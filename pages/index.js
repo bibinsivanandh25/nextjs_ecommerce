@@ -1,5 +1,5 @@
 import Head from "next/head";
-import ModalComponent from "../components/atoms/ModalComponent";
+import ProgressBar from "../components/atoms/ProgressBar";
 
 export default function Home() {
   return (
@@ -8,9 +8,6 @@ export default function Home() {
         <title>MrMrsCart</title>
       </Head>
       <div> Empty project</div>
-      <ModalComponent open={true}>
-        <div>suhil</div>
-      </ModalComponent>
     </div>
   );
 }
