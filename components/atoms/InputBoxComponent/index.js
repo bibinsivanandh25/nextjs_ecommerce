@@ -1,16 +1,32 @@
 import { TextField } from "@mui/material";
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const InputBox= ({
     placeholder='placeholder',
     value='default value',
-    label='asdasd',
+    label='label',
     className='w-25',
     size='small',
-    onInputChange =()=>{}
+    onInputChange =()=>{},
+    iconName = '',
+    onIconClick = ()=>{}
     })=>{
+
+        const getIcons =()=>{
+            if(iconName==='visible'){
+                return <Visibility  />
+            }
+           else if(iconName === 'visibleOff'){
+                return <VisibilityOff/>
+            }
+            else {
+                return null;
+            }
+
+        }
     return (
         <TextField
         onChange={
@@ -21,18 +37,17 @@ const InputBox= ({
         defaultValue={value}
         size={size}
         className={className}
-        endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                // onClick={handleClickShowPassword}
-                // onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
-                {<VisibilityOff />}
-              </IconButton>
-            </InputAdornment>
-          }
+        InputProps={{
+            endAdornment: <InputAdornment position="end">
+                <IconButton
+                onClick={()=>{
+                    onIconClick()
+                }}
+                >
+                {getIcons()}
+                </IconButton>
+                </InputAdornment>,
+          }}
         />
     )
 
