@@ -99,12 +99,24 @@ const reportsList = {
   logo: "fas fa-chart-bar",
   dropdownlist: [
     {
+      subtitle: "Payment Reports",
+      path_name: "payment-report",
+    },
+    {
       subtitle: "Order Report",
       path_name: "order-report",
     },
     {
-      subtitle: "Payment Report",
-      path_name: "payment-report",
+      subtitle: "Order Tax Invoice Report",
+      path_name: "order-tex-invoice-report",
+    },
+    {
+      subtitle: "Credit Notes",
+      path_name: "credit-notes",
+    },
+    {
+      subtitle: "Commission Invoices",
+      path_name: "commission-invoices",
     },
     {
       subtitle: "TCS/Sales Report",
@@ -166,10 +178,24 @@ const dashboardList = [
   },
 ];
 
+const earningsList = {
+  dropdownlist: [
+    {
+      subtitle: "Summary",
+      path_name: "summary",
+    },
+    {
+      subtitle: "Withdraw Request",
+      path_name: "withdraw",
+    },
+  ],
+};
+
 const submenuList = {
   orders: ordersList,
   products: productsList,
   reports: reportsList,
+  earnings: earningsList,
 };
 
 const openedMixin = (theme) => ({
@@ -196,9 +222,9 @@ const closedMixin = (theme) => ({
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
+  justifyContent: "flex-start",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
+  marginLeft: 5,
   ...theme.mixins.toolbar,
 }));
 
@@ -222,7 +248,7 @@ const Drawer = styled(MuiDrawer, {
 export default function SupplierSidebar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState("");
+  const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
 
   return (
@@ -247,7 +273,7 @@ export default function SupplierSidebar({ children }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {dashboardList.map((text, index) => (
+          {dashboardList.map((text) => (
             <>
               <ListItemButton
                 key={text.id}
@@ -256,7 +282,9 @@ export default function SupplierSidebar({ children }) {
                   justifyContent: open ? "initial" : "center",
                   px: 1.5,
                 }}
-                onClick={() => setSelected(text.id)}
+                onClick={() =>
+                  setSelected({ show: !selected.show, id: text.id })
+                }
               >
                 <ListItemIcon
                   sx={{
@@ -273,7 +301,7 @@ export default function SupplierSidebar({ children }) {
                       variant="text"
                       fontWeight={700}
                       fontSize={14}
-                      color={selected === text.id && "orange"}
+                      color={selected.id === text.id && "orange"}
                     >
                       {text.title}
                     </Typography>
@@ -282,8 +310,9 @@ export default function SupplierSidebar({ children }) {
                   sx={{ opacity: open ? 1 : 0 }}
                 />
               </ListItemButton>
-              {selected === text.id &&
-                submenuList[selected]?.dropdownlist?.map((item) => (
+              {selected.show &&
+                selected.id === text.id &&
+                submenuList[selected.id]?.dropdownlist?.map((item) => (
                   <MenuList
                     key={item.title || item.subtitle}
                     sx={{
@@ -291,7 +320,9 @@ export default function SupplierSidebar({ children }) {
                       px: 2.5,
                       display: "block",
                     }}
-                    onClick={() => setSelected(text.id)}
+                    onClick={() =>
+                      setSelected({ show: selected.show, id: text.id })
+                    }
                   >
                     <MenuItem
                       sx={{
