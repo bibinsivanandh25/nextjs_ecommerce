@@ -295,8 +295,8 @@ export default function SupplierSidebar({ children }) {
         <DrawerHeader>
           <MenuOpenIcon onClick={() => setOpen(!open)} color="inherit" />
         </DrawerHeader>
-        <Divider />
-        <List>
+        {/* <Divider /> */}
+        <List sx={{ height: "100%", overflowY: "auto" }}>
           {dashboardList.map((text) => (
             <>
               <ListItemButton
