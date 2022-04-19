@@ -1,4 +1,5 @@
 import Head from "next/head";
+import HeaderComponent from "../components/organism/HeaderComponent";
 
 export default function Home() {
   return (
@@ -6,7 +7,6 @@ export default function Home() {
       <Head>
         <title>MrMrsCart</title>
       </Head>
-      <div> Empty project</div>
     </div>
   );
 }
