@@ -251,6 +251,30 @@ export default function SupplierSidebar({ children }) {
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
 
+  const getSubmenuStyles = (o) => {
+    return {
+      opacity: open ? 1 : 0,
+      color: subMenuSelected === o.subtitle ? "black" : "gray",
+      fontSize: 11,
+      fontWeight: 600,
+      ml: 2,
+    };
+  };
+
+  const getMenuStyles = (item) => {
+    return {
+      opacity: open ? 1 : 0,
+      color: item?.subList?.length
+        ? "orange"
+        : subMenuSelected === item.subtitle
+        ? "black"
+        : "gray",
+      fontSize: item?.subList?.length ? 14 : 11,
+      fontWeight: item?.subList?.length ? 500 : 600,
+      ml: !item?.subList?.length && 2,
+    };
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -283,7 +307,10 @@ export default function SupplierSidebar({ children }) {
                   px: 1.5,
                 }}
                 onClick={() =>
-                  setSelected({ show: !selected.show, id: text.id })
+                  setSelected({
+                    show: text.id === selected.id ? !selected.show : true,
+                    id: text.id,
+                  })
                 }
               >
                 <ListItemIcon
@@ -318,21 +345,15 @@ export default function SupplierSidebar({ children }) {
                     sx={{
                       minHeight: 40,
                       px: 2.5,
-                      display: "block",
                     }}
                     onClick={() =>
                       setSelected({ show: selected.show, id: text.id })
                     }
                   >
                     <MenuItem
-                      sx={{
-                        opacity: open ? 1 : 0,
-                        color: item?.subList?.length ? "orange" : "gray",
-                        fontSize: item?.subList?.length ? 14 : 11,
-                        fontWeight: item?.subList?.length ? 500 : 600,
-                        ml: !item?.subList?.length && 2,
-                      }}
+                      sx={getMenuStyles(item)}
                       key={item.title || item.subtitle}
+                      onClick={() => setSubMenuSelected(item.subtitle)}
                     >
                       {item?.subList && item?.subList?.length
                         ? `+ ${item.title}`
@@ -340,14 +361,7 @@ export default function SupplierSidebar({ children }) {
                     </MenuItem>
                     {item?.subList?.map((o) => (
                       <MenuItem
-                        sx={{
-                          opacity: open ? 1 : 0,
-                          color:
-                            subMenuSelected === o.subtitle ? "black" : "gray",
-                          fontSize: 11,
-                          fontWeight: 600,
-                          ml: 2,
-                        }}
+                        sx={getSubmenuStyles(o)}
                         key={o.subtitle}
                         onClick={() => setSubMenuSelected(o.subtitle)}
                       >
