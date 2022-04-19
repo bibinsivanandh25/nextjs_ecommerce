@@ -339,9 +339,9 @@ export default function SupplierSidebar({ children }) {
               </ListItemButton>
               {selected.show &&
                 selected.id === text.id &&
-                submenuList[selected.id]?.dropdownlist?.map((item) => (
+                submenuList[selected.id]?.dropdownlist?.map((item,index) => (
                   <MenuList
-                    key={item.title || item.subtitle}
+                    key={index}
                     sx={{
                       minHeight: 40,
                       px: 2.5,
