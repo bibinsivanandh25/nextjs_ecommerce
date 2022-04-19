@@ -2,8 +2,6 @@ import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -13,8 +11,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { MenuItem, MenuList } from "@mui/material";
@@ -70,7 +66,7 @@ const ordersList = {
   ],
 };
 
-const myProductObj = {
+const productsList = {
   title: "My Product & Inventory",
   logo: "fas fa-cog",
   dropdownlist: [
@@ -98,7 +94,7 @@ const myProductObj = {
   path_name: "newproducts",
 };
 
-const ReportObj = {
+const reportsList = {
   title: "Report",
   logo: "fas fa-chart-bar",
   dropdownlist: [
@@ -170,6 +166,12 @@ const dashboardList = [
   },
 ];
 
+const submenuList = {
+  orders: ordersList,
+  products: productsList,
+  reports: reportsList,
+};
+
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -221,6 +223,7 @@ export default function SupplierSidebar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState("");
+  const [subMenuSelected, setSubMenuSelected] = React.useState("");
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -280,10 +283,9 @@ export default function SupplierSidebar({ children }) {
                 />
               </ListItemButton>
               {selected === text.id &&
-                text.id === "orders" &&
-                ordersList.dropdownlist.map((item) => (
+                submenuList[selected]?.dropdownlist?.map((item) => (
                   <MenuList
-                    key={text.id}
+                    key={item.title || item.subtitle}
                     sx={{
                       minHeight: 40,
                       px: 2.5,
@@ -294,22 +296,29 @@ export default function SupplierSidebar({ children }) {
                     <MenuItem
                       sx={{
                         opacity: open ? 1 : 0,
-                        color: "orange",
-                        fontSize: 14,
-                        fontWeight: 500,
+                        color: item?.subList?.length ? "orange" : "gray",
+                        fontSize: item?.subList?.length ? 14 : 11,
+                        fontWeight: item?.subList?.length ? 500 : 600,
+                        ml: !item?.subList?.length && 2,
                       }}
+                      key={item.title || item.subtitle}
                     >
-                      + {item.title}
+                      {item?.subList && item?.subList?.length
+                        ? `+ ${item.title}`
+                        : item.subtitle}
                     </MenuItem>
-                    {item.subList.map((o) => (
+                    {item?.subList?.map((o) => (
                       <MenuItem
                         sx={{
                           opacity: open ? 1 : 0,
-                          color: "gray",
+                          color:
+                            subMenuSelected === o.subtitle ? "black" : "gray",
                           fontSize: 11,
                           fontWeight: 600,
                           ml: 2,
                         }}
+                        key={o.subtitle}
+                        onClick={() => setSubMenuSelected(o.subtitle)}
                       >
                         {o.subtitle}
                       </MenuItem>
