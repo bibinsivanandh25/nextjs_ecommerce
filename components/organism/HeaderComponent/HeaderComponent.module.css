@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  padding: 6px 14px;
+  align-items: center;
+}
+
+.subcontainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
