@@ -1,13 +1,23 @@
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import ProgressBar from "../components/atoms/ProgressBar";
 
 export default function Home() {
+  const { data: session } = useSession();
+  console.log("session", session);
+  if (session === null) signIn();
   return (
     <div>
       <Head>
         <title>MrMrsCart</title>
       </Head>
       <div> Empty project</div>
+      <div
+        onClick={() => {
+          signOut();
+        }}
+      >
+        sign out
+      </div>
     </div>
   );
 }
