@@ -6,7 +6,6 @@ export default function Home() {
       <Head>
         <title>MrMrsCart</title>
       </Head>
-      <TableComponent columns={columns} tableRows={rows} />
     </div>
   );
 }
