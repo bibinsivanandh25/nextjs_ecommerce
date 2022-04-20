@@ -15,52 +15,56 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { MenuItem, MenuList } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
 const ordersList = {
   title: "My Order",
   logo: "fas fa-shopping-cart",
+  path_name: "myorders",
   dropdownlist: [
     {
       title: "New Orders To Process (0)",
+      path_name: "neworders",
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
-          path_name: "acceptAndConfirmAddress",
+          path_name: "acceptandconfirmaddress",
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
-          path_name: "ordersData",
+          path_name: "ordersdata",
         },
         {
           subtitle: "Upload Manifest (00)",
-          path_name: "manifestUpload",
+          path_name: "manifestupload",
         },
       ],
     },
     {
-      title: "Orders History (0)",
+      title: "Order History (0)",
+      path_name: "orderhistory",
       subList: [
         {
           subtitle: "Manifested Orders (00)",
-          path_name: "manifestedOrders",
+          path_name: "manifestedorders",
         },
         {
           subtitle: "Shipped Orders (00)",
-          path_name: "shippedOrders",
+          path_name: "shippedorders",
         },
         {
           subtitle: "Delivered Orders (00)",
-          path_name: "deliveredOrder",
+          path_name: "deliveredorders",
         },
         {
           subtitle: "Cancelled Orders (00)",
-          path_name: "cancelledOrder",
+          path_name: "cancelledorders",
         },
         {
           subtitle: "Returned Orders (00)",
-          path_name: "returnedOrders",
+          path_name: "returnedorders",
         },
       ],
     },
@@ -70,6 +74,7 @@ const ordersList = {
 const productsList = {
   title: "My Product & Inventory",
   logo: "fas fa-cog",
+  path_name: "products",
   dropdownlist: [
     {
       subtitle: "My Products (Update Inventory)",
@@ -92,12 +97,12 @@ const productsList = {
       path_name: "MrMrsCartProduct",
     },
   ],
-  path_name: "newproducts",
 };
 
 const reportsList = {
   title: "Report",
   logo: "fas fa-chart-bar",
+  path_name: "reports",
   dropdownlist: [
     {
       subtitle: "Payment Reports",
@@ -124,7 +129,6 @@ const reportsList = {
       path_name: "sales-report",
     },
   ],
-  path_name: "neworders",
 };
 
 const dashboardList = [
@@ -180,6 +184,7 @@ const dashboardList = [
 ];
 
 const earningsList = {
+  path_name: "earnings",
   dropdownlist: [
     {
       subtitle: "Summary",
@@ -352,23 +357,37 @@ export default function SupplierSidebar({ children }) {
                       setSelected({ show: selected.show, id: text.id })
                     }
                   >
-                    <MenuItem
-                      sx={getMenuStyles(item)}
-                      key={item.title || item.subtitle}
-                      onClick={() => setSubMenuSelected(item.subtitle)}
+                    <Link
+                      href={`/${submenuList[selected.id].path_name}/${
+                        item.path_name
+                      }`}
+                      replace
                     >
-                      {item?.subList && item?.subList?.length
-                        ? `+ ${item.title}`
-                        : item.subtitle}
-                    </MenuItem>
-                    {item?.subList?.map((o) => (
                       <MenuItem
-                        sx={getSubmenuStyles(o)}
-                        key={o.subtitle}
-                        onClick={() => setSubMenuSelected(o.subtitle)}
+                        sx={getMenuStyles(item)}
+                        key={item.title || item.subtitle}
+                        onClick={() => setSubMenuSelected(item.subtitle)}
                       >
-                        {o.subtitle}
+                        {item?.subList && item?.subList?.length
+                          ? `+ ${item.title}`
+                          : item.subtitle}
                       </MenuItem>
+                    </Link>
+                    {item?.subList?.map((o) => (
+                      <Link
+                        href={`/${submenuList[selected.id].path_name}/${
+                          item.path_name
+                        }/${o.path_name}`}
+                        replace
+                      >
+                        <MenuItem
+                          sx={getSubmenuStyles(o)}
+                          key={o.subtitle}
+                          onClick={() => setSubMenuSelected(o.subtitle)}
+                        >
+                          {o.subtitle}
+                        </MenuItem>
+                      </Link>
                     ))}
                   </MenuList>
                 ))}
