@@ -76,7 +76,7 @@ export default function TableComponent({
   // }, []);
   useEffect(() => {
     if (searchText === "") setRows(tableRows);
-  }, [searchText]);
+  }, [searchText, tableRows]);
 
   useEffect(() => {
     const temp = columns.map((item, index) => {
