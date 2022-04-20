@@ -14,6 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { MenuItem, MenuList } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const drawerWidth = 240;
 
@@ -245,8 +246,15 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    top: "60px !important",
+  },
+}));
+
 export default function SupplierSidebar({ children }) {
   const theme = useTheme();
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
@@ -291,7 +299,11 @@ export default function SupplierSidebar({ children }) {
       >
         <MenuIcon />
       </IconButton>
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        classes={{ paper: classes.paper }}
+      >
         <DrawerHeader>
           <MenuOpenIcon onClick={() => setOpen(!open)} color="inherit" />
         </DrawerHeader>

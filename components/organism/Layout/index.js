@@ -33,12 +33,7 @@ const Layout = ({ Component, pageProps }) => {
       </Head>
       <div>
         {/* {!isLoginTrue && <HeaderComponent />} */}
-        <div style={{ display: "block" }}>
-          <HeaderComponent />
-        </div>
-        {!session?.accessToken && (
-          <button onClick={() => signIn()}>Sign in </button>
-        )}
+        <HeaderComponent />
         <SupplierSidebar>
           <Component {...pageProps} className="mxh-80vh" />
         </SupplierSidebar>
