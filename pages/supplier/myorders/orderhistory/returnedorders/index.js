@@ -1,107 +1,205 @@
-import { Paper } from "@mui/material";
+import { Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 
 const ReturnedOrders = () => {
   const columns = [
     {
       label: "Purchase ID",
-      id: "purchaseid",
+      align: "center",
+      id: "col1",
     },
     {
       label: "Order ID",
-      id: "orderid",
+      align: "center",
+      id: "col2",
     },
     {
       label: "Order Date",
-      id: "orderdate",
+      align: "center",
+      id: "col3",
     },
     {
       label: "Size",
-      id: "size",
+      align: "center",
+      id: "col4",
     },
     {
       label: "Weight",
-      id: "weight",
+      align: "center",
+      id: "col5",
     },
     {
       label: "Manifest Date",
-      id: "manifestdate",
+      align: "center",
+      id: "col6",
     },
     {
       label: "Qty",
-      id: "qty",
-    },
-    {
-      label: "Choose Action",
-      id: "chooseaction",
-    },
-    {
-      label: "Status",
-      id: "status",
+      align: "center",
+      id: "col7",
     },
     {
       label: "Total",
-      id: "total",
+      align: "center",
+      id: "col8",
+    },
+    {
+      label: "Status",
+      align: "center",
+      id: "col9",
+    },
+    {
+      label: "Choose Action",
+      id: "col10",
+      align: "center",
     },
     {
       label: "Action",
-      id: "action",
+      id: "col11",
+      align: "center",
     },
-    4,
   ];
+
+  const [tableRows, setTableRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const chooseActionList = [
+    {
+      id: "received",
+      value: "received",
+      label: "Product Received",
+    },
+    {
+      id: "notreceived",
+      value: "notreceived",
+      label: "Product Not Received",
+    },
+    {
+      id: "receivedwithdamage",
+      value: "receivedwithdamage",
+      label: "Product Received With Damage",
+    },
+    {
+      id: "lost",
+      value: "lost",
+      label: "Product Lost In Transit",
+    },
+  ];
+
+  const handleChooseActionChange = (val, id) => {
+    const copy = tableData.map((row) => {
+      if (row.purchaseid === id) {
+        return {
+          ...row,
+          chooseActionValue: val,
+        };
+      }
+      return row;
+    });
+    setTableData(copy);
+  };
+
+  const getClassnames = (status) => {
+    if (status?.toLowerCase().includes("live")) {
+      return "text-success";
+    } else if (status.toLowerCase().includes("fail")) {
+      return "text-danger";
+    }
+    return "";
+  };
 
   const mapRowsToTable = (data) => {
     const result = [];
-    // data.forEach((row) => {
+    data.forEach((row) => {
+      result.push({
+        col1: row.purchaseid,
+        col2: row.orderid,
+        col3: row.orderdate,
+        col4: row.size,
+        col5: row.weight,
+        col6: row.manifestdate,
+        col7: row.qty,
+        col8: row.total,
+        col9: <div className={getClassnames(row.status)}>{row.status}</div>,
+        col10: (
+          <Grid container spacing={2} sx={{ width: 200 }}>
+            <Grid item xs={8}>
+              <SimpleDropdownComponent
+                label="Choose Action"
+                list={chooseActionList}
+                size="small"
+                value={row.chooseActionValue}
+                id={`${row.purchaseid}chooseAction`}
+                onDropdownSelect={(val) =>
+                  handleChooseActionChange(val, row.purchaseid)
+                }
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                size="small"
+                disabled={!row.chooseActionValue}
+              >
+                Send
+              </Button>
+            </Grid>
+          </Grid>
+        ),
+        col11: (
+          <>
+            <DownloadIcon className="text-secondary mx-2" />
+            <VisibilityIcon className="text-secondary" />
+          </>
+        ),
+      });
+    });
+    return result;
+  };
 
-    // })
-  }
+  useEffect(() => {
+    setTableRows(mapRowsToTable(tableData));
+  }, [tableData]);
 
-  const rows = [
-    {
-      purchaseid: "#123456",
-      orderid: "123456",
-      orderdate: "12-01-2022",
-      size: "UK24",
-      weight: "200gm",
-      manifestdate: "23-01-2022",
-      qty: "4",
-      status: "500",
-      total: 4,
-      action: (
-        <>
-          <DownloadIcon className="text-secondary mx-2" />
-          <VisibilityIcon className="text-secondary" />
-        </>
-      ),
-    },
-    {
-      purchaseid: "#123456",
-      orderid: "123456",
-      orderdate: "12-01-2022",
-      size: "UK24",
-      weight: "200gm",
-      manifestdate: "23-01-2022",
-      qty: "4",
-      status: "500",
-      total: 4,
-      action: (
-        <>
-          <DownloadIcon className="text-secondary mx-2" />
-          <VisibilityIcon className="text-secondary" />
-        </>
-      ),
-    },
-  ];
+  useEffect(() => {
+    const rows = [
+      {
+        purchaseid: "#123458",
+        orderid: "123456",
+        orderdate: "12-01-2022",
+        size: "UK24",
+        weight: "200gm",
+        manifestdate: "23-01-2022",
+        qty: "4",
+        status: "PRODUCT LIVE",
+        total: 4,
+        chooseActionValue: null,
+      },
+      {
+        purchaseid: "#123456",
+        orderid: "123456",
+        orderdate: "12-01-2022",
+        size: "UK24",
+        weight: "200gm",
+        manifestdate: "23-01-2022",
+        qty: "4",
+        status: "VALIDATION FAILED",
+        chooseActionValue: null,
+        total: 4,
+      },
+    ];
+    setTableData(rows);
+  }, []);
+
   return (
     <Paper sx={{ px: 0 }}>
       <TableComponent
-        table_heading={`Returned Orders (${rows.length})`}
+        table_heading={`Returned Orders (${tableRows.length})`}
         columns={columns}
-        tableRows={rows}
+        tableRows={tableRows}
         showSearchbar={false}
         showCheckbox={false}
       />
