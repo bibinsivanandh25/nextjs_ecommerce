@@ -6,9 +6,6 @@ export default function Home() {
   // if (session === null) signIn();
   return (
     <div>
-      <Head>
-        <title>MrMrsCart</title>
-      </Head>
       <div> Empty project</div>
       <div
         onClick={() => {

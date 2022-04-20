@@ -41,6 +41,8 @@ font-weight: 400;
   font-size: 12;
 }
 
+// scrollbar styles
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -60,4 +62,10 @@ font-weight: 400;
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
+}
+
+// heights
+
+.mxh-80vh {
+  max-height: 80vh;
 }

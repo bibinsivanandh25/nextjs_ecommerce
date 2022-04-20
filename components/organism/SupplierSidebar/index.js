@@ -14,52 +14,57 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import { MenuItem, MenuList } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import Link from "next/link";
 
 const drawerWidth = 240;
 
 const ordersList = {
   title: "My Order",
   logo: "fas fa-shopping-cart",
+  path_name: "myorders",
   dropdownlist: [
     {
       title: "New Orders To Process (0)",
+      path_name: "neworders",
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
-          path_name: "acceptAndConfirmAddress",
+          path_name: "acceptandconfirmaddress",
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
-          path_name: "ordersData",
+          path_name: "ordersdata",
         },
         {
           subtitle: "Upload Manifest (00)",
-          path_name: "manifestUpload",
+          path_name: "manifestupload",
         },
       ],
     },
     {
-      title: "Orders History (0)",
+      title: "Order History (0)",
+      path_name: "orderhistory",
       subList: [
         {
           subtitle: "Manifested Orders (00)",
-          path_name: "manifestedOrders",
+          path_name: "manifestedorders",
         },
         {
           subtitle: "Shipped Orders (00)",
-          path_name: "shippedOrders",
+          path_name: "shippedorders",
         },
         {
           subtitle: "Delivered Orders (00)",
-          path_name: "deliveredOrder",
+          path_name: "deliveredorders",
         },
         {
           subtitle: "Cancelled Orders (00)",
-          path_name: "cancelledOrder",
+          path_name: "cancelledorders",
         },
         {
           subtitle: "Returned Orders (00)",
-          path_name: "returnedOrders",
+          path_name: "returnedorders",
         },
       ],
     },
@@ -69,6 +74,7 @@ const ordersList = {
 const productsList = {
   title: "My Product & Inventory",
   logo: "fas fa-cog",
+  path_name: "products",
   dropdownlist: [
     {
       subtitle: "My Products (Update Inventory)",
@@ -91,12 +97,12 @@ const productsList = {
       path_name: "MrMrsCartProduct",
     },
   ],
-  path_name: "newproducts",
 };
 
 const reportsList = {
   title: "Report",
   logo: "fas fa-chart-bar",
+  path_name: "reports",
   dropdownlist: [
     {
       subtitle: "Payment Reports",
@@ -123,7 +129,6 @@ const reportsList = {
       path_name: "sales-report",
     },
   ],
-  path_name: "neworders",
 };
 
 const dashboardList = [
@@ -179,6 +184,7 @@ const dashboardList = [
 ];
 
 const earningsList = {
+  path_name: "earnings",
   dropdownlist: [
     {
       subtitle: "Summary",
@@ -245,8 +251,15 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    top: "60px !important",
+  },
+}));
+
 export default function SupplierSidebar({ children }) {
   const theme = useTheme();
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
@@ -278,22 +291,16 @@ export default function SupplierSidebar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={() => setOpen(!open)}
-        edge="start"
-        sx={
-          {
-            //   marginRight: 5,
-          }
-        }
+      <Drawer
+        variant="permanent"
+        open={open}
+        classes={{ paper: classes.paper }}
       >
-        <MenuIcon />
-      </IconButton>
-      <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <MenuOpenIcon onClick={() => setOpen(!open)} color="inherit" />
+          <MenuOpenIcon
+            onClick={() => setOpen(!open)}
+            className="text-secondary"
+          />
         </DrawerHeader>
         {/* <Divider /> */}
         <List sx={{ height: "100%", overflowY: "auto" }}>
@@ -350,23 +357,37 @@ export default function SupplierSidebar({ children }) {
                       setSelected({ show: selected.show, id: text.id })
                     }
                   >
-                    <MenuItem
-                      sx={getMenuStyles(item)}
-                      key={item.title || item.subtitle}
-                      onClick={() => setSubMenuSelected(item.subtitle)}
+                    <Link
+                      href={`/${submenuList[selected.id].path_name}/${
+                        item.path_name
+                      }`}
+                      replace
                     >
-                      {item?.subList && item?.subList?.length
-                        ? `+ ${item.title}`
-                        : item.subtitle}
-                    </MenuItem>
-                    {item?.subList?.map((o) => (
                       <MenuItem
-                        sx={getSubmenuStyles(o)}
-                        key={o.subtitle}
-                        onClick={() => setSubMenuSelected(o.subtitle)}
+                        sx={getMenuStyles(item)}
+                        key={item.title || item.subtitle}
+                        onClick={() => setSubMenuSelected(item.subtitle)}
                       >
-                        {o.subtitle}
+                        {item?.subList && item?.subList?.length
+                          ? `+ ${item.title}`
+                          : item.subtitle}
                       </MenuItem>
+                    </Link>
+                    {item?.subList?.map((o) => (
+                      <Link
+                        href={`/${submenuList[selected.id].path_name}/${
+                          item.path_name
+                        }/${o.path_name}`}
+                        replace
+                      >
+                        <MenuItem
+                          sx={getSubmenuStyles(o)}
+                          key={o.subtitle}
+                          onClick={() => setSubMenuSelected(o.subtitle)}
+                        >
+                          {o.subtitle}
+                        </MenuItem>
+                      </Link>
                     ))}
                   </MenuList>
                 ))}
@@ -374,7 +395,16 @@ export default function SupplierSidebar({ children }) {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: -0.5,
+          backgroundColor: "#f7f7f7",
+          height: "90vh",
+        }}
+      >
         {children}
       </Box>
     </Box>

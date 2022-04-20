@@ -9,7 +9,7 @@ const ModalComponent = ({
   ModalWidth = 500,
   showFooter = true,
   showHeader = true,
-  minHeightClassName = "mnh-200",
+  minHeightClassName = "",
   showClearBtn = true,
   showSaveBtn = true,
   saveBtnText = "Save",
@@ -40,12 +40,12 @@ const ModalComponent = ({
         <Box sx={style}>
           {showHeader ? (
             <div
-              className={`d-flex justify-content-between px-4 py-2 ${headerClassName}`}
+              className={`d-flex justify-content-between align-items-center px-4 py-2 ${headerClassName}`}
               style={{
-                borderBottom: "1px solid #707070",
+                borderBottom: "1px solid #e6e6e6",
               }}
             >
-              <label className="  fw-600 ">{ModalTitle}</label>
+              <label className="fs-12">{ModalTitle}</label>
               <div className={showCloseIcon ? "" : "d-none"}>
                 <CloseIcon onClick={onCloseIconClick} />
               </div>
@@ -57,9 +57,6 @@ const ModalComponent = ({
           {showFooter ? (
             <div
               className={`px-4 py-2 d-flex justify-content-end ${footerClassName}`}
-              style={{
-                borderTop: "1px solid #707070",
-              }}
             >
               {showSaveBtn ? (
                 <ButtonComponent
