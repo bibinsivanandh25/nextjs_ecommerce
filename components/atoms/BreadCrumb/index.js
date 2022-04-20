@@ -3,6 +3,7 @@ import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { paths } from "./paths";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const BreadCrumb = () => {
@@ -16,7 +17,7 @@ const BreadCrumb = () => {
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
         <Link href={"/"}>
-          <HomeIcon className="fs-14 mx-2" />
+          <HomeIcon className="text-secondary mx-2" />
         </Link>
         {path.map((item, index) => {
           completePath =
@@ -34,7 +35,7 @@ const BreadCrumb = () => {
                     path.length === index + 1 ? "color-orange" : ""
                   } fs-14 mx-2`}
                 >
-                  {item}
+                  {paths.find((i) => i.id === item)?.title}
                 </span>
               </Link>
             </React.Fragment>

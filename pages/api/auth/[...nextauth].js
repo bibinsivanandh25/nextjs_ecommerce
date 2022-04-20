@@ -12,7 +12,6 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log(credentials);
         if (
           credentials.username === "suhil" &&
           credentials.password === "123"
@@ -23,9 +22,9 @@ const options = {
       },
     }),
   ],
-  // pages: {
-  //   signIn: "/login",
-  // },
+  pages: {
+    signIn: "/auth/login",
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
@@ -39,6 +38,19 @@ const options = {
       }
       return session;
     },
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   if (user.id) {
+    //     return "/";
+    //   }
+    //   return "/loginerror";
+    // },
+    // async redirect({ url, baseUrl }) {
+    //   // Allows relative callback URLs
+    //   if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+    //   // Allows callback URLs on the same origin
+    //   else if (new URL(url).origin === baseUrl) return url;
+    //   return baseUrl;
+    // },
   },
   secret: "123",
   jwt: { secret: "123", encryption: true },
