@@ -11,8 +11,6 @@ const Layout = ({ Component, pageProps }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const noLayout = status !== "authenticated";
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [isLoginTrue, setisLoginTrue] = useState(false);
 
   useEffect(() => {
     if (status !== "authenticated") {
@@ -24,14 +22,10 @@ const Layout = ({ Component, pageProps }) => {
 
   return (
     <>
-      <div id="loader" style={{ display: "none" }}>
-        <div className="spinner"></div>
-      </div>
-      <div id="toastContainer" style={{ display: "none" }}></div>
       <Head>
-        <title> Panda </title>
-        <meta name="description" content="Panda project" />
-        <link rel="icon" href="/logo1.ico" />
+        <title> MrMrsCart </title>
+        <meta name="description" content="MrMrsCart project" />
+        <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
       <div>
         {/* {!isLoginTrue && <HeaderComponent />} */}
