@@ -4,6 +4,8 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import HeaderComponent from "../HeaderComponent";
 import SupplierSidebar from "../SupplierSidebar";
+import BreadCrumb from "components/atoms/BreadCrumb";
+import { Paper } from "@mui/material";
 
 const Layout = ({ Component, pageProps }) => {
   const { data: session, status } = useSession();
@@ -35,7 +37,10 @@ const Layout = ({ Component, pageProps }) => {
         {/* {!isLoginTrue && <HeaderComponent />} */}
         <HeaderComponent />
         <SupplierSidebar>
-          <Component {...pageProps} className="mxh-80vh" />
+          <BreadCrumb />
+          <Paper sx={{ maxHeight: "80vh", height: "100%", p: 3, mx: 1, mt: 2 }}>
+            <Component {...pageProps} />
+          </Paper>
         </SupplierSidebar>
       </div>
     </>

@@ -286,26 +286,16 @@ export default function SupplierSidebar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={() => setOpen(!open)}
-        edge="start"
-        sx={
-          {
-            //   marginRight: 5,
-          }
-        }
-      >
-        <MenuIcon />
-      </IconButton>
       <Drawer
         variant="permanent"
         open={open}
         classes={{ paper: classes.paper }}
       >
         <DrawerHeader>
-          <MenuOpenIcon onClick={() => setOpen(!open)} color="inherit" />
+          <MenuOpenIcon
+            onClick={() => setOpen(!open)}
+            className="text-secondary"
+          />
         </DrawerHeader>
         {/* <Divider /> */}
         <List sx={{ height: "100%", overflowY: "auto" }}>
@@ -386,7 +376,16 @@ export default function SupplierSidebar({ children }) {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: -0.5,
+          backgroundColor: "#f7f7f7",
+          height: "90vh",
+        }}
+      >
         {children}
       </Box>
     </Box>

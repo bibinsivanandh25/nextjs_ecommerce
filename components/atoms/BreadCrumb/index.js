@@ -16,7 +16,7 @@ const BreadCrumb = () => {
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
         <Link href={"/"}>
-          <HomeIcon className="fs-14 mx-2" />
+          <HomeIcon className="text-secondary mx-2" />
         </Link>
         {path.map((item, index) => {
           completePath =
