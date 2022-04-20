@@ -242,7 +242,6 @@ export default function TableComponent({
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -254,6 +253,9 @@ export default function TableComponent({
                           <CheckBoxComponent
                             isChecked={isItemSelected}
                             label=""
+                            checkBoxClick={(event) =>
+                              handleClick(event, row.id)
+                            }
                           />
                         </TableCell>
                       )}
