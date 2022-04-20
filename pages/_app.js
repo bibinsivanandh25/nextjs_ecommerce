@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-// export default MyApp;
-export default dynamic(() => Promise.resolve(MyApp), {
-  ssr: false,
-});
+export default MyApp;
+// export default dynamic(() => Promise.resolve(MyApp), {
+//   ssr: false,
+// });
