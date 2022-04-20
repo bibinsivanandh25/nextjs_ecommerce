@@ -339,7 +339,7 @@ export default function SupplierSidebar({ children }) {
               </ListItemButton>
               {selected.show &&
                 selected.id === text.id &&
-                submenuList[selected.id]?.dropdownlist?.map((item,index) => (
+                submenuList[selected.id]?.dropdownlist?.map((item, index) => (
                   <MenuList
                     key={index}
                     sx={{
