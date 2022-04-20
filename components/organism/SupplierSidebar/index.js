@@ -301,8 +301,8 @@ export default function SupplierSidebar({ children }) {
           />
         </DrawerHeader>
         <List sx={{ height: "100%", overflowY: "auto" }}>
-          {dashboardList.map((text) => (
-            <>
+          {dashboardList.map((text, index) => (
+            <React.Fragment key={index}>
               <ListItemButton
                 key={text.id}
                 sx={{
@@ -388,7 +388,7 @@ export default function SupplierSidebar({ children }) {
                     ))}
                   </MenuList>
                 ))}
-            </>
+            </React.Fragment>
           ))}
         </List>
       </Drawer>

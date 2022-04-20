@@ -8,7 +8,12 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import CheckBoxComponent from "./CheckboxComponent";
-import { Grid } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
+import SimpleDropdownComponent from "./SimpleDropdownComponent";
+import InputBox from "./InputBoxComponent";
+import ButtonComponent from "./ButtonComponent";
+import SearchIcon from "@mui/icons-material/Search";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const EnhancedTableHead = (props) => {
   const { onSelectAllClick, numSelected, rowCount, showCheckbox, columns } =
@@ -20,7 +25,7 @@ const EnhancedTableHead = (props) => {
         {showCheckbox && (
           <TableCell padding="checkbox">
             <CheckBoxComponent
-              onCheckBoxClick={onSelectAllClick}
+              checkBoxClick={onSelectAllClick}
               isindeterminate={numSelected > 0 && numSelected < rowCount}
               isChecked={rowCount > 0 && numSelected === rowCount}
               label=""
@@ -33,7 +38,7 @@ const EnhancedTableHead = (props) => {
               key={column.id}
               align={column.align}
               style={{ top: 57, minWidth: column.minWidth }}
-              className="fw-600 "
+              className="fw-600 p-2"
             >
               {column.label}
             </TableCell>
@@ -50,38 +55,68 @@ export default function TableComponent({
   table_heading = "",
   tableRows = [],
   columns = [],
+  showSearchbar = true,
+  OnSelectionChange = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
-  useEffect(() => {
-    setRows(tableRows);
-    if (searchText) {
-      requestSearch(searchText);
-    }
-  }, [searchText]);
-
+  const [searchFilterList, setSearchFilterList] = useState([
+    { label: "All", id: "0", value: "All" },
+  ]);
+  const [searchFilter, setSearchFilter] = useState({
+    label: "All",
+    id: "0",
+    value: "All",
+  });
   // useEffect(() => {
   //   setRows(tableRows);
   // }, []);
+  useEffect(() => {
+    if (searchText === "") setRows(tableRows);
+  }, [searchText]);
+
+  useEffect(() => {
+    const temp = columns.map((item, index) => {
+      return { label: item.label, id: item.id, value: item.label };
+    });
+    setSearchFilterList(() => {
+      return [{ label: "All", id: "0", value: "All" }, ...temp];
+    });
+  }, [columns]);
 
   const requestSearch = (searchval) => {
-    let filteredData = tableRows.filter((value) => {
-      let flag = false;
-      let dataarray = Object.values(value);
-      let index;
-      dataarray.forEach((ele) => {
-        index =
-          typeof ele === "string" &&
-          ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
-        if (index) {
-          flag = true;
-        }
-      });
-      return flag;
-    });
+    let filteredData =
+      searchFilter.label === "All" || searchFilter.label === ""
+        ? rows.filter((value) => {
+            debugger;
+            let flag = false;
+            let dataarray = Object.values(value);
+            dataarray.splice(0, 1);
+            let index;
+            dataarray.forEach((ele) => {
+              index =
+                typeof ele === "string" &&
+                ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
+              if (index) {
+                flag = true;
+              }
+            });
+            return flag;
+          })
+        : rows.filter((value) => {
+            debugger;
+            if (
+              typeof value[`${searchFilter.id}`] === "string" &&
+              value[`${searchFilter.id}`]
+                .toLowerCase()
+                .indexOf(searchval.toLowerCase()) > -1
+            )
+              return true;
+            else return false;
+          });
 
     setRows(filteredData);
   };
@@ -98,6 +133,7 @@ export default function TableComponent({
   const handleSelectAllClick = (event) => {
     if (event) {
       const newSelecteds = rows.map((n, i) => n.id);
+      OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
       return;
     }
@@ -119,10 +155,16 @@ export default function TableComponent({
         selected.slice(selectedIndex + 1)
       );
     }
+    OnSelectionChange(newSelected);
     setSelected(newSelected);
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
+
+  const handleSearch = () => {
+    if (searchText !== "") requestSearch(searchText);
+  };
+
   return (
     <div>
       <Grid
@@ -131,14 +173,57 @@ export default function TableComponent({
           pr: { xs: 1, sm: 1 },
         }}
       >
-        <Typography
-          sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          {table_heading}
-        </Typography>
+        <Grid container>
+          <Grid item sm={6} md={5}>
+            <Typography
+              sx={{ flex: "1 1 100%", py: { sm: 1 } }}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              {table_heading}
+            </Typography>
+          </Grid>
+          {showSearchbar && (
+            <Grid item sm={6} md={7} container spacing={2}>
+              <Grid item md={3}>
+                <SimpleDropdownComponent
+                  list={[...searchFilterList]}
+                  size={"small"}
+                  label="Search Filter"
+                  value={searchFilter}
+                  onDropdownSelect={(value) => {
+                    setSearchFilter(
+                      value === null
+                        ? { label: "All", id: 0, value: "All" }
+                        : { ...value }
+                    );
+                  }}
+                />
+              </Grid>
+              <Grid item md={7}>
+                <InputBox
+                  value={searchText}
+                  label="Search"
+                  className="w-100"
+                  size="small"
+                  onInputChange={(e) => {
+                    setsearchText(e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item md={2}>
+                <div
+                  style={{ width: "35px", height: "38px" }}
+                  className="bg-orange d-flex justify-content-center align-items-center rounded shadow"
+                  onClick={handleSearch}
+                >
+                  <SearchOutlinedIcon style={{ color: "white" }} />
+                </div>
+              </Grid>
+            </Grid>
+          )}
+        </Grid>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table>
             <EnhancedTableHead
@@ -166,13 +251,6 @@ export default function TableComponent({
                     >
                       {showCheckbox && (
                         <TableCell padding="checkbox">
-                          {/* <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          /> */}
                           <CheckBoxComponent
                             isChecked={isItemSelected}
                             label=""
@@ -186,7 +264,7 @@ export default function TableComponent({
                           <TableCell
                             key={column.id}
                             align={column.data_align}
-                            className={column.data_classname}
+                            className={`${column.data_classname} p-2`}
                             style={column.data_style && column.data_style}
                           >
                             {column.format && typeof value === "number"

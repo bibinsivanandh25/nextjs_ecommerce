@@ -9,7 +9,7 @@ const SimpleDropdownComponent = (props) => {
     label = "",
     size = "medium",
     fullWidth = true,
-    value = "",
+    value = null,
     onDropdownSelect = () => {},
     error = "",
     placeholder = "",
@@ -26,7 +26,7 @@ const SimpleDropdownComponent = (props) => {
         options={list}
         size={size}
         fullWidth={fullWidth}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) => option.label || ""}
         renderInput={(params) => (
           <TextField
             {...params}
