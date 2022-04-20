@@ -11,7 +11,7 @@ const SimpleDropdownComponent = (props) => {
     fullWidth = true,
     value = null,
     onDropdownSelect = () => {},
-    error = "",
+    error = false,
     placeholder = "",
   } = props;
   return (
@@ -34,7 +34,7 @@ const SimpleDropdownComponent = (props) => {
             fullWidth
             error={error}
             helperText={error}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: value?.id }}
             placeholder={placeholder}
           />
         )}
