@@ -3,7 +3,7 @@ import { Box, style } from "@mui/system";
 import React from "react";
 
 const ProfileComponent = () => {
-  const [anchorEl, setAnchorEl] = React.useState();
+  const [anchorEl, setAnchorEl] = React.useState(false);
   const open = anchorEl;
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

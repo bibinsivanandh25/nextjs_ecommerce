@@ -6,11 +6,12 @@ import "../styles/global.scss";
 import "../styles/colors.scss";
 import "../styles/font.scss";
 import dynamic from "next/dynamic";
+import Layout from "components/organism/Layout";
 
 function MyApp({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
+      <Layout Component={Component} pageProps={pageProps} />
     </SessionProvider>
   );
 }
