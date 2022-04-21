@@ -36,7 +36,7 @@ const InputBox = ({
         shrink: { inputlabelshrink },
       }}
       InputProps={{
-        endAdornment: (
+        endAdornment: iconName !== "" && (
           <InputAdornment position="end">
             <IconButton
               onClick={() => {

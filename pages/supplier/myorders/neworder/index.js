@@ -6,11 +6,17 @@ import logo from "../../../../public/assets/logo.jpeg";
 import Image from "next/image";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import OrderConfirmModal from "components/forms/supplier/myorder/orderconfirmodal";
+import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
+import { useRouter } from "next/router";
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();
   const [openModal, setOpenModal] = useState(false);
+  const [showConfirmAdress, setshowConfirmAdress] = useState(false);
+
+  const router = useRouter();
+  console.log(router.query);
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -23,7 +29,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col2",
       label: "Purchase ID",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -31,7 +37,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col3",
       label: "Order ID",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -40,7 +46,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col4",
       label: "Style Code",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -49,7 +55,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col5",
       label: "Size",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -58,7 +64,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col6",
       label: "Weight",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -67,7 +73,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col7",
       label: "Order Date",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -76,7 +82,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col8",
       label: "Expected Dispatch Date",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -85,7 +91,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col9",
       label: "Add weight in grams including packaging",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -94,7 +100,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col10",
       label: "Action",
-      minWidth: 170,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -150,41 +156,50 @@ const AcceptandConfirmOrder = () => {
         ]}
         showHeader
       />
-      <div className="d-flex justify-content-end">
-        <div className="w-25">
-          <SimpleDropdownComponent
-            size={"small"}
-            list={[
-              { label: "Zero Commission", id: 1, value: "Zero Commission" },
-              { label: "Full Commission", id: 2, value: "Full Commission" },
-            ]}
-            onDropdownSelect={(val) => {
-              setDropDownValue(val);
-            }}
-            value={dropDownValue}
-            label="commission"
-          />
-        </div>
-        <ButtonComponent
-          label="Download orders"
-          variant="outlined"
-          muiProps="mx-3"
-        />
-        <ButtonComponent
-          label="Confirm Orders"
-          muiProps="me-2"
-          onBtnClick={() => {
-            setOpenModal(!openModal);
-          }}
-        />
-      </div>
+      {!showConfirmAdress ? (
+        <div>
+          <div className="d-flex justify-content-end">
+            <div className="w-25">
+              <SimpleDropdownComponent
+                size={"small"}
+                list={[
+                  { label: "Zero Commission", id: 1, value: "Zero Commission" },
+                  { label: "Full Commission", id: 2, value: "Full Commission" },
+                ]}
+                onDropdownSelect={(val) => {
+                  setDropDownValue(val);
+                }}
+                value={dropDownValue}
+                label="commission"
+              />
+            </div>
+            <ButtonComponent
+              label="Download orders"
+              variant="outlined"
+              muiProps="mx-3"
+            />
+            <ButtonComponent
+              label="Confirm Orders"
+              muiProps="me-2"
+              onBtnClick={() => {
+                setshowConfirmAdress(!showConfirmAdress);
+                setOpenModal(!openModal);
+              }}
+            />
+          </div>
 
-      <TableComponent
-        table_heading="34 Orders"
-        columns={columns}
-        tableRows={rows}
-      />
-      <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} />
+          <Paper className="py-3">
+            <TableComponent
+              table_heading="34 Orders"
+              columns={columns}
+              tableRows={rows}
+            />
+          </Paper>
+        </div>
+      ) : (
+        <AcceptandConfirmAddress />
+      )}
+      {/* <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} /> */}
     </div>
   );
 };
