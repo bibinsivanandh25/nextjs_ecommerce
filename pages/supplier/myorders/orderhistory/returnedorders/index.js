@@ -9,42 +9,34 @@ const ReturnedOrders = () => {
   const columns = [
     {
       label: "Purchase ID",
-      align: "center",
       id: "col1",
     },
     {
       label: "Order ID",
-      align: "center",
       id: "col2",
     },
     {
       label: "Order Date",
-      align: "center",
       id: "col3",
     },
     {
       label: "Size",
-      align: "center",
       id: "col4",
     },
     {
       label: "Weight",
-      align: "center",
       id: "col5",
     },
     {
       label: "Manifest Date",
-      align: "center",
       id: "col6",
     },
     {
       label: "Qty",
-      align: "center",
       id: "col7",
     },
     {
       label: "Total",
-      align: "center",
       id: "col8",
     },
     {
@@ -125,8 +117,8 @@ const ReturnedOrders = () => {
         col8: row.total,
         col9: <div className={getClassnames(row.status)}>{row.status}</div>,
         col10: (
-          <Grid container spacing={2} sx={{ width: 200 }}>
-            <Grid item xs={8}>
+          <Grid container spacing={2} sx={{ width: 250 }} alignItems="center">
+            <Grid item xs={10}>
               <SimpleDropdownComponent
                 label="Choose Action"
                 list={chooseActionList}
@@ -136,13 +128,17 @@ const ReturnedOrders = () => {
                 onDropdownSelect={(val) =>
                   handleChooseActionChange(val, row.purchaseid)
                 }
+                muiProps={{
+                  InputProps: { style: { fontSize: `12 !important` } },
+                }}
               />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={2}>
               <Button
                 variant="contained"
                 size="small"
                 disabled={!row.chooseActionValue}
+                sx={{ fontSize: 8 }}
               >
                 Send
               </Button>
