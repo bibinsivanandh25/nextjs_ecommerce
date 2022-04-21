@@ -135,7 +135,7 @@ const dashboardList = [
     id: "dashboard",
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
-    selectedIcon: <DashboardIcon style={{ color: "orange" }} />,
+    selectedIcon: <DashboardIcon style={{ color: "#e56700" }} />,
   },
   {
     id: "orders",
@@ -270,7 +270,7 @@ export default function SupplierSidebar({ children }) {
     return {
       opacity: open ? 1 : 0,
       color: item?.subList?.length
-        ? "color-orange"
+        ? "#e56700"
         : subMenuSelected === item.subtitle
         ? "black"
         : "gray",
@@ -322,7 +322,7 @@ export default function SupplierSidebar({ children }) {
                       variant="text"
                       fontWeight={700}
                       fontSize={14}
-                      color={selected.id === text.id && "color-orange"}
+                      color={selected.id === text.id && "#e56700"}
                     >
                       {text.title}
                     </Typography>
