@@ -48,11 +48,13 @@ const ReturnedOrders = () => {
       label: "Choose Action",
       id: "col10",
       align: "center",
+      minWidth: 320,
     },
     {
       label: "Action",
       id: "col11",
       align: "center",
+      minWidth: 100,
     },
   ];
 
@@ -117,7 +119,7 @@ const ReturnedOrders = () => {
         col8: row.total,
         col9: <div className={getClassnames(row.status)}>{row.status}</div>,
         col10: (
-          <Grid container spacing={2} sx={{ width: 250 }} alignItems="center">
+          <Grid container spacing={2} alignItems="center">
             <Grid item xs={10}>
               <SimpleDropdownComponent
                 label="Choose Action"
@@ -146,10 +148,14 @@ const ReturnedOrders = () => {
           </Grid>
         ),
         col11: (
-          <>
-            <DownloadIcon className="text-secondary mx-2" />
-            <VisibilityIcon className="text-secondary" />
-          </>
+          <Grid container mx={1}>
+            <Grid item xs={6}>
+              <DownloadIcon className="text-secondary mx-2" />
+            </Grid>
+            <Grid item xs={6}>
+              <VisibilityIcon className="text-secondary" />
+            </Grid>
+          </Grid>
         ),
       });
     });
