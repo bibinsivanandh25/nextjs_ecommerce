@@ -10,6 +10,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { MenuItem, MenuList } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Link from "next/link";
@@ -135,6 +136,7 @@ const dashboardList = [
     id: "dashboard",
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
+    selectedIcon: <DashboardIcon style={{ color: "orange" }} />,
   },
   {
     id: "orders",
@@ -324,7 +326,7 @@ export default function SupplierSidebar({ children }) {
                     justifyContent: "center",
                   }}
                 >
-                  {text.icon}
+                  {selected.id === text.id ? text.selectedIcon : text.icon}
                 </ListItemIcon>
                 <ListItemText
                   primary={
