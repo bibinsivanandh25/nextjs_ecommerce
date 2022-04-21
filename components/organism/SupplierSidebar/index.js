@@ -283,10 +283,7 @@ export default function SupplierSidebar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <Drawer
-        variant="permanent"
-        open={open}
-      >
+      <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <MenuOpenIcon
             onClick={() => setOpen(!open)}
@@ -389,7 +386,8 @@ export default function SupplierSidebar({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          px: 2,
+          py: 1.5,
           mt: -0.5,
           backgroundColor: "#f7f7f7",
           height: "90vh",
