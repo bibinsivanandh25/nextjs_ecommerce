@@ -270,7 +270,7 @@ export default function SupplierSidebar({ children }) {
     return {
       opacity: open ? 1 : 0,
       color: item?.subList?.length
-        ? "orange"
+        ? "color-orange"
         : subMenuSelected === item.subtitle
         ? "black"
         : "gray",
@@ -322,7 +322,7 @@ export default function SupplierSidebar({ children }) {
                       variant="text"
                       fontWeight={700}
                       fontSize={14}
-                      color={selected.id === text.id && "orange"}
+                      color={selected.id === text.id && "color-orange"}
                     >
                       {text.title}
                     </Typography>
