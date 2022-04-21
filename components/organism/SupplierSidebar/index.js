@@ -1,23 +1,23 @@
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { MenuItem, MenuList } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Link from "next/link";
 
 const drawerWidth = 240;
+
+const moduleType = "supplier";
 
 const ordersList = {
   title: "My Order",
@@ -136,6 +136,7 @@ const dashboardList = [
     id: "dashboard",
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
+    selectedIcon: <DashboardIcon style={{ color: "orange" }} />,
   },
   {
     id: "orders",
@@ -258,7 +259,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SupplierSidebar({ children }) {
-  const theme = useTheme();
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState({ show: false, id: null });
@@ -302,7 +302,6 @@ export default function SupplierSidebar({ children }) {
             className="text-secondary"
           />
         </DrawerHeader>
-        {/* <Divider /> */}
         <List sx={{ height: "100%", overflowY: "auto" }}>
           {dashboardList.map((text, index) => (
             <React.Fragment key={index}>
@@ -327,7 +326,7 @@ export default function SupplierSidebar({ children }) {
                     justifyContent: "center",
                   }}
                 >
-                  {text.icon}
+                  {selected.id === text.id ? text.selectedIcon : text.icon}
                 </ListItemIcon>
                 <ListItemText
                   primary={
@@ -358,9 +357,9 @@ export default function SupplierSidebar({ children }) {
                     }
                   >
                     <Link
-                      href={`/${submenuList[selected.id].path_name}/${
-                        item.path_name
-                      }`}
+                      href={`/${moduleType}/${
+                        submenuList[selected.id].path_name
+                      }/${item.path_name}`}
                       replace
                     >
                       <MenuItem
@@ -375,9 +374,9 @@ export default function SupplierSidebar({ children }) {
                     </Link>
                     {item?.subList?.map((o) => (
                       <Link
-                        href={`/${submenuList[selected.id].path_name}/${
-                          item.path_name
-                        }/${o.path_name}`}
+                        href={`/${moduleType}/${
+                          submenuList[selected.id].path_name
+                        }/${item.path_name}/${o.path_name}`}
                         replace
                       >
                         <MenuItem

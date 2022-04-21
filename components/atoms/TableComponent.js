@@ -39,6 +39,7 @@ const EnhancedTableHead = (props) => {
               align={column.align}
               style={{ top: 57, minWidth: column.minWidth }}
               className="fw-600 p-2"
+              sx={{ fontSize: 13 }}
             >
               {column.label}
             </TableCell>
@@ -76,7 +77,7 @@ export default function TableComponent({
   // }, []);
   useEffect(() => {
     if (searchText === "") setRows(tableRows);
-  }, [searchText]);
+  }, [searchText, tableRows]);
 
   useEffect(() => {
     const temp = columns.map((item, index) => {
@@ -268,6 +269,7 @@ export default function TableComponent({
                             align={column.data_align}
                             className={`${column.data_classname} p-2`}
                             style={column.data_style && column.data_style}
+                            sx={{ fontSize: 12 }}
                           >
                             {column.format && typeof value === "number"
                               ? column.format(value)

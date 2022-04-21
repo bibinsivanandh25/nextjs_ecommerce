@@ -32,7 +32,16 @@ const Layout = ({ Component, pageProps }) => {
         <HeaderComponent />
         <SupplierSidebar>
           <BreadCrumb />
-          <Paper sx={{ maxHeight: "80vh", height: "100%", p: 3, mx: 1, mt: 2 }}>
+          <Paper
+            sx={{
+              maxHeight: "80vh",
+              height: "100%",
+              p: 3,
+              mx: 1,
+              mt: 2,
+              overflowY: "auto",
+            }}
+          >
             <Component {...pageProps} />
           </Paper>
         </SupplierSidebar>

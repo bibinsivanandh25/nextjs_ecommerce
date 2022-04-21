@@ -13,6 +13,8 @@ const BreadCrumb = () => {
     route.pathname.substring(1) === ""
       ? []
       : route.pathname.substring(1).split("/");
+  path.splice(0, 1);
+  
   return (
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
