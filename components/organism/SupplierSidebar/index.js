@@ -12,7 +12,6 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { MenuItem, MenuList } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import Link from "next/link";
 
 const drawerWidth = 240;
@@ -136,7 +135,7 @@ const dashboardList = [
     id: "dashboard",
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
-    selectedIcon: <DashboardIcon style={{ color: "orange" }} />,
+    selectedIcon: <DashboardIcon style={{ color: "#e56700" }} />,
   },
   {
     id: "orders",
@@ -252,14 +251,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    top: "60px !important",
-  },
-}));
-
 export default function SupplierSidebar({ children }) {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
@@ -278,7 +270,7 @@ export default function SupplierSidebar({ children }) {
     return {
       opacity: open ? 1 : 0,
       color: item?.subList?.length
-        ? "orange"
+        ? "#e56700"
         : subMenuSelected === item.subtitle
         ? "black"
         : "gray",
@@ -291,11 +283,7 @@ export default function SupplierSidebar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <Drawer
-        variant="permanent"
-        open={open}
-        classes={{ paper: classes.paper }}
-      >
+      <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <MenuOpenIcon
             onClick={() => setOpen(!open)}
@@ -334,7 +322,7 @@ export default function SupplierSidebar({ children }) {
                       variant="text"
                       fontWeight={700}
                       fontSize={14}
-                      color={selected.id === text.id && "orange"}
+                      color={selected.id === text.id && "#e56700"}
                     >
                       {text.title}
                     </Typography>
@@ -398,7 +386,8 @@ export default function SupplierSidebar({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          px: 2,
+          py: 1.5,
           mt: -0.5,
           backgroundColor: "#f7f7f7",
           height: "90vh",
