@@ -48,7 +48,7 @@ const ReturnedOrders = () => {
       label: "Choose Action",
       id: "col10",
       align: "center",
-      minWidth: 320,
+      minWidth: 250,
     },
     {
       label: "Action",
@@ -130,9 +130,7 @@ const ReturnedOrders = () => {
                 onDropdownSelect={(val) =>
                   handleChooseActionChange(val, row.purchaseid)
                 }
-                muiProps={{
-                  InputProps: { style: { fontSize: `12 !important` } },
-                }}
+                fontSize="0.8rem"
               />
             </Grid>
             <Grid item xs={2}>
