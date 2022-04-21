@@ -36,23 +36,19 @@ const ReturnedOrders = () => {
       id: "col7",
     },
     {
-      label: "Total",
+      label: "Status",
+      align: "center",
       id: "col8",
     },
     {
-      label: "Status",
-      align: "center",
-      id: "col9",
-    },
-    {
       label: "Choose Action",
-      id: "col10",
+      id: "col9",
       align: "center",
       minWidth: 250,
     },
     {
       label: "Action",
-      id: "col11",
+      id: "col10",
       align: "center",
       minWidth: 100,
     },
@@ -116,9 +112,8 @@ const ReturnedOrders = () => {
         col5: row.weight,
         col6: row.manifestdate,
         col7: row.qty,
-        col8: row.total,
-        col9: <div className={getClassnames(row.status)}>{row.status}</div>,
-        col10: (
+        col8: <div className={getClassnames(row.status)}>{row.status}</div>,
+        col9: (
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={10}>
               <SimpleDropdownComponent
@@ -145,7 +140,7 @@ const ReturnedOrders = () => {
             </Grid>
           </Grid>
         ),
-        col11: (
+        col10: (
           <Grid container mx={1}>
             <Grid item xs={6}>
               <DownloadIcon className="text-secondary mx-2" />
@@ -175,7 +170,6 @@ const ReturnedOrders = () => {
         manifestdate: "23-01-2022",
         qty: "4",
         status: "PRODUCT LIVE",
-        total: 4,
         chooseActionValue: null,
       },
       {
@@ -188,7 +182,6 @@ const ReturnedOrders = () => {
         qty: "4",
         status: "VALIDATION FAILED",
         chooseActionValue: null,
-        total: 4,
       },
     ];
     setTableData(rows);
