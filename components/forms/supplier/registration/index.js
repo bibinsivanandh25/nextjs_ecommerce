@@ -3,6 +3,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
+import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 
 const RegistrationForm = ({
   formValues = {},
@@ -73,7 +74,7 @@ const RegistrationForm = ({
           />
         </Grid>
         <Grid item md={6} sm={12}>
-          <InputBox
+          {/* <InputBox
             placeholder="Choose your Main Category"
             value={formValues.mainCat}
             label="Select Main Category"
@@ -85,6 +86,21 @@ const RegistrationForm = ({
                 mainCat: e.target.value,
               }));
             }}
+          /> */}
+          <SimpleDropdownComponent
+            list={[
+              { label: "Women", value: "women", id: 1 },
+              { label: "Watch", value: "watch", id: 3 },
+            ]}
+            label="Select Main Category"
+            onDropdownSelect={(value) => {
+              setFormValues((prev) => ({
+                ...prev,
+                mainCat: value,
+              }));
+            }}
+            value={formValues.mainCat}
+            size="small"
           />
         </Grid>
         <Grid item md={6} sm={12}>

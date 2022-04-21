@@ -39,7 +39,7 @@ const InputBox = ({
       }}
       variant={variant}
       InputProps={{
-        endAdornment: (
+        endAdornment: iconName !== "" && (
           <InputAdornment position="end">
             <IconButton
               onClick={() => {

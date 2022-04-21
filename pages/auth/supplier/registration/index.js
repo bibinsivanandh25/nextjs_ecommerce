@@ -4,6 +4,8 @@ import RegistrationForm from "components/forms/supplier/registration";
 import Layout from "components/organism/Layout";
 import { useState } from "react";
 import styles from "./Registration.module.css";
+import { supplierRegister } from "services/supplier/Registration";
+
 const Registration = () => {
   const [formValues, setFormValues] = useState({
     businessName: "",
@@ -14,12 +16,34 @@ const Registration = () => {
     gstin: "",
     stockCount: "",
     site: "",
-    siteLink: "",
+    siteLink: null,
   });
   const [showModal, setShowModal] = useState(false);
-  const handleSubmit = () => {
-    console.log(formValues);
-    setShowModal(true);
+  const handleSubmit = async () => {
+    const payload = {
+      businessName: formValues.businessName,
+      email: formValues.mail,
+      mobileNumber: formValues.mobile,
+      city: formValues.city,
+      gstin: formValues.gstin,
+      role: "SUPPLIER",
+      averageStockCount: formValues.stockCount,
+      website: formValues.site,
+      websiteLink: formValues.siteLink,
+      categoryData: [
+        {
+          categoryId: formValues.mainCat.value,
+          categoryName: formValues.mainCat.id,
+        },
+      ],
+    };
+    const { data, errRes } = await supplierRegister(payload);
+    if (data) {
+      setShowModal(true);
+      console.log(data);
+    } else if (errRes) {
+      console.log(errRes);
+    }
   };
   return (
     <Grid container spacing={2} className="">
