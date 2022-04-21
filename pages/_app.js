@@ -7,6 +7,8 @@ import "../styles/colors.scss";
 import "../styles/font.scss";
 import dynamic from "next/dynamic";
 import Layout from "../components/organism/Layout";
+import Loading from "../components/organism/Loading";
+import "nprogress/nprogress.css";
 
 function MyApp({ Component, pageProps, router }) {
   if (router.pathname.startsWith("/auth/")) {
@@ -15,6 +17,7 @@ function MyApp({ Component, pageProps, router }) {
 
   return (
     <SessionProvider session={pageProps.session}>
+      <Loading />
       <Layout Component={Component} pageProps={pageProps} />
     </SessionProvider>
   );
