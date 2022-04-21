@@ -15,7 +15,7 @@ const CheckBoxComponent = ({
   return (
     <div>
       <FormControlLabel
-        label=""
+        label={label}
         control={
           <Checkbox
             label={label}
