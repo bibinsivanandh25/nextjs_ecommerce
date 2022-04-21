@@ -1,7 +1,6 @@
 import * as React from "react";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { orange } from "@mui/material/colors";
 
 export default function RadiobuttonComponent(props) {
   const {
@@ -27,7 +26,7 @@ export default function RadiobuttonComponent(props) {
           sx={{
             color: 'gray',
             "&.Mui-checked": {
-              color: orange[600],
+              color: '#e56700',
             },
           }}
           {...muiProps}

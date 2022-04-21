@@ -11,8 +11,9 @@ const SimpleDropdownComponent = (props) => {
     fullWidth = true,
     value = null,
     onDropdownSelect = () => {},
-    error = "",
+    error = false,
     placeholder = "",
+    fontSize = "",
   } = props;
   return (
     <>
@@ -27,6 +28,11 @@ const SimpleDropdownComponent = (props) => {
         size={size}
         fullWidth={fullWidth}
         getOptionLabel={(option) => option.label || ""}
+        sx={{
+          "& .MuiAutocomplete-input, & .MuiInputLabel-root": {
+            fontSize
+          },
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -34,7 +40,10 @@ const SimpleDropdownComponent = (props) => {
             fullWidth
             error={error}
             helperText={error}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: value?.id,
+              fontSize: fontSize && "0.8rem",
+            }}
             placeholder={placeholder}
           />
         )}

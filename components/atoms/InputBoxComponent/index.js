@@ -14,6 +14,8 @@ const InputBox = ({
   onInputChange = () => {},
   iconName = "",
   onIconClick = () => {},
+  variant = "outlined",
+  InputProps = {},
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -35,6 +37,7 @@ const InputBox = ({
       InputLabelProps={{
         shrink: { inputlabelshrink },
       }}
+      variant={variant}
       InputProps={{
         endAdornment: iconName !== "" && (
           <InputAdornment position="end">
@@ -47,6 +50,7 @@ const InputBox = ({
             </IconButton>
           </InputAdornment>
         ),
+        ...InputProps,
       }}
     />
   );

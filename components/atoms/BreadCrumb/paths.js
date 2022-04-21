@@ -4,6 +4,14 @@ export const paths = [
     id: "acceptandconfirmaddress",
   },
   {
+    title: "Registration",
+    id: "registration",
+  },
+  {
+    title: "Accept & Confirm Address (00)",
+    id: "acceptandconfirmaddress",
+  },
+  {
     title: "Generate Invoice & Manifest (00)",
     id: "ordersdata",
   },
