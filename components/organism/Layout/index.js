@@ -28,6 +28,9 @@ const Layout = ({ Component, pageProps }) => {
         <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
       <div>
+        <div id="loader" style={{ display: "none" }}>
+          <div className="spinner"></div>
+        </div>
         {/* {!isLoginTrue && <HeaderComponent />} */}
         <HeaderComponent />
         <SupplierSidebar>
