@@ -13,6 +13,7 @@ const SimpleDropdownComponent = (props) => {
     onDropdownSelect = () => {},
     error = false,
     placeholder = "",
+    fontSize = "",
   } = props;
   return (
     <>
@@ -36,6 +37,10 @@ const SimpleDropdownComponent = (props) => {
             helperText={error}
             InputLabelProps={{ shrink: value?.id }}
             placeholder={placeholder}
+            inputProps={{
+              ...params.inputProps,
+              style: { fontSize: fontSize && "0.8rem" },
+            }}
           />
         )}
       />
