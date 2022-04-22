@@ -113,9 +113,8 @@ const Login = (prop) => {
   });
   const handleSubmit = () => {
     signIn("credentials", {
-      username: formValues.username,
+      username: formValues.user,
       password: formValues.password,
-      callbackUrl: `/loginerror`,
     });
   };
   return (

@@ -1,5 +1,6 @@
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import { Box, style } from "@mui/system";
+import { signOut } from "next-auth/react";
 import React from "react";
 
 const ProfileComponent = () => {
@@ -62,7 +63,13 @@ const ProfileComponent = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>My account</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem
+          onClick={() => {
+            signOut({ callbackUrl: "/auth/login" });
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );
