@@ -22,6 +22,8 @@ import {
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import logo from "../../../public/assets/favicon.png";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const SelectComponent = () => {
   const [anchorEl, setAnchorEl] = useState(false);
@@ -106,7 +108,8 @@ const SelectComponent = () => {
   );
 };
 
-const Login = (prop) => {
+const Login = () => {
+  const router = useRouter();
   const [formValues, setFormValues] = useState({
     user: null,
     password: null,
@@ -196,12 +199,16 @@ const Login = (prop) => {
               </Grid>
               <Grid item md={12}>
                 <div className="d-flex justify-content-between">
-                  <span className="color-orange fs-12 cursor-pointer">
-                    Login with OTP
-                  </span>
-                  <span className="color-orange fs-12 cursor-pointer">
-                    Forgot password
-                  </span>
+                  <Link href={"/auth/login/otplogin"}>
+                    <span className="color-orange fs-12 cursor-pointer">
+                      Login with OTP
+                    </span>
+                  </Link>
+                  <Link href={"/auth/forgotpassword"}>
+                    <span className="color-orange fs-12 cursor-pointer">
+                      Forgot password
+                    </span>
+                  </Link>
                 </div>
               </Grid>
               <Grid item sm={12}>
