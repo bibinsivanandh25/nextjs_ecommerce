@@ -178,9 +178,10 @@ export default function TableComponent({
           <Grid item sm={6} md={5}>
             <Typography
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-              variant="h6"
+              // variant="h6"
               id="tableTitle"
               component="div"
+              className="fw-bold"
             >
               {table_heading}
             </Typography>
@@ -216,7 +217,7 @@ export default function TableComponent({
               <Grid item md={2}>
                 <div
                   style={{ width: "35px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded shadow"
+                  className="bg-orange d-flex justify-content-center align-items-center rounded"
                   onClick={handleSearch}
                 >
                   <SearchOutlinedIcon style={{ color: "white" }} />
@@ -284,15 +285,18 @@ export default function TableComponent({
           </Table>
         </TableContainer>
         {showPagination && (
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          <Grid>
+            <TablePagination
+              className="justify-content-start d-flex"
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Grid>
         )}
       </Grid>
     </div>

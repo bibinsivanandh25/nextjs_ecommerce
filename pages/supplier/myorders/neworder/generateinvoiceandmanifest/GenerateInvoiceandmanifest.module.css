@@ -1,0 +1,14 @@
+.Previousinvoicelink{
+    font-weight: bold;
+    text-decoration: underline; 
+   
+}
+.Previousinvoicelink:hover{
+    color:#ff7518;
+}
+.tableIcons{
+    color: blue !important;
+}
+.tableIcons:hover{
+    color: #ff7518 !important;
+}
