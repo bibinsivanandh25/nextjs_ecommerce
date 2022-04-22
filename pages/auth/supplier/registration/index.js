@@ -1,13 +1,12 @@
 import { Grid, Typography } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 import RegistrationForm from "components/forms/supplier/registration";
-import Layout from "components/organism/Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Registration.module.css";
 import { supplierRegister } from "services/supplier/Registration";
 
 const Registration = () => {
-  const [formValues, setFormValues] = useState({
+  const formObj = {
     businessName: "",
     mail: "",
     mobile: "",
@@ -17,7 +16,8 @@ const Registration = () => {
     stockCount: "",
     site: "",
     siteLink: null,
-  });
+  };
+  const [formValues, setFormValues] = useState(formObj);
   const [showModal, setShowModal] = useState(false);
   const handleSubmit = async () => {
     const payload = {
@@ -45,6 +45,12 @@ const Registration = () => {
       console.log(errRes);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      setFormValues(formObj);
+    };
+  });
   return (
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">

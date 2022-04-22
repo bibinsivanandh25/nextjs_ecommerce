@@ -1,7 +1,6 @@
 import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const InputBox = ({
@@ -16,6 +15,9 @@ const InputBox = ({
   onIconClick = () => {},
   variant = "outlined",
   InputProps = {},
+  onKeyDown = () => {},
+  inputRef = null,
+  type = "text",
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -37,7 +39,10 @@ const InputBox = ({
       InputLabelProps={{
         shrink: { inputlabelshrink },
       }}
+      inputRef={inputRef}
+      onKeyDown={onKeyDown}
       variant={variant}
+      type={type}
       InputProps={{
         endAdornment: iconName !== "" && (
           <InputAdornment position="end">

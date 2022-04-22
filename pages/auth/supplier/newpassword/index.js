@@ -1,5 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 import NewPasswordForm from "components/forms/supplier/newpassword";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import styles from "./Newpassword.module.css";
 
@@ -9,10 +10,12 @@ const Newpassword = () => {
     password: "",
     rePassword: "",
   });
-  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+  // const [showModal, setShowModal] = useState(false);
   const handleSubmit = () => {
     console.log(formValues);
-    setShowModal(true);
+    // setShowModal(true);
+    router.push("/auth/login");
   };
   return (
     <Grid container spacing={2} className="">

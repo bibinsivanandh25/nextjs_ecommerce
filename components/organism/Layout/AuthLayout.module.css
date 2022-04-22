@@ -1,0 +1,6 @@
+.imgContainer {
+  background-image: url("../../../public/assets/background.jpg");
+  background-size: cover;
+  height: 160px;
+  border-radius: 15px;
+}
