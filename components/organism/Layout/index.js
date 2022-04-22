@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Head from "next/head";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import HeaderComponent from "../HeaderComponent";
 import SupplierSidebar from "../SupplierSidebar";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { Paper } from "@mui/material";
 
 const Layout = ({ Component, pageProps }) => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const noLayout = status !== "authenticated";
-
-  useEffect(() => {
-    if (status !== "authenticated") {
-      //   router.push("/auth/login");
-    }
-  }, [session]);
-
   //   if (noLayout) return <Component {...pageProps} className="mxh-80vh" />;
 
   return (
@@ -31,7 +19,6 @@ const Layout = ({ Component, pageProps }) => {
         <div id="loader" style={{ display: "none" }}>
           <div className="spinner"></div>
         </div>
-        {/* {!isLoginTrue && <HeaderComponent />} */}
         <HeaderComponent />
         <SupplierSidebar>
           <BreadCrumb />
