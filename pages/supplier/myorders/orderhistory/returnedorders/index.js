@@ -55,6 +55,7 @@ const ReturnedOrders = () => {
   ];
 
   const [tableRows, setTableRows] = useState([]);
+  const [dropdownFilter, setDropdownFilter] = useState({});
   const [tableData, setTableData] = useState([]);
   const chooseActionList = [
     {
@@ -171,6 +172,7 @@ const ReturnedOrders = () => {
         qty: "4",
         status: "PRODUCT LIVE",
         chooseActionValue: null,
+        orderQuantity: 1,
       },
       {
         purchaseid: "#123456",
@@ -182,10 +184,48 @@ const ReturnedOrders = () => {
         qty: "4",
         status: "VALIDATION FAILED",
         chooseActionValue: null,
+        orderQuantity: 1,
+      },
+      {
+        purchaseid: "#123459",
+        orderid: "123423",
+        orderdate: "12-01-2023",
+        size: "UK22",
+        weight: "300gm",
+        manifestdate: "23-01-2022",
+        qty: "1",
+        status: "VALIDATION FAILED",
+        chooseActionValue: null,
+        orderQuantity: 3,
       },
     ];
     setTableData(rows);
   }, []);
+
+  const filterByType = React.useCallback(() => {
+    if (dropdownFilter && dropdownFilter.id) {
+      switch (dropdownFilter?.id) {
+        case "single":
+          setTableRows(
+            tableRows?.filter((row) => parseInt(row["col7"], 10) === 1)
+          );
+          break;
+        case "multiple":
+          setTableRows(
+            tableRows?.filter((row) => parseInt(row["col7"], 10) > 1)
+          );
+          break;
+        default:
+          setTableRows(mapRowsToTable(tableData));
+      }
+    } else {
+      setTableRows(mapRowsToTable(tableData));
+    }
+  }, [dropdownFilter]);
+
+  useEffect(() => {
+    filterByType();
+  }, [dropdownFilter]);
 
   return (
     <Paper sx={{ px: 0 }}>
@@ -195,6 +235,20 @@ const ReturnedOrders = () => {
         tableRows={tableRows}
         showSearchbar={false}
         showCheckbox={false}
+        showCustomDropdown
+        customDropdownLabel="Order Type"
+        customDropdownList={[
+          { id: "single", label: "Single" },
+          { id: "multiple", label: "Multiple" },
+        ]}
+        showCustomButton
+        customButtonLabel="Download All Orders"
+        onCustomButtonClick={() => {
+          console.log("onCustomButtonClick");
+        }}
+        customFilterId="col7"
+        onCustomDropdownChange={(val) => setDropdownFilter(val)}
+        customDropdownValue={dropdownFilter}
       />
     </Paper>
   );

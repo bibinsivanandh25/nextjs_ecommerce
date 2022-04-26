@@ -58,6 +58,14 @@ export default function TableComponent({
   columns = [],
   showSearchbar = true,
   OnSelectionChange = () => {},
+  showCustomButton = false,
+  showCustomDropdown = false,
+  customButtonLabel = "",
+  customDropdownLabel = "",
+  customDropdownList = [],
+  customDropdownValue = {},
+  onCustomButtonClick = () => {},
+  onCustomDropdownChange = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -72,12 +80,14 @@ export default function TableComponent({
     id: "0",
     value: "All",
   });
-  // useEffect(() => {
-  //   setRows(tableRows);
-  // }, []);
+
+  useEffect(() => {
+    setRows(tableRows);
+  }, [tableRows]);
+
   useEffect(() => {
     if (searchText === "") setRows(tableRows);
-  }, [searchText, tableRows]);
+  }, [searchText]);
 
   useEffect(() => {
     const temp = columns.map((item, index) => {
@@ -174,8 +184,13 @@ export default function TableComponent({
           pr: { xs: 1, sm: 1 },
         }}
       >
-        <Grid container>
-          <Grid item sm={6} md={5}>
+        <Grid container spacing={2}>
+          <Grid
+            item
+            sm={showCustomDropdown || showCustomButton ? 9 : 6}
+            md={showCustomDropdown || showCustomButton ? 8 : 5}
+            xs={6}
+          >
             <Typography
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
               // variant="h6"
@@ -187,7 +202,7 @@ export default function TableComponent({
             </Typography>
           </Grid>
           {showSearchbar && (
-            <Grid item sm={6} md={7} container spacing={2}>
+            <Grid item sm={6} md={7} xs={6} container spacing={2}>
               <Grid item md={3}>
                 <SimpleDropdownComponent
                   list={[...searchFilterList]}
@@ -223,6 +238,37 @@ export default function TableComponent({
                   <SearchOutlinedIcon style={{ color: "white" }} />
                 </div>
               </Grid>
+            </Grid>
+          )}
+          {(showCustomDropdown || showCustomButton) && (
+            <Grid item sm={3} md={4} container spacing={2} xs={6}>
+              {showCustomDropdown && (
+                <Grid item sm={6} md={6} container my={1}>
+                  <SimpleDropdownComponent
+                    list={customDropdownList}
+                    size="small"
+                    label={customDropdownLabel}
+                    value={customDropdownValue}
+                    onDropdownSelect={(value) => {
+                      onCustomDropdownChange(value);
+                    }}
+                  />
+                </Grid>
+              )}
+              {showCustomButton && (
+                <Grid item sm={6} md={6} container my={1}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    className="bg-orange"
+                    sx={{ textTransform: "none" }}
+                    fullWidth
+                    onClick={onCustomButtonClick}
+                  >
+                    {customButtonLabel}
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           )}
         </Grid>
