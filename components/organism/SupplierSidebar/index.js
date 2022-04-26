@@ -290,15 +290,16 @@ export default function SupplierSidebar({ children }) {
             className="text-secondary"
           />
         </DrawerHeader>
-        <List sx={{ height: "100%", overflowY: "auto" }}>
+        <List sx={{ height: "80vh", overflowY: "auto", py: 0 }}>
           {dashboardList.map((text, index) => (
             <React.Fragment key={index}>
               <ListItemButton
                 key={text.id}
                 sx={{
-                  minHeight: 40,
+                  minHeight: 20,
                   justifyContent: open ? "initial" : "center",
                   px: 1.5,
+                  py: 0.5,
                 }}
                 onClick={() =>
                   setSelected({
