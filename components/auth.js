@@ -6,7 +6,7 @@ const Auth = ({ children }) => {
   const hasuser = !!session?.user;
 
   useEffect(() => {
-    if (status) return;
+    if (status === "loading") return;
     if (!hasuser || session?.error) {
       signIn();
     }

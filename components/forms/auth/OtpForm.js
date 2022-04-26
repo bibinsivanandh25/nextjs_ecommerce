@@ -18,7 +18,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           className="w-100"
           inputRef={firstInputRef}
           onInputChange={(e) => {
-            secondInputRef.current.focus();
+            if (e.target.value !== "") secondInputRef.current.focus();
             // const temp = e.target.value + otp.slice(1, 4);
             // setotp(temp);
           }}
@@ -46,11 +46,13 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           className="w-100"
           inputRef={secondInputRef}
           onInputChange={(e) => {
-            if (otp.charAt(1) !== "x") thirdInputRef.current.focus();
+            // debugger;
+            if (e.target.value !== "") thirdInputRef.current.focus();
             // const temp = otp.slice(0, 1) + e.target.value + otp.slice(2, 4);
             // setotp(temp);
           }}
           onKeyDown={(e) => {
+            debugger;
             if (e.keyCode == 8 || e.keyCode == 46) {
               if (otp.charAt(1) === "x") {
                 firstInputRef.current.focus();
@@ -79,7 +81,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           className="w-100"
           inputRef={thirdInputRef}
           onInputChange={(e) => {
-            if (otp.charAt(2) !== "x") fourthInputRef.current.focus();
+            if (e.target.value !== "") fourthInputRef.current.focus();
             // const temp = otp.slice(0, 2) + e.target.value + otp.slice(3, 4);
             // setotp(temp);
           }}
