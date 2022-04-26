@@ -241,7 +241,15 @@ export default function TableComponent({
             </Grid>
           )}
           {(showCustomDropdown || showCustomButton) && (
-            <Grid item sm={3} md={4} container spacing={2} xs={6}>
+            <Grid
+              item
+              sm={3}
+              md={4}
+              container
+              spacing={2}
+              xs={6}
+              justifyContent="right"
+            >
               {showCustomDropdown && (
                 <Grid item sm={6} md={6} container my={1}>
                   <SimpleDropdownComponent

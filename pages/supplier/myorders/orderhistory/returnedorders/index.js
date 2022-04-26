@@ -246,7 +246,6 @@ const ReturnedOrders = () => {
         onCustomButtonClick={() => {
           console.log("onCustomButtonClick");
         }}
-        customFilterId="col7"
         onCustomDropdownChange={(val) => setDropdownFilter(val)}
         customDropdownValue={dropdownFilter}
       />
