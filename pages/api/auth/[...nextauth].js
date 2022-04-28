@@ -1,5 +1,8 @@
+import axios from "axios";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { loginCall } from "services";
+import toastify from "services/utils/toastUtils";
 
 const options = {
   // Configure one or more authentication providers
@@ -12,12 +15,33 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (
-          credentials.username === "suhil" &&
-          credentials.password === "123"
-        ) {
+        // if (credentials.username && credentials.password) {
+        const { data, errRes } = await axios
+          .post("http://10.10.20.18:8082/api/v1/authenticate", {
+            userName: credentials.username,
+            password: credentials.password,
+          })
+          .then((res) => {
+            const data = res && res.data;
+            return { data };
+          })
+          .catch((err) => {
+            const errRes = err?.response?.data;
+            return { errRes };
+          });
+        if (data) {
           return { id: 20, name: "suhil", email: "suhil@gmail.com" };
+        } else if (errRes) {
+          toastify("wrong credentials", "error");
+          return null;
         }
+        // }
+        //  if (
+        //   credentials.username === "suhil" &&
+        //   credentials.password === "123"
+        // ) {
+        //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
+        // }
         return null;
       },
     }),

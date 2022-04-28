@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getSession, signIn } from "next-auth/react";
 
-const baseUrl = "http://localhost:8082";
+const baseUrl = "http://10.10.20.18:8082/api/v1/";
 
 axios.defaults.baseURL = baseUrl;
 

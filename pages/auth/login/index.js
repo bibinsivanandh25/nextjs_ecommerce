@@ -24,6 +24,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import logo from "../../../public/assets/favicon.png";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { loginCall } from "services";
+import axios from "axios";
 
 const SelectComponent = () => {
   const [anchorEl, setAnchorEl] = useState(false);
@@ -114,7 +116,21 @@ const Login = () => {
     user: null,
     password: null,
   });
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // await axios.post("authenticate", {
+    //   userName: formValues.user,
+    //   password: formValues.password,
+    // });
+
+    // loginCall({
+    //   userName: formValues.user,
+    //   password: formValues.password,
+    // });
+    // if (data && !data?.data?.error) {
+    //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
+    // } else if (errRes) {
+    //   toastify("wrong credentials", "error");
+    // }
     signIn("credentials", {
       username: formValues.user,
       password: formValues.password,
