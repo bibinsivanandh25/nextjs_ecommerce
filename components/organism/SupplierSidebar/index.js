@@ -25,19 +25,19 @@ const ordersList = {
   dropdownlist: [
     {
       title: "New Orders To Process (0)",
-      path_name: "neworders",
+      path_name: "neworder",
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
-          path_name: "acceptandconfirmaddress",
+        path_name: "acceptandconfirmaddress",
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
-          path_name: "ordersdata",
+          path_name: "generateinvoiceandmanifest",
         },
         {
           subtitle: "Upload Manifest (00)",
-          path_name: "manifestupload",
+          path_name: "uploadmanifest",
         },
       ],
     },
