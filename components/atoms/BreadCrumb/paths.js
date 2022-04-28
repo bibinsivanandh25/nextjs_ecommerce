@@ -124,7 +124,7 @@ export const paths = [
     title: "Reports",
   },
   {
-    id: "help",
+    id: "helpandsupport",
     title: "Help & Support",
   },
   {

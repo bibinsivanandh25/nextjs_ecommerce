@@ -29,7 +29,7 @@ const ordersList = {
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
-        path_name: "acceptandconfirmaddress",
+          path_name: "acceptandconfirmaddress",
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
@@ -178,7 +178,7 @@ const dashboardList = [
     title: "Reports",
   },
   {
-    id: "help",
+    id: "helpandsupport",
     title: "Help & Support",
   },
 ];
@@ -293,45 +293,47 @@ export default function SupplierSidebar({ children }) {
         <List sx={{ height: "80vh", overflowY: "auto", py: 0 }}>
           {dashboardList.map((text, index) => (
             <React.Fragment key={index}>
-              <ListItemButton
-                key={text.id}
-                sx={{
-                  minHeight: 20,
-                  justifyContent: open ? "initial" : "center",
-                  px: 1.5,
-                  py: 0.5,
-                }}
-                onClick={() =>
-                  setSelected({
-                    show: text.id === selected.id ? !selected.show : true,
-                    id: text.id,
-                  })
-                }
-              >
-                <ListItemIcon
+              <Link href={`/${moduleType}/${text.id}`} replace>
+                <ListItemButton
+                  key={text.id}
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 20,
+                    justifyContent: open ? "initial" : "center",
+                    px: 1.5,
+                    py: 0.5,
                   }}
-                >
-                  {selected.id === text.id ? text.selectedIcon : text.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography
-                      variant="text"
-                      fontWeight={700}
-                      fontSize={14}
-                      color={selected.id === text.id && "#e56700"}
-                    >
-                      {text.title}
-                    </Typography>
+                  onClick={() =>
+                    setSelected({
+                      show: text.id === selected.id ? !selected.show : true,
+                      id: text.id,
+                    })
                   }
-                  disableTypography
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {selected.id === text.id ? text.selectedIcon : text.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="text"
+                        fontWeight={700}
+                        fontSize={14}
+                        color={selected.id === text.id && "#e56700"}
+                      >
+                        {text.title}
+                      </Typography>
+                    }
+                    disableTypography
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Link>
               {selected.show &&
                 selected.id === text.id &&
                 submenuList[selected.id]?.dropdownlist?.map((item, index) => (
