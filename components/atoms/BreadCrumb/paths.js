@@ -1,42 +1,38 @@
 export const paths = [
   {
-    title: "Accept & Confirm Address (00)",
-    id: "acceptandconfirmaddress",
-  },
-  {
     title: "Registration",
     id: "registration",
   },
   {
-    title: "Accept & Confirm Address (00)",
+    title: "Accept & Confirm Address",
     id: "acceptandconfirmaddress",
   },
   {
-    title: "Generate Invoice & Manifest (00)",
-    id: "ordersdata",
+    title: "Generate Invoice & Manifest",
+    id: "generateinvoiceandmanifest",
   },
   {
-    title: "Upload Manifest (00)",
-    id: "manifestupload",
+    title: "Upload Manifest",
+    id: "uploadmanifest",
   },
   {
-    title: "Manifested Orders (00)",
+    title: "Manifested Orders",
     id: "manifestedorders",
   },
   {
-    title: "Shipped Orders (00)",
+    title: "Shipped Orders",
     id: "shippedorders",
   },
   {
-    title: "Delivered Orders (00)",
+    title: "Delivered Orders",
     id: "deliveredorders",
   },
   {
-    title: "Cancelled Orders (00)",
+    title: "Cancelled Orders",
     id: "cancelledorders",
   },
   {
-    title: "Returned Orders (00)",
+    title: "Returned Orders",
     id: "returnedorders",
   },
   {
@@ -128,15 +124,15 @@ export const paths = [
     title: "Reports",
   },
   {
-    id: "help",
+    id: "helpandsupport",
     title: "Help & Support",
   },
   {
-    title: "New Orders To Process (0)",
-    id: "neworders",
+    title: "New Order",
+    id: "neworder",
   },
   {
-    title: "Order History (0)",
+    title: "Order History",
     id: "orderhistory",
   },
 ];
