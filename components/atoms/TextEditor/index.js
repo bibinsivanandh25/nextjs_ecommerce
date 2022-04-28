@@ -1,65 +1,78 @@
-import React, { Component } from 'react'
-import {EditorState} from "draft-js";
-import dynamic from 'next/dynamic'; 
-// import apiClient from '../api/api_client'
-import { convertFromRaw, convertToRaw } from 'draft-js';
-const Editor = dynamic(
-  () => import('react-draft-wysiwyg').then(mod => mod.Editor),
-  { ssr: false }
-)
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import "suneditor/dist/css/suneditor.min.css";
+import styles from "./TextEditor.module.css";
+import Image from "next/image";
+import logo from "../../../public/assets/favicon.png";
 
-export default class ArticleEditor extends Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      editorState: EditorState.createEmpty()
-    };
-  }
+const SunEditor = dynamic(() => import("suneditor-react"), {
+  ssr: false,
+});
 
-  onEditorStateChange = (editorState) => {
-    this.setState({
-      editorState,
-    });
-    this.props.handleContent(
-        convertToRaw(editorState.getCurrentContent()
-    ));
-  };
+export default function TextEditor() {
+  const [content, setContent] = useState("");
 
-  uploadImageCallBack = async (file) => {
-    // const imgData = await apiClient.uploadInlineImageForArticle(file);
-    return Promise.resolve({ data: { 
-    //   link: `${process.env.NEXT_PUBLIC_API_URL}${imgData[0].formats.small.url}`
-    }});
-  }
+  // useEffect(() => {
+  //   // if (typeof window !== undefined) {
+  //   console.log(document.getElementsByClassName("sun-editor"));
+  //   let element = document.getElementsByClassName("sun-editor");
+  //   element.classList.add(styles.toolBarClassName);
+  //   // }
+  // }, []);
+  console.log(content, " <img>asds</img>", "content");
+  useEffect(() => {
+    let element = document.getElementsByClassName("se-btn-tray");
+    element.length > 0 ? element.classList.remove("se-btn-tray") : null;
+  }, []);
+  return (
+    <div>
+      {/* <Image src={logo} alt="" width="100px" height="40px" /> */}
 
-  render() {
-    const { editorState } = this.state;
-    return (
-      <Editor
-        editorState={editorState}
-        toolbarClassName="toolbar-class"
-        wrapperClassName="wrapper-class"
-        editorClassName="editor-class"
-        onEditorStateChange={this.onEditorStateChange}
-        // toolbarOnFocus
-        toolbar={{
-          options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
-          inline: { inDropdown: true },
-          list: { inDropdown: true },
-          textAlign: { inDropdown: true },
-          link: { inDropdown: true },
-          history: { inDropdown: true },
-        //   image: { 
-        //     urlEnabled: true,
-        //     uploadEnabled: true,
-        //     // uploadCallback: this.uploadImageCallBack, 
-        //     previewImage: true,
-        //     alt: { present: false, mandatory: false } 
-        //   },
+      <SunEditor
+        className="bg-primary"
+        height="250px"
+        placeholder="Add a Reply..."
+        name="content"
+        defaultValue={content}
+        onChange={(text) => setContent(text)}
+        setOptions={{
+          display: "flex",
+          showPathLabel: false,
+          resizingBar: false,
+          // paragraphStyles: [
+          //   {
+          //     name: "Box",
+          //     class: styles.toolBarClassName,
+          //   },
+          // ],
+          colorList: [
+            // ["#ff0000", "#ff5e00", "#ffe400", "#abf200"],
+            // ["#00d8ff", "#0055ff", "#6600ff", "#ff00dd"],
+          ],
+          height: 500,
+          buttonList: [
+            ["fontSize"],
+            ["bold"],
+            ["underline"],
+            ["italic"],
+            ["strike"],
+            ["align"],
+            ["list"],
+            ["fontColor"],
+            ["hiliteColor"],
+          ],
+          menu: {
+            spaced: "Spaced",
+          },
         }}
       />
-    )
-  }
+      <div
+        className="ms-4"
+        dangerouslySetInnerHTML={{
+          __html: content,
+        }}
+      />
+    </div>
+  );
 }

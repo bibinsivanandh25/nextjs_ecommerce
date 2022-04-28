@@ -1,14 +1,15 @@
+import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
 import PrintIcon from "@mui/icons-material/Print";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { Paper, Tooltip } from "@mui/material";
 
-const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
+const UploadManifest = () => {
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
-      label: "Invoice ID",
+      label: "<Manifest ID>",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -16,7 +17,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     },
     {
       id: "col2",
-      label: "Date and Time",
+      label: "Shipment Provider",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -24,7 +25,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     },
     {
       id: "col3",
-      label: "number of Orders ",
+      label: "Manifest Date",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -33,8 +34,17 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     },
     {
       id: "col4",
-      label: "Print Invoices",
-      minWidth: 50,
+      label: "Number of Orders ",
+      minWidth: 100,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col5",
+      label: "Action",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -45,10 +55,14 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     {
       id: "1",
       col1: "#23324234",
-      col2: "28 may 2021",
-      col3: "1",
-      col4: (
+      col2: "ECOM",
+      col3: "28 may 2021",
+      col4: "1",
+      col5: (
         <div className="d-flex justify-content-center align-items-center ">
+          <Tooltip title="Upload" placement="top">
+            <FileUploadIcon />
+          </Tooltip>
           <Tooltip title="Print" placement="top">
             <PrintIcon className="mx-2 tableIcons" />
           </Tooltip>
@@ -61,10 +75,14 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     {
       id: "2",
       col1: "#23324234",
-      col2: "29 Apr 2021",
-      col3: "2",
-      col4: (
+      col2: "Ecom",
+      col3: "29 Apr 2021",
+      col4: "2",
+      col5: (
         <div className="d-flex justify-content-center align-items-center">
+          <Tooltip title="Upload" placement="top">
+            <FileUploadIcon />
+          </Tooltip>
           <Tooltip title="Print" placement="top">
             <PrintIcon className="mx-2" />
           </Tooltip>
@@ -77,23 +95,17 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
   ];
   return (
     <>
-      <div
-        className="color-orange d-flex align-items-center mb-3"
-        onClick={() => {
-          setShowInvoices(false);
-        }}
-      >
-        <KeyboardArrowLeftIcon className="fw-bold fs-26" />
-        <label>Back</label>
-      </div>
+      <ProgressBar
+        steps={[
+          "Accept & confirm Adress",
+          "Generate Invoice & Manifest ",
+          "Upload Maifest",
+        ]}
+      />
       <Paper className="py-3">
-        <TableComponent
-          table_heading="Print Previous Invoices"
-          tableRows={[...rows]}
-          columns={[...columns]}
-        />
+        <TableComponent columns={[...columns]} tableRows={[...rows]} />
       </Paper>
     </>
   );
 };
-export default ShowPreviousInvoices;
+export default UploadManifest;

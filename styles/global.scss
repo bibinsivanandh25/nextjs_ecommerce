@@ -90,7 +90,14 @@
   position: static;
 }
 
-
+.se-btn-tray{
+  display: block !important;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+.se-btn-module-border{
+  border:none !important
+}
 .loadContainer {
   display: flex !important;
   justify-content: center;

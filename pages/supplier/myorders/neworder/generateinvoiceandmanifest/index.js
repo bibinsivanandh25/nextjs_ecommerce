@@ -8,8 +8,11 @@ import styles from "./Generateinvoiceandmanifest.module.css";
 import Image from "next/image";
 import { useState } from "react";
 import ShowPreviousInvoices from "components/forms/supplier/myorder/showpreviousorder";
+import Link from "next/link";
+import { useRouter } from "next/router";
 const Generateinvoiceandmanifest = () => {
   const [showInvoices, setShowInvoices] = useState(false);
+  const route = useRouter();
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -136,7 +139,7 @@ const Generateinvoiceandmanifest = () => {
               className="d-flex flex-column justify-content-end"
             >
               <p
-                className={`${styles.Previousinvoicelink} fs-14`}
+                className={`${styles.Previousinvoicelink} fs-14 cursor-pointer`}
                 onClick={() => {
                   setShowInvoices(true);
                 }}
@@ -161,7 +164,9 @@ const Generateinvoiceandmanifest = () => {
                 label="Download selected Invoice and Manifest"
                 size="large"
                 muiProps="fs-11"
-                onBtnClick={() => {}}
+                onBtnClick={() => {
+                  route.push("/supplier/myorders/neworder/uploadmanifest");
+                }}
               />
             </Grid>
           </Grid>
