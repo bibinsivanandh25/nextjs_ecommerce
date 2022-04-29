@@ -20,6 +20,7 @@ const ModalComponent = ({
   onCloseIconClick = () => {},
   open = false,
   footerClassName = "align-center",
+  footerPadding = "px-4 py-2",
   headerClassName = "",
 }) => {
   const style = {
@@ -60,7 +61,7 @@ const ModalComponent = ({
           </div>
           {showFooter ? (
             <div
-              className={`px-4 py-2 d-flex justify-content-end ${footerClassName}`}
+              className={`${footerPadding} d-flex justify-content-end ${footerClassName}`}
             >
               {showSaveBtn ? (
                 <ButtonComponent
