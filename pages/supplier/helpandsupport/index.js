@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -6,6 +6,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import HelpandsupportCreate from "components/forms/supplier/helpandsupport/helpandsupportcreate";
 import HelpAndSupportNotification from "components/forms/supplier/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/supplier/helpandsupport/helpandsupportview";
+import { red } from "@mui/material/colors";
 
 const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -98,16 +99,26 @@ const HelpAndSupport = () => {
               />
             </Grid>
             <Grid item xs={6}>
-              <NotificationsNoneIcon
-                className="text-secondary cursor-pointer"
-                onClick={() => {
-                  setShowModal({
-                    show: true,
-                    id: row.ticketid,
-                    type: "notification",
-                  });
+              <Badge
+                variant="dot"
+                sx={{
+                  "& .MuiBadge-badge": {
+                    color: "red",
+                    backgroundColor: "red",
+                  },
                 }}
-              />
+              >
+                <NotificationsNoneIcon
+                  className="text-secondary cursor-pointer"
+                  onClick={() => {
+                    setShowModal({
+                      show: true,
+                      id: row.ticketid,
+                      type: "notification",
+                    });
+                  }}
+                />
+              </Badge>
             </Grid>
           </Grid>
         ),
