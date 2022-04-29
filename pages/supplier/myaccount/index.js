@@ -1,4 +1,8 @@
 import { Grid } from "@mui/material";
+import BankDetails from "components/forms/supplier/myaccount/bankdetails";
+import ChangePassword from "components/forms/supplier/myaccount/changepassword";
+import MyProfile from "components/forms/supplier/myaccount/myprofile";
+import PickUpAddress from "components/forms/supplier/myaccount/pickupaddress";
 import React, { useEffect, useState } from "react";
 
 const MyAccount = () => {
@@ -12,10 +16,10 @@ const MyAccount = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const getSelectedMenuItem = () => {
     if (selectedMenu === 0) {
-      return "My profile";
-    } else if (selectedMenu === 1) return "Bank Details";
-    else if (selectedMenu === 2) return "Change Password";
-    else if (selectedMenu === 3) return "Pickup Address";
+      return <MyProfile />;
+    } else if (selectedMenu === 1) return <BankDetails />;
+    else if (selectedMenu === 2) return <ChangePassword />;
+    else if (selectedMenu === 3) return <PickUpAddress />;
   };
   return (
     <>
