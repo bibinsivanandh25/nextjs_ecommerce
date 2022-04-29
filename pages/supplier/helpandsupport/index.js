@@ -172,51 +172,53 @@ const HelpAndSupport = () => {
       ) : showModal.show && showModal.type === "view" ? (
         <HelpandsupportView />
       ) : (
-        <Grid container>
-          <Grid
-            container
-            item
-            xs={12}
-            justifyContent="space-between"
-            className="border-bottom"
-          >
-            <Grid item>
-              <p>
-                <span className="fs-16 fw-bold px-3">Help & Support</span>
-                <span className="fs-12 fw-normal text-secondary">
-                  (We ensure to solve your issues within 3 working days)
-                </span>
-              </p>
+        <Paper>
+          <Grid container>
+            <Grid
+              container
+              item
+              xs={12}
+              justifyContent="space-between"
+              className="border-bottom"
+            >
+              <Grid item sx={{ p: 2 }}>
+                <p>
+                  <span className="fs-16 fw-bold px-3">Help & Support</span>
+                  <span className="fs-12 fw-normal text-secondary">
+                    (We ensure to solve your issues within 3 working days)
+                  </span>
+                </p>
+              </Grid>
+              <Grid item sx={{ p: 2 }}>
+                <Button
+                  variant="contained"
+                  className="bg-orange"
+                  size="small"
+                  onClick={() => setShowCreateComponent(true)}
+                >
+                  Create Tickets
+                </Button>
+              </Grid>
             </Grid>
-            <Grid>
-              <Button
-                variant="contained"
-                className="bg-orange"
-                size="small"
-                onClick={() => setShowCreateComponent(true)}
-              >
-                Create Tickets
-              </Button>
+            <Grid item xs={12} sx={{ my: 5, px: 2 }}>
+              <Paper>
+                <TableComponent
+                  table_heading=""
+                  columns={columns}
+                  tableRows={tableRows}
+                  showCheckbox={false}
+                  showSearchFilter={false}
+                />
+              </Paper>
             </Grid>
-          </Grid>
-          <Grid item xs={12} sx={{ my: 5 }}>
-            <Paper>
-              <TableComponent
-                table_heading=""
-                columns={columns}
-                tableRows={tableRows}
-                showCheckbox={false}
-                showSearchFilter={false}
+            {showModal.show && showModal.type === "notification" && (
+              <HelpAndSupportNotification
+                show={showModal.show}
+                setShowModal={setShowModal}
               />
-            </Paper>
+            )}
           </Grid>
-          {showModal.show && showModal.type === "notification" && (
-            <HelpAndSupportNotification
-              show={showModal.show}
-              setShowModal={setShowModal}
-            />
-          )}
-        </Grid>
+        </Paper>
       )}
     </>
   );

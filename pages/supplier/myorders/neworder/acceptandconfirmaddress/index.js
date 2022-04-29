@@ -147,7 +147,7 @@ const AcceptandConfirmOrder = () => {
   ];
 
   return (
-    <div>
+    <Paper sx={{ p: 2 }}>
       <ProgressBar
         steps={[
           "Accept & confirm Adress",
@@ -200,7 +200,7 @@ const AcceptandConfirmOrder = () => {
         <AcceptandConfirmAddress />
       )}
       {/* <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} /> */}
-    </div>
+    </Paper>
   );
 };
 export default AcceptandConfirmOrder;
