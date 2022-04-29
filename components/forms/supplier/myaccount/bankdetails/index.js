@@ -58,10 +58,10 @@ const BankDetails = () => {
           item
           xs={5}
           container
-          className="border border-1 mx-4 my-3 rounded"
+          className="border border-1 mx-4 my-3 rounded mnh-130"
         >
           <Grid container>
-            <Grid item xs={1} className="d-flex align-items-center mx-2">
+            <Grid item xs={1} className="d-flex align-items-center mx-2 ">
               <RadiobuttonComponent
                 id={index}
                 isChecked={ele.isChecked}
@@ -108,14 +108,14 @@ const BankDetails = () => {
     });
   };
   return (
-    <Paper className="h-95p">
+    <Paper className="h-95p overflow-auto">
       <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
       <Grid container>
         {getPickUpAdress()}
         <Grid
           item
           xs={5}
-          className="d-flex align-items-center justify-content-center w-100 cursor-pointer border border-1 mx-4 my-3 rounded mnh-150"
+          className="d-flex align-items-center justify-content-center w-100 cursor-pointer border border-1 mx-4 my-3 rounded mnh-130"
           onClick={() => setShowModal(true)}
         >
           <AddCircleIcon className="text-secondary fs-1" />
