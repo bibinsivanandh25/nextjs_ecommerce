@@ -32,6 +32,7 @@ const ModalComponent = ({
     border: "0px solid white",
     boxShadow: 24,
     borderRadius: "10px",
+    outline: "none",
   };
 
   return (
@@ -45,9 +46,12 @@ const ModalComponent = ({
                 borderBottom: "1px solid #e6e6e6",
               }}
             >
-              <label className="fs-12">{ModalTitle}</label>
+              <label className="fs-12 fw-600">{ModalTitle}</label>
               <div className={showCloseIcon ? "" : "d-none"}>
-                <CloseIcon onClick={onCloseIconClick} />
+                <CloseIcon
+                  onClick={onCloseIconClick}
+                  className="cursor-pointer"
+                />
               </div>
             </div>
           ) : null}
