@@ -2,6 +2,9 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import Checkbox from "@mui/material/Checkbox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { FormControlLabel } from "@mui/material";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 
 const CheckBoxComponent = ({
   label = "",
@@ -11,7 +14,27 @@ const CheckBoxComponent = ({
   checkBoxClick = () => {},
   size = "small",
   varient = "normal", //filled or normal
+  showIcon = false,
+  iconType = "normal", //normal or circled
 }) => {
+  const getIcon = () => {
+    if (showIcon && iconType === "normal" && varient === "filled") {
+      return <CheckBoxIcon />;
+    } else if (showIcon && iconType === "circled") {
+      return <RadioButtonUncheckedIcon />;
+    } else {
+      return <CheckBoxOutlineBlankIcon />;
+    }
+  };
+
+  const getCheckIcon = () => {
+    if (showIcon && iconType === "circled") {
+      return <CheckCircleIcon />;
+    } else {
+      return <CheckBoxIcon />;
+    }
+  };
+
   return (
     <div>
       <FormControlLabel
@@ -20,14 +43,8 @@ const CheckBoxComponent = ({
           <Checkbox
             label={label}
             checked={isChecked}
-            icon={
-              varient === "filled" ? (
-                <CheckBoxIcon />
-              ) : (
-                <CheckBoxOutlineBlankIcon />
-              )
-            }
-            checkedIcon={<CheckBoxIcon />}
+            icon={getIcon()}
+            checkedIcon={getCheckIcon()}
             sx={{
               "&.Mui-checked": {
                 color: "#e56700",
