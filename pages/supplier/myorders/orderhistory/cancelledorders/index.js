@@ -155,27 +155,29 @@ const CancelledOrders = () => {
   }, [dropdownFilter]);
 
   return (
-    <Paper sx={{ px: 0 }}>
-      <TableComponent
-        table_heading={`Cancelled Orders (${tableRows.length})`}
-        columns={columns}
-        tableRows={tableRows}
-        showSearchbar={false}
-        showCheckbox={false}
-        showCustomDropdown
-        customDropdownLabel="Order Type"
-        customDropdownList={[
-          { id: "single", label: "Single" },
-          { id: "multiple", label: "Multiple" },
-        ]}
-        showCustomButton
-        customButtonLabel="Download All Orders"
-        onCustomButtonClick={() => {
-          console.log("onCustomButtonClick");
-        }}
-        onCustomDropdownChange={(val) => setDropdownFilter(val)}
-        customDropdownValue={dropdownFilter}
-      />
+    <Paper sx={{ p: 2, height: "100%" }}>
+      <Paper sx={{ px: 0, py: 2 }}>
+        <TableComponent
+          table_heading={`Cancelled Orders (${tableRows.length})`}
+          columns={columns}
+          tableRows={tableRows}
+          showSearchbar={false}
+          showCheckbox={false}
+          showCustomDropdown
+          customDropdownLabel="Order Type"
+          customDropdownList={[
+            { id: "single", label: "Single" },
+            { id: "multiple", label: "Multiple" },
+          ]}
+          showCustomButton
+          customButtonLabel="Download All Orders"
+          onCustomButtonClick={() => {
+            console.log("onCustomButtonClick");
+          }}
+          onCustomDropdownChange={(val) => setDropdownFilter(val)}
+          customDropdownValue={dropdownFilter}
+        />
+      </Paper>
     </Paper>
   );
 };

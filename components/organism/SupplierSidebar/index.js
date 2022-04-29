@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -136,50 +137,62 @@ const dashboardList = [
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
     selectedIcon: <DashboardIcon style={{ color: "#e56700" }} />,
+    navigate: false,
   },
   {
     id: "orders",
     title: "My Orders",
+    navigate: false,
   },
   {
     id: "collections",
     title: "My Collections",
+    navigate: false,
   },
   {
     id: "products",
     title: "Products & Inventory",
+    navigate: false,
   },
   {
     id: "earnings",
     title: "My Earnings",
+    navigate: false,
   },
   {
     id: "adminproducts",
     title: "Admin Products",
+    navigate: false,
   },
   {
     id: "coupns",
     title: "Coupons",
+    navigate: false,
   },
   {
     id: "staff",
     title: "Staff",
+    navigate: false,
   },
   {
     id: "delivery",
     title: "Delivery Management",
+    navigate: false,
   },
   {
     id: "review",
     title: "Customer Review",
+    navigate: false,
   },
   {
     id: "reports",
     title: "Reports",
+    navigate: false,
   },
   {
     id: "helpandsupport",
     title: "Help & Support",
+    navigate: true,
   },
 ];
 
@@ -253,6 +266,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function SupplierSidebar({ children }) {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
 
@@ -293,47 +307,48 @@ export default function SupplierSidebar({ children }) {
         <List sx={{ height: "80vh", overflowY: "auto", py: 0 }}>
           {dashboardList.map((text, index) => (
             <React.Fragment key={index}>
-              <Link href={`/${moduleType}/${text.id}`} replace>
-                <ListItemButton
-                  key={text.id}
-                  sx={{
-                    minHeight: 20,
-                    justifyContent: open ? "initial" : "center",
-                    px: 1.5,
-                    py: 0.5,
-                  }}
-                  onClick={() =>
-                    setSelected({
-                      show: text.id === selected.id ? !selected.show : true,
-                      id: text.id,
-                    })
+              <ListItemButton
+                key={text.id}
+                sx={{
+                  minHeight: 20,
+                  justifyContent: open ? "initial" : "center",
+                  px: 1.5,
+                  py: 0.5,
+                }}
+                onClick={() => {
+                  setSelected({
+                    show: text.id === selected.id ? !selected.show : true,
+                    id: text.id,
+                  });
+                  if (text.navigate) {
+                    router.push(`/${moduleType}/${text.id}`);
                   }
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {selected.id === text.id ? text.selectedIcon : text.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="text"
-                        fontWeight={700}
-                        fontSize={14}
-                        color={selected.id === text.id && "#e56700"}
-                      >
-                        {text.title}
-                      </Typography>
-                    }
-                    disableTypography
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </Link>
+                  {selected.id === text.id ? text.selectedIcon : text.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="text"
+                      fontWeight={700}
+                      fontSize={14}
+                      color={selected.id === text.id && "#e56700"}
+                    >
+                      {text.title}
+                    </Typography>
+                  }
+                  disableTypography
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
               {selected.show &&
                 selected.id === text.id &&
                 submenuList[selected.id]?.dropdownlist?.map((item, index) => (

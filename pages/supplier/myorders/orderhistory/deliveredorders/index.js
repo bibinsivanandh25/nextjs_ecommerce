@@ -130,16 +130,18 @@ const DeliveredOrders = () => {
   }, [tableData]);
 
   return (
-    <Paper sx={{ px: 0 }}>
-      <TableComponent
-        table_heading={`Delivered Orders (${tableRows.length})`}
-        columns={columns}
-        tableRows={tableRows}
-        showCheckbox={false}
-        showSearchbar={false}
-        showCustomButton
-        customButtonLabel="Download All Orders"
-      />
+    <Paper sx={{ p: 2, height: "100%" }}>
+      <Paper sx={{ px: 0, py: 2 }}>
+        <TableComponent
+          table_heading={`Delivered Orders (${tableRows.length})`}
+          columns={columns}
+          tableRows={tableRows}
+          showCheckbox={false}
+          showSearchbar={false}
+          showCustomButton
+          customButtonLabel="Download All Orders"
+        />
+      </Paper>
     </Paper>
   );
 };

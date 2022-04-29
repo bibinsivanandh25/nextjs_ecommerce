@@ -121,7 +121,7 @@ const Generateinvoiceandmanifest = () => {
     },
   ];
   return (
-    <>
+    <Paper sx={{ p: 2 }}>
       {!showInvoices ? (
         <>
           <ProgressBar
@@ -181,7 +181,7 @@ const Generateinvoiceandmanifest = () => {
       ) : (
         <ShowPreviousInvoices setShowInvoices={setShowInvoices} />
       )}
-    </>
+    </Paper>
   );
 };
 export default Generateinvoiceandmanifest;

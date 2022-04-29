@@ -130,19 +130,21 @@ const ManifestedOrders = () => {
   }, [tableData]);
 
   return (
-    <Paper sx={{ px: 0 }}>
-      <TableComponent
-        table_heading={`Manifested Orders (${tableRows.length})`}
-        columns={columns}
-        tableRows={tableRows}
-        showSearchbar={false}
-        showCheckbox={false}
-        showCustomButton
-        customButtonLabel="Download All Orders"
-        onCustomButtonClick={() => {
-          console.log("onCustomButtonClick");
-        }}
-      />
+    <Paper sx={{ p: 2, height: "100%" }}>
+      <Paper sx={{ px: 0, py: 2 }}>
+        <TableComponent
+          table_heading={`Manifested Orders (${tableRows.length})`}
+          columns={columns}
+          tableRows={tableRows}
+          showSearchbar={false}
+          showCheckbox={false}
+          showCustomButton
+          customButtonLabel="Download All Orders"
+          onCustomButtonClick={() => {
+            console.log("onCustomButtonClick");
+          }}
+        />
+      </Paper>
     </Paper>
   );
 };

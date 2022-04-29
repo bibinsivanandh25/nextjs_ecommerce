@@ -66,6 +66,7 @@ export default function TableComponent({
   customDropdownValue = {},
   onCustomButtonClick = () => {},
   onCustomDropdownChange = () => {},
+  showSearchFilter = true,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -204,19 +205,21 @@ export default function TableComponent({
           {showSearchbar && (
             <Grid item sm={6} md={7} xs={6} container spacing={2}>
               <Grid item md={3}>
-                <SimpleDropdownComponent
-                  list={[...searchFilterList]}
-                  size={"small"}
-                  label="Search Filter"
-                  value={searchFilter}
-                  onDropdownSelect={(value) => {
-                    setSearchFilter(
-                      value === null
-                        ? { label: "All", id: 0, value: "All" }
-                        : { ...value }
-                    );
-                  }}
-                />
+                {showSearchFilter && (
+                  <SimpleDropdownComponent
+                    list={[...searchFilterList]}
+                    size={"small"}
+                    label="Search Filter"
+                    value={searchFilter}
+                    onDropdownSelect={(value) => {
+                      setSearchFilter(
+                        value === null
+                          ? { label: "All", id: 0, value: "All" }
+                          : { ...value }
+                      );
+                    }}
+                  />
+                )}
               </Grid>
               <Grid item md={7}>
                 <InputBox
@@ -280,7 +283,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer sx={{ maxHeight: 440, mt: 2 }}>
           <Table>
             <EnhancedTableHead
               numSelected={selected.length}
