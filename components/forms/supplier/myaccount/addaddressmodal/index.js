@@ -37,6 +37,13 @@ const AddAddressModal = (props) => {
           setShowAddAddressModal(false);
         }
       }}
+      onClearBtnClick={() => {
+        if (type === "edit") {
+          setSelectId({});
+        } else {
+          setShowAddAddressModal(false);
+        }
+      }}
       minHeightClassName="mxh-500"
       ModalWidth={800}
       footerClassName="align-right border-top me-3"
