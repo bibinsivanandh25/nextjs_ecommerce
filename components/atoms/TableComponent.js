@@ -268,7 +268,7 @@ export default function TableComponent({
               <Grid item>
                 <div
                   style={{ width: "40px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded- cursor-pointer rounded"
+                  className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
                   onClick={handleSearch}
                 >
                   <SearchOutlinedIcon style={{ color: "white" }} />
