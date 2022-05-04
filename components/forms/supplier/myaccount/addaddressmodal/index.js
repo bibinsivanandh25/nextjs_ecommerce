@@ -2,11 +2,20 @@ import { Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AddAddressModal = (props) => {
-  const { setShowAddAddressModal = () => {} } = props;
+  const {
+    setShowAddAddressModal = () => {},
+    values = {},
+    setSelectId = () => {},
+    type = "",
+  } = props;
   const [formValues, setFormValues] = useState({});
+
+  useEffect(() => {
+    setFormValues(values);
+  }, [values]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -21,8 +30,21 @@ const AddAddressModal = (props) => {
       open
       ModalTitle="Add New Pickup Address"
       showFooter
-      onCloseIconClick={() => setShowAddAddressModal(false)}
-      minHeightClassName="mnh-400 mxh-400"
+      onCloseIconClick={() => {
+        if (type === "edit") {
+          setSelectId({});
+        } else {
+          setShowAddAddressModal(false);
+        }
+      }}
+      onClearBtnClick={() => {
+        if (type === "edit") {
+          setSelectId({});
+        } else {
+          setShowAddAddressModal(false);
+        }
+      }}
+      minHeightClassName="mxh-500"
       ModalWidth={800}
       footerClassName="align-right border-top me-3"
       footerPadding="p-3"
@@ -30,6 +52,7 @@ const AddAddressModal = (props) => {
     >
       <Grid container my={2} spacing={2}>
         <Grid item xs={6}>
+          {console.log(formValues.name)}
           <InputBox
             value={formValues.name}
             label="Name"

@@ -12,6 +12,7 @@ const PickUpAddress = () => {
   ]);
   const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectId, setSelectId] = useState({ type: null, id: null });
 
   return (
     <>
@@ -27,7 +28,7 @@ const PickUpAddress = () => {
         </Grid>
         <Grid xs={6} />
         {addressList.map((add, index) => (
-          <Grid xs={6} item onClick={() => setSelectedAddress(add.id)}>
+          <Grid xs={6} item>
             <Grid
               container
               sx={{
@@ -45,6 +46,7 @@ const PickUpAddress = () => {
                     label={`Address ${index + 1}`}
                     isChecked={add.id === selectedAddress}
                     showIcon
+                    checkBoxClick={() => setSelectedAddress(add.id)}
                     iconType="circled"
                   />
                 </Grid>
@@ -62,15 +64,25 @@ const PickUpAddress = () => {
                 container
                 alignItems="center"
               >
-                <DeleteIcon sx={{ mb: 2 }} />
-                <EditIcon />
+                <DeleteIcon
+                  sx={{ mb: 2 }}
+                  onClick={() => setSelectId({ type: "delete", id: add.id })}
+                />
+                <EditIcon
+                  onClick={() => setSelectId({ type: "edit", id: add.id })}
+                />
               </Grid>
             </Grid>
           </Grid>
         ))}
       </Grid>
-      {showAddAddressModal && (
-        <AddAddressModal setShowAddAddressModal={setShowAddAddressModal} />
+      {(showAddAddressModal || selectId.type === "edit") && (
+        <AddAddressModal
+          setShowAddAddressModal={setShowAddAddressModal}
+          values={addressList.find((i) => i.id === selectId.id)}
+          type={selectId.type}
+          setSelectId={setSelectId}
+        />
       )}
     </>
   );
