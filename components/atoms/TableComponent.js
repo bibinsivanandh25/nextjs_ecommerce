@@ -67,6 +67,7 @@ export default function TableComponent({
   onCustomButtonClick = () => {},
   onCustomDropdownChange = () => {},
   showSearchFilter = true,
+  showCustomDropdownWithSearch = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -185,23 +186,55 @@ export default function TableComponent({
           pr: { xs: 1, sm: 1 },
         }}
       >
-        <Grid container spacing={2}>
-          <Grid
-            item
-            sm={showCustomDropdown || showCustomButton ? 9 : 6}
-            md={showCustomDropdown || showCustomButton ? 8 : 5}
-            xs={6}
-          >
-            <Typography
-              sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-              // variant="h6"
-              id="tableTitle"
-              component="div"
-              className="fw-bold"
-            >
-              {table_heading}
-            </Typography>
+        {showCustomDropdownWithSearch && (
+          <Grid container justifyContent="end" spacing={2}>
+            <Grid item sm={6} md={2}>
+              <SimpleDropdownComponent
+                list={customDropdownList}
+                size="small"
+                label={customDropdownLabel}
+                value={customDropdownValue}
+                onDropdownSelect={(value) => {
+                  onCustomDropdownChange(value);
+                }}
+              />
+            </Grid>
+            <Grid item md={3}>
+              <InputBox
+                value={searchText}
+                label="Search"
+                // className="w-100"
+                size="small"
+                onInputChange={(e) => {
+                  setsearchText(e.target.value);
+                }}
+              />
+            </Grid>
+            <Grid item>
+              <div
+                style={{ width: "35px", height: "38px" }}
+                className="bg-orange d-flex justify-content-center align-items-center rounded"
+                onClick={handleSearch}
+              >
+                <SearchOutlinedIcon style={{ color: "white" }} />
+              </div>
+            </Grid>
           </Grid>
+        )}
+        <Grid container spacing={2} justifyContent="end">
+          {table_heading && (
+            <Grid item sm={6} md={5} xs={6} lg={12}>
+              <Typography
+                sx={{ flex: "1 1 100%", py: { sm: 1 } }}
+                // variant="h6"
+                id="tableTitle"
+                component="div"
+                className="fw-bold"
+              >
+                {table_heading}
+              </Typography>
+            </Grid>
+          )}
           {showSearchbar && (
             <Grid item sm={6} md={7} xs={6} container spacing={2}>
               <Grid item md={3}>
@@ -221,7 +254,7 @@ export default function TableComponent({
                   />
                 )}
               </Grid>
-              <Grid item md={7}>
+              <Grid item md={8}>
                 <InputBox
                   value={searchText}
                   label="Search"
@@ -232,10 +265,10 @@ export default function TableComponent({
                   }}
                 />
               </Grid>
-              <Grid item md={2}>
+              <Grid item>
                 <div
                   style={{ width: "35px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded"
+                  className="bg-orange d-flex justify-content-center align-items-center rounded- cursor-pointer"
                   onClick={handleSearch}
                 >
                   <SearchOutlinedIcon style={{ color: "white" }} />
@@ -254,7 +287,7 @@ export default function TableComponent({
               justifyContent="right"
             >
               {showCustomDropdown && (
-                <Grid item sm={6} md={6} container my={1}>
+                <Grid item sm={6} md={6} container>
                   <SimpleDropdownComponent
                     list={customDropdownList}
                     size="small"
@@ -267,7 +300,7 @@ export default function TableComponent({
                 </Grid>
               )}
               {showCustomButton && (
-                <Grid item sm={6} md={6} container my={1}>
+                <Grid item sm={6} md={6} container>
                   <Button
                     variant="contained"
                     size="small"
@@ -283,7 +316,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <TableContainer sx={{ maxHeight: 440, mt: 2 }}>
+        <TableContainer sx={{ maxHeight: 440, mt: 3 }}>
           <Table>
             <EnhancedTableHead
               numSelected={selected.length}
