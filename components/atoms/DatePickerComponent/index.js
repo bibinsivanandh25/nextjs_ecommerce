@@ -13,6 +13,7 @@ const DatePickerComponent = (props) => {
     value = null,
     onDateChange = () => {},
     error = "",
+    inputlabelshrink = false,
   } = props;
 
   return (
@@ -25,7 +26,14 @@ const DatePickerComponent = (props) => {
         onChange={(newData) => onDateChange(newData)}
         inputFormat="dd/mm/yyyy"
         renderInput={(params) => (
-          <TextField {...params} fullWidth={fullWidth} size={size} />
+          <TextField
+            {...params}
+            fullWidth={fullWidth}
+            size={size}
+            InputLabelProps={{
+              shrink: inputlabelshrink || value,
+            }}
+          />
         )}
       />
       <div className="errorContainer">{error}</div>

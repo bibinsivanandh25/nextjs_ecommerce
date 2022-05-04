@@ -165,9 +165,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "coupns",
+    id: "coupons",
     title: "Coupons",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "staff",

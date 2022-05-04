@@ -104,7 +104,7 @@ export const paths = [
     title: "Admin Products",
   },
   {
-    id: "coupns",
+    id: "coupons",
     title: "Coupons",
   },
   {
@@ -134,5 +134,9 @@ export const paths = [
   {
     title: "Order History",
     id: "orderhistory",
+  },
+  {
+    title: "Add New Coupon",
+    id: "addnewcoupons",
   },
 ];
