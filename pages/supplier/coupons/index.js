@@ -1,9 +1,6 @@
 import { Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import HelpandsupportCreate from "components/forms/supplier/helpandsupport/helpandsupportcreate";
-import HelpAndSupportNotification from "components/forms/supplier/helpandsupport/helpandsupportnotification";
-import HelpandsupportView from "components/forms/supplier/helpandsupport/helpandsupportview";
 import { useRouter } from "next/router";
 import ModalComponent from "components/atoms/ModalComponent";
 import CouponLogo from "public/assets/images/Coupon.png";
@@ -186,11 +183,12 @@ const Coupons = () => {
               tableRows={tableRows}
               showCheckbox={false}
               showSearchFilter={false}
-              showCustomDropdown
               onCustomDropdownChange={(val) => setDropdownFilter(val)}
               customDropdownValue={dropdownFilter}
               customDropdownLabel="Select Type"
+              showSearchbar={false}
               customDropdownList={selectTypeList}
+              showCustomDropdownWithSearch
             />
           </Paper>
         </Grid>
