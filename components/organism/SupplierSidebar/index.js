@@ -369,7 +369,6 @@ export default function SupplierSidebar({ children }) {
                       href={`/${moduleType}/${
                         submenuList[selected.id].path_name
                       }/${item.path_name}`}
-                      replace
                     >
                       <MenuItem
                         sx={getMenuStyles(item)}
@@ -386,7 +385,6 @@ export default function SupplierSidebar({ children }) {
                         href={`/${moduleType}/${
                           submenuList[selected.id].path_name
                         }/${item.path_name}/${o.path_name}`}
-                        replace
                       >
                         <MenuItem
                           sx={getSubmenuStyles(o)}
