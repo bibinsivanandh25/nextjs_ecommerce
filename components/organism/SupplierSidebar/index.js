@@ -180,9 +180,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "review",
+    id: "customerreview",
     title: "Customer Review",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "reports",
@@ -295,7 +295,9 @@ export default function SupplierSidebar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{ display: "flex", position: "absolute", top: "50px", width: "100%" }}
+    >
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
