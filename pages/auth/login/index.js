@@ -228,8 +228,16 @@ const Login = () => {
                 </div>
               </Grid>
               <Grid item sm={12}>
-                <div className="d-flex justify-content-center w-100">
+                <div className="d-flex flex-column align-items-center justify-content-center w-100">
                   <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
+                  <div>
+                    <span className="fs-11">Don't have an account?</span>
+                    <Link href={"/auth/supplier/registration"}>
+                      <span className="color-orange fs-11 cursor-pointer">
+                        Register
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </Grid>
             </Grid>

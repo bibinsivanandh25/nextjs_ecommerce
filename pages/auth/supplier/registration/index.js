@@ -37,7 +37,17 @@ const Registration = () => {
         },
       ],
     };
-    const { data, errRes } = await supplierRegister(payload);
+    const { data, errRes } = await axios
+      .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
+      .then((res) => {
+        const data = res && res.data;
+        return { data };
+      })
+      .catch((err) => {
+        const errRes = err?.response?.data;
+        return { errRes };
+      });
+    // const { data, errRes } = await supplierRegister(payload);
     if (data) {
       setShowModal(true);
       console.log(data);
