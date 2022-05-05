@@ -56,9 +56,8 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
       </Grid>
       <Grid item md={5} container>
         {labels.map((ele, index) => {
-          // color.map((color) => {
           return (
-            <Grid className="d-flex align-items-center" item md={6}>
+            <Grid className="d-flex align-items-center" item md={6} key={index}>
               <Grid
                 // item
                 // sm={1}

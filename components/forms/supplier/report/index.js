@@ -111,10 +111,10 @@ const ReportLayout = ({
   };
 
   const getCardDetails = () => {
-    return cardDetails.map((ele) => {
+    return cardDetails.map((ele, ind) => {
       return (
         <>
-          <Grid className="" item xs={3}>
+          <Grid className="" item xs={3} key={ind}>
             <Paper
               className="px-3 py-2"
               sx={{
