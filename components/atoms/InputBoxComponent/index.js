@@ -4,6 +4,8 @@ import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const InputBox = ({
+  id = "textbox",
+  name = "textbox",
   placeholder = "",
   inputlabelshrink = false,
   value = "",
@@ -18,6 +20,9 @@ const InputBox = ({
   onKeyDown = () => {},
   inputRef = null,
   type = "text",
+  isMultiline = false,
+  rows = 3,
+  fullWidth = true,
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -33,16 +38,21 @@ const InputBox = ({
       onChange={onInputChange}
       label={label}
       placeholder={placeholder}
-      defaultValue={value}
+      value={value}
       size={size}
       className={className}
       InputLabelProps={{
-        shrink: { inputlabelshrink },
+        shrink: inputlabelshrink || value,
       }}
       inputRef={inputRef}
       onKeyDown={onKeyDown}
       variant={variant}
       type={type}
+      id={id}
+      name={name}
+      multiline={isMultiline}
+      rows={rows}
+      fullWidth={fullWidth}
       InputProps={{
         endAdornment: iconName !== "" && (
           <InputAdornment position="end">

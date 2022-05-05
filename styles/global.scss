@@ -79,17 +79,29 @@
   max-height: 80vh;
 }
 
-.zIndex-1{
+.zIndex-1 {
   z-index: 1;
 }
-.cursor-pointer{
-  cursor: pointer;}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .MuiDrawer-paper {
   top: auto !important;
   border-right: none;
   position: static;
 }
 
+.se-btn-tray {
+  display: block !important;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.se-btn-module-border {
+  border: none !important
+}
 
 .loadContainer {
   display: flex !important;
@@ -103,7 +115,12 @@
   top: 0;
   left: 0;
 }
+.active-tab{
+  color: #e56700 !important;
+  border-bottom: 1px solid #e56700;
+  padding: 3px 0px;
 
+}
 .spinner {
   width: 70px;
   height: 70px;
@@ -150,4 +167,8 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

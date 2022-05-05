@@ -3,10 +3,8 @@ import PrintIcon from "@mui/icons-material/Print";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Paper, Tooltip } from "@mui/material";
-import { useRouter } from "next/router";
 
 const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
-  const Router = useRouter();
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key

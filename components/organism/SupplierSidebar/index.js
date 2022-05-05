@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -25,7 +26,7 @@ const ordersList = {
   dropdownlist: [
     {
       title: "New Orders To Process (0)",
-      path_name: "neworders",
+      path_name: "neworder",
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
@@ -33,11 +34,11 @@ const ordersList = {
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
-          path_name: "ordersdata",
+          path_name: "generateinvoiceandmanifest",
         },
         {
           subtitle: "Upload Manifest (00)",
-          path_name: "manifestupload",
+          path_name: "uploadmanifest",
         },
       ],
     },
@@ -105,27 +106,27 @@ const reportsList = {
   dropdownlist: [
     {
       subtitle: "Payment Reports",
-      path_name: "payment-report",
+      path_name: "paymentreport",
     },
     {
       subtitle: "Order Report",
-      path_name: "order-report",
+      path_name: "orderreport",
     },
     {
       subtitle: "Order Tax Invoice Report",
-      path_name: "order-tex-invoice-report",
+      path_name: "ordertaxinvoicereport",
     },
     {
       subtitle: "Credit Notes",
-      path_name: "credit-notes",
+      path_name: "creditnotes",
     },
     {
       subtitle: "Commission Invoices",
-      path_name: "commission-invoices",
+      path_name: "commissioninvoices",
     },
     {
       subtitle: "TCS/Sales Report",
-      path_name: "sales-report",
+      path_name: "salesreport",
     },
   ],
 };
@@ -136,50 +137,62 @@ const dashboardList = [
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
     selectedIcon: <DashboardIcon style={{ color: "#e56700" }} />,
+    navigate: false,
   },
   {
     id: "orders",
     title: "My Orders",
+    navigate: false,
   },
   {
     id: "collections",
     title: "My Collections",
+    navigate: false,
   },
   {
     id: "products",
     title: "Products & Inventory",
+    navigate: false,
   },
   {
     id: "earnings",
     title: "My Earnings",
+    navigate: false,
   },
   {
     id: "adminproducts",
     title: "Admin Products",
+    navigate: false,
   },
   {
-    id: "coupns",
+    id: "coupons",
     title: "Coupons",
+    navigate: true,
   },
   {
     id: "staff",
     title: "Staff",
+    navigate: false,
   },
   {
     id: "delivery",
     title: "Delivery Management",
+    navigate: false,
   },
   {
     id: "review",
     title: "Customer Review",
+    navigate: false,
   },
   {
     id: "reports",
     title: "Reports",
+    navigate: false,
   },
   {
-    id: "help",
+    id: "helpandsupport",
     title: "Help & Support",
+    navigate: true,
   },
 ];
 
@@ -253,6 +266,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function SupplierSidebar({ children }) {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
   const [selected, setSelected] = React.useState({ show: false, id: null });
   const [subMenuSelected, setSubMenuSelected] = React.useState("");
 
@@ -301,12 +315,15 @@ export default function SupplierSidebar({ children }) {
                   px: 1.5,
                   py: 0.5,
                 }}
-                onClick={() =>
+                onClick={() => {
                   setSelected({
                     show: text.id === selected.id ? !selected.show : true,
                     id: text.id,
-                  })
-                }
+                  });
+                  if (text.navigate) {
+                    router.push(`/${moduleType}/${text.id}`);
+                  }
+                }}
               >
                 <ListItemIcon
                   sx={{
@@ -334,6 +351,7 @@ export default function SupplierSidebar({ children }) {
               </ListItemButton>
               {selected.show &&
                 selected.id === text.id &&
+                open &&
                 submenuList[selected.id]?.dropdownlist?.map((item, index) => (
                   <MenuList
                     key={index}

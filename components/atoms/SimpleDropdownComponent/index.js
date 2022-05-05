@@ -14,6 +14,7 @@ const SimpleDropdownComponent = (props) => {
     error = false,
     placeholder = "",
     fontSize = "",
+    inputlabelshrink = false,
   } = props;
   return (
     <>
@@ -30,7 +31,7 @@ const SimpleDropdownComponent = (props) => {
         getOptionLabel={(option) => option.label || ""}
         sx={{
           "& .MuiAutocomplete-input, & .MuiInputLabel-root": {
-            fontSize
+            fontSize,
           },
         }}
         renderInput={(params) => (
@@ -41,7 +42,7 @@ const SimpleDropdownComponent = (props) => {
             error={error}
             helperText={error}
             InputLabelProps={{
-              shrink: value?.id ? true : false,
+              shrink: value?.id ? true : inputlabelshrink,
               fontSize: fontSize && "0.8rem",
             }}
             placeholder={placeholder}

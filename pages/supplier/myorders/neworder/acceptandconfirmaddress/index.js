@@ -2,7 +2,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import logo from "../../../../public/assets/logo.jpeg";
+import logo from "../../../../../public/assets/logo.jpeg";
 import Image from "next/image";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
@@ -147,7 +147,7 @@ const AcceptandConfirmOrder = () => {
   ];
 
   return (
-    <div>
+    <Paper sx={{ p: 2 }}>
       <ProgressBar
         steps={[
           "Accept & confirm Adress",
@@ -200,7 +200,7 @@ const AcceptandConfirmOrder = () => {
         <AcceptandConfirmAddress />
       )}
       {/* <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} /> */}
-    </div>
+    </Paper>
   );
 };
 export default AcceptandConfirmOrder;

@@ -2,9 +2,11 @@ import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import { Box, style } from "@mui/system";
 import { signOut } from "next-auth/react";
 import React from "react";
+import { useRouter } from "next/router";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
+  const router = useRouter();
   const open = anchorEl;
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -62,7 +64,9 @@ const ProfileComponent = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>My account</MenuItem>
+        <MenuItem onClick={() => router.push("/supplier/myaccount")}>
+          My account
+        </MenuItem>
         <MenuItem
           onClick={() => {
             signOut({ callbackUrl: "/auth/login" });
