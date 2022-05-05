@@ -69,6 +69,7 @@ export default function TableComponent({
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
   searchBarSizeMd = 8,
+  tableMaxHeight = 440,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -325,7 +326,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <TableContainer sx={{ maxHeight: 440, mt: 3 }}>
+        <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
           <Table>
             <EnhancedTableHead
               numSelected={selected.length}

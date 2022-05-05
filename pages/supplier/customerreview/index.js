@@ -99,16 +99,80 @@ const CustomerReview = () => {
 
   useEffect(() => {
     const rows = [
-    //   {
-    //     productId: "#123458",
-    //     skuid: "123456",
-    //     email: "12-01-2022",
-    //     name: "UK24",
-    //     mobileno: "200gm",
-    //     ratings: "23-01-2022",
-    //     questions: "4",
-    //     supplierreply: "PRODUCT LIVE",
-    //   },
+      {
+        productId: "#123458",
+        skuid: "123456",
+        email: "12-01-2022",
+        name: "UK24",
+        mobileno: "200gm",
+        ratings: "23-01-2022",
+        questions: "4",
+        supplierreply: "PRODUCT LIVE",
+      },
+      {
+        productId: "#123456",
+        skuid: "123456",
+        email: "12-01-2022",
+        name: "UK24",
+        mobileno: "200gm",
+        ratings: "23-01-2022",
+        questions: "4",
+        supplierreply:
+          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      },
+      {
+        productId: "#123459",
+        skuid: "123423",
+        email: "12-01-2023",
+        name: "UK22",
+        mobileno: "300gm",
+        ratings: "23-01-2022",
+        questions: "1",
+        supplierreply:
+          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      },
+      {
+        productId: "#123458",
+        skuid: "123456",
+        email: "12-01-2022",
+        name: "UK24",
+        mobileno: "200gm",
+        ratings: "23-01-2022",
+        questions: "4",
+        supplierreply: "PRODUCT LIVE",
+      },
+      {
+        productId: "#123456",
+        skuid: "123456",
+        email: "12-01-2022",
+        name: "UK24",
+        mobileno: "200gm",
+        ratings: "23-01-2022",
+        questions: "4",
+        supplierreply:
+          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      },
+      {
+        productId: "#123459",
+        skuid: "123423",
+        email: "12-01-2023",
+        name: "UK22",
+        mobileno: "300gm",
+        ratings: "23-01-2022",
+        questions: "1",
+        supplierreply:
+          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      },
+      {
+        productId: "#123458",
+        skuid: "123456",
+        email: "12-01-2022",
+        name: "UK24",
+        mobileno: "200gm",
+        ratings: "23-01-2022",
+        questions: "4",
+        supplierreply: "PRODUCT LIVE",
+      },
       {
         productId: "#123456",
         skuid: "123456",
@@ -159,6 +223,7 @@ const CustomerReview = () => {
             showCheckbox={false}
             showSearchFilter={false}
             searchBarSizeMd={4}
+            tableMaxHeight="none"
           />
         </Paper>
       </Box>
