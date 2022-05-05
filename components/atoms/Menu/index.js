@@ -4,7 +4,7 @@ import { Tooltip } from "@mui/material";
 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { MoreVert } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, MoreVert } from "@mui/icons-material";
 import { styled, alpha } from "@mui/material/styles";
 
 export default function BasicMenu({
@@ -12,7 +12,48 @@ export default function BasicMenu({
   getSelectedValue = () => {},
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [MenuItems, setMenuItems] = React.useState([]);
+  const [showArrowIcon, setShowArrowIcon] = React.useState([]);
+
+  React.useEffect(() => {
+    if (menuList.length) {
+      setMenuItems(() => {
+        return menuList.map((item) => {
+          return { label: item, sort: "ascending", showarrow: false };
+        });
+      });
+      setShowArrowIcon(() => {
+        return menuList.map((item) => {
+          return false;
+        });
+      });
+    } else {
+      setMenuItems([]);
+    }
+  }, [menuList]);
+
+  const getArrow = (item) => {
+    let arr = [...MenuItems];
+    arr = arr.map((ele) => {
+      if (ele.label === item.label) {
+        if (item.sort === "ascending") {
+          return {
+            ...ele,
+            sort: "descending",
+          };
+        } else if (item.sort === "descending") {
+          return {
+            ...ele,
+            sort: "ascending",
+          };
+        }
+      } else return ele;
+    });
+
+    setMenuItems([...arr]);
+  };
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -61,7 +102,19 @@ export default function BasicMenu({
       },
     },
   }));
-
+  const showIcon = (item) => {
+    let arr = [...MenuItems];
+    arr.forEach((ele) => {
+      debugger;
+      if (ele.label === item.label) {
+        // return { ...ele, showarrow: true };
+        setShowArrowIcon(true);
+      }
+      // else return { ...ele, showarrow: false };
+      else setShowArrowIcon(false);
+    });
+    // setMenuItems([...arr]);
+  };
   return (
     <div>
       <Tooltip title="Details" placement="top">
@@ -82,7 +135,8 @@ export default function BasicMenu({
           "aria-labelledby": "basic-button",
         }}
       >
-        {menuList.map((item, index) => {
+        {MenuItems.map((item, index) => {
+          let flag = false;
           return (
             <MenuItem
               key={index}
@@ -91,7 +145,31 @@ export default function BasicMenu({
                 getSelectedValue(item);
               }}
             >
-              {item}
+              <div
+                onClick={() => getArrow(item)}
+                // onMouseLeave={() => {
+                //   flag = false;
+                //   setShowArrowIcon((pre) => {
+                //     const temp = [...pre];
+                //     temp[index] = false;
+                //     return [...temp];
+                //   });
+                // }}
+                className="d-flex w-100 justify-content-between"
+                id="menuitem"
+              >
+                <p>{item.label}</p>
+
+                <span>
+                  {item.label !== "Download" ? (
+                    item.sort === "ascending" ? (
+                      <ArrowUpward />
+                    ) : (
+                      <ArrowDownward />
+                    )
+                  ) : null}
+                </span>
+              </div>
             </MenuItem>
           );
         })}

@@ -172,3 +172,13 @@ input[type=number] {
 .cursor-pointer {
   cursor: pointer;
 }
+
+
+#menuitem span{
+display: none;
+}
+
+#menuitem:hover  span{
+  display: block ;
+}
+

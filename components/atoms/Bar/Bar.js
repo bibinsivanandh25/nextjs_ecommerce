@@ -20,7 +20,13 @@ ChartJS.register(
   Legend
 );
 
-const Bargraph = ({ labels = [], data = [], height = "250px" }) => {
+const Bargraph = ({
+  labels = [],
+  data = [],
+  height = "250px",
+  backgroundColor = "",
+  hoverBackgroundColor = "",
+}) => {
   const [datasets, setDatasets] = useState([]);
 
   useEffect(() => {
@@ -32,10 +38,10 @@ const Bargraph = ({ labels = [], data = [], height = "250px" }) => {
       label: "amount",
       data: data,
       // backgroundColor: index === 0 ? "#ffd09b" : "#9bc4ff",
-      backgroundColor: "#58698a",
+      backgroundColor: backgroundColor,
 
       // hoverBackgroundColor: index === 0 ? "#fd941a" : "#3d84ec",
-      hoverBackgroundColor: "#3d84ec",
+      hoverBackgroundColor: hoverBackgroundColor,
 
       borderSkipped: false,
     });
