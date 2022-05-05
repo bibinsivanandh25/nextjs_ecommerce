@@ -165,9 +165,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "coupns",
+    id: "coupons",
     title: "Coupons",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "staff",
@@ -351,6 +351,7 @@ export default function SupplierSidebar({ children }) {
               </ListItemButton>
               {selected.show &&
                 selected.id === text.id &&
+                open &&
                 submenuList[selected.id]?.dropdownlist?.map((item, index) => (
                   <MenuList
                     key={index}

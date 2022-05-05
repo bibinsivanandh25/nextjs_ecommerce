@@ -22,6 +22,7 @@ const InputBox = ({
   type = "text",
   isMultiline = false,
   rows = 3,
+  fullWidth = true,
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -51,6 +52,7 @@ const InputBox = ({
       name={name}
       multiline={isMultiline}
       rows={rows}
+      fullWidth={fullWidth}
       InputProps={{
         endAdornment: iconName !== "" && (
           <InputAdornment position="end">
