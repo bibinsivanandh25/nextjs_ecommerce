@@ -83,6 +83,10 @@
   z-index: 1;
 }
 
+.zIndex-1101 {
+  z-index: 1101;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -115,12 +119,14 @@
   top: 0;
   left: 0;
 }
-.active-tab{
+
+.active-tab {
   color: #e56700 !important;
   border-bottom: 1px solid #e56700;
   padding: 3px 0px;
 
 }
+
 .spinner {
   width: 70px;
   height: 70px;
@@ -171,4 +177,14 @@ input[type=number] {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.stickyHeader {
+  top: 0;
+  left: 0;
+  z-index: 1105;
+  width: 100%;
+  position: fixed;
+  background-color: white;
+  opacity: 1;
 }

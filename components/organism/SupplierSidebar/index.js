@@ -296,7 +296,7 @@ export default function SupplierSidebar({ children }) {
 
   return (
     <Box
-      sx={{ display: "flex", position: "absolute", top: "50px", width: "100%" }}
+      sx={{ display: "flex", position: "absolute", top: "58px", width: "100%" }}
     >
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
