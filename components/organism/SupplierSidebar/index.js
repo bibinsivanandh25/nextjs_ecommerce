@@ -411,7 +411,6 @@ export default function SupplierSidebar({ children }) {
           py: 1.5,
           mt: -0.5,
           backgroundColor: "#f7f7f7",
-          height: "90vh",
         }}
       >
         {children}
