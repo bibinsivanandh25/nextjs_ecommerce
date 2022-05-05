@@ -62,7 +62,7 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
               <Grid
                 // item
                 // sm={1}
-                className="mx-4"
+                // className="mx-4"
                 style={{
                   height: "15px",
                   width: "15px",
@@ -70,7 +70,7 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
                   backgroundColor: color[index],
                 }}
               ></Grid>
-              <Grid>{ele}</Grid>
+              <Grid className="mx-3">{ele}</Grid>
             </Grid>
           );
           // });
