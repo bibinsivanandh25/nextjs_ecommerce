@@ -106,27 +106,27 @@ const reportsList = {
   dropdownlist: [
     {
       subtitle: "Payment Reports",
-      path_name: "payment-report",
+      path_name: "paymentreport",
     },
     {
       subtitle: "Order Report",
-      path_name: "order-report",
+      path_name: "orderreport",
     },
     {
       subtitle: "Order Tax Invoice Report",
-      path_name: "order-tex-invoice-report",
+      path_name: "ordertaxinvoicereport",
     },
     {
       subtitle: "Credit Notes",
-      path_name: "credit-notes",
+      path_name: "creditnotes",
     },
     {
       subtitle: "Commission Invoices",
-      path_name: "commission-invoices",
+      path_name: "commissioninvoices",
     },
     {
       subtitle: "TCS/Sales Report",
-      path_name: "sales-report",
+      path_name: "salesreport",
     },
   ],
 };
@@ -180,9 +180,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "review",
+    id: "customerreview",
     title: "Customer Review",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "reports",
@@ -295,7 +295,9 @@ export default function SupplierSidebar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{ display: "flex", position: "absolute", top: "58px", width: "100%" }}
+    >
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>

@@ -116,7 +116,7 @@ export const paths = [
     title: "Delivery Management",
   },
   {
-    id: "review",
+    id: "customerreview",
     title: "Customer Review",
   },
   {

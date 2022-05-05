@@ -68,6 +68,8 @@ export default function TableComponent({
   onCustomDropdownChange = () => {},
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
+  searchBarSizeMd = 8,
+  tableMaxHeight = 440,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -223,7 +225,7 @@ export default function TableComponent({
         )}
         <Grid container spacing={2} justifyContent="end">
           {table_heading && (
-            <Grid item sm={6} md={5} xs={6} lg={12}>
+            <Grid item sm={6} md={5} xs={6}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
@@ -236,7 +238,15 @@ export default function TableComponent({
             </Grid>
           )}
           {showSearchbar && (
-            <Grid item sm={6} md={7} xs={6} container spacing={2}>
+            <Grid
+              item
+              sm={6}
+              md={7}
+              xs={6}
+              container
+              spacing={2}
+              justifyContent="end"
+            >
               <Grid item md={3}>
                 {showSearchFilter && (
                   <SimpleDropdownComponent
@@ -254,7 +264,7 @@ export default function TableComponent({
                   />
                 )}
               </Grid>
-              <Grid item md={8}>
+              <Grid item md={searchBarSizeMd}>
                 <InputBox
                   value={searchText}
                   label="Search"
@@ -316,7 +326,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <TableContainer sx={{ maxHeight: 440, mt: 3 }}>
+        <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
           <Table>
             <EnhancedTableHead
               numSelected={selected.length}
