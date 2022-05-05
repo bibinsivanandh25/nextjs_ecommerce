@@ -223,7 +223,7 @@ export default function TableComponent({
         )}
         <Grid container spacing={2} justifyContent="end">
           {table_heading && (
-            <Grid item sm={6} md={5} xs={6} lg={12}>
+            <Grid item sm={6} md={5} xs={6}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
