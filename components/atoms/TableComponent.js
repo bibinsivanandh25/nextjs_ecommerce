@@ -68,6 +68,7 @@ export default function TableComponent({
   onCustomDropdownChange = () => {},
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
+  searchBarSizeMd = 8,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -236,7 +237,15 @@ export default function TableComponent({
             </Grid>
           )}
           {showSearchbar && (
-            <Grid item sm={6} md={7} xs={6} container spacing={2}>
+            <Grid
+              item
+              sm={6}
+              md={7}
+              xs={6}
+              container
+              spacing={2}
+              justifyContent="end"
+            >
               <Grid item md={3}>
                 {showSearchFilter && (
                   <SimpleDropdownComponent
@@ -254,7 +263,7 @@ export default function TableComponent({
                   />
                 )}
               </Grid>
-              <Grid item md={8}>
+              <Grid item md={searchBarSizeMd}>
                 <InputBox
                   value={searchText}
                   label="Search"
