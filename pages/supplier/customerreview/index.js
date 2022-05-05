@@ -211,6 +211,7 @@ const CustomerReview = () => {
         borderBottom="1px solid lightgray"
         py={2}
         px={4}
+        fontSize={16}
       >
         Customer Review
       </Typography>
@@ -231,9 +232,20 @@ const CustomerReview = () => {
         <ModalComponent
           ModalTitle="Reply Customer Review"
           onCloseIconClick={() => setShowReplyModal({ show: false, id: null })}
-          onClearBtnClick={() => setShowReplyModal({ show: false, id: null })}
+          onSaveBtnClick={() => setShowReplyModal({ show: false, id: null })}
+          open={showReplyModal.show}
+          ModalWidth={500}
+          footerClassName="align-center m-3"
+          ClearBtnText="Submit"
+          saveBtnText="Cancel"
+          clearBtnClassName="mnw-150"
+          saveBtnClassName="mnw-150"
+          clearBtnVariant="contained"
+          saveBtnVariant="outlined"
         >
-          <InputBox label="Reply" />
+          <Box mx={2} mt={2}>
+            <InputBox label="Reply" isMultiline inputlabelshrink />
+          </Box>
         </ModalComponent>
       )}
     </Paper>
