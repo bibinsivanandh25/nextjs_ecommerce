@@ -102,7 +102,6 @@ const Staff = () => {
   };
   return (
     <>
-      {/* {!addStaff ? ( */}
       <Paper>
         <div className="border-bottom">
           <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
@@ -119,9 +118,6 @@ const Staff = () => {
           <TableComponent tableRows={tempRows} columns={tableHeaders} />
         </Box>
       </Paper>
-      {/* ) : (
-        <StaffForm handlebackClick={handleBtnClick} />
-      )} */}
     </>
   );
 };
