@@ -419,8 +419,36 @@ const PaymentReports = () => {
             col2: 22222,
           },
         ]}
-        summaryColumns={[]}
-        summaryRows={[]}
+        summaryColumns={[
+          {
+            id: "col1", //id value in column should be presented in row as key
+            label: "Date",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col2",
+            label: "No. of Sales",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+        ]}
+        summaryRows={[
+          {
+            id: "1",
+            col1: "1 Jan 2021",
+            col2: 33333,
+          },
+          {
+            id: "2",
+            col1: "2 Feb 2022",
+            col2: 22222,
+          },
+        ]}
         cardDetails={[
           {
             label: "Total Payment Amount",

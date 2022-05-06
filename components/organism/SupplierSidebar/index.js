@@ -113,18 +113,6 @@ const reportsList = {
       path_name: "orderreport",
     },
     {
-      subtitle: "Order Tax Invoice Report",
-      path_name: "ordertaxinvoicereport",
-    },
-    {
-      subtitle: "Credit Notes",
-      path_name: "creditnotes",
-    },
-    {
-      subtitle: "Commission Invoices",
-      path_name: "commissioninvoices",
-    },
-    {
       subtitle: "TCS/Sales Report",
       path_name: "salesreport",
     },
@@ -145,9 +133,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "collections",
+    id: "mycollections",
     title: "My Collections",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "products",
@@ -202,10 +190,6 @@ const earningsList = {
     {
       subtitle: "Summary",
       path_name: "summary",
-    },
-    {
-      subtitle: "Withdraw Request",
-      path_name: "withdraw",
     },
   ],
 };

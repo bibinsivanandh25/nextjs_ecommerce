@@ -63,8 +63,8 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
                 // sm={1}
                 // className="mx-4"
                 style={{
-                  height: "15px",
-                  width: "15px",
+                  minHeight: "15px",
+                  minWidth: "15px",
                   borderRadius: "50%",
                   backgroundColor: color[index],
                 }}
