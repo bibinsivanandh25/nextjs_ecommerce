@@ -116,6 +116,25 @@ const OrderReport = () => {
         ]}
         Detailrows={[
           {
+            id: "col1", //id value in column should be presented in row as key
+            label: "Date",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col2",
+            label: "No. of Sales",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+        ]}
+        summaryColumns={[]}
+        summaryRows={[
+          {
             id: "1",
             col1: "1 Jan 2021",
             col2: 33333,
@@ -126,8 +145,6 @@ const OrderReport = () => {
             col2: 22222,
           },
         ]}
-        summaryColumns={[]}
-        summaryRows={[]}
         cardDetails={[
           {
             label: "Total Orders",

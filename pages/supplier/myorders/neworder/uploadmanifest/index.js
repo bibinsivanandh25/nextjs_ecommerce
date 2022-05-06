@@ -95,13 +95,7 @@ const UploadManifest = () => {
   ];
   return (
     <Paper sx={{ p: 2, height: "100%" }}>
-      <ProgressBar
-        steps={[
-          "Accept & confirm Adress",
-          "Generate Invoice & Manifest ",
-          "Upload Maifest",
-        ]}
-      />
+      <ProgressBar />
       <Paper className="py-3">
         <TableComponent columns={[...columns]} tableRows={[...rows]} />
       </Paper>
