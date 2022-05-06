@@ -145,9 +145,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "collections",
+    id: "mycollections",
     title: "My Collections",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "products",

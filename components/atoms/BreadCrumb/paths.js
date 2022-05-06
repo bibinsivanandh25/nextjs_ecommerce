@@ -88,7 +88,7 @@ export const paths = [
     title: "My Orders",
   },
   {
-    id: "collections",
+    id: "mycollections",
     title: "My Collections",
   },
   {
