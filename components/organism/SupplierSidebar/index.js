@@ -172,7 +172,7 @@ const dashboardList = [
   {
     id: "staff",
     title: "Staff",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "delivery",

@@ -236,7 +236,7 @@ export default function TableComponent({
             </Grid>
           )}
           {showSearchbar && (
-            <Grid item sm={6} md={7} xs={6} container spacing={2}>
+            <Grid item sm={6} md={8} xs={6} container spacing={2}>
               <Grid item md={3}>
                 {showSearchFilter && (
                   <SimpleDropdownComponent

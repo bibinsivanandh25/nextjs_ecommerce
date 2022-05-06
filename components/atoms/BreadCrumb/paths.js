@@ -112,6 +112,10 @@ export const paths = [
     title: "Staff",
   },
   {
+    id: "addstaff",
+    title: "Add Staff",
+  },
+  {
     id: "delivery",
     title: "Delivery Management",
   },
