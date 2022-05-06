@@ -293,7 +293,7 @@ export default function TableComponent({
             {(showCustomDropdown || showCustomButton) && (
               <Grid item container xs={12} spacing={2} justifyContent="right">
                 {showCustomDropdown && (
-                  <Grid item sm={6} container>
+                  <Grid item sm={4} container>
                     <SimpleDropdownComponent
                       list={customDropdownList}
                       size="small"
@@ -306,7 +306,7 @@ export default function TableComponent({
                   </Grid>
                 )}
                 {showCustomButton && (
-                  <Grid item sm={6} container>
+                  <Grid item sm={4} container>
                     <Button
                       variant="contained"
                       size="small"
