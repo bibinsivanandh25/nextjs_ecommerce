@@ -64,18 +64,6 @@ export const paths = [
     id: "orderreport",
   },
   {
-    title: "Order Tax Invoice Report",
-    id: "ordertaxinvoicereport",
-  },
-  {
-    title: "Credit Notes",
-    id: "creditnotes",
-  },
-  {
-    title: "Commission Invoices",
-    id: "commissioninvoices",
-  },
-  {
     title: "TCS/Sales Report",
     id: "salesreport",
   },
@@ -88,7 +76,7 @@ export const paths = [
     title: "My Orders",
   },
   {
-    id: "collections",
+    id: "mycollections",
     title: "My Collections",
   },
   {
