@@ -28,7 +28,7 @@ const Layout = ({ Component, pageProps }) => {
             className="mx-1 mt-2 p-3"
             style={
               {
-                // minHeight: "80vh",
+                minHeight: "80vh",
                 // height: "100%",
                 // overflowY: "auto",
               }
