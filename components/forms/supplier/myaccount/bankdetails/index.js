@@ -3,8 +3,7 @@ import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Paper from "@mui/material/paper";
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddBankDetails from "./addbankdetails";
 const BankDetails = () => {

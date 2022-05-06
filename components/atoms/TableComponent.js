@@ -223,108 +223,105 @@ export default function TableComponent({
             </Grid>
           </Grid>
         )}
-        <Grid container spacing={2} justifyContent="end">
-          {table_heading && (
-            <Grid item sm={6} md={5} xs={6}>
-              <Typography
-                sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-                // variant="h6"
-                id="tableTitle"
-                component="div"
-                className="fw-bold"
+        <Grid container>
+          <Grid item container xs={6} justifyContent="start">
+            {table_heading && (
+              <Grid item sm={6} md={5} xs={12}>
+                <Typography
+                  sx={{ flex: "1 1 100%", py: { sm: 1 } }}
+                  // variant="h6"
+                  id="tableTitle"
+                  component="div"
+                  className="fw-bold"
+                >
+                  {table_heading}
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+          <Grid item container xs={6} justifyContent={"end"}>
+            {showSearchbar && (
+              <Grid
+                item
+                // sm={6}
+                // md={7}
+                xs={12}
+                container
+                spacing={2}
+                justifyContent="end"
               >
-                {table_heading}
-              </Typography>
-            </Grid>
-          )}
-          {showSearchbar && (
-            <Grid
-              item
-              sm={6}
-              md={7}
-              xs={6}
-              container
-              spacing={2}
-              justifyContent="end"
-            >
-              <Grid item md={3}>
-                {showSearchFilter && (
-                  <SimpleDropdownComponent
-                    list={[...searchFilterList]}
-                    size={"small"}
-                    label="Search Filter"
-                    value={searchFilter}
-                    onDropdownSelect={(value) => {
-                      setSearchFilter(
-                        value === null
-                          ? { label: "All", id: 0, value: "All" }
-                          : { ...value }
-                      );
+                <Grid item md={2}>
+                  {showSearchFilter && (
+                    <SimpleDropdownComponent
+                      list={[...searchFilterList]}
+                      size={"small"}
+                      label="Search Filter"
+                      value={searchFilter}
+                      onDropdownSelect={(value) => {
+                        setSearchFilter(
+                          value === null
+                            ? { label: "All", id: 0, value: "All" }
+                            : { ...value }
+                        );
+                      }}
+                    />
+                  )}
+                </Grid>
+                <Grid item md={searchBarSizeMd}>
+                  <InputBox
+                    value={searchText}
+                    label="Search"
+                    className="w-100"
+                    size="small"
+                    onInputChange={(e) => {
+                      setsearchText(e.target.value);
                     }}
                   />
+                </Grid>
+                <Grid item xs={2}>
+                  <div
+                    style={{ width: "40px", height: "38px" }}
+                    className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
+                    onClick={handleSearch}
+                  >
+                    <SearchOutlinedIcon style={{ color: "white" }} />
+                  </div>
+                </Grid>
+              </Grid>
+            )}
+
+            {(showCustomDropdown || showCustomButton) && (
+              <Grid item container xs={12} spacing={2} justifyContent="right">
+                {showCustomDropdown && (
+                  <Grid item sm={4} container>
+                    <SimpleDropdownComponent
+                      list={customDropdownList}
+                      size="small"
+                      label={customDropdownLabel}
+                      value={customDropdownValue}
+                      onDropdownSelect={(value) => {
+                        onCustomDropdownChange(value);
+                      }}
+                    />
+                  </Grid>
+                )}
+                {showCustomButton && (
+                  <Grid item sm={4} container>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      className="bg-orange"
+                      sx={{ textTransform: "none" }}
+                      fullWidth
+                      onClick={onCustomButtonClick}
+                    >
+                      {customButtonLabel}
+                    </Button>
+                  </Grid>
                 )}
               </Grid>
-              <Grid item md={searchBarSizeMd}>
-                <InputBox
-                  value={searchText}
-                  label="Search"
-                  className="w-100"
-                  size="small"
-                  onInputChange={(e) => {
-                    setsearchText(e.target.value);
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <div
-                  style={{ width: "40px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
-                  onClick={handleSearch}
-                >
-                  <SearchOutlinedIcon style={{ color: "white" }} />
-                </div>
-              </Grid>
-            </Grid>
-          )}
-          {(showCustomDropdown || showCustomButton) && (
-            <Grid
-              item
-              sm={3}
-              md={4}
-              container
-              spacing={2}
-              xs={6}
-              justifyContent="right"
-            >
-              {showCustomDropdown && (
-                <Grid item sm={6} md={6} container>
-                  <SimpleDropdownComponent
-                    list={customDropdownList}
-                    size="small"
-                    label={customDropdownLabel}
-                    value={customDropdownValue}
-                    onDropdownSelect={(value) => {
-                      onCustomDropdownChange(value);
-                    }}
-                  />
-                </Grid>
-              )}
-              {showCustomButton && (
-                <Grid item sm={6} md={6} container>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    className="bg-orange"
-                    sx={{ textTransform: "none" }}
-                    fullWidth
-                    onClick={onCustomButtonClick}
-                  >
-                    {customButtonLabel}
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
         <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
           <Table>
