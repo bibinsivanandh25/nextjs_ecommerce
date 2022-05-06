@@ -124,14 +124,7 @@ const Generateinvoiceandmanifest = () => {
     <Paper sx={{ p: 2 }}>
       {!showInvoices ? (
         <>
-          <ProgressBar
-            showHeader
-            steps={[
-              "Accept & confirm Adress",
-              "Generate Invoice & Manifest ",
-              "Upload Maifest",
-            ]}
-          />
+          <ProgressBar showHeader />
           <Grid container className="" spacing={1}>
             <Grid
               item
@@ -148,18 +141,18 @@ const Generateinvoiceandmanifest = () => {
               </p>
             </Grid>
             <Grid item xs={2} className="d-flex align-items-center">
-              <p className="fs-11 fw-bold mt-2">Show Order with:</p>
+              <p className="fs-10 fw-bold mt-2">Show Order with:</p>
               <div className="w-50">
                 <SimpleDropdownComponent size="small" label="all" />
               </div>
             </Grid>
             <Grid item xs={2} className="d-flex align-items-center">
-              <p className="fs-11 fw-bold mt-2">Shipping Partner:</p>
+              <p className="fs-10 fw-bold mt-2">Shipping Partner:</p>
               <div className="w-50">
                 <SimpleDropdownComponent label="all" size="small" />
               </div>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={4} className="d-flex align-items-center">
               <ButtonComponent
                 label="Download selected Invoice and Manifest"
                 size="large"

@@ -21,7 +21,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col1", //id value in column should be presented in row as key
       label: "Image",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -29,7 +29,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col2",
       label: "Purchase ID",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -37,7 +37,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col3",
       label: "Order ID",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -46,7 +46,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col4",
       label: "Style Code",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -55,7 +55,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col5",
       label: "Size",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -64,7 +64,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col6",
       label: "Weight",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -73,7 +73,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col7",
       label: "Order Date",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -82,7 +82,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col8",
       label: "Expected Dispatch Date",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -91,7 +91,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col9",
       label: "Add weight in grams including packaging",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -100,7 +100,7 @@ const AcceptandConfirmOrder = () => {
     {
       id: "col10",
       label: "Action",
-      minWidth: 100,
+      // minWidth: 50,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -148,14 +148,7 @@ const AcceptandConfirmOrder = () => {
 
   return (
     <Paper sx={{ p: 2 }}>
-      <ProgressBar
-        steps={[
-          "Accept & confirm Adress",
-          "Generate Invoice & Manifest ",
-          "Upload Maifest",
-        ]}
-        showHeader
-      />
+      <ProgressBar showHeader />
       {!showConfirmAdress ? (
         <div>
           <div className="d-flex justify-content-end">
@@ -188,7 +181,7 @@ const AcceptandConfirmOrder = () => {
             />
           </div>
 
-          <Paper className="py-3">
+          <Paper className="py-3 mt-3">
             <TableComponent
               table_heading="34 Orders"
               columns={columns}

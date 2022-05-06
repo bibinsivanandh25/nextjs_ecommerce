@@ -216,7 +216,12 @@ const ReportLayout = ({
               </Grid>
             </Grid>
 
-            <TableComponent showSearchFilter={false} showSearchbar={false} />
+            <TableComponent
+              showSearchFilter={false}
+              showSearchbar={false}
+              // tableRows={[...summaryRows]}
+              columns={[...summaryColumns]}
+            />
           </Paper>
         </Grid>
       </Grid>

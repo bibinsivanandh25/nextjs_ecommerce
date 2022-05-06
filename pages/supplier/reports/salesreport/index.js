@@ -128,8 +128,30 @@ const SalesReport = () => {
             col2: 22222,
           },
         ]}
-        summaryColumns={[]}
-        summaryRows={[]}
+        summaryColumns={[
+          {
+            id: "1",
+            col1: "1 Jan 2021",
+            col2: 33333,
+          },
+          {
+            id: "2",
+            col1: "2 Feb 2022",
+            col2: 22222,
+          },
+        ]}
+        summaryRows={[
+          {
+            id: "1",
+            col1: "1 Jan 2021",
+            col2: 33333,
+          },
+          {
+            id: "2",
+            col1: "2 Feb 2022",
+            col2: 22222,
+          },
+        ]}
         cardDetails={[
           {
             label: "Net Revenue",
