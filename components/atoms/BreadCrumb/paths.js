@@ -57,27 +57,27 @@ export const paths = [
   },
   {
     title: "Payment Reports",
-    id: "payment-report",
+    id: "paymentreport",
   },
   {
     title: "Order Report",
-    id: "order-report",
+    id: "orderreport",
   },
   {
     title: "Order Tax Invoice Report",
-    id: "order-tex-invoice-report",
+    id: "ordertaxinvoicereport",
   },
   {
     title: "Credit Notes",
-    id: "credit-notes",
+    id: "creditnotes",
   },
   {
     title: "Commission Invoices",
-    id: "commission-invoices",
+    id: "commissioninvoices",
   },
   {
     title: "TCS/Sales Report",
-    id: "sales-report",
+    id: "salesreport",
   },
   {
     id: "dashboard",
@@ -120,7 +120,7 @@ export const paths = [
     title: "Delivery Management",
   },
   {
-    id: "review",
+    id: "customerreview",
     title: "Customer Review",
   },
   {

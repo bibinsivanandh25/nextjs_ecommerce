@@ -180,9 +180,9 @@ const dashboardList = [
     navigate: false,
   },
   {
-    id: "review",
+    id: "customerreview",
     title: "Customer Review",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "reports",
@@ -295,7 +295,9 @@ export default function SupplierSidebar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{ display: "flex", position: "absolute", top: "58px", width: "100%" }}
+    >
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -367,7 +369,7 @@ export default function SupplierSidebar({ children }) {
                       href={`/${moduleType}/${
                         submenuList[selected.id].path_name
                       }/${item.path_name}`}
-                      replace
+                      key={item.path_name}
                     >
                       <MenuItem
                         sx={getMenuStyles(item)}
@@ -384,7 +386,7 @@ export default function SupplierSidebar({ children }) {
                         href={`/${moduleType}/${
                           submenuList[selected.id].path_name
                         }/${item.path_name}/${o.path_name}`}
-                        replace
+                        key={o.path_name}
                       >
                         <MenuItem
                           sx={getSubmenuStyles(o)}
@@ -409,7 +411,6 @@ export default function SupplierSidebar({ children }) {
           py: 1.5,
           mt: -0.5,
           backgroundColor: "#f7f7f7",
-          height: "90vh",
         }}
       >
         {children}

@@ -45,12 +45,15 @@
 .mxh-100 {
   max-height: 100px;
 }
-.mxh-130{
+
+.mxh-130 {
   max-height: 130px;
 }
-.mnh-130{
+
+.mnh-130 {
   min-height: 130px;
 }
+
 .mxh-150 {
   max-height: 150px;
 }
@@ -146,9 +149,23 @@
 .w-60p {
   width: 60% !important;
 }
-.w-58p{
-width: 58% !important;
+
+.w-58p {
+  width: 58% !important;
 }
-.h-95p{
+
+.h-95p {
   height: 95% !important;
+}
+
+.mxw-200 {
+  max-width: 200px;
+}
+
+.mxh-50 {
+  max-height: 50px;
+}
+
+.mnw-150 {
+  min-width: 150px !important;
 }

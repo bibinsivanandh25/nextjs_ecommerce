@@ -74,7 +74,6 @@ export default function SelectComponent({
         {label}
       </InputLabel>
       <NativeSelect
-        labelId="demo-select-small"
         id="demo-select-small"
         disableUnderline
         defaultValue={defaultValue}

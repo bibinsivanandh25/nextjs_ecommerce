@@ -3,8 +3,7 @@ import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Paper from "@mui/material/paper";
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 const AcceptandConfirmAdress = () => {
   const [radioChecked, setRadioChecked] = useState(false);

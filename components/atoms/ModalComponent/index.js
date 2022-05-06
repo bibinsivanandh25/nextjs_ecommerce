@@ -22,6 +22,10 @@ const ModalComponent = ({
   footerClassName = "align-center",
   footerPadding = "px-4 py-2",
   headerClassName = "",
+  clearBtnClassName = "",
+  saveBtnClassName = "",
+  clearBtnVariant = "outlined",
+  saveBtnVariant = "contained",
 }) => {
   const style = {
     position: "absolute",
@@ -67,14 +71,16 @@ const ModalComponent = ({
                 <ButtonComponent
                   onBtnClick={onSaveBtnClick}
                   label={saveBtnText}
-                  muiProps="me-2"
+                  muiProps={`me-2 ${saveBtnClassName}`}
+                  variant={saveBtnVariant}
                 />
               ) : null}
               {showClearBtn ? (
                 <ButtonComponent
                   onBtnClick={onClearBtnClick}
                   label={ClearBtnText}
-                  variant="outlined"
+                  variant={clearBtnVariant}
+                  muiProps={clearBtnClassName}
                 />
               ) : null}
             </div>

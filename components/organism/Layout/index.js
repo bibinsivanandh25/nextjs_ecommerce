@@ -19,16 +19,20 @@ const Layout = ({ Component, pageProps }) => {
         <div id="loader" style={{ display: "none" }}>
           <div className="spinner"></div>
         </div>
-        <HeaderComponent />
+        <div className="stickyHeader">
+          <HeaderComponent />
+        </div>
         <SupplierSidebar>
           <BreadCrumb />
           <div
             className="mx-1 mt-2 p-3"
-            style={{
-              maxHeight: "80vh",
-              height: "100%",
-              overflowY: "auto",
-            }}
+            style={
+              {
+                // minHeight: "80vh",
+                // height: "100%",
+                // overflowY: "auto",
+              }
+            }
           >
             <Component {...pageProps} />
           </div>

@@ -23,6 +23,7 @@ const InputBox = ({
   isMultiline = false,
   rows = 3,
   fullWidth = true,
+  disabled = false,
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -36,6 +37,7 @@ const InputBox = ({
   return (
     <TextField
       onChange={onInputChange}
+      disabled={disabled}
       label={label}
       placeholder={placeholder}
       value={value}
