@@ -3,7 +3,7 @@ import ModalComponent from "components/atoms/ModalComponent";
 import Image from "next/image";
 import image from "public/assets/images/coupon.png";
 
-const OrderDetails = () => {
+const OrderDetails = ({ showModal = false, setshowModal = () => {} }) => {
   const orderdetails = [
     {
       OrderId: "#12345",
@@ -66,14 +66,16 @@ const OrderDetails = () => {
       quantity: 10,
     },
   ];
+
   return (
     <ModalComponent
       ModalWidth={1000}
-      open
+      open={showModal}
       showClearBtn={false}
       showSaveBtn={false}
       ModalTitle="Order Details (03 May 2021 to 02 Jun 2021)"
       minHeightClassName="mxh-600"
+      onCloseIconClick={() => setshowModal(false)}
     >
       <Grid container spacing={2} className="mt-2   ">
         {orderdetails.map((ele, ind) => {

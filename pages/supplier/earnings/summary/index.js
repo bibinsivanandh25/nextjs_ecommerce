@@ -8,31 +8,32 @@ import {
   Typography,
 } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
+import OrderDetails from "components/forms/supplier/myearnings/orderdetails";
 import { useEffect, useState } from "react";
 
 const cardData = [
   {
     title: "Next Payment Release Date: Jun 05",
     description:
-      " d-flex justify-content-between align-items-center border-bottom-0 p-2",
+      "See Details of earnings so far in the Payment cycle from may 05 to june 30",
     amount: "10000",
   },
   {
     title: "Total Money Earned Till Date",
     description:
-      " d-flex justify-content-between align-items-center border-bottom-0 p-2",
+      "See Details of earnings so far in the Payment cycle from may 05 to june 30",
     amount: "10000",
   },
   {
     title: "Cycle wise Payment",
-    description:
-      " d-flex justify-content-between align-items-center border-bottom-0 p-2",
+    description: "Total money paid till date",
     amount: "10000",
   },
 ];
 
 const MyEarnings = () => {
   const [earningData, setEarningData] = useState([]);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
 
   useEffect(() => {
     setEarningData([...cardData]);
@@ -50,7 +51,7 @@ const MyEarnings = () => {
         <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
           <Box className="fs-16 fw-700 ps-4">Summary</Box>
           <Box>
-            <ButtonComponent label="Add new Staffs" onBtnClick={() => {}} />
+            <ButtonComponent label="Choose Bank" onBtnClick={() => {}} />
           </Box>
         </Box>
       </div>
@@ -82,6 +83,9 @@ const MyEarnings = () => {
                         muiProps="p-1 h-75"
                         label="View Order details"
                         variant="outlined"
+                        onBtnClick={() => {
+                          setShowOrderDetails(true);
+                        }}
                       />
                     </div>
                   </CardContent>
@@ -90,6 +94,12 @@ const MyEarnings = () => {
             );
           })}
         </Grid>
+        {/* {showOrderDetails ? ( */}
+        <OrderDetails
+          showModal={showOrderDetails}
+          setshowModal={setShowOrderDetails}
+        />
+        {/* ) : null} */}
       </Box>
     </Paper>
   );
