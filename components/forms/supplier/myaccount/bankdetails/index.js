@@ -42,7 +42,7 @@ const BankDetails = () => {
   const getBankDetails = (details) => {
     return Object.entries(details).map(([key, value]) => {
       return (
-        <div>
+        <div key={value}>
           <div className={`${key === "isChecked" ? "d-none" : ""} fs-12 my-2`}>
             {key} : {value}
           </div>
@@ -58,6 +58,7 @@ const BankDetails = () => {
           xs={5}
           container
           className="border border-1 mx-4 my-3 rounded mnh-130"
+          key={index}
         >
           <Grid container>
             <Grid item xs={1} className="d-flex align-items-center mx-2 ">

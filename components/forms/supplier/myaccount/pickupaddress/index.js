@@ -28,7 +28,7 @@ const PickUpAddress = () => {
         </Grid>
         <Grid xs={6} />
         {addressList.map((add, index) => (
-          <Grid xs={6} item>
+          <Grid xs={6} item key={add.id}>
             <Grid
               container
               sx={{
