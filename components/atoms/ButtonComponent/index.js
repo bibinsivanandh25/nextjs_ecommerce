@@ -3,6 +3,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 const ButtonComponent = ({
   label = "Button",
@@ -16,6 +18,8 @@ const ButtonComponent = ({
   iconSize = "20",
   iconName = "",
   iconOrintation = "start",
+  borderColor = "border-orange",
+  textColor = "color-orange",
 }) => {
   const getIcon = () => {
     if (iconName === "search") {
@@ -26,6 +30,10 @@ const ButtonComponent = ({
       return <FilterListIcon color={iconColor} size={iconSize} />;
     } else if (iconName === "delete") {
       return <DeleteIcon color={iconColor} size={iconSize} />;
+    } else if (iconName === "upload") {
+      return <FileUploadIcon color={iconColor} size={iconSize} />;
+    } else if (iconName === "download") {
+      return <FileDownloadIcon color={iconColor} size={iconSize} />;
     }
   };
   return (
@@ -37,7 +45,7 @@ const ButtonComponent = ({
         variant === "contained"
           ? "bg-orange"
           : variant === "outlined"
-          ? "border-orange color-orange"
+          ? `${borderColor} ${textColor}`
           : ""
       } ${muiProps}`}
       startIcon={showIcon && iconOrintation === "start" ? getIcon() : <></>}
