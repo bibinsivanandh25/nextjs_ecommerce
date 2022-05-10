@@ -37,7 +37,7 @@ export const paths = [
   },
   {
     title: "My Products",
-    id: "myproduct",
+    id: "myproducts",
   },
   {
     title: "Add New Products",
@@ -80,7 +80,7 @@ export const paths = [
     title: "My Collections",
   },
   {
-    id: "products",
+    id: "products&inventory",
     title: "Products & Inventory",
   },
   {

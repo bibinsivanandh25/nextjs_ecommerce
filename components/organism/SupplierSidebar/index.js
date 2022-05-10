@@ -78,7 +78,7 @@ const productsList = {
   dropdownlist: [
     {
       subtitle: "My Products (Update Inventory)",
-      path_name: "myproduct",
+      path_name: "myproducts",
     },
     {
       subtitle: "Add New Products",
