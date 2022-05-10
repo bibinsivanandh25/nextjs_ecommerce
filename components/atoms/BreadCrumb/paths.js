@@ -36,7 +36,7 @@ export const paths = [
     id: "returnedorders",
   },
   {
-    title: "My Products (Update Inventory)",
+    title: "My Products",
     id: "myproduct",
   },
   {
@@ -44,16 +44,16 @@ export const paths = [
     id: "newproducts",
   },
   {
-    title: "Excel Upload (New Products Upload)",
-    id: "excel_upload",
+    title: "New Product Upload",
+    id: "newproductupload",
   },
   {
-    title: "Add Inventory (Excel)",
-    id: "add_Inventory",
+    title: "Add Inventory",
+    id: "addinventory",
   },
   {
     title: "MrMrsCart Product",
-    id: "MrMrsCartProduct",
+    id: "mrmrscartproduct",
   },
   {
     title: "Payment Reports",

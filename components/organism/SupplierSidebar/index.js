@@ -85,12 +85,12 @@ const productsList = {
       path_name: "newproducts",
     },
     {
-      subtitle: "Excel Upload (New Products Upload)",
-      path_name: "excelupload",
+      subtitle: "New Product Upload (Excel)",
+      path_name: "newproductupload",
     },
     {
       subtitle: "Add Inventory (Excel)",
-      path_name: "addInventory",
+      path_name: "addinventory",
     },
     {
       subtitle: "MrMrsCart Product",
