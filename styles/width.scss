@@ -22,6 +22,9 @@
   min-height: 150px;
 }
 
+.mnh-inherit {
+  min-height: inherit;
+}
 .mnh-200 {
   min-height: 200px;
 }
@@ -108,6 +111,9 @@
 
 .w-95p {
   width: 95%;
+}
+.mxh-80vh {
+  max-height: 80vh;
 }
 
 .w-90p {
