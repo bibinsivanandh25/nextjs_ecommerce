@@ -138,9 +138,9 @@ const dashboardList = [
     navigate: true,
   },
   {
-    id: "products",
+    id: "products&inventory",
     title: "Products & Inventory",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "earnings",
