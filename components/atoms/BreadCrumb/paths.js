@@ -36,24 +36,24 @@ export const paths = [
     id: "returnedorders",
   },
   {
-    title: "My Products (Update Inventory)",
-    id: "myproduct",
+    title: "My Products",
+    id: "myproducts",
   },
   {
     title: "Add New Products",
     id: "newproducts",
   },
   {
-    title: "Excel Upload (New Products Upload)",
-    id: "excel_upload",
+    title: "New Product Upload",
+    id: "newproductupload",
   },
   {
-    title: "Add Inventory (Excel)",
-    id: "add_Inventory",
+    title: "Add Inventory",
+    id: "addinventory",
   },
   {
     title: "MrMrsCart Product",
-    id: "MrMrsCartProduct",
+    id: "mrmrscartproduct",
   },
   {
     title: "Payment Reports",
@@ -80,7 +80,7 @@ export const paths = [
     title: "My Collections",
   },
   {
-    id: "products",
+    id: "products&inventory",
     title: "Products & Inventory",
   },
   {

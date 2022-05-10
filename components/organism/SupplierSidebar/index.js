@@ -74,27 +74,27 @@ const ordersList = {
 const productsList = {
   title: "My Product & Inventory",
   logo: "fas fa-cog",
-  path_name: "products",
+  path_name: "products&inventory",
   dropdownlist: [
     {
       subtitle: "My Products (Update Inventory)",
-      path_name: "MyProduct",
+      path_name: "myproducts",
     },
     {
       subtitle: "Add New Products",
       path_name: "newproducts",
     },
     {
-      subtitle: "Excel Upload (New Products Upload)",
-      path_name: "excel_upload",
+      subtitle: "New Product Upload (Excel)",
+      path_name: "newproductupload",
     },
     {
       subtitle: "Add Inventory (Excel)",
-      path_name: "add_Inventory",
+      path_name: "addinventory",
     },
     {
       subtitle: "MrMrsCart Product",
-      path_name: "MrMrsCartProduct",
+      path_name: "mrmrscartproduct",
     },
   ],
 };
@@ -140,7 +140,7 @@ const dashboardList = [
   {
     id: "products&inventory",
     title: "Products & Inventory",
-    navigate: true,
+    navigate: false,
   },
   {
     id: "earnings",
@@ -196,7 +196,7 @@ const earningsList = {
 
 const submenuList = {
   orders: ordersList,
-  products: productsList,
+  "products&inventory": productsList,
   reports: reportsList,
   earnings: earningsList,
 };
