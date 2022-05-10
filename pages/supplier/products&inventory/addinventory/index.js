@@ -80,58 +80,51 @@ let rows = [
   },
 ];
 
-const NewProductUpload = () => {
+const AddInventory = () => {
   return (
     <Paper>
       <div className="fs-14 fw-bold border-bottom p-3 mb-3">
         Get Started by Adding Products
       </div>
       <Box sx={{ p: 2 }}>
-        <Grid container spacing={3} className="px-4 pb-4">
-          <Grid item sm={4}>
-            <SimpleDropdownComponent
-              label="select catogory"
-              inputlabelshrink
-              size="small"
-            />
-          </Grid>
-          <Grid
-            className="d-flex justify-content-center align-items-center"
-            item
-            sm={3}
-          >
+        <Grid
+          container
+          spacing={3}
+          justifyContent="center"
+          className="pb-4 "
+          sx={{
+            pl: "10%",
+          }}
+        >
+          <Grid className="" item xs={4}>
             <ButtonComponent
-              muiProps="w-100 d-flex justify-content-between ps-0 m-0 fs-11"
+              muiProps="w-75 d-flex justify-content-between ps-0 m-0 fs-11"
               size="large"
               variant="outlined"
               iconName="download"
               showIcon
               iconOrintation="end"
-              label="Download Excel Template"
+              label="Download All Products"
               borderColor="border-secondary"
               textColor="text-secondary"
             />
           </Grid>
-          <Grid
-            className="d-flex justify-content-center align-items-center"
-            item
-            sm={3}
-          >
+          <Grid className="" item xs={4}>
             <ButtonComponent
               showIcon
-              muiProps="w-100 d-flex justify-content-between ps-0 m-0 fs-11 "
+              muiProps="w-75 d-flex justify-content-between ps-0 m-0 fs-11 "
               size="large"
               variant="outlined"
               iconName="upload"
               iconOrintation="end"
-              label="Upload Excel Template"
+              label="Upload Inventory "
               borderColor="border-secondary"
               textColor="text-secondary"
             />
           </Grid>
-          <Grid className="d-flex" item sm={2}>
+          <Grid className="d-flex" item xs={4}>
             <ButtonComponent
-              muiProps="w-100"
+              muiProps="w-50"
               size="medium"
               label="submit"
               variant="outlined"
@@ -152,4 +145,4 @@ const NewProductUpload = () => {
     </Paper>
   );
 };
-export default NewProductUpload;
+export default AddInventory;
