@@ -61,17 +61,17 @@ const AcceptandConfirmOrder = () => {
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+    // {
+    //   id: "col6",
+    //   label: "Weight",
+    //   // minWidth: 50,
+    //   align: "center",
+    //   data_align: "center",
+    //   data_classname: "",
+    //   // data_style: { paddingLeft: "7%" },
+    // },
     {
       id: "col6",
-      label: "Weight",
-      // minWidth: 50,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col7",
       label: "Order Date",
       // minWidth: 50,
       align: "center",
@@ -80,7 +80,7 @@ const AcceptandConfirmOrder = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col8",
+      id: "col7",
       label: "Expected Dispatch Date",
       // minWidth: 50,
       align: "center",
@@ -89,8 +89,8 @@ const AcceptandConfirmOrder = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col9",
-      label: "Add weight in grams including packaging",
+      id: "col8",
+      label: "weight (inclusive of package)",
       // minWidth: 50,
       align: "center",
       data_align: "center",
@@ -98,7 +98,7 @@ const AcceptandConfirmOrder = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col10",
+      id: "col9",
       label: "Action",
       // minWidth: 50,
       align: "center",
@@ -115,11 +115,10 @@ const AcceptandConfirmOrder = () => {
       col3: "#23234342",
       col4: "SL1234",
       col5: "UK34",
-      col6: "600gms",
+      col6: "28 May 2020",
       col7: "28 May 2020",
-      col8: "28 May 2020",
-      col9: "500",
-      col10: (
+      col8: "500",
+      col9: (
         <div className="d-flex justify-content-between align-items-center">
           <ButtonComponent variant="oulined" label="cancel" />
           <RemoveRedEyeIcon />
@@ -133,11 +132,10 @@ const AcceptandConfirmOrder = () => {
       col3: "#23234342",
       col4: "SL1234",
       col5: "UK34",
-      col6: "600gms",
+      col6: "28 May 2020",
       col7: "28 May 2020",
-      col8: "28 May 2020",
-      col9: "500",
-      col10: (
+      col8: "500",
+      col9: (
         <div className="d-flex justify-content-between align-items-center">
           <ButtonComponent variant="oulined" label="cancel" />
           <RemoveRedEyeIcon />

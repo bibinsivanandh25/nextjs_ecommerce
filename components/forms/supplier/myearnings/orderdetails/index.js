@@ -69,7 +69,7 @@ const OrderDetails = ({ showModal = false, setshowModal = () => {} }) => {
 
   return (
     <ModalComponent
-      ModalWidth={1000}
+      ModalWidth={"90%"}
       open={showModal}
       showClearBtn={false}
       showSaveBtn={false}
@@ -90,7 +90,7 @@ const OrderDetails = ({ showModal = false, setshowModal = () => {} }) => {
             >
               <Card variant="outlined">
                 <Grid container>
-                  <Grid item md={3} className="mx-2">
+                  <Grid item md={3} className="mx-2 d-flex align-items-center">
                     <Image src={image} />
                   </Grid>
                   <Grid item md={8}>

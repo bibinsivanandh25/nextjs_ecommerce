@@ -5,7 +5,7 @@ const ProgressBar = ({ showHeader = true }) => {
   const route = useRouter();
   const steps = [
     {
-      label: "Accept & confirm Adress",
+      label: "Accept & confirm Address",
       path: "acceptandconfirmaddress",
     },
     {
