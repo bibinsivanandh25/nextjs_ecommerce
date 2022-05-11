@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import { Grid } from "@mui/material";
+import { Box, Chip, Grid } from "@mui/material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -17,29 +17,18 @@ const DropdownComponent = (props) => {
     label = "",
     size = "medium",
     fullWidth = true,
-    value = [],
-    onDropdownSelect = () => {},
     error = false,
     placeholder = "",
+    onDropdownSelect = () => {},
+    // value = [],
   } = props;
 
-  const [values, setValues] = useState([]);
+  const [pendingValue, setPendingValue] = React.useState([]);
 
-  const handleClick = (option, selected) => {
-    const filter = values.findIndex((i) => i.id === option.id);
-    if (filter === -1) {
-      setValues([...values, option]);
-    } else {
-      setValues(values.filter((i) => i.id !== option.id));
-    }
-  };
-
-  useEffect(() => {
-    onDropdownSelect(values);
-  }, [values]);
-
-  const handleCheck = (option) => {
-    return value.findIndex((o) => o.id === option.id) !== -1;
+  const handleDelete = (id) => {
+    const filtered = pendingValue.filter((i) => i.id !== id);
+    setPendingValue(filtered);
+    onDropdownSelect(filtered);
   };
 
   return (
@@ -56,14 +45,24 @@ const DropdownComponent = (props) => {
               icon={icon}
               checkedIcon={checkedIcon}
               style={{ marginRight: 8 }}
-              checked={handleCheck(option)}
-              onClick={() => handleClick(option, selected)}
+              checked={selected}
             />
             {option.label}
           </Grid>
         )}
-        // value={value}
-        // onChange={(event, newValue) => onDropdownSelect(newValue)}
+        value={pendingValue}
+        onChange={(event, newValue, reason) => {
+          if (
+            event.type === "keydown" &&
+            event.key === "Backspace" &&
+            reason === "removeOption"
+          ) {
+            return;
+          }
+          setPendingValue(newValue);
+          onDropdownSelect(newValue);
+        }}
+        renderTags={() => null}
         size={size}
         fullWidth={fullWidth}
         renderInput={(params) => (
@@ -78,6 +77,17 @@ const DropdownComponent = (props) => {
           />
         )}
       />
+      <Box my={2}>
+        {pendingValue.map((item) => (
+          <Chip
+            label={item.label}
+            variant="outlined"
+            key={item.label}
+            sx={{ m: 0.5 }}
+            onDelete={() => handleDelete(item.id)}
+          />
+        ))}
+      </Box>
     </>
   );
 };
