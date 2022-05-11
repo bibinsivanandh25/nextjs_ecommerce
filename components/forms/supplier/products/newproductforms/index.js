@@ -1,6 +1,6 @@
 import { Box, Grid, Paper } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InventoryForm from "./InventoryForm";
 import PricingForm from "./Pricing&Weight";
 import LinkedForm from "./LinkedForm";
@@ -14,47 +14,95 @@ import { commisiondata, product_type } from "./constants";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 
-const tabsData = [
-  {
-    title: "Inventory",
-    component: <InventoryForm />,
-    active: true,
-  },
-  {
-    title: "Pricing & Weight",
-    component: <PricingForm />,
-    active: false,
-  },
-  {
-    title: "Linked",
-    component: <LinkedForm />,
-    active: false,
-  },
-  {
-    title: "Product Policies",
-    component: <ProductPoliciesForm />,
-    active: false,
-  },
-  {
-    title: "Grouped products",
-    component: <GroupedproductsForm />,
-    active: false,
-  },
-  {
-    title: "Variation",
-    component: <VariationForm />,
-    active: false,
-  },
-  {
-    title: "Attributes",
-    component: <AttributesForm />,
-    active: false,
-  },
-];
-
-const ProductsLayout = ({}) => {
+const ProductsLayout = ({
+  formData = {},
+  setFormData = () => {},
+  handleSubmitClick = () => {},
+}) => {
+  const formsRef = useRef(null);
+  const handleNextClick = () => {
+    const temp = formsRef.current.handleSendFormData();
+    // console.log("temp", temp);
+    setFormData((prev) => {
+      return { ...prev, [temp[0]]: temp[1] };
+    });
+    setactiveTab((prev) => prev + 1);
+  };
+  const tabsData = [
+    {
+      title: "Inventory",
+      component: (
+        <InventoryForm
+          formData={formData.inventory}
+          setFormData={setFormData}
+          ref={formsRef}
+        />
+      ),
+    },
+    {
+      title: "Pricing & Weight",
+      component: (
+        <PricingForm
+          formData={formData.pricing}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Linked",
+      component: (
+        <LinkedForm
+          formData={formData.linked}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Product Policies",
+      component: (
+        <ProductPoliciesForm
+          formData={formData.policy}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Grouped products",
+      component: (
+        <GroupedproductsForm
+          formData={formData.grouped}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Attributes",
+      component: (
+        <AttributesForm
+          formData={formData.attribute}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Variation",
+      component: (
+        <VariationForm
+          formData={formData.variation}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+  ];
   const [imagedata, setImageData] = useState([]);
   const [tabsList, setTabsList] = useState([...tabsData]);
+  const [activeTab, setactiveTab] = useState(0);
   const [commisionData, setCommisionData] = useState([...commisiondata]);
   const [mainFormData, setMainFormData] = useState({
     commision_mode: "",
@@ -72,6 +120,9 @@ const ProductsLayout = ({}) => {
     tags: "",
     limit_per_order: "",
   });
+  useEffect(() => {
+    setMainFormData({ ...formData.mainForm });
+  }, []);
 
   const handleInputChange = (e) => {
     setMainFormData((prev) => {
@@ -260,16 +311,18 @@ const ProductsLayout = ({}) => {
                     item
                     md={12}
                     className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
-                      item.active ? "bg-orange color-white" : "bg-light-gray"
+                      activeTab === index
+                        ? "bg-orange color-white"
+                        : "bg-light-gray"
                     }`}
-                    onClick={() => {
-                      const temp = [...tabsList];
-                      temp.forEach((ele) => {
-                        ele.active = false;
-                      });
-                      temp[index].active = true;
-                      setTabsList([...temp]);
-                    }}
+                    // onClick={() => {
+                    //   const temp = [...tabsList];
+                    //   temp.forEach((ele) => {
+                    //     ele.active = false;
+                    //   });
+                    //   temp[index].active = true;
+                    //   setTabsList([...temp]);
+                    // }}
                   >
                     {item.title}
                   </Grid>
@@ -278,8 +331,8 @@ const ProductsLayout = ({}) => {
             </Grid>
           </Box>
           <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll hide-scrollbar">
-            {tabsList.map((item) => {
-              return item.active ? item.component : null;
+            {tabsList.map((item, ind) => {
+              return activeTab === ind ? item.component : null;
             })}
           </Box>
         </Box>
@@ -292,10 +345,28 @@ const ProductsLayout = ({}) => {
             muiProps="me-2"
           />
           <ButtonComponent
-            label={tabsList[tabsList.length - 1].active ? "Submit" : "Next"}
+            label="Previous"
+            variant={"outlined"}
+            size={"small"}
+            onBtnClick={() => {
+              setactiveTab((prev) => prev - 1);
+            }}
+            muiProps="me-2"
+          />
+          <ButtonComponent
+            label={activeTab === 6 ? "Submit" : "Next"}
             size={"small"}
             onBtnClick={
-              tabsList[tabsList.length - 1].active ? () => {} : () => {}
+              activeTab === 6
+                ? () => {
+                    const temp = formsRef.current.handleSendFormData();
+                    setFormData((prev) => {
+                      const data = { ...prev, [temp[0]]: temp[1] };
+                      handleSubmitClick(data);
+                      return;
+                    });
+                  }
+                : handleNextClick
             }
           />
         </Box>
