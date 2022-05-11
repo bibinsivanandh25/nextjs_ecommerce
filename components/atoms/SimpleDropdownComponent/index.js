@@ -15,6 +15,7 @@ const SimpleDropdownComponent = (props) => {
     placeholder = "",
     fontSize = "",
     inputlabelshrink = false,
+    className = "",
   } = props;
   return (
     <>
@@ -34,6 +35,7 @@ const SimpleDropdownComponent = (props) => {
             fontSize,
           },
         }}
+        className={className}
         renderInput={(params) => (
           <TextField
             {...params}
