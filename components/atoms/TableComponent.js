@@ -300,7 +300,7 @@ export default function TableComponent({
                   </div>
                 </Grid>
                 {showCustomSearchButton && (
-                  <Grid item xs={4}>
+                  <Grid item xs={3}>
                     <Button
                       variant="contained"
                       className="bg-orange"
