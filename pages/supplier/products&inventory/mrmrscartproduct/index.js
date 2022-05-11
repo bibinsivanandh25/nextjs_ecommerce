@@ -1,15 +1,12 @@
-import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import SubTabComponent from "components/molecule/SubTabComponent";
-import { Delete, Edit, FileCopy, MoreVert } from "@mui/icons-material";
+import { FileCopy } from "@mui/icons-material";
 
 const MrMrsCartProducts = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [value, setValue] = React.useState(0);
   const [tableData, setTableData] = useState([]);
-  const [showMenu, setShowMenu] = useState(null);
   const columns = [
     {
       label: "Image",
@@ -69,10 +66,6 @@ const MrMrsCartProducts = () => {
       isFilter: false,
     },
   ];
-
-  const handleClose = () => {
-    setShowMenu(null);
-  };
 
   const mapRowsToTable = (data) => {
     const result = [];
