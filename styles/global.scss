@@ -196,6 +196,11 @@ display: none;
   opacity: 1;
 }
 
+p{
+  margin-bottom: 0 !important;
+}
+
+
 //hide scrollbar
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

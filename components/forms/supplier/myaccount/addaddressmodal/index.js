@@ -52,7 +52,6 @@ const AddAddressModal = (props) => {
     >
       <Grid container my={2} spacing={2}>
         <Grid item xs={6}>
-          {console.log(formValues.name)}
           <InputBox
             value={formValues.name}
             label="Name"

@@ -9,7 +9,6 @@ const getWithResp = (url, reqObj) => {
 };
 
 const post = (url, reqObj) => {
-  console.log(url);
   return axiosInstance.post(url, reqObj);
 };
 
