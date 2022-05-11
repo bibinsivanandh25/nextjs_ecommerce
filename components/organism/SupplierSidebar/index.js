@@ -94,7 +94,7 @@ const productsList = {
     },
     {
       subtitle: "Add New Products",
-      path_name: "newproducts",
+      path_name: "addnewproduct",
       navigate: true,
     },
     {

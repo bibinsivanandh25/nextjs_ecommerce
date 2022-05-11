@@ -41,7 +41,7 @@ export const paths = [
   },
   {
     title: "Add New Products",
-    id: "newproducts",
+    id: "addnewproduct",
   },
   {
     title: "New Product Upload",
