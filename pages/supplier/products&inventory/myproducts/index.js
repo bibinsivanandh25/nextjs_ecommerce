@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SubTabComponent from "components/molecule/SubTabComponent";
 import { Delete, Edit, FileCopy, MoreVert } from "@mui/icons-material";
-import MyProductsTable from "components/forms/supplier/products/myproductstable";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -184,17 +183,9 @@ const MyProducts = () => {
       <SubTabComponent value={value} setValue={setValue} tabList={tabList} />
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>
-          <MyProductsTable
-            columns={columns}
-            tableRows={tableRows}
-            customButtonLabel="Mark Out Of Stock"
-            searchDropdownLabel="Style Code"
-          />
           <TableComponent
             columns={columns}
             tableRows={tableRows}
-            // showCustomDropdownWithSearch
-            // showSearchbar={false}
             customDropdownLabel="Style Code"
             customSearchButtonLabel="Mark Out Of Stock"
             showCustomSearchButton
