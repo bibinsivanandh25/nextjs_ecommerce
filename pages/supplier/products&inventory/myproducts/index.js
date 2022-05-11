@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import SubTabComponent from "components/molecule/SubTabComponent";
 import { Delete, Edit, FileCopy, MoreVert } from "@mui/icons-material";
+import DropdownComponent from "components/atoms/DropdownComponent";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
   const [value, setValue] = React.useState(0);
+  const [v, setV] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [showMenu, setShowMenu] = useState(null);
   const columns = [
@@ -179,9 +181,18 @@ const MyProducts = () => {
     },
   ];
 
+  console.log(v);
+
   return (
     <Paper sx={{ height: "100%" }}>
       <SubTabComponent value={value} setValue={setValue} tabList={tabList} />
+      <DropdownComponent
+        list={columns}
+        label="Test"
+        setValue={setV}
+        value={v}
+        onDropdownSelect={(val) => console.log(val)}
+      />
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
