@@ -70,6 +70,9 @@ export default function TableComponent({
   showCustomDropdownWithSearch = false,
   searchBarSizeMd = 8,
   tableMaxHeight = 440,
+  showCustomSearchButton = false,
+  customSearchButtonLabel = "",
+  onCustomSearchButtonClick = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -94,8 +97,9 @@ export default function TableComponent({
   }, [searchText]);
 
   useEffect(() => {
-    const temp = columns.map((item, index) => {
-      return { label: item.label, id: item.id, value: item.label };
+    const temp = columns.filter((item) => {
+      if (!item.hasOwnProperty("isFilter"))
+        return { label: item.label, id: item.id, value: item.label };
     });
     setSearchFilterList(() => {
       return [{ label: "All", id: "0", value: "All" }, ...temp];
@@ -106,7 +110,6 @@ export default function TableComponent({
     let filteredData =
       searchFilter.label === "All" || searchFilter.label === ""
         ? rows.filter((value) => {
-            debugger;
             let flag = false;
             let dataarray = Object.values(value);
             dataarray.splice(0, 1);
@@ -122,7 +125,6 @@ export default function TableComponent({
             return flag;
           })
         : rows.filter((value) => {
-            debugger;
             if (
               typeof value[`${searchFilter.id}`] === "string" &&
               value[`${searchFilter.id}`]
@@ -224,7 +226,12 @@ export default function TableComponent({
           </Grid>
         )}
         <Grid container>
-          <Grid item container xs={6} justifyContent="start">
+          <Grid
+            item
+            container
+            xs={showCustomSearchButton ? 4 : 6}
+            justifyContent="start"
+          >
             {table_heading && (
               <Grid item sm={6} md={5} xs={12}>
                 <Typography
@@ -239,7 +246,12 @@ export default function TableComponent({
               </Grid>
             )}
           </Grid>
-          <Grid item container xs={6} justifyContent={"end"}>
+          <Grid
+            item
+            container
+            xs={showCustomSearchButton ? 8 : 6}
+            justifyContent={"end"}
+          >
             {showSearchbar && (
               <Grid
                 item
@@ -278,7 +290,7 @@ export default function TableComponent({
                     }}
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={!showCustomSearchButton && 2}>
                   <div
                     style={{ width: "40px", height: "38px" }}
                     className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
@@ -287,6 +299,19 @@ export default function TableComponent({
                     <SearchOutlinedIcon style={{ color: "white" }} />
                   </div>
                 </Grid>
+                {showCustomSearchButton && (
+                  <Grid item xs={4}>
+                    <Button
+                      variant="contained"
+                      className="bg-orange"
+                      sx={{ textTransform: "none" }}
+                      fullWidth
+                      onClick={onCustomSearchButtonClick}
+                    >
+                      {customSearchButtonLabel}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             )}
 
