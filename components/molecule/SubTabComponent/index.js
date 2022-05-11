@@ -57,7 +57,6 @@ export default function CustomizedTabs({ tabList = [] }) {
           onChange={handleChange}
           aria-label="styled tabs example"
         >
-          {console.log(value)}
           {tabList.map((o, index) => (
             <StyledTab
               label={
