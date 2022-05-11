@@ -196,4 +196,5 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     </div>
   );
 });
+InventoryForm.displayName = "InventoryForm";
 export default InventoryForm;

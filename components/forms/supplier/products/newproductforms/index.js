@@ -12,6 +12,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import { commisiondata, product_type } from "./constants";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
+import { getBase64 } from "services/utils/functionUtils";
 
 const ProductsLayout = ({
   formData = {},
@@ -122,15 +123,6 @@ const ProductsLayout = ({
   const handleDropdownChange = (value, key) => {
     setMainFormData((prev) => {
       return { ...prev, [key]: value };
-    });
-  };
-
-  const getBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
     });
   };
 

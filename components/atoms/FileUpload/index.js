@@ -6,40 +6,56 @@ import ButtonComponent from "../ButtonComponent";
 import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { getBase64 } from "services/utils/functionUtils";
 
-const FileUploadModal = ({}) => {
+const FileUploadModal = ({
+  showModal = false,
+  setShowModal = () => {},
+  getUploadedFiles = () => {},
+}) => {
   const fileUploadRef = useRef(null);
   const [binaryStr, setbinaryStr] = useState([]);
 
-  const handlefileDrop = (acceptedFiles) => {
+  const handlefileDrop = async (acceptedFiles) => {
     let arr = [...binaryStr];
     const reader = new FileReader();
-    if (acceptedFiles[0]) {
-      reader.readAsDataURL(acceptedFiles[0]);
-      reader.onloadend = () => {
-        const bitStr = reader.result;
-        console.log(bitStr);
-        arr.push(bitStr);
+    if (acceptedFiles.length) {
+      if (Array.isArray(acceptedFiles)) {
+        const promiseArr = [];
+        acceptedFiles.forEach((item) => {
+          promiseArr.push(getBase64(item));
+        });
+        const filePaths = await Promise.all(promiseArr);
+        const temp = filePaths.map((ele) => ele);
+        arr.push(...temp);
         setbinaryStr([...arr]);
-      };
+      } else {
+        reader.readAsDataURL(acceptedFiles[0]);
+        reader.onloadend = () => {
+          const bitStr = reader.result;
+          arr.push(bitStr);
+          setbinaryStr([...arr]);
+        };
+      }
     }
   };
-  console.log(binaryStr);
+  const onSubmitClick = () => {
+    getUploadedFiles(binaryStr);
+    setShowModal(false);
+  };
 
   return (
     <ModalComponent
       ModalTitle=""
       showClearBtn={false}
-      saveBtnText="Upload"
-      open
+      saveBtnText="Submit"
+      open={showModal}
       headerClassName="border-bottom-0"
       showCloseIcon={true}
+      onCloseIconClick={() => setShowModal(false)}
+      onSaveBtnClick={onSubmitClick}
     >
       <>
-        {/* <div
-          className="d-flex flex-column rounded-3 flex-grow-1 mx-5 mt-2 pt-4 justify-content-center align-items-center"
-          style={{ border: "0.4px dashed #e56700", height: "180px" }}
-        > */}
         <Dropzone onDrop={handlefileDrop} noClick={true}>
           {({ getRootProps, getInputProps }) => (
             <div

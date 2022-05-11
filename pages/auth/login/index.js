@@ -141,9 +141,9 @@ const Login = () => {
       className={`d-flex justify-content-center align-items-center ${styles.container}`}
     >
       <SelectComponent />
-      <Card sx={{ background: "rgba(1,1,1,0.3)" }}>
+      <Card sx={{ background: "rgba(1,1,1,0.5)" }}>
         <div className="w-400px p-5 ">
-          <Image src={logo} style={{ width: "100%", height: "50px" }} />
+          <Image src={logo} style={{ width: "100%", height: "50px" }} alt="" />
           <Typography varient="h1" className="text-center color-white">
             A Multi Ecommerce Store
           </Typography>
@@ -194,6 +194,7 @@ const Login = () => {
                   InputProps={{
                     style: { fontSize: "14px", color: "#fff" },
                   }}
+                  inputlabelshrink
                 />
               </Grid>
               <Grid item sm={12}>
@@ -211,16 +212,17 @@ const Login = () => {
                   InputProps={{
                     style: { fontSize: "14px", color: "#fff" },
                   }}
+                  inputlabelshrink
                 />
               </Grid>
               <Grid item md={12}>
                 <div className="d-flex justify-content-between">
-                  <Link href={"/auth/login/otplogin"}>
+                  <Link href={"/auth/login/otplogin"} passHref>
                     <span className="color-orange fs-12 cursor-pointer">
                       Login with OTP
                     </span>
                   </Link>
-                  <Link href={"/auth/forgotpassword"}>
+                  <Link href={"/auth/forgotpassword"} passHref>
                     <span className="color-orange fs-12 cursor-pointer">
                       Forgot password
                     </span>
@@ -231,8 +233,8 @@ const Login = () => {
                 <div className="d-flex flex-column align-items-center justify-content-center w-100">
                   <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
                   <div>
-                    <span className="fs-11">Don't have an account?</span>
-                    <Link href={"/auth/supplier/registration"}>
+                    <span className="fs-11">Don&apos;t have an account?</span>
+                    <Link href={"/auth/supplier/registration"} passHref>
                       <span className="color-orange fs-11 cursor-pointer">
                         Register
                       </span>
