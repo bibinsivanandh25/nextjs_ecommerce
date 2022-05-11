@@ -193,4 +193,6 @@ const InventoryForm = forwardRef(
     );
   }
 );
+
+InventoryForm.displayName = "InventoryForm";
 export default InventoryForm;
