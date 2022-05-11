@@ -26,6 +26,7 @@ const MyProducts = () => {
     },
     {
       label: "Name",
+      isFilter: false,
       id: "col4",
     },
     {
