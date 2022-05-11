@@ -15,6 +15,8 @@ const TextAreaComponent = ({
   widthClassName = "w-50",
   rows = 3,
   muiProps = "",
+  name = "",
+  value = "",
 }) => {
   return (
     <div className={`${widthClassName}`}>
@@ -30,7 +32,13 @@ const TextAreaComponent = ({
           muiProps={muiProps}
         />
       </div>
-      <textarea rows={rows} className={styles.textarea} onChange={onChange} />
+      <textarea
+        rows={rows}
+        className={styles.textarea}
+        onChange={onChange}
+        name={name}
+        value={value}
+      />
     </div>
   );
 };
