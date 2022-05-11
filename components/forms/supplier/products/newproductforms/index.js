@@ -5,7 +5,6 @@ import InventoryForm from "./InventoryForm";
 import PricingForm from "./Pricing&Weight";
 import LinkedForm from "./LinkedForm";
 import ProductPoliciesForm from "./ProductPoliciesForm";
-import GroupedproductsForm from "./GroupedproductsForm";
 import AttributesForm from "./AttributesForm";
 import VariationForm from "./VariationForm";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
@@ -69,16 +68,7 @@ const ProductsLayout = ({
         />
       ),
     },
-    {
-      title: "Grouped products",
-      component: (
-        <GroupedproductsForm
-          formData={formData.grouped}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
+
     {
       title: "Attributes",
       component: (
@@ -191,7 +181,7 @@ const ProductsLayout = ({
                 inputlabelshrink
               />
             </Grid>
-            <Grid item md={12}>
+            {/* <Grid item md={12}>
               <SimpleDropdownComponent
                 list={product_type}
                 id="producttype"
@@ -203,7 +193,7 @@ const ProductsLayout = ({
                 }}
                 inputlabelshrink
               />
-            </Grid>
+            </Grid> */}
             <Grid item md={12}>
               <InputBox
                 id="brand"
@@ -266,6 +256,7 @@ const ProductsLayout = ({
                 id="category"
                 label="Select Category"
                 size="small"
+                inputlabelshrink
               />
             </Grid>
             <Grid item md={12}>

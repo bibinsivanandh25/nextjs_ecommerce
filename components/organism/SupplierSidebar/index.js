@@ -98,6 +98,16 @@ const productsList = {
       navigate: true,
     },
     {
+      subtitle: "Add New Collections",
+      path_name: "newproducts",
+      navigate: true,
+    },
+    {
+      subtitle: "Add grouped products",
+      path_name: "newproducts",
+      navigate: true,
+    },
+    {
       subtitle: "New Product Upload (Excel)",
       path_name: "newproductupload",
       navigate: true,
