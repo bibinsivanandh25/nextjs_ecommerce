@@ -56,6 +56,33 @@ const ProductsLayout = ({}) => {
   const [imagedata, setImageData] = useState([]);
   const [tabsList, setTabsList] = useState([...tabsData]);
   const [commisionData, setCommisionData] = useState([...commisiondata]);
+  const [mainFormData, setMainFormData] = useState({
+    commision_mode: "",
+    product_type: "",
+    brand: "",
+    short_description: {
+      media: [],
+      text: "",
+    },
+    long_description: {
+      media: [],
+      text: "",
+    },
+    sub_category_id: "",
+    tags: "",
+    limit_per_order: "",
+  });
+
+  const handleInputChange = (e) => {
+    setMainFormData((prev) => {
+      return { ...prev, [e.target.id]: e.target.value };
+    });
+  };
+  const handleDropdownChange = (value, key) => {
+    setMainFormData((prev) => {
+      return { ...prev, [key]: value };
+    });
+  };
 
   const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -106,6 +133,11 @@ const ProductsLayout = ({}) => {
                 id="commisionmode"
                 label="Commision Mode"
                 size="small"
+                value={mainFormData.commision_mode}
+                onDropdownSelect={(value) => {
+                  handleDropdownChange(value, "commision_mode");
+                }}
+                inputlabelshrink
               />
             </Grid>
             <Grid item md={12}>
@@ -114,14 +146,19 @@ const ProductsLayout = ({}) => {
                 id="producttype"
                 label="Product Type"
                 size="small"
+                value={mainFormData.product_type}
+                onDropdownSelect={(value) => {
+                  handleDropdownChange(value, "product_type");
+                }}
+                inputlabelshrink
               />
             </Grid>
             <Grid item md={12}>
               <InputBox
                 id="brand"
                 label="Brand"
-                onInputChange={() => {}}
-                value={""}
+                onInputChange={handleInputChange}
+                value={mainFormData.brand}
                 placeholder="Any brand"
                 inputlabelshrink
               />
@@ -129,7 +166,17 @@ const ProductsLayout = ({}) => {
             <Grid item md={12}>
               <TextAreaComponent
                 legend="Short Description"
-                onChange={() => {}}
+                onChange={(e) => {
+                  setMainFormData((prev) => {
+                    return {
+                      ...prev,
+                      short_description: {
+                        ...prev.short_description.media,
+                        text: e.target.value,
+                      },
+                    };
+                  });
+                }}
                 onBtnClick={() => {}}
                 btnLabel="Add Media"
                 btnSize="small"
@@ -142,7 +189,17 @@ const ProductsLayout = ({}) => {
             <Grid item md={12}>
               <TextAreaComponent
                 legend="Long Description"
-                onChange={() => {}}
+                onChange={(e) => {
+                  setMainFormData((prev) => {
+                    return {
+                      ...prev,
+                      long_description: {
+                        ...prev.long_description.media,
+                        text: e.target.value,
+                      },
+                    };
+                  });
+                }}
                 onBtnClick={() => {}}
                 btnLabel="Add Media"
                 btnSize="small"
@@ -164,8 +221,8 @@ const ProductsLayout = ({}) => {
               <InputBox
                 id="tags"
                 label="Tags"
-                onInputChange={() => {}}
-                value={""}
+                onInputChange={handleInputChange}
+                value={mainFormData.tags}
                 inputlabelshrink
               />
             </Grid>
@@ -182,10 +239,10 @@ const ProductsLayout = ({}) => {
             </Grid>
             <Grid item md={12}>
               <InputBox
-                id="limits"
+                id="limit_per_order"
                 label="Limits Per Order"
-                onInputChange={() => {}}
-                value={""}
+                onInputChange={handleInputChange}
+                value={mainFormData.limit_per_order}
                 inputlabelshrink
                 type="number"
               />
@@ -206,7 +263,6 @@ const ProductsLayout = ({}) => {
                       item.active ? "bg-orange color-white" : "bg-light-gray"
                     }`}
                     onClick={() => {
-                      console.log("asdfasdasd");
                       const temp = [...tabsList];
                       temp.forEach((ele) => {
                         ele.active = false;
@@ -221,7 +277,7 @@ const ProductsLayout = ({}) => {
               })}
             </Grid>
           </Box>
-          <Box className="p-3 w-100 mnh-75vh">
+          <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll hide-scrollbar">
             {tabsList.map((item) => {
               return item.active ? item.component : null;
             })}
