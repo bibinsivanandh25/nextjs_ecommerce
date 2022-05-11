@@ -27,45 +27,56 @@ const ordersList = {
     {
       title: "New Orders To Process (0)",
       path_name: "neworder",
+      navigate: false,
       subList: [
         {
           subtitle: "Accept & Confirm Address (00)",
           path_name: "acceptandconfirmaddress",
+          navigate: true,
         },
         {
           subtitle: "Generate Invoice & Manifest (00)",
           path_name: "generateinvoiceandmanifest",
+          navigate: true,
         },
         {
           subtitle: "Upload Manifest (00)",
           path_name: "uploadmanifest",
+          navigate: true,
         },
       ],
     },
     {
       title: "Order History (0)",
       path_name: "orderhistory",
+      navigate: false,
       subList: [
         {
           subtitle: "Manifested Orders (00)",
           path_name: "manifestedorders",
+          navigate: true,
         },
         {
           subtitle: "Shipped Orders (00)",
           path_name: "shippedorders",
+          navigate: true,
         },
         {
           subtitle: "Delivered Orders (00)",
           path_name: "deliveredorders",
+          navigate: true,
         },
         {
           subtitle: "Cancelled Orders (00)",
           path_name: "cancelledorders",
+          navigate: true,
         },
         {
           subtitle: "Returned Orders (00)",
           path_name: "returnedorders",
+          navigate: true,
         },
+        8,
       ],
     },
   ],
@@ -79,22 +90,27 @@ const productsList = {
     {
       subtitle: "My Products (Update Inventory)",
       path_name: "myproducts",
+      navigate: true,
     },
     {
       subtitle: "Add New Products",
       path_name: "newproducts",
+      navigate: true,
     },
     {
       subtitle: "New Product Upload (Excel)",
       path_name: "newproductupload",
+      navigate: true,
     },
     {
       subtitle: "Add Inventory (Excel)",
       path_name: "addinventory",
+      navigate: true,
     },
     {
       subtitle: "MrMrsCart Product",
       path_name: "mrmrscartproduct",
+      navigate: true,
     },
   ],
 };
@@ -107,14 +123,17 @@ const reportsList = {
     {
       subtitle: "Payment Reports",
       path_name: "paymentreport",
+      navigate: true,
     },
     {
       subtitle: "Order Report",
       path_name: "orderreport",
+      navigate: true,
     },
     {
       subtitle: "TCS/Sales Report",
       path_name: "salesreport",
+      navigate: true,
     },
   ],
 };
@@ -190,6 +209,7 @@ const earningsList = {
     {
       subtitle: "Summary",
       path_name: "summary",
+      navigate: true,
     },
   ],
 };
@@ -349,28 +369,31 @@ export default function SupplierSidebar({ children }) {
                       setSelected({ show: selected.show, id: text.id })
                     }
                   >
-                    <Link
-                      href={`/${moduleType}/${
-                        submenuList[selected.id].path_name
-                      }/${item.path_name}`}
-                      key={item.path_name}
+                    <MenuItem
+                      sx={getMenuStyles(item)}
+                      key={item.title || item.subtitle}
+                      onClick={() => {
+                        setSubMenuSelected(item.subtitle);
+                        if (item?.navigate) {
+                          router.push(
+                            `/${moduleType}/${
+                              submenuList[selected.id].path_name
+                            }/${item.path_name}`
+                          );
+                        }
+                      }}
                     >
-                      <MenuItem
-                        sx={getMenuStyles(item)}
-                        key={item.title || item.subtitle}
-                        onClick={() => setSubMenuSelected(item.subtitle)}
-                      >
-                        {item?.subList && item?.subList?.length
-                          ? `+ ${item.title}`
-                          : item.subtitle}
-                      </MenuItem>
-                    </Link>
+                      {item?.subList && item?.subList?.length
+                        ? `+ ${item.title}`
+                        : item.subtitle}
+                    </MenuItem>
                     {item?.subList?.map((o) => (
                       <Link
                         href={`/${moduleType}/${
                           submenuList[selected.id].path_name
                         }/${item.path_name}/${o.path_name}`}
                         key={o.path_name}
+                        passHref
                       >
                         <MenuItem
                           sx={getSubmenuStyles(o)}
