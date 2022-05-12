@@ -33,6 +33,10 @@ const NewProducts = () => {
       meta_description: "",
       meta_keyword: "",
     },
+    linked: {
+      upSells: "",
+      crossSells: "",
+    },
     pricing: {
       sale_price: "",
       mrp: "",
@@ -44,7 +48,6 @@ const NewProducts = () => {
       height: "",
       delivery_charge: "",
     },
-    linked: {},
     policy: {},
     grouped: {},
     variation: {},
