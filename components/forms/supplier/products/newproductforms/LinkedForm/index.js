@@ -10,6 +10,10 @@ const LinkedForm = forwardRef(({}, ref) => {
     crossSells: "",
   });
 
+  useEffect(() => {
+    setInventoryFormData({ ...formData.inventory });
+  }, [formData]);
+
   const handleDropdownChange = (value, key) => {
     setLinkedFormData((prev) => {
       return { ...prev, [key]: value };
