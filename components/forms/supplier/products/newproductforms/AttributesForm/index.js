@@ -16,4 +16,6 @@ const AttributesForm = forwardRef(({}, ref) => {
     </Grid>
   );
 });
+
+AttributesForm.displayName = "AttributesForm";
 export default AttributesForm;

@@ -16,4 +16,6 @@ const VariationForm = forwardRef(({}, ref) => {
     </Grid>
   );
 });
+
+VariationForm.displayName = "VariationForm";
 export default VariationForm;

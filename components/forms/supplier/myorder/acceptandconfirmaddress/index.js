@@ -60,6 +60,7 @@ const AcceptandConfirmAdress = () => {
           xs={5}
           container
           className="border border-1 mx-4 my-3 rounded"
+          key={index}
         >
           <Grid item xs={1} className="d-flex align-items-center mx-2">
             <RadiobuttonComponent
