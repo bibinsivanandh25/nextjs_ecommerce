@@ -53,9 +53,9 @@ const InvoiceCardComponent = ({}) => {
             <Grid item>
               <Typography className="fs-16 fw-600">{data.text}</Typography>
             </Grid>
-            {data.detailed_price_list.map((item) => {
+            {data.detailed_price_list.map((item, index) => {
               return (
-                <Grid item container>
+                <Grid item container key={index}>
                   <Grid item md={6}>
                     <Typography className="fs-12">{item.name}</Typography>
                   </Grid>
