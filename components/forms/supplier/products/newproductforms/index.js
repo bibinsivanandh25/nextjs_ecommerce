@@ -133,6 +133,7 @@ const ProductsLayout = ({
         {imagedata.length > 0
           ? imagedata.map((item, index) => (
               <ImageCard
+                key={index}
                 imgSrc={item}
                 handleCloseClick={() => {
                   setImageData((prev) => {
@@ -293,6 +294,7 @@ const ProductsLayout = ({
                 return (
                   <Grid
                     item
+                    key={index}
                     md={12}
                     className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
                       activeTab === index

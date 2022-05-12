@@ -160,12 +160,12 @@ const StaffForm = ({ handlebackClick }) => {
         <Grid container item md={7} lg={9} spacing={2} className="p-4">
           {capabilites.map((item, index) => {
             return (
-              <Grid item container spacing={1} sm={12} md={6}>
+              <Grid item container spacing={1} sm={12} md={6} key={index}>
                 <Grid item sm={12} className="color-orange fw-600 fs-14">
                   {item.title}
                 </Grid>
                 {item.items.map((ele, ind) => (
-                  <Grid item container spacing={2} sm={12}>
+                  <Grid item container spacing={2} sm={12} key={ind}>
                     <Grid item sm={6} className="">
                       <div className="d-flex justify-content-end align-items-center">
                         {ele.name}

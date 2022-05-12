@@ -81,4 +81,6 @@ const LinkedForm = forwardRef(({}, ref) => {
     </Grid>
   );
 });
+
+LinkedForm.displayName = "LinkedForm";
 export default LinkedForm;
