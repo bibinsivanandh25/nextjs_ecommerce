@@ -34,7 +34,10 @@ const NewProducts = () => {
       meta_keyword: "",
     },
     pricing: {},
-    linked: {},
+    linked: {
+      upSells: "",
+      crossSells: "",
+    },
     policy: {},
     grouped: {},
     variation: {},
