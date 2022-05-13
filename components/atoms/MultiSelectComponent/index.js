@@ -8,11 +8,11 @@ const MultiSelectComponent = ({
   list = [],
   size = "small",
   inputlabelshrink = false,
-  variant = "contained",
   fullWidth = true,
   value = [],
   label = "abc",
   onSelectionChange = () => {},
+  id = "tags-outlined",
 }) => {
   //list
   // [
@@ -22,7 +22,7 @@ const MultiSelectComponent = ({
   return (
     <Autocomplete
       multiple
-      id="tags-outlined"
+      id={id}
       options={list}
       disableCloseOnSelect
       getOptionLabel={(option) => option.title}

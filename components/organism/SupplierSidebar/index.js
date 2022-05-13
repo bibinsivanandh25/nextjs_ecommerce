@@ -104,7 +104,7 @@ const productsList = {
     },
     {
       subtitle: "Add grouped products",
-      path_name: "newproducts",
+      path_name: "addgroupproducts",
       navigate: true,
     },
     {
