@@ -18,31 +18,6 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     styleCode: null,
     countryOfOrigin: null,
   });
-  useImperativeHandle(ref, () => {
-    return {
-      handleSendFormData: () => {
-        return ["variation", { ...variationFormData }];
-      },
-    };
-  });
-
-  useEffect(() => {
-    setVariationFormData({ ...formData.inventory });
-  }, [formData]);
-
-  useEffect(() => {
-    const dropdownCopy = [...dropdowns];
-    Object.entries(variationFormData).forEach(([key, value]) => {
-      const existingVal = dropdowns.find((i) => i.id === key);
-      const index = dropdowns.findIndex((i) => i.id === key);
-      dropdownCopy[index] = {
-        ...existingVal,
-        value,
-      };
-    });
-    setDropdowns(dropdownCopy);
-  }, [variationFormData]);
-
   const [dropdowns, setDropdowns] = useState([
     {
       label: "Select Color",
@@ -161,6 +136,33 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       value: null,
     },
   ]);
+  useImperativeHandle(ref, () => {
+    return {
+      handleSendFormData: () => {
+        return ["variation", { ...variationFormData }];
+      },
+    };
+  });
+
+  useEffect(() => {
+    setVariationFormData({ ...formData.inventory });
+  }, [formData]);
+
+  useEffect(() => {
+    const dropdownCopy = [...dropdowns];
+    Object.entries(variationFormData).forEach(([key, value]) => {
+      const existingVal = dropdowns.find((i) => i.id === key);
+      const index = dropdowns.findIndex((i) => i.id === key);
+      dropdownCopy[index] = {
+        ...existingVal,
+        value,
+      };
+    });
+    console.log(dropdownCopy);
+    setDropdowns(dropdownCopy);
+  }, [variationFormData]);
+
+  console.log(dropdowns);
 
   const handleInputChange = (val, ele) => {
     const getData = () => {
@@ -192,7 +194,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
                   id={ele.id}
                   size="small"
                   list={ele.options}
-                  value={ele.value}
+                  value={ele.options.find((op) => op.id === ele.value)}
                   onDropdownSelect={(val) => handleInputChange(val, ele)}
                 />
               )}
