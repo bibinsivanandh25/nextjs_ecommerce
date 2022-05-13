@@ -144,6 +144,10 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     };
   });
 
+  function getUniqueListBy(arr, key) {
+    return [...new Map(arr.map((item) => [item[key], item])).values()];
+  }
+
   useEffect(() => {
     if (formData && formData.attribute) {
       const data = Object.entries(formData?.attribute).map(([key, value]) => {
@@ -156,7 +160,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
         };
         return ob;
       });
-      setDropdowns((prev) => [...data, ...prev]);
+      setDropdowns((prev) => getUniqueListBy([...data, ...prev], "id"));
     }
     setVariationFormData({ ...formData.variation });
   }, [formData]);
