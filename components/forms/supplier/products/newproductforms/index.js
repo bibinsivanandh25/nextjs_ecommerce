@@ -28,69 +28,7 @@ const ProductsLayout = ({
     });
     setactiveTab((prev) => prev + 1);
   };
-  const tabsData = [
-    {
-      title: "Inventory",
-      component: (
-        <InventoryForm
-          formData={formData.inventory}
-          setFormData={setFormData}
-          ref={formsRef}
-        />
-      ),
-    },
-    {
-      title: "Pricing & Weight",
-      component: (
-        <PricingForm
-          formData={formData.pricing}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
-    {
-      title: "Linked",
-      component: (
-        <LinkedForm
-          formData={formData.linked}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
-    {
-      title: "Product Policies",
-      component: (
-        <ProductPoliciesForm
-          formData={formData.policy}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
-
-    {
-      title: "Attributes",
-      component: (
-        <AttributesForm
-          formData={formData.attribute}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
-    {
-      title: "Variation",
-      component: (
-        <VariationForm
-          formData={formData.variation}
-          ref={formsRef}
-          setFormData={setFormData}
-        />
-      ),
-    },
-  ];
+  const [tabsData, setTabsData] = useState([]);
   const [imagedata, setImageData] = useState([]);
   const [tabsList, setTabsList] = useState([...tabsData]);
   const [activeTab, setactiveTab] = useState(0);
@@ -126,6 +64,76 @@ const ProductsLayout = ({
       return { ...prev, [key]: value };
     });
   };
+
+  useEffect(() => {
+    setTabsData([
+      {
+        title: "Inventory",
+        component: (
+          <InventoryForm
+            formData={formData}
+            setFormData={setFormData}
+            ref={formsRef}
+          />
+        ),
+      },
+      {
+        title: "Pricing & Weight",
+        component: (
+          <PricingForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Linked",
+        component: (
+          <LinkedForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Product Policies",
+        component: (
+          <ProductPoliciesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+
+      {
+        title: "Attributes",
+        component: (
+          <AttributesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Variation",
+        component: (
+          <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+    ]);
+  }, [formData]);
+
+  useEffect(() => {
+    setTabsList([...tabsData]);
+  }, [tabsData]);
 
   return (
     <Box className="d-flex flex-grow-1 flex-row mt-2">
@@ -343,7 +351,7 @@ const ProductsLayout = ({
                     setFormData((prev) => {
                       const data = { ...prev, [temp[0]]: temp[1] };
                       handleSubmitClick(data);
-                      return;
+                      return data;
                     });
                   }
                 : handleNextClick

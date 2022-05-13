@@ -1,22 +1,22 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import React from "react";
+import React, { useState } from "react";
 
-const SimpleDropdownComponent = (props) => {
-  const {
-    list = [],
-    id = "dropdownid",
-    label = "",
-    size = "medium",
-    fullWidth = true,
-    value = null,
-    onDropdownSelect = () => {},
-    error = false,
-    placeholder = "",
-    fontSize = "",
-    inputlabelshrink = false,
-    className = "",
-  } = props;
+const SimpleDropdownComponent = ({
+  list = [],
+  id = "dropdownid",
+  label = "",
+  size = "medium",
+  fullWidth = true,
+  value = null,
+  onDropdownSelect = () => {},
+  error = false,
+  placeholder = "",
+  fontSize = "",
+  inputlabelshrink = false,
+  className = "",
+}) => {
+  const [inputValue, setInputValue] = useState("");
   return (
     <>
       <Autocomplete
@@ -35,6 +35,7 @@ const SimpleDropdownComponent = (props) => {
             fontSize,
           },
         }}
+        onInputChange={(e) => setInputValue(e?.target?.value)}
         className={className}
         renderInput={(params) => (
           <TextField
@@ -44,7 +45,7 @@ const SimpleDropdownComponent = (props) => {
             error={error}
             helperText={error}
             InputLabelProps={{
-              shrink: value?.id ? true : inputlabelshrink,
+              shrink: value?.id || inputValue ? true : inputlabelshrink,
               fontSize: fontSize && "0.8rem",
             }}
             placeholder={placeholder}

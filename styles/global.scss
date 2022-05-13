@@ -11,7 +11,9 @@
   justify-content: center !important;
 }
 
-.word-break{word-break: break-all}
+.word-break {
+  word-break: break-all
+}
 
 //font weight
 .fw-700 {
@@ -178,12 +180,12 @@ input[type=number] {
 }
 
 
-#menuitem span{
-display: none;
+#menuitem span {
+  display: none;
 }
 
-#menuitem:hover  span{
-  display: block ;
+#menuitem:hover span {
+  display: block;
 }
 
 .stickyHeader {
@@ -196,7 +198,7 @@ display: none;
   opacity: 1;
 }
 
-p{
+p {
   margin-bottom: 0 !important;
 }
 
@@ -208,6 +210,14 @@ p{
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+fieldset {
+  legend {
+    width: unset;
+  }
 }
