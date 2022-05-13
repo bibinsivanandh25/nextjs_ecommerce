@@ -24,7 +24,7 @@ const DatePickerComponent = (props) => {
         disableFuture={disableFuture}
         fullWidth={fullWidth}
         onChange={(newData) => onDateChange(newData)}
-        inputFormat="dd/mm/yyyy"
+        inputFormat="dd/MM/yyyy"
         renderInput={(params) => (
           <TextField
             {...params}
