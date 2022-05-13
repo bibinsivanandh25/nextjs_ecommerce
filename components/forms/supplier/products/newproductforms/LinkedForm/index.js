@@ -1,17 +1,17 @@
 import { Box, Grid, Paper } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-const LinkedForm = forwardRef(({}, ref) => {
+const LinkedForm = forwardRef(({ formData }, ref) => {
   const [linkedFormData, setLinkedFormData] = useState({
     upSells: "",
     crossSells: "",
   });
 
   useEffect(() => {
-    setInventoryFormData({ ...formData.inventory });
+    setLinkedFormData({ ...formData.linked });
   }, [formData]);
 
   const handleDropdownChange = (value, key) => {
