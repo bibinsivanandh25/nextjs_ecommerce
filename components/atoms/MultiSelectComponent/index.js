@@ -13,6 +13,7 @@ const MultiSelectComponent = ({
   label = "abc",
   onSelectionChange = () => {},
   id = "tags-outlined",
+  disabled = false,
 }) => {
   //list
   // [
@@ -22,6 +23,7 @@ const MultiSelectComponent = ({
   return (
     <Autocomplete
       multiple
+      disabled={disabled}
       id={id}
       options={list}
       disableCloseOnSelect
@@ -46,7 +48,9 @@ const MultiSelectComponent = ({
           error={false}
         />
       )}
-      onChange={onSelectionChange}
+      onChange={(e, val) => {
+        onSelectionChange(e, val, id);
+      }}
     />
   );
 };

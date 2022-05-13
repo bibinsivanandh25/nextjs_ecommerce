@@ -1,53 +1,192 @@
 import { Box, Grid, Paper } from "@mui/material";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import MultiSelectComponent from "components/atoms/MultiSelectComponent";
+import ButtonComponent from "components/atoms/ButtonComponent";
+import ModalComponent from "components/atoms/ModalComponent";
+import InputBoxComponent from "components/atoms/InputBoxComponent";
 
-let attributes = {
-  brand: ["puma", "adidas"],
-  color: ["red", "green"],
-  Gender: ["Male", "Female"],
-  Material: ["Cotton", "Nylon", "Silk"],
-  Size: ["xs", "s", "m", "l", "xl", "xxl"],
-};
+let attributes = [
+  {
+    attribute: "brand",
+    options: ["puma", "adidas"],
+    selected: false,
+    visibleOnProduct: false,
+  },
+  {
+    attribute: "color",
+    options: ["red", "green"],
+    selected: false,
+    visibleOnProduct: false,
+  },
+  {
+    attribute: "Gender",
+    options: ["Male", "Female"],
+    selected: false,
+    visibleOnProduct: false,
+  },
+  {
+    attribute: "Material",
+    options: ["Cotton", "Nylon", "Silk"],
+    selected: false,
+    visibleOnProduct: false,
+  },
+  {
+    attribute: "Size",
+    options: ["xs", "s", "m", "l", "xl", "xxl"],
+    selected: false,
+    visibleOnProduct: false,
+  },
+];
 
 const AttributesForm = forwardRef(({}, ref) => {
   const [attributesFormData, setAttributesFormData] = useState({});
-  const [Attributes, setAttributes] = useState({ ...attributes });
+  const [Attributes, setAttributes] = useState([...attributes]);
+  const [selectedAttribute, setSelectedAttribute] = useState({});
+  const [showAddAttributeModal, setShowAttributeModal] = useState(false);
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
-        return ["attribute", { ...attributesFormData }];
+        return ["attribute", { ...selectedAttribute }];
       },
     };
   });
 
   const getAttributeValues = () => {
-    return Object.entries(Attributes).map(([key, value], index) => {
+    return Attributes.map((ele, index) => {
       let options = [];
-      value.forEach((ele, ind) => {
+      ele.options.forEach((item, ind) => {
         options.push({
           id: ind + 1,
-          label: ele,
-          value: ele,
+          title: item,
+          value: item,
         });
       });
+
       return (
-        <Grid container item key={index}>
+        <Grid
+          container
+          item
+          md={12}
+          key={index}
+          className="border my-2 px-2 py-2"
+        >
           <Grid item lg={3} sm={12}>
-            <CheckBoxComponent label={key} />
+            <CheckBoxComponent
+              label={ele.attribute}
+              isChecked={ele.selected}
+              id={ele.attribute}
+              checkBoxClick={(id) => {
+                let arr = [...Attributes];
+                arr.map((ele, ind) => {
+                  if (ele.attribute === id) {
+                    ele.selected = !ele.selected;
+                  }
+                });
+                setAttributes([...arr]);
+              }}
+            />
           </Grid>
-          <Grid item lg={9} sm={12}>
-            <SimpleDropdownComponent list={[...options]} />
-          </Grid>
+          {ele.selected ? (
+            <Grid item lg={9} sm={12} container rowGap={1}>
+              <Grid item sm={12}>
+                <MultiSelectComponent
+                  list={[...options]}
+                  id={ele.attribute}
+                  onSelectionChange={(e, val, id) => {
+                    setSelectedAttribute((pre) => ({
+                      ...pre,
+                      [id]: [...val],
+                    }));
+                  }}
+                  value={selectedAttribute?.[ele.attribute]}
+                />
+              </Grid>
+              <Grid item xs={12} container spacing={2}>
+                <Grid item sm={4}>
+                  <ButtonComponent
+                    muiProps="fs-10 w-100"
+                    bgColor="bg-secondary"
+                    label="Select All"
+                    onBtnClick={() => {
+                      setSelectedAttribute((pre) => ({
+                        ...pre,
+                        [ele.attribute]: options,
+                      }));
+                    }}
+                  />
+                </Grid>
+                <Grid item sm={4}>
+                  <ButtonComponent
+                    muiProps="fs-10 w-100"
+                    bgColor="bg-secondary"
+                    label="Select None"
+                    onBtnClick={() => {
+                      setSelectedAttribute((prev) => ({
+                        ...prev,
+                        [ele.attribute]: [],
+                      }));
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item sm={4}>
+                  <ButtonComponent
+                    muiProps="fs-10 w-100"
+                    bgColor="bg-secondary"
+                    label="Add New"
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12} container>
+                <CheckBoxComponent
+                  id={ele.attribute}
+                  label="Visible on the product page"
+                  isChecked={ele.visibleOnProduct}
+                  checkBoxClick={(id) => {
+                    let arr = [...Attributes];
+                    arr.map((item) => {
+                      if (item.attribute === id) {
+                        ele.visibleOnProduct = !ele.visibleOnProduct;
+                      }
+                    });
+                    setAttributes([...arr]);
+                  }}
+                />
+              </Grid>
+            </Grid>
+          ) : null}
         </Grid>
       );
     });
   };
-  console.log(getAttributeValues());
   return (
     <Grid container className="">
       {getAttributeValues()}
+      <Grid item md={12} className="d-flex justify-content-end m-2">
+        <ButtonComponent
+          label="Add New Attribute"
+          variant="outlined"
+          size="large"
+          muiProps="fs-12"
+          onBtnClick={() => setShowAttributeModal(!showAddAttributeModal)}
+        />
+      </Grid>
+      <ModalComponent
+        open={showAddAttributeModal}
+        ModalTitle="Add new Attribute"
+        showClearBtn={false}
+        saveBtnText="submit"
+        onCloseIconClick={() => setShowAttributeModal(!showAddAttributeModal)}
+      >
+        <Grid container justifyContent={"center"} rowGap={2} className="my-4">
+          <Grid item sm={12} className="mx-5">
+            <InputBoxComponent label="Name for the new Attribute" />
+          </Grid>
+          <Grid item sm={12} className="mx-5">
+            <InputBoxComponent label="Values" />
+          </Grid>
+        </Grid>
+      </ModalComponent>
     </Grid>
   );
 });

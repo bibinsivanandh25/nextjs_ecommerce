@@ -20,6 +20,7 @@ const ButtonComponent = ({
   iconOrintation = "start",
   borderColor = "border-orange",
   textColor = "color-orange",
+  bgColor = "bg-orange",
 }) => {
   const getIcon = () => {
     if (iconName === "search") {
@@ -43,7 +44,7 @@ const ButtonComponent = ({
       size={size}
       className={`${
         variant === "contained"
-          ? "bg-orange"
+          ? bgColor
           : variant === "outlined"
           ? `${borderColor} ${textColor}`
           : ""
