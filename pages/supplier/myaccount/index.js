@@ -26,7 +26,7 @@ const MyAccount = () => {
       <Grid container className="list-unstyled  fs-14 mb-2">
         {tabList.map((ele, ind) => {
           return (
-            <Grid item xs={2}>
+            <Grid item xs={2} key={ind}>
               <span
                 onClick={() => setSelectedMenu(ind)}
                 className={`cursor-pointer fw-bold   ${

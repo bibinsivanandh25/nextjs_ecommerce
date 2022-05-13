@@ -111,6 +111,7 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
   });
+
   useEffect(() => {
     setMainFormData({ ...formData.mainForm });
   }, []);
@@ -132,6 +133,7 @@ const ProductsLayout = ({
         {imagedata.length > 0
           ? imagedata.map((item, index) => (
               <ImageCard
+                key={index}
                 imgSrc={item}
                 handleCloseClick={() => {
                   setImageData((prev) => {
@@ -285,27 +287,20 @@ const ProductsLayout = ({
         </div>
       </Box>
       <Box className=" d-flex flex-column w-60p">
-        <Box className="d-flex w-100">
+        <Box className="d-flex w-100 mb-2">
           <Box className="w-200px p-2">
             <Grid container className="">
               {tabsList.map((item, index) => {
                 return (
                   <Grid
                     item
+                    key={index}
                     md={12}
                     className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
                       activeTab === index
                         ? "bg-orange color-white"
                         : "bg-light-gray"
                     }`}
-                    // onClick={() => {
-                    //   const temp = [...tabsList];
-                    //   temp.forEach((ele) => {
-                    //     ele.active = false;
-                    //   });
-                    //   temp[index].active = true;
-                    //   setTabsList([...temp]);
-                    // }}
                   >
                     {item.title}
                   </Grid>
@@ -327,22 +322,24 @@ const ProductsLayout = ({
             onBtnClick={() => {}}
             muiProps="me-2"
           />
+          {activeTab !== 0 ? (
+            <ButtonComponent
+              label="Previous"
+              variant={"outlined"}
+              size={"small"}
+              onBtnClick={() => {
+                setactiveTab((prev) => prev - 1);
+              }}
+              muiProps="me-2"
+            />
+          ) : null}
           <ButtonComponent
-            label="Previous"
-            variant={"outlined"}
-            size={"small"}
-            onBtnClick={() => {
-              setactiveTab((prev) => prev - 1);
-            }}
-            muiProps="me-2"
-          />
-          <ButtonComponent
-            label={activeTab === 6 ? "Submit" : "Next"}
+            label={activeTab === 5 ? "Submit" : "Next"}
             size={"small"}
             onBtnClick={
-              activeTab === 6
+              activeTab === 5
                 ? () => {
-                    const temp = formsRef.current.handleSendFormData();
+                    const temp = formsRef?.current?.handleSendFormData();
                     setFormData((prev) => {
                       const data = { ...prev, [temp[0]]: temp[1] };
                       handleSubmitClick(data);

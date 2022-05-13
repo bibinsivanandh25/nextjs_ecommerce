@@ -88,9 +88,9 @@ const FileUploadModal = ({
         <div className="d-flex mt-3">
           {binaryStr?.map((ele, ind) => {
             return (
-              <div className="position-relative">
+              <div className="position-relative" key={ind}>
                 <div className="mx-2">
-                  <Image src={ele} width={60} height={60} />
+                  <Image src={ele} width={60} height={60} alt="" />
                 </div>
                 <CloseIcon
                   onClick={() => {

@@ -57,9 +57,9 @@ const MyEarnings = () => {
       </div>
       <Box className="m-3 mt-4">
         <Grid container spacing={2}>
-          {earningData.map((item) => {
+          {earningData.map((item, index) => {
             return (
-              <Grid item md={6}>
+              <Grid item md={6} key={index}>
                 <Card variant="outlined">
                   <CardContent className="p-2 pt-4">
                     <Typography

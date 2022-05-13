@@ -149,4 +149,6 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     </Paper>
   );
 });
+
+PricingForm.displayName = "PricingForm";
 export default PricingForm;

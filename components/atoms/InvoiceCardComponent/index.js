@@ -1,5 +1,5 @@
 import { Grid, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import styles from "./InvoiceCardComponent.module.css";
@@ -20,11 +20,18 @@ const InvoiceCardComponent = ({}) => {
     payout_price: "100",
   };
   const [expand, setExpand] = useState(false);
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (expand) {
+      cardRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [expand]);
   return (
-    <Paper className={`w-100  `}>
+    <Paper className={`w-100 mt-2 `} ref={cardRef}>
       <div className={`${expand ? styles.expand : styles.shrink}`}>
-        {/* {expand ? (
-          <> */}
         <div
           className={`w-100 d-flex justify-content-between align-items-center p-2 px-3  ${styles.invoiceContainer}`}
         >
@@ -37,6 +44,7 @@ const InvoiceCardComponent = ({}) => {
               onClick={() => {
                 setExpand(!expand);
               }}
+              className="cursor-pointer"
             />
           </div>
         </div>
@@ -45,9 +53,9 @@ const InvoiceCardComponent = ({}) => {
             <Grid item>
               <Typography className="fs-16 fw-600">{data.text}</Typography>
             </Grid>
-            {data.detailed_price_list.map((item) => {
+            {data.detailed_price_list.map((item, index) => {
               return (
-                <Grid item container>
+                <Grid item container key={index}>
                   <Grid item md={6}>
                     <Typography className="fs-12">{item.name}</Typography>
                   </Grid>
@@ -76,6 +84,7 @@ const InvoiceCardComponent = ({}) => {
               onClick={() => {
                 setExpand(!expand);
               }}
+              className="cursor-pointer"
             />
           ) : null}
         </div>
