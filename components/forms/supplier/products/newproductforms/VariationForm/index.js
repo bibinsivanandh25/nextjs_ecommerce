@@ -19,97 +19,97 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     countryOfOrigin: null,
   });
   const [dropdowns, setDropdowns] = useState([
-    {
-      label: "Select Color",
-      type: "dropdown",
-      id: "color",
-      options: [
-        {
-          id: "blue",
-          label: "Blue",
-        },
-        { id: "black", label: "Black" },
-      ],
-      value: null,
-    },
-    {
-      label: "Select Fabric*",
-      type: "dropdown",
-      id: "fabric",
-      options: [
-        {
-          id: "cotton",
-          label: "Cotton",
-        },
-        { id: "silk", label: "Silk" },
-      ],
-      value: null,
-    },
-    {
-      label: "Select Type",
-      type: "dropdown",
-      id: "type",
-      options: [
-        {
-          id: "shirt",
-          label: "Shirt",
-        },
-        { id: "pant", label: "Pant" },
-      ],
-      value: null,
-    },
-    {
-      label: "Select Available Sizes*",
-      type: "dropdown",
-      id: "availabeSizes",
-      options: [
-        {
-          id: "m",
-          label: "Medium",
-        },
-        { id: "l", label: "Large" },
-      ],
-      value: null,
-    },
-    {
-      label: "Select Style",
-      type: "dropdown",
-      id: "style",
-      options: [
-        {
-          id: "spotted",
-          label: "Spotted",
-        },
-        { id: "striped", label: "Striped" },
-      ],
-      value: null,
-    },
-    {
-      label: "Select Design Type",
-      type: "dropdown",
-      id: "designType",
-      options: [
-        {
-          id: "blue",
-          label: "Blue",
-        },
-        { id: "black", label: "Black" },
-      ],
-      value: null,
-    },
-    {
-      label: "Style Code(optional)",
-      type: "dropdown",
-      id: "styleCode",
-      options: [
-        {
-          id: "blue",
-          label: "Blue",
-        },
-        { id: "black", label: "Black" },
-      ],
-      value: null,
-    },
+    // {
+    //   label: "Select Color",
+    //   type: "dropdown",
+    //   id: "color",
+    //   options: [
+    //     {
+    //       id: "blue",
+    //       label: "Blue",
+    //     },
+    //     { id: "black", label: "Black" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Select Fabric*",
+    //   type: "dropdown",
+    //   id: "fabric",
+    //   options: [
+    //     {
+    //       id: "cotton",
+    //       label: "Cotton",
+    //     },
+    //     { id: "silk", label: "Silk" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Select Type",
+    //   type: "dropdown",
+    //   id: "type",
+    //   options: [
+    //     {
+    //       id: "shirt",
+    //       label: "Shirt",
+    //     },
+    //     { id: "pant", label: "Pant" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Select Available Sizes*",
+    //   type: "dropdown",
+    //   id: "availabeSizes",
+    //   options: [
+    //     {
+    //       id: "m",
+    //       label: "Medium",
+    //     },
+    //     { id: "l", label: "Large" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Select Style",
+    //   type: "dropdown",
+    //   id: "style",
+    //   options: [
+    //     {
+    //       id: "spotted",
+    //       label: "Spotted",
+    //     },
+    //     { id: "striped", label: "Striped" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Select Design Type",
+    //   type: "dropdown",
+    //   id: "designType",
+    //   options: [
+    //     {
+    //       id: "blue",
+    //       label: "Blue",
+    //     },
+    //     { id: "black", label: "Black" },
+    //   ],
+    //   value: null,
+    // },
+    // {
+    //   label: "Style Code(optional)",
+    //   type: "dropdown",
+    //   id: "styleCode",
+    //   options: [
+    //     {
+    //       id: "blue",
+    //       label: "Blue",
+    //     },
+    //     { id: "black", label: "Black" },
+    //   ],
+    //   value: null,
+    // },
     {
       label: "Expiry Date",
       type: "date",
@@ -145,7 +145,20 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
   });
 
   useEffect(() => {
-    setVariationFormData({ ...formData.inventory });
+    if (formData && formData.attribute) {
+      const data = Object.entries(formData?.attribute).map(([key, value]) => {
+        const ob = {
+          label: key.charAt(0).toUpperCase() + key.slice(1, key.length),
+          type: "dropdown",
+          id: key,
+          options: value.map((o) => ({ ...o, label: o.title })),
+          value: null,
+        };
+        return ob;
+      });
+      setDropdowns((prev) => [...data, ...prev]);
+    }
+    setVariationFormData({ ...formData.variation });
   }, [formData]);
 
   useEffect(() => {
@@ -158,11 +171,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
         value,
       };
     });
-    console.log(dropdownCopy);
     setDropdowns(dropdownCopy);
   }, [variationFormData]);
-
-  console.log(dropdowns);
 
   const handleInputChange = (val, ele) => {
     const getData = () => {
@@ -184,8 +194,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     <Grid container spacing={2} className="">
       {dropdowns.map((ele) => {
         return (
-          <Grid item md={12} container key={ele.id}>
-            <Grid item md={3}>
+          <Grid item md={12} container key={ele.id} alignItems="center">
+            <Grid item lg={3} md={12} xs={12}>
               <Typography fontSize={14}>{ele.label}</Typography>
             </Grid>
             <Grid item lg={9} md={12} xs={12}>
