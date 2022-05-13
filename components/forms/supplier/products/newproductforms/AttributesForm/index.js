@@ -47,7 +47,7 @@ const AttributesForm = forwardRef(({}, ref) => {
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
-        return ["attribute", { ...attributesFormData }];
+        return ["attribute", { ...selectedAttribute }];
       },
     };
   });
@@ -176,6 +176,7 @@ const AttributesForm = forwardRef(({}, ref) => {
         ModalTitle="Add new Attribute"
         showClearBtn={false}
         saveBtnText="submit"
+        onCloseIconClick={() => setShowAttributeModal(!showAddAttributeModal)}
       >
         <Grid container justifyContent={"center"} rowGap={2} className="my-4">
           <Grid item sm={12} className="mx-5">
