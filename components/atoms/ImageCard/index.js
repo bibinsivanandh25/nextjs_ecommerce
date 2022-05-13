@@ -10,16 +10,17 @@ const ImageCard = ({
   imgSrc = "",
   showClose = true,
   handleImageUpload = () => {},
+  className = "",
 }) => {
   const inputRef = useRef(null);
   return (
-    <div className="mt-2 mb-2">
+    <div className={`mt-2 mb-2 d-flex position-relative ${className}`}>
       {showClose && (
         <div
           className="bg-light-gray rounded-circle fit-content float-right"
           style={{
-            position: "relative",
-            top: "10px",
+            position: "absolute",
+            top: "-10px",
             left: `${width - 10}px`,
           }}
         >
