@@ -35,7 +35,7 @@ const SimpleDropdownComponent = ({
             fontSize,
           },
         }}
-        onInputChange={(e) => setInputValue(e.target.value)}
+        onInputChange={(e) => setInputValue(e?.target?.value)}
         className={className}
         renderInput={(params) => (
           <TextField
