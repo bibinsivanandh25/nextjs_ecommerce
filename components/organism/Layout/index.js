@@ -25,14 +25,12 @@ const Layout = ({ Component, pageProps }) => {
         <SupplierSidebar>
           <BreadCrumb />
           <div
-            className="mx-1 mt-2 p-3"
-            style={
-              {
-                minHeight: "80vh",
-                // height: "100%",
-                // overflowY: "auto",
-              }
-            }
+            className="mx-1 mt-2 p-3 w-100"
+            style={{
+              minHeight: "80vh",
+              // height: "100%",
+              // overflowY: "auto",
+            }}
           >
             <Component {...pageProps} />
           </div>

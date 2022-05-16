@@ -1,0 +1,15 @@
+.invoiceContainer {
+  border-bottom: 1px solid #b9b9b9;
+}
+
+.shrink {
+  max-height: 0px;
+  transition: max-height 0.2s ease-out;
+  -webkit-transition: max-height 0.2s ease-out;
+}
+
+.expand {
+  max-height: 400px;
+  transition: max-height 0.2s ease-out;
+  -webkit-transition: max-height 0.2s ease-out;
+}

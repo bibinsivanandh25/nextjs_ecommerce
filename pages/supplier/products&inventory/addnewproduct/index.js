@@ -1,8 +1,15 @@
 import { Box, Paper } from "@mui/material";
 import ProductsLayout from "components/forms/supplier/products/newproductforms";
-import { useEffect, useState } from "react";
+import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
+import InventoryForm from "components/forms/supplier/products/newproductforms/InventoryForm";
+import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
+import PricingForm from "components/forms/supplier/products/newproductforms/Pricing&Weight";
+import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
+import VariationForm from "components/forms/supplier/products/newproductforms/VariationForm";
+import { useEffect, useRef, useState } from "react";
 
 const NewProducts = () => {
+  const formsRef = useRef(null);
   const [formData, setFormData] = useState({
     mainform: {
       commision_mode: "",
@@ -53,6 +60,71 @@ const NewProducts = () => {
     variation: {},
     attribute: {},
   });
+
+  const [tabsList, setTabsList] = useState([
+    {
+      title: "Inventory",
+      component: (
+        <InventoryForm
+          formData={formData}
+          setFormData={setFormData}
+          ref={formsRef}
+        />
+      ),
+    },
+    {
+      title: "Pricing & Weight",
+      component: (
+        <PricingForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Linked",
+      component: (
+        <LinkedForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Product Policies",
+      component: (
+        <ProductPoliciesForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+
+    {
+      title: "Attributes",
+      component: (
+        <AttributesForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Variation",
+      component: (
+        <VariationForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+  ]);
+
   // useEffect(() => {
   //   console.log(formData);
   // }, [formData]);
@@ -70,9 +142,12 @@ const NewProducts = () => {
       }}
     >
       <ProductsLayout
+        type="simple"
         formData={formData}
         setFormData={setFormData}
         handleSubmitClick={handleSubmitClick}
+        tabsList={tabsList}
+        formsRef={formsRef}
       />
     </Paper>
   );
