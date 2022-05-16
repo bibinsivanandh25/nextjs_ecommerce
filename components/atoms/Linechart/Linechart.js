@@ -18,9 +18,18 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-export const LineChart = ({ data = [], labels = [], height = "200px" }) => {
+export const LineChart = ({
+  data = [],
+  labels = [],
+  height = "200px",
+  showYAxis = true,
+  lineColor = "#C100C1",
+}) => {
   const options = {
     plugins: {
+      datalabels: {
+        display: false,
+      },
       legend: {
         display: false,
       },
@@ -36,7 +45,7 @@ export const LineChart = ({ data = [], labels = [], height = "200px" }) => {
           padding: 5,
         },
         beginAtZero: false,
-        display: true,
+        display: showYAxis,
         title: {
           display: true,
           text: "Amount",
@@ -60,7 +69,7 @@ export const LineChart = ({ data = [], labels = [], height = "200px" }) => {
         pointRadius: 5,
         pointBackgroundColor: "white",
         backgroundColor: "#c510c5",
-        borderColor: "#C100C1",
+        borderColor: lineColor,
         borderWidth: 2,
       },
     ],
