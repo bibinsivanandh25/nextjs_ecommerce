@@ -351,7 +351,7 @@ const ProductsLayout = ({
                     setFormData((prev) => {
                       const data = { ...prev, [temp[0]]: temp[1] };
                       handleSubmitClick(data);
-                      return;
+                      return data;
                     });
                   }
                 : handleNextClick

@@ -10,6 +10,7 @@ const ModalComponent = ({
   showFooter = true,
   showHeader = true,
   minHeightClassName = "",
+  minWidth = 300,
   showClearBtn = true,
   showSaveBtn = true,
   saveBtnText = "Save",
@@ -38,6 +39,7 @@ const ModalComponent = ({
     boxShadow: 24,
     borderRadius: "10px",
     outline: "none",
+    minWidth: minWidth,
   };
 
   return (
