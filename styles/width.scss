@@ -17,6 +17,10 @@
 .fit-content {
   width: fit-content;
 }
+.height-fit-content{
+  height: fit-content !important;
+
+}
 
 .mnh-150 {
   min-height: 150px;
@@ -48,6 +52,9 @@
 
 .mxh-100 {
   max-height: 100px;
+}
+.mnh-80vh{
+  min-height: 80vh
 }
 
 .mxh-130 {
@@ -176,6 +183,9 @@
 
 .mxw-200 {
   max-width: 200px;
+}
+.mxw-85vw{
+  max-width:85vw;
 }
 
 .mxh-50 {
