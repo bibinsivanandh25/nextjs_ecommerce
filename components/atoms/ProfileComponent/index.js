@@ -69,6 +69,7 @@ const ProfileComponent = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
+            window.localStorage.setItem("moduleType", null);
             signOut({ callbackUrl: "/auth/login" });
           }}
         >

@@ -25,6 +25,7 @@
 .mnh-inherit {
   min-height: inherit;
 }
+
 .mnh-200 {
   min-height: 200px;
 }
@@ -112,12 +113,15 @@
 .w-95p {
   width: 95%;
 }
+
 .mxh-80vh {
   max-height: 80vh;
 }
+
 .mxh-75vh {
   max-height: 75vh;
 }
+
 .mnh-75vh {
   min-height: 75vh;
 }
@@ -181,12 +185,19 @@
 .mnw-150 {
   min-width: 150px !important;
 }
-.w-200px{
-  width:200px !important
+
+.w-200px {
+  width: 200px !important
 }
+
 .mnw-200px {
   min-width: 200px !important;
 }
+
 .mnw-300 {
   min-width: 300px !important;
+}
+
+.mnh-80vh {
+  min-height: 80vh;
 }

@@ -3,10 +3,10 @@ import Head from "next/head";
 import HeaderComponent from "../HeaderComponent";
 import SupplierSidebar from "../SupplierSidebar";
 import BreadCrumb from "components/atoms/BreadCrumb";
-import { Paper } from "@mui/material";
+import ResellerSidebar from "../ResellerSidebar";
 
 const Layout = ({ Component, pageProps }) => {
-  //   if (noLayout) return <Component {...pageProps} className="mxh-80vh" />;
+  const moduleType = JSON.parse(window.localStorage.getItem("moduleType"));
 
   return (
     <>
@@ -22,21 +22,22 @@ const Layout = ({ Component, pageProps }) => {
         <div className="stickyHeader">
           <HeaderComponent />
         </div>
-        <SupplierSidebar>
-          <BreadCrumb />
-          <div
-            className="mx-1 mt-2 p-3"
-            style={
-              {
-                minHeight: "80vh",
-                // height: "100%",
-                // overflowY: "auto",
-              }
-            }
-          >
-            <Component {...pageProps} />
-          </div>
-        </SupplierSidebar>
+        {moduleType?.moduleId === 0 && (
+          <SupplierSidebar>
+            <BreadCrumb />
+            <div className="mx-1 mt-2 p-3 mnh-80vh">
+              <Component {...pageProps} />
+            </div>
+          </SupplierSidebar>
+        )}
+        {moduleType?.moduleId === 1 && (
+          <ResellerSidebar>
+            <BreadCrumb />
+            <div className="mx-1 mt-2 p-3 mnh-80vh">
+              <Component {...pageProps} />
+            </div>
+          </ResellerSidebar>
+        )}
       </div>
     </>
   );
