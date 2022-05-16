@@ -5,6 +5,7 @@ import MultiSelectComponent from "components/atoms/MultiSelectComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
+import InputFieldWithChip from "components/atoms/InputWithChip";
 
 let attributes = [
   {
@@ -91,6 +92,7 @@ const AttributesForm = forwardRef(({}, ref) => {
             <Grid item lg={9} sm={12} container rowGap={1}>
               <Grid item sm={12}>
                 <MultiSelectComponent
+                  label={ele.attribute}
                   list={[...options]}
                   id={ele.attribute}
                   onSelectionChange={(e, val, id) => {
@@ -183,7 +185,10 @@ const AttributesForm = forwardRef(({}, ref) => {
             <InputBoxComponent label="Name for the new Attribute" />
           </Grid>
           <Grid item sm={12} className="mx-5">
-            <InputBoxComponent label="Values" />
+            <InputFieldWithChip
+              label="values"
+              handleChange={(e, value) => console.log(value)}
+            />
           </Grid>
         </Grid>
       </ModalComponent>
