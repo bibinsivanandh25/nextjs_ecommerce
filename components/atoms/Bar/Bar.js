@@ -1,6 +1,8 @@
 import { Bar } from "react-chartjs-2";
 import React, { useEffect } from "react";
 import { useState } from "react";
+// import "chartjs-plugin-datalabels";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,7 +19,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 const Bargraph = ({
@@ -26,8 +29,19 @@ const Bargraph = ({
   height = "250px",
   backgroundColor = "",
   hoverBackgroundColor = "",
+  barDirection = "x",
+  showBarInfo = false,
+  showXAxis = true,
+  showGridY = true,
+  colorOfMax = "",
 }) => {
   const [datasets, setDatasets] = useState([]);
+
+  function getBgColors() {
+    var maxValue = Math.max.apply(this, data);
+    var bg = data.map((a) => (a === maxValue ? colorOfMax : backgroundColor));
+    return bg;
+  }
 
   useEffect(() => {
     let temp = [];
@@ -38,7 +52,7 @@ const Bargraph = ({
       label: "amount",
       data: data,
       // backgroundColor: index === 0 ? "#ffd09b" : "#9bc4ff",
-      backgroundColor: backgroundColor,
+      backgroundColor: colorOfMax ? getBgColors() : backgroundColor,
 
       // hoverBackgroundColor: index === 0 ? "#fd941a" : "#3d84ec",
       hoverBackgroundColor: hoverBackgroundColor,
@@ -50,6 +64,7 @@ const Bargraph = ({
   // console.log(datasets[0].data);
 
   const options = {
+    indexAxis: barDirection,
     title: {
       display: true,
       text: "Amount",
@@ -61,7 +76,15 @@ const Bargraph = ({
         pointStyle: "rectRounded",
       },
     },
+    responsive: true,
     plugins: {
+      datalabels: {
+        display: showBarInfo,
+        color: "black",
+        align: "end",
+        anchor: "end",
+        font: { size: "14" },
+      },
       legend: {
         display: false,
       },
@@ -75,11 +98,12 @@ const Bargraph = ({
           display: true,
           labelString: "Y text",
         },
+        display: showXAxis,
         stacked: true,
       },
       y: {
         grid: {
-          display: true,
+          display: showGridY,
           lineWidth: 0.7,
           // color: "black",
         },

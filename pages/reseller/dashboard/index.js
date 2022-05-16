@@ -1,36 +1,10 @@
-import { MenuOutlined, MoreVert } from "@mui/icons-material";
-import { Grid, MenuList, Paper } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bar";
-import Doughnutchart from "components/atoms/Doughnut/Doughnut";
-import BasicMenu from "components/atoms/Menu";
-import SelectComponent from "components/atoms/SelectComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import TableComponent from "components/atoms/TableComponent";
-import { useState } from "react";
-import ReportLayout from "../../../../components/forms/supplier/report/index";
-const columns = [
-  {
-    id: "col1", //id value in column should be presented in row as key
-    label: "Date",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col2",
-    label: "No. of Sales",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-];
+import ResellerDashboardLayout from "components/forms/reseller/resellerdashboardlayout";
+import ReportLayout from "components/forms/supplier/report";
 
-const PaymentReports = () => {
+const ResellerDashboard = () => {
   return (
-    <div>
-      <ReportLayout
+    <>
+      <ResellerDashboardLayout
         barGraphLabels={[
           "Jan",
           "Feb",
@@ -45,8 +19,6 @@ const PaymentReports = () => {
           "Nov",
           "Dec",
         ]}
-        barGraphBackgroundColor="#58698a"
-        barGraphHoverBackgroundColor="#4f98b5"
         barGraphData={[
           1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
         ]}
@@ -65,7 +37,19 @@ const PaymentReports = () => {
           "Dec",
         ]}
         doughnutData={[
-          1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
+          {
+            label: "First dataset",
+            data: [33, 53, 85, 41, 44, 65],
+            fill: true,
+            backgroundColor: "rgba(75,192,192,0.2)",
+            borderColor: "rgba(75,192,192,1)",
+          },
+          {
+            label: "Second dataset",
+            data: [33, 25, 35, 51, 54, 76],
+            fill: false,
+            borderColor: "#742774",
+          },
         ]}
         detailSelectList={[
           {
@@ -128,7 +112,7 @@ const PaymentReports = () => {
         Detailcolumns={[
           {
             id: "col1", //id value in column should be presented in row as key
-            label: "Date",
+            label: "Referee Name",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -136,7 +120,15 @@ const PaymentReports = () => {
           },
           {
             id: "col2",
-            label: "No. of Sales",
+            label: "Store Name",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col3",
+            label: "Total Earnings",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -146,69 +138,55 @@ const PaymentReports = () => {
         Detailrows={[
           {
             id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
+            col1: "Alex",
+            col2: "Traders",
+            col3: 20,
           },
           {
             id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
+            col1: "Alex",
+            col2: "Traders",
+            col3: 20,
+          },
+          {
+            id: "3",
+            col1: "Alex",
+            col2: "Traders",
+            col3: 20,
           },
         ]}
-        summaryColumns={[
-          {
-            id: "col1", //id value in column should be presented in row as key
-            label: "Date",
-            minWidth: 100,
-            align: "center",
-            data_align: "center",
-            data_classname: "",
-          },
-          {
-            id: "col2",
-            label: "No. of Sales",
-            minWidth: 100,
-            align: "center",
-            data_align: "center",
-            data_classname: "",
-          },
-        ]}
-        summaryRows={[
-          {
-            id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
-          },
-          {
-            id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
-          },
-        ]}
+        customerGraphData={[5, 10, 15, 20, 25, 30, 35, 40, 20, 10, 30]}
         cardDetails={[
           {
-            label: "Total Payment Amount",
-            value: "54,233.00",
-            background: "#59698b",
+            label: "Total Sales",
+            value: "5,23,390",
+            background: "#e98129",
           },
           {
-            label: "No. of Payments Recieved",
-            value: "233",
-            background: "#4f98b5",
+            label: "Total Earning Through Sales",
+            value: "4,23,300",
+            background: "#6E86C5",
           },
           {
-            label: "Refunded",
-            value: " 2000.00",
-            background: "#d83a56",
+            label: "Total Referral Commission Earned",
+            value: "12,40,200",
+            background: "#76C44E",
           },
           {
-            label: "Pending Payment",
-            value: "12,40,000",
-            background: "#053742",
+            label: "Total Customers",
+            value: "1000",
+            background: "#DBDB12",
+          },
+          {
+            label: "Total Referrals",
+            value: "1000",
+            background: "#12DBAE",
           },
         ]}
+        barGraphHoverBackgroundColor="#4f98b5"
+        barGraphBackgroundColor="#1f78b4"
       />
-    </div>
+    </>
   );
 };
-export default PaymentReports;
+export default ResellerDashboard;
