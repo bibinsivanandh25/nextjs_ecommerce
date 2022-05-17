@@ -6,5 +6,8 @@ const nextConfig = {
     if (!isServer) configCopy.resolve.fallback.fs = false;
     return configCopy;
   },
+  images: {
+    domains: ["fakestoreapi.com"],
+  },
 };
 module.exports = nextConfig;
