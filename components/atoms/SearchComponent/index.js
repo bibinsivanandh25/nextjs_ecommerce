@@ -25,6 +25,11 @@ const SearchComponent = ({
           setSearchText(e.target.value);
           !showSearchBtn ? onSearchTextChange(e.target.value) : null;
         }}
+        onKeyDown={(e) => {
+          if (!showSearchBtn && e.key === "Enter") {
+            handleBtnSearch(searchText);
+          }
+        }}
       />
       {showSearchBtn ? (
         <Box
