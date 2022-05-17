@@ -135,18 +135,15 @@ const Login = () => {
     // } else if (errRes) {
     //   toastify("wrong credentials", "error");
     // }
-    window.localStorage.setItem(
-      "moduleType",
-      JSON.stringify({
-        moduleId: selectedIndex,
-        moduleName: options[selectedIndex],
-      })
-    );
+
     signIn("credentials", {
       username: formValues.user,
       password: formValues.password,
+      role: options[selectedIndex],
+      roleId: selectedIndex,
     });
   };
+
   return (
     <div
       className={`d-flex justify-content-center align-items-center ${styles.container}`}

@@ -9,26 +9,27 @@ const options = {
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
-      name: "Credentials",
-      credentials: {
-        username: { label: "UserName", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
+      // name: "Credentials",
+      // credentials: {
+      //   username: { label: "UserName", type: "text" },
+      //   password: { label: "Password", type: "password" },
+      // },
       async authorize(credentials, req) {
         // if (credentials.username && credentials.password) {
-        // const { data, errRes } = await axios
-        //   .post("http://10.10.20.18:8082/api/v1/authenticate", {
-        //     userName: credentials.username,
-        //     password: credentials.password,
-        //   })
-        //   .then((res) => {
-        //     const data = res && res.data;
-        //     return { data };
-        //   })
-        //   .catch((err) => {
-        //     const errRes = err?.response?.data;
-        //     return { errRes };
-        //   });
+        //   const { data, errRes } = await axios
+        //     .post("http://10.10.20.18:8082/api/v1/authenticate", {
+        //       userName: credentials.username,
+        //       password: credentials.password,
+        //       role: credentials.role,
+        //     })
+        //     .then((res) => {
+        //       const data = res && res.data;
+        //       return { data };
+        //     })
+        //     .catch((err) => {
+        //       const errRes = err?.response?.data;
+        //       return { errRes };
+        //     });
         // if (data) {
         //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
         // } else if (errRes) {
@@ -40,7 +41,13 @@ const options = {
           credentials.username === "suhil" &&
           credentials.password === "123"
         ) {
-          return { id: 20, name: "suhil", email: "suhil@gmail.com" };
+          return {
+            id: 20,
+            name: "suhilkm",
+            email: "suhil@gmail.com",
+            role: "credentials.role",
+            roleId: credentials.roleId,
+          };
         }
         return null;
       },
@@ -53,12 +60,14 @@ const options = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id;
+        token.user = user;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token?.id) {
         session.id = token.id;
+        session.user = token.user;
       }
       return session;
     },
