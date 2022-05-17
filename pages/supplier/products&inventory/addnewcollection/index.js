@@ -1,8 +1,16 @@
 import { Box, Paper } from "@mui/material";
+import VariationForm from "components/forms/supplier/products/newCollections/VariationForm";
 import ProductsLayout from "components/forms/supplier/products/newproductforms";
-import { useEffect, useState } from "react";
+import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
+import InventoryForm from "components/forms/supplier/products/newproductforms/InventoryForm";
+import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
+import PricingForm from "components/forms/supplier/products/newproductforms/Pricing&Weight";
+import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
+import { useEffect, useRef, useState } from "react";
 
 const NewProducts = () => {
+  const formsRef = useRef(null);
+  const [showGroupVariant, setShowGroupVariant] = useState(false);
   const [formData, setFormData] = useState({
     mainform: {
       commision_mode: "",
@@ -53,6 +61,49 @@ const NewProducts = () => {
     variation: {},
     attribute: {},
   });
+  const [tabsList, setTabsList] = useState([
+    {
+      title: "Linked",
+      component: (
+        <LinkedForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Product Policies",
+      component: (
+        <ProductPoliciesForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Attributes",
+      component: (
+        <AttributesForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Variation",
+      component: (
+        <VariationForm
+          setShowGroupVariant={setShowGroupVariant}
+          setFormData={setFormData}
+          formData={formData}
+        />
+      ),
+    },
+  ]);
+
   // useEffect(() => {
   //   console.log(formData);
   // }, [formData]);
@@ -70,9 +121,14 @@ const NewProducts = () => {
       }}
     >
       <ProductsLayout
+        type="collections"
         formData={formData}
         setFormData={setFormData}
         handleSubmitClick={handleSubmitClick}
+        tabsList={tabsList}
+        formsRef={formsRef}
+        showGroupVariant={showGroupVariant}
+        setShowGroupVariant={setShowGroupVariant}
       />
     </Paper>
   );

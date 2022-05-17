@@ -149,6 +149,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
   }
 
   useEffect(() => {
+    console.log(formData);
     if (formData && formData.attribute) {
       const data = Object.entries(formData?.attribute).map(([key, value]) => {
         const ob = {

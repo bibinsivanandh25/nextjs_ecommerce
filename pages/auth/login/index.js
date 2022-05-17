@@ -27,9 +27,13 @@ import Link from "next/link";
 import { loginCall } from "services";
 import axios from "axios";
 
-const SelectComponent = () => {
+const options = ["Supplier", "Reseller", "Customer"];
+
+const SelectComponent = ({
+  selectedIndex = 1,
+  setSelectedIndex = () => {},
+}) => {
   const [anchorEl, setAnchorEl] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(1);
   const open = anchorEl;
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,7 +45,6 @@ const SelectComponent = () => {
     setSelectedIndex(index);
     setAnchorEl(null);
   };
-  const options = ["Supplier", "Reseller", "Customer"];
   return (
     <div style={{ position: "fixed", top: "0", left: "0" }}>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -97,7 +100,7 @@ const SelectComponent = () => {
           return (
             <MenuItem
               key={item}
-              disabled={index === 0}
+              // disabled={index === 0}
               selected={index === selectedIndex}
               onClick={() => handleMenuItemClick(index)}
             >
@@ -112,6 +115,7 @@ const SelectComponent = () => {
 
 const Login = () => {
   const router = useRouter();
+  const [selectedIndex, setSelectedIndex] = useState(1);
   const [formValues, setFormValues] = useState({
     user: null,
     password: null,
@@ -131,6 +135,13 @@ const Login = () => {
     // } else if (errRes) {
     //   toastify("wrong credentials", "error");
     // }
+    window.localStorage.setItem(
+      "moduleType",
+      JSON.stringify({
+        moduleId: selectedIndex,
+        moduleName: options[selectedIndex],
+      })
+    );
     signIn("credentials", {
       username: formValues.user,
       password: formValues.password,
@@ -140,7 +151,10 @@ const Login = () => {
     <div
       className={`d-flex justify-content-center align-items-center ${styles.container}`}
     >
-      <SelectComponent />
+      <SelectComponent
+        selectedIndex={selectedIndex}
+        setSelectedIndex={setSelectedIndex}
+      />
       <Card sx={{ background: "rgba(1,1,1,0.5)" }}>
         <div className="w-400px p-5 ">
           <Image src={logo} style={{ width: "100%", height: "50px" }} alt="" />
@@ -213,6 +227,7 @@ const Login = () => {
                     style: { fontSize: "14px", color: "#fff" },
                   }}
                   inputlabelshrink
+                  type="password"
                 />
               </Grid>
               <Grid item md={12}>
