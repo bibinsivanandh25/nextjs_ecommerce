@@ -10,16 +10,16 @@ import {
 const items = [
   {
     src: "https://img.freepik.com/free-photo/front-view-cyber-monday-shopping-cart-with-bags-copy-space_23-2148657638.jpg?t=st=1652684330~exp=1652684930~hmac=2120a68ea587be22dc154a616865cfb21e67264ede09272e6eaa6dac18beb505&w=826",
-    // altText: "Slide 1",
+    altText: "Slide 1",
     // caption: "Slide 1",
   },
   {
-    src: "https://img.freepik.com/free-photo/front-view-cyber-monday-shopping-cart-with-bags-copy-space_23-2148657638.jpg?t=st=1652684330~exp=1652684930~hmac=2120a68ea587be22dc154a616865cfb21e67264ede09272e6eaa6dac18beb505&w=826",
+    src: "https://image.shutterstock.com/image-vector/web-development-coding-cross-platform-600w-1128653108.jpg",
     // altText: "Slide 2",
     // caption: "Slide 2",
   },
   {
-    src: "https://img.freepik.com/free-photo/front-view-cyber-monday-shopping-cart-with-bags-copy-space_23-2148657638.jpg?t=st=1652684330~exp=1652684930~hmac=2120a68ea587be22dc154a616865cfb21e67264ede09272e6eaa6dac18beb505&w=826",
+    src: "https://image.shutterstock.com/image-vector/creation-responsive-internet-website-multiple-600w-1199480788.jpg",
     // altText: "Slide 3",
     // caption: "Slide 3",
   },
@@ -77,7 +77,7 @@ class CarousalComponent extends Component {
           onExited={this.onExited}
           key={item.src}
         >
-          <img src={item.src} alt={item.altText} className="mxh-400 w-100" />
+          <img src={item.src} className="mxh-300 w-100" onClick={() => {}} />
           <CarouselCaption />
         </CarouselItem>
       );
@@ -85,6 +85,7 @@ class CarousalComponent extends Component {
 
     return (
       <Carousel
+        autoplay={false}
         activeIndex={activeIndex}
         next={this.next}
         previous={this.previous}
