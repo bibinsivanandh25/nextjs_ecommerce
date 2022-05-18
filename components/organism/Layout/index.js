@@ -4,10 +4,10 @@ import HeaderComponent from "../HeaderComponent";
 import SupplierSidebar from "../SupplierSidebar";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import ResellerSidebar from "../ResellerSidebar";
+import { useSession } from "next-auth/react";
 
 const Layout = ({ Component, pageProps }) => {
-  const moduleType = JSON.parse(window.localStorage.getItem("moduleType"));
-
+  const { data: session } = useSession();
   return (
     <>
       <Head>
@@ -22,7 +22,7 @@ const Layout = ({ Component, pageProps }) => {
         <div className="stickyHeader">
           <HeaderComponent />
         </div>
-        {moduleType?.moduleId === 0 && (
+        {session?.user.roleId == 0 && (
           <SupplierSidebar>
             <BreadCrumb />
             <div className="mx-1 mt-2 p-3 mnh-80vh">
@@ -30,7 +30,7 @@ const Layout = ({ Component, pageProps }) => {
             </div>
           </SupplierSidebar>
         )}
-        {moduleType?.moduleId === 1 && (
+        {session?.user.roleId == 1 && (
           <ResellerSidebar>
             <BreadCrumb />
             <div className="mx-1 mt-2 p-3 mnh-80vh">

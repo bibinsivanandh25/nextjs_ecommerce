@@ -15,6 +15,7 @@ const SimpleDropdownComponent = ({
   fontSize = "",
   inputlabelshrink = false,
   className = "",
+  helperText = "",
 }) => {
   const [inputValue, setInputValue] = useState("");
   return (
@@ -42,8 +43,8 @@ const SimpleDropdownComponent = ({
             {...params}
             label={label}
             fullWidth
-            error={error}
-            helperText={error}
+            error={helperText !== null}
+            helperText={helperText}
             InputLabelProps={{
               shrink: value?.id || inputValue ? true : inputlabelshrink,
               fontSize: fontSize && "0.8rem",

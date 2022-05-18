@@ -5,10 +5,13 @@ import Image from "next/image";
 import logo from "public/assets/logo.jpeg";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
+import { maxLengthValidator } from "services/validationUtils";
 
 const CustomerReview = () => {
   const [tableRows, setTableRows] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [replyData, setReplyData] = useState({ value: "", id: null });
+  const [error, setError] = useState(null);
   const [showReplyModal, setShowReplyModal] = useState({
     show: false,
     id: null,
@@ -59,7 +62,7 @@ const CustomerReview = () => {
       result.push({
         col1: (
           <div>
-            <Image src={logo} height={50} width={50} />
+            <Image src={logo} height={50} width={50} alt="" />
             <Typography fontSize={10} pl={1}>
               {row.productId}
             </Typography>
@@ -131,70 +134,6 @@ const CustomerReview = () => {
         supplierreply:
           "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
       },
-      {
-        productId: "#123458",
-        skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
-        supplierreply: "PRODUCT LIVE",
-      },
-      {
-        productId: "#123456",
-        skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-      {
-        productId: "#123459",
-        skuid: "123423",
-        email: "12-01-2023",
-        name: "UK22",
-        mobileno: "300gm",
-        ratings: "23-01-2022",
-        questions: "1",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-      {
-        productId: "#123458",
-        skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
-        supplierreply: "PRODUCT LIVE",
-      },
-      {
-        productId: "#123456",
-        skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-      {
-        productId: "#123459",
-        skuid: "123423",
-        email: "12-01-2023",
-        name: "UK22",
-        mobileno: "300gm",
-        ratings: "23-01-2022",
-        questions: "1",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
     ];
     setTableData(rows);
   }, []);
@@ -202,6 +141,22 @@ const CustomerReview = () => {
   useEffect(() => {
     setTableRows(mapRowsToTable(tableData));
   }, [tableData]);
+
+  const handleSubmit = () => {
+    const errMsg = maxLengthValidator(replyData.value, 255);
+    setError(errMsg);
+    if (!errMsg) {
+      setShowReplyModal({ show: false, id: null });
+      console.log(replyData);
+      setReplyData({ value: "", id: null });
+    }
+  };
+
+  const handleClose = () => {
+    setShowReplyModal({ show: false, id: null });
+    setReplyData({ value: "", id: null });
+    setError(null);
+  };
 
   return (
     <Paper sx={{ height: "100%" }}>
@@ -231,8 +186,9 @@ const CustomerReview = () => {
       {showReplyModal.show && (
         <ModalComponent
           ModalTitle="Reply Customer Review"
-          onCloseIconClick={() => setShowReplyModal({ show: false, id: null })}
-          onSaveBtnClick={() => setShowReplyModal({ show: false, id: null })}
+          onCloseIconClick={handleClose}
+          onSaveBtnClick={handleClose}
+          onClearBtnClick={handleSubmit}
           open={showReplyModal.show}
           ModalWidth={500}
           footerClassName="align-center m-3"
@@ -244,7 +200,17 @@ const CustomerReview = () => {
           saveBtnVariant="outlined"
         >
           <Box mx={2} mt={2}>
-            <InputBox label="Reply" isMultiline inputlabelshrink />
+            <InputBox
+              label="Reply"
+              isMultiline
+              inputlabelshrink
+              onInputChange={(e) =>
+                setReplyData({ value: e.target.value, id: showReplyModal.id })
+              }
+              value={replyData?.value}
+              error={Boolean(error)}
+              helperText={error}
+            />
           </Box>
         </ModalComponent>
       )}

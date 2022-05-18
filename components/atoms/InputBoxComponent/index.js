@@ -24,6 +24,8 @@ const InputBox = ({
   rows = 3,
   fullWidth = true,
   disabled = false,
+  error = false,
+  helperText = "",
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -69,6 +71,8 @@ const InputBox = ({
         ),
         ...InputProps,
       }}
+      helperText={helperText}
+      error={error}
     />
   );
 };
