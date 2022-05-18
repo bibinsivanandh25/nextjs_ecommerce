@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -7,12 +7,49 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 
 const RegistrationForm = ({
   formValues = {},
+  errorObj = {},
   handleSubmit = () => {},
   setFormValues = () => {},
 }) => {
   return (
     <div className="w-70p  d-flex justify-content-center">
       <Grid container spacing={2}>
+        <Grid item md={6} sm={12}>
+          <InputBox
+            placeholder="Enter First Name"
+            value={formValues.firstName}
+            label="First Name"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                firstName: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.firstName}
+            error={errorObj.firstName !== ""}
+          />
+        </Grid>
+        <Grid item md={6} sm={12}>
+          <InputBox
+            placeholder="Enter Last Name"
+            value={formValues.lastName}
+            label="Last Name"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                lastName: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.lastName}
+            error={errorObj.lastName !== ""}
+          />
+        </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
             placeholder="Enter your Business Name"
@@ -27,6 +64,8 @@ const RegistrationForm = ({
               }));
             }}
             inputlabelshrink
+            helperText={errorObj.businessName}
+            error={errorObj.businessName !== ""}
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -43,6 +82,8 @@ const RegistrationForm = ({
               }));
             }}
             inputlabelshrink
+            helperText={errorObj.mail}
+            error={errorObj.mail !== ""}
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -59,22 +100,26 @@ const RegistrationForm = ({
               }));
             }}
             inputlabelshrink
+            helperText={errorObj.mobile}
+            error={errorObj.mobile !== ""}
           />
         </Grid>
         <Grid item md={6} sm={12}>
-          <InputBox
-            placeholder="Choose City"
-            value={formValues.city}
-            label="City"
-            className="w-100"
-            size="small"
-            onInputChange={(e) => {
+          <SimpleDropdownComponent
+            list={[
+              { label: "Bangalore", value: "Bangalore", id: 1 },
+              { label: "Mysore", value: "Mysore", id: 3 },
+            ]}
+            label="Choose City"
+            onDropdownSelect={(value) => {
               setFormValues((prev) => ({
                 ...prev,
-                city: e.target.value,
+                city: value,
               }));
             }}
-            inputlabelshrink
+            value={formValues.city}
+            size="small"
+            helperText={errorObj.city}
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -105,6 +150,7 @@ const RegistrationForm = ({
             }}
             value={formValues.mainCat}
             size="small"
+            helperText={errorObj.mainCat}
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -121,6 +167,8 @@ const RegistrationForm = ({
               }));
             }}
             inputlabelshrink
+            helperText={errorObj.gstin}
+            error={errorObj.gstin !== ""}
           />
         </Grid>
         <Grid container item md={12}>
@@ -173,10 +221,17 @@ const RegistrationForm = ({
                 isChecked={formValues.stockCount === "200"}
               />
             </Grid>
+            {errorObj.stockCount !== "" ? (
+              <Grid item md={12}>
+                <Typography className="color-error h-5">
+                  {errorObj.stockCount}
+                </Typography>
+              </Grid>
+            ) : null}
           </Grid>
           <Grid container item md={4}>
             <Grid item md={12} className="fw-700">
-              Average Stock Count
+              Which website do you sell on?
             </Grid>
             <Grid item md={12}>
               <CheckBoxComponent
@@ -217,12 +272,19 @@ const RegistrationForm = ({
                 size="medium"
               />
             </Grid>
+            {errorObj.site !== "" ? (
+              <Grid item md={12}>
+                <Typography className="color-error h-5">
+                  {errorObj.site}
+                </Typography>
+              </Grid>
+            ) : null}
           </Grid>
           <Grid container item md={4}>
             <div className="d-flex w-100 h-100 align-items-end">
               <InputBox
                 placeholder="Please provide a link of your website"
-                value={formValues.gstin}
+                value={formValues.siteLink}
                 label=""
                 className="w-100"
                 size="small"
@@ -237,12 +299,14 @@ const RegistrationForm = ({
                   style: { fontSize: "12px" },
                 }}
                 inputlabelshrink
+                helperText={errorObj.siteLink}
+                error={errorObj.siteLink !== ""}
               />
             </div>
           </Grid>
         </Grid>
         <Grid item md={12}>
-          <div className="d-flex flex-row-reverse mt-4">
+          <div className="d-flex flex-row-reverse mt-4 mb-2">
             <ButtonComponent label="Register" onBtnClick={handleSubmit} />
           </div>
         </Grid>
