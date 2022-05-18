@@ -26,6 +26,7 @@ const RegistrationForm = ({
                 businessName: e.target.value,
               }));
             }}
+            inputlabelshrink
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -41,6 +42,7 @@ const RegistrationForm = ({
                 mail: e.target.value,
               }));
             }}
+            inputlabelshrink
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -56,6 +58,7 @@ const RegistrationForm = ({
                 mobile: e.target.value,
               }));
             }}
+            inputlabelshrink
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -71,6 +74,7 @@ const RegistrationForm = ({
                 city: e.target.value,
               }));
             }}
+            inputlabelshrink
           />
         </Grid>
         <Grid item md={6} sm={12}>
@@ -116,6 +120,7 @@ const RegistrationForm = ({
                 gstin: e.target.value,
               }));
             }}
+            inputlabelshrink
           />
         </Grid>
         <Grid container item md={12}>
@@ -231,6 +236,7 @@ const RegistrationForm = ({
                 InputProps={{
                   style: { fontSize: "12px" },
                 }}
+                inputlabelshrink
               />
             </div>
           </Grid>
