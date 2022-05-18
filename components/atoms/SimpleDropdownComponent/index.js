@@ -15,7 +15,7 @@ const SimpleDropdownComponent = ({
   fontSize = "",
   inputlabelshrink = false,
   className = "",
-  helperText = "",
+  helperText = null,
 }) => {
   const [inputValue, setInputValue] = useState("");
   return (

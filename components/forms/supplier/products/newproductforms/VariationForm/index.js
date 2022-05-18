@@ -141,6 +141,11 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["variation", { ...variationFormData }];
       },
+      validate: () => {
+        //write validation logic here
+        //return true if validation is success else false
+        return true;
+      },
     };
   });
 

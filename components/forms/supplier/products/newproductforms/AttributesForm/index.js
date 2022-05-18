@@ -58,6 +58,11 @@ const AttributesForm = forwardRef(({}, ref) => {
       handleSendFormData: () => {
         return ["attribute", { ...selectedAttribute }];
       },
+      validate: () => {
+        //write validation logic here
+        //return true if validation is success else false
+        return false;
+      },
     };
   });
 

@@ -20,12 +20,15 @@ const ProductsLayout = ({
   setShowGroupVariant = () => {},
 }) => {
   const handleNextClick = () => {
-    const temp = formsRef.current.handleSendFormData();
-    // console.log("temp", temp);
-    setFormData((prev) => {
-      return { ...prev, [temp[0]]: temp[1] };
-    });
-    setactiveTab((prev) => prev + 1);
+    const flag = formsRef.current.validate();
+    if (flag) {
+      const temp = formsRef.current.handleSendFormData();
+      // console.log("temp", temp);
+      setFormData((prev) => {
+        return { ...prev, [temp[0]]: temp[1] };
+      });
+      setactiveTab((prev) => prev + 1);
+    }
   };
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
