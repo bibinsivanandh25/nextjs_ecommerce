@@ -26,6 +26,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { loginCall } from "services";
 import axios from "axios";
+import validateMessage from "constants/validateMessages";
+import validationRegex from "services/utils/regexUtils";
 
 const options = ["Supplier", "Reseller", "Customer"];
 
@@ -117,10 +119,54 @@ const Login = () => {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [formValues, setFormValues] = useState({
-    user: null,
-    password: null,
+    user: "",
+    password: "",
   });
+  const [errorObj, setErrorObj] = useState({ user: "", password: "" });
+
+  const validateCredentials = () => {
+    let flag = false;
+    const errObj = { user: "", password: "" };
+    if (formValues.user === "") {
+      errObj.user = validateMessage.field_required;
+      flag = true;
+    } else if (validationRegex.email.test(formValues.user)) {
+      if (formValues.user.length > 255) {
+        errObj.user = "Email Id should not be greater than 255 characters";
+        flag = true;
+      }
+    } else if (!validationRegex.mobile.test(formValues.user)) {
+      errObj.user = validateMessage.mobile;
+      flag = true;
+    } else if (!validationRegex.email.test(formValues.user)) {
+      errObj.user = validateMessage.email;
+      flag = true;
+    }
+    if (formValues.password === "") {
+      errObj.password = validateMessage.field_required;
+      flag = true;
+    } else if (
+      !(formValues.password.length >= 8 && formValues.password.length <= 16)
+    ) {
+      errObj.password =
+        "should contain atleast 8 characters and at most 16 characters";
+      flag = true;
+    } else if (!validationRegex.upperCase.test(formValues.password)) {
+      errObj.password = "should contain atleast one uppercase alphabet ";
+      flag = true;
+    } else if (!validationRegex.lowerCase.test(formValues.password)) {
+      errObj.password = "should contain atleast one lowercase alphabet ";
+      flag = true;
+    } else if (!validationRegex.specialChar.test(formValues.password)) {
+      errObj.password = "should includes '@#$'";
+      flag = true;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
+
   const handleSubmit = async () => {
+    const flag = validateCredentials();
     // await axios.post("authenticate", {
     //   userName: formValues.user,
     //   password: formValues.password,
@@ -136,12 +182,14 @@ const Login = () => {
     //   toastify("wrong credentials", "error");
     // }
 
-    signIn("credentials", {
-      username: formValues.user,
-      password: formValues.password,
-      role: options[selectedIndex],
-      roleId: selectedIndex,
-    });
+    if (!flag) {
+      signIn("credentials", {
+        username: formValues.user,
+        password: formValues.password,
+        role: options[selectedIndex],
+        roleId: selectedIndex,
+      });
+    }
   };
 
   return (
@@ -206,6 +254,8 @@ const Login = () => {
                     style: { fontSize: "14px", color: "#fff" },
                   }}
                   inputlabelshrink
+                  helperText={errorObj.user}
+                  error={errorObj.user !== ""}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -225,6 +275,8 @@ const Login = () => {
                   }}
                   inputlabelshrink
                   type="password"
+                  helperText={errorObj.password}
+                  error={errorObj.password !== ""}
                 />
               </Grid>
               <Grid item md={12}>

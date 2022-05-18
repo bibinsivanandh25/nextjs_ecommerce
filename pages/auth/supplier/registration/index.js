@@ -26,94 +26,115 @@ const Registration = () => {
   const [showModal, setShowModal] = useState(false);
 
   const validateForm = () => {
+    let flag = false;
     const errObj = { ...formObj };
     if (formValues.firstName === "") {
       errObj.firstName = validateMessage.field_required;
+      flag = true;
     } else if (formValues.firstName.length > 50) {
+      flag = true;
       errObj.firstName = validateMessage.alpha_numeric_max_50;
     }
     if (formValues.lastName === "") {
+      flag = true;
       errObj.lastName = validateMessage.field_required;
     } else if (formValues.lastName.length > 50) {
+      flag = true;
       errObj.lastName = validateMessage.alpha_numeric_max_50;
     }
     if (formValues.businessName === "") {
+      flag = true;
       errObj.businessName = validateMessage.field_required;
     } else if (formValues.businessName.length > 60) {
+      flag = true;
       errObj.businessName = validateMessage.alpha_numeric_max_60;
     }
     if (formValues.mail === "") {
+      flag = true;
       errObj.mail = validateMessage.field_required;
     } else if (!validationRegex.email.test(formValues.mail)) {
+      flag = true;
       errObj.mail = validateMessage.email;
     }
     if (formValues.mobile === "") {
+      flag = true;
       errObj.mobile = validateMessage.field_required;
     } else if (!validationRegex.mobile.test(formValues.mobile)) {
+      flag = true;
       errObj.mobile = validateMessage.mobile;
     }
     if (formValues.gstin === "") {
+      flag = true;
       errObj.gstin = validateMessage.field_required;
     } else if (formValues.gstin.length !== 15) {
+      flag = true;
       errObj.gstin = "Gstin number should be of length 15";
     }
     if (formValues.stockCount === "") {
+      flag = true;
       errObj.stockCount = "Please select one option";
     }
     if (formValues.site === "") {
+      flag = true;
       errObj.site = "Please select atleact one option";
     }
-    debugger;
     if (formValues.siteLink.length > 255) {
+      flag = true;
       errObj.siteLink = validateMessage.alpha_numeric_max_255;
     }
     if (formValues.city === null) {
+      flag = true;
       errObj.city = validateMessage.field_required;
     }
     if (formValues.mainCat === null) {
+      flag = true;
       errObj.mainCat = validateMessage.field_required;
     }
     setErrorObj({ ...errObj });
+    return flag;
   };
 
   const handleSubmit = async () => {
-    validateForm();
-    // const payload = {
-    //   firstName: formValues.firstName,
-    //   lastName: formValues.lastName,
-    //   businessName: formValues.businessName,
-    //   email: formValues.mail,
-    //   mobileNumber: formValues.mobile,
-    //   city: formValues.city,
-    //   gstin: formValues.gstin,
-    //   role: "SUPPLIER",
-    //   averageStockCount: formValues.stockCount,
-    //   website: formValues.site,
-    //   websiteLink: formValues.siteLink,
-    //   categoryData: [
-    //     {
-    //       categoryId: formValues.mainCat.value,
-    //       categoryName: formValues.mainCat.id,
-    //     },
-    //   ],
-    // };
-    // const { data, errRes } = await axios
-    //   .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
-    //   .then((res) => {
-    //     const data = res && res.data;
-    //     return { data };
-    //   })
-    //   .catch((err) => {
-    //     const errRes = err?.response?.data;
-    //     return { errRes };
-    //   });
-    // // const { data, errRes } = await supplierRegister(payload);
-    // if (data) {
-    //   setShowModal(true);
-    //   console.log(data);
-    // } else if (errRes) {
-    //   console.log(errRes);
-    // }
+    const flag = validateForm();
+    console.log(flag);
+    if (!flag) {
+      const payload = {
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        businessName: formValues.businessName,
+        email: formValues.mail,
+        mobileNumber: formValues.mobile,
+        city: formValues.city,
+        gstin: formValues.gstin,
+        role: "SUPPLIER",
+        averageStockCount: formValues.stockCount,
+        website: formValues.site,
+        websiteLink: formValues.siteLink,
+        categoryData: [
+          {
+            categoryId: formValues.mainCat.value,
+            categoryName: formValues.mainCat.id,
+          },
+        ],
+      };
+      // const { data, errRes } = await axios
+      //   .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
+      //   .then((res) => {
+      //     const data = res && res.data;
+      //     return { data };
+      //   })
+      //   .catch((err) => {
+      //     const errRes = err?.response?.data;
+      //     return { errRes };
+      //   });
+      // // const { data, errRes } = await supplierRegister(payload);
+      // if (data) {
+      //   setShowModal(true);
+      //   console.log(data);
+      // } else if (errRes) {
+      //   console.log(errRes);
+      // }
+    }
   };
 
   useEffect(() => {

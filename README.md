@@ -1,3 +1,3 @@
 supplier
-email: suhilkm100@gmail.com
-password: Suhil@123
+email: admin@gmail.com
+password: Admin@123
