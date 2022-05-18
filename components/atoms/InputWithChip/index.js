@@ -11,6 +11,8 @@ const InputFieldWithChip = ({
   name = "",
   fullWidth = true,
   size = "small",
+  helperText = "",
+  error = false,
   handleChange = () => {},
 }) => {
   const [InputValue, setInputValue] = useState("");
@@ -37,6 +39,8 @@ const InputFieldWithChip = ({
             {...params}
             id={id}
             name={name}
+            helperText={helperText}
+            error={error}
             variant={variant}
             label={label}
             placeholder={placeholder}

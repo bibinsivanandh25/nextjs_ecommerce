@@ -42,8 +42,12 @@ const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
   })
 );
 
-export default function CustomizedTabs({ tabList = [] }) {
-  const [value, setValue] = React.useState(0);
+export default function CustomizedTabs({
+  tabList = [],
+  value = 0,
+  setValue = () => {},
+}) {
+  // const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
