@@ -45,6 +45,14 @@ const AttributesForm = forwardRef(({}, ref) => {
   const [Attributes, setAttributes] = useState([...attributes]);
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [showAddAttributeModal, setShowAttributeModal] = useState(false);
+  const [formValues, setFormValues] = useState({
+    attributeName: "",
+    values: [],
+  });
+  const [errorObj, setErrorObj] = useState({
+    attributeName: "",
+    values: "",
+  });
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
@@ -161,6 +169,28 @@ const AttributesForm = forwardRef(({}, ref) => {
       );
     });
   };
+  const validateField = () => {
+    const errObj = {
+      attributeName: "",
+      values: "",
+    };
+    if (formValues.attributeName === "") {
+      errObj.attributeName = "field required";
+    } else if (formValues.attributeName.length > 50) {
+      errObj.attributeName = "Max 50 characters are allowed";
+    }
+    formValues.values.forEach((ele) => {
+      if (ele.length > 50) {
+        errObj.values = "Max 50 characters are allowed";
+      }
+    });
+    if (formValues.values.length === 0) {
+      errObj.values = "Field required";
+    }
+    setErrorObj({ ...errObj });
+  };
+
+  console.log(formValues);
   return (
     <Grid container className="">
       {getAttributeValues()}
@@ -179,15 +209,34 @@ const AttributesForm = forwardRef(({}, ref) => {
         showClearBtn={false}
         saveBtnText="submit"
         onCloseIconClick={() => setShowAttributeModal(!showAddAttributeModal)}
+        onSaveBtnClick={validateField}
       >
         <Grid container justifyContent={"center"} rowGap={2} className="my-4">
           <Grid item sm={12} className="mx-5">
-            <InputBoxComponent label="Name for the new Attribute" />
+            <InputBoxComponent
+              label="Name for the new Attribute"
+              helperText={errorObj.attributeName}
+              error={errorObj.attributeName !== ""}
+              value={formValues.attributeName}
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  attributeName: e.target.value,
+                }));
+              }}
+            />
           </Grid>
           <Grid item sm={12} className="mx-5">
             <InputFieldWithChip
               label="values"
-              handleChange={(e, value) => console.log(value)}
+              helperText={errorObj.values}
+              error={errorObj.values.length}
+              handleChange={(e, value) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  values: [...value],
+                }));
+              }}
             />
           </Grid>
         </Grid>

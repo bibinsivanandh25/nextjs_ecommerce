@@ -57,7 +57,7 @@ const ModalComponent = ({
               <div className={showCloseIcon ? "" : "d-none"}>
                 <CloseIcon
                   onClick={onCloseIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-black"
                 />
               </div>
             </div>
