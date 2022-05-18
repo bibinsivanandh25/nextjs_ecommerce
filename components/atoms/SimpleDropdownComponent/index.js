@@ -43,7 +43,7 @@ const SimpleDropdownComponent = ({
             {...params}
             label={label}
             fullWidth
-            error={helperText !== null}
+            error={Boolean(helperText)}
             helperText={helperText}
             InputLabelProps={{
               shrink: value?.id || inputValue ? true : inputlabelshrink,
