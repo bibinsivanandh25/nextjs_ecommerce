@@ -6,5 +6,6 @@ const validateMessage = {
   alpha_numeric_max_60: "Max 60 alpha numeric characters can be entered",
   alpha_numeric_max_255: "Max 255 alpha numeric characters can be entered",
   mobile: "Invalid Mobile Number",
+  maxLength: "Max length should be",
 };
 export default validateMessage;
