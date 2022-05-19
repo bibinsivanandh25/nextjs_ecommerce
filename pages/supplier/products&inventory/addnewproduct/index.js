@@ -125,9 +125,71 @@ const NewProducts = () => {
     },
   ]);
 
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
+  useEffect(() => {
+    setTabsList([
+      {
+        title: "Inventory",
+        component: (
+          <InventoryForm
+            formData={formData}
+            setFormData={setFormData}
+            ref={formsRef}
+          />
+        ),
+      },
+      {
+        title: "Pricing & Weight",
+        component: (
+          <PricingForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Linked",
+        component: (
+          <LinkedForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Product Policies",
+        component: (
+          <ProductPoliciesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+
+      {
+        title: "Attributes",
+        component: (
+          <AttributesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Variation",
+        component: (
+          <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+    ]);
+  }, [formData]);
 
   const handleSubmitClick = (data) => {
     console.log(data);
