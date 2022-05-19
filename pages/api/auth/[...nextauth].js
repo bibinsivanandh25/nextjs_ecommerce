@@ -45,7 +45,7 @@ const options = {
             id: 20,
             name: "suhilkm",
             email: "suhil@gmail.com",
-            role: "credentials.role",
+            role: credentials.role,
             roleId: credentials.roleId,
           };
         }
