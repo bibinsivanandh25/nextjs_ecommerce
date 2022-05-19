@@ -131,4 +131,5 @@ export const paths = [
     title: "Add New Coupon",
     id: "addnewcoupons",
   },
+  { title: "Add New Collection", id: "addnewcollection" },
 ];
