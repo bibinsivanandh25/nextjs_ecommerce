@@ -92,6 +92,8 @@ const AddAddressModal = (props) => {
       label: "Alternate Number (Optional)",
       id: "alternateNumber",
       value: null,
+      errorMessage: validateMessage.mobile,
+      validation: validationRegex.mobile,
     },
     {
       label: "Latitude Value (Optional)",
