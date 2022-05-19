@@ -2,7 +2,9 @@ import { Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
+import validationRegex from "services/utils/regexUtils";
 
 const AddAddressModal = (props) => {
   const {
@@ -20,32 +22,50 @@ const AddAddressModal = (props) => {
       id: "name",
       value: null,
       required: true,
+      validation: /^.{1,50}$/,
+      errorMessage: validateMessage.alpha_numeric_max_50,
     },
     {
       label: "Mobile Number",
       id: "mobileNumber",
       value: null,
+      required: true,
+      // validation: /^(\+\d{1,3})?(\d{3}-){2}\d{4}(\/\d{3,4})?$/,
+      errorMessage: validateMessage.mobile,
+      validation: validationRegex.mobile,
     },
     {
       label: "Pin Code",
       id: "pincode",
       value: null,
+      required: true,
+      validation: /^([a-zA-Z0-9_-]){1,6}$/,
+      errorMessage: validateMessage.alpha_numeric_6,
     },
     {
       label: "Location",
       id: "location",
       value: null,
+      required: true,
+      validation: /^.{1,255}$/,
+      errorMessage: validateMessage.alpha_numeric_max_255,
     },
     {
       label: "Address",
       id: "address",
       size: 12,
       value: null,
+      required: true,
+      validation: /^.{1,255}$/,
+      errorMessage: validateMessage.alpha_numeric_max_255,
     },
     {
       label: "City / District / Town",
       id: "city",
       value: null,
+      required: true,
+      validation: /^.{1,50}$/,
+      errorMessage: validateMessage.alpha_numeric_max_50,
     },
     {
       label: "State",
@@ -59,11 +79,14 @@ const AddAddressModal = (props) => {
         { id: "delhi", label: "Delhi" },
       ],
       value: null,
+      required: true,
     },
     {
       label: "Landmark (Optional)",
       id: "landmark",
       value: null,
+      validation: /^.{1,65}$/,
+      errorMessage: validateMessage.alpha_numeric_max_65,
     },
     {
       label: "Alternate Number (Optional)",
@@ -74,11 +97,15 @@ const AddAddressModal = (props) => {
       label: "Latitude Value (Optional)",
       id: "latitude",
       value: null,
+      validation: /^.{1,100}$/,
+      errorMessage: validateMessage.alpha_numeric_max_100,
     },
     {
       label: "Longitude Value (Optional)",
       id: "longitude",
       value: null,
+      validation: /^.{1,100}$/,
+      errorMessage: validateMessage.alpha_numeric_max_100,
     },
   ]);
 
@@ -88,26 +115,22 @@ const AddAddressModal = (props) => {
     }
   }, [values, type]);
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormValues((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
   const validateForm = () => {
     const errObj = { ...error };
-
-    const validatePassword = (field) => {
-      if (!formValues[field]) {
-        errObj[field] = validateMessage.field_required;
-      } else if (!validationRegex.password.test(formValues[field])) {
-        errObj[field] = validateMessage.password;
+    inputFields.forEach((el) => {
+      if (el.hasOwnProperty("required") && !el.value) {
+        errObj[el.id] = validateMessage.field_required;
+      } else if (
+        el.hasOwnProperty("validation") &&
+        el.value &&
+        !el.validation.test(el.value)
+      ) {
+        errObj[el.id] = el.errorMessage;
       } else {
-        errObj[field] = null;
+        errObj[el.id] = null;
       }
-    };
+    });
+
     setError({ ...errObj });
     let valid = true;
     Object.values(errObj).forEach((i) => {
@@ -191,6 +214,7 @@ const AddAddressModal = (props) => {
                 label={field.label}
                 value={field.options.find((op) => op.id === field.value)}
                 onDropdownSelect={(val) => handleInputChange(val, field)}
+                helperText={error[field.id]}
               />
             ) : (
               <InputBox
@@ -201,6 +225,8 @@ const AddAddressModal = (props) => {
                 id={field.id}
                 name={field.id}
                 onInputChange={(e) => handleInputChange(e.target.value, field)}
+                error={Boolean(error[field.id])}
+                helperText={error[field.id]}
               />
             )}
           </Grid>
