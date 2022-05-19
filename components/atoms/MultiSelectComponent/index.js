@@ -14,6 +14,8 @@ const MultiSelectComponent = ({
   onSelectionChange = () => {},
   id = "tags-outlined",
   disabled = false,
+  helperText = "",
+  error = false,
 }) => {
   //list
   // [
@@ -41,11 +43,12 @@ const MultiSelectComponent = ({
           {...params}
           label={label}
           size={size}
+          helperText={helperText}
+          error={error}
           InputLabelProps={{
             shrink: inputlabelshrink || value,
           }}
           fullWidth={fullWidth}
-          error={false}
         />
       )}
       onChange={(e, val) => {
