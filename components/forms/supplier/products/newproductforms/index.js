@@ -281,9 +281,12 @@ const ProductsLayout = ({
                     ? () => {
                         const temp = formsRef?.current?.handleSendFormData();
                         setFormData((prev) => {
-                          const data = { ...prev, [temp[0]]: temp[1] };
-                          handleSubmitClick(data);
-                          return data;
+                          const flag = formsRef.current.validate();
+                          if (flag) {
+                            const data = { ...prev, [temp[0]]: temp[1] };
+                            handleSubmitClick(data);
+                            return data;
+                          }
                         });
                       }
                     : handleNextClick

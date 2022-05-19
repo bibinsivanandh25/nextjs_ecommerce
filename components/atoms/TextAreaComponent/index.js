@@ -17,13 +17,19 @@ const TextAreaComponent = ({
   muiProps = "",
   name = "",
   value = "",
+  error = false,
+  helperText = null,
 }) => {
   return (
     <div className={`${widthClassName}`}>
       <div
-        className={`d-flex flex-row-reverse py-2 px-1 rounded-top ${styles.fieldset}`}
+        className={`d-flex flex-row-reverse py-2 px-1 rounded-top ${
+          styles.fieldset
+        } ${error && "error-border"}`}
       >
-        <label className={`${styles.legend} fs-14`}>{legend}</label>
+        <label className={`${styles.legend} fs-14 ${error && "error-text"}`}>
+          {legend}
+        </label>
         <ButtonComponent
           label={btnLabel}
           variant={btnVariant}
@@ -34,11 +40,16 @@ const TextAreaComponent = ({
       </div>
       <textarea
         rows={rows}
-        className={styles.textarea}
+        className={`${styles.textarea} ${error && "error-border"}`}
         onChange={onChange}
         name={name}
         value={value}
       />
+      {error && (
+        <p className="error" id="textbox-helper-text">
+          {helperText}
+        </p>
+      )}
     </div>
   );
 };

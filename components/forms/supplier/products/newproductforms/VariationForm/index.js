@@ -4,6 +4,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
+import validateMessage from "constants/validateMessages";
 
 const VariationForm = forwardRef(({ formData = {} }, ref) => {
   const [variationFormData, setVariationFormData] = useState({
@@ -18,103 +19,14 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     styleCode: null,
     countryOfOrigin: null,
   });
+  const [error, setError] = useState({});
   const [dropdowns, setDropdowns] = useState([
-    // {
-    //   label: "Select Color",
-    //   type: "dropdown",
-    //   id: "color",
-    //   options: [
-    //     {
-    //       id: "blue",
-    //       label: "Blue",
-    //     },
-    //     { id: "black", label: "Black" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Select Fabric*",
-    //   type: "dropdown",
-    //   id: "fabric",
-    //   options: [
-    //     {
-    //       id: "cotton",
-    //       label: "Cotton",
-    //     },
-    //     { id: "silk", label: "Silk" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Select Type",
-    //   type: "dropdown",
-    //   id: "type",
-    //   options: [
-    //     {
-    //       id: "shirt",
-    //       label: "Shirt",
-    //     },
-    //     { id: "pant", label: "Pant" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Select Available Sizes*",
-    //   type: "dropdown",
-    //   id: "availabeSizes",
-    //   options: [
-    //     {
-    //       id: "m",
-    //       label: "Medium",
-    //     },
-    //     { id: "l", label: "Large" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Select Style",
-    //   type: "dropdown",
-    //   id: "style",
-    //   options: [
-    //     {
-    //       id: "spotted",
-    //       label: "Spotted",
-    //     },
-    //     { id: "striped", label: "Striped" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Select Design Type",
-    //   type: "dropdown",
-    //   id: "designType",
-    //   options: [
-    //     {
-    //       id: "blue",
-    //       label: "Blue",
-    //     },
-    //     { id: "black", label: "Black" },
-    //   ],
-    //   value: null,
-    // },
-    // {
-    //   label: "Style Code(optional)",
-    //   type: "dropdown",
-    //   id: "styleCode",
-    //   options: [
-    //     {
-    //       id: "blue",
-    //       label: "Blue",
-    //     },
-    //     { id: "black", label: "Black" },
-    //   ],
-    //   value: null,
-    // },
     {
       label: "Expiry Date",
       type: "date",
       id: "expiryDate",
       value: null,
+      required: true,
     },
     {
       label: "Country of Origin",
@@ -128,14 +40,43 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
         { id: "japan", label: "Japan" },
       ],
       value: null,
+      required: true,
     },
     {
       label: "Others",
       type: "textarea",
       id: "others",
       value: null,
+      required: true,
     },
   ]);
+
+  const validateForm = () => {
+    const errObj = { ...error };
+    dropdowns.forEach((el) => {
+      if (el.hasOwnProperty("required") && !el.value) {
+        errObj[el.id] = validateMessage.field_required;
+      } else if (
+        el.hasOwnProperty("validation") &&
+        el.value &&
+        !el.validation.test(el.value)
+      ) {
+        errObj[el.id] = el.errorMessage;
+      } else {
+        errObj[el.id] = null;
+      }
+    });
+
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
@@ -144,7 +85,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       validate: () => {
         //write validation logic here
         //return true if validation is success else false
-        return true;
+        return validateForm();
       },
     };
   });
@@ -163,6 +104,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
           id: key,
           options: value.map((o) => ({ ...o, label: o.title })),
           value: null,
+          required: true,
         };
         return ob;
       });
@@ -216,6 +158,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
                   list={ele.options}
                   value={ele.options.find((op) => op.id === ele.value)}
                   onDropdownSelect={(val) => handleInputChange(val, ele)}
+                  helperText={error[ele.id]}
                 />
               )}
               {ele.type === "textarea" && (
@@ -224,6 +167,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
                   value={ele.value}
                   isMultiline
                   onInputChange={(e) => handleInputChange(e.target.value, ele)}
+                  error={Boolean(error[ele.id])}
+                  helperText={error[ele.id]}
                 />
               )}
               {ele.type === "date" && (
@@ -232,6 +177,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
                   value={ele.value}
                   size="small"
                   onDateChange={(val) => handleInputChange(val, ele)}
+                  error={Boolean(error[ele.id])}
+                  helperText={error[ele.id]}
                 />
               )}
             </Grid>
