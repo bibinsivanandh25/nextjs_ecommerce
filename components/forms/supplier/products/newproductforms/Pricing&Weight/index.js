@@ -21,6 +21,11 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["pricing", { ...pricingFormData }];
       },
+      validate: () => {
+        //write validation logic here
+        //return true if validation is success else false
+        return true;
+      },
     };
   });
 

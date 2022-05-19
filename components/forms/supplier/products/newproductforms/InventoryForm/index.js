@@ -45,6 +45,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["inventory", { ...inventoryFormData }];
       },
+      validate: () => {
+        //write validation logic here
+        //return true if validation is success else false
+        return true;
+      },
     };
   });
   return (

@@ -38,8 +38,8 @@ const options = {
         // }
         // }
         if (
-          credentials.username === "suhil" &&
-          credentials.password === "123"
+          credentials.username === "admin@gmail.com" &&
+          credentials.password === "Admin@123"
         ) {
           return {
             id: 20,

@@ -21,6 +21,11 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["policy", { ...productPolicyFormData }];
       },
+      validate: () => {
+        //write validation logic here
+        //return true if validation is success else false
+        return true;
+      },
     };
   });
 
