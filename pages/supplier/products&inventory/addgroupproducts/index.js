@@ -4,6 +4,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import validateMessage from "constants/validateMessages";
 import { useState } from "react";
 
 const AddGroupProducts = () => {
@@ -18,7 +19,7 @@ const AddGroupProducts = () => {
     { id: 3, title: "ijk", value: "ijk" },
   ]);
   const [formData, setFormData] = useState({
-    partentproduct: {},
+    partentproduct: null,
     childproduct: [],
   });
   const [childDetails, setChildDetails] = useState([
@@ -31,11 +32,34 @@ const AddGroupProducts = () => {
     description: "content",
   });
   const [price, setPrice] = useState("");
+  const [errorObj, setErrorObj] = useState({
+    partentproduct: "",
+    childproduct: "",
+  });
 
   const handleDropdownChange = (value, key) => {
     setFormData((prev) => {
       return { ...prev, [key]: value };
     });
+  };
+
+  const validate = () => {
+    const errObj = { partentproduct: "", childproduct: "" };
+    let flag = false;
+    if (formData.partentproduct === null) {
+      errObj.partentproduct = validateMessage.field_required;
+      flag = true;
+    }
+    if (!formData.childproduct.length) {
+      errObj.childproduct = validateMessage.field_required;
+      flag = true;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
+
+  const handleSubmit = () => {
+    const flag = validate();
   };
 
   return (
@@ -53,15 +77,20 @@ const AddGroupProducts = () => {
                 handleDropdownChange(value, "partentproduct");
               }}
               inputlabelshrink
+              helperText={errorObj.partentproduct}
+              error={errorObj.partentproduct !== ""}
             />
           </div>
           <div className="mt-2">
             <MultiSelectComponent
+              label="Child Products"
               list={childProduct}
               value={formData.childproduct}
               onSelectionChange={(a, val) => {
                 setFormData((prev) => ({ ...prev, childproduct: [...val] }));
               }}
+              helperText={errorObj.childproduct}
+              error={errorObj.childproduct !== ""}
             />
           </div>
         </Box>
@@ -199,7 +228,11 @@ const AddGroupProducts = () => {
           }}
           muiProps="me-2"
         />
-        <ButtonComponent label="Submit" size={"small"} onBtnClick={() => {}} />
+        <ButtonComponent
+          label="Submit"
+          size={"small"}
+          onBtnClick={handleSubmit}
+        />
       </Box>
     </Paper>
   );
