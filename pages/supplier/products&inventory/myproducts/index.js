@@ -10,6 +10,7 @@ const MyProducts = () => {
   const [value, setValue] = React.useState(0);
   const [tableData, setTableData] = useState([]);
   const [showMenu, setShowMenu] = useState(null);
+  const [selected, setSelected] = useState([]);
   const columns = [
     {
       label: "Image",
@@ -105,6 +106,7 @@ const MyProducts = () => {
             </Grid>
           </Grid>
         ),
+        id: row.id,
       });
     });
     return result;
@@ -113,6 +115,7 @@ const MyProducts = () => {
   useEffect(() => {
     const rows = [
       {
+        id: 1,
         productType: "Simple Product",
         productId: "#45523232",
         name: "Bag",
@@ -125,6 +128,7 @@ const MyProducts = () => {
         updateAndDate: "12-01-2022 12:00",
       },
       {
+        id: 2,
         productType: "Simple Product",
         productId: "#45523232",
         name: "Mouse",
@@ -137,6 +141,7 @@ const MyProducts = () => {
         updateAndDate: "12-01-2022 12:00",
       },
       {
+        id: 3,
         productType: "Simple Product",
         size: "UK24",
         productId: "#45523232",
@@ -194,6 +199,8 @@ const MyProducts = () => {
               console.log("custom search button")
             }
             searchBarSizeMd={4}
+            disableCustomSearchButton={!selected.length}
+            OnSelectionChange={(vals) => setSelected(vals)}
           />
           <Menu
             id="basic-menu"
