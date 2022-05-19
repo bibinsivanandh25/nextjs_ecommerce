@@ -3,6 +3,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
+import validateMessage from "constants/validateMessages";
 
 const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
   const [productPolicyFormData, setProductPolicyFormData] = useState({
@@ -11,10 +12,54 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
     cancellationPolicy: "",
     shippingPolicy: "",
   });
+  const [error, setError] = useState({});
 
   useEffect(() => {
     setProductPolicyFormData({ ...formData.policy });
   }, [formData]);
+
+  const validateForm = () => {
+    const errObj = { ...error };
+
+    const validateFields = (id, validation, errorMessage) => {
+      if (!productPolicyFormData[id]) {
+        errObj[id] = validateMessage.field_required;
+      } else if (validation && !validation.test(productPolicyFormData[id])) {
+        errObj[id] = errorMessage;
+      } else {
+        errObj[id] = null;
+      }
+    };
+    validateFields(
+      "policyTabLabel",
+      /^.{1,100}$/,
+      validateMessage.alpha_numeric_max_100
+    );
+    validateFields(
+      "shippingPolicy",
+      /^.{1,255}$/,
+      validateMessage.alpha_numeric_max_255
+    );
+    validateFields(
+      "cancellationPolicy",
+      /^.{1,255}$/,
+      validateMessage.alpha_numeric_max_255
+    );
+    validateFields(
+      "refundPolicy",
+      /^.{1,255}$/,
+      validateMessage.alpha_numeric_max_255
+    );
+
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
 
   useImperativeHandle(ref, () => {
     return {
@@ -24,7 +69,7 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
       validate: () => {
         //write validation logic here
         //return true if validation is success else false
-        return true;
+        return validateForm();
       },
     };
   });
@@ -50,6 +95,8 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
             onInputChange={handleChange}
             label="Policy Tab Label"
             value={productPolicyFormData.policyTabLabel}
+            error={Boolean(error.policyTabLabel)}
+            helperText={error.policyTabLabel}
           />
           <InfoOutlinedIcon className="ms-1" />
         </div>
@@ -67,6 +114,8 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           rows={2}
           muiProps="m-0 p-0 fs-10"
           value={productPolicyFormData.shippingPolicy}
+          error={Boolean(error.shippingPolicy)}
+          helperText={error.shippingPolicy}
         />
       </Grid>
       <Grid item xs={11}>
@@ -82,6 +131,8 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           rows={2}
           value={productPolicyFormData.refundPolicy}
           muiProps="m-0 p-0 fs-10"
+          error={Boolean(error.refundPolicy)}
+          helperText={error.refundPolicy}
         />
       </Grid>
       <Grid item xs={11}>
@@ -97,6 +148,8 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           rows={2}
           value={productPolicyFormData.cancellationPolicy}
           muiProps="m-0 p-0 fs-10"
+          error={Boolean(error.cancellationPolicy)}
+          helperText={error.cancellationPolicy}
         />
       </Grid>
     </Grid>
