@@ -7,6 +7,7 @@ import ModalComponent from "components/atoms/ModalComponent";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
 import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
 
 let attributes = [
   {
@@ -46,6 +47,7 @@ const AttributesForm = forwardRef(({}, ref) => {
   const [Attributes, setAttributes] = useState([...attributes]);
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [showAddAttributeModal, setShowAttributeModal] = useState(false);
+  const [formErrorObj, setFormErrorObj] = useState({});
   const [formValues, setFormValues] = useState({
     attributeName: "",
     values: [],
@@ -59,13 +61,8 @@ const AttributesForm = forwardRef(({}, ref) => {
       handleSendFormData: () => {
         return ["attribute", { ...selectedAttribute }];
       },
-      validate: () => {
-        //write validation logic here
-        //return true if validation is success else false
-        return false;
-      },
+      validate: validateAttributeForms,
     };
-    validate: () => {};
   });
 
   const getAttributeValues = () => {
@@ -107,6 +104,8 @@ const AttributesForm = forwardRef(({}, ref) => {
             <Grid item lg={9} sm={12} container rowGap={1}>
               <Grid item sm={12}>
                 <MultiSelectComponent
+                  helperText={formErrorObj[ele.attribute]}
+                  error={formErrorObj[ele.attribute]?.length}
                   label={ele.attribute}
                   list={[...options]}
                   id={ele.attribute}
@@ -176,6 +175,37 @@ const AttributesForm = forwardRef(({}, ref) => {
       );
     });
   };
+
+  const validateAttributeForms = () => {
+    let flag = true;
+    let errObj = {};
+    let temp = [];
+    Attributes.forEach((ele) => {
+      temp.push(ele.selected);
+      if (ele.selected) {
+        errObj = {
+          ...errObj,
+          [ele.attribute]: "",
+        };
+      }
+    });
+    if (!temp.some((item) => item)) {
+      flag = false;
+      toastify("Please select atleast one attribute", "error");
+    }
+
+    Object.keys(errObj).forEach((ele) => {
+      if (!selectedAttribute[ele] || !selectedAttribute[ele]?.length) {
+        errObj[ele] = validateMessage.field_required;
+        flag = false;
+      }
+    });
+
+    setFormErrorObj({ ...errObj });
+    return flag;
+    // console.log(errObj);
+  };
+
   const validateField = () => {
     const errObj = {
       attributeName: "",
