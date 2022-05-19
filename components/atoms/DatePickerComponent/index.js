@@ -11,7 +11,8 @@ const DatePickerComponent = ({
   disableFuture = false,
   value = null,
   onDateChange = () => {},
-  error = "",
+  error = false,
+  helperText = null,
   inputlabelshrink = false,
 }) => {
   return (
@@ -31,10 +32,12 @@ const DatePickerComponent = ({
             InputLabelProps={{
               shrink: inputlabelshrink || value,
             }}
+            error={error}
+            helperText={helperText}
           />
         )}
+        errorText={error}
       />
-      <div className="errorContainer">{error}</div>
     </LocalizationProvider>
   );
 };
