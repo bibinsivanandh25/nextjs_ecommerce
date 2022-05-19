@@ -12,17 +12,146 @@ const AddAddressModal = (props) => {
     type = "",
   } = props;
   const [formValues, setFormValues] = useState({});
+  const [error, setError] = useState({});
+
+  const [inputFields, setInputFields] = useState([
+    {
+      label: "Name",
+      id: "name",
+      value: null,
+      required: true,
+    },
+    {
+      label: "Mobile Number",
+      id: "mobileNumber",
+      value: null,
+    },
+    {
+      label: "Pin Code",
+      id: "pincode",
+      value: null,
+    },
+    {
+      label: "Location",
+      id: "location",
+      value: null,
+    },
+    {
+      label: "Address",
+      id: "address",
+      size: 12,
+      value: null,
+    },
+    {
+      label: "City / District / Town",
+      id: "city",
+      value: null,
+    },
+    {
+      label: "State",
+      type: "dropdown",
+      id: "state",
+      options: [
+        {
+          id: "karnataka",
+          label: "Karnataka",
+        },
+        { id: "delhi", label: "Delhi" },
+      ],
+      value: null,
+    },
+    {
+      label: "Landmark (Optional)",
+      id: "landmark",
+      value: null,
+    },
+    {
+      label: "Alternate Number (Optional)",
+      id: "alternateNumber",
+      value: null,
+    },
+    {
+      label: "Latitude Value (Optional)",
+      id: "latitude",
+      value: null,
+    },
+    {
+      label: "Longitude Value (Optional)",
+      id: "longitude",
+      value: null,
+    },
+  ]);
 
   useEffect(() => {
-    setFormValues(values);
-  }, [values]);
+    if (type === "edit") {
+      setFormValues(values);
+    }
+  }, [values, type]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormValues((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const validateForm = () => {
+    const errObj = { ...error };
+
+    const validatePassword = (field) => {
+      if (!formValues[field]) {
+        errObj[field] = validateMessage.field_required;
+      } else if (!validationRegex.password.test(formValues[field])) {
+        errObj[field] = validateMessage.password;
+      } else {
+        errObj[field] = null;
+      }
+    };
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
+  const handleSave = () => {
+    const isValid = validateForm();
+    if (isValid) {
+      console.log(formValues);
+    }
+  };
+
+  useEffect(() => {
+    const dropdownCopy = [...inputFields];
+    Object.entries(formValues).forEach(([key, value]) => {
+      const existingVal = inputFields.find((i) => i.id === key);
+      const index = inputFields.findIndex((i) => i.id === key);
+      dropdownCopy[index] = {
+        ...existingVal,
+        value,
+      };
+    });
+    setInputFields(dropdownCopy);
+  }, [formValues]);
+
+  const handleInputChange = (val, ele) => {
+    const getData = () => {
+      if (ele.type === "dropdown") {
+        return val ? val.id : null;
+      } else {
+        return val;
+      }
+    };
+    setFormValues((prev) => {
+      return {
+        ...prev,
+        [ele.id]: getData(),
+      };
+    });
   };
 
   return (
@@ -44,133 +173,38 @@ const AddAddressModal = (props) => {
           setShowAddAddressModal(false);
         }
       }}
+      onSaveBtnClick={handleSave}
       minHeightClassName="mxh-500"
-      ModalWidth={800}
+      ModalWidth={"60%"}
       footerClassName="align-right border-top me-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"
     >
       <Grid container my={2} spacing={2}>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.name}
-            label="Name"
-            className="w-100"
-            size="small"
-            name="name"
-            id="name"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.mobileNumber}
-            label="Mobile Number"
-            className="w-100"
-            size="small"
-            id="mobileNumber"
-            name="mobileNumber"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.pincode}
-            label="Pin Code"
-            className="w-100"
-            size="small"
-            id="pincode"
-            name="pincode"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.location}
-            label="Location"
-            className="w-100"
-            size="small"
-            id="location"
-            name="location"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <InputBox
-            value={formValues.address}
-            label="Address"
-            className="w-100"
-            size="small"
-            id="address"
-            name="address"
-            isMultiline
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.city}
-            label="City / District / Town"
-            className="w-100"
-            size="small"
-            id="city"
-            name="city"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <SimpleDropdownComponent
-            list={[]}
-            label="State"
-            size="small"
-            id="state"
-            name="state"
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.landmark}
-            label="Landmark (Optional)"
-            className="w-100"
-            size="small"
-            id="landmark"
-            name="landmark"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.alternateNumber}
-            label="Alternate Number (Optional)"
-            className="w-100"
-            size="small"
-            id="alternateNumber"
-            name="alternateNumber"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.latitude}
-            label="Latitude Value (Optional)"
-            className="w-100"
-            size="small"
-            id="latitude"
-            name="latitude"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <InputBox
-            value={formValues.longitude}
-            label="Longitude Value (Optional)"
-            className="w-100"
-            size="small"
-            id="longitude"
-            name="longitude"
-            onInputChange={handleInputChange}
-          />
-        </Grid>
+        {inputFields.map((field) => (
+          <Grid item lg={field?.size || 6} md={12} xs={12} key={field.id}>
+            {field.type === "dropdown" ? (
+              <SimpleDropdownComponent
+                id={field.id}
+                size="small"
+                list={field.options}
+                label={field.label}
+                value={field.options.find((op) => op.id === field.value)}
+                onDropdownSelect={(val) => handleInputChange(val, field)}
+              />
+            ) : (
+              <InputBox
+                value={field.value || ""}
+                label={field.label}
+                className="w-100"
+                size="small"
+                id={field.id}
+                name={field.id}
+                onInputChange={(e) => handleInputChange(e.target.value, field)}
+              />
+            )}
+          </Grid>
+        ))}
       </Grid>
     </ModalComponent>
   );
