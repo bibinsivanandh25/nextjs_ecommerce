@@ -119,4 +119,6 @@ const VariationForm = forwardRef(
     );
   }
 );
+
+VariationForm.displayName = "VariationForm";
 export default VariationForm;
