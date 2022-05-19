@@ -6,6 +6,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
+import validateMessage from "constants/validateMessages";
 
 let attributes = [
   {
@@ -64,6 +65,7 @@ const AttributesForm = forwardRef(({}, ref) => {
         return false;
       },
     };
+    validate: () => {};
   });
 
   const getAttributeValues = () => {
@@ -179,23 +181,28 @@ const AttributesForm = forwardRef(({}, ref) => {
       attributeName: "",
       values: "",
     };
+    let flag = false;
     if (formValues.attributeName === "") {
-      errObj.attributeName = "field required";
+      errObj.attributeName = validateMessage.field_required;
+      flag = true;
     } else if (formValues.attributeName.length > 50) {
-      errObj.attributeName = "Max 50 characters are allowed";
+      errObj.attributeName = validateMessage.alpha_numeric_max_50;
+      flag = true;
     }
     formValues.values.forEach((ele) => {
       if (ele.length > 50) {
-        errObj.values = "Max 50 characters are allowed";
+        errObj.values = validateMessage.alpha_numeric_max_50;
+        flag = true;
       }
     });
     if (formValues.values.length === 0) {
-      errObj.values = "Field required";
+      errObj.values = validateMessage.field_required;
+      flag = true;
     }
     setErrorObj({ ...errObj });
+    return flag;
   };
 
-  console.log(formValues);
   return (
     <Grid container className="">
       {getAttributeValues()}
@@ -213,8 +220,29 @@ const AttributesForm = forwardRef(({}, ref) => {
         ModalTitle="Add new Attribute"
         showClearBtn={false}
         saveBtnText="submit"
-        onCloseIconClick={() => setShowAttributeModal(!showAddAttributeModal)}
-        onSaveBtnClick={validateField}
+        onCloseIconClick={() => {
+          setShowAttributeModal(!showAddAttributeModal);
+          setErrorObj({
+            attributeName: "",
+            values: "",
+          });
+          setFormValues({
+            attributeName: "",
+            values: "",
+          });
+        }}
+        onSaveBtnClick={() => {
+          let error = validateField();
+          if (error) {
+            setShowAttributeModal(true);
+          } else {
+            setFormValues({
+              attributeName: "",
+              values: [],
+            });
+            setShowAttributeModal(false);
+          }
+        }}
       >
         <Grid container justifyContent={"center"} rowGap={2} className="my-4">
           <Grid item sm={12} className="mx-5">
