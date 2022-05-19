@@ -73,6 +73,7 @@ export default function TableComponent({
   showCustomSearchButton = false,
   customSearchButtonLabel = "",
   onCustomSearchButtonClick = () => {},
+  disableCustomSearchButton = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -307,6 +308,7 @@ export default function TableComponent({
                       sx={{ textTransform: "none" }}
                       fullWidth
                       onClick={onCustomSearchButtonClick}
+                      disabled={disableCustomSearchButton}
                     >
                       {customSearchButtonLabel}
                     </Button>

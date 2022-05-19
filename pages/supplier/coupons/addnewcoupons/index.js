@@ -1,10 +1,11 @@
 import { Grid, Paper, Button } from "@mui/material";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import SelectComponent from "components/atoms/SelectComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
+import validateMessage from "constants/validateMessages";
+import validationRegex from "services/utils/regexUtils";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const AddNewCoupons = () => {
@@ -19,17 +20,82 @@ const AddNewCoupons = () => {
     },
   ];
   const [selectedTab, setSelectedTab] = useState("restriction");
+  const [formValues, setFormValues] = useState({});
+  const [error, setError] = useState({});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    const errObj = { ...error };
+
+    const validateFields = (id, validation, errorMessage) => {
+      if (!formValues[id]) {
+        errObj[id] = validateMessage.field_required;
+      } else if (validation && !validation.test(formValues[id])) {
+        errObj[id] = errorMessage;
+      } else {
+        errObj[id] = null;
+      }
+    };
+
+    validateFields(
+      "description",
+      /^.{1,255}$/,
+      validateMessage.alpha_numeric_max_255
+    );
+    validateFields("couponAmount");
+    validateFields("couponExpiryDate");
+    validateFields("discountType");
+    validateFields("categoryInclude");
+    validateFields("productsInclude");
+    validateFields("usageLimitPerCoupon");
+    validateFields("usageLimittoXTimes");
+    validateFields("usageLimitPerUser");
+
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
+  const handleDraftClick = () => {
+    const isValid = validateForm();
+    if (isValid) {
+      console.log(formValues);
+    }
+  };
+
+  const handleSubmitClick = () => {
+    const isValid = validateForm();
+    if (isValid) {
+      console.log(formValues);
+    }
+  };
 
   return (
-    <Paper sx={{ height: "100%" }}>
-      <Grid container sx={{ height: "100%" }}>
+    <Paper sx={{ height: "100%", minHeight: "80vh" }}>
+      <Grid container sx={{ height: "100%", minHeight: "80vh" }}>
         <Grid
           item
           xs={4}
           container
           justifyContent="center"
           alignItems="start"
-          sx={{ borderRight: "1px solid lightgray", height: "100%" }}
+          sx={{
+            borderRight: "1px solid lightgray",
+            height: "100%",
+            minHeight: "80vh",
+          }}
         >
           <Grid container item xs={10} spacing={2} pt={4}>
             <Grid item xs={12}>
@@ -37,6 +103,12 @@ const AddNewCoupons = () => {
                 label="Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
+                value={formValues.code}
+                id="code"
+                name="code"
+                onInputChange={handleInputChange}
+                error={Boolean(error.code)}
+                helperText={error.code}
               />
             </Grid>
             <Grid item xs={12}>
@@ -46,19 +118,60 @@ const AddNewCoupons = () => {
                 inputlabelshrink
                 isMultiline
                 rows={4}
+                value={formValues.description}
+                id="description"
+                name="description"
+                onInputChange={handleInputChange}
+                error={Boolean(error.description)}
+                helperText={error.description}
               />
             </Grid>
             <Grid item xs={12}>
-              <SimpleDropdownComponent label="Discount Type" inputlabelshrink />
+              <SimpleDropdownComponent
+                label="Discount Type"
+                inputlabelshrink
+                value={formValues.discountTypeObj}
+                id="discountType"
+                name="discountType"
+                onDropdownSelect={(val) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    discountType: val ? val.id : null,
+                    discountTypeObj: val,
+                  }))
+                }
+                error={Boolean(error.discountType)}
+                helperText={error.discountType}
+              />
             </Grid>
             <Grid item xs={12}>
-              <InputBox label="Coupon Amount" inputlabelshrink />
+              <InputBox
+                label="Coupon Amount"
+                inputlabelshrink
+                value={formValues.couponAmount}
+                id="couponAmount"
+                name="couponAmount"
+                onInputChange={handleInputChange}
+                error={Boolean(error.couponAmount)}
+                helperText={error.couponAmount}
+              />
             </Grid>
             <Grid item xs={12}>
               <DatePickerComponent
                 label="Coupon Expiry Date"
                 size="small"
                 inputlabelshrink
+                value={formValues.couponExpiryDate}
+                id="couponExpiryDate"
+                name="couponExpiryDate"
+                onDateChange={(val) =>
+                  setFormValues((prev) => ({
+                    ...prev,
+                    couponExpiryDate: val,
+                  }))
+                }
+                error={Boolean(error.couponExpiryDate)}
+                helperText={error.couponExpiryDate}
               />
             </Grid>
           </Grid>
@@ -93,6 +206,18 @@ const AddNewCoupons = () => {
                         label="Category Include"
                         size="small"
                         inputlabelshrink
+                        value={formValues.categoryIncludeObj}
+                        id="categoryInclude"
+                        name="categoryInclude"
+                        onDropdownSelect={(val) =>
+                          setFormValues((prev) => ({
+                            ...prev,
+                            categoryInclude: val ? val.id : null,
+                            categoryIncludeObj: val,
+                          }))
+                        }
+                        error={Boolean(error.categoryInclude)}
+                        helperText={error.categoryInclude}
                       />
                       <InfoOutlinedIcon className="ms-2" />
                     </div>
@@ -103,6 +228,18 @@ const AddNewCoupons = () => {
                         label="Products Include"
                         size="small"
                         inputlabelshrink
+                        value={formValues.productsIncludeObj}
+                        id="productsInclude"
+                        name="productsInclude"
+                        onDropdownSelect={(val) =>
+                          setFormValues((prev) => ({
+                            ...prev,
+                            productsInclude: val ? val.id : null,
+                            productsIncludeObj: val,
+                          }))
+                        }
+                        error={Boolean(error.productsInclude)}
+                        helperText={error.productsInclude}
                       />
                       <InfoOutlinedIcon className="ms-2" />
                     </div>
@@ -116,6 +253,13 @@ const AddNewCoupons = () => {
                       placeholder="eg: Zero"
                       inputlabelshrink
                       label="Usage Limit Per Coupon"
+                      value={formValues.usageLimitPerCoupon}
+                      id="usageLimitPerCoupon"
+                      name="usageLimitPerCoupon"
+                      onInputChange={handleInputChange}
+                      error={Boolean(error.usageLimitPerCoupon)}
+                      helperText={error.usageLimitPerCoupon}
+                      type="number"
                     />
                   </Grid>
                   <Grid item xs={11}>
@@ -123,6 +267,13 @@ const AddNewCoupons = () => {
                       placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
+                      value={formValues.usageLimittoXTimes}
+                      id="usageLimittoXTimes"
+                      name="usageLimittoXTimes"
+                      onInputChange={handleInputChange}
+                      error={Boolean(error.usageLimittoXTimes)}
+                      helperText={error.usageLimittoXTimes}
+                      type="number"
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -131,6 +282,13 @@ const AddNewCoupons = () => {
                         placeholder="eg: Unlimited Usage"
                         inputlabelshrink
                         label="Usage Limit Per User"
+                        value={formValues.usageLimitPerUser}
+                        id="usageLimitPerUser"
+                        name="usageLimitPerUser"
+                        onInputChange={handleInputChange}
+                        error={Boolean(error.usageLimitPerUser)}
+                        helperText={error.usageLimitPerUser}
+                        type="number"
                       />
                       <InfoOutlinedIcon className="ms-1" />
                     </div>
@@ -153,6 +311,7 @@ const AddNewCoupons = () => {
                 size="small"
                 className="bg-orange"
                 sx={{ width: "150px", textTransform: "none" }}
+                onClick={handleDraftClick}
               >
                 Draft
               </Button>
@@ -163,6 +322,7 @@ const AddNewCoupons = () => {
                 size="small"
                 sx={{ width: "150px", textTransform: "none" }}
                 className="bg-orange"
+                onClick={handleSubmitClick}
               >
                 Submit
               </Button>
