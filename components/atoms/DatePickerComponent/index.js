@@ -4,18 +4,16 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
-const DatePickerComponent = (props) => {
-  const {
-    label = "",
-    fullWidth = true,
-    size = "medium",
-    disableFuture = false,
-    value = null,
-    onDateChange = () => {},
-    error = "",
-    inputlabelshrink = false,
-  } = props;
-
+const DatePickerComponent = ({
+  label = "",
+  fullWidth = true,
+  size = "medium",
+  disableFuture = false,
+  value = null,
+  onDateChange = () => {},
+  error = "",
+  inputlabelshrink = false,
+}) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
