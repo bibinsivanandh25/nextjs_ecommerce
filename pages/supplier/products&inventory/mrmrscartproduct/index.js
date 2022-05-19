@@ -184,6 +184,7 @@ const MrMrsCartProducts = () => {
             columns={columns}
             tableRows={tableRows}
             table_heading={`Total Products ${tableRows.length}`}
+            showCheckbox={false}
           />
         </Paper>
       </Box>

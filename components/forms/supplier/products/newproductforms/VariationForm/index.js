@@ -110,7 +110,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       });
       setDropdowns((prev) => getUniqueListBy([...data, ...prev], "id"));
     }
-    setVariationFormData({ ...formData.variation });
+    // setVariationFormData({ ...formData.variation });
   }, [formData]);
 
   useEffect(() => {
