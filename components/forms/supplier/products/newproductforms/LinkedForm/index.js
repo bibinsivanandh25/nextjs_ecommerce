@@ -3,13 +3,26 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { formatValue } from "@syncfusion/ej2-react-maps";
+import validateMessage from "constants/validateMessages";
 
 const LinkedForm = forwardRef(({ formData }, ref) => {
   const [linkedFormData, setLinkedFormData] = useState({
+    upSells: {
+      label: "",
+      value: "",
+    },
+    crossSells: {
+      label: "",
+      value: "",
+    },
+  });
+  const [errorObj, setErrorObj] = useState({
     upSells: "",
     crossSells: "",
   });
 
+  console.log(formData);
   useEffect(() => {
     setLinkedFormData({ ...formData.linked });
   }, [formData]);
@@ -24,11 +37,7 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       handleSendFormData: () => {
         return ["linked", { ...linkedFormData }];
       },
-      validate: () => {
-        //write validation logic here
-        //return true if validation is success else false
-        return true;
-      },
+      validate: validateFormvalues,
     };
   });
   const upSellsArray = [
@@ -45,11 +54,30 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
     },
   ];
 
+  const validateFormvalues = () => {
+    let flag = true;
+    let errObj = {
+      upSells: "",
+      crossSells: "",
+    };
+    if (!linkedFormData.upSells.value) {
+      errObj.upSells = validateMessage.field_required;
+      flag = false;
+    }
+    if (!linkedFormData.crossSells.value) {
+      errObj.crossSells = validateMessage.field_required;
+      flag = false;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} container spacing={2}>
         <Grid item xs={9}>
           <SimpleDropdownComponent
+            error={errorObj.upSells?.length}
+            helperText={errorObj.upSells}
             size="small"
             label="Up-Sells"
             placeholder="Filter By Product..."
@@ -68,6 +96,8 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       <Grid item xs={12} container spacing={2}>
         <Grid item xs={9}>
           <SimpleDropdownComponent
+            error={errorObj.crossSells?.length}
+            helperText={errorObj.crossSells}
             size="small"
             label="Cross-Sells"
             placeholder="Filter By Product..."
