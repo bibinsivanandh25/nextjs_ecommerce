@@ -10,7 +10,6 @@ import {
   TableBody,
 } from "@mui/material";
 import React from "react";
-import styles from "./Supplier.module.css";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
 const CustomTableComponent = ({ columns = [], rows = [] }) => {
