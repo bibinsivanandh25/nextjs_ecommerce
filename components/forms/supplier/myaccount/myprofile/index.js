@@ -6,61 +6,105 @@ import { useState } from "react";
 import avatar from "../../../../../public/assets/images/man.png";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
+import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+const formObj = {
+  businessName: "",
+  mail: "",
+  mobile: "",
+  city: null,
+  mainCat: null,
+  gstin: "",
+  stockCount: "",
+  site: "",
+  siteLink: "",
+  firstName: "",
+  lastName: "",
+};
 
 const MyProfile = () => {
-  const [formDetails, setFormDetails] = useState({
+  const [formValues, setFormValues] = useState({
+    businessName: "",
+    mail: "",
+    mobile: "",
+    city: null,
+    mainCat: null,
+    gstin: "",
+    stockCount: "",
+    site: "",
+    siteLink: "",
     firstName: "",
     lastName: "",
-    mobileNumber: "",
-    emailId: "",
   });
-  const [errorObj, setErrorObj] = useState({});
+  const [errorObj, setErrorObj] = useState({ ...formObj });
 
-  const validateFields = () => {
+  const validateForm = () => {
     let flag = false;
-    let errObj = {
-      firstName: "",
-      lastName: "",
-      mobileNumber: "",
-      emailId: "",
-    };
-
-    if (!formDetails.firstName.length) {
+    const errObj = { ...formObj };
+    if (formValues.firstName === "") {
       errObj.firstName = validateMessage.field_required;
       flag = true;
-    }
-    if (formDetails.firstName.length > 50) {
+    } else if (formValues.firstName.length > 50) {
+      flag = true;
       errObj.firstName = validateMessage.alpha_numeric_max_50;
-      flag = true;
     }
-    if (!formDetails.lastName.length) {
+    if (formValues.lastName === "") {
+      flag = true;
       errObj.lastName = validateMessage.field_required;
+    } else if (formValues.lastName.length > 50) {
       flag = true;
-    }
-    if (formDetails.lastName.length > 50) {
       errObj.lastName = validateMessage.alpha_numeric_max_50;
-      flag = true;
     }
-    if (!validationRegex.mobile.test(formDetails.mobileNumber)) {
+    if (formValues.businessName === "") {
       flag = true;
-      errObj.mobileNumber = validateMessage.mobile;
+      errObj.businessName = validateMessage.field_required;
+    } else if (formValues.businessName.length > 60) {
+      flag = true;
+      errObj.businessName = validateMessage.alpha_numeric_max_60;
     }
-    if (!formDetails.mobileNumber.length) {
-      errObj.mobileNumber = validateMessage.field_required;
+    if (formValues.mail === "") {
       flag = true;
+      errObj.mail = validateMessage.field_required;
+    } else if (!validationRegex.email.test(formValues.mail)) {
+      flag = true;
+      errObj.mail = validateMessage.email;
     }
-    if (!validationRegex.email.test(formDetails.emailId)) {
+    if (formValues.mobile === "") {
       flag = true;
-      errObj.emailId = validateMessage.email;
+      errObj.mobile = validateMessage.field_required;
+    } else if (!validationRegex.mobile.test(formValues.mobile)) {
+      flag = true;
+      errObj.mobile = validateMessage.mobile;
     }
-    if (!formDetails.mobileNumber.length) {
+    if (formValues.gstin === "") {
       flag = true;
-      errObj.emailId = validateMessage.email;
+      errObj.gstin = validateMessage.field_required;
+    } else if (formValues.gstin.length !== 15) {
+      flag = true;
+      errObj.gstin = "Gstin number should be of length 15";
+    }
+    if (formValues.stockCount === "") {
+      flag = true;
+      errObj.stockCount = "Please select one option";
+    }
+    if (formValues.site === "") {
+      flag = true;
+      errObj.site = "Please select atleact one option";
+    }
+    if (formValues.siteLink.length > 255) {
+      flag = true;
+      errObj.siteLink = validateMessage.alpha_numeric_max_255;
+    }
+    if (formValues.city === null) {
+      flag = true;
+      errObj.city = validateMessage.field_required;
+    }
+    if (formValues.mainCat === null) {
+      flag = true;
+      errObj.mainCat = validateMessage.field_required;
     }
     setErrorObj({ ...errObj });
     return flag;
   };
-
   return (
     <div>
       <div className="mt-4 d-flex align-items-center">
@@ -73,78 +117,168 @@ const MyProfile = () => {
         </div>
       </div>
       <div className="my-2">
-        <p className="fw-bold">Update your profile</p>
-        <Grid className="mx-5">
-          <Grid container columnSpacing={10}>
-            <Grid item xs={4}>
-              <InputBox
-                value={formDetails.firstName}
-                className="w-100"
-                label="First Name"
-                helperText={errorObj.firstName}
-                error={errorObj.firstName?.length}
-                onInputChange={(e) => {
-                  setFormDetails((pre) => ({
-                    ...pre,
-                    firstName: e.target.value,
-                  }));
-                }}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <InputBox
-                value={formDetails.lastName}
-                helperText={errorObj.lastName}
-                error={errorObj.lastName?.length}
-                className="w-100"
-                label="Last Name"
-                onInputChange={(e) => {
-                  setFormDetails((pre) => ({
-                    ...pre,
-                    lastName: e.target.value,
-                  }));
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid container columnSpacing={10} className="my-4">
-            <Grid item xs={4}>
-              <InputBox
-                className="w-100"
-                value={formDetails.mobileNumber}
-                label="Mobile Number"
-                helperText={errorObj.mobileNumber}
-                error={errorObj.mobileNumber?.length}
-                onInputChange={(e) => {
-                  setFormDetails((pre) => ({
-                    ...pre,
-                    mobileNumber: e.target.value,
-                  }));
-                }}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <InputBox
-                className="w-100"
-                value={formDetails.emailId}
-                helperText={errorObj.emailId}
-                error={errorObj.emailId?.length}
-                label="Email ID"
-                onInputChange={(e) => {
-                  setFormDetails((pre) => ({
-                    ...pre,
-                    emailId: e.target.value,
-                  }));
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid>
-            <ButtonComponent
-              label="Update profile"
-              onBtnClick={validateFields}
+        <p className="fw-bold pb-3">Update your profile</p>
+        <Grid container spacing={2}>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter First Name"
+              value={formValues.firstName}
+              label="First Name"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  firstName: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.firstName}
+              error={errorObj.firstName !== ""}
             />
           </Grid>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter Last Name"
+              value={formValues.lastName}
+              label="Last Name"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  lastName: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.lastName}
+              error={errorObj.lastName !== ""}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter your Business Name"
+              value={formValues.businessName}
+              label="Business Name"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  businessName: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.businessName}
+              error={errorObj.businessName !== ""}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter your E-mail ID"
+              value={formValues.mail}
+              label="E-mail ID"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  mail: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.mail}
+              error={errorObj.mail !== ""}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter your Mobile Number"
+              value={formValues.mobile}
+              label="Mobile Number"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  mobile: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.mobile}
+              error={errorObj.mobile !== ""}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <SimpleDropdownComponent
+              list={[
+                { label: "Bangalore", value: "Bangalore", id: 1 },
+                { label: "Mysore", value: "Mysore", id: 3 },
+              ]}
+              label="Choose City"
+              onDropdownSelect={(value) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  city: value,
+                }));
+              }}
+              value={formValues.city}
+              size="small"
+              helperText={errorObj.city}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            {/* <InputBox
+            placeholder="Choose your Main Category"
+            value={formValues.mainCat}
+            label="Select Main Category"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                mainCat: e.target.value,
+              }));
+            }}
+          /> */}
+            <SimpleDropdownComponent
+              list={[
+                { label: "Women", value: "women", id: 1 },
+                { label: "Watch", value: "watch", id: 3 },
+              ]}
+              label="Select Main Category"
+              onDropdownSelect={(value) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  mainCat: value,
+                }));
+              }}
+              value={formValues.mainCat}
+              size="small"
+              helperText={errorObj.mainCat}
+            />
+          </Grid>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter your GSTIN"
+              value={formValues.gstin}
+              label="GSTIN"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  gstin: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText={errorObj.gstin}
+              error={errorObj.gstin !== ""}
+            />
+          </Grid>
+        </Grid>
+        <Grid className={"mt-2"}>
+          <ButtonComponent label="Update profile" onBtnClick={validateForm} />
         </Grid>
       </div>
     </div>

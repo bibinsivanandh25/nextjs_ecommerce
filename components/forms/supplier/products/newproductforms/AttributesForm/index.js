@@ -95,6 +95,12 @@ const AttributesForm = forwardRef(({}, ref) => {
                   if (ele.attribute === id) {
                     ele.selected = !ele.selected;
                   }
+                  if (!ele.selected) {
+                    setSelectedAttribute((pre) => ({
+                      ...pre,
+                      [ele.attribute]: [],
+                    }));
+                  }
                 });
                 setAttributes([...arr]);
               }}
