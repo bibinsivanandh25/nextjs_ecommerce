@@ -3,7 +3,7 @@ import ModalComponent from "components/atoms/ModalComponent";
 import validateMessage from "constants/validateMessages";
 import Image from "next/image";
 import BankLogo from "public/assets/images/banklogo.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AddBankDetails = ({
   BankDetails,
@@ -12,6 +12,7 @@ const AddBankDetails = ({
   setBankDetails = () => {},
 }) => {
   const [errorObj, setErrorObj] = useState({});
+
   const validateFields = () => {
     console.log(BankDetails);
     let flag = false;
@@ -38,23 +39,29 @@ const AddBankDetails = ({
       errObj.accountHolderName = validateMessage.alpha_numeric_max_100;
       flag = true;
     }
-    console.log(BankDetails["Account Number"]);
-    if (!BankDetails["Account Number"]?.toString.length) {
+    if (!BankDetails["Account Number"]?.toString().length) {
       errObj.accountNumber = validateMessage.field_required;
       flag = true;
     }
     if (
-      BankDetails["Account Number"]?.toString.length < 9 ||
-      BankDetails["Account Number"]?.toString.length > 18
+      BankDetails["Account Number"]?.toString().tolength < 9 ||
+      BankDetails["Account Number"]?.toString().length > 18
     ) {
       errObj.accountNumber = "Invalid Account.No";
       flag = true;
     }
     if (!errObj.accountNumber.length) {
-      if (BankDetails["Account Number"] !== BankDetails["ReBankAcc"]) {
+      if (
+        BankDetails["Account Number"]?.toString() !==
+        BankDetails["ReBankAcc"]?.toString()
+      ) {
         errObj.reenterAccountNumber = "Account No. is not matching";
         flag = true;
       }
+    }
+    if (!BankDetails["ReBankAcc"]?.length) {
+      flag = true;
+      errObj.reenterAccountNumber = validateMessage.field_required;
     }
     if (!/^[A-Z]{4}[0][A-Z0-9]{6}$/.test(BankDetails["IFSC code"])) {
       errObj.ifscCode = "Invalid IFSC code";
