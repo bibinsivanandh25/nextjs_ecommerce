@@ -108,7 +108,8 @@ const BankDetails = () => {
     });
   };
   return (
-    <Paper className="h-95p overflow-auto">
+    // <Paper className="h-95p overflow-auto">
+    <div className="">
       <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
       <Grid container>
         {getPickUpAdress()}
@@ -128,7 +129,8 @@ const BankDetails = () => {
         setShowModal={setShowModal}
         setBankDetails={setSelectedBankDetails}
       />
-    </Paper>
+    </div>
+    // </Paper>
   );
 };
 

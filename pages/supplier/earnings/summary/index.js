@@ -8,6 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
+import ModalComponent from "components/atoms/ModalComponent";
+import BankDetails from "components/forms/supplier/myaccount/bankdetails";
+import AddBankDetails from "components/forms/supplier/myaccount/bankdetails/addbankdetails";
 import OrderDetails from "components/forms/supplier/myearnings/orderdetails";
 import { useEffect, useState } from "react";
 
@@ -34,6 +37,7 @@ const cardData = [
 const MyEarnings = () => {
   const [earningData, setEarningData] = useState([]);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [showAddBankModal, setShowAddBankModal] = useState(false);
 
   useEffect(() => {
     setEarningData([...cardData]);
@@ -51,7 +55,12 @@ const MyEarnings = () => {
         <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
           <Box className="fs-16 fw-700 ps-4">Summary</Box>
           <Box>
-            <ButtonComponent label="Choose Bank" onBtnClick={() => {}} />
+            <ButtonComponent
+              label="Choose Bank"
+              onBtnClick={() => {
+                setShowAddBankModal(true);
+              }}
+            />
           </Box>
         </Box>
       </div>
@@ -99,6 +108,19 @@ const MyEarnings = () => {
           showModal={showOrderDetails}
           setshowModal={setShowOrderDetails}
         />
+        {showAddBankModal ? (
+          <ModalComponent
+            open={showAddBankModal}
+            ModalWidth={1000}
+            showFooter={false}
+            showHeader={true}
+            ModalTitle=""
+            headerClassName="border-0"
+            onCloseIconClick={() => setShowAddBankModal(false)}
+          >
+            <BankDetails />
+          </ModalComponent>
+        ) : null}
         {/* ) : null} */}
       </Box>
     </Paper>

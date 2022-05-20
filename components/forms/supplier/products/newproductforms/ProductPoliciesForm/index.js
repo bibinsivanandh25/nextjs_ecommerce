@@ -4,6 +4,7 @@ import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import validateMessage from "constants/validateMessages";
+import FileUploadModal from "components/atoms/FileUpload";
 
 const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
   const [productPolicyFormData, setProductPolicyFormData] = useState({
@@ -13,6 +14,7 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
     shippingPolicy: "",
   });
   const [error, setError] = useState({});
+  const [showFileUploadModal, setShowFileUploadModal] = useState(false);
 
   useEffect(() => {
     setProductPolicyFormData({ ...formData.policy });
@@ -106,7 +108,9 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           legend="Shipping Policy"
           onChange={handleChange}
           name="shippingPolicy"
-          onBtnClick={() => {}}
+          onBtnClick={() => {
+            setShowFileUploadModal(true);
+          }}
           btnLabel="Add Media"
           btnSize="small"
           btnVariant="outlined"
@@ -123,7 +127,9 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           legend="Refund Policy"
           name="refundPolicy"
           onChange={handleChange}
-          onBtnClick={() => {}}
+          onBtnClick={() => {
+            setShowFileUploadModal(true);
+          }}
           btnLabel="Add Media"
           btnSize="small"
           btnVariant="outlined"
@@ -140,7 +146,9 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           legend="Cancellation/Return/Exchange Policy"
           onChange={handleChange}
           name="cancellationPolicy"
-          onBtnClick={() => {}}
+          onBtnClick={() => {
+            setShowFileUploadModal(true);
+          }}
           btnLabel="Add Media"
           btnSize="small"
           btnVariant="outlined"
@@ -152,6 +160,12 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           helperText={error.cancellationPolicy}
         />
       </Grid>
+      {showFileUploadModal ? (
+        <FileUploadModal
+          showModal={showFileUploadModal}
+          setShowModal={setShowFileUploadModal}
+        />
+      ) : null}
     </Grid>
   );
 });

@@ -5,8 +5,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import AddAddressModal from "../../myaccount/addaddressmodal";
 const AcceptandConfirmAdress = () => {
   const [radioChecked, setRadioChecked] = useState(false);
+  const [showAddAddress, setShowAddAddress] = useState(false);
   const [pickupDetails, setpickupDetails] = useState([
     {
       name: "Madhusudhan Agrahar",
@@ -105,6 +107,7 @@ const AcceptandConfirmAdress = () => {
   };
   return (
     <>
+      <p className="color-orange cursor-pointer"> Back</p>
       <div className="d-flex justify-content-between align-items-center ">
         <p className="fw-600">Select Pickup Address (5 orders Selected)</p>
         <ButtonComponent label="Ship with MrMrs Cart" />
@@ -112,7 +115,12 @@ const AcceptandConfirmAdress = () => {
       <Paper className="px-3">
         <div className="d-flex justify-content-between py-3">
           <p>Pickup Details</p>
-          <div className="d-flex align-items-center mx-2 ">
+          <div
+            className="d-flex align-items-center mx-2 cursor-pointer"
+            onClick={() => {
+              setShowAddAddress(true);
+            }}
+          >
             <div className="bg-orange rounded-circle mx-2">
               <AddIcon className="text-white " />
             </div>
@@ -124,6 +132,9 @@ const AcceptandConfirmAdress = () => {
           <Grid item xs={2}></Grid>
         </Grid>
       </Paper>
+      {showAddAddress ? (
+        <AddAddressModal setShowAddAddressModal={setShowAddAddress} />
+      ) : null}
     </>
   );
 };
