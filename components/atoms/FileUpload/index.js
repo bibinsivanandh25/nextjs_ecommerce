@@ -13,6 +13,8 @@ const FileUploadModal = ({
   showModal = false,
   setShowModal = () => {},
   getUploadedFiles = () => {},
+  maxFileSize = 2e6,
+  maxNoofFiles = 5,
 }) => {
   const fileUploadRef = useRef(null);
   const [binaryStr, setbinaryStr] = useState([]);
@@ -26,7 +28,7 @@ const FileUploadModal = ({
         const promiseArr = [];
         acceptedFiles.forEach((item) => {
           console.log(item.size);
-          if (item.size <= 2e6) {
+          if (item.size <= maxFileSize) {
             promiseArr.push(getBase64(item));
           } else {
             toastify("File size should be less than 2 MB", "error");
@@ -36,7 +38,7 @@ const FileUploadModal = ({
         const temp = filePaths.map((ele) => ele);
         arr.push(...temp);
         console.log(arr.length);
-        if (arr.length <= 5) {
+        if (arr.length <= maxNoofFiles) {
           setbinaryStr([...arr]);
         } else {
           toastify("Maximum 5 files can be uploaded", "error");
@@ -47,7 +49,7 @@ const FileUploadModal = ({
         reader.onloadend = () => {
           const bitStr = reader.result;
           arr.push(bitStr);
-          if (arr.length <= 5) {
+          if (arr.length <= maxNoofFiles) {
             setbinaryStr([...arr]);
           } else {
             toastify("Maximum 5 files can be uploaded", "error");
@@ -99,7 +101,7 @@ const FileUploadModal = ({
                 ref={fileUploadRef}
                 className="d-none"
                 onChange={(e) => {
-                  if (e.target.files[0]?.size <= 2e6) {
+                  if (e.target.files[0]?.size <= maxFileSize) {
                     handlefileDrop(e.target.files);
                   } else {
                     toastify("File size should be less than 2 MB", "error");
