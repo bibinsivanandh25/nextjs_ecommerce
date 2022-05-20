@@ -7,18 +7,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import validateMessage from "constants/validateMessages";
 
 const VariationForm = forwardRef(({ formData = {} }, ref) => {
-  const [variationFormData, setVariationFormData] = useState({
-    expiryDate: null,
-    others: "",
-    color: null,
-    fabric: null,
-    type: null,
-    availabeSizes: null,
-    style: null,
-    designType: null,
-    styleCode: null,
-    countryOfOrigin: null,
-  });
+  const [variationFormData, setVariationFormData] = useState({});
   const [error, setError] = useState({});
   const [dropdowns, setDropdowns] = useState([
     {
@@ -95,7 +84,6 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
   }
 
   useEffect(() => {
-    console.log(formData);
     if (formData && formData.attribute) {
       const data = Object.entries(formData?.attribute).map(([key, value]) => {
         const ob = {
@@ -110,20 +98,25 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       });
       setDropdowns((prev) => getUniqueListBy([...data, ...prev], "id"));
     }
-    // setVariationFormData({ ...formData.variation });
-  }, [formData]);
+  }, [formData?.attribute]);
 
   useEffect(() => {
-    const dropdownCopy = [...dropdowns];
-    Object.entries(variationFormData).forEach(([key, value]) => {
-      const existingVal = dropdowns.find((i) => i.id === key);
-      const index = dropdowns.findIndex((i) => i.id === key);
-      dropdownCopy[index] = {
-        ...existingVal,
-        value,
-      };
+    setVariationFormData({ ...formData.variation });
+  }, [formData.variation]);
+
+  useEffect(() => {
+    setDropdowns((prev) => {
+      const dropdownCopy = [...prev];
+      Object.entries(variationFormData).forEach(([key, value]) => {
+        const existingVal = dropdowns.find((i) => i.id === key);
+        const index = dropdowns.findIndex((i) => i.id === key);
+        dropdownCopy[index] = {
+          ...existingVal,
+          value,
+        };
+      });
+      return dropdownCopy;
     });
-    setDropdowns(dropdownCopy);
   }, [variationFormData]);
 
   const handleInputChange = (val, ele) => {

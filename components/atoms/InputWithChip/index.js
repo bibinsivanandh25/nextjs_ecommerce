@@ -6,7 +6,7 @@ const InputFieldWithChip = ({
   placeholder = "",
   className = "",
   variant = "outlined",
-  inputlabelshrink = "",
+  inputlabelshrink = false,
   id = "",
   name = "",
   fullWidth = true,
@@ -36,6 +36,9 @@ const InputFieldWithChip = ({
         fullWidth={fullWidth}
         renderInput={(params) => (
           <TextField
+            InputLabelProps={{
+              shrink: inputlabelshrink,
+            }}
             {...params}
             id={id}
             name={name}
@@ -45,9 +48,6 @@ const InputFieldWithChip = ({
             label={label}
             placeholder={placeholder}
             className={className}
-            InputLabelProps={{
-              shrink: InputValue,
-            }}
           />
         )}
         onChange={handleChange}
