@@ -10,6 +10,7 @@ import { getBase64 } from "services/utils/functionUtils";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
+import FileUploadModal from "components/atoms/FileUpload";
 
 const ProductsLayout = ({
   formData = {},
@@ -23,16 +24,17 @@ const ProductsLayout = ({
 }) => {
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
-    if (validateForm() && flag) {
-      const temp = formsRef.current.handleSendFormData();
-      setFormData((prev) => {
-        return { ...prev, [temp[0]]: temp[1] };
-      });
-      setactiveTab((prev) => prev + 1);
-    }
+    // if (validateForm() && flag) {
+    const temp = formsRef.current.handleSendFormData();
+    setFormData((prev) => {
+      return { ...prev, [temp[0]]: temp[1] };
+    });
+    setactiveTab((prev) => prev + 1);
+    // }
   };
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
+  const [showFileUploadModal, setShowFileUploadModal] = useState(false);
   const [commisionData, setCommisionData] = useState([...commisiondata]);
   const [mainFormData, setMainFormData] = useState({
     commision_mode: null,
@@ -239,7 +241,9 @@ const ProductsLayout = ({
                         };
                       });
                     }}
-                    onBtnClick={() => {}}
+                    onBtnClick={() => {
+                      setShowFileUploadModal(true);
+                    }}
                     btnLabel="Add Media"
                     btnSize="small"
                     btnVariant="outlined"
@@ -264,7 +268,9 @@ const ProductsLayout = ({
                         };
                       });
                     }}
-                    onBtnClick={() => {}}
+                    onBtnClick={() => {
+                      setShowFileUploadModal(true);
+                    }}
                     btnLabel="Add Media"
                     btnSize="small"
                     btnVariant="outlined"
@@ -391,6 +397,12 @@ const ProductsLayout = ({
               />
             </Box>
           </Box>
+          {showFileUploadModal ? (
+            <FileUploadModal
+              showModal={showFileUploadModal}
+              setShowModal={setShowFileUploadModal}
+            />
+          ) : null}
         </Box>
       ) : (
         <GroupVariationForm
