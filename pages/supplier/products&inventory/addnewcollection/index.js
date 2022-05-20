@@ -98,15 +98,56 @@ const NewProducts = () => {
         <VariationForm
           setShowGroupVariant={setShowGroupVariant}
           setFormData={setFormData}
-          formData={formData}
+          formData={JSON.parse(JSON.stringify(formData))}
         />
       ),
     },
   ]);
 
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
+  useEffect(() => {
+    setTabsList([
+      {
+        title: "Linked",
+        component: (
+          <LinkedForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Product Policies",
+        component: (
+          <ProductPoliciesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Attributes",
+        component: (
+          <AttributesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Variation",
+        component: (
+          <VariationForm
+            setShowGroupVariant={setShowGroupVariant}
+            setFormData={setFormData}
+            formData={JSON.parse(JSON.stringify(formData))}
+          />
+        ),
+      },
+    ]);
+  }, [formData]);
 
   const handleSubmitClick = (data) => {
     console.log(data);
