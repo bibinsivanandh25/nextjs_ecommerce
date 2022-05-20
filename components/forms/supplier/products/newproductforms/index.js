@@ -8,6 +8,8 @@ import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
 
 const ProductsLayout = ({
   formData = {},
@@ -21,9 +23,8 @@ const ProductsLayout = ({
 }) => {
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
-    if (flag) {
+    if (validateForm() && flag) {
       const temp = formsRef.current.handleSendFormData();
-      // console.log("temp", temp);
       setFormData((prev) => {
         return { ...prev, [temp[0]]: temp[1] };
       });
@@ -34,6 +35,22 @@ const ProductsLayout = ({
   const [activeTab, setactiveTab] = useState(0);
   const [commisionData, setCommisionData] = useState([...commisiondata]);
   const [mainFormData, setMainFormData] = useState({
+    commision_mode: null,
+    product_type: "",
+    brand: "",
+    short_description: {
+      media: [],
+      text: "",
+    },
+    long_description: {
+      media: [],
+      text: "",
+    },
+    sub_category_id: "",
+    tags: "",
+    limit_per_order: "",
+  });
+  const [errorObj, setErrorObj] = useState({
     commision_mode: "",
     product_type: "",
     brand: "",
@@ -50,9 +67,69 @@ const ProductsLayout = ({
     limit_per_order: "",
   });
 
+  const validateForm = () => {
+    const errObj = {
+      commision_mode: "",
+      product_type: "",
+      brand: "",
+      short_description: {
+        media: [],
+        text: "",
+      },
+      long_description: {
+        media: [],
+        text: "",
+      },
+      sub_category_id: "",
+      tags: "",
+      limit_per_order: "",
+    };
+    let flag = false;
+    if (mainFormData.commision_mode === null) {
+      errObj.commision_mode = validateMessage.field_required;
+      flag = true;
+    }
+    if (mainFormData.brand === null || mainFormData.brand === "") {
+      errObj.brand = validateMessage.field_required;
+      flag = true;
+    }
+    if (mainFormData.short_description.text === "") {
+      errObj.short_description.text = validateMessage.field_required;
+      flag = true;
+    } else if (mainFormData.short_description.text.length > 255) {
+      errObj.short_description.text = validateMessage.alpha_numeric_max_255;
+      flag = true;
+    }
+    if (mainFormData.long_description.text === "") {
+      errObj.long_description.text = validateMessage.field_required;
+      flag = true;
+    } else if (mainFormData.long_description.text.length > 255) {
+      errObj.long_description.text = validateMessage.alpha_numeric_max_255;
+      flag = true;
+    }
+    if (mainFormData.tags === "") {
+      errObj.tags = validateMessage.field_required;
+      flag = true;
+    } else if (mainFormData.tags.length > 15) {
+      errObj.tags = validateMessage.alpha_numeric_max_255;
+      flag = true;
+    }
+    if (mainFormData.limit_per_order === "") {
+      errObj.limit_per_order = validateMessage.field_required;
+      flag = true;
+    } else if (mainFormData.limit_per_order.length < 1) {
+      errObj.limit_per_order = "Limit per order should atleast be 1";
+      flag = true;
+    }
+    setErrorObj({ ...errObj });
+    return !flag;
+  };
+
   useEffect(() => {
-    setMainFormData({ ...formData.mainForm });
-  }, []);
+    if (formData?.mainForm && Object.keys(formData.mainForm).length) {
+      setMainFormData({ ...formData.mainForm });
+    }
+  }, [formData]);
 
   const handleInputChange = (e) => {
     setMainFormData((prev) => {
@@ -82,6 +159,7 @@ const ProductsLayout = ({
                         return [...temp];
                       });
                     }}
+                    className="mx-3"
                   />
                 ))
               : null}
@@ -90,12 +168,17 @@ const ProductsLayout = ({
                 showClose={false}
                 handleImageUpload={async (e) => {
                   if (e.target.files.length) {
-                    const file = await getBase64(e.target.files[0]);
-                    setImageData((prev) => {
-                      return [...prev, file];
-                    });
+                    if (e.target.files[0].size <= 1000000) {
+                      const file = await getBase64(e.target.files[0]);
+                      setImageData((prev) => {
+                        return [...prev, file];
+                      });
+                    } else {
+                      toastify("Image size should be less than 1MB", "error");
+                    }
                   }
                 }}
+                className="mx-3"
               />
             ) : null}
           </Box>
@@ -113,6 +196,8 @@ const ProductsLayout = ({
                       handleDropdownChange(value, "commision_mode");
                     }}
                     inputlabelshrink
+                    error={errorObj.commision_mode !== ""}
+                    helperText={errorObj.commision_mode}
                   />
                 </Grid>
                 {/* <Grid item md={12}>
@@ -136,6 +221,8 @@ const ProductsLayout = ({
                     value={mainFormData.brand}
                     placeholder="Any brand"
                     inputlabelshrink
+                    error={errorObj.brand !== ""}
+                    helperText={errorObj.brand}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -159,6 +246,8 @@ const ProductsLayout = ({
                     widthClassName="w-100 mt-0"
                     rows={2}
                     muiProps="m-0 p-0 fs-10"
+                    error={errorObj.short_description.text !== ""}
+                    helperText={errorObj.short_description.text}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -182,6 +271,8 @@ const ProductsLayout = ({
                     widthClassName="w-100 mt-0"
                     rows={3}
                     muiProps="m-0 p-0 fs-10"
+                    error={errorObj.long_description.text !== ""}
+                    helperText={errorObj.long_description.text}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -191,6 +282,8 @@ const ProductsLayout = ({
                     label="Select Category"
                     size="small"
                     inputlabelshrink
+                    // error={errorObj.commision_mode !== ""}
+                    // helperText={errorObj.commision_mode}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -200,6 +293,8 @@ const ProductsLayout = ({
                     onInputChange={handleInputChange}
                     value={mainFormData.tags}
                     inputlabelshrink
+                    error={errorObj.tags !== ""}
+                    helperText={errorObj.tags}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -221,6 +316,8 @@ const ProductsLayout = ({
                     value={mainFormData.limit_per_order}
                     inputlabelshrink
                     type="number"
+                    error={errorObj.limit_per_order !== ""}
+                    helperText={errorObj.limit_per_order}
                   />
                 </Grid>
               </Grid>

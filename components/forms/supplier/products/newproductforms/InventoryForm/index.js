@@ -1,11 +1,14 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
+import InputFieldWithChip from "components/atoms/InputWithChip";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import validateMessage from "constants/validateMessages";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   allowback_orders,
   back_orders,
+  business_processing_days,
   shipping_class,
   stock_status,
 } from "../constants";
@@ -13,6 +16,19 @@ import {
 const InventoryForm = forwardRef(({ formData = {} }, ref) => {
   const [manageStock, setManageStock] = useState(false);
   const [inventoryFormData, setInventoryFormData] = useState({
+    sku: "",
+    stock_status: null,
+    allow_backorders: null,
+    stock_qty: "",
+    back_Orders: "",
+    shipping_class: "",
+    product_title: "",
+    business_processing_days: null,
+    seo_title: "",
+    meta_description: "",
+    meta_keyword: [],
+  });
+  const [errorObj, setErrorObj] = useState({
     sku: "",
     stock_status: "",
     allow_backorders: "",
@@ -36,6 +52,79 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     });
   };
 
+  const validate = () => {
+    let flag = false;
+    const errObj = {
+      sku: "",
+      stock_status: null,
+      allow_backorders: null,
+      stock_qty: "",
+      back_Orders: "",
+      shipping_class: "",
+      product_title: "",
+      business_processing_days: null,
+      seo_title: "",
+      meta_description: "",
+      meta_keyword: [],
+    };
+    if (inventoryFormData.stock_status === null) {
+      flag = true;
+      errObj.stock_status = validateMessage.field_required;
+    }
+    if (manageStock) {
+      if (inventoryFormData.stock_qty === "") {
+        flag = true;
+        errObj.stock_qty = validateMessage.field_required;
+      } else if (parseInt(inventoryFormData.stock_qty) < 1) {
+        flag = true;
+        errObj.stock_qty = "Stock Qty must be greater then or equal to 1";
+      }
+      if (inventoryFormData.allow_backorders === null) {
+        flag = true;
+        errObj.allow_backorders = validateMessage.field_required;
+      }
+    }
+    if (inventoryFormData.business_processing_days === null) {
+      flag = true;
+      errObj.business_processing_days = validateMessage.field_required;
+    }
+
+    if (inventoryFormData.seo_title === "") {
+      flag = true;
+      errObj.seo_title = validateMessage.field_required;
+    } else if (inventoryFormData.seo_title.length > 100) {
+      flag = true;
+      errObj.seo_title = validateMessage.alpha_numeric_max_100;
+    }
+    if (inventoryFormData.meta_description === "") {
+      flag = true;
+      errObj.meta_description = validateMessage.field_required;
+    } else if (inventoryFormData.meta_description.length > 100) {
+      flag = true;
+      errObj.meta_description = validateMessage.alpha_numeric_max_100;
+    }
+
+    if (!inventoryFormData.meta_keyword.length) {
+      flag = true;
+      errObj.meta_keyword = validateMessage.field_required;
+    } else
+      inventoryFormData.meta_keyword.forEach((ele) => {
+        if (ele.length > 15) {
+          flag = true;
+          errObj.meta_keyword = validateMessage.field_required;
+        }
+      });
+    if (inventoryFormData.product_title === "") {
+      flag = true;
+      errObj.product_title = validateMessage.field_required;
+    } else if (inventoryFormData.product_title.length > 100) {
+      flag = true;
+      errObj.product_title = validateMessage.alpha_numeric_max_100;
+    }
+    setErrorObj(errObj);
+    return !flag;
+  };
+
   useEffect(() => {
     setInventoryFormData({ ...formData.inventory });
   }, [formData]);
@@ -45,11 +134,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["inventory", { ...inventoryFormData }];
       },
-      validate: () => {
-        //write validation logic here
-        //return true if validation is success else false
-        return true;
-      },
+      validate: validate,
     };
   });
   return (
@@ -65,6 +150,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             inputlabelshrink
             fullWidth={false}
             className="w-70p"
+            disabled
+            helperText={errorObj.sku}
+            error={errorObj.sku && errorObj.sku !== ""}
           />
         </Grid>
         <Grid item md={12} className="pt-4">
@@ -95,6 +183,8 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             onDropdownSelect={(value) => {
               handleDropdownChange(value, "stock_status");
             }}
+            helperText={errorObj.stock_status}
+            error={errorObj.stock_status !== ""}
           />
         </Grid>
         {manageStock ? (
@@ -111,18 +201,23 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                 onDropdownSelect={(value) => {
                   handleDropdownChange(value, "allow_backorders");
                 }}
+                helperText={errorObj.allow_backorders}
+                error={errorObj.allow_backorders !== ""}
               />
             </Grid>
-            <Grid item md={6}>
+            <Grid item md={12}>
               <InputBox
                 id="stock_qty"
                 label="Stock Qty"
                 onInputChange={handleInputChange}
                 value={inventoryFormData.stock_qty}
                 inputlabelshrink
+                type="number"
+                helperText={errorObj.stock_qty}
+                error={errorObj.stock_qty && errorObj.stock_qty !== ""}
               />
             </Grid>
-            <Grid item md={6}>
+            {/* <Grid item md={6}>
               <SimpleDropdownComponent
                 inputlabelshrink
                 list={back_orders}
@@ -135,7 +230,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                   handleDropdownChange(value, "back_Orders");
                 }}
               />
-            </Grid>
+            </Grid> */}
           </>
         ) : null}
         <Grid item md={12}>
@@ -150,6 +245,8 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             onDropdownSelect={(value) => {
               handleDropdownChange(value, "shipping_class");
             }}
+            helperText={errorObj.shipping_class}
+            error={errorObj.shipping_class !== ""}
           />
         </Grid>
         <Grid item md={12}>
@@ -159,15 +256,30 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             onInputChange={handleInputChange}
             value={inventoryFormData.product_title}
             inputlabelshrink
+            helperText={errorObj.product_title}
+            error={errorObj.product_title !== ""}
           />
         </Grid>
         <Grid item md={12}>
-          <InputBox
+          <SimpleDropdownComponent
+            inputlabelshrink
+            list={[...business_processing_days]}
             id="business_processing_days"
             label="Business Processing Days"
-            onInputChange={handleInputChange}
+            size="small"
+            fullWidth={false}
             value={inventoryFormData.business_processing_days}
-            inputlabelshrink
+            onDropdownSelect={(value) => {
+              setInventoryFormData((pre) => ({
+                ...pre,
+                business_processing_days: value,
+              }));
+            }}
+            helperText={errorObj.business_processing_days}
+            error={
+              errorObj.business_processing_days &&
+              errorObj.business_processing_days !== null
+            }
           />
         </Grid>
         <Grid item md={12}>
@@ -177,6 +289,8 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             onInputChange={handleInputChange}
             value={inventoryFormData.seo_title}
             inputlabelshrink
+            helperText={errorObj.seo_title}
+            error={errorObj.seo_title && errorObj.seo_title !== ""}
           />
         </Grid>
         <Grid item md={12}>
@@ -186,15 +300,26 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             onInputChange={handleInputChange}
             value={inventoryFormData.meta_description}
             inputlabelshrink
+            helperText={errorObj.meta_description}
+            error={
+              errorObj.meta_description && errorObj.meta_description !== ""
+            }
           />
         </Grid>
         <Grid item md={12}>
-          <InputBox
+          <InputFieldWithChip
             id="meta_keyword"
             label="Meta Keywords"
-            onInputChange={handleInputChange}
             value={inventoryFormData.meta_keyword}
             inputlabelshrink
+            handleChange={(_, val) => {
+              setInventoryFormData((pre) => ({
+                ...pre,
+                meta_keyword: [...val],
+              }));
+            }}
+            helperText={errorObj.meta_keyword}
+            error={errorObj.meta_keyword !== ""}
           />
         </Grid>
       </Grid>
