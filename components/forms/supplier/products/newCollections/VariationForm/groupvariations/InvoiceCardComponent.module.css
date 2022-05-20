@@ -3,13 +3,19 @@
 }
 
 .shrink {
-  max-height: 0px;
+  max-height: 0px !important;
+  display: none;
   transition: max-height 0.2s ease-out;
   -webkit-transition: max-height 0.2s ease-out;
 }
 
 .expand {
-  max-height: 400px;
+  /* max-height: 400px; */
+  transition: max-height 0.2s ease-out;
+  -webkit-transition: max-height 0.2s ease-out;
+}
+.papershrink {
+  max-height: fit-content;
   transition: max-height 0.2s ease-out;
   -webkit-transition: max-height 0.2s ease-out;
 }

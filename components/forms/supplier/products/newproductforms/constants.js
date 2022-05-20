@@ -66,17 +66,31 @@ const stock_status = [
     value: "reject",
     label: "Rejected",
   },
+];
+const business_processing_days = [
   {
-    value: "pending",
-    label: "Pending",
+    value: "readyToShipIn",
+    label: "Ready to shin in...",
   },
   {
-    value: "out-of-stock",
-    label: "Out Of Stock",
+    value: "oneBusinessDay",
+    label: "1 business day",
   },
   {
-    value: "blacked",
-    label: "Blacklisted",
+    value: "oneToTwoBusinessDay",
+    label: "1-2 business days",
+  },
+  {
+    value: "oneToThreeBusinessDay",
+    label: "1-3 business days",
+  },
+  {
+    value: "threeToFiveBusinessDay",
+    label: "3-5 business days",
+  },
+  {
+    value: "oneToTwoWeeks",
+    label: "1-2 weeks",
   },
 ];
 
@@ -87,4 +101,5 @@ export {
   back_orders,
   allowback_orders,
   stock_status,
+  business_processing_days,
 };
