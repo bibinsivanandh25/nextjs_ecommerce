@@ -9,7 +9,7 @@ import validateMessage from "constants/validateMessages";
 const VariationForm = forwardRef(({ formData = {} }, ref) => {
   const [variationFormData, setVariationFormData] = useState({});
   const [error, setError] = useState({});
-  const [dropdowns, setDropdowns] = useState([
+  const defaultList = [
     {
       label: "Expiry Date",
       type: "date",
@@ -38,7 +38,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
       value: null,
       required: true,
     },
-  ]);
+  ];
+  const [dropdowns, setDropdowns] = useState([]);
 
   const validateForm = () => {
     const errObj = { ...error };
@@ -96,7 +97,16 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
         };
         return ob;
       });
-      setDropdowns((prev) => getUniqueListBy([...data, ...prev], "id"));
+      const dataCopy =
+        data.filter((ele) => {
+          if (
+            (ele.type === "dropdown" && ele.options.length) ||
+            ele.type !== "dropdown"
+          ) {
+            return ele;
+          }
+        }) || [];
+      setDropdowns([...dataCopy, ...defaultList]);
     }
   }, [formData?.attribute]);
 
@@ -104,20 +114,20 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     setVariationFormData({ ...formData.variation });
   }, [formData.variation]);
 
-  useEffect(() => {
-    setDropdowns((prev) => {
-      const dropdownCopy = [...prev];
-      Object.entries(variationFormData).forEach(([key, value]) => {
-        const existingVal = dropdowns.find((i) => i.id === key);
-        const index = dropdowns.findIndex((i) => i.id === key);
-        dropdownCopy[index] = {
-          ...existingVal,
-          value,
-        };
-      });
-      return dropdownCopy;
-    });
-  }, [variationFormData]);
+  // useEffect(() => {
+  //   setDropdowns((prev) => {
+  //     const dropdownCopy = [...prev];
+  //     Object.entries(variationFormData).forEach(([key, value]) => {
+  //       const existingVal = dropdowns.find((i) => i.id === key);
+  //       const index = dropdowns.findIndex((i) => i.id === key);
+  //       dropdownCopy[index] = {
+  //         ...existingVal,
+  //         value,
+  //       };
+  //     });
+  //     return dropdownCopy;
+  //   });
+  // }, [variationFormData]);
 
   const handleInputChange = (val, ele) => {
     const getData = () => {
@@ -149,7 +159,9 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
                   id={ele.id}
                   size="small"
                   list={ele.options}
-                  value={ele.options.find((op) => op.id === ele.value)}
+                  value={ele.options.find(
+                    (op) => op.id === variationFormData[ele.id]
+                  )}
                   onDropdownSelect={(val) => handleInputChange(val, ele)}
                   helperText={error[ele.id]}
                 />
@@ -157,7 +169,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
               {ele.type === "textarea" && (
                 <InputBox
                   id={ele.id}
-                  value={ele.value}
+                  value={variationFormData[ele.id]}
                   isMultiline
                   onInputChange={(e) => handleInputChange(e.target.value, ele)}
                   error={Boolean(error[ele.id])}
@@ -167,7 +179,7 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
               {ele.type === "date" && (
                 <DatePickerComponent
                   id={ele.id}
-                  value={ele.value}
+                  value={variationFormData[ele.id]}
                   size="small"
                   onDateChange={(val) => handleInputChange(val, ele)}
                   error={Boolean(error[ele.id])}

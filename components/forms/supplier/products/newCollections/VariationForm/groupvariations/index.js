@@ -117,16 +117,28 @@ const GroupVariationForm = forwardRef(
                 errObj[item].inventory.stock_status =
                   validateMessage.field_required;
               }
+              if (variationData[item].manageStock) {
+                if (tempInventory.stock_qty === "") {
+                  flag = true;
+                  errObj[item].inventory.stock_qty =
+                    validateMessage.field_required;
+                } else if (parseInt(tempInventory.stock_qty) < 1) {
+                  flag = true;
+                  errObj[item].inventory.stock_qty =
+                    "Stock Qty must be greater then or equal to 1";
+                }
+                if (tempInventory.allow_backorders === null) {
+                  flag = true;
+                  errObj[item].inventory.allow_backorders =
+                    validateMessage.field_required;
+                }
+              }
               if (tempInventory.business_processing_days === null) {
                 flag = true;
                 errObj[item].inventory.business_processing_days =
                   validateMessage.field_required;
               }
-              if (tempInventory.allow_backorders === null) {
-                flag = true;
-                errObj[item].inventory.allow_backorders =
-                  validateMessage.field_required;
-              }
+
               if (tempInventory.seo_title === "") {
                 flag = true;
                 errObj[item].inventory.seo_title =
@@ -502,6 +514,7 @@ const GroupVariationForm = forwardRef(
                                     value={
                                       variationData[item].inventory.stock_qty
                                     }
+                                    type="number"
                                     inputlabelshrink
                                     helperText={
                                       errorObj[item]?.inventory.stock_qty
@@ -972,6 +985,7 @@ const GroupVariationForm = forwardRef(
                                   variationData[item].pricing.delivery_charge
                                 }
                                 inputlabelshrink
+                                type="number"
                                 disabled
                                 helperText={
                                   errorObj[item]?.pricing.delivery_charge
