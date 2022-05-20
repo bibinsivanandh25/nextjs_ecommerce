@@ -1,6 +1,8 @@
+import { Upload } from "@mui/icons-material";
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import DropdownComponent from "components/atoms/DropdownComponent";
+import FileUploadModal from "components/atoms/FileUpload";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
@@ -41,7 +43,7 @@ const HelpandsupportCreate = () => {
       value: "Others",
     },
   ];
-
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [formValue, setFormValue] = useState({
     issueType: {},
     OrderID: "",
@@ -170,18 +172,19 @@ const HelpandsupportCreate = () => {
         </div>
         <div className="my-3 ">
           <span className="me-2">Attach File :</span>
-          <input
+          {/* <input
             type="file"
             className=""
             hidden
             ref={inputField}
             onChange={(e) => console.log(e.target.files[0])}
-          />
+          /> */}
           <ButtonComponent
             label="choose file"
             color="#e8e8e8"
             onBtnClick={() => {
-              inputField.current.click();
+              // inputField.current.click();
+              setShowUploadModal(true);
             }}
           />
         </div>
@@ -189,6 +192,13 @@ const HelpandsupportCreate = () => {
           <ButtonComponent label="Create Ticket" onBtnClick={validateFields} />
         </div>
       </div>
+      <FileUploadModal
+        getUploadedFiles={(files) => {
+          console.log(files);
+        }}
+        showModal={showUploadModal}
+        setShowModal={setShowUploadModal}
+      />
     </div>
   );
 };
