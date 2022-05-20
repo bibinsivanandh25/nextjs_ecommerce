@@ -75,15 +75,17 @@ const GroupVariationForm = forwardRef(
           temp[`variation${ind + 1}`].images.fill("");
           temp[`variation${ind + 1}`].images[0] = item;
           Object.entries(formData.attribute).forEach(([key, val]) => {
-            temp[`variation${ind + 1}`].variation[key] = null;
-            const ddval = val.map((ele) => {
-              return {
-                id: ele?.id ?? "",
-                label: ele.title,
-                value: ele.value,
-              };
-            });
-            dropDownVal[key] = [...ddval];
+            if (val.length) {
+              temp[`variation${ind + 1}`].variation[key] = null;
+              const ddval = val.map((ele) => {
+                return {
+                  id: ele?.id ?? "",
+                  label: ele.title,
+                  value: ele.value,
+                };
+              });
+              dropDownVal[key] = [...ddval];
+            }
           });
         });
         setEmptyObj({ ...JSON.parse(JSON.stringify({ ...temp })) });
