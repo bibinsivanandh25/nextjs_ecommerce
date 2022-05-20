@@ -1,66 +1,35 @@
 import { Grid, Typography } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
-import RegistrationForm from "components/forms/supplier/registration";
+import RegistrationForm from "components/forms/reseller/registration";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "./Registration.module.css";
-import { supplierRegister } from "services/supplier/Registration";
 
 const Registration = () => {
-  const formObj = {
-    businessName: "",
-    mail: "",
-    mobile: "",
-    city: "",
-    mainCat: "",
-    gstin: "",
-    stockCount: "",
-    site: "",
-    siteLink: null,
-  };
-  const [formValues, setFormValues] = useState(formObj);
+  const [formValues, setFormValues] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const handleSubmit = async () => {
-    const payload = {
-      businessName: formValues.businessName,
-      email: formValues.mail,
-      mobileNumber: formValues.mobile,
-      city: formValues.city,
-      gstin: formValues.gstin,
-      role: "SUPPLIER",
-      averageStockCount: formValues.stockCount,
-      website: formValues.site,
-      websiteLink: formValues.siteLink,
-      categoryData: [
-        {
-          categoryId: formValues.mainCat.value,
-          categoryName: formValues.mainCat.id,
-        },
-      ],
-    };
-    const { data, errRes } = await axios
-      .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
-      .then((res) => {
-        const data = res && res.data;
-        return { data };
-      })
-      .catch((err) => {
-        const errRes = err?.response?.data;
-        return { errRes };
-      });
-    // const { data, errRes } = await supplierRegister(payload);
-    if (data) {
+  const [displayType, setDisplayType] = useState("referral");
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    if (displayType === "referral") {
+      setDisplayType("registration");
+    } else if (displayType === "registration") {
       setShowModal(true);
-      console.log(data);
-    } else if (errRes) {
-      console.log(errRes);
+    } else if (displayType === "otp") {
+      router.push("/auth/supplier/newpassword");
     }
   };
 
   useEffect(() => {
-    return () => {
-      setFormValues(formObj);
-    };
-  }, []);
+    if (showModal) {
+      setTimeout(() => {
+        setShowModal(false);
+        setDisplayType("otp");
+      }, 2000);
+    }
+  }, [showModal]);
+
   return (
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">
@@ -68,21 +37,19 @@ const Registration = () => {
           className={`${styles.imgContainer} mx-2 d-flex justify-content-center align-items-center`}
         >
           <Typography variant="h3" className="color-orange">
-            Referral Code
+            {displayType === "referral" && "Referral Code"}
+            {displayType === "registration" && "Reseller Registration"}
+            {displayType === "otp" && "Enter OTP"}
           </Typography>
         </div>
       </Grid>
-      <Grid item xs={12}>
-        <p className="color-orange d-flex justify-content-center">
-          Already have a referral code? You have more chance to win Prize&apos;s
-          & Discounts.
-        </p>
-      </Grid>
-      <Grid item sm={12} className="d-flex justify-content-center ">
+      <Grid item sm={12} className="d-flex justify-content-center">
         <RegistrationForm
           formValues={formValues}
           setFormValues={setFormValues}
           handleSubmit={handleSubmit}
+          displayType={displayType}
+          setDisplayType={setDisplayType}
         />
       </Grid>
       <ModalComponent
@@ -96,10 +63,8 @@ const Registration = () => {
         ModalWidth={350}
       >
         <div className="text-center">
-          <div className={styles.modalImgContainer} />
-          <Typography className="my-2 fw-600">
-            We have sent a mail. Once the varification is complete we will send
-            login credential
+          <Typography className="my-2 fw-600 px-5 py-3">
+            An OTP has been sent to your specified Mobile number.
           </Typography>
         </div>
       </ModalComponent>

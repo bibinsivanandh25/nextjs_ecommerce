@@ -21,6 +21,7 @@ const NewPasswordForm = ({
               userId: e.target.value,
             }));
           }}
+          inputlabelshrink
         />
       </div>
 
@@ -36,6 +37,7 @@ const NewPasswordForm = ({
             password: e.target.value,
           }));
         }}
+        inputlabelshrink
       />
 
       <InputBox
@@ -50,6 +52,7 @@ const NewPasswordForm = ({
             rePassword: e.target.value,
           }));
         }}
+        inputlabelshrink
       />
       <ButtonComponent
         label="Submit"
