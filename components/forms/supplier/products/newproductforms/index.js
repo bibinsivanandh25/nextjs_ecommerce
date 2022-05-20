@@ -24,13 +24,13 @@ const ProductsLayout = ({
 }) => {
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
-    // if (validateForm() && flag) {
-    const temp = formsRef.current.handleSendFormData();
-    setFormData((prev) => {
-      return { ...prev, [temp[0]]: temp[1] };
-    });
-    setactiveTab((prev) => prev + 1);
-    // }
+    if (validateForm() && flag) {
+      const temp = formsRef.current.handleSendFormData();
+      setFormData((prev) => {
+        return { ...prev, [temp[0]]: temp[1] };
+      });
+      setactiveTab((prev) => prev + 1);
+    }
   };
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
