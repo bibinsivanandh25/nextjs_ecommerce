@@ -154,7 +154,7 @@ const dashboardList = [
     title: "Dashboard",
     icon: <DashboardOutlinedIcon />,
     selectedIcon: <DashboardIcon style={{ color: "#e56700" }} />,
-    navigate: false,
+    navigate: true,
   },
   {
     id: "orders",
