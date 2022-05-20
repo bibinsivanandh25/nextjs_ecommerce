@@ -6,6 +6,7 @@ const validationRegex = {
   upperCase: /^.*[A-Z].*$/,
   lowerCase: /^.*[a-z].*$/,
   specialChar: /\@|\$|\#/,
+  decimal_2digit: /^(\d+\.?(\d{1,2}))$/,
 };
 
 export default validationRegex;

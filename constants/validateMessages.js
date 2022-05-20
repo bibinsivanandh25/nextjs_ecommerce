@@ -1,6 +1,7 @@
 const validateMessage = {
   field_required: "This field is required",
   email: "Invalid Email",
+  decimal_2digits: "Only decimal with 2 digits of after point allowed",
   alpha_numeric_6: "Max 6 alpha numeric characters can be entered",
   alpha_numeric_15: "Max 15 alpha numeric characters can be entered",
   alpha_numeric_max_50: "Max 50 alpha numeric characters can be entered",
