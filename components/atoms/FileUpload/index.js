@@ -7,6 +7,7 @@ import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getBase64 } from "services/utils/functionUtils";
+import toastify from "services/utils/toastUtils";
 
 const FileUploadModal = ({
   showModal = false,
@@ -19,24 +20,42 @@ const FileUploadModal = ({
   const handlefileDrop = async (acceptedFiles) => {
     let arr = [...binaryStr];
     const reader = new FileReader();
-    if (acceptedFiles.length) {
+
+    if (acceptedFiles.length !== 0 && acceptedFiles.length <= 5) {
       if (Array.isArray(acceptedFiles)) {
         const promiseArr = [];
         acceptedFiles.forEach((item) => {
-          promiseArr.push(getBase64(item));
+          console.log(item.size);
+          if (item.size <= 2e6) {
+            promiseArr.push(getBase64(item));
+          } else {
+            toastify("File size should be less than 2 MB", "error");
+          }
         });
         const filePaths = await Promise.all(promiseArr);
         const temp = filePaths.map((ele) => ele);
         arr.push(...temp);
-        setbinaryStr([...arr]);
+        console.log(arr.length);
+        if (arr.length <= 5) {
+          setbinaryStr([...arr]);
+        } else {
+          toastify("Maximum 5 files can be uploaded", "error");
+        }
       } else {
+        console.log(acceptedFiles[0].size);
         reader.readAsDataURL(acceptedFiles[0]);
         reader.onloadend = () => {
           const bitStr = reader.result;
           arr.push(bitStr);
-          setbinaryStr([...arr]);
+          if (arr.length <= 5) {
+            setbinaryStr([...arr]);
+          } else {
+            toastify("Maximum 5 files can be uploaded", "error");
+          }
         };
       }
+    } else {
+      toastify("Maximum 5 files can be uploaded", "error");
     }
   };
   const onSubmitClick = () => {
@@ -79,7 +98,13 @@ const FileUploadModal = ({
                 name="file"
                 ref={fileUploadRef}
                 className="d-none"
-                onChange={(e) => handlefileDrop(e.target.files)}
+                onChange={(e) => {
+                  if (e.target.files[0]?.size <= 2e6) {
+                    handlefileDrop(e.target.files);
+                  } else {
+                    toastify("File size should be less than 2 MB", "error");
+                  }
+                }}
               />
             </div>
           )}
