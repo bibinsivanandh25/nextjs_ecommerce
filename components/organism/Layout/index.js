@@ -2,7 +2,6 @@ import React from "react";
 import Head from "next/head";
 import HeaderComponent from "../HeaderComponent";
 import BreadCrumb from "components/atoms/BreadCrumb";
-import ResellerSidebar from "../ResellerSidebar";
 import { useSession } from "next-auth/react";
 import { Box } from "@mui/material";
 import SideBarComponent from "../SideBarComponent";
