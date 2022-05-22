@@ -1,10 +1,11 @@
 import React from "react";
 import Head from "next/head";
 import HeaderComponent from "../HeaderComponent";
-import SupplierSidebar from "../SupplierSidebar";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import ResellerSidebar from "../ResellerSidebar";
 import { useSession } from "next-auth/react";
+import { Box } from "@mui/material";
+import SideBarComponent from "../SideBarComponent";
 
 const Layout = ({ Component, pageProps }) => {
   const { data: session } = useSession();
@@ -15,29 +16,20 @@ const Layout = ({ Component, pageProps }) => {
         <meta name="description" content="MrMrsCart project" />
         <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
-      <div>
+      <div className="mnh-100vh">
         <div id="loader" style={{ display: "none" }}>
           <div className="spinner"></div>
         </div>
-        <div className="stickyHeader">
+        <div className="h-100">
           <HeaderComponent />
         </div>
-        {session?.user.roleId == 0 && (
-          <SupplierSidebar>
-            <BreadCrumb />
-            <div className="mx-1 mt-2 p-3 mnh-80vh">
+        <Box className="mnw-100hw">
+          <SideBarComponent>
+            <Box className="w-100 h-100 p-2 pb-1">
               <Component {...pageProps} />
-            </div>
-          </SupplierSidebar>
-        )}
-        {session?.user.roleId == 1 && (
-          <ResellerSidebar>
-            <BreadCrumb />
-            <div className="mx-1 mt-2 p-3 mnh-80vh">
-              <Component {...pageProps} />
-            </div>
-          </ResellerSidebar>
-        )}
+            </Box>
+          </SideBarComponent>
+        </Box>
       </div>
     </>
   );

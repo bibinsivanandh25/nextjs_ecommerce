@@ -14,7 +14,6 @@ const AddBankDetails = ({
   const [errorObj, setErrorObj] = useState({});
 
   const validateFields = () => {
-    console.log(BankDetails);
     let flag = false;
     let errObj = {
       bankName: "",

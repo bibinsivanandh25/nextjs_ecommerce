@@ -11,7 +11,7 @@ import ProfileComponent from "../../atoms/ProfileComponent";
 const HeaderComponent = () => {
   return (
     <Box
-      className={`${styles.container} shadow-sm`}
+      className={`${styles.container} shadow-sm bg-white`}
       sx={{ position: "sticky" }}
     >
       <Grid container spacing={2}>

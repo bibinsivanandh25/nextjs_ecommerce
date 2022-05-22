@@ -27,7 +27,6 @@ const FileUploadModal = ({
       if (Array.isArray(acceptedFiles)) {
         const promiseArr = [];
         acceptedFiles.forEach((item) => {
-          console.log(item.size);
           if (item.size <= maxFileSize) {
             promiseArr.push(getBase64(item));
           } else {
@@ -37,14 +36,12 @@ const FileUploadModal = ({
         const filePaths = await Promise.all(promiseArr);
         const temp = filePaths.map((ele) => ele);
         arr.push(...temp);
-        console.log(arr.length);
         if (arr.length <= maxNoofFiles) {
           setbinaryStr([...arr]);
         } else {
           toastify("Maximum 5 files can be uploaded", "error");
         }
       } else {
-        console.log(acceptedFiles[0].size);
         reader.readAsDataURL(acceptedFiles[0]);
         reader.onloadend = () => {
           const bitStr = reader.result;
