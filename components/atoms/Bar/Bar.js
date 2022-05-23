@@ -61,7 +61,6 @@ const Bargraph = ({
     });
     setDatasets([...temp]);
   }, []);
-  // console.log(datasets[0].data);
 
   const options = {
     indexAxis: barDirection,

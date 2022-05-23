@@ -62,7 +62,6 @@ const HelpandsupportCreate = () => {
       subject: "",
       content: "",
     };
-    console.log(formValue.issueType);
     if (!formValue.issueType?.value?.length) {
       errObj.issueType = validateMessage.field_required;
       flag = true;
@@ -193,9 +192,7 @@ const HelpandsupportCreate = () => {
         </div>
       </div>
       <FileUploadModal
-        getUploadedFiles={(files) => {
-          console.log(files);
-        }}
+        getUploadedFiles={(files) => {}}
         showModal={showUploadModal}
         setShowModal={setShowUploadModal}
       />

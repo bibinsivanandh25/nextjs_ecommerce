@@ -22,7 +22,6 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
     crossSells: "",
   });
 
-  console.log(formData);
   useEffect(() => {
     setLinkedFormData({ ...formData.linked });
   }, [formData]);
