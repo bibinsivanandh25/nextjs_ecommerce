@@ -13,5 +13,6 @@ const validateMessage = {
   maxLength: "Max length should be",
   password:
     "Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character @ $ $",
+  userId: "Invalid Email / Mobile Number",
 };
 export default validateMessage;

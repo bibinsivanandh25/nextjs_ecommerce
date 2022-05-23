@@ -24,7 +24,7 @@ const Newpassword = () => {
           className={`${styles.imgContainer} mx-2 d-flex justify-content-center align-items-center`}
         >
           <Typography variant="h3" className="color-orange">
-            New Password
+            Create Password
           </Typography>
         </div>
       </Grid>
