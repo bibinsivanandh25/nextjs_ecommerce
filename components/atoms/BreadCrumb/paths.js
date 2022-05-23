@@ -132,4 +132,5 @@ export const paths = [
     id: "addnewcoupons",
   },
   { title: "Add New Collection", id: "addnewcollection" },
+  { title: "My Shared Category", id: "mysharedcategory" },
 ];
