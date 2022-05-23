@@ -3,6 +3,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
+import { Favorite, Star } from "@mui/icons-material";
 
 const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
   const getProductsCard = () => {
@@ -34,23 +35,27 @@ const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
                       width: "100%",
                       position: "relative",
                     }}
+                    alt=""
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                   <Tooltip title={ele.title} placement="top">
-                    <Typography className="fw-bold mt-2 fs-12 text-truncate cursor-pointer">
+                    <Typography className="fw-bold mt-2 fs-14 text-truncate cursor-pointer">
                       {ele.title}
                     </Typography>
                   </Tooltip>
                   <Typography>
-                    <span className="bg-orange border-0 rounded-3 px-2 text-white">
-                      {ele.rating.rate}
+                    <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
+                      {ele.rating.rate} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
                     </span>
                     <span className="text-secondary fs-12 mx-2">
-                      ({ele.rating.count})
+                      {`(${ele.rating.count} Ratings)`}
                     </span>
                   </Typography>
-                  <Typography className="color-orange bg-light rounded d-inline px-2">
+                  <Typography
+                    className="color-orange py-1 bg-light-orange1 rounded d-inline px-2"
+                    fontSize={12}
+                  >
                     Free shipping
                   </Typography>
                   <Typography className="mt-3 fw-bold fs-4">
@@ -60,13 +65,13 @@ const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
                 <Grid
                   className="d-flex flex-column justify-content-between align-items-end my-1"
                   item
-                  xs={5}
+                  xs={3}
                 >
-                  <Grid className="border rounded-circle p-1 fs-14">
-                    <FavoriteBorderIcon />
+                  <Grid className="border rounded-circle p-1 fs-14 cursor-pointer">
+                    <Favorite className="text-secondary" />
                   </Grid>
-                  <Grid className="border rounded-circle  fs-14 p-1">
-                    <ShareIcon />
+                  <Grid className="border rounded-circle cursor-pointer fs-14 p-1">
+                    <ShareIcon className="text-secondary" />
                   </Grid>
                   <Grid className="d-flex">
                     {showMarginButton ? (
@@ -88,7 +93,7 @@ const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       {getProductsCard()}
     </Grid>
   );
