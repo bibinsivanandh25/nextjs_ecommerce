@@ -174,7 +174,7 @@ const dashboardList = [
   {
     id: "mysharedcategory",
     title: "My Shared Category",
-    navigate: false,
+    navigate: true,
   },
   {
     id: "myshop",
