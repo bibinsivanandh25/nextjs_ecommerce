@@ -230,7 +230,7 @@ const resellerMenu = [
   {
     title: "My Shared Category",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "mysharedcategory",
     navigate: true,
   },
   {
