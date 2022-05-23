@@ -155,7 +155,11 @@ const Home = () => {
           </Box>
         </Box>
       </Box>
-      <HomeComponent categories={[...categories]} products={[...products]} />
+      <HomeComponent
+        categories={[...categories]}
+        products={[...products]}
+        productTitle="Top Products"
+      />
     </div>
   );
 };
