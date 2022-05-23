@@ -10,14 +10,7 @@ const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
       return products.map((ele) => {
         return (
           <Grid item sm={4}>
-            <Paper
-              className="p-2"
-              // style={{
-              //   maxHeight: "150px",
-              //   minHeight: "150px",
-              //   overflow: "auto",
-              // }}
-            >
+            <Paper className="p-2" sx={{}}>
               <Grid container columnSpacing={1}>
                 <Grid
                   item
