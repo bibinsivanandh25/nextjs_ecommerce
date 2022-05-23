@@ -109,7 +109,10 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [dropDownValue, setDropDownValue] = useState([]);
   useEffect(() => {
-    axios
+    getproducts();
+  }, []);
+  const getproducts = async () => {
+    await axios
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);
@@ -117,7 +120,7 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  };
 
   return (
     <div>

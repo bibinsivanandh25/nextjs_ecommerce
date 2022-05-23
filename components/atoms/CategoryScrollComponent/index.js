@@ -1,8 +1,9 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import ImageCard from "../ImageCard";
 
-const CategoryScrollComponent = () => {
+const CategoryScrollComponent = ({ categories = [] }) => {
   return (
-    <Box className="d-flex overflow-auto w-90vw hide-scrollbar">
+    <Box className="d-flex overflow-auto w-100 hide-scrollbar">
       {categories.map((ele) => {
         return (
           <Box

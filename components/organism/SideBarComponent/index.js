@@ -187,138 +187,139 @@ const SideBarComponent = ({ children }) => {
     );
   };
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        minWidth: "100vw",
+        maxWidth: "100vw",
+      }}
+    >
       <CssBaseline />
 
       <Drawer variant="permanent" open={open}>
         <Box
-          className={`d-flex ${
-            open ? "justify-content-end" : "justify-content-center"
-          }`}
-        >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              ...(open && { display: "none" }),
-            }}
-            className="mx-auto "
-          >
-            <MenuOpenOutlinedIcon />
-          </IconButton>
-          <IconButton
-            onClick={handleDrawerClose}
-            sx={{
-              paddingBottom: 0,
-              ...(!open && { display: "none" }),
-            }}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        </Box>
-        {/* {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding sx={{ display: "block" }}>
-          <ListItemButton
+          className="overflow-y-scroll hide-scrollbar"
           sx={{
-            minHeight: 48,
-            justifyContent: open ? "initial" : "center",
-            px: 2.5,
+            maxHeight: `calc(100vh - 60px)`,
+            overflowX: "hidden",
           }}
-              >
-                <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-                >
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))} */}
-        <List>
-          {menuList.map((item, index) => {
-            return (
-              <ListItem key={index} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                  onClick={() => {
-                    if (item.navigate) {
-                      route.push(`${item.path_name}`);
-                    }
-                    setMenuList((pre) => {
-                      const setSelectedToFalse = (data) => {
-                        data.forEach((element) => {
-                          if (element?.child?.length) {
-                            element.child = setSelectedToFalse(
-                              JSON.parse(JSON.stringify([...element.child]))
-                            );
-                          }
-                          element.selected = false;
-                        });
-                        return data;
-                      };
-                      const temp = setSelectedToFalse(
-                        JSON.parse(JSON.stringify([...pre]))
-                      );
-                      temp[index].selected = true;
-                      return [...temp];
-                    });
-                  }}
-                >
-                  <ListItemIcon
+        >
+          <Box
+            className={`d-flex ${
+              open ? "justify-content-end" : "justify-content-center"
+            }`}
+          >
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                ...(open && { display: "none" }),
+              }}
+              className="mx-auto "
+            >
+              <MenuOpenOutlinedIcon />
+            </IconButton>
+            <IconButton
+              onClick={handleDrawerClose}
+              sx={{
+                paddingBottom: 0,
+                ...(!open && { display: "none" }),
+              }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+          </Box>
+          <List>
+            {menuList.map((item, index) => {
+              return (
+                <ListItem key={index} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                      color: item.selected && "#e56700",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                    onClick={() => {
+                      if (item.navigate) {
+                        route.push(`${item.path_name}`);
+                      }
+                      setMenuList((pre) => {
+                        const setSelectedToFalse = (data) => {
+                          data.forEach((element) => {
+                            if (element?.child?.length) {
+                              element.child = setSelectedToFalse(
+                                JSON.parse(JSON.stringify([...element.child]))
+                              );
+                            }
+                            element.selected = false;
+                          });
+                          return data;
+                        };
+                        const temp = setSelectedToFalse(
+                          JSON.parse(JSON.stringify([...pre]))
+                        );
+                        temp[index].selected = true;
+                        return [...temp];
+                      });
                     }}
                   >
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="text"
-                        fontWeight={600}
-                        fontSize={14}
-                        color={item.selected && "#e56700"}
-                      >
-                        {item.title}
-                      </Typography>
-                    }
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-                {item.selected && item?.child?.length ? (
-                  <div>
-                    <MenuList
-                      key={index}
+                    <ListItemIcon
                       sx={{
-                        minHeight: 40,
-                        px: 2.5,
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: item.selected && "#e56700",
                       }}
                     >
-                      {getSubMenuList(
-                        JSON.parse(JSON.stringify([...item.child]))
-                      )}
-                    </MenuList>
-                  </div>
-                ) : null}
-              </ListItem>
-            );
-          })}
-        </List>
+                      <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography
+                          variant="text"
+                          fontWeight={600}
+                          fontSize={14}
+                          color={item.selected && "#e56700"}
+                        >
+                          {item.title}
+                        </Typography>
+                      }
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                  {item.selected && item?.child?.length ? (
+                    <div>
+                      <MenuList
+                        key={index}
+                        sx={{
+                          minHeight: 40,
+                          px: 2.5,
+                        }}
+                      >
+                        {getSubMenuList(
+                          JSON.parse(JSON.stringify([...item.child]))
+                        )}
+                      </MenuList>
+                    </div>
+                  ) : null}
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          maxHeight: `calc(100vh - 60px)`,
+          maxWidth: ` ${open ? "calc(100vw - 240px)" : "calc(100vw - 60px)"}`,
+          marginLeft: ` ${open ? "240px" : "60px"}`,
+          transition: "margin 0.2s ease-out",
+          WebkitTransition: "margin 0.2s ease-out",
+        }}
+        className=" overflow-auto px-2 py-3 hide-scrollbar"
+      >
         {children}
       </Box>
     </Box>

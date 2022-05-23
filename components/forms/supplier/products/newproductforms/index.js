@@ -241,6 +241,7 @@ const ProductsLayout = ({
                         };
                       });
                     }}
+                    value={mainFormData.short_description.text}
                     onBtnClick={() => {
                       setShowFileUploadModal(true);
                     }}
@@ -257,6 +258,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <TextAreaComponent
                     legend="Long Description"
+                    value={mainFormData.long_description.text}
                     onChange={(e) => {
                       setMainFormData((prev) => {
                         return {

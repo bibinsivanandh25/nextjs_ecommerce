@@ -59,11 +59,11 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       upSells: "",
       crossSells: "",
     };
-    if (!linkedFormData.upSells.value) {
+    if (!linkedFormData.upSells?.value) {
       errObj.upSells = validateMessage.field_required;
       flag = false;
     }
-    if (!linkedFormData.crossSells.value) {
+    if (!linkedFormData.crossSells?.value) {
       errObj.crossSells = validateMessage.field_required;
       flag = false;
     }

@@ -22,11 +22,11 @@ const Layout = ({ Component, pageProps }) => {
         <div className="h-100">
           <HeaderComponent />
         </div>
-        <Box className="mnw-100hw">
+        <Box className="mnw-100vw">
           <SideBarComponent>
-            <Box className="w-100 h-100 p-2 pb-1">
-              <Component {...pageProps} />
-            </Box>
+            {/* <Box className="w-100 h-100 p-2 pb-1"> */}
+            <Component {...pageProps} />
+            {/* </Box> */}
           </SideBarComponent>
         </Box>
       </div>
