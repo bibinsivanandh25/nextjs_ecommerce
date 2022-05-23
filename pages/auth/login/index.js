@@ -41,11 +41,11 @@ const SelectComponent = ({
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(false);
   };
   const handleMenuItemClick = (index) => {
     setSelectedIndex(index);
-    setAnchorEl(null);
+    setAnchorEl(false);
   };
   return (
     <div style={{ position: "fixed", top: "0", left: "0" }}>
@@ -165,6 +165,17 @@ const Login = () => {
     return flag;
   };
 
+  const getBasePath = (role) => {
+    switch (role) {
+      case "Supplier":
+        return "supplier";
+      case "Reseller":
+        return "reseller";
+      default:
+        return "customer";
+    }
+  };
+
   const handleSubmit = async () => {
     const flag = validateCredentials();
     // await axios.post("authenticate", {
@@ -183,11 +194,13 @@ const Login = () => {
     // }
 
     if (!flag) {
+      console.log({ callbackUrl: getBasePath(options[selectedIndex]) });
       signIn("credentials", {
         username: formValues.user,
         password: formValues.password,
         role: options[selectedIndex],
         roleId: selectedIndex,
+        callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
       });
     }
   };

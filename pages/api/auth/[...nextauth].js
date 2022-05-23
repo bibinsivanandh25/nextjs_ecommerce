@@ -77,13 +77,9 @@ const options = {
     //   }
     //   return "/loginerror";
     // },
-    // async redirect({ url, baseUrl }) {
-    //   // Allows relative callback URLs
-    //   if (url.startsWith("/")) return new URL(url, baseUrl).toString();
-    //   // Allows callback URLs on the same origin
-    //   else if (new URL(url).origin === baseUrl) return url;
-    //   return baseUrl;
-    // },
+    redirect: async ({ url, baseUrl }) => {
+      return url.startsWith(baseUrl) ? url : `${baseUrl}/${url}`;
+    },
   },
   secret: "123",
   jwt: { secret: "123", encryption: true },

@@ -1,11 +1,55 @@
 import ButtonComponent from "components/atoms/ButtonComponent";
+import validateMessage from "constants/validateMessages";
 import InputBox from "components/atoms/InputBoxComponent";
+import validationRegex from "services/utils/regexUtils";
+import { useState } from "react";
 
 const NewPasswordForm = ({
   formValues = {},
   handleSubmit = () => {},
   setFormValues = () => {},
 }) => {
+  const [error, setError] = useState({});
+
+  const validateForm = () => {
+    const errObj = { ...error };
+    const validate = (id, errMsg, valid1, valid2) => {
+      if (!formValues[id]) {
+        errObj[id] = validateMessage.field_required;
+      } else if (
+        (valid1 &&
+          valid2 &&
+          !valid1.test(formValues[id]) &&
+          !valid2.test(formValues[id])) ||
+        !valid1.test(formValues[id])
+      ) {
+        errObj[id] = errMsg;
+      } else {
+        errObj[id] = null;
+      }
+    };
+    validate(
+      "userId",
+      validateMessage.userId,
+      validationRegex.mobile,
+      validationRegex.email
+    );
+    validate("password", validateMessage.password, validationRegex.password);
+    validate("rePassword", validateMessage.password, validationRegex.password);
+
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+  const handleSubmitBtnClick = () => {
+    if (validateForm()) handleSubmit();
+  };
+
   return (
     <div className="d-flex flex-column justify-content-center">
       <div style={{ width: "400px" }}>
@@ -21,6 +65,9 @@ const NewPasswordForm = ({
               userId: e.target.value,
             }));
           }}
+          error={Boolean(error["userId"])}
+          helperText={error["userId"]}
+          inputlabelshrink
         />
       </div>
 
@@ -36,6 +83,9 @@ const NewPasswordForm = ({
             password: e.target.value,
           }));
         }}
+        error={Boolean(error["password"])}
+        helperText={<div className="mxw-200">{error["password"]}</div>}
+        inputlabelshrink
       />
 
       <InputBox
@@ -50,10 +100,13 @@ const NewPasswordForm = ({
             rePassword: e.target.value,
           }));
         }}
+        error={Boolean(error["rePassword"])}
+        helperText={error["rePassword"]}
+        inputlabelshrink
       />
       <ButtonComponent
         label="Submit"
-        onBtnClick={handleSubmit}
+        onBtnClick={handleSubmitBtnClick}
         muiProps={"w-30p mx-auto"}
       />
     </div>

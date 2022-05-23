@@ -17,7 +17,6 @@ const OtpLogIn = () => {
       setotp("xxxx");
     };
   }, []);
-  useEffect(() => console.log("otp", otp), [otp]);
   const handleSubmit = () => {
     router.push("/auth/supplier/newpassword");
   };

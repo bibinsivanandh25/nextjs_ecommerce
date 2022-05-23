@@ -181,7 +181,6 @@ const RegistrationForm = ({
                 label="<50 Units"
                 value="50"
                 onRadioChange={(e) => {
-                  console.log(e.target);
                   setFormValues((prev) => ({
                     ...prev,
                     stockCount: e.target.value,
@@ -196,7 +195,6 @@ const RegistrationForm = ({
                 label="50-200 Units"
                 value="50-200"
                 onRadioChange={(e) => {
-                  console.log(e.target);
                   setFormValues((prev) => ({
                     ...prev,
                     stockCount: e.target.value,
@@ -211,7 +209,6 @@ const RegistrationForm = ({
                 label=">200 Units"
                 value="200"
                 onRadioChange={(e) => {
-                  console.log(e.target);
                   setFormValues((prev) => ({
                     ...prev,
                     stockCount: e.target.value,
