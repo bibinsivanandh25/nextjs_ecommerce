@@ -27,6 +27,7 @@ const ModalComponent = ({
   saveBtnClassName = "",
   clearBtnVariant = "outlined",
   saveBtnVariant = "contained",
+  showPositionedClose = false,
 }) => {
   const style = {
     position: "absolute",
@@ -48,11 +49,23 @@ const ModalComponent = ({
         <Box sx={style}>
           {showHeader ? (
             <div
-              className={`d-flex justify-content-between align-items-center px-4 py-2 ${headerClassName}`}
+              className={`d-flex justify-content-between align-items-center px-4 py-2 position-relative ${headerClassName}`}
               style={{
                 borderBottom: "1px solid #e6e6e6",
               }}
             >
+              <CloseIcon
+                className={`${
+                  showPositionedClose
+                    ? "position-absolute rounded-circle bg-orange border text-white p-1 fs-3 ms-3 border-white"
+                    : "d-none"
+                }`}
+                style={{
+                  top: "-10px",
+                  right: "-10px",
+                }}
+                onClick={onCloseIconClick}
+              />
               <label className="fs-12 fw-600">{ModalTitle}</label>
               <div className={showCloseIcon ? "" : "d-none"}>
                 <CloseIcon
