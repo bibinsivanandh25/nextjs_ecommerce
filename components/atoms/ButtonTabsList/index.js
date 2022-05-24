@@ -10,6 +10,7 @@ const ButtonTabsList = ({
       {tabsList.map((item, index) => {
         return (
           <Box
+            key={index}
             className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
               activeTab === index ? "bg-orange color-white" : "bg-light-gray"
             }`}

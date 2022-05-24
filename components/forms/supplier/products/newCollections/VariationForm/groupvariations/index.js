@@ -294,6 +294,7 @@ const GroupVariationForm = forwardRef(
             {Object.keys(variationData).map((item, index) => {
               return (
                 <div
+                  key={index}
                   style={{
                     height: variationData[item].expand ? "100%" : "fit-content",
                   }}
@@ -701,9 +702,9 @@ const GroupVariationForm = forwardRef(
                         </div>
                         <div className="w-100 mt-3 pb-3">
                           <Grid container className="w-100" spacing={2}>
-                            {Object.keys(optionsValue).map((ele) => {
+                            {Object.keys(optionsValue).map((ele, index) => {
                               return (
-                                <Grid item md={12} container>
+                                <Grid item md={12} container key={index}>
                                   <Grid
                                     item
                                     md={4}

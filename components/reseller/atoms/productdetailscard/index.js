@@ -8,9 +8,9 @@ import { Favorite, Star } from "@mui/icons-material";
 const ProductDetailsCard = ({ products = [], showMarginButton = false }) => {
   const getProductsCard = () => {
     {
-      return products.map((ele) => {
+      return products.map((ele, index) => {
         return (
-          <Grid item sm={4}>
+          <Grid item sm={4} key={index}>
             <Paper className="p-2" sx={{}}>
               <Grid container columnSpacing={1}>
                 <Grid
