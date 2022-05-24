@@ -270,7 +270,7 @@ const resellerMenu = [
     navigate: true,
   },
   {
-    title: "New & Notifications",
+    title: "News & Notifications",
     logo: "fas fa-shopping-cart",
     path_name: "",
     navigate: false,
@@ -279,13 +279,13 @@ const resellerMenu = [
         title: "News",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "newsandnotifications/news",
       },
       {
         title: "Notifications",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "newsandnotifications/notifications",
       },
     ],
   },
@@ -356,13 +356,13 @@ const resellerMenu = [
   {
     title: "Rate MrMrsCart",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "ratemrmrscart",
     navigate: true,
   },
   {
     title: "Help & Support",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "helpandsupport",
     navigate: true,
   },
   {
