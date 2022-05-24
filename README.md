@@ -10,18 +10,28 @@ Prerequisites:
 Install dependencies:
 
 bash
-npm install
+npm i -f
 
-First run the development server
+## To run localy
 
 bash
 npm run dev
 
+APP_SERVER = "http://localhost:3010"
+
 ## To depoly a new development build
 
 bash
-npm run build:staging
+npm run build
 
-supplier
-email: admin@gmail.com
-password: Admin@123
+Builds the app for production to the `build` folder.\
+If correctly bundles React in production mode and optimizes the build for the best performance.
+
+Your app is ready to be deployed!
+
+# To run the build
+
+bash
+npm run start
+
+APP_SERVER = "http://10.10.30.10:3010"
