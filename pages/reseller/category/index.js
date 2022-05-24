@@ -12,7 +12,6 @@ import CategoryScrollComponent from "components/atoms/CategoryScrollComponent";
 import ImageCard from "components/atoms/ImageCard";
 import SearchComponent from "components/atoms/SearchComponent";
 import Image from "next/image";
-import logo from "public/assets/images/Coupon.png";
 import { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CategoryProductCard from "components/reseller/atoms/CategoryProductCard";
@@ -128,7 +127,8 @@ const subCategoryItems = [
   {
     id: 1,
     label: "Daily wears",
-    image: logo,
+    image:
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/flower.jpg",
   },
 
   {
@@ -303,7 +303,11 @@ const Category = ({}) => {
                     >
                       <Card elevation={2} className="w-100 h-100">
                         <CardActionArea>
-                          <Image src={logo} />
+                          <Image
+                            src={
+                              "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/flower.jpg"
+                            }
+                          />
                         </CardActionArea>
                       </Card>
                       <Typography className={`h-4 cursor-pointer`}>
