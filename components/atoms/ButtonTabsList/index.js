@@ -1,12 +1,12 @@
 const { Box } = require("@mui/material");
 const ButtonTabsList = ({
-  className = "",
+  className = "w-100",
   activeTab = 0,
   tabsList = [],
   getActiveTab = () => {},
 }) => {
   return (
-    <Box className={`w-100 ${className}`}>
+    <Box className={`${className}`}>
       {tabsList.map((item, index) => {
         return (
           <Box
