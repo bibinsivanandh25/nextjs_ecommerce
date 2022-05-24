@@ -1,0 +1,112 @@
+/* progress bar style */
+.progresscontainer {
+  width: 100%;
+  text-align: center;
+}
+
+.progresscontainer span {
+  color: gray;
+  font-size: 14px;
+  font-weight: 600;
+}
+.progresscontainer li {
+  margin-bottom: 10px;
+  width: 33.33%;
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  position: relative;
+  font-size: 12px;
+}
+
+.progressbar {
+  margin-top: 15px;
+  counter-reset: step;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 10px;
+}
+
+.progresscontainer li::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 45px;
+  height: 45px;
+  border: 1px solid #ff7518;
+  border-radius: 100%;
+  display: block;
+  text-align: center;
+  margin: 0 auto 10px;
+  line-height: 40px;
+  position: relative;
+  z-index: 20;
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7518;
+  background-color: white;
+  cursor: pointer;
+
+}
+
+.progresscontainer li::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid #ff7518;
+  top: 23px;
+  left: -50%;
+  z-index: 3;
+}
+
+.progresscontainer li:first-child::after {
+  content: none;
+}
+
+.progresscontainer li.active {
+  color: #ff7518;
+}
+.progresscontainer li.active:before {
+  color: #ffff;
+  background-color: #ff7518;
+  
+}
+
+
+@media only screen and (max-width: 700px) {
+  .progresscontainer li::before {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    line-height: 25px;
+    margin-bottom: 3px;
+  }
+  .progresscontainer li::after {
+    top: 15px;
+  }
+}
+@media only screen and (max-width: 550px) {
+  .progresscontainer li::before {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    line-height: 25px;
+    margin-bottom: 3px;
+  }
+  .progresscontainer li::after {
+    top: 15px;
+  }
+  .progresscontainer {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  .progressbar {
+    padding: 10px;
+  }
+  .progresscontainer > span {
+    font-size: 2.5vw;
+  }
+
+}

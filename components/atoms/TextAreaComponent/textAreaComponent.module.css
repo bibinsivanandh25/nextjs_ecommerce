@@ -1,0 +1,23 @@
+.textarea{
+    resize: none;
+    width:100%;
+    border-bottom-left-radius: 2%;
+    border-bottom-right-radius: 2%;
+    outline: none;
+    border-color: #838383;
+  }
+
+  .legend {
+    position: absolute;
+    top: -15px;
+    left: 10px;
+    background-color: #FFFFFF;
+}
+
+.fieldset{
+  border:0.5px solid #838383;
+  height:10%;
+  position:relative;
+  border-bottom: none;
+  
+}
