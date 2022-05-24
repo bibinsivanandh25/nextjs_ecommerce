@@ -224,7 +224,7 @@ const resellerMenu = [
   {
     title: "Category",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "category",
     navigate: true,
   },
   {
