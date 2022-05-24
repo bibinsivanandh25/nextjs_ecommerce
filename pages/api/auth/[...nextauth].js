@@ -5,10 +5,8 @@ import { loginCall } from "services";
 import toastify from "services/utils/toastUtils";
 
 const options = {
-  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       // name: "Credentials",
       // credentials: {
       //   username: { label: "UserName", type: "text" },
@@ -78,7 +76,11 @@ const options = {
     //   return "/loginerror";
     // },
     redirect: async ({ url, baseUrl }) => {
-      return url.startsWith(baseUrl) ? url : `${baseUrl}/${url}`;
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
   secret: "123",

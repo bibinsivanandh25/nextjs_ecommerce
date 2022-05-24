@@ -194,7 +194,6 @@ const Login = () => {
     // }
 
     if (!flag) {
-      console.log({ callbackUrl: getBasePath(options[selectedIndex]) });
       signIn("credentials", {
         username: formValues.user,
         password: formValues.password,

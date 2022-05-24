@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3010",
-    "build": "next build && next export",
-    "build:staging": "env-cmd -f .env.staging next build && next export && next start",
-    "build:development": "env-cmd -f .env.development next build && next export && next start",
+    "build": "next build && next start -p 3010",
+    "build:development": "env-cmd -f .env.development next build && next start -p 3010",
     "start": "next start -p 3010",
     "lint": "next lint"
   },

@@ -242,9 +242,9 @@ const ProductDetailsCard = ({
         saveBtnText="submit"
         footerClassName="justify-content-end"
       >
-        {wishListCollection.map((ele) => {
+        {wishListCollection.map((ele, index) => {
           return (
-            <div>
+            <div key={index}>
               <RadiobuttonComponent
                 label={ele.title}
                 isChecked={ele.isSelected}
