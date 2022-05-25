@@ -1,23 +1,21 @@
 import { Box, Card, Paper, Typography } from "@mui/material";
+import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
-import productImg from "public/assets/registerConfirmIcon.png";
 import { useState } from "react";
 import styles from "./CategoryProductCard.module.css";
 
-const CategoryProductCard = ({ data }) => {
+const CategoryProductCard = ({ data = [] }) => {
   const [hover, setHover] = useState(false);
 
   return (
     <Box className="w-100 d-flex flex-column">
       <Paper
         className=""
-        elevation={hover ? 10 : 3}
+        elevation={hover ? 6 : 3}
         onMouseEnter={() => {
-          console.log("over");
           setHover(true);
         }}
         onMouseLeave={() => {
-          console.log("leave");
           setHover(false);
         }}
         sx={{
@@ -26,7 +24,14 @@ const CategoryProductCard = ({ data }) => {
           height: "30vh",
         }}
       >
-        <Image src={productImg} layout="fill" />
+        <Image
+          src={
+            "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/flower.jpg"
+          }
+          layout="fill"
+          width={100}
+          height={100}
+        />
         <Box
           className={`${
             !hover ? styles.hoverCard_none : styles.hoverCard_block
@@ -34,7 +39,13 @@ const CategoryProductCard = ({ data }) => {
         >
           <Box className="d-flex flex-row-reverse p-2">
             <Box className="d-flex flex-column">
-              <Box>icon</Box>
+              <Box>
+                <Image
+                  src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/watsapp-icon.png"
+                  width={25}
+                  height={25}
+                />
+              </Box>
               <Box>icon</Box>
               <Box>icon</Box>
             </Box>
@@ -60,6 +71,15 @@ const CategoryProductCard = ({ data }) => {
           Free Delivary: <span className="fw-bold">{data.freeDelivary}</span>
         </Typography>
       </Box>
+      {data?.no_of_Design > 1 ? (
+        <Box className="px-2">
+          <ButtonComponent
+            label={`${data.no_of_Design} Designs`}
+            variant="outlined"
+            muiProps="w-100 bg-orange-transparnt"
+          />
+        </Box>
+      ) : null}
     </Box>
   );
 };
