@@ -103,7 +103,7 @@ const ResellerNews = () => {
                       3 Jan 2022 | 2 mins read
                     </Typography>
                     <Typography
-                      nowrap
+                      nowrap="true"
                       sx={{
                         overflow: "hidden",
                         textOverflow: "ellipsis",
