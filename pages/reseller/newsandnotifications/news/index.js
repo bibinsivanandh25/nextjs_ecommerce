@@ -1,4 +1,12 @@
-import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
+import {
+  Badge,
+  Button,
+  Grid,
+  Pagination,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { orange } from "@mui/material/colors";
 import axios from "axios";
 import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
@@ -9,6 +17,11 @@ const ResellerNews = () => {
   const [newsData, setNewsData] = useState([]);
   const [dropDownValue, setDropDownValue] = useState({});
   const [popupDetails, setPopupDetails] = useState({ show: false });
+  const [paginatedData, setPaginatedData] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const indexOfLastRowData = page * 10;
+  const indexOfFirstRowData = indexOfLastRowData - 10;
 
   const getData = async () => {
     await axios
@@ -24,6 +37,10 @@ const ResellerNews = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(() => {
+    setPaginatedData(newsData.slice(indexOfFirstRowData, indexOfLastRowData));
+  }, [indexOfFirstRowData, indexOfLastRowData, newsData]);
 
   const handleCardClick = (ele) => {
     setPopupDetails({
@@ -54,7 +71,7 @@ const ResellerNews = () => {
           </Grid>
         </Grid>
         <Grid item container spacing={2} xs={12} sx={{ my: 5, px: 2 }}>
-          {newsData.map((ele, i) => (
+          {paginatedData.map((ele) => (
             <Grid xs={6} item key={ele.id} onClick={() => handleCardClick(ele)}>
               <Grid
                 container
@@ -65,11 +82,17 @@ const ResellerNews = () => {
               >
                 <Grid container spacing={2} item xs={12} alignItems="center">
                   <Grid item xs={3}>
-                    <Image src={ele.image} height={100} width={100} alt="" />
+                    <Image
+                      src={ele.image}
+                      height={100}
+                      width={100}
+                      alt=""
+                      className="ms-2"
+                    />
                   </Grid>
                   <Grid
                     item
-                    xs={ele.image ? 8 : 12}
+                    xs={ele.image ? 9 : 12}
                     zeroMinWidth
                     className="fs-14 fw-bold"
                   >
@@ -97,6 +120,14 @@ const ResellerNews = () => {
               </Grid>
             </Grid>
           ))}
+          <div className="d-flex justify-content-end my-2 w-100">
+            <Pagination
+              count={newsData.length / 10}
+              page={page}
+              shape="rounded"
+              onChange={(event, value) => setPage(value)}
+            />
+          </div>
         </Grid>
       </Grid>
       {popupDetails.show && (
@@ -114,7 +145,11 @@ const ResellerNews = () => {
             <Grid item xs={12} container justifyContent="center">
               <Image src={popupDetails.image} height={100} width={100} alt="" />
             </Grid>
-            <Typography color="navy" className="fw-600 fs-14 my-3" align="center">
+            <Typography
+              color="navy"
+              className="fw-600 fs-14 my-3"
+              align="center"
+            >
               {popupDetails.title}
             </Typography>
             <Typography className="fs-14">
