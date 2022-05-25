@@ -1,4 +1,4 @@
-export const images = {
+const assetsJson = {
   add: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/add.png",
   ecommerceBanner:
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg",
@@ -65,3 +65,5 @@ export const images = {
   whatsapp:
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/whatsapp.png",
 };
+
+export { assetsJson };
