@@ -29,9 +29,6 @@ If correctly bundles React in production mode and optimizes the build for the be
 
 Your app is ready to be deployed!
 
-# To run the build
-
-bash
-npm run start
+App will be started at 3010 port
 
 APP_SERVER = "http://10.10.30.10:3010"
