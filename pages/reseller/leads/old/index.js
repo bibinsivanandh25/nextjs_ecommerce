@@ -99,9 +99,12 @@ const OldLeads = () => {
   }, []);
 
   const getCampaigns = () => {
-    return campaignDetail.map((ele) => {
+    return campaignDetail.map((ele, index) => {
       return (
-        <div className="d-flex align-items-center py-3 border-bottom">
+        <div
+          className="d-flex align-items-center py-3 border-bottom"
+          key={index}
+        >
           <div>
             <CheckBoxComponent
               isChecked={ele.isSelected}
