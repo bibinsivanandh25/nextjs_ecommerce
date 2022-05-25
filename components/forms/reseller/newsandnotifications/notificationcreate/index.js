@@ -5,11 +5,54 @@ import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import TextEditor from "components/atoms/TextEditor";
 import { useRef, useState } from "react";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
+import validateMessage from "constants/validateMessages";
 
 const ResellerNotificationCreate = () => {
   const inputField = useRef();
+  const [notificationData, setNotificationData] = useState({});
   const [editorContent, setEditorContent] = useState(null);
   const [type, setType] = useState("referral");
+  const [error, setError] = useState({});
+
+  const validateForm = () => {
+    const errObj = { ...error };
+    if (!notificationData.subject) {
+      errObj["subject"] = validateMessage.field_required;
+    } else {
+      errObj["subject"] = null;
+    }
+    if (type !== "referral") {
+      if (!notificationData.content) {
+        errObj["content"] = validateMessage.field_required;
+      } else if (!/^.{1,1000}$/.test(notificationData.content)) {
+        errObj["content"] = validateMessage.field_required;
+      } else {
+        errObj["content"] = null;
+      }
+    } else {
+      if (!editorContent) {
+        errObj["content"] = validateMessage.field_required;
+      } else if (!/^.{1,1000}$/.test(editorContent)) {
+        errObj["content"] = validateMessage.field_required;
+      } else {
+        errObj["content"] = null;
+      }
+    }
+    setError({ ...errObj });
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
+  const handleBtnClick = () => {
+    if (validateForm()) {
+      console.log(notificationData);
+    }
+  };
 
   return (
     <>
@@ -61,16 +104,47 @@ const ResellerNotificationCreate = () => {
       <div className="my-2 px-5">
         <div className="my-2">
           <span className="fw-600 d-flex align-items-center">
-            Subject: <InputBox className="w-75 ms-3 my-3" />
+            Subject:{" "}
+            <InputBox
+              className="w-75 ms-3 my-3"
+              onInputChange={(e) =>
+                setNotificationData((prev) => ({
+                  ...prev,
+                  subject: e.target.value,
+                }))
+              }
+              error={Boolean(error.subject)}
+              helperText={error.subject}
+            />
           </span>
         </div>
         {type === "customer" ? (
-          <TextEditor
-            widthClassName="w-100"
-            getContent={(val) => setEditorContent(val)}
-          />
+          <>
+            <TextEditor
+              widthClassName="w-100"
+              getContent={(val) => setEditorContent(val)}
+            />
+            <div>
+              {error.content && (
+                <p className="error" id="textbox-helper-text">
+                  {error.content}
+                </p>
+              )}
+            </div>
+          </>
         ) : (
-          <InputBox isMultiline rows={8} />
+          <InputBox
+            isMultiline
+            rows={8}
+            onInputChange={(e) =>
+              setNotificationData((prev) => ({
+                ...prev,
+                content: e.target.value,
+              }))
+            }
+            error={Boolean(error.content)}
+            helperText={error.content}
+          />
         )}
         <Grid
           container
@@ -102,7 +176,7 @@ const ResellerNotificationCreate = () => {
           <Grid item className="d-flex justify-content-end">
             <ButtonComponent
               label="Create Notification"
-              onBtnClick={() => {}}
+              onBtnClick={handleBtnClick}
             />
           </Grid>
         </Grid>
