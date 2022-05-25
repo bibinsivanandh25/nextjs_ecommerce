@@ -78,7 +78,7 @@
 }
 
 .mxh-300 {
-  max-height: 300px;
+  max-height: 300px !important;
 }
 
 .mxh-400 {
@@ -234,4 +234,7 @@
 }
 .mxh-50vh{
   max-height:50vh
+}
+.h-300px{
+  height: 300px !important;
 }
