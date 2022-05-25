@@ -272,20 +272,20 @@ const resellerMenu = [
   {
     title: "News & Notifications",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "/newsandnotifications",
     navigate: false,
     child: [
       {
         title: "News",
         logo: "",
         navigate: true,
-        path_name: "newsandnotifications/news",
+        path_name: "news",
       },
       {
         title: "Notifications",
         logo: "",
         navigate: true,
-        path_name: "newsandnotifications/notifications",
+        path_name: "notifications",
       },
     ],
   },
