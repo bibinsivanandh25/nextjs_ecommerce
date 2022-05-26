@@ -1,13 +1,117 @@
 import { ArrowBack, ArrowBackIos, ArrowLeft } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import CustomDatePickerComponent from "components/atoms/CustomDatePickerComponent";
-import DatePickerComponent from "components/atoms/DatePickerComponent";
+import CheckBoxComponent from "components/atoms/CheckboxComponent";
+import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
+import { assetsJson } from "public/assets";
+import { useState } from "react";
 
 const CreateDiscount = ({ setShowCreateDiscount = () => {} }) => {
+  let ProductsDetails = [
+    {
+      id: 1,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 2,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 3,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 4,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 5,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 6,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 7,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 8,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 9,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+    {
+      id: 10,
+      title: "Sarree",
+      image: assetsJson["Printed Dress"],
+      discount: "25% Margin",
+      isSelected: false,
+    },
+  ];
+  const [Products, setProducts] = useState([...ProductsDetails]);
+  const getProducts = () => {
+    return Products.map((ele, ind) => {
+      return (
+        <div key={ind}>
+          <ImageCard imgSrc={ele.image} showClose={false} />
+          <Typography className="text-center">{ele.title}</Typography>
+          <Typography className="text-center color-dark-green h-5 fw-bold">
+            {ele.discount}
+          </Typography>
+          <div className="ms-2">
+            <CheckBoxComponent
+              isChecked={ele.isSelected}
+              id={ele.id}
+              checkBoxClick={(id) => {
+                let arr = [...Products];
+                arr.forEach((item) => {
+                  if (item.id == id) {
+                    item.isSelected = !item.isSelected;
+                  }
+                });
+                setProducts([...arr]);
+              }}
+            />
+          </div>
+        </div>
+      );
+    });
+  };
+
   return (
     <div>
       <span
@@ -111,6 +215,7 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {} }) => {
       <div className="mt-2">
         <TextEditor />
       </div>
+      <div className="d-flex justify-content-between">{getProducts()}</div>
     </div>
   );
 };
