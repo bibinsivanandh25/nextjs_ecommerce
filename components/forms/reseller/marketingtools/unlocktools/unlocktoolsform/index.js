@@ -48,7 +48,7 @@ const UnlockToolsForm = ({
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row.heading,
+        col1: <span className="fw-600">{row.heading}</span>,
         col2: getRadioComponent(
           row.id,
           row.col2.label,
