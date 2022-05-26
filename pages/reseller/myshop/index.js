@@ -123,7 +123,7 @@ const MyShop = ({}) => {
                 className="bg-gray"
               >
                 <CameraAltIcon
-                  className="m-1"
+                  className="m-1 cursor-pointer"
                   onClick={() => {
                     inputRef.current.click();
                   }}
@@ -150,7 +150,7 @@ const MyShop = ({}) => {
                 />
               </Box>
               <EditIcon
-                className="ms-4"
+                className="ms-4 cursor-pointer"
                 onClick={() => {
                   setShowEditModal(true);
                 }}
