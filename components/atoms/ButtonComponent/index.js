@@ -5,6 +5,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import ShareIcon from "@mui/icons-material/Share";
 
 const ButtonComponent = ({
   label = "Button",
@@ -14,7 +15,7 @@ const ButtonComponent = ({
   muiProps = "",
   color = "primary",
   showIcon = false,
-  iconColor = "#fff",
+  iconColorClass = "",
   iconSize = "20",
   iconName = "",
   iconOrintation = "start",
@@ -24,17 +25,19 @@ const ButtonComponent = ({
 }) => {
   const getIcon = () => {
     if (iconName === "search") {
-      return <SearchIcon color={iconColor} size={iconSize} />;
+      return <SearchIcon className={iconColorClass} size={iconSize} />;
     } else if (iconName === "add") {
-      return <AddIcon color={iconColor} size={iconSize} />;
+      return <AddIcon className={iconColorClass} size={iconSize} />;
     } else if (iconName === "filter") {
-      return <FilterListIcon color={iconColor} size={iconSize} />;
+      return <FilterListIcon className={iconColorClass} size={iconSize} />;
     } else if (iconName === "delete") {
-      return <DeleteIcon color={iconColor} size={iconSize} />;
+      return <DeleteIcon className={iconColorClass} size={iconSize} />;
     } else if (iconName === "upload") {
-      return <FileUploadIcon color={iconColor} size={iconSize} />;
+      return <FileUploadIcon className={iconColorClass} size={iconSize} />;
     } else if (iconName === "download") {
-      return <FileDownloadIcon color={iconColor} size={iconSize} />;
+      return <FileDownloadIcon className={iconColorClass} size={iconSize} />;
+    } else if (iconName === "share") {
+      return <ShareIcon className={iconColorClass} size={iconSize} />;
     }
   };
   return (

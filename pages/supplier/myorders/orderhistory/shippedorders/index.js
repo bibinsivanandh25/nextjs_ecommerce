@@ -129,55 +129,6 @@ const ShippedOrders = () => {
     setTableRows(mapRowsToTable(tableData));
   }, [tableData]);
 
-  useEffect(() => {
-    const rows = [
-      {
-        purchaseid: "#123458",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "PRODUCT LIVE",
-        chooseActionValue: null,
-        total: 2,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123456",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        total: 3,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123459",
-        orderid: "123423",
-        orderdate: "12-01-2023",
-        size: "UK22",
-        weight: "300gm",
-        manifestdate: "23-01-2022",
-        qty: "1",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        total: 4,
-        orderQuantity: 3,
-      },
-    ];
-    setTableData(rows);
-  }, []);
-
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
-
   const filterByType = React.useCallback(() => {
     if (dropdownFilter && dropdownFilter.id) {
       switch (dropdownFilter?.id) {

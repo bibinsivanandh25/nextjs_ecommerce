@@ -128,7 +128,7 @@ const AddGroupProducts = () => {
                   <Box className="d-flex w-100">
                     <Grid container className="w-100" spacing={2}>
                       {childDetails.map((item, index) => (
-                        <Grid item md={6} lg={4}>
+                        <Grid item md={6} lg={4} key={index}>
                           <Card className="" variant="outlined" key={index}>
                             <CardContent className="w-100 d-flex">
                               <Box className="w-40p">Image</Box>

@@ -224,7 +224,7 @@ const resellerMenu = [
   {
     title: "Category",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "category",
     navigate: true,
   },
   {
@@ -236,7 +236,7 @@ const resellerMenu = [
   {
     title: "My Shop",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "myshop",
     navigate: true,
   },
   {
@@ -270,22 +270,22 @@ const resellerMenu = [
     navigate: true,
   },
   {
-    title: "New & Notifications",
+    title: "News & Notifications",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "/newsandnotifications",
     navigate: false,
     child: [
       {
         title: "News",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "news",
       },
       {
         title: "Notifications",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "notifications",
       },
     ],
   },
@@ -356,13 +356,13 @@ const resellerMenu = [
   {
     title: "Rate MrMrsCart",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "ratemrmrscart",
     navigate: true,
   },
   {
     title: "Help & Support",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "helpandsupport",
     navigate: true,
   },
   {

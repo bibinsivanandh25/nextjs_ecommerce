@@ -133,4 +133,7 @@ export const paths = [
   },
   { title: "Add New Collection", id: "addnewcollection" },
   { title: "My Shared Category", id: "mysharedcategory" },
+  { title: "News", id: "news" },
+  { title: "Notification", id: "notifications" },
+  { title: "News & Notification", id: "newsandnotifications" },
 ];
