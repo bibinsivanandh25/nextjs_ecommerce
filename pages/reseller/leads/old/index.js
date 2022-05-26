@@ -6,36 +6,6 @@ import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
 
 const OldLeads = () => {
-  const columns = [
-    {
-      id: "col1", //id value in column should be presented in row as key
-      label: "Sl No ",
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-    },
-    {
-      id: "col2",
-      label: "Name",
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-    },
-    {
-      id: "col3",
-      label: "Mobile Number",
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-    },
-    {
-      id: "col4",
-      label: "Action",
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-    },
-  ];
   let campaigns = [
     {
       campaignType: "Quiz",
@@ -56,34 +26,7 @@ const OldLeads = () => {
       endDate: "22/12/2020",
     },
   ];
-  let rows = [
-    {
-      id: "1",
-      col1: 1,
-      col2: "Suhil",
-      col3: "9875867734",
-      col4: (
-        <div className="text-center">
-          <Share
-            onClick={() => {
-              setShowCampaignModal(true);
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "1",
-      col1: 1,
-      col2: "Balu",
-      col3: "7022230923",
-      col4: (
-        <div className="text-center">
-          <Share onClick={() => setShowCampaignModal(true)} />
-        </div>
-      ),
-    },
-  ];
+
   const [showCampaignModal, setShowCampaignModal] = useState(false);
   const [campaignDetail, setCampaignDetail] = useState([...campaigns]);
 
