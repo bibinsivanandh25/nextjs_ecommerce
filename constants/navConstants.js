@@ -254,13 +254,7 @@ const resellerMenu = [
   {
     title: "Customers",
     logo: "fas fa-shopping-cart",
-    path_name: "",
-    navigate: true,
-  },
-  {
-    title: "Customers Gift Cards",
-    logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "Customers",
     navigate: true,
   },
   {
