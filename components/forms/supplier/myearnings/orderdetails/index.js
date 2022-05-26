@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 import Image from "next/image";
-import image from "public/assets/images/coupon.png";
+import image from "public/assets/images/Coupon.png";
 
 const OrderDetails = ({ showModal = false, setshowModal = () => {} }) => {
   const orderdetails = [
