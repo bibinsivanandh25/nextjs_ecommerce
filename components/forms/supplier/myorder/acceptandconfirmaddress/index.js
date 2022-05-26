@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AddAddressModal from "../../myaccount/addaddressmodal";
-const AcceptandConfirmAdress = () => {
+const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
   const [radioChecked, setRadioChecked] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [pickupDetails, setpickupDetails] = useState([
@@ -81,14 +81,14 @@ const AcceptandConfirmAdress = () => {
               }}
             />
           </Grid>
-          <Grid item xs={9}>
+          <Grid item xs={9} className="my-2">
             <p className="font-weight-bold">{ele.name}</p>
             <p>{ele.address}</p>
           </Grid>
           <Grid
             item
             xs={1}
-            className="d-flex flex-column justify-content-between my-2"
+            className="d-flex flex-column justify-content-between my-2 ms-auto"
           >
             <EditIcon
               onClick={() => {
@@ -107,7 +107,15 @@ const AcceptandConfirmAdress = () => {
   };
   return (
     <>
-      <p className="color-orange cursor-pointer"> Back</p>
+      <p
+        className="color-orange cursor-pointer position-absolute top-0"
+        onClick={() => {
+          setshowConfirmAdress(false);
+        }}
+      >
+        {"< "}
+        Back
+      </p>
       <div className="d-flex justify-content-between align-items-center ">
         <p className="fw-600">Select Pickup Address (5 orders Selected)</p>
         <ButtonComponent label="Ship with MrMrs Cart" />
