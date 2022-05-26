@@ -49,6 +49,7 @@ const UnlockToolsSingle = () => {
       col5: { label: "₹10", isChecked: false },
       col6: { label: "₹10", isChecked: false },
       col7: { label: "₹10", isChecked: false },
+      isRadioSelected: false,
     },
     {
       id: 2,
@@ -59,6 +60,7 @@ const UnlockToolsSingle = () => {
       col5: { label: "₹10", isChecked: false },
       col6: { label: "₹10", isChecked: false },
       col7: { label: "₹10", isChecked: false },
+      isRadioSelected: false,
     },
     {
       id: 3,
@@ -69,6 +71,7 @@ const UnlockToolsSingle = () => {
       col5: { label: "₹10", isChecked: false },
       col6: { label: "₹10", isChecked: false },
       col7: { label: "₹10", isChecked: false },
+      isRadioSelected: false,
     },
     {
       id: 4,
@@ -79,6 +82,7 @@ const UnlockToolsSingle = () => {
       col5: { label: "₹10", isChecked: false },
       col6: { label: "₹10", isChecked: false },
       col7: { label: "₹10", isChecked: false },
+      isRadioSelected: false,
     },
     {
       id: 5,
@@ -89,6 +93,7 @@ const UnlockToolsSingle = () => {
       col5: { label: "₹10", isChecked: false },
       col6: { label: "₹10", isChecked: false },
       col7: { label: "₹10", isChecked: false },
+      isRadioSelected: false,
     },
   ];
 
