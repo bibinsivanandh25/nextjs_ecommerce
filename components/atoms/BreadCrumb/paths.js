@@ -136,4 +136,8 @@ export const paths = [
   { title: "News", id: "news" },
   { title: "Notification", id: "notifications" },
   { title: "News & Notification", id: "newsandnotifications" },
+  { title: "Marketing Tools", id: "marketingtools" },
+  { title: "Unlock Tools", id: "unlocktools" },
+  { title: "Single", id: "single" },
+  { title: "Combo", id: "combo" },
 ];
