@@ -17,6 +17,7 @@ const CheckBoxComponent = ({
   showIcon = false,
   iconType = "normal", //normal or circled
   id = "checkbox",
+  className = "",
 }) => {
   const getIcon = () => {
     if (showIcon && iconType === "normal" && varient === "filled") {
@@ -58,6 +59,7 @@ const CheckBoxComponent = ({
               checkBoxClick(e.target.id, e.target.checked);
             }}
             size={size}
+            className={className}
           />
         }
       />

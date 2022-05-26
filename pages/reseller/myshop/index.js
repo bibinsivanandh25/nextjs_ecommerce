@@ -17,12 +17,17 @@ import { getBase64 } from "services/utils/functionUtils";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import styled from "@emotion/styled";
+import validateMessage from "constants/validateMessages";
 
 const MyShop = ({}) => {
   const [showTheme, setShowTheme] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectTheme, setSelectTheme] = useState(1);
   const [formData, setFormData] = useState({
+    shop_name: "",
+    margin: "",
+  });
+  const [errorObj, setErrorObj] = useState({
     shop_name: "",
     margin: "",
   });
@@ -57,6 +62,31 @@ const MyShop = ({}) => {
       transformOrigin: "bottom left",
     },
   });
+
+  const validate = () => {
+    const errObj = {
+      shop_name: "",
+      margin: "",
+    };
+    let flag = false;
+    if (formData.shop_name === "") {
+      errObj.shop_name = validateMessage.field_required;
+      flag = true;
+    } else if (formData.shop_name.length > 35) {
+      errObj.shop_name = validateMessage.field_required;
+      flag = true;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) {
+      console.log({ formData });
+      setShowEditModal(false);
+      setErrorObj({ shop_name: "", margin: "" });
+    }
+  };
 
   return (
     <>
@@ -93,7 +123,7 @@ const MyShop = ({}) => {
                 className="bg-gray"
               >
                 <CameraAltIcon
-                  className="m-1"
+                  className="m-1 cursor-pointer"
                   onClick={() => {
                     inputRef.current.click();
                   }}
@@ -120,7 +150,7 @@ const MyShop = ({}) => {
                 />
               </Box>
               <EditIcon
-                className="ms-4"
+                className="ms-4 cursor-pointer"
                 onClick={() => {
                   setShowEditModal(true);
                 }}
@@ -200,11 +230,25 @@ const MyShop = ({}) => {
           ModalTitle="Edit Shop"
           minHeightClassName=""
           ClearBtnText="Cancle"
+          onSaveBtnClick={handleSubmit}
+          footerClassName="border-top d-flex flex-row-reverse"
+          saveBtnClassName="ms-2"
+          footerPadding="p-3"
+          onClearBtnClick={() => {
+            setFormData({ shop_name: "", margin: "" });
+            setShowEditModal(false);
+            setErrorObj({ shop_name: "", margin: "" });
+          }}
+          onCloseIconClick={() => {
+            setFormData({ shop_name: "", margin: "" });
+            setShowEditModal(false);
+            setErrorObj({ shop_name: "", margin: "" });
+          }}
         >
           <Box className="w-100 h-100 d-flex flex-column p-4">
             <InputBox
               label="Shop Name"
-              onChange={(e) => {
+              onInputChange={(e) => {
                 setFormData((pre) => {
                   return {
                     ...pre,
@@ -214,7 +258,10 @@ const MyShop = ({}) => {
               }}
               value={formData.shop_name}
               fullWidth={false}
-              className="w-75"
+              className="w-75 "
+              inputlabelshrink
+              error={errorObj.shop_name !== ""}
+              helperText={errorObj.shop_name}
             />
             <Box className="mt-3">
               <Typography className="fs-14 fw-bold mb-3">
