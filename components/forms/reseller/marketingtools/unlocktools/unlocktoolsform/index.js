@@ -84,6 +84,7 @@ const UnlockToolsForm = ({
             variant="outlined"
             size="small"
             disabled={!row.isRadioSelected}
+            sx={{ textTransform: "none" }}
           >
             Add to Cart
           </Button>
@@ -94,6 +95,7 @@ const UnlockToolsForm = ({
             className="bg-orange"
             size="small"
             disabled={!row.isRadioSelected}
+            sx={{ textTransform: "none" }}
           >
             Buy Now
           </Button>
