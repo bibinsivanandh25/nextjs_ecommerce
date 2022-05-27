@@ -343,7 +343,7 @@ const resellerMenu = [
         title: "Share Product by price",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "shareproductbyprice",
       },
     ],
   },

@@ -140,4 +140,5 @@ export const paths = [
   { title: "Unlock Tools", id: "unlocktools" },
   { title: "Single", id: "single" },
   { title: "Combo", id: "combo" },
+  { title: "Share Product By Price", id: "shareproductbyprice" },
 ];
