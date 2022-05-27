@@ -254,13 +254,7 @@ const resellerMenu = [
   {
     title: "Customers",
     logo: "fas fa-shopping-cart",
-    path_name: "",
-    navigate: true,
-  },
-  {
-    title: "Customers Gift Cards",
-    logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "Customers",
     navigate: true,
   },
   {
@@ -292,7 +286,7 @@ const resellerMenu = [
   {
     title: "Referref Reseller",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "referredreseller",
     navigate: true,
   },
   {
@@ -363,6 +357,12 @@ const resellerMenu = [
     title: "Help & Support",
     logo: "fas fa-shopping-cart",
     path_name: "helpandsupport",
+    navigate: true,
+  },
+  {
+    title: "Customer Q & A",
+    logo: "fas fa-shopping-cart",
+    path_name: "",
     navigate: true,
   },
   {

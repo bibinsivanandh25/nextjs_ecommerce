@@ -4,6 +4,7 @@ const validateMessage = {
   decimal_2digits: "Only decimal with 2 digits of after point allowed",
   alpha_numeric_6: "Max 6 alpha numeric characters can be entered",
   alpha_numeric_15: "Max 15 alpha numeric characters can be entered",
+  alpha_numeric_20: "Max 20 alpha numeric characters can be entered",
   alpha_numeric_35: "Max 35 alpha numeric characters can be entered",
   alpha_numeric_max_50: "Max 50 alpha numeric characters can be entered",
   alpha_numeric_max_60: "Max 60 alpha numeric characters can be entered",
