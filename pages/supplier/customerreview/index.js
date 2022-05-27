@@ -42,7 +42,7 @@ const CustomerReview = () => {
       id: "col6",
     },
     {
-      label: "Questions",
+      label: "Customer Reviews",
       id: "col7",
     },
     {

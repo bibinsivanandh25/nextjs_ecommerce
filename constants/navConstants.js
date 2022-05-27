@@ -298,7 +298,7 @@ const resellerMenu = [
   {
     title: "Marketing Tools",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "marketingtools",
     navigate: false,
     child: [
       {
@@ -323,19 +323,19 @@ const resellerMenu = [
         title: "Unlock Tools",
         logo: "",
         navigate: false,
-        path_name: "",
+        path_name: "unlocktools",
         child: [
           {
             title: "Single",
             logo: "",
             navigate: true,
-            path_name: "",
+            path_name: "single",
           },
           {
             title: "Combo",
             logo: "",
             navigate: true,
-            path_name: "",
+            path_name: "combo",
           },
         ],
       },
