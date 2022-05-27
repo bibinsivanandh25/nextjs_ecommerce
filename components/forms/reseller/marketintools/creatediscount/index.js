@@ -9,7 +9,7 @@ import TextEditor from "components/atoms/TextEditor";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
 
-const CreateDiscount = ({ setShowCreateDiscount = () => {} }) => {
+const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
   let ProductsDetails = [
     {
       id: 1,
@@ -148,7 +148,7 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {} }) => {
             <ButtonComponent
               muiProps="py-2 fs-12"
               size="medium"
-              label="View Discount Product"
+              label={btnText}
               variant="outlined"
             />
           </div>

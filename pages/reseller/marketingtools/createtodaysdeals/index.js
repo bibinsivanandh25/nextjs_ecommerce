@@ -5,7 +5,7 @@ import TableComponent from "components/atoms/TableComponent";
 import CreateDiscount from "components/forms/reseller/marketintools/creatediscount";
 import { useState } from "react";
 
-const CreateDiscountCoupons = () => {
+const CreateTodaysDeals = () => {
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -150,7 +150,7 @@ const CreateDiscountCoupons = () => {
             <Grid>
               <ButtonComponent
                 variant="outlined"
-                label="Create Discounts"
+                label="Create Today's Deal"
                 onBtnClick={() => {
                   setShowCreateDiscount(true);
                 }}
@@ -179,10 +179,10 @@ const CreateDiscountCoupons = () => {
       ) : (
         <CreateDiscount
           setShowCreateDiscount={setShowCreateDiscount}
-          btnText="View Discount Price"
+          btnText="View Today's Deal"
         />
       )}
     </div>
   );
 };
-export default CreateDiscountCoupons;
+export default CreateTodaysDeals;
