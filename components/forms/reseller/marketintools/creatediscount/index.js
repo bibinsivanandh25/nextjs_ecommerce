@@ -6,10 +6,12 @@ import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
+import ListGroupComponent from "components/molecule/ListGroupComponent";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
 
 const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
+  const [showListGroup, setShowListGroup] = useState(false);
   let ProductsDetails = [
     {
       id: 1,
@@ -114,6 +116,15 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
 
   return (
     <div>
+      <div
+        className={
+          btnText.toLowerCase() == "view Today's Deal".toLowerCase()
+            ? "h-5 text-primary text-end text-decoration-underline"
+            : "d-none"
+        }
+      >
+        Guidelines to Create
+      </div>
       <span
         className="h-5 color-orange cursor-pointer"
         onClick={() => {
@@ -122,21 +133,63 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
       >
         {"< "}Back
       </span>
-      <Grid container spacing={1} alignItems="center">
+      <Grid container spacing={1}>
         <Grid item sm={2}>
           <SimpleDropdownComponent size="small" label="Margin type" />
         </Grid>
-        <Grid item sm={5}>
-          <SimpleDropdownComponent size="small" />
+        <Grid item sm={5} className="d-flex position-relative" container>
+          <InputBox
+            iconName={!showListGroup ? "arrowDown" : "arrowUp"}
+            onIconClick={() => {
+              setShowListGroup(!showListGroup);
+            }}
+          />
+          {showListGroup ? (
+            <Grid
+              item
+              container
+              sm={12}
+              className="position-absolute "
+              sx={{
+                // zIndex: 100,
+                width: "98.5%",
+                top: 48,
+              }}
+            >
+              <Grid item sm={4}>
+                <ListGroupComponent
+                  size="small"
+                  showAddIcon={false}
+                  showEditIcon={false}
+                  showTitle
+                  title="Category"
+                />
+              </Grid>
+              <Grid item sm={4}>
+                <ListGroupComponent
+                  size="small"
+                  showAddIcon={false}
+                  showEditIcon={false}
+                  showTitle
+                  title="Set"
+                />
+              </Grid>
+              <Grid item sm={4}>
+                <ListGroupComponent
+                  size="small"
+                  showAddIcon={false}
+                  showEditIcon={false}
+                  showTitle
+                  title="Sub Category"
+                />
+              </Grid>
+            </Grid>
+          ) : null}
         </Grid>
         <Grid item sm={2}>
           <InputBox size="small" placeholder="Enter Discount %" />
         </Grid>
-        <Grid
-          item
-          sm={3}
-          className="d-flex align-items-between align-items-center"
-        >
+        <Grid item sm={3} className="d-flex align-items-between ">
           <div>
             <ButtonComponent
               muiProps="me-1 fs-12 py-2 "
