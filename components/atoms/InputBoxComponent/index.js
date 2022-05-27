@@ -2,6 +2,8 @@ import { TextField } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 const InputBox = ({
   id = "textbox",
@@ -32,6 +34,10 @@ const InputBox = ({
       return <Visibility />;
     } else if (iconName === "visibleOff") {
       return <VisibilityOff />;
+    } else if (iconName === "arrowDown") {
+      return <KeyboardArrowDownIcon />;
+    } else if (iconName === "arrowUp") {
+      return <KeyboardArrowUpIcon />;
     } else {
       return null;
     }

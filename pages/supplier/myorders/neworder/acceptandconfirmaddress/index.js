@@ -145,7 +145,7 @@ const AcceptandConfirmOrder = () => {
   ];
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper sx={{ p: 2 }} className="position-relative">
       <ProgressBar showHeader />
       {!showConfirmAdress ? (
         <div>
@@ -155,7 +155,11 @@ const AcceptandConfirmOrder = () => {
                 size={"small"}
                 list={[
                   { label: "Zero Commission", id: 1, value: "Zero Commission" },
-                  { label: "Full Commission", id: 2, value: "Full Commission" },
+                  {
+                    label: "Fixed Commission",
+                    id: 2,
+                    value: "Fixed Commission",
+                  },
                 ]}
                 onDropdownSelect={(val) => {
                   setDropDownValue(val);
@@ -188,7 +192,7 @@ const AcceptandConfirmOrder = () => {
           </Paper>
         </div>
       ) : (
-        <AcceptandConfirmAddress />
+        <AcceptandConfirmAddress setshowConfirmAdress={setshowConfirmAdress} />
       )}
       {/* <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} /> */}
     </Paper>
