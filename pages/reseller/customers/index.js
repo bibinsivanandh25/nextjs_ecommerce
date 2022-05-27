@@ -104,7 +104,7 @@ const Customer = () => {
       col9: (
         <div className="d-flex justify-content-evenly">
           <NotificationsIcon
-            className="color-blue"
+            className="color-blue cursor-pointer"
             onClick={() => {
               setshowNotifyModal(true);
               setselectedRow({ id: 1, name: "ABC" });
@@ -115,6 +115,7 @@ const Customer = () => {
             height={20}
             src={assetsJson["whatsapp-icon"]}
             alt="alt"
+            className="cursor-pointer"
           />
         </div>
       ),
@@ -192,6 +193,11 @@ const Customer = () => {
         files: [],
       });
       setshowNotifyModal(false);
+      setErrorObj({
+        subject: "",
+        content: "",
+        files: "",
+      });
     }
   };
 
@@ -213,6 +219,11 @@ const Customer = () => {
         ModalWidth={800}
         onCloseIconClick={() => {
           setshowNotifyModal(false);
+          setErrorObj({
+            subject: "",
+            content: "",
+            files: "",
+          });
         }}
         open={showNotifyModal}
         showFooter={false}
