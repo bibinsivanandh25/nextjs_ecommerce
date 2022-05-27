@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
@@ -16,11 +16,18 @@ import SearchIcon from "@mui/icons-material/Search";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const EnhancedTableHead = (props) => {
-  const { onSelectAllClick, numSelected, rowCount, showCheckbox, columns } =
-    props;
+  const {
+    onSelectAllClick,
+    numSelected,
+    rowCount,
+    showCheckbox,
+    columns,
+    showCellBorders,
+    tHeadBgColor,
+  } = props;
 
   return (
-    <TableHead className="border-top">
+    <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
         {showCheckbox && (
           <TableCell padding="checkbox">
@@ -74,6 +81,8 @@ export default function TableComponent({
   customSearchButtonLabel = "",
   onCustomSearchButtonClick = () => {},
   disableCustomSearchButton = false,
+  showCellBorders = true,
+  tHeadBgColor = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -351,13 +360,22 @@ export default function TableComponent({
           </Grid>
         </Grid>
         <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
-          <Table>
+          <Table
+            sx={{
+              [`& .${tableCellClasses.root}`]: {
+                borderBottom: !showCellBorders && "none",
+                borderTop: !showCellBorders && "none",
+              },
+            }}
+          >
             <EnhancedTableHead
               numSelected={selected.length}
               onSelectAllClick={handleSelectAllClick}
               rowCount={rows.length}
               showCheckbox={showCheckbox}
               columns={columns}
+              showCellBorders={showCellBorders}
+              tHeadBgColor={tHeadBgColor}
             />
             <TableBody>
               {rows

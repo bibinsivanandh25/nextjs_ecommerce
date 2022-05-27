@@ -266,20 +266,20 @@ const resellerMenu = [
   {
     title: "News & Notifications",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "/newsandnotifications",
     navigate: false,
     child: [
       {
         title: "News",
         logo: "",
         navigate: true,
-        path_name: "newsandnotifications/news",
+        path_name: "news",
       },
       {
         title: "Notifications",
         logo: "",
         navigate: true,
-        path_name: "newsandnotifications/notifications",
+        path_name: "notifications",
       },
     ],
   },
@@ -292,7 +292,7 @@ const resellerMenu = [
   {
     title: "Marketing Tools",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "marketingtools",
     navigate: false,
     child: [
       {
@@ -317,19 +317,19 @@ const resellerMenu = [
         title: "Unlock Tools",
         logo: "",
         navigate: false,
-        path_name: "",
+        path_name: "unlocktools",
         child: [
           {
             title: "Single",
             logo: "",
             navigate: true,
-            path_name: "",
+            path_name: "single",
           },
           {
             title: "Combo",
             logo: "",
             navigate: true,
-            path_name: "",
+            path_name: "combo",
           },
         ],
       },
