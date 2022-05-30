@@ -1,7 +1,7 @@
 .dateinput::-webkit-calendar-picker-indicator {
   opacity: 1;
   display: block;
-  background-image: url(../../public/assets/calendar.png);
+  background-image: url(../../../public/assets/calendar.png);
   width: 30px;
   height: 30px !important;
   border-width: thin;

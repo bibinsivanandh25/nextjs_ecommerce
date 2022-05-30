@@ -7,14 +7,14 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import CheckBoxComponent from "./CheckboxComponent";
+import CheckBoxComponent from "../CheckboxComponent";
 import { Button, Grid, IconButton } from "@mui/material";
-import SimpleDropdownComponent from "./SimpleDropdownComponent";
-import InputBox from "./InputBoxComponent";
-import ButtonComponent from "./ButtonComponent";
+import SimpleDropdownComponent from "../SimpleDropdownComponent";
+import InputBox from "../InputBoxComponent";
+import ButtonComponent from "../ButtonComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import CustomDatePickerComponent from "./CustomDatePickerComponent";
+import CustomDatePickerComponent from "../CustomDatePickerComponent";
 import styles from "./TableComponent.module.css";
 
 const EnhancedTableHead = (props) => {
