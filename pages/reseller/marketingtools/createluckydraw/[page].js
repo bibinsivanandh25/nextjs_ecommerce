@@ -4,11 +4,12 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { format, parse } from "date-fns";
 import { useState } from "react";
-import CreatequizForm from "components/forms/reseller/marketingtools/createluckydraw/createquiz";
+import GenericForm from "components/forms/reseller/marketingtools/createluckydraw";
 import ModalComponent from "components/atoms/ModalComponent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { useRouter } from "next/router";
 
-const CreateQuiz = () => {
+const CreateQuiz = ({ pageName }) => {
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -133,12 +134,14 @@ const CreateQuiz = () => {
     },
   ];
 
-  const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+  const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const route = useRouter();
+  console.log(route.query.page);
 
   return (
     <Paper className="mnh-80vh w-100 p-3">
-      {!showCreateQuiz ? (
+      {!genericForm ? (
         <div>
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
@@ -155,10 +158,15 @@ const CreateQuiz = () => {
             <Grid>
               <ButtonComponent
                 variant="outlined"
-                label="Create Quiz"
+                label={`Create ${
+                  pageName === "createquiz"
+                    ? "Quiz"
+                    : pageName === "spinwheel"
+                    ? "Spin Wheel"
+                    : "Scratch Card"
+                }`}
                 onBtnClick={() => {
                   setShowModal(true);
-                  // setShowCreateQuiz(true);
                 }}
               />
               <Typography
@@ -205,7 +213,7 @@ const CreateQuiz = () => {
                   label="Proced"
                   onBtnClick={() => {
                     setShowModal(false);
-                    setShowCreateQuiz(true);
+                    setShowGenericForm(true);
                   }}
                   muiProps="mx-auto mt-3"
                 />
@@ -214,9 +222,27 @@ const CreateQuiz = () => {
           </ModalComponent>
         </div>
       ) : (
-        <CreatequizForm setShowCreateQuiz={setShowCreateQuiz} />
+        <GenericForm
+          setShowGenericForm={setShowGenericForm}
+          pageName={pageName}
+        />
       )}
     </Paper>
   );
 };
 export default CreateQuiz;
+
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { page: "createquiz" } },
+      { params: { page: "spinwheel" } },
+      { params: { page: "scratchcard" } },
+    ],
+    fallback: false, // false or 'blocking'
+  };
+}
+
+export async function getStaticProps({ params }) {
+  return { props: { pageName: params.page } };
+}
