@@ -107,7 +107,7 @@ const CreateDiscount = ({
   const getProducts = () => {
     return Products.map((ele, ind) => {
       return (
-        <div key={ind}>
+        <Grid item key={ind} lg={1.2} md={2} sm={3}>
           <ImageCard imgSrc={ele.image} showClose={false} />
           <Typography className="text-center">{ele.title}</Typography>
           <Typography className="text-center color-dark-green h-5 fw-bold">
@@ -128,7 +128,7 @@ const CreateDiscount = ({
               }}
             />
           </div>
-        </div>
+        </Grid>
       );
     });
   };
@@ -430,7 +430,7 @@ const CreateDiscount = ({
           </p>
         )}
       </div>
-      <div className="d-flex justify-content-between">{getProducts()}</div>
+      <Grid container>{getProducts()}</Grid>
     </div>
   );
 };
