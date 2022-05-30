@@ -2,7 +2,7 @@ import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import CreateDiscount from "components/forms/reseller/marketintools/creatediscount";
+import CreateDiscount from "components/forms/reseller/marketingtools/creatediscount";
 import { useState } from "react";
 
 const CreateDiscountCoupons = () => {

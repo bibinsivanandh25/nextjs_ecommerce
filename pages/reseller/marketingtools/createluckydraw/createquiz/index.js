@@ -1,11 +1,14 @@
 import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import CreateDiscount from "components/forms/reseller/marketingtools/creatediscount";
+import { format, parse } from "date-fns";
 import { useState } from "react";
+import CreatequizForm from "components/forms/reseller/marketingtools/createluckydraw/createquiz";
+import ModalComponent from "components/atoms/ModalComponent";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-const CreateTodaysDeals = () => {
+const CreateQuiz = () => {
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -130,29 +133,32 @@ const CreateTodaysDeals = () => {
     },
   ];
 
-  const [showCreateDiscount, setShowCreateDiscount] = useState(false);
+  const [showCreateQuiz, setShowCreateQuiz] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   return (
-    <div>
-      {!showCreateDiscount ? (
+    <Paper className="mnh-80vh w-100 p-3">
+      {!showCreateQuiz ? (
         <div>
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
               <Typography className="h-6 fw-bold">
-                Subscription Start Date & time:{Date()}
+                Subscription Start Date & time:
+                {format(new Date(), "dd/mm/yyyy")}
               </Typography>
             </Grid>
             <Grid>
               <Typography className="h-6 fw-bold">
-                Subscription End Date & time:{Date()}
+                Subscription End Date & time:{format(new Date(), "dd/mm/yyyy")}
               </Typography>
             </Grid>
             <Grid>
               <ButtonComponent
                 variant="outlined"
-                label="Create Today's Deal"
+                label="Create Quiz"
                 onBtnClick={() => {
-                  setShowCreateDiscount(true);
+                  setShowModal(true);
+                  // setShowCreateQuiz(true);
                 }}
               />
               <Typography
@@ -175,14 +181,42 @@ const CreateTodaysDeals = () => {
               showSearchbar={false}
             />
           </Grid>
+          <ModalComponent
+            ModalTitle="Warning"
+            titleClassName="color-orange"
+            onCloseIconClick={() => {
+              setShowModal(false);
+            }}
+            showFooter={false}
+            showClearBtn={false}
+            showSaveBtn={false}
+            open={showModal}
+          >
+            <Box className="w-100 d-flex  justify-content-center">
+              <Box className="w-60p mb-4 d-flex flex-column align-items-center m-3">
+                <Box>
+                  <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
+                </Box>
+
+                <Typography className="h-4">
+                  Be cautious that creating quiz does not create any loss to you
+                </Typography>
+                <ButtonComponent
+                  label="Proced"
+                  onBtnClick={() => {
+                    setShowModal(false);
+                    setShowCreateQuiz(true);
+                  }}
+                  muiProps="mx-auto mt-3"
+                />
+              </Box>
+            </Box>
+          </ModalComponent>
         </div>
       ) : (
-        <CreateDiscount
-          setShowCreateDiscount={setShowCreateDiscount}
-          btnText="View Today's Deal"
-        />
+        <CreatequizForm setShowCreateQuiz={setShowCreateQuiz} />
       )}
-    </div>
+    </Paper>
   );
 };
-export default CreateTodaysDeals;
+export default CreateQuiz;

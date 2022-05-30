@@ -11,7 +11,7 @@ import {
   business_processing_days,
   shipping_class,
   stock_status,
-} from "../constants";
+} from "../../../../../../constants/constants";
 
 const InventoryForm = forwardRef(({ formData = {} }, ref) => {
   const [manageStock, setManageStock] = useState(false);

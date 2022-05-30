@@ -3,7 +3,10 @@ import ImageCard from "components/atoms/ImageCard";
 import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import { commisiondata, product_type } from "./constants";
+import {
+  commisiondata,
+  product_type,
+} from "../../../../../constants/constants";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";

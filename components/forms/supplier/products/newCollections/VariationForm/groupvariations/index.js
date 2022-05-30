@@ -11,7 +11,7 @@ import {
   business_processing_days,
   shipping_class,
   stock_status,
-} from "../../../newproductforms/constants";
+} from "../../../../../../../constants/constants";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import DatePickerComponent from "components/atoms/DatePickerComponent";

@@ -299,19 +299,39 @@ const resellerMenu = [
         title: "Create discount coupons",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "creatediscountcoupons",
       },
       {
         title: "Create Today's Deal",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "createtodaysdeals",
       },
       {
         title: "Create Lucky Draw",
         logo: "",
-        navigate: true,
-        path_name: "",
+        navigate: false,
+        path_name: "createluckydraw",
+        child: [
+          {
+            title: "Create Quiz",
+            logo: "",
+            navigate: true,
+            path_name: "createquiz",
+          },
+          {
+            title: "Spin wheel",
+            logo: "",
+            navigate: true,
+            path_name: "spinwheel",
+          },
+          {
+            title: "Scratch Card",
+            logo: "",
+            navigate: true,
+            path_name: "scratchcard",
+          },
+        ],
       },
       {
         title: "Unlock Tools",
