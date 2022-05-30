@@ -201,28 +201,48 @@ export default function TableComponent({
   const getDateFilter = () => {
     return (
       <Grid container justifyContent="end" alignItems="center">
-        <span className="fs-12">From Date:</span>
-        <CustomDatePickerComponent
-          isOpen={fromDateOpen}
-          setIsOpen={setFromDateOpen}
-          value={dateValue.from}
-          onDateChange={(val) =>
-            setDateValue((prev) => ({
-              ...prev,
-              from: val,
-            }))
-          }
-        />
+        <span className="fs-12">From date:</span>
         <input
           type="date"
-          value={"2021-12-01"}
+          value={dateValue.from}
           className={styles.dateinput}
           style={{
             border: "none",
             outline: "none",
             display: "flex",
             flexDirection: "row-reverse",
+            color: !dateValue.from && "#CFCFCF",
           }}
+          onChange={(e) => {
+            setDateValue((prev) => ({
+              ...prev,
+              from: e.target.value,
+            }));
+          }}
+        />
+        <span className="fs-12">To date:</span>
+        <input
+          type="date"
+          value={dateValue.to}
+          className={styles.dateinput}
+          style={{
+            border: "none",
+            outline: "none",
+            display: "flex",
+            flexDirection: "row-reverse",
+            color: !dateValue.to && "#CFCFCF",
+          }}
+          onChange={(e) => {
+            setDateValue((prev) => ({
+              ...prev,
+              to: e.target.value,
+            }));
+          }}
+        />
+        <input
+          type="text"
+          placeholder="Search"
+          className={`${styles.searchInput} w-300px`}
         />
       </Grid>
     );

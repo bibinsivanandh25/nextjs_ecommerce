@@ -6,3 +6,11 @@
   height: 30px !important;
   border-width: thin;
 }
+
+.searchInput {
+  background-color: #eeeeee;
+  outline: none;
+  border: #eeeeee;
+  padding: 5px 15px;
+  border-radius: 20px;
+}
