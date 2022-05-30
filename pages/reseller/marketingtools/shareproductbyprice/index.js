@@ -12,12 +12,12 @@ import { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import { Delete, Download, Share } from "@mui/icons-material";
-import CreatePriceCatalog from "components/forms/reseller/marketingtools/shareproductbyprice";
+import { useRouter } from "next/router";
 
 const ShareProductByPrice = () => {
   const [tableRows, setTableRows] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [showCreatePage, setShowCreatePage] = useState(false);
+  const router = useRouter();
   const [showMenu, setShowMenu] = useState(null);
   const [showModal, setShowModal] = useState({
     show: false,
@@ -157,53 +157,49 @@ const ShareProductByPrice = () => {
 
   return (
     <Paper sx={{ p: 2, height: "100%", minHeight: "80vh" }}>
-      {showCreatePage ? (
-        <CreatePriceCatalog setShowCreatePage={setShowCreatePage} />
-      ) : (
-        <Grid container>
-          <Grid
-            container
-            item
-            xs={12}
-            justifyContent="space-between"
-            // className="border-bottom"
-          >
-            <Grid item sx={{ p: 2 }}>
-              <Typography variant="h6" fontWeight="bold" fontSize={14}>
-                Subscription Start Date & Time: --
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              sx={{ p: 2 }}
-              className="d-flex justify-content-end w-75"
-            >
-              <Typography
-                variant="h6"
-                fontWeight="bold"
-                fontSize={14}
-                className="me-5"
-              >
-                Subscription End Date & Time: --
-              </Typography>
-              <ButtonComponent
-                label="Create Price Catelog"
-                size="small"
-                onBtnClick={() => setShowCreatePage(true)}
-                variant="outlined"
-              />
-            </Grid>
+      <Grid container>
+        <Grid
+          container
+          item
+          xs={12}
+          justifyContent="space-between"
+          // className="border-bottom"
+        >
+          <Grid item sx={{ p: 2 }}>
+            <Typography variant="h6" fontWeight="bold" fontSize={14}>
+              Subscription Start Date & Time: --
+            </Typography>
           </Grid>
-          <Grid item xs={12}>
-            <TableComponent
-              table_heading=""
-              columns={columns}
-              tableRows={tableRows}
-              showSearchbar={false}
+          <Grid item sx={{ p: 2 }} className="d-flex justify-content-end w-75">
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              fontSize={14}
+              className="me-5"
+            >
+              Subscription End Date & Time: --
+            </Typography>
+            <ButtonComponent
+              label="Create Price Catelog"
+              size="small"
+              onBtnClick={() =>
+                router.push(
+                  "/reseller/marketingtools/shareproductbyprice/create"
+                )
+              }
+              variant="outlined"
             />
           </Grid>
         </Grid>
-      )}
+        <Grid item xs={12}>
+          <TableComponent
+            table_heading=""
+            columns={columns}
+            tableRows={tableRows}
+            showSearchbar={false}
+          />
+        </Grid>
+      </Grid>
       <Menu
         id="basic-menu"
         anchorEl={showMenu}
