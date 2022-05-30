@@ -396,6 +396,7 @@ const CustomerQnA = () => {
             columns={
               tabType === "tab1" ? [...UnansweredColumns] : [...answeredColumns]
             }
+            showDateFilter
           />
         }
       </Paper>
