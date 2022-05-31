@@ -372,10 +372,6 @@ const Category = ({}) => {
   const [selectedSets, setSelectedSets] = useState([]);
   const [searchText, setSearchText] = useState("");
 
-  useEffect(() => {
-    console.log({ selectedSubCategory });
-  }, [selectedSubCategory]);
-
   return (
     <Paper className="w-100 d-flex flex-column h-100 hide-scrollbar p-3 pb-0">
       {!selectedSubCategory.length ? (
