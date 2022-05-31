@@ -14,7 +14,6 @@ import InputBox from "../InputBoxComponent";
 import ButtonComponent from "../ButtonComponent";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import CustomDatePickerComponent from "../CustomDatePickerComponent";
 import styles from "./TableComponent.module.css";
 
 const EnhancedTableHead = (props) => {
@@ -86,6 +85,7 @@ export default function TableComponent({
   showCellBorders = true,
   tHeadBgColor = "",
   showDateFilter = false,
+  dateFilterColName = [],
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -110,7 +110,7 @@ export default function TableComponent({
 
   useEffect(() => {
     if (searchText === "") setRows(tableRows);
-  }, [searchText]);
+  }, [searchText, tableRows]);
 
   useEffect(() => {
     const temp = columns.filter((item) => {
@@ -198,6 +198,22 @@ export default function TableComponent({
     if (searchText !== "") requestSearch(searchText);
   };
 
+  useEffect(() => {
+    if (dateValue.from && dateValue.to) {
+      var startDate = new Date(dateValue.from);
+      var endDate = new Date(dateValue.to);
+      var resultProductData = tableRows.filter(function (a) {
+        for (let i of dateFilterColName) {
+          var date = new Date(a[i]);
+          return date >= startDate && date <= endDate;
+        }
+      });
+      setRows(resultProductData);
+    } else {
+      setRows(tableRows);
+    }
+  }, [dateValue, tableRows, dateFilterColName]);
+
   const getDateFilter = () => {
     return (
       <Grid container justifyContent="end" alignItems="center">
@@ -243,6 +259,13 @@ export default function TableComponent({
           type="text"
           placeholder="Search"
           className={`${styles.searchInput} w-300px`}
+          value={searchText}
+          label="Search"
+          size="small"
+          onChange={(e) => {
+            setsearchText(e.target.value);
+            handleSearch();
+          }}
         />
       </Grid>
     );

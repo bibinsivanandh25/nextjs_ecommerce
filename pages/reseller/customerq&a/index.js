@@ -174,7 +174,7 @@ const CustomerQnA = () => {
       //   </Tooltip>
       // ),
       // col6: "Rakesh",
-      col5: "25 may 2021, 21:22",
+      col5: "25 may 2022, 21:22",
       col6: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
           <Reply className="fs-5" />
@@ -397,6 +397,7 @@ const CustomerQnA = () => {
               tabType === "tab1" ? [...UnansweredColumns] : [...answeredColumns]
             }
             showDateFilter
+            dateFilterColName={["col5"]}
           />
         }
       </Paper>
