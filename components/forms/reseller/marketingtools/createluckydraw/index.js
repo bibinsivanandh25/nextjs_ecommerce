@@ -14,7 +14,7 @@ import { format, parse } from "date-fns";
 import ProductModal from "./ProductModal";
 import CreateQuiz from "./CreateQuiz";
 import ScratchCard from "./createScratchCard";
-import SpinWheel from "./createSpinWheel";
+import SpinWheelForm from "./createSpinWheel";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();
@@ -51,6 +51,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     }));
   };
   const generateInputField = () => {
+    if (formData.split_type === "equal_split") return [];
     const temp = [];
     const maxLength = Math.max(
       formData.limit_per_coupon,
@@ -330,38 +331,40 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
           </Grid>
         </Box>
       </Box>
-      <Box className="d-flex w-100 mt-3">
-        <Box className=" mb-3 ms-3">
-          How do you want to split the discount
-          <Box className="d-flex mt-1 ms-3">
-            <RadiobuttonComponent
-              label="Random Split"
-              isChecked={formData.split_type === "random_split"}
-              onRadioChange={() => {
-                setFormData((pre) => ({
-                  ...pre,
-                  split_type: "random_split",
-                }));
-              }}
-              size="small"
-            />
-            <RadiobuttonComponent
-              label="Equal Split"
-              isChecked={formData.split_type === "equal_split"}
-              onRadioChange={() => {
-                setFormData((pre) => ({
-                  ...pre,
-                  split_type: "equal_split",
-                }));
-              }}
-              size="small"
-            />
+      {pageName !== "spinwheel" ? (
+        <Box className="d-flex w-100 mt-3">
+          <Box className=" mb-3 ms-3">
+            How do you want to split the discount
+            <Box className="d-flex mt-1 ms-3">
+              <RadiobuttonComponent
+                label="Random Split"
+                isChecked={formData.split_type === "random_split"}
+                onRadioChange={() => {
+                  setFormData((pre) => ({
+                    ...pre,
+                    split_type: "random_split",
+                  }));
+                }}
+                size="small"
+              />
+              <RadiobuttonComponent
+                label="Equal Split"
+                isChecked={formData.split_type === "equal_split"}
+                onRadioChange={() => {
+                  setFormData((pre) => ({
+                    ...pre,
+                    split_type: "equal_split",
+                  }));
+                }}
+                size="small"
+              />
+            </Box>
+          </Box>
+          <Box className="ms-4 d-flex flex-column mxh-200 overflow-y-scroll mb-3 p-1">
+            {generateInputField()}
           </Box>
         </Box>
-        <Box className="ms-4 d-flex flex-column mxh-200 overflow-y-scroll mb-3 p-1">
-          {generateInputField()}
-        </Box>
-      </Box>
+      ) : null}
       <Box className="w-100 mx-3">
         <TextEditor
           getContent={(text) => {
@@ -403,7 +406,11 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       {pageName === "scratchcard" ? (
         <ScratchCard ref={formRef} />
       ) : pageName === "spinwheel" ? (
-        <SpinWheel ref={formRef} />
+        <SpinWheelForm
+          ref={formRef}
+          formData={formData}
+          generateInputField={generateInputField}
+        />
       ) : null}
       <Box className="w-100 d-flex justify-content-end mt-3">
         <ButtonComponent
