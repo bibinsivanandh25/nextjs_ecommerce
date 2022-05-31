@@ -284,7 +284,7 @@ const resellerMenu = [
     ],
   },
   {
-    title: "Referref Reseller",
+    title: "Referred Reseller",
     logo: "fas fa-shopping-cart",
     path_name: "referredreseller",
     navigate: true,

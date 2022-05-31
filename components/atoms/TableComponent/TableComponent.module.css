@@ -5,6 +5,7 @@
   width: 30px;
   height: 30px !important;
   border-width: thin;
+  user-select: none;
 }
 
 .searchInput {
@@ -13,4 +14,12 @@
   border: #eeeeee;
   padding: 5px 15px;
   border-radius: 20px;
+}
+
+.dateinput::-webkit-datetime-edit-day-field:focus,
+.dateinput::-webkit-datetime-edit-month-field:focus,
+.dateinput::-webkit-datetime-edit-year-field:focus {
+  background-color: white;
+  color: black;
+  outline: none;
 }

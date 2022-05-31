@@ -227,7 +227,6 @@ export default function TableComponent({
             outline: "none",
             display: "flex",
             flexDirection: "row-reverse",
-            color: !dateValue.from && "#CFCFCF",
           }}
           onChange={(e) => {
             setDateValue((prev) => ({
@@ -235,6 +234,7 @@ export default function TableComponent({
               from: e.target.value,
             }));
           }}
+          // max={dateValue.to}
         />
         <span className="fs-12">To date:</span>
         <input
@@ -246,7 +246,6 @@ export default function TableComponent({
             outline: "none",
             display: "flex",
             flexDirection: "row-reverse",
-            color: !dateValue.to && "#CFCFCF",
           }}
           onChange={(e) => {
             setDateValue((prev) => ({
@@ -254,6 +253,7 @@ export default function TableComponent({
               to: e.target.value,
             }));
           }}
+          // min={dateValue.from}
         />
         <input
           type="text"
