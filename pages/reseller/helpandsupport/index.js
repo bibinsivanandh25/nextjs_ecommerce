@@ -3,9 +3,9 @@ import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import HelpandsupportCreate from "components/forms/supplier/helpandsupport/helpandsupportcreate";
-import HelpAndSupportNotification from "components/forms/supplier/helpandsupport/helpandsupportnotification";
-import HelpandsupportView from "components/forms/supplier/helpandsupport/helpandsupportview";
+import HelpandsupportCreate from "components/forms/reseller/helpandsupport/helpandsupportcreate";
+import HelpAndSupportNotification from "components/forms/reseller/helpandsupport/helpandsupportnotification";
+import HelpandsupportView from "components/forms/reseller/helpandsupport/helpandsupportview";
 import { red } from "@mui/material/colors";
 import ButtonComponent from "components/atoms/ButtonComponent";
 
@@ -97,7 +97,17 @@ const HelpAndSupport = () => {
               </Badge>
             </Grid>
             <Grid item xs={4}>
-              <Button size="small" className="color-orange fs-12">
+              <Button
+                size="small"
+                className="color-orange fs-12"
+                onClick={() =>
+                  setShowModal({
+                    show: true,
+                    id: row.ticketid,
+                    type: "reply",
+                  })
+                }
+              >
                 Reply
               </Button>
             </Grid>
@@ -161,7 +171,8 @@ const HelpAndSupport = () => {
     <>
       {showCreateComponent ? (
         <HelpandsupportCreate />
-      ) : showModal.show && showModal.type === "view" ? (
+      ) : showModal.show &&
+        (showModal.type === "view" || showModal.type === "reply") ? (
         <HelpandsupportView />
       ) : (
         <Paper>
