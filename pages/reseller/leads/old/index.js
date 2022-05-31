@@ -6,6 +6,26 @@ import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
 
 const OldLeads = () => {
+  let campaigns = [
+    {
+      campaignType: "Quiz",
+      campaignTitle: "Quiz1234",
+      startDate: "12/12/2020",
+      endDate: "22/12/2020",
+    },
+    {
+      campaignType: "Scratch Card",
+      campaignTitle: "Scratch Card1234",
+      startDate: "12/12/2020",
+      endDate: "22/12/2020",
+    },
+    {
+      campaignType: "spin wheel",
+      campaignTitle: "spin wheel1234",
+      startDate: "12/12/2020",
+      endDate: "22/12/2020",
+    },
+  ];
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
@@ -36,26 +56,6 @@ const OldLeads = () => {
       data_classname: "",
     },
   ];
-  let campaigns = [
-    {
-      campaignType: "Quiz",
-      campaignTitle: "Quiz1234",
-      startDate: "12/12/2020",
-      endDate: "22/12/2020",
-    },
-    {
-      campaignType: "Scratch Card",
-      campaignTitle: "Scratch Card1234",
-      startDate: "12/12/2020",
-      endDate: "22/12/2020",
-    },
-    {
-      campaignType: "spin wheel",
-      campaignTitle: "spin wheel1234",
-      startDate: "12/12/2020",
-      endDate: "22/12/2020",
-    },
-  ];
   let rows = [
     {
       id: "1",
@@ -79,11 +79,16 @@ const OldLeads = () => {
       col3: "7022230923",
       col4: (
         <div className="text-center">
-          <Share onClick={() => setShowCampaignModal(true)} />
+          <Share
+            onClick={() => {
+              setShowCampaignModal(true);
+            }}
+          />
         </div>
       ),
     },
   ];
+
   const [showCampaignModal, setShowCampaignModal] = useState(false);
   const [campaignDetail, setCampaignDetail] = useState([...campaigns]);
 
