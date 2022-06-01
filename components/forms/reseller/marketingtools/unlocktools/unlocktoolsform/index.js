@@ -11,11 +11,21 @@ const UnlockToolsForm = ({
   setTableData = () => {},
 }) => {
   const [tableRows, setTableRows] = useState([]);
-  const handleRadio = (row, val, radioId) => {
+  const handleRadio = (row, radioId) => {
     const res = tableData.map((i) => {
       if (i.id === row) {
-        const ob = { ...i, [radioId]: { ...i[radioId], isChecked: val } };
-        return ob;
+        const result = {};
+        Object.entries(i).forEach(([key, value]) => {
+          if (key === radioId) {
+            result[key] = { ...value, isChecked: true };
+          } else if (key.includes("col")) {
+            result[key] = { ...value, isChecked: false };
+          } else {
+            result[key] = value;
+          }
+        });
+        result["isRadioSelected"] = true;
+        return result;
       }
       return i;
     });
@@ -27,9 +37,10 @@ const UnlockToolsForm = ({
       return (
         <RadiobuttonComponent
           id={radioId}
-          label={label}
+          label={<span className="fw-600 fs-14">{label}</span>}
           isChecked={isChecked}
-          onRadioChange={(val) => handleRadio(id, val.target.checked, radioId)}
+          onRadioChange={() => handleRadio(id, radioId)}
+          muiProps={{ size: "small" }}
         />
       );
     };
@@ -37,7 +48,7 @@ const UnlockToolsForm = ({
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row.heading,
+        col1: <span className="fw-600">{row.heading}</span>,
         col2: getRadioComponent(
           row.id,
           row.col2.label,
@@ -69,12 +80,23 @@ const UnlockToolsForm = ({
           "col6"
         ),
         col7: (
-          <Button variant="outlined" size="small">
+          <Button
+            variant="outlined"
+            size="small"
+            disabled={!row.isRadioSelected}
+            sx={{ textTransform: "none" }}
+          >
             Add to Cart
           </Button>
         ),
         col8: (
-          <Button variant="contained" className="bg-orange" size="small">
+          <Button
+            variant="contained"
+            className="bg-orange"
+            size="small"
+            disabled={!row.isRadioSelected}
+            sx={{ textTransform: "none" }}
+          >
             Buy Now
           </Button>
         ),

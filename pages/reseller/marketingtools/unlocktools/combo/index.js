@@ -2,7 +2,7 @@ import { Paper } from "@mui/material";
 import UnlockToolsForm from "components/forms/reseller/marketingtools/unlocktools/unlocktoolsform";
 import { useState } from "react";
 
-const UnlockToolsSingle = () => {
+const UnlockToolsCombo = () => {
   const [tableData, setTableData] = useState([]);
   const columns = [
     {
@@ -42,7 +42,7 @@ const UnlockToolsSingle = () => {
   const rows = [
     {
       id: 1,
-      heading: "Create Today's Deal",
+      heading: "Spin Wheels & Scratch Card",
       col2: { label: "₹10", isChecked: false },
       col3: { label: "₹10", isChecked: false },
       col4: { label: "₹10", isChecked: false },
@@ -53,7 +53,7 @@ const UnlockToolsSingle = () => {
     },
     {
       id: 2,
-      heading: "Create Discount",
+      heading: "Discount & Todays Deal",
       col2: { label: "₹10", isChecked: false },
       col3: { label: "₹10", isChecked: false },
       col4: { label: "₹10", isChecked: false },
@@ -64,29 +64,7 @@ const UnlockToolsSingle = () => {
     },
     {
       id: 3,
-      heading: "Create Spin Wheel",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 4,
-      heading: "Scratch Card",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 5,
-      heading: "Quiz",
+      heading: "Discounts, Todays Deal, Spin Wheel, Scratch Card & Quiz",
       col2: { label: "₹10", isChecked: false },
       col3: { label: "₹10", isChecked: false },
       col4: { label: "₹10", isChecked: false },
@@ -111,4 +89,4 @@ const UnlockToolsSingle = () => {
   );
 };
 
-export default UnlockToolsSingle;
+export default UnlockToolsCombo;
