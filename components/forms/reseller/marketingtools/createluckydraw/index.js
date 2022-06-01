@@ -13,7 +13,7 @@ import { useEffect, useState, useRef } from "react";
 import { format, parse } from "date-fns";
 import ProductModal from "./ProductModal";
 import CreateQuiz from "./CreateQuiz";
-import ScratchCard from "./createScratchCard";
+import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
@@ -282,7 +282,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 value={formData.highest_discount}
               />
             </Grid>
-            <Grid item md={2} className="w-100 d-flex align-items-center">
+            <Grid item md={3} className="w-100 d-flex align-items-center">
               <ButtonComponent
                 label="Choose product"
                 onBtnClick={() => {
@@ -404,7 +404,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       </Box>
       {createQuestions ? <CreateQuiz ref={formRef} /> : null}
       {pageName === "scratchcard" ? (
-        <ScratchCard ref={formRef} />
+        <ScratchCardForm ref={formRef} />
       ) : pageName === "spinwheel" ? (
         <SpinWheelForm
           ref={formRef}
