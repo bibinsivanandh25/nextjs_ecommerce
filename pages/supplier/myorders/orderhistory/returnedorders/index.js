@@ -1,9 +1,8 @@
 import { Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import DownloadIcon from "@mui/icons-material/Download";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import CustomIcon from "services/iconUtils";
 
 const ReturnedOrders = () => {
   const columns = [
@@ -142,12 +141,12 @@ const ReturnedOrders = () => {
           </Grid>
         ),
         col10: (
-          <Grid container mx={1}>
-            <Grid item xs={6}>
-              <DownloadIcon className="text-secondary mx-2" />
+          <Grid container mx={1} alignItems="center" justifyContent="center">
+            <Grid item>
+              <CustomIcon title="Download" type="download" />
             </Grid>
-            <Grid item xs={6}>
-              <VisibilityIcon className="text-secondary" />
+            <Grid item>
+              <CustomIcon title="View" type="view" />
             </Grid>
           </Grid>
         ),

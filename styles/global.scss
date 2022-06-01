@@ -248,6 +248,16 @@ fieldset {
   border-radius: 15px;
 }
 
-div, span, p {
+div,
+span,
+p {
   cursor: default;
+}
+
+span[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  background-color: #fff !important;
+  top: -100%;
+  left: 0;
 }

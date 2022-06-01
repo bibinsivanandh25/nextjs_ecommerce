@@ -1,9 +1,8 @@
 import { Box, Grid, Menu, MenuItem, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import SubTabComponent from "components/molecule/SubTabComponent";
-import { Delete, Edit, FileCopy, MoreVert } from "@mui/icons-material";
+import CustomIcon from "services/iconUtils";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -93,15 +92,16 @@ const MyProducts = () => {
         col12: (
           <Grid container>
             <Grid item xs={4}>
-              <VisibilityIcon className="text-secondary" />
+              <CustomIcon title="View" type="view" />
             </Grid>
             <Grid item xs={4}>
-              <Delete className="text-secondary" />
+              <CustomIcon title="Delete" type="delete" />
             </Grid>
             <Grid item xs={4}>
-              <MoreVert
-                className="text-secondary"
-                onClick={(event) => setShowMenu(event.currentTarget)}
+              <CustomIcon
+                title="More"
+                type="more"
+                onIconClick={(event) => setShowMenu(event.currentTarget)}
               />
             </Grid>
           </Grid>
@@ -212,11 +212,15 @@ const MyProducts = () => {
             }}
           >
             <MenuItem onClick={handleClose}>
-              <Edit className="text-secondary" sx={{ zoom: 0.8 }} />
+              <CustomIcon
+                type="edit"
+                className="text-secondary"
+                muiProps={{ sx: { zoom: 0.8 } }}
+              />
               <span className="fs-12 ms-2">Edit</span>
             </MenuItem>
             <MenuItem onClick={handleClose}>
-              <FileCopy className="text-secondary" sx={{ zoom: 0.8 }} />
+              <CustomIcon muiProps={{ sx: { zoom: 0.8 } }} />
               <span className="fs-12 ms-2">Duplicate</span>
             </MenuItem>
           </Menu>

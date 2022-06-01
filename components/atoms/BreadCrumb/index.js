@@ -1,10 +1,9 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import HomeIcon from "@mui/icons-material/Home";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { paths } from "./paths";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CustomIcon from "services/iconUtils";
 
 const BreadCrumb = () => {
   const route = useRouter();
@@ -18,8 +17,8 @@ const BreadCrumb = () => {
   return (
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
-        <Link href={"/"}>
-          <HomeIcon className="text-secondary mx-2" />
+        <Link href={"/"} passHref>
+          <CustomIcon type="home" />
         </Link>
         {path.map((item, index) => {
           completePath =
@@ -29,9 +28,9 @@ const BreadCrumb = () => {
           return (
             <React.Fragment key={index}>
               <span>
-                <ArrowForwardIosIcon className="fs-12 mx-2" />
+                <CustomIcon type="arrowforward" />
               </span>
-              <Link href={`${completePath}`} className="">
+              <Link href={`${completePath}`} passHref>
                 <span
                   className={`${
                     path.length === index + 1 ? "color-orange" : ""

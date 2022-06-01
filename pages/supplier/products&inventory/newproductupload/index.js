@@ -2,8 +2,8 @@ import { Box, Grid, Paper, Tooltip } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import TableComponent from "components/atoms/TableComponent";
+import CustomIcon from "services/iconUtils";
 const columns = [
   {
     id: "col1", //id value in column should be presented in row as key
@@ -58,9 +58,7 @@ let rows = [
     col4: "31-05-2030",
     col5: (
       <div className="d-flex justify-content-center align-items-center ">
-        <Tooltip title="Detail" placement="top">
-          <RemoveRedEyeIcon />
-        </Tooltip>
+        <CustomIcon type="remove" title="Detail" />
       </div>
     ),
   },
@@ -72,9 +70,7 @@ let rows = [
     col4: "31-05-2030",
     col5: (
       <div className="d-flex justify-content-center align-items-center">
-        <Tooltip title="Detail" placement="top">
-          <RemoveRedEyeIcon />
-        </Tooltip>
+        <CustomIcon type="remove" title="Detail" />
       </div>
     ),
   },
