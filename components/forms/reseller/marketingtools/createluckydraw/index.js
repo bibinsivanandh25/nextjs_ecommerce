@@ -15,17 +15,20 @@ import ProductModal from "./ProductModal";
 import CreateQuiz from "./CreateQuiz";
 import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
+import validationRegex from "services/utils/regexUtils";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();
   const tempFormData = {
-    start_date: new Date(),
+    start_date: format(new Date(), "yyyy-MM-dd"),
     end_date: format(new Date(), "yyyy-MM-dd"),
     quiz_users: [],
-    commision_type: {},
-    category: {},
-    sets: {},
-    subCategory: {},
+    commision_type: null,
+    category: null,
+    sets: null,
+    subCategory: null,
     products: [],
     highest_discount: "",
     limit_per_coupon: "",
@@ -36,7 +39,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     campign_name: "",
     questions: [],
   };
-
+  const [errorObj, setErrorObj] = useState({});
   const [formData, setFormData] = useState({
     ...JSON.parse(JSON.stringify(tempFormData)),
   });
@@ -85,6 +88,95 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       );
     }
     return [...temp];
+  };
+
+  const validate = () => {
+    const errObj = {};
+    let flag = false;
+    if (formData.start_date < new Date()) {
+      flag = true;
+      errObj = "Start date should be a future date";
+    } else if (formData.start_date > formData.end_date) {
+      flag = true;
+      errObj = "Start date should be less than end date";
+    }
+
+    if (!formData.quiz_users.length) {
+      flag = true;
+      errObj.quiz_users = "Please selecte atleast one users";
+    }
+    if (formData.commision_type === null) {
+      flag = true;
+      errObj.commision_type = validateMessage.field_required;
+    }
+    if (formData.category === null) {
+      flag = true;
+      errObj.category = validateMessage.field_required;
+    }
+    if (formData.sets === null) {
+      flag = true;
+      errObj.sets = validateMessage.field_required;
+    }
+    if (formData.subCategory === null) {
+      flag = true;
+      errObj.subCategory = validateMessage.field_required;
+    }
+    if (formData.highest_discount === "") {
+      flag = true;
+      errObj.highest_discount = validateMessage.field_required;
+    } else if (
+      !validationRegex.decimal_2digit.test(
+        parseFloat(formData.highest_discount)
+      )
+    ) {
+      flag = true;
+      errObj.highest_discount = validateMessage.decimal_2digits;
+    }
+    if (!formData.products.length) {
+      flag = true;
+      toastify("Please select the products for discount", "warning");
+    }
+    if (formData.limit_per_coupon === "") {
+      flag = true;
+      errObj.limit_per_coupon = validateMessage.field_required;
+    } else if (!validationRegex.integers.test(formData.limit_per_coupon)) {
+      flag = true;
+      errObj.limit_per_coupon = "Only integers are allowed";
+    }
+    if (formData.limit_per_customer === "") {
+      flag = true;
+      errObj.limit_per_customer = validateMessage.field_required;
+    } else if (!validationRegex.integers.test(formData.limit_per_customer)) {
+      flag = true;
+      errObj.limit_per_customer = "Only integers are allowed";
+    }
+    if (formData.split_type === "") {
+      flag = true;
+      errObj.split_type = validateMessage.field_required;
+    }
+    if (formData.description === "") {
+      flag = true;
+      errObj.description = validateMessage.field_required;
+    } else if (formData.description.length > 255) {
+      flag = true;
+      errObj.description = validateMessage.alpha_numeric_max_255;
+    }
+    if (formData.campign_name === "") {
+      flag = true;
+      errObj.campign_name = validateMessage.field_required;
+    } else if (formData.campign_name.length > 20) {
+      flag = true;
+      errObj.campign_name = validateMessage.alpha_numeric_20;
+    }
+
+    setErrorObj({ ...errObj });
+    return flag;
+  };
+  const handleSubmit = () => {
+    console.log(validate());
+    if (formRef.current) {
+      console.log(formRef.current.handleSendFormData());
+    }
   };
 
   return (
@@ -413,14 +505,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
         />
       ) : null}
       <Box className="w-100 d-flex justify-content-end mt-3">
-        <ButtonComponent
-          label="Create"
-          onBtnClick={() => {
-            if (formRef.current) {
-              console.log(formRef.current.handleSendFormData());
-            }
-          }}
-        />
+        <ButtonComponent label="Create" onBtnClick={handleSubmit} />
       </Box>
 
       <ProductModal
