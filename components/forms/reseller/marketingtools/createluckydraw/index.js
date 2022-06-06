@@ -9,7 +9,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { commisiondata } from "constants/constants";
 import TextEditor from "components/atoms/TextEditor";
 import AddIcon from "@mui/icons-material/Add";
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { format, parse } from "date-fns";
 import ProductModal from "./ProductModal";
 import CreateQuiz from "./CreateQuiz";

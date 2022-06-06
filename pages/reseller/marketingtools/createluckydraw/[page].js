@@ -3,11 +3,12 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { format, parse } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenericForm from "components/forms/reseller/marketingtools/createluckydraw";
 import ModalComponent from "components/atoms/ModalComponent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { useRouter } from "next/router";
+import ViewPage from "components/forms/reseller/marketingtools/createluckydraw/ViewPage";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
@@ -104,7 +105,12 @@ const CreateQuiz = ({ pageName }) => {
       col10: "Active",
       col11: (
         <div className="d-flex justify-content-between">
-          <RemoveRedEye className="fs-18" />
+          <RemoveRedEye
+            className="fs-18"
+            onClick={() => {
+              setshowViewModal(rows.filter((item) => item.id === "1")[0]);
+            }}
+          />
           <WhatsApp className="fs-16" />
           <Share className="fs-16" />
           <Delete className="fs-16" />
@@ -112,7 +118,7 @@ const CreateQuiz = ({ pageName }) => {
       ),
     },
     {
-      id: "1",
+      id: "10",
       col1: "Quiz",
       col2: "Fixed",
       col3: "Shirts",
@@ -125,7 +131,12 @@ const CreateQuiz = ({ pageName }) => {
       col10: "Active",
       col11: (
         <div className="d-flex justify-content-between">
-          <RemoveRedEye className="fs-18" />
+          <RemoveRedEye
+            className="fs-18"
+            onClick={() => {
+              setshowViewModal(rows.filter((item) => item.id === "10")[0]);
+            }}
+          />
           <WhatsApp className="fs-16" />
           <Share className="fs-16" />
           <Delete className="fs-16" />
@@ -136,8 +147,8 @@ const CreateQuiz = ({ pageName }) => {
 
   const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showViewModal, setshowViewModal] = useState({});
   const route = useRouter();
-  console.log(route.query.page);
 
   return (
     <Paper className="mnh-80vh w-100 p-3">
@@ -219,6 +230,18 @@ const CreateQuiz = ({ pageName }) => {
                 />
               </Box>
             </Box>
+          </ModalComponent>
+          <ModalComponent
+            open={Object.keys(showViewModal).length}
+            ModalTitle="View campain name"
+            onCloseIconClick={() => {
+              setshowViewModal({});
+            }}
+            showFooter={false}
+            ModalWidth={800}
+            titleClassName="color-orange h-4"
+          >
+            <ViewPage data={showViewModal} pageName={pageName} />
           </ModalComponent>
         </div>
       ) : (

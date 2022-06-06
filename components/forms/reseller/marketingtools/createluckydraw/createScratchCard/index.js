@@ -19,36 +19,31 @@ const ScratchCardForm = forwardRef(({}, ref) => {
       },
     };
   });
+  const [mobile, setMobile] = useState("");
 
   return (
-    // <Box className="w-100 d-flex  mx-3 mt-3">
-    //   <Box className="">
-    //     <Typography className="h-5 mb-2">Store Name: abc</Typography>
-    //     <Typography className="h-5 mb-2">Store Code: #123</Typography>
-    //     <Box className="d-flex  align-items-center mb-2">
-    //       <Box className="me-2">
-    //         <InputBox
-    //           label=""
-    //           placeholder="Enter mobile number"
-    //           value={""}
-    //           onInputChange={(e) => {}}
-    //           textInputProps={{
-    //             style: { padding: 5 },
-    //           }}
-    //         />
-    //       </Box>
-    //       <ButtonComponent
-    //         label="Click to Spin"
-    //         onBtnClick={() => {}}
-    //         variant="outlined"
-    //         size="medium"
-    //         muiProps=" fs-12"
-    //       />
-    //     </Box>
-    //   </Box>
-    // </Box>
-    <Box elevation={4} className="" sx={{ zIndex: 1000 }}>
-      <ScratchCardComponent>hajksbdjkn</ScratchCardComponent>
+    <Box className="w-100 d-flex  mx-3 mt-3">
+      <Box className="">
+        <Typography className="h-5 mb-2">Store Name: abc</Typography>
+        <Typography className="h-5 mb-2">Store Code: #123</Typography>
+        <InputBox
+          label=""
+          placeholder="Enter mobile number"
+          value={mobile}
+          onInputChange={(e) => {
+            setMobile(e.target.value);
+          }}
+          textInputProps={{
+            style: { padding: 5 },
+          }}
+        />
+      </Box>
+      <Box className="ms-3">
+        <ScratchCardComponent>scratch card</ScratchCardComponent>
+        <Typography className="h-6 mt-2">
+          Last date to redeem coupon 20-08-2021
+        </Typography>
+      </Box>
     </Box>
   );
 });
