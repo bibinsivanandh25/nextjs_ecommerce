@@ -95,10 +95,10 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     let flag = false;
     if (formData.start_date < new Date()) {
       flag = true;
-      errObj = "Start date should be a future date";
+      toastify("Start date should be a future date", "warning");
     } else if (formData.start_date > formData.end_date) {
       flag = true;
-      errObj = "Start date should be less than end date";
+      toastify("Start date should be less than end date", "warning");
     }
 
     if (!formData.quiz_users.length) {
@@ -150,7 +150,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       flag = true;
       errObj.limit_per_customer = "Only integers are allowed";
     }
-    if (formData.split_type === "") {
+    if (pageName !== "spinwheel" && formData.split_type === "") {
       flag = true;
       errObj.split_type = validateMessage.field_required;
     }
@@ -288,6 +288,11 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 size="small"
               />
             </Box>
+            {errorObj?.quiz_users && (
+              <Typography className="h-5 color-error">
+                {errorObj.quiz_users}
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box className="">
@@ -317,6 +322,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                   handleDropDownChange(val, "commision_type");
                 }}
                 inputlabelshrink
+                error={errorObj.commision_type || false}
+                helperText={errorObj?.commision_type}
               />
             </Grid>
             <Grid item md={4} lg={3}>
@@ -330,6 +337,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                   handleDropDownChange(val, "category");
                 }}
                 inputlabelshrink
+                error={errorObj.category || false}
+                helperText={errorObj?.category}
               />
             </Grid>
             <Grid item md={4} lg={3}>
@@ -343,6 +352,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                   handleDropDownChange(val, "sets");
                 }}
                 inputlabelshrink
+                error={errorObj.sets || false}
+                helperText={errorObj?.sets}
               />
             </Grid>
             <Grid item md={4} lg={3}>
@@ -356,6 +367,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                   handleDropDownChange(val, "subCategory");
                 }}
                 inputlabelshrink
+                error={errorObj.subCategory || false}
+                helperText={errorObj?.subCategory}
               />
             </Grid>
 
@@ -372,6 +385,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 label=""
                 size="small"
                 value={formData.highest_discount}
+                error={errorObj.highest_discount || false}
+                helperText={errorObj?.highest_discount}
               />
             </Grid>
             <Grid item md={3} className="w-100 d-flex align-items-center">
@@ -399,8 +414,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 value={formData.limit_per_coupon}
                 label=""
                 size="small"
-                helperText="eg.: 1"
                 type="number"
+                error={errorObj.limit_per_coupon || false}
+                helperText={errorObj?.limit_per_coupon || "eg.: 1"}
               />
             </Grid>
             <Grid item md={3}>
@@ -416,8 +432,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 value={formData.limit_per_customer}
                 label=""
                 size="small"
-                helperText="eg.: 1"
                 type="number"
+                error={errorObj.limit_per_customer || false}
+                helperText={errorObj?.limit_per_customer || "eg.:1"}
               />
             </Grid>
           </Grid>
@@ -451,6 +468,11 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 size="small"
               />
             </Box>
+            {errorObj?.split_type && (
+              <Typography className="h-5 color-error">
+                {errorObj.split_type}
+              </Typography>
+            )}
           </Box>
           <Box className="ms-4 d-flex flex-column mxh-200 overflow-y-scroll mb-3 p-1">
             {generateInputField()}
@@ -466,6 +488,11 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             }));
           }}
         />
+        {errorObj?.description && (
+          <Typography className="h-5 color-error">
+            {errorObj.description}
+          </Typography>
+        )}
       </Box>
       <Box className="w-100 d-flex mx-3 mt-4">
         <Grid container>
@@ -480,6 +507,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 }));
               }}
               value={formData.campign_name}
+              error={errorObj.campign_name || false}
+              helperText={errorObj?.campign_name}
             />
             {!createQuestions && pageName === "createquiz" ? (
               <div
