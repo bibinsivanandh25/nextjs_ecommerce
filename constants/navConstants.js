@@ -218,7 +218,7 @@ const resellerMenu = [
   {
     title: "New Products",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "newproducts",
     navigate: true,
   },
   {
@@ -242,13 +242,13 @@ const resellerMenu = [
   {
     title: "My Earnings",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "myearnings",
     navigate: true,
   },
   {
     title: "Wishlist",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "wishlist",
     navigate: true,
   },
   {
@@ -260,7 +260,7 @@ const resellerMenu = [
   {
     title: "Articles",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "articles",
     navigate: true,
   },
   {
@@ -284,7 +284,7 @@ const resellerMenu = [
     ],
   },
   {
-    title: "Referref Reseller",
+    title: "Referred Reseller",
     logo: "fas fa-shopping-cart",
     path_name: "referredreseller",
     navigate: true,
@@ -357,14 +357,14 @@ const resellerMenu = [
         title: "Share Product by price",
         logo: "",
         navigate: true,
-        path_name: "",
+        path_name: "shareproductbyprice",
       },
     ],
   },
   {
     title: "Challenges",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "challenges",
     navigate: true,
   },
   {
@@ -382,13 +382,13 @@ const resellerMenu = [
   {
     title: "Customer Q & A",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "customerq&a",
     navigate: true,
   },
   {
     title: "Help Center",
     logo: "fas fa-shopping-cart",
-    path_name: "",
+    path_name: "helpcenter",
     navigate: true,
   },
 ];

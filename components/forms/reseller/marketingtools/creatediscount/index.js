@@ -7,11 +7,30 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
+import validateMessage from "constants/validateMessages";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
+import validationRegex from "services/utils/regexUtils";
 
-const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
+const CreateDiscount = ({
+  setShowCreateDiscount = () => {},
+  btnText = "",
+  inputLabel = "Enter Discount %",
+  showBackBtn = true,
+  showTypography = true,
+  showDateAndTime = true,
+  onCreateBtnClick = () => {},
+  onCustomBtnClick = () => {},
+}) => {
   const [showListGroup, setShowListGroup] = useState(false);
+  const [error, setError] = useState({});
+  const [formValues, setFormValues] = useState({ content: "" });
+  const [categoriesList, setCategoriesList] = useState({
+    category: [],
+    set: [],
+    subCategory: [],
+  });
+
   let ProductsDetails = [
     {
       id: 1,
@@ -88,7 +107,7 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
   const getProducts = () => {
     return Products.map((ele, ind) => {
       return (
-        <div key={ind}>
+        <Grid item key={ind} lg={1.2} md={2} sm={3}>
           <ImageCard imgSrc={ele.image} showClose={false} />
           <Typography className="text-center">{ele.title}</Typography>
           <Typography className="text-center color-dark-green h-5 fw-bold">
@@ -109,9 +128,62 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
               }}
             />
           </div>
-        </div>
+        </Grid>
       );
     });
+  };
+
+  const validateForm = () => {
+    const errObj = { ...error };
+    const validateFields = (id, errField, regex, errMsg) => {
+      if (!formValues[id]) {
+        errObj[errField || id] = validateMessage.field_required;
+      } else if (regex && !regex.test(formValues[id])) {
+        errObj[id] = errMsg;
+      } else {
+        errObj[errField || id] = null;
+      }
+    };
+    validateFields("marginType.id", "marginType");
+    validateFields("inputValue");
+    validateFields(
+      "campaignTitle",
+      null,
+      /^.{1,25}$/,
+      validateMessage.alpha_numeric_25
+    );
+
+    if (!categoriesList.category.length) {
+      errObj["categories"] = validateMessage.field_required;
+    } else if (!categoriesList.set.length) {
+      errObj["categories"] = "Set selection is required";
+    } else if (!categoriesList.subCategory.length) {
+      errObj["categories"] = "Sub Category selection is required";
+    } else {
+      errObj["categories"] = null;
+    }
+
+    if (formValues?.content.replace(/<[^>]*>/g, "").length === 0) {
+      errObj["content"] = validateMessage.field_required;
+    } else if (formValues.content.replace(/<[^>]*>/g, "").length > 1000) {
+      errObj["content"] = validateMessage.alpha_numeric_max_1000;
+    } else {
+      errObj["content"] = null;
+    }
+    setError(errObj);
+    let valid = true;
+    Object.values(errObj).forEach((i) => {
+      if (i) {
+        valid = false;
+      }
+    });
+    return valid;
+  };
+
+  const handleCreateBtnClick = () => {
+    if (validateForm()) {
+      onCreateBtnClick();
+    }
   };
 
   return (
@@ -125,17 +197,33 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
       >
         Guidelines to Create
       </div>
-      <span
-        className="h-5 color-orange cursor-pointer"
-        onClick={() => {
-          setShowCreateDiscount(false);
-        }}
-      >
-        {"< "}Back
-      </span>
+      {showBackBtn && (
+        <span
+          className="h-5 color-orange cursor-pointer"
+          onClick={() => {
+            setShowCreateDiscount(false);
+          }}
+        >
+          {"< "}Back
+        </span>
+      )}
       <Grid container spacing={1}>
         <Grid item sm={2}>
-          <SimpleDropdownComponent size="small" label="Margin type" />
+          <SimpleDropdownComponent
+            size="small"
+            label="Margin type"
+            value={formValues.marginType}
+            onDropdownSelect={(val) =>
+              setFormValues((prev) => {
+                return {
+                  ...prev,
+                  marginType: val,
+                };
+              })
+            }
+            error={Boolean(error.marginType)}
+            helperText={error.marginType}
+          />
         </Grid>
         <Grid item sm={5} className="d-flex position-relative" container>
           <InputBox
@@ -143,6 +231,8 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
             onIconClick={() => {
               setShowListGroup(!showListGroup);
             }}
+            error={Boolean(error.categories)}
+            helperText={error.categories}
           />
           {showListGroup ? (
             <Grid
@@ -156,38 +246,79 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
                 top: 48,
               }}
             >
-              <Grid item sm={4}>
-                <ListGroupComponent
-                  size="small"
-                  showAddIcon={false}
-                  showEditIcon={false}
-                  showTitle
-                  title="Category"
-                />
-              </Grid>
-              <Grid item sm={4}>
-                <ListGroupComponent
-                  size="small"
-                  showAddIcon={false}
-                  showEditIcon={false}
-                  showTitle
-                  title="Set"
-                />
-              </Grid>
-              <Grid item sm={4}>
-                <ListGroupComponent
-                  size="small"
-                  showAddIcon={false}
-                  showEditIcon={false}
-                  showTitle
-                  title="Sub Category"
-                />
-              </Grid>
+              <>
+                <Grid item sm={4}>
+                  <ListGroupComponent
+                    size="small"
+                    showAddIcon={false}
+                    showEditIcon={false}
+                    showTitle
+                    title="Category"
+                    onSelectionChange={(val) => {
+                      setCategoriesList((prev) => {
+                        return {
+                          ...prev,
+                          category: val,
+                        };
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item sm={4}>
+                  <ListGroupComponent
+                    size="small"
+                    showAddIcon={false}
+                    showEditIcon={false}
+                    showTitle
+                    title="Set"
+                    onSelectionChange={(val) => {
+                      setCategoriesList((prev) => {
+                        return {
+                          ...prev,
+                          set: val,
+                        };
+                      });
+                    }}
+                  />
+                </Grid>
+                <Grid item sm={4}>
+                  <ListGroupComponent
+                    size="small"
+                    showAddIcon={false}
+                    showEditIcon={false}
+                    showTitle
+                    title="Sub Category"
+                    onSelectionChange={(val) => {
+                      setCategoriesList((prev) => {
+                        return {
+                          ...prev,
+                          subCategory: val,
+                        };
+                      });
+                    }}
+                  />
+                </Grid>
+              </>
             </Grid>
           ) : null}
         </Grid>
         <Grid item sm={2}>
-          <InputBox size="small" placeholder="Enter Discount %" />
+          <InputBox
+            size="small"
+            placeholder={inputLabel}
+            value={formValues.inputValue}
+            onInputChange={(e) =>
+              setFormValues((prev) => {
+                return {
+                  ...prev,
+                  inputValue: e.target.value,
+                };
+              })
+            }
+            type="number"
+            error={Boolean(error.inputValue)}
+            helperText={error.inputValue}
+          />
         </Grid>
         <Grid item sm={3} className="d-flex align-items-between ">
           <div>
@@ -195,6 +326,7 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
               muiProps="me-1 fs-12 py-2 "
               label="Create"
               size="medium"
+              onBtnClick={handleCreateBtnClick}
             />
           </div>
           <div>
@@ -203,72 +335,102 @@ const CreateDiscount = ({ setShowCreateDiscount = () => {}, btnText = "" }) => {
               size="medium"
               label={btnText}
               variant="outlined"
+              onBtnClick={onCustomBtnClick}
             />
           </div>
         </Grid>
       </Grid>
-      <Typography className="text-danger h-5 fw-bold my-2">
-        Discount starts from 5% to 30%
-      </Typography>
-      <div className="d-flex w-75 justify-content-between mt-2">
-        <div className="d-flex align-items-center h-5">
-          start date:
-          <input
-            type="date"
-            value={"2021-12-01"}
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-          />
+      {showTypography && (
+        <Typography className="text-danger h-5 fw-bold my-2">
+          Discount starts from 5% to 30%
+        </Typography>
+      )}
+      {showDateAndTime && (
+        <div className="d-flex w-75 justify-content-between mt-2">
+          <div className="d-flex align-items-center h-5">
+            start date:
+            <input
+              type="date"
+              value={"2021-12-01"}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+            />
+          </div>
+          <div className="d-flex align-items-center h-5">
+            End Date:
+            <input
+              type="date"
+              value={"2021-12-01"}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+            />
+          </div>
+          <div className="d-flex align-items-center h-5">
+            Start time:
+            <input
+              type="time"
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+            />
+          </div>
+          <div className="d-flex align-items-center h-5">
+            End time:
+            <input
+              type="time"
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+            />
+          </div>
         </div>
-        <div className="d-flex align-items-center h-5">
-          End Date:
-          <input
-            type="date"
-            value={"2021-12-01"}
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-          />
-        </div>
-        <div className="d-flex align-items-center h-5">
-          Start time:
-          <input
-            type="time"
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-          />
-        </div>
-        <div className="d-flex align-items-center h-5">
-          End time:
-          <input
-            type="time"
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-          />
-        </div>
-      </div>
+      )}
       <div className="w-25 my-3">
-        <InputBox placeholder="Enter the campaign title" />
+        <InputBox
+          placeholder="Enter the campaign title"
+          value={formValues.campaignTitle}
+          onInputChange={(e) =>
+            setFormValues((prev) => {
+              return {
+                ...prev,
+                campaignTitle: e.target.value,
+              };
+            })
+          }
+          error={Boolean(error.campaignTitle)}
+          helperText={error.campaignTitle}
+        />
       </div>
       <div className="mt-2">
-        <TextEditor />
+        <TextEditor
+          getContent={(text) => {
+            setFormValues((prev) => ({
+              ...prev,
+              content: text,
+            }));
+          }}
+        />
+        {error.content && (
+          <p className="error" id="textbox-helper-text">
+            {error.content}
+          </p>
+        )}
       </div>
-      <div className="d-flex justify-content-between">{getProducts()}</div>
+      <Grid container>{getProducts()}</Grid>
     </div>
   );
 };
