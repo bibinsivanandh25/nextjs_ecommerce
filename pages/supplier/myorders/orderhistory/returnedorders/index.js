@@ -36,19 +36,19 @@ const ReturnedOrders = () => {
     },
     {
       label: "Status",
-      align: "center",
+      // align: "center",
       id: "col8",
     },
     {
       label: "Choose Action",
       id: "col9",
-      align: "center",
+      // align: "center",
       minWidth: 250,
     },
     {
       label: "Action",
       id: "col10",
-      align: "center",
+      // align: "center",
       minWidth: 100,
     },
   ];

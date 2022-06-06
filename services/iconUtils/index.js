@@ -13,6 +13,19 @@ import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import { useState } from "react";
+
+const useClasses = makeStyles((theme) => ({
+  iconContainer: {
+    "&:hover $icon": {
+      color: "red !important",
+    },
+  },
+  icon: {
+    color: "blue",
+  },
+}));
 
 const CustomIcon = ({
   title = "",
@@ -23,6 +36,7 @@ const CustomIcon = ({
   size = "",
   placement = "",
   muiProps = {},
+  showColorOnHover = true,
 }) => {
   const Map = {
     view: VisibilityIcon,
@@ -42,11 +56,15 @@ const CustomIcon = ({
     filecopy: FileCopy,
   };
 
+  const [hover, setHover] = useState(false);
+
   const getIcon = () => {
     let Component = Map[type];
     return (
       <Component
-        className={`${color} ${className}`}
+        className={`${color} ${className} ${
+          hover && showColorOnHover && "color-orange"
+        }`}
         size={size}
         {...muiProps}
       />
@@ -99,7 +117,17 @@ const CustomIcon = ({
   return (
     // <Tooltip title={title} placement={placement}>
     <span title={title} data-bs-toggle="tooltip" data-bs-placement="top">
-      <IconButton disableFocusRipple disableRipple onClick={onIconClick}>
+      <IconButton
+        disableFocusRipple
+        disableRipple
+        onClick={onIconClick}
+        onMouseEnter={() => {
+          setHover(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+      >
         {getIcon() || <></>}
       </IconButton>
     </span>

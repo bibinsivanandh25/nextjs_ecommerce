@@ -254,10 +254,6 @@ p {
   cursor: default;
 }
 
-span[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  background-color: #fff !important;
-  top: -100%;
-  left: 0;
+.MyCustomButton:hover {
+  background-color: orange !important;
 }
