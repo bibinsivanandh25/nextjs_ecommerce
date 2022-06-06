@@ -120,5 +120,5 @@ const SpinWheel = forwardRef(
     );
   }
 );
-
+SpinWheel.displayName = "SpinWheel";
 export default SpinWheel;

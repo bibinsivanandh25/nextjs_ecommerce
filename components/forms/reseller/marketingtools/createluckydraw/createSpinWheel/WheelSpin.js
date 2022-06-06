@@ -229,4 +229,5 @@ const WheelSpin = forwardRef(
     );
   }
 );
+WheelSpin.displayName = "WheelSpin";
 export default WheelSpin;
