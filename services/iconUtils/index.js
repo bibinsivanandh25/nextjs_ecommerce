@@ -13,19 +13,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
-import { makeStyles } from "@mui/styles";
 import { useState } from "react";
-
-const useClasses = makeStyles((theme) => ({
-  iconContainer: {
-    "&:hover $icon": {
-      color: "red !important",
-    },
-  },
-  icon: {
-    color: "blue",
-  },
-}));
 
 const CustomIcon = ({
   title = "",
@@ -127,6 +115,7 @@ const CustomIcon = ({
         onMouseLeave={() => {
           setHover(false);
         }}
+        sx={{ p: 0 }}
       >
         {getIcon() || <></>}
       </IconButton>

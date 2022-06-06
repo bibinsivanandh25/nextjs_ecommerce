@@ -216,11 +216,16 @@ const MyProducts = () => {
                 type="edit"
                 className="text-secondary"
                 muiProps={{ sx: { zoom: 0.8 } }}
+                showColorOnHover={false}
               />
               <span className="fs-12 ms-2">Edit</span>
             </MenuItem>
             <MenuItem onClick={handleClose}>
-              <CustomIcon muiProps={{ sx: { zoom: 0.8 } }} />
+              <CustomIcon
+                type="filecopy"
+                muiProps={{ sx: { zoom: 0.8 } }}
+                showColorOnHover={false}
+              />
               <span className="fs-12 ms-2">Duplicate</span>
             </MenuItem>
           </Menu>
