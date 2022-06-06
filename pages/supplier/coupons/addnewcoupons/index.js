@@ -49,7 +49,7 @@ const AddNewCoupons = () => {
       /^.{1,255}$/,
       validateMessage.alpha_numeric_max_255
     );
-    validateFields("couponAmount");
+    validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
     validateFields("categoryInclude");
@@ -109,6 +109,7 @@ const AddNewCoupons = () => {
                 onInputChange={handleInputChange}
                 error={Boolean(error.code)}
                 helperText={error.code}
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -124,12 +125,17 @@ const AddNewCoupons = () => {
                 onInputChange={handleInputChange}
                 error={Boolean(error.description)}
                 helperText={error.description}
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <SimpleDropdownComponent
                 label="Discount Type"
                 inputlabelshrink
+                list={[
+                  { id: "percentage", label: "Percentage" },
+                  { id: "cash", label: "Cash" },
+                ]}
                 value={formValues.discountTypeObj}
                 id="discountType"
                 name="discountType"
@@ -142,12 +148,15 @@ const AddNewCoupons = () => {
                 }
                 error={Boolean(error.discountType)}
                 helperText={error.discountType}
+                required
+                size="small"
               />
             </Grid>
             <Grid item xs={12}>
               <InputBox
                 label="Coupon Amount"
                 inputlabelshrink
+                type="number"
                 value={formValues.couponAmount}
                 id="couponAmount"
                 name="couponAmount"
@@ -172,6 +181,7 @@ const AddNewCoupons = () => {
                 }
                 error={Boolean(error.couponExpiryDate)}
                 helperText={error.couponExpiryDate}
+                required
               />
             </Grid>
           </Grid>
@@ -184,7 +194,12 @@ const AddNewCoupons = () => {
                   <Button
                     variant="contained"
                     size="small"
-                    sx={{ width: "200px", textTransform: "none" }}
+                    sx={{
+                      width: "200px",
+                      textTransform: "none",
+                      justifyContent: "left",
+                      pl: 3,
+                    }}
                     className={`${
                       selectedTab === tab.id
                         ? "bg-light-orange"
@@ -201,7 +216,7 @@ const AddNewCoupons = () => {
               {selectedTab === "restriction" && (
                 <>
                   <Grid item xs={12}>
-                    <div className="d-flex align-items-center h-100">
+                    <div className="d-flex h-100">
                       <SimpleDropdownComponent
                         label="Category Include"
                         size="small"
@@ -219,11 +234,11 @@ const AddNewCoupons = () => {
                         error={Boolean(error.categoryInclude)}
                         helperText={error.categoryInclude}
                       />
-                      <InfoOutlinedIcon className="ms-2" />
+                      <InfoOutlinedIcon className="ms-2 mt-2" />
                     </div>
                   </Grid>
                   <Grid item xs={12}>
-                    <div className="d-flex align-items-center h-100">
+                    <div className="d-flex h-100">
                       <SimpleDropdownComponent
                         label="Products Include"
                         size="small"
@@ -241,7 +256,7 @@ const AddNewCoupons = () => {
                         error={Boolean(error.productsInclude)}
                         helperText={error.productsInclude}
                       />
-                      <InfoOutlinedIcon className="ms-2" />
+                      <InfoOutlinedIcon className="ms-2 mt-2" />
                     </div>
                   </Grid>
                 </>
@@ -277,7 +292,7 @@ const AddNewCoupons = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <div className="d-flex align-items-center h-100">
+                    <div className="d-flex h-100">
                       <InputBoxComponent
                         placeholder="eg: Unlimited Usage"
                         inputlabelshrink
@@ -290,7 +305,7 @@ const AddNewCoupons = () => {
                         helperText={error.usageLimitPerUser}
                         type="number"
                       />
-                      <InfoOutlinedIcon className="ms-1" />
+                      <InfoOutlinedIcon className="ms-1 mt-2" />
                     </div>
                   </Grid>
                 </>

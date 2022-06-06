@@ -28,7 +28,7 @@ const BreadCrumb = () => {
           return (
             <React.Fragment key={index}>
               <span>
-                <CustomIcon type="arrowforward" />
+                <CustomIcon type="arrowforward" className="fs-12 mx-2" />
               </span>
               <Link href={`${completePath}`} passHref>
                 <span
