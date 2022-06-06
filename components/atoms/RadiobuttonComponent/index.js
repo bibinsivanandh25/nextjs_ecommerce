@@ -11,6 +11,7 @@ export default function RadiobuttonComponent({
   muiProps = {},
   disabled = false,
   className = "",
+  size = "medium",
 }) {
   return (
     <FormControlLabel
@@ -20,6 +21,7 @@ export default function RadiobuttonComponent({
       className={className}
       control={
         <Radio
+          size={size}
           onClick={onRadioChange}
           id={id}
           checked={isChecked}

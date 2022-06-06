@@ -28,6 +28,7 @@ const InputBox = ({
   disabled = false,
   error = false,
   helperText = "",
+  textInputProps = {},
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -75,8 +76,10 @@ const InputBox = ({
             </IconButton>
           </InputAdornment>
         ),
+
         ...InputProps,
       }}
+      inputProps={textInputProps}
       helperText={helperText}
       error={error}
     />

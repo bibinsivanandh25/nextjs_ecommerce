@@ -5,6 +5,7 @@ import ButtonComponent from "../ButtonComponent";
 
 const ModalComponent = ({
   children,
+  titleClassName = "",
   ModalTitle = "Modal Title",
   ModalWidth = 500,
   showFooter = true,
@@ -66,7 +67,9 @@ const ModalComponent = ({
                 }}
                 onClick={onCloseIconClick}
               />
-              <label className="fs-12 fw-600">{ModalTitle}</label>
+              <label className={`fs-12 fw-600 ${titleClassName}`}>
+                {ModalTitle}
+              </label>
               <div className={showCloseIcon ? "" : "d-none"}>
                 <CloseIcon
                   onClick={onCloseIconClick}
