@@ -163,8 +163,8 @@ export default function TableComponent({
     setPage(0);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event) {
+  const handleSelectAllClick = (event, checked) => {
+    if (checked) {
       const newSelecteds = rows.map((n, i) => n.id);
       OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
