@@ -389,7 +389,9 @@ export default function TableComponent({
                 <Grid item xs={3}>
                   <Button
                     variant="contained"
-                    className="bg-orange"
+                    className={`${
+                      disableCustomSearchButton ? "" : "bg-orange"
+                    }`}
                     sx={{ textTransform: "none" }}
                     fullWidth
                     onClick={onCustomSearchButtonClick}
