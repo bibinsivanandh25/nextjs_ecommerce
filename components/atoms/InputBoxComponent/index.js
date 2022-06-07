@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { createTheme, TextField, ThemeProvider } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -28,6 +28,7 @@ const InputBox = ({
   disabled = false,
   error = false,
   helperText = "",
+  required = false,
   textInputProps = {},
 }) => {
   const getIcons = () => {
@@ -43,46 +44,59 @@ const InputBox = ({
       return null;
     }
   };
-  return (
-    <TextField
-      onChange={onInputChange}
-      disabled={disabled}
-      label={label}
-      placeholder={placeholder}
-      value={value}
-      size={size}
-      className={className}
-      InputLabelProps={{
-        shrink: inputlabelshrink || value,
-      }}
-      inputRef={inputRef}
-      onKeyDown={onKeyDown}
-      variant={variant}
-      type={type}
-      id={id}
-      name={name}
-      multiline={isMultiline}
-      rows={rows}
-      fullWidth={fullWidth}
-      InputProps={{
-        endAdornment: iconName !== "" && (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={() => {
-                onIconClick();
-              }}
-            >
-              {getIcons()}
-            </IconButton>
-          </InputAdornment>
-        ),
 
-        ...InputProps,
-      }}
-      inputProps={textInputProps}
-      helperText={helperText}
-      error={error}
-    />
+  const theme = createTheme({
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: { color: "red", fontWeight: 700, fontSize: 22 },
+        },
+      },
+    },
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <TextField
+        onChange={onInputChange}
+        disabled={disabled}
+        label={label}
+        placeholder={placeholder}
+        value={value}
+        size={size}
+        className={className}
+        InputLabelProps={{
+          shrink: inputlabelshrink || value,
+        }}
+        inputRef={inputRef}
+        onKeyDown={onKeyDown}
+        variant={variant}
+        type={type}
+        id={id}
+        name={name}
+        multiline={isMultiline}
+        rows={rows}
+        fullWidth={fullWidth}
+        InputProps={{
+          endAdornment: iconName !== "" && (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => {
+                  onIconClick();
+                }}
+              >
+                {getIcons()}
+              </IconButton>
+            </InputAdornment>
+          ),
+          ...InputProps,
+        }}
+        helperText={helperText}
+        error={error}
+        inputProps={textInputProps}
+        required={required}
+      />
+    </ThemeProvider>
   );
 };
 export default InputBox;

@@ -1,8 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { FileCopy } from "@mui/icons-material";
+import CustomIcon from "services/iconUtils";
 
 const MrMrsCartProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -85,10 +84,10 @@ const MrMrsCartProducts = () => {
         col12: (
           <Grid container spacing={2}>
             <Grid item xs={4}>
-              <VisibilityIcon className="text-secondary" />
+              <CustomIcon type="view" title="View" />
             </Grid>
             <Grid item xs={4}>
-              <FileCopy className="text-secondary" />
+              <CustomIcon type="filecopy" title="Copy" />
             </Grid>
           </Grid>
         ),

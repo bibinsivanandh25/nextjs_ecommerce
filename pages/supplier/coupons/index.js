@@ -31,26 +31,38 @@ const Coupons = () => {
     {
       label: "Coupon Code",
       id: "col1",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Discount Type",
       id: "col2",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Amount in %",
       id: "col3",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Usage Limit",
       id: "col4",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Expire Date",
       id: "col5",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Status",
       id: "col6",
+      align: "center",
+      data_align: "center",
     },
   ];
 

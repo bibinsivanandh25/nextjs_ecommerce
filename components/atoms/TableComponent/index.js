@@ -163,8 +163,8 @@ export default function TableComponent({
     setPage(0);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event) {
+  const handleSelectAllClick = (event, checked) => {
+    if (checked) {
       const newSelecteds = rows.map((n, i) => n.id);
       OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
@@ -388,7 +388,9 @@ export default function TableComponent({
                 <Grid item xs={3}>
                   <Button
                     variant="contained"
-                    className="bg-orange"
+                    className={`${
+                      disableCustomSearchButton ? "" : "bg-orange"
+                    }`}
                     sx={{ textTransform: "none" }}
                     fullWidth
                     onClick={onCustomSearchButtonClick}

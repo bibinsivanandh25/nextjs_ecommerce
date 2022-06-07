@@ -94,7 +94,7 @@ const HelpandsupportCreate = () => {
       <p className="fs-16 fw-bold pb-2 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">
-          (Any issues Please rise to us here)
+          (Any issues Please raise to us here)
         </span>
       </p>
       <div className="my-3">
@@ -169,8 +169,18 @@ const HelpandsupportCreate = () => {
             }}
           />
         </div>
-        <div className="my-3 ">
-          <span className="me-2">Attach File :</span>
+        <Grid container className="my-3">
+          <Grid item xs={6}>
+            <span className="me-2">Attach File :</span>
+            <ButtonComponent
+              label="choose file"
+              color="#e8e8e8"
+              onBtnClick={() => {
+                // inputField.current.click();
+                setShowUploadModal(true);
+              }}
+            />
+          </Grid>
           {/* <input
             type="file"
             className=""
@@ -178,18 +188,13 @@ const HelpandsupportCreate = () => {
             ref={inputField}
             onChange={(e) => console.log(e.target.files[0])}
           /> */}
-          <ButtonComponent
-            label="choose file"
-            color="#e8e8e8"
-            onBtnClick={() => {
-              // inputField.current.click();
-              setShowUploadModal(true);
-            }}
-          />
-        </div>
-        <div className="d-flex flex-row-reverse">
-          <ButtonComponent label="Create Ticket" onBtnClick={validateFields} />
-        </div>
+          <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
+            <ButtonComponent
+              label="Create Ticket"
+              onBtnClick={validateFields}
+            />
+          </Grid>
+        </Grid>
       </div>
       <FileUploadModal
         getUploadedFiles={(files) => {}}

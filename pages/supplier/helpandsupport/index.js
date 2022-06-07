@@ -12,6 +12,7 @@ const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [selectedData, setSelectedData] = useState(null);
   const [showModal, setShowModal] = useState({
     show: false,
     id: null,
@@ -76,26 +77,27 @@ const HelpAndSupport = () => {
     data.forEach((row, index) => {
       result.push({
         col1: index + 1,
-        col2: row.ticketid,
-        col3: row.issuetype,
-        col4: row.orderid,
+        col2: row.ticketId,
+        col3: row.issueType,
+        col4: row.orderId,
         col5: row.subject,
         col6: row.attachments,
-        col7: row.createddateandtime,
-        col8: row.lastupdateddateandtime,
+        col7: row.createdDateAndTime,
+        col8: row.lastUpdateDateAndTime,
         col9: <div className={getClassnames(row.status)}>{row.status}</div>,
         col10: (
           <Grid container>
             <Grid item xs={6} sx={{ px: 0, mx: 0 }}>
               <VisibilityIcon
                 className="text-secondary cursor-pointer"
-                onClick={() =>
+                onClick={() => {
                   setShowModal({
                     show: true,
-                    id: row.ticketid,
+                    id: row.ticketId,
                     type: "view",
-                  })
-                }
+                  });
+                  setSelectedData(row);
+                }}
               />
             </Grid>
             <Grid item xs={6}>
@@ -113,9 +115,10 @@ const HelpAndSupport = () => {
                   onClick={() => {
                     setShowModal({
                       show: true,
-                      id: row.ticketid,
+                      id: row.ticketId,
                       type: "notification",
                     });
+                    setSelectedData(row);
                   }}
                 />
               </Badge>
@@ -130,12 +133,12 @@ const HelpAndSupport = () => {
   useEffect(() => {
     const rows = [
       {
-        ticketid: "#123458",
-        issuetype: "123456",
-        lastupdateddateandtime: "12-01-2022, 04:45 AM",
-        orderid: "123456",
+        ticketId: "#123458",
+        issueType: "123456",
+        lastUpdateDateAndTime: "12-01-2022, 04:45 AM",
+        orderId: "123456",
         subject: "Request for refund",
-        createddateandtime: "23-01-2022, 11:20 PM",
+        createdDateAndTime: "23-01-2022, 11:20 PM",
         attachments: "4",
         status: "Pending",
         chooseActionValue: null,
@@ -143,12 +146,12 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
-        ticketid: "#123456",
-        issuetype: "123456",
-        lastupdateddateandtime: "12-01-2022, 07:09 AM",
-        orderid: "123456",
+        ticketId: "#123456",
+        issueType: "123456",
+        lastUpdateDateAndTime: "12-01-2022, 07:09 AM",
+        orderId: "123456",
         subject: "Low quality",
-        createddateandtime: "23-01-2022, 12:23 AM",
+        createdDateAndTime: "23-01-2022, 12:23 AM",
         attachments: "4",
         status: "Open",
         chooseActionValue: null,
@@ -156,12 +159,12 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
-        ticketid: "#123459",
-        issuetype: "123423",
-        lastupdateddateandtime: "12-01-2023, 08:43 PM",
-        orderid: "123456",
+        ticketId: "#123459",
+        issueType: "123423",
+        lastUpdateDateAndTime: "12-01-2023, 08:43 PM",
+        orderId: "123456",
         subject: "Not satisfied",
-        createddateandtime: "23-01-2022, 05:40 PM",
+        createdDateAndTime: "23-01-2022, 05:40 PM",
         attachments: "1",
         status: "Closed",
         chooseActionValue: null,
@@ -181,7 +184,7 @@ const HelpAndSupport = () => {
       {showCreateComponent ? (
         <HelpandsupportCreate />
       ) : showModal.show && showModal.type === "view" ? (
-        <HelpandsupportView />
+        <HelpandsupportView selectedData={selectedData} />
       ) : (
         <Paper>
           <Grid container>

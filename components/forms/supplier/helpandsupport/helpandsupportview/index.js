@@ -1,39 +1,43 @@
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
+import { Paper } from "@mui/material";
 import { useRef } from "react";
 
-const HelpandsupportView = () => {
+const HelpandsupportView = ({ selectedData }) => {
   const inputField = useRef();
+
+  const getContent = (label, value, className) => {
+    return (
+      <p className="mx-3 my-2">
+        <span>{label}</span> :{" "}
+        <span className={`fw-bold ${className}`}>{value}</span>
+      </p>
+    );
+  };
+
+  const getClassName = () => {
+    if (selectedData.status.toLowerCase() === "open") return "text-success";
+    if (selectedData.status.toLowerCase() === "pending") return "text-warning";
+    if (selectedData.status.toLowerCase() === "rejected") return "text-danger";
+  };
+
   return (
-    <>
-      <p className="fs-16 fw-bold pb-2 border-bottom">
+    <Paper className="mnh-80vh">
+      <p className="fs-16 fw-bold p-3 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
-      <div className="fs-12 border-bottom ">
-        <p className="mx-3">
-          {" "}
-          <span> Date & time</span> :{" "}
-          <span className="fw-bold"> 25-06-2021, 12:12am</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Ticket Id</span> : <span className="fw-bold"> #1233434</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Subject</span> :{" "}
-          <span className="fw-bold"> Request for refund has not apporoved</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Status</span> :{" "}
-          <span className="fw-bold text-success"> Open</span>
-        </p>
+      <div className="fs-12 border-bottom px-4 py-1">
+        {getContent("Date & Time", selectedData.lastUpdateDateAndTime)}
+        {getContent("Ticket ID", selectedData.ticketId)}
+        {getContent("Subject", selectedData.subject)}
+        {getContent("Status", selectedData.status, getClassName())}
       </div>
       <div className="my-2 border-bottom">
-        <TextEditor />
-        <div className="my-2 ">
+        <div className="px-4 py-2">
+          <TextEditor />
+        </div>
+        <div className="my-2 px-4">
           <span className="me-2">Attach File :</span>
           <input
             type="file"
@@ -51,7 +55,7 @@ const HelpandsupportView = () => {
           />
         </div>
       </div>
-    </>
+    </Paper>
   );
 };
 export default HelpandsupportView;

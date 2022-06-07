@@ -248,10 +248,16 @@ fieldset {
   border-radius: 15px;
 }
 
-div, span, p {
+div,
+span,
+p {
   cursor: default;
 }
 
+.MyCustomButton:hover {
+  background-color: orange !important;
+}
+
 #canvas {
-   width:500px !important;
+  width: 500px !important;
 }

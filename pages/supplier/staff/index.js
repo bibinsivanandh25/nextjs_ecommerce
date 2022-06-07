@@ -2,10 +2,8 @@ import { Box, Grid, MenuList, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/router";
+import CustomIcon from "services/iconUtils";
 
 const tableHeaders = [
   {
@@ -59,13 +57,13 @@ const tempRows = [
     col5: (
       <div className="d-flex justify-content-around align-items-center">
         <div>
-          <VisibilityIcon />
+          <CustomIcon type="view" title="View" />
         </div>
         <div>
-          <DeleteIcon />
+          <CustomIcon type="delete" title="Delete" />
         </div>
         <div>
-          <EditIcon />
+          <CustomIcon type="edit" title="Edit" />
         </div>
       </div>
     ),
@@ -79,13 +77,13 @@ const tempRows = [
     col5: (
       <div className="d-flex justify-content-around align-items-center">
         <div>
-          <VisibilityIcon />
+          <CustomIcon type="view" title="View" />
         </div>
         <div>
-          <DeleteIcon />
+          <CustomIcon type="delete" title="Delete" />
         </div>
         <div>
-          <EditIcon />
+          <CustomIcon type="edit" title="Edit" />
         </div>
       </div>
     ),
