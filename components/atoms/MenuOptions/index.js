@@ -71,9 +71,11 @@ export default function MenuOption({
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {options.map((ele) => {
+        {options.map((ele, ind) => {
           return (
-            <MenuItem onClick={() => getSelectedItem(ele)}>{ele}</MenuItem>
+            <MenuItem key={ind} onClick={() => getSelectedItem(ele)}>
+              {ele}
+            </MenuItem>
           );
         })}
       </Menu>

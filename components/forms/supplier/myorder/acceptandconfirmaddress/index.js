@@ -120,9 +120,9 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
         <p className="fw-600">Select Pickup Address (5 orders Selected)</p>
         <ButtonComponent label="Ship with MrMrs Cart" />
       </div>
-      <Paper className="px-3">
+      <Paper elevation={6} className="px-3 mt-2">
         <div className="d-flex justify-content-between py-3">
-          <p>Pickup Details</p>
+          <p className="fw-bold">Pickup Details</p>
           <div
             className="d-flex align-items-center mx-2 cursor-pointer"
             onClick={() => {

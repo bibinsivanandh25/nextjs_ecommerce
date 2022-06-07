@@ -9,8 +9,8 @@ const UploadManifest = () => {
   const columns = [
     {
       id: "col1", //id value in column should be presented in row as key
-      label: "<Manifest ID>",
-      minWidth: 100,
+      label: "Manifest ID",
+
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -18,7 +18,7 @@ const UploadManifest = () => {
     {
       id: "col2",
       label: "Shipment Provider",
-      minWidth: 100,
+
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -26,7 +26,7 @@ const UploadManifest = () => {
     {
       id: "col3",
       label: "Manifest Date",
-      minWidth: 100,
+
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -35,7 +35,7 @@ const UploadManifest = () => {
     {
       id: "col4",
       label: "Number of Orders ",
-      minWidth: 100,
+
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -44,7 +44,7 @@ const UploadManifest = () => {
     {
       id: "col5",
       label: "Action",
-      minWidth: 100,
+
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -64,7 +64,7 @@ const UploadManifest = () => {
             <FileUploadIcon />
           </Tooltip>
           <Tooltip title="Print" placement="top">
-            <PrintIcon className="mx-2 tableIcons" />
+            <PrintIcon className="mx-4 tableIcons" />
           </Tooltip>
           <Tooltip title="Detail" placement="top">
             <RemoveRedEyeIcon />
@@ -84,7 +84,7 @@ const UploadManifest = () => {
             <FileUploadIcon />
           </Tooltip>
           <Tooltip title="Print" placement="top">
-            <PrintIcon className="mx-2" />
+            <PrintIcon className="mx-4" />
           </Tooltip>
           <Tooltip title="Detail" placement="top">
             <RemoveRedEyeIcon />

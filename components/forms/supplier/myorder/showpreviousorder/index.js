@@ -24,7 +24,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
     },
     {
       id: "col3",
-      label: "number of Orders ",
+      label: "No. of Orders ",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -91,6 +91,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
           table_heading="Print Previous Invoices"
           tableRows={[...rows]}
           columns={[...columns]}
+          showCheckbox={false}
         />
       </Paper>
     </>

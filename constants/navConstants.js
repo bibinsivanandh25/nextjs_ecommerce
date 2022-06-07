@@ -310,8 +310,28 @@ const resellerMenu = [
       {
         title: "Create Lucky Draw",
         logo: "",
-        navigate: true,
+        navigate: false,
         path_name: "createluckydraw",
+        child: [
+          {
+            title: "Create Quiz",
+            logo: "",
+            navigate: true,
+            path_name: "createquiz",
+          },
+          {
+            title: "Spin wheel",
+            logo: "",
+            navigate: true,
+            path_name: "spinwheel",
+          },
+          {
+            title: "Scratch Card",
+            logo: "",
+            navigate: true,
+            path_name: "scratchcard",
+          },
+        ],
       },
       {
         title: "Unlock Tools",

@@ -34,6 +34,9 @@ const ButtonComponent = ({
           ? `${borderColor} ${textColor}`
           : ""
       } ${muiProps}`}
+      sx={{
+        textTransform: "none",
+      }}
       startIcon={showIcon && iconOrintation === "start" ? getIcon() : <></>}
       endIcon={showIcon && iconOrintation === "end" ? getIcon() : <></>}
     >

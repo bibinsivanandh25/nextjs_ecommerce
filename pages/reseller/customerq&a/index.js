@@ -387,7 +387,7 @@ const CustomerQnA = () => {
           Answered
         </div>
       </div>
-      <Paper>
+      <Paper className="py-2">
         {
           <TableComponent
             tableRows={

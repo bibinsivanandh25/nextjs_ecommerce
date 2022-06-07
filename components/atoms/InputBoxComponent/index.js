@@ -29,6 +29,7 @@ const InputBox = ({
   error = false,
   helperText = "",
   required = false,
+  textInputProps = {},
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -92,6 +93,7 @@ const InputBox = ({
         }}
         helperText={helperText}
         error={error}
+        inputProps={textInputProps}
         required={required}
       />
     </ThemeProvider>

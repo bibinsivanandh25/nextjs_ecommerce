@@ -19,7 +19,7 @@ const ReplyModal = ({
         >
           <div className="text-truncate w-50">
             Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
-            consectetur, adipisci velit..."
+            consectetur, adipisci velit...
           </div>
         </Tooltip>
       }

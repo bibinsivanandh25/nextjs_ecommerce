@@ -120,13 +120,13 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent variant="oulined" label="cancel" />
+          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
           <RemoveRedEyeIcon />
         </div>
       ),
     },
     {
-      id: "1",
+      id: "2",
       col1: <Image src={logo} height={50} width={50} />,
       col2: "#23234342",
       col3: "#23234342",
@@ -137,7 +137,7 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent variant="oulined" label="cancel" />
+          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
           <RemoveRedEyeIcon />
         </div>
       ),
@@ -185,7 +185,7 @@ const AcceptandConfirmOrder = () => {
 
           <Paper className="py-3 mt-3">
             <TableComponent
-              table_heading="34 Orders"
+              table_heading="34 New Orders"
               columns={columns}
               tableRows={rows}
             />

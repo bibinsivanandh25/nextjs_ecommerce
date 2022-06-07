@@ -128,7 +128,7 @@ const Generateinvoiceandmanifest = () => {
           <Grid container className="" spacing={1}>
             <Grid
               item
-              xs={4}
+              lg={5}
               className="d-flex flex-column justify-content-end"
             >
               <p
@@ -140,21 +140,26 @@ const Generateinvoiceandmanifest = () => {
                 Show Previous Invoice
               </p>
             </Grid>
-            <Grid item xs={2} className="d-flex align-items-center">
-              <p className="fs-10 fw-bold mt-2">Show Order with:</p>
-              <div className="w-50">
-                <SimpleDropdownComponent size="small" label="all" />
+            <Grid
+              item
+              lg={7}
+              className="d-flex align-items-center justify-content-end"
+            >
+              <p className="fs-12 fw-bold">Shipping Partner:</p>
+              <div className="w-25">
+                <SimpleDropdownComponent label="All" size="small" />
               </div>
-            </Grid>
-            <Grid item xs={2} className="d-flex align-items-center">
-              <p className="fs-10 fw-bold mt-2">Shipping Partner:</p>
-              <div className="w-50">
-                <SimpleDropdownComponent label="all" size="small" />
-              </div>
-            </Grid>
-            <Grid item xs={4} className="d-flex align-items-center">
+
               <ButtonComponent
-                label="Download selected Invoice and Manifest"
+                label="Download Invoice"
+                size="large"
+                muiProps="fs-11 mx-3"
+                // onBtnClick={() => {
+                //   route.push("/supplier/myorders/neworder/uploadmanifest");
+                // }}
+              />
+              <ButtonComponent
+                label="Download Manifest"
                 size="large"
                 muiProps="fs-11"
                 onBtnClick={() => {
