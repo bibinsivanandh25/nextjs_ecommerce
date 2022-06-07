@@ -313,7 +313,6 @@ const SideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxHeight: `calc(100vh - 60px)`,
           maxWidth: ` ${open ? "calc(100vw - 240px)" : "calc(100vw - 60px)"}`,
           marginLeft: ` ${open ? "240px" : "60px"}`,
           transition: "margin 0.2s ease-out",
