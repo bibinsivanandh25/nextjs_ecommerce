@@ -7,6 +7,7 @@ const validationRegex = {
   lowerCase: /^.*[a-z].*$/,
   specialChar: /\@|\$|\#/,
   decimal_2digit: /^(\d+\.?(\d{1,2}))$/,
+  name: /^[A-Za-z]+$/,
 };
 
 export default validationRegex;

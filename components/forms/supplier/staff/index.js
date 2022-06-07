@@ -27,11 +27,11 @@ const dummyData = [
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
   {
-    title: "coupons",
+    title: "Coupons",
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
   {
-    title: "orders",
+    title: "Orders",
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
 ];
@@ -91,22 +91,34 @@ const StaffForm = ({ handlebackClick }) => {
     if (formData.firstName === "") {
       flag = true;
       errObj.firstName = validateMessage.field_required;
+    } else if (!validationRegex.name.test(formData.firstName)) {
+      flag = true;
+      errObj.firstName = validateMessage.alphabets;
     } else if (formData.firstName.length > 50) {
       flag = true;
-      errObj.firstName = validateMessage.alpha_numeric_max_50;
+      errObj.firstName = validateMessage.alphabets_50;
     }
     if (formData.last_Name === "") {
       flag = true;
       errObj.last_Name = validateMessage.field_required;
+    } else if (!validationRegex.name.test(formData.last_Name)) {
+      flag = true;
+      errObj.last_Name = validateMessage.alphabets;
     } else if (formData.last_Name.length > 50) {
       flag = true;
-      errObj.last_Name = validateMessage.alpha_numeric_max_50;
+      errObj.last_Name = validateMessage.alphabets_50;
     }
-    if (!validationRegex.mobile.test(formData.MobileNo)) {
+    if (!formData.MobileNo) {
+      flag = true;
+      errObj.MobileNo = validateMessage.field_required;
+    } else if (!validationRegex.mobile.test(formData.MobileNo)) {
       flag = true;
       errObj.MobileNo = validateMessage.mobile;
     }
-    if (!validationRegex.email.test(formData.email)) {
+    if (!formData.email) {
+      flag = true;
+      errObj.email = validateMessage.field_required;
+    } else if (!validationRegex.email.test(formData.email)) {
       flag = true;
       errObj.email = validateMessage.email;
     } else if (formData.email.length > 255) {
@@ -204,7 +216,7 @@ const StaffForm = ({ handlebackClick }) => {
                 <CheckBoxComponent
                   label="Custom Capability"
                   isChecked={checkbox}
-                  checkBoxClick={(value) => {
+                  checkBoxClick={(id, value) => {
                     setCheckbox(value);
                     value
                       ? setCapabilities((pre) => {
@@ -271,7 +283,7 @@ const StaffForm = ({ handlebackClick }) => {
               onBtnClick={handleSubmit}
               muiProps="ms-3"
             />
-            <ButtonComponent onBtnClick={handlebackClick} label="Cancle" />
+            <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
           </div>
         </Grid>
       </Grid>
