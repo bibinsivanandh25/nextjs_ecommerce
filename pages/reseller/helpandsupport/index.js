@@ -12,6 +12,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [showModal, setShowModal] = useState({
     show: false,
@@ -56,8 +57,8 @@ const HelpAndSupport = () => {
     const result = [];
     data.forEach((row, index) => {
       result.push({
-        col1: row.dateandtime,
-        col2: <div className="w-200px">{row.ticketid}</div>,
+        col1: row.dateAndTime,
+        col2: <div className="w-200px">{row.ticketId}</div>,
         col3: <div className="w-200px">{row.subject}</div>,
         col4: <div className={getClassnames(row.status)}>{row.status}</div>,
         col5: (
@@ -65,13 +66,14 @@ const HelpAndSupport = () => {
             <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
               <VisibilityIcon
                 className="text-secondary cursor-pointer"
-                onClick={() =>
+                onClick={() => {
                   setShowModal({
                     show: true,
-                    id: row.ticketid,
+                    id: row.ticketId,
                     type: "view",
-                  })
-                }
+                  });
+                  setSelectedData(row);
+                }}
               />
             </Grid>
             <Grid item xs={4}>
@@ -89,9 +91,10 @@ const HelpAndSupport = () => {
                   onClick={() => {
                     setShowModal({
                       show: true,
-                      id: row.ticketid,
+                      id: row.ticketId,
                       type: "notification",
                     });
+                    setSelectedData(row);
                   }}
                 />
               </Badge>
@@ -103,7 +106,7 @@ const HelpAndSupport = () => {
                 onClick={() =>
                   setShowModal({
                     show: true,
-                    id: row.ticketid,
+                    id: row.ticketId,
                     type: "reply",
                   })
                 }
@@ -121,12 +124,12 @@ const HelpAndSupport = () => {
   useEffect(() => {
     const rows = [
       {
-        ticketid: "#123458",
-        issuetype: "123456",
-        dateandtime: "12-01-2022, 04:45 AM",
+        ticketId: "#123458",
+        issueType: "123456",
+        dateAndTime: "12-01-2022, 04:45 AM",
         orderid: "123456",
         subject: "Request for refund",
-        createddateandtime: "23-01-2022, 11:20 PM",
+        createdDateAndTime: "23-01-2022, 11:20 PM",
         attachments: "4",
         status: "Pending",
         chooseActionValue: null,
@@ -134,12 +137,12 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
-        ticketid: "#123456",
-        issuetype: "123456",
-        dateandtime: "12-01-2022, 07:09 AM",
+        ticketId: "#123456",
+        issueType: "123456",
+        dateAndTime: "12-01-2022, 07:09 AM",
         orderid: "123456",
         subject: "Low quality",
-        createddateandtime: "23-01-2022, 12:23 AM",
+        createdDateAndTime: "23-01-2022, 12:23 AM",
         attachments: "4",
         status: "Open",
         chooseActionValue: null,
@@ -147,12 +150,12 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
-        ticketid: "#123459",
-        issuetype: "123423",
-        dateandtime: "12-01-2023, 08:43 PM",
+        ticketId: "#123459",
+        issueType: "123423",
+        dateAndTime: "12-01-2023, 08:43 PM",
         orderid: "123456",
         subject: "Not satisfied",
-        createddateandtime: "23-01-2022, 05:40 PM",
+        createdDateAndTime: "23-01-2022, 05:40 PM",
         attachments: "1",
         status: "Closed",
         chooseActionValue: null,
@@ -173,7 +176,7 @@ const HelpAndSupport = () => {
         <HelpandsupportCreate />
       ) : showModal.show &&
         (showModal.type === "view" || showModal.type === "reply") ? (
-        <HelpandsupportView />
+        <HelpandsupportView selectedData={selectedData} />
       ) : (
         <Paper>
           <Grid container>
