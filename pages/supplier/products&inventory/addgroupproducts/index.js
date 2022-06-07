@@ -46,7 +46,10 @@ const AddGroupProducts = () => {
   const validate = () => {
     const errObj = { partentproduct: "", childproduct: "" };
     let flag = false;
-    if (formData.partentproduct === null) {
+    if (
+      formData.partentproduct === null ||
+      !Object.keys(formData.partentproduct).length
+    ) {
       errObj.partentproduct = validateMessage.field_required;
       flag = true;
     }
@@ -61,7 +64,6 @@ const AddGroupProducts = () => {
   const handleSubmit = () => {
     const flag = validate();
   };
-
   return (
     <Paper className="mnh-75vh mxh-75vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
       <Box className="d-flex">
@@ -81,7 +83,7 @@ const AddGroupProducts = () => {
               error={errorObj.partentproduct !== ""}
             />
           </div>
-          <div className="mt-2">
+          <div className="mt-3">
             <MultiSelectComponent
               label="Child Products"
               list={childProduct}
@@ -124,7 +126,7 @@ const AddGroupProducts = () => {
             <Card className="w-100" variant="outlined">
               <CardContent className="w-100">
                 <div className="d-flex flex-column w-100">
-                  <Typography className="h-3">product title</Typography>
+                  <Typography className="h-3">Combined Products</Typography>
                   <Box className="d-flex w-100">
                     <Grid container className="w-100" spacing={2}>
                       {childDetails.map((item, index) => (

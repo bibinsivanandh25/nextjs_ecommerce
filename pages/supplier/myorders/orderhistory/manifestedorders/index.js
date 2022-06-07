@@ -1,8 +1,7 @@
 import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import DownloadIcon from "@mui/icons-material/Download";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import CustomIcon from "services/iconUtils";
 
 const ManifestedOrders = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -68,10 +67,10 @@ const ManifestedOrders = () => {
         col10: (
           <Grid container>
             <Grid item xs={6}>
-              <DownloadIcon className="text-secondary" />
+              <CustomIcon type="download" title="Download" />
             </Grid>
             <Grid item xs={6}>
-              <VisibilityIcon className="text-secondary" />
+              <CustomIcon type="view" title="View" />
             </Grid>
           </Grid>
         ),

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import ModalComponent from "components/atoms/ModalComponent";
 import CouponLogo from "public/assets/images/Coupon.png";
 import Image from "next/image";
+import ButtonComponent from "components/atoms/ButtonComponent";
 
 const Coupons = () => {
   const selectTypeList = [
@@ -30,26 +31,38 @@ const Coupons = () => {
     {
       label: "Coupon Code",
       id: "col1",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Discount Type",
       id: "col2",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Amount in %",
       id: "col3",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Usage Limit",
       id: "col4",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Expire Date",
       id: "col5",
+      align: "center",
+      data_align: "center",
     },
     {
       label: "Status",
       id: "col6",
+      align: "center",
+      data_align: "center",
     },
   ];
 
@@ -165,14 +178,13 @@ const Coupons = () => {
             Coupon Listing
           </Grid>
           <Grid item sx={{ p: 2 }}>
-            <Button
+            <ButtonComponent
               variant="contained"
               className="bg-orange"
               size="small"
-              onClick={() => router.push("/supplier/coupons/addnewcoupons")}
-            >
-              Add New Coupon
-            </Button>
+              label=" Add New Coupon"
+              onBtnClick={() => router.push("/supplier/coupons/addnewcoupons")}
+            />
           </Grid>
         </Grid>
         <Grid item xs={12} sx={{ my: 5, px: 2 }}>

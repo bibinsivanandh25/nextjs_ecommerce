@@ -1,6 +1,5 @@
-import { Delete } from "@mui/icons-material";
-import Edit from "@mui/icons-material/Edit";
 import { useState } from "react";
+import CustomIcon from "services/iconUtils";
 
 const { Box } = require("@mui/material");
 const ButtonTabsList = ({
@@ -37,8 +36,8 @@ const ButtonTabsList = ({
               </div>
               {activeTab === index ? (
                 <div className={`position-absolute end-0 top-2`}>
-                  <Edit className="fs-14" />
-                  <Delete className="fs-14" />
+                  <CustomIcon type="edit" className="fs-14" />
+                  <CustomIcon type="delete" className="fs-14" />
                 </div>
               ) : null}
             </div>

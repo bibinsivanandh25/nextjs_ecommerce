@@ -6,6 +6,7 @@ import logo from "public/assets/logo.jpeg";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import { maxLengthValidator } from "services/validationUtils";
+import { Star } from "@mui/icons-material";
 
 const CustomerReview = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -42,8 +43,9 @@ const CustomerReview = () => {
       id: "col6",
     },
     {
-      label: "Customer Reviews",
+      label: "Questions",
       id: "col7",
+      data_classname: "mxw-200",
     },
     {
       label: "Supplier Reply",
@@ -72,8 +74,17 @@ const CustomerReview = () => {
         col3: row.name,
         col4: row.email,
         col5: row.mobileno,
-        col6: row.ratings,
-        col7: row.questions,
+        col6: (
+          <span>
+            {row.ratings}
+            <Star sx={{ color: "gold", zoom: 0.6 }} />
+          </span>
+        ),
+        col7: (
+          <div className="mxh-50 overflow-y-scroll overflow-text">
+            {row.questions}
+          </div>
+        ),
         col8: (
           <div className="mxh-50 overflow-y-scroll overflow-text">
             {row.supplierreply}
@@ -105,32 +116,35 @@ const CustomerReview = () => {
       {
         productId: "#123458",
         skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
+        email: "tom@gmail.com",
+        name: "Tom",
+        mobileno: "9988293842",
+        ratings: "4.5",
+        questions:
+          "lorem It is a long established fact that a reader will be distracted by the ",
         supplierreply: "PRODUCT LIVE",
       },
       {
         productId: "#123456",
         skuid: "123456",
-        email: "12-01-2022",
-        name: "UK24",
-        mobileno: "200gm",
-        ratings: "23-01-2022",
-        questions: "4",
+        email: "jerry@gmail.com",
+        name: "Jerry",
+        mobileno: "9988293840",
+        ratings: "5",
+        questions:
+          "lorem It is a long established fact that a reader will be distracted by the ",
         supplierreply:
           "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
       },
       {
         productId: "#123459",
         skuid: "123423",
-        email: "12-01-2023",
-        name: "UK22",
-        mobileno: "300gm",
-        ratings: "23-01-2022",
-        questions: "1",
+        email: "jessy@gmail.com",
+        name: "Jessy",
+        mobileno: "9988293849",
+        ratings: "3",
+        questions:
+          "lorem It is a long established fact that a reader will be distracted by the ",
         supplierreply:
           "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
       },

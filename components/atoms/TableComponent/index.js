@@ -76,7 +76,7 @@ export default function TableComponent({
   onCustomDropdownChange = () => {},
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
-  searchBarSizeMd = 8,
+  searchBarSizeMd = 7,
   tableMaxHeight = 440,
   showCustomSearchButton = false,
   customSearchButtonLabel = "",
@@ -163,8 +163,8 @@ export default function TableComponent({
     setPage(0);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event) {
+  const handleSelectAllClick = (event, checked) => {
+    if (checked) {
       const newSelecteds = rows.map((n, i) => n.id);
       OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
@@ -335,20 +335,19 @@ export default function TableComponent({
         <Grid
           item
           container
-          xs={showCustomSearchButton ? 8 : 6}
+          // xs={showCustomSearchButton ? 8 : 6}
           justifyContent={"end"}
         >
           {showSearchbar && (
             <Grid
               item
-              // sm={6}
-              // md={7}
+              md={8}
               xs={12}
               container
-              spacing={2}
+              spacing={1}
               justifyContent="end"
             >
-              <Grid item md={2}>
+              <Grid item md={3}>
                 {showSearchFilter && (
                   <SimpleDropdownComponent
                     list={[...searchFilterList]}
@@ -376,7 +375,7 @@ export default function TableComponent({
                   }}
                 />
               </Grid>
-              <Grid item xs={!showCustomSearchButton && 2}>
+              <Grid item xs={!showCustomSearchButton && 1}>
                 <div
                   style={{ width: "40px", height: "38px" }}
                   className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
@@ -389,7 +388,9 @@ export default function TableComponent({
                 <Grid item xs={3}>
                   <Button
                     variant="contained"
-                    className="bg-orange"
+                    className={`${
+                      disableCustomSearchButton ? "" : "bg-orange"
+                    }`}
                     sx={{ textTransform: "none" }}
                     fullWidth
                     onClick={onCustomSearchButtonClick}

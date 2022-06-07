@@ -44,6 +44,10 @@ export const paths = [
     id: "addnewproduct",
   },
   {
+    title: "Add Grouped Products",
+    id: "addgroupproducts",
+  },
+  {
     title: "New Product Upload",
     id: "newproductupload",
   },
@@ -101,7 +105,7 @@ export const paths = [
   },
   {
     id: "addstaff",
-    title: "Add Staff",
+    title: "Add New Staff",
   },
   {
     id: "delivery",

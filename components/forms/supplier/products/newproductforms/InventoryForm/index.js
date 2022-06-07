@@ -3,6 +3,8 @@ import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
 import validateMessage from "constants/validateMessages";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
@@ -140,20 +142,25 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
   return (
     <div className="w-100">
       <Grid container className="w-100" spacing={2}>
-        <Grid item md={12}>
-          <InputBox
-            id="sku"
-            label="SKU"
-            onInputChange={handleInputChange}
-            value={inventoryFormData.sku}
-            placeholder="SKU"
-            inputlabelshrink
-            fullWidth={false}
-            className="w-70p"
-            disabled
-            helperText={errorObj.sku}
-            error={errorObj.sku && errorObj.sku !== ""}
-          />
+        <Grid item md={12} className="d-flex align-items-center">
+          <div className="w-70p">
+            <InputBox
+              id="sku"
+              label="SKU"
+              onInputChange={handleInputChange}
+              value={inventoryFormData.sku}
+              placeholder="SKU"
+              inputlabelshrink
+              fullWidth
+              // className="w-90p"
+              disabled
+              helperText={errorObj.sku}
+              error={errorObj.sku && errorObj.sku !== ""}
+            />
+          </div>
+          <div className="mx-2">
+            <InfoOutlinedIcon />
+          </div>
         </Grid>
         <Grid item md={12} className="pt-4">
           <div className="d-flex align-items-center">
@@ -170,40 +177,50 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             />
           </div>
         </Grid>
-        <Grid item md={12}>
-          <SimpleDropdownComponent
-            inputlabelshrink
-            list={stock_status}
-            id="stockstatus"
-            label="Stock Status"
-            size="small"
-            fullWidth={false}
-            className="w-70p"
-            value={inventoryFormData.stock_status}
-            onDropdownSelect={(value) => {
-              handleDropdownChange(value, "stock_status");
-            }}
-            helperText={errorObj.stock_status}
-            error={errorObj.stock_status !== ""}
-          />
+        <Grid item md={12} className="d-flex align-items-center">
+          <div className="w-70p">
+            <SimpleDropdownComponent
+              inputlabelshrink
+              list={stock_status}
+              id="stockstatus"
+              label="Stock Status"
+              size="small"
+              // fullWidth={false}
+              // className="w-70p"
+              value={inventoryFormData.stock_status}
+              onDropdownSelect={(value) => {
+                handleDropdownChange(value, "stock_status");
+              }}
+              helperText={errorObj.stock_status}
+              error={errorObj.stock_status !== ""}
+            />
+          </div>
+          <div className="mx-2">
+            <InfoOutlinedIcon />
+          </div>
         </Grid>
         {manageStock ? (
           <>
-            <Grid item md={12}>
-              <SimpleDropdownComponent
-                inputlabelshrink
-                list={allowback_orders}
-                id="Allow Backorders ?"
-                label="Allow Backorders ?"
-                size="small"
-                fullWidth={false}
-                value={inventoryFormData.allow_backorders}
-                onDropdownSelect={(value) => {
-                  handleDropdownChange(value, "allow_backorders");
-                }}
-                helperText={errorObj.allow_backorders}
-                error={errorObj.allow_backorders !== ""}
-              />
+            <Grid item md={12} className="d-flex align-items-center">
+              <div className="w-70p">
+                <SimpleDropdownComponent
+                  inputlabelshrink
+                  list={allowback_orders}
+                  id="Allow Backorders ?"
+                  label="Allow Backorders ?"
+                  size="small"
+                  fullWidth={false}
+                  value={inventoryFormData.allow_backorders}
+                  onDropdownSelect={(value) => {
+                    handleDropdownChange(value, "allow_backorders");
+                  }}
+                  helperText={errorObj.allow_backorders}
+                  error={errorObj.allow_backorders !== ""}
+                />
+              </div>
+              <div className="mx-2">
+                <InfoOutlinedIcon />
+              </div>
             </Grid>
             <Grid item md={12}>
               <InputBox
@@ -218,19 +235,19 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               />
             </Grid>
             {/* <Grid item md={6}>
-              <SimpleDropdownComponent
-                inputlabelshrink
-                list={back_orders}
-                id="Backorders"
-                label="Back Orders"
-                size="small"
-                fullWidth={false}
-                value={inventoryFormData.back_Orders}
-                onDropdownSelect={(value) => {
-                  handleDropdownChange(value, "back_Orders");
-                }}
-              />
-            </Grid> */}
+                <SimpleDropdownComponent
+                  inputlabelshrink
+                  list={back_orders}
+                  id="Backorders"
+                  label="Back Orders"
+                  size="small"
+                  fullWidth={false}
+                  value={inventoryFormData.back_Orders}
+                  onDropdownSelect={(value) => {
+                    handleDropdownChange(value, "back_Orders");
+                  }}
+                />
+              </Grid> */}
           </>
         ) : null}
         <Grid item md={12}>

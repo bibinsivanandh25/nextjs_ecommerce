@@ -18,6 +18,7 @@ const CheckBoxComponent = ({
   iconType = "normal", //normal or circled
   id = "checkbox",
   className = "",
+  diableLabelClick = true,
 }) => {
   const getIcon = () => {
     if (showIcon && iconType === "normal" && varient === "filled") {
@@ -41,6 +42,7 @@ const CheckBoxComponent = ({
     <div>
       <FormControlLabel
         label={label}
+        style={{ pointerEvents: diableLabelClick && "none" }}
         control={
           <Checkbox
             id={id}
@@ -52,6 +54,8 @@ const CheckBoxComponent = ({
               "&.Mui-checked": {
                 color: "#e56700",
               },
+              pointerEvents: "auto",
+              cursor: "pointer",
             }}
             disabled={isDisabled}
             indeterminate={indeterminate}

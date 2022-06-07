@@ -1,9 +1,8 @@
 import { Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import DownloadIcon from "@mui/icons-material/Download";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import CustomIcon from "services/iconUtils";
 
 const ReturnedOrders = () => {
   const columns = [
@@ -37,19 +36,19 @@ const ReturnedOrders = () => {
     },
     {
       label: "Status",
-      align: "center",
+      // align: "center",
       id: "col8",
     },
     {
       label: "Choose Action",
       id: "col9",
-      align: "center",
+      // align: "center",
       minWidth: 250,
     },
     {
       label: "Action",
       id: "col10",
-      align: "center",
+      // align: "center",
       minWidth: 100,
     },
   ];
@@ -142,12 +141,12 @@ const ReturnedOrders = () => {
           </Grid>
         ),
         col10: (
-          <Grid container mx={1}>
-            <Grid item xs={6}>
-              <DownloadIcon className="text-secondary mx-2" />
+          <Grid container mx={1} alignItems="center" justifyContent="center">
+            <Grid item>
+              <CustomIcon title="Download" type="download" />
             </Grid>
-            <Grid item xs={6}>
-              <VisibilityIcon className="text-secondary" />
+            <Grid item>
+              <CustomIcon title="View" type="view" />
             </Grid>
           </Grid>
         ),
@@ -187,7 +186,7 @@ const ReturnedOrders = () => {
         orderQuantity: 1,
       },
       {
-        purchaseid: "#123458",
+        purchaseid: "#123450",
         orderid: "123456",
         orderdate: "12-01-2022",
         size: "UK24",
@@ -197,78 +196,6 @@ const ReturnedOrders = () => {
         status: "PRODUCT LIVE",
         chooseActionValue: null,
         orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123456",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123458",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "PRODUCT LIVE",
-        chooseActionValue: null,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123456",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123458",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "PRODUCT LIVE",
-        chooseActionValue: null,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123456",
-        orderid: "123456",
-        orderdate: "12-01-2022",
-        size: "UK24",
-        weight: "200gm",
-        manifestdate: "23-01-2022",
-        qty: "4",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        orderQuantity: 1,
-      },
-      {
-        purchaseid: "#123459",
-        orderid: "123423",
-        orderdate: "12-01-2023",
-        size: "UK22",
-        weight: "300gm",
-        manifestdate: "23-01-2022",
-        qty: "1",
-        status: "VALIDATION FAILED",
-        chooseActionValue: null,
-        orderQuantity: 3,
       },
     ];
     setTableData(rows);

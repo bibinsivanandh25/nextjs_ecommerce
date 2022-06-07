@@ -1,11 +1,11 @@
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
 import { useRef, useState } from "react";
 
-const HelpandsupportView = () => {
+const HelpandsupportView = ({ selectedData }) => {
   const [type, setType] = useState("customer");
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
@@ -28,64 +28,66 @@ const HelpandsupportView = () => {
     }
   };
 
+  const getContent = (label, value, className) => {
+    return (
+      <p className="mx-3 my-2">
+        <span>{label}</span> :{" "}
+        <span className={`fw-bold ${className}`}>{value}</span>
+      </p>
+    );
+  };
+
+  const getClassName = () => {
+    if (selectedData.status.toLowerCase() === "open") return "text-success";
+    if (selectedData.status.toLowerCase() === "pending") return "text-warning";
+    if (selectedData.status.toLowerCase() === "rejected") return "text-danger";
+  };
+
   return (
-    <>
-      <p className="fs-16 fw-bold pb-2 border-bottom">
+    <Paper className="mnh-80vh">
+      <p className="fs-16 fw-bold p-3 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
-      <div className="fs-12 border-bottom p-2">
-        <p className="mx-3">
-          {" "}
-          <span> Date & time</span> :{" "}
-          <span className="fw-bold"> 25-06-2021, 12:12am</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Ticket Id</span> : <span className="fw-bold"> #1233434</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Subject</span> :{" "}
-          <span className="fw-bold"> Request for refund has not apporoved</span>
-        </p>
-        <p className="mx-3">
-          {" "}
-          <span> Status</span> :{" "}
-          <span className="fw-bold text-success"> Open</span>
-        </p>
+      <div className="fs-12 border-bottom px-4 py-1">
+        {getContent("Date & Time", selectedData.dateAndTime)}
+        {getContent("Ticket ID", selectedData.ticketId)}
+        {getContent("Subject", selectedData.subject)}
+        {getContent("Status", selectedData.status, getClassName())}
       </div>
       <div className="my-2 border-bottom">
-        {type === "customer" ? (
-          <>
-            <TextEditor
-              getContent={(text) => {
-                setFormValue(text);
+        <div className="px-4 py-2">
+          {type === "customer" ? (
+            <>
+              <TextEditor
+                getContent={(text) => {
+                  setFormValue(text);
+                }}
+              />
+              {error && (
+                <p className="error" id="textbox-helper-text">
+                  {error}
+                </p>
+              )}
+            </>
+          ) : (
+            <InputBox
+              isMultiline
+              value={formValue}
+              onInputChange={(e) => {
+                setFormValue(e.target.value);
               }}
+              type="text"
+              rows={6}
+              error={Boolean(error)}
+              helperText={error}
             />
-            {error && (
-              <p className="error" id="textbox-helper-text">
-                {error}
-              </p>
-            )}
-          </>
-        ) : (
-          <InputBox
-            isMultiline
-            value={formValue}
-            onInputChange={(e) => {
-              setFormValue(e.target.value);
-            }}
-            type="text"
-            rows={6}
-            error={Boolean(error)}
-            helperText={error}
-          />
-        )}
+          )}
+        </div>
 
         <Grid
           container
-          className="my-2"
+          className="my-2 px-4"
           item
           xs={12}
           justifyContent="space-between"
@@ -116,7 +118,7 @@ const HelpandsupportView = () => {
           </Grid>
         </Grid>
       </div>
-    </>
+    </Paper>
   );
 };
 export default HelpandsupportView;
