@@ -116,6 +116,18 @@ const OrderReport = () => {
         ]}
         Detailrows={[
           {
+            id: "1",
+            col1: "1 Jan 2021",
+            col2: 33333,
+          },
+          {
+            id: "2",
+            col1: "2 Feb 2022",
+            col2: 22222,
+          },
+        ]}
+        summaryColumns={[
+          {
             id: "col1", //id value in column should be presented in row as key
             label: "Date",
             minWidth: 100,
@@ -132,7 +144,6 @@ const OrderReport = () => {
             data_classname: "",
           },
         ]}
-        summaryColumns={[]}
         summaryRows={[
           {
             id: "1",
