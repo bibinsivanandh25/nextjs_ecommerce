@@ -169,6 +169,9 @@ const OrderReport = () => {
         ]}
         barGraphHoverBackgroundColor="#4f98b5"
         barGraphBackgroundColor="#1f78b4"
+        cardLabel="Month Wise Orders"
+        tableLabel1="Month Wise Order Details"
+        tableLabel2="Order Summary"
       />
     </>
   );

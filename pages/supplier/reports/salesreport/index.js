@@ -174,6 +174,9 @@ const SalesReport = () => {
             background: "#ffcc29",
           },
         ]}
+        cardLabel="Month Wise Sales"
+        tableLabel1="Month Wise Sales Data"
+        tableLabel2="Month Wise Sales Summary"
       />
     </div>
   );
