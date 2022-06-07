@@ -190,8 +190,10 @@ const SideBarComponent = ({ children }) => {
   return (
     <Box
       sx={{
-        minWidth: "100vw",
+        minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
+        position: "relative",
+        top: "60px",
       }}
     >
       <CssBaseline />
