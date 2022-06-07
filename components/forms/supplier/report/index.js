@@ -196,7 +196,7 @@ const ReportLayout = ({
                 <SelectComponent
                   disableUnderline={true}
                   list={summaryStatusList}
-                  label="status"
+                  label="Status"
                 />
                 <SelectComponent
                   disableUnderline={true}

@@ -110,6 +110,7 @@ const AddNewCoupons = () => {
                 error={Boolean(error.code)}
                 helperText={error.code}
                 required
+                disabled
               />
             </Grid>
             <Grid item xs={12}>
