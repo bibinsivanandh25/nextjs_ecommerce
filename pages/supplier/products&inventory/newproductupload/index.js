@@ -90,7 +90,7 @@ const NewProductUpload = () => {
         <Grid container spacing={3} className="px-4 pb-4">
           <Grid item sm={4}>
             <SimpleDropdownComponent
-              label="select catogory"
+              label="Select Category"
               inputlabelshrink
               size="small"
             />
@@ -131,9 +131,9 @@ const NewProductUpload = () => {
           </Grid>
           <Grid className="d-flex" item sm={2}>
             <ButtonComponent
-              muiProps="w-100"
+              muiProps="w-100 fw-bold"
               size="medium"
-              label="submit"
+              label="Submit"
               variant="outlined"
             />
           </Grid>

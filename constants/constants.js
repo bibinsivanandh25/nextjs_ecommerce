@@ -69,10 +69,6 @@ const stock_status = [
 ];
 const business_processing_days = [
   {
-    value: "readyToShipIn",
-    label: "Ready to shin in...",
-  },
-  {
     value: "oneBusinessDay",
     label: "1 business day",
   },
