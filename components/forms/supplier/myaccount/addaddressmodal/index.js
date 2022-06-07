@@ -22,8 +22,8 @@ const AddAddressModal = (props) => {
       id: "name",
       value: null,
       required: true,
-      validation: /^.{1,50}$/,
-      errorMessage: validateMessage.alpha_numeric_max_50,
+      validation: /^[A-Za-z]{1,50}$/,
+      errorMessage: validateMessage.alphabets_50,
     },
     {
       label: "Mobile Number",
@@ -201,7 +201,7 @@ const AddAddressModal = (props) => {
       onSaveBtnClick={handleSave}
       minHeightClassName="mxh-500"
       ModalWidth={"60%"}
-      footerClassName="align-right border-top me-3"
+      footerClassName="justify-content-end border-top me-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"
     >

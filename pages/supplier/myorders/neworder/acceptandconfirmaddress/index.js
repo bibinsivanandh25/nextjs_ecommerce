@@ -10,6 +10,7 @@ import { Grid, Paper } from "@mui/material";
 import OrderConfirmModal from "components/forms/supplier/myorder/orderconfirmodal";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
 import { useRouter } from "next/router";
+import CustomIcon from "services/iconUtils";
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();
   const [openModal, setOpenModal] = useState(false);
@@ -110,7 +111,7 @@ const AcceptandConfirmOrder = () => {
   let rows = [
     {
       id: "1",
-      col1: <Image src={logo} height={50} width={50} />,
+      col1: <Image src={logo} height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -121,13 +122,13 @@ const AcceptandConfirmOrder = () => {
       col9: (
         <div className="d-flex justify-content-between align-items-center">
           <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
-          <RemoveRedEyeIcon />
+          <CustomIcon type="remove" title="Detail" />
         </div>
       ),
     },
     {
       id: "2",
-      col1: <Image src={logo} height={50} width={50} />,
+      col1: <Image src={logo} height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -138,7 +139,7 @@ const AcceptandConfirmOrder = () => {
       col9: (
         <div className="d-flex justify-content-between align-items-center">
           <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
-          <RemoveRedEyeIcon />
+          <CustomIcon type="remove" title="Detail" />
         </div>
       ),
     },

@@ -77,6 +77,9 @@ const ReportLayout = ({
   cardDetails = [],
   barGraphBackgroundColor = "",
   barGraphHoverBackgroundColor = "",
+  cardLabel = "",
+  tableLabel1 = "",
+  tableLabel2 = "",
 }) => {
   const [tableRows, setTableRows] = useState([...Detailrows]);
   const [summarytableRows, setsummaryTableRows] = useState([...summaryRows]);
@@ -167,8 +170,8 @@ const ReportLayout = ({
       </Grid>
       <Grid container spacing={3} className="mt-2">
         <Grid item xs={6}>
-          <Paper className="">
-            <p className="fs-12 fw-bold px-4 pt-2">Month Wise Payment</p>
+          <Paper sx={{ borderRadius: 4 }}>
+            <p className="fs-12 fw-bold px-4 pt-2 mb-2">{cardLabel}</p>
             <Bargraph
               data={barGraphData}
               labels={barGraphLabels}
@@ -178,8 +181,8 @@ const ReportLayout = ({
           </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper className="h-100">
-            <p className="fs-12 fw-bold px-4 pt-2 ">Month Wise Payment (%)</p>
+          <Paper className="h-100" sx={{ borderRadius: 4 }}>
+            <p className="fs-12 fw-bold px-4 pt-2 ">{cardLabel} (%)</p>
             <Grid className="mt-5 w-100">
               <Doughnutchart labels={doughnutLabels} data={doughnutData} />
             </Grid>
@@ -188,12 +191,9 @@ const ReportLayout = ({
       </Grid>
       <Grid container spacing={3} className="mt-2">
         <Grid item xs={5}>
-          <Paper>
+          <Paper sx={{ borderRadius: 4 }}>
             <Grid className="d-flex align-items-center ">
-              <Grid className="fs-12 fw-bold px-2 mt-3">
-                {" "}
-                Month wise Payment Details
-              </Grid>
+              <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
               <Grid className="ms-auto ">
                 <SelectComponent
                   disableUnderline={true}
@@ -219,17 +219,14 @@ const ReportLayout = ({
           </Paper>
         </Grid>
         <Grid item xs={7}>
-          <Paper>
+          <Paper sx={{ borderRadius: 4 }}>
             <Grid className="d-flex align-items-center justify-content-between">
-              <Grid className="fs-12 fw-bold px-2 mt-3">
-                {" "}
-                Month wise Payment Details
-              </Grid>
+              <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
               <Grid className="d-flex justify-content-between align-items-center">
                 <SelectComponent
                   disableUnderline={true}
                   list={summaryStatusList}
-                  label="status"
+                  label="Status"
                 />
                 <SelectComponent
                   disableUnderline={true}
