@@ -39,7 +39,7 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
     // <Cards>
     //   <Grid item xs={12}>
     <Grid container>
-      <Grid item md={6}>
+      <Grid item md={9}>
         <Doughnut
           data={datas}
           options={{
@@ -47,14 +47,46 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
               legend: {
                 display: false,
               },
+              datalabels: {
+                display: false,
+              },
+              legend: {
+                display: true,
+                labels: {
+                  usePointStyle: true,
+                },
+                position: "right",
+                align: "center",
+              },
             },
             maintainAspectRatio: false,
             rotation: 1.0 * Math.PI,
             cutout: 60,
           }}
+          // options={{
+          //   responsive: true,
+          //   plugins: {
+          //     legend: {
+          //       display: true,
+          //       labels: {
+          //         usePointStyle: true,
+          //       },
+          //       position: "right",
+          //       align: "center",
+          //     },
+          //     title: {
+          //       display: true,
+          //       text: "tooltip",
+          //     },
+          //     labels: {
+          //       fontSize: 10,
+          //       usePointStyle: true,
+          //     },
+          //   },
+          // }}
         />
       </Grid>
-      <Grid item md={5} container>
+      {/* <Grid item md={5} container>
         {labels.map((ele, index) => {
           return (
             <Grid className="d-flex align-items-center" item md={6} key={index}>
@@ -74,7 +106,7 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
           );
           // });
         })}
-      </Grid>
+      </Grid> */}
     </Grid>
     //   </Grid>
     // </Cards>

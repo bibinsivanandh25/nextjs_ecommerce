@@ -82,6 +82,7 @@ const ReportLayout = ({
   tableLabel2 = "",
 }) => {
   const [tableRows, setTableRows] = useState([...Detailrows]);
+  const [summarytableRows, setsummaryTableRows] = useState([...summaryRows]);
 
   const sortTable = (val) => {
     console.log(val, "val");
@@ -111,6 +112,35 @@ const ReportLayout = ({
       });
     }
     setTableRows([...rows]);
+  };
+  const sortSummaryTable = (val) => {
+    console.log(val, "val");
+    let sortCol;
+    let rows = [...tableRows];
+    if (val.label === "Sort By Price") {
+      sortCol = "col2";
+    } else if (val.label === "Sort By Date") {
+      sortCol = "col1";
+    }
+
+    if (val.sort === "ascending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] > b[sortCol]) {
+          return -1;
+        } else if (a[sortCol] < b[sortCol]) {
+          return 1;
+        }
+      });
+    } else if (val.sort === "descending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] < b[sortCol]) {
+          return -1;
+        } else if (a[sortCol] > b[sortCol]) {
+          return 1;
+        }
+      });
+    }
+    setsummaryTableRows([...rows]);
   };
 
   const getCardDetails = () => {
@@ -206,7 +236,7 @@ const ReportLayout = ({
                   <BasicMenu
                     menuList={summaryMenuList}
                     getSelectedValue={(item) => {
-                      sortTable(item);
+                      sortSummaryTable(item);
                     }}
                   />
                 </Grid>
@@ -216,7 +246,7 @@ const ReportLayout = ({
             <TableComponent
               showSearchFilter={false}
               showSearchbar={false}
-              // tableRows={[...summaryRows]}
+              tableRows={[...summarytableRows]}
               columns={[...summaryColumns]}
             />
           </Paper>
