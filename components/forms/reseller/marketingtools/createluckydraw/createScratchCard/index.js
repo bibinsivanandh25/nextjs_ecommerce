@@ -47,5 +47,5 @@ const ScratchCardForm = forwardRef(({}, ref) => {
     </Box>
   );
 });
-
+ScratchCardForm.displayName = "ScratchCardForm";
 export default ScratchCardForm;

@@ -205,4 +205,5 @@ const CreateQuiz = forwardRef(({}, ref) => {
     </Box>
   );
 });
+CreateQuiz.displayName = "CreateQuiz";
 export default CreateQuiz;
