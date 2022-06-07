@@ -126,7 +126,7 @@ const AcceptandConfirmOrder = () => {
       ),
     },
     {
-      id: "1",
+      id: "2",
       col1: <Image src={logo} height={50} width={50} />,
       col2: "#23234342",
       col3: "#23234342",
@@ -185,7 +185,7 @@ const AcceptandConfirmOrder = () => {
 
           <Paper className="py-3 mt-3">
             <TableComponent
-              table_heading="34 Orders"
+              table_heading="34 New Orders"
               columns={columns}
               tableRows={rows}
             />
