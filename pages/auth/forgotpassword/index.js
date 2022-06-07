@@ -26,7 +26,7 @@ const OtpLogIn = () => {
 
   return (
     <AuthLayout title={submited ? "OTP Verification" : "Forgot Password"}>
-      <div className="d-flex flex-column justify-content-center">
+      <div className="d-flex flex-column justify-content-center mt-5">
         <div style={{ width: "400px" }}>
           {submited ? (
             <>
@@ -53,6 +53,7 @@ const OtpLogIn = () => {
                 onInputChange={(e) => {
                   setUser(e.target.value);
                 }}
+                inputlabelshrink
               />
 
               <div className="w-100 d-flex justify-content-center">
