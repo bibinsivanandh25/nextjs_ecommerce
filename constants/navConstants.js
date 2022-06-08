@@ -276,7 +276,7 @@ const resellerMenu = [
         path_name: "news",
       },
       {
-        title: "Notifications",
+        title: "Push Notifications",
         logo: "",
         navigate: true,
         path_name: "notifications",
