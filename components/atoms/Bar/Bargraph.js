@@ -1,7 +1,5 @@
 import { Bar } from "react-chartjs-2";
-import React, { useEffect } from "react";
-import { useState } from "react";
-// import "chartjs-plugin-datalabels";
+import  { useEffect,useState } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
@@ -39,22 +37,18 @@ const Bargraph = ({
 
   function getBgColors() {
     var maxValue = Math.max.apply(this, data);
-    var bg = data.map((a) => (a === maxValue ? colorOfMax : backgroundColor));
-    return bg;
+    return data.map((a) => (a === maxValue ? colorOfMax : backgroundColor));
   }
 
   useEffect(() => {
     let temp = [];
-    // data.forEach((item, index) => {
     temp.push({
       barThickness: 15,
       borderRadius: 0,
       label: "amount",
       data: data,
-      // backgroundColor: index === 0 ? "#ffd09b" : "#9bc4ff",
       backgroundColor: colorOfMax ? getBgColors() : backgroundColor,
 
-      // hoverBackgroundColor: index === 0 ? "#fd941a" : "#3d84ec",
       hoverBackgroundColor: hoverBackgroundColor,
 
       borderSkipped: false,

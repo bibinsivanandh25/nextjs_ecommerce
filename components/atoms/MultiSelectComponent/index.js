@@ -2,7 +2,6 @@ import * as React from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import CheckBoxComponent from "../CheckboxComponent";
-import { Checkbox } from "@mui/material";
 
 const MultiSelectComponent = ({
   list = [],
@@ -31,7 +30,7 @@ const MultiSelectComponent = ({
       disableCloseOnSelect
       getOptionLabel={(option) => option.title}
       value={value}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      isOptionEqualToValue={(option, val) => option.id === val.id}
       renderOption={(props, option, obj) => (
         <div className="d-flex" {...props}>
           <CheckBoxComponent isChecked={obj.selected} />

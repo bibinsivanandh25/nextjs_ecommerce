@@ -41,7 +41,7 @@ const CustomTableComponent = ({ columns = [], rows = [] }) => {
                     key={column.id}
                     align={column.data_align}
                     className={`${column.data_classname} p-2`}
-                    style={column.data_style && column.data_style}
+                    style={column.data_style ?? {}}
                     sx={{ fontSize: 12 }}
                   >
                     {column.format && typeof value === "number"

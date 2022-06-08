@@ -1,5 +1,4 @@
 import { Autocomplete, Chip, TextField } from "@mui/material";
-import { useState } from "react";
 
 const InputFieldWithChip = ({
   label = "",
@@ -15,7 +14,6 @@ const InputFieldWithChip = ({
   error = false,
   handleChange = () => {},
 }) => {
-  const [InputValue, setInputValue] = useState("");
   return (
     <div className="App">
       <Autocomplete
@@ -52,7 +50,6 @@ const InputFieldWithChip = ({
           />
         )}
         onChange={handleChange}
-        onInputChange={(e) => setInputValue(e.target.value)}
       />
     </div>
   );
@@ -60,4 +57,3 @@ const InputFieldWithChip = ({
 
 export default InputFieldWithChip;
 
-//handleChange(event,dataArray)

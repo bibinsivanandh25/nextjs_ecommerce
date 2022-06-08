@@ -11,7 +11,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { assetsJson } from "public/assets";
 import ScratchCardComponent from "components/forms/reseller/marketingtools/createluckydraw/createScratchCard/ScratchCard";
 
-const ScratchCardForm = forwardRef(({}, ref) => {
+const ScratchCardForm = forwardRef((_props, ref) => {
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {

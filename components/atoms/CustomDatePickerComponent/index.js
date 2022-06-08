@@ -28,7 +28,7 @@ const CustomDatePickerComponent = ({
         onClose={() => setIsOpen(false)}
         value={value}
         onChange={onDateChange}
-        renderInput={({ inputRef, inputProps, InputProps }) => (
+        renderInput={({ inputRef, _inputProps, InputProps }) => (
           <Box
             ref={inputRef}
             sx={{

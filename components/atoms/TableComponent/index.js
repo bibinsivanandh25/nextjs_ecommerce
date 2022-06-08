@@ -8,11 +8,9 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import CheckBoxComponent from "../CheckboxComponent";
-import { Button, Grid, IconButton } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
-import ButtonComponent from "../ButtonComponent";
-import SearchIcon from "@mui/icons-material/Search";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import styles from "./TableComponent.module.css";
 
@@ -501,7 +499,7 @@ export default function TableComponent({
                             key={column.id}
                             align={column.data_align}
                             className={`${column.data_classname} p-2`}
-                            style={column.data_style && column.data_style}
+                            style={column.data_style ?? {}}
                             sx={{ fontSize: 12 }}
                           >
                             {column.format && typeof value === "number"

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Grid } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
-  const [donoughtData, setDonoughtData] = useState({});
-  const [labelData, setLabelData] = useState([]);
+export const Doughnutchart = ({ labels = [], data = [] }) => {
 
   const color = [
     "#8F1FF9",
@@ -44,9 +42,6 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
           data={datas}
           options={{
             plugins: {
-              legend: {
-                display: false,
-              },
               datalabels: {
                 display: false,
               },

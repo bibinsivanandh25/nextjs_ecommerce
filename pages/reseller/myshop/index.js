@@ -19,7 +19,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import styled from "@emotion/styled";
 import validateMessage from "constants/validateMessages";
 
-const MyShop = ({}) => {
+const MyShop = () => {
   const [showTheme, setShowTheme] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectTheme, setSelectTheme] = useState(1);
