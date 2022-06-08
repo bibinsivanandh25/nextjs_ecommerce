@@ -277,8 +277,13 @@ const MyProfile = () => {
             />
           </Grid>
         </Grid>
-        <Grid className={"mt-2"}>
-          <ButtonComponent label="Update profile" onBtnClick={validateForm} />
+        <Grid className={"mt-4"}>
+          <ButtonComponent
+            label="Update profile"
+            size="large"
+            muiProps="fs-12"
+            onBtnClick={validateForm}
+          />
         </Grid>
       </div>
     </div>

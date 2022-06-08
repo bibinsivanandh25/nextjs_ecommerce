@@ -316,7 +316,11 @@ const Login = () => {
               </Grid>
               <Grid item sm={12}>
                 <div className="d-flex flex-column align-items-center justify-content-center w-100">
-                  <ButtonComponent label="Login" onBtnClick={handleSubmit} />
+                  <ButtonComponent
+                    label="Login"
+                    onBtnClick={handleSubmit}
+                    muiProps={"w-100px"}
+                  />
                   <div>
                     <span className="fs-11 color-white mx-2">
                       Don&apos;t have an account?
