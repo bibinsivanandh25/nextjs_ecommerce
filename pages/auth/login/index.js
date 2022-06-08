@@ -1,5 +1,4 @@
 // import { providers, signIn, getSession, csrfToken } from "next-auth/client";
-import styles from "./Login.module.css";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import {
@@ -22,13 +21,14 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import logo from "../../../public/assets/favicon.png";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { loginCall } from "services";
 import axios from "axios";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
+import logo from "../../../public/assets/favicon.png";
+import styles from "./Login.module.css";
 
 const options = ["Supplier", "Reseller", "Customer"];
 
@@ -302,12 +302,12 @@ const Login = () => {
               </Grid>
               <Grid item md={12}>
                 <div className="d-flex justify-content-between">
-                  <Link href={"/auth/login/otplogin"} passHref>
+                  <Link href="/auth/login/otplogin" passHref>
                     <span className="color-orange fs-12 cursor-pointer">
                       Login with OTP
                     </span>
                   </Link>
-                  <Link href={"/auth/forgotpassword"} passHref>
+                  <Link href="/auth/forgotpassword" passHref>
                     <span className="color-orange fs-12 cursor-pointer">
                       Forgot password?
                     </span>
@@ -319,13 +319,13 @@ const Login = () => {
                   <ButtonComponent
                     label="Login"
                     onBtnClick={handleSubmit}
-                    muiProps={"w-100px"}
+                    muiProps="w-100px"
                   />
                   <div>
                     <span className="fs-11 color-white mx-2">
                       Don&apos;t have an account?
                     </span>
-                    <Link href={"/auth/supplier/registration"} passHref>
+                    <Link href="/auth/supplier/registration" passHref>
                       <span className="color-orange fs-11 cursor-pointer">
                         Register
                       </span>
