@@ -1,10 +1,11 @@
-import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
+import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import validationRegex from "services/utils/regexUtils";
 // import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
@@ -12,17 +13,43 @@ const OtpLogIn = () => {
   const [user, setUser] = useState("");
   const [submited, setSubmitted] = useState(false);
   const router = useRouter();
+  const [error, setError] = useState();
+
   useEffect(() => {
     return () => {
       setotp("xxxx");
     };
   }, []);
+
   useEffect(() => console.log("otp", otp), [otp]);
+
   const handleSubmit = () => {
     router.push("/");
   };
+
+  const validateForm = () => {
+    let errObj = error;
+    const validate = (errMsg, valid1, valid2) => {
+      if (!user) {
+        errObj = validateMessage.field_required;
+      } else if (!valid1.test(user) && !valid2.test(user)) {
+        errObj = errMsg;
+      } else {
+        errObj = null;
+      }
+    };
+    validate(
+      validateMessage.userId,
+      validationRegex.mobile,
+      validationRegex.email
+    );
+
+    setError(errObj);
+    return Boolean(errObj);
+  };
+
   const sendOTPclick = () => {
-    setSubmitted(true);
+    if (!validateForm()) setSubmitted(true);
   };
 
   return (
@@ -36,7 +63,7 @@ const OtpLogIn = () => {
                 <ButtonComponent
                   label="Login"
                   onBtnClick={handleSubmit}
-                  muiProps={"w-30p "}
+                  muiProps="w-30p "
                 />
                 <span className="color-orange fs-12 mt-2 cursor-pointer">
                   Resend OTP
@@ -54,13 +81,16 @@ const OtpLogIn = () => {
                 onInputChange={(e) => {
                   setUser(e.target.value);
                 }}
+                inputlabelshrink
+                error={Boolean(error)}
+                helperText={error}
               />
 
               <div className="w-100 d-flex justify-content-center">
                 <ButtonComponent
                   label="Get OTP"
                   onBtnClick={sendOTPclick}
-                  muiProps={"w-30p "}
+                  muiProps="w-30p "
                 />
               </div>
             </>

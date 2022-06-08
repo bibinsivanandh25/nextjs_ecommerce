@@ -1,12 +1,10 @@
-import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
+import { Badge, Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import HelpandsupportCreate from "components/forms/supplier/helpandsupport/helpandsupportcreate";
 import HelpAndSupportNotification from "components/forms/supplier/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/supplier/helpandsupport/helpandsupportview";
-import { red } from "@mui/material/colors";
+import CustomIcon from "services/iconUtils";
 
 const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -64,9 +62,11 @@ const HelpAndSupport = () => {
   const getClassnames = (status) => {
     if (status?.toLowerCase().includes("open")) {
       return "text-success";
-    } else if (status.toLowerCase().includes("close")) {
+    }
+    if (status.toLowerCase().includes("close")) {
       return "text-danger";
-    } else if (status.toLowerCase().includes("pending")) {
+    }
+    if (status.toLowerCase().includes("pending")) {
       return "text-warning";
     }
     return "";
@@ -88,9 +88,10 @@ const HelpAndSupport = () => {
         col10: (
           <Grid container>
             <Grid item xs={6} sx={{ px: 0, mx: 0 }}>
-              <VisibilityIcon
-                className="text-secondary cursor-pointer"
-                onClick={() => {
+              <CustomIcon
+                type="view"
+                title="View & Reply"
+                onIconClick={() => {
                   setShowModal({
                     show: true,
                     id: row.ticketId,
@@ -110,9 +111,9 @@ const HelpAndSupport = () => {
                   },
                 }}
               >
-                <NotificationsNoneIcon
-                  className="text-secondary cursor-pointer"
-                  onClick={() => {
+                <CustomIcon
+                  type="notification"
+                  onIconClick={() => {
                     setShowModal({
                       show: true,
                       id: row.ticketId,
@@ -139,7 +140,7 @@ const HelpAndSupport = () => {
         orderId: "123456",
         subject: "Request for refund",
         createdDateAndTime: "23-01-2022, 11:20 PM",
-        attachments: "4",
+        attachments: "abc.jpeg",
         status: "Pending",
         chooseActionValue: null,
         total: 2,
@@ -152,7 +153,7 @@ const HelpAndSupport = () => {
         orderId: "123456",
         subject: "Low quality",
         createdDateAndTime: "23-01-2022, 12:23 AM",
-        attachments: "4",
+        attachments: "pqr.png",
         status: "Open",
         chooseActionValue: null,
         total: 3,
@@ -165,7 +166,7 @@ const HelpAndSupport = () => {
         orderId: "123456",
         subject: "Not satisfied",
         createdDateAndTime: "23-01-2022, 05:40 PM",
-        attachments: "1",
+        attachments: "xyz.jpg",
         status: "Closed",
         chooseActionValue: null,
         total: 4,
@@ -215,7 +216,7 @@ const HelpAndSupport = () => {
               </Grid>
             </Grid>
             <Grid item xs={12} sx={{ my: 5, px: 2 }}>
-              <Paper>
+              <Paper className="pt-3">
                 <TableComponent
                   table_heading=""
                   columns={columns}

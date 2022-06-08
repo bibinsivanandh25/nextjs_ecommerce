@@ -7,13 +7,13 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import CheckBoxComponent from "../CheckboxComponent";
 import { Button, Grid, IconButton } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
 import ButtonComponent from "../ButtonComponent";
-import SearchIcon from "@mui/icons-material/Search";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import styles from "./TableComponent.module.css";
 
 const EnhancedTableHead = (props) => {
@@ -123,11 +123,11 @@ export default function TableComponent({
   }, [columns]);
 
   const requestSearch = (searchval) => {
-    let filteredData =
+    const filteredData =
       searchFilter.label === "All" || searchFilter.label === ""
         ? rows.filter((value) => {
             let flag = false;
-            let dataarray = Object.values(value);
+            const dataarray = Object.values(value);
             dataarray.splice(0, 1);
             let index;
             dataarray.forEach((ele) => {
@@ -148,7 +148,7 @@ export default function TableComponent({
                 .indexOf(searchval.toLowerCase()) > -1
             )
               return true;
-            else return false;
+            return false;
           });
 
     setRows(filteredData);
@@ -200,11 +200,11 @@ export default function TableComponent({
 
   useEffect(() => {
     if (dateValue.from && dateValue.to) {
-      var startDate = new Date(dateValue.from);
-      var endDate = new Date(dateValue.to);
-      var resultProductData = tableRows.filter(function (a) {
-        for (let i of dateFilterColName) {
-          var date = new Date(a[i]);
+      const startDate = new Date(dateValue.from);
+      const endDate = new Date(dateValue.to);
+      const resultProductData = tableRows.filter(function (a) {
+        for (const i of dateFilterColName) {
+          const date = new Date(a[i]);
           return date >= startDate && date <= endDate;
         }
       });
@@ -312,14 +312,9 @@ export default function TableComponent({
 
     return (
       <Grid container>
-        <Grid
-          item
-          container
-          xs={showCustomSearchButton ? 4 : 6}
-          justifyContent="start"
-        >
+        <Grid item container xs={4} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={5} xs={12}>
+            <Grid item sm={6} md={4} xs={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
@@ -332,12 +327,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid
-          item
-          container
-          // xs={showCustomSearchButton ? 8 : 6}
-          justifyContent={"end"}
-        >
+        <Grid item container xs={8} justifyContent="end">
           {showSearchbar && (
             <Grid
               item
@@ -351,7 +341,7 @@ export default function TableComponent({
                 {showSearchFilter && (
                   <SimpleDropdownComponent
                     list={[...searchFilterList]}
-                    size={"small"}
+                    size="small"
                     label="Search Filter"
                     value={searchFilter}
                     onDropdownSelect={(value) => {
@@ -373,6 +363,7 @@ export default function TableComponent({
                   onInputChange={(e) => {
                     setsearchText(e.target.value);
                   }}
+                  showAutoCompleteOff={false}
                 />
               </Grid>
               <Grid item xs={!showCustomSearchButton && 1}>
@@ -535,7 +526,7 @@ export default function TableComponent({
   );
 }
 
-//Sample prop data
+// Sample prop data
 // const columns = [
 //   {
 //     id: "col1", //id value in column should be presented in row as key
