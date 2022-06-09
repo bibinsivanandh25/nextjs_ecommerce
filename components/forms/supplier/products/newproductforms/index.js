@@ -21,7 +21,6 @@ const ProductsLayout = ({
   handleSubmitClick = () => {},
   tabsList = [],
   formsRef = null,
-  type = "",
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
@@ -52,7 +51,7 @@ const ProductsLayout = ({
       text: "",
     },
     sub_category_id: "",
-    tags: "",
+    tags: {},
     limit_per_order: "",
   });
   const [errorObj, setErrorObj] = useState({
@@ -203,6 +202,7 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.commision_mode !== ""}
                     helperText={errorObj.commision_mode}
+                    placeholder="Select commission mode"
                   />
                 </Grid>
                 {/* <Grid item md={12}>
@@ -224,7 +224,7 @@ const ProductsLayout = ({
                     label="Brand"
                     onInputChange={handleInputChange}
                     value={mainFormData.brand}
-                    placeholder="Any brand"
+                    placeholder="Enter Brand"
                     inputlabelshrink
                     error={errorObj.brand !== ""}
                     helperText={errorObj.brand}
@@ -233,6 +233,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <TextAreaComponent
                     legend="Short Description"
+                    placeholder="Enter short description"
                     onChange={(e) => {
                       setMainFormData((prev) => {
                         return {
@@ -262,6 +263,7 @@ const ProductsLayout = ({
                   <TextAreaComponent
                     legend="Long Description"
                     value={mainFormData.long_description.text}
+                    placeholder="Enter long description"
                     onChange={(e) => {
                       setMainFormData((prev) => {
                         return {
@@ -298,7 +300,7 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <InputBox
+                  {/* <InputBox
                     id="tags"
                     label="Tags"
                     onInputChange={handleInputChange}
@@ -306,6 +308,32 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.tags !== ""}
                     helperText={errorObj.tags}
+                    placeholder=""
+                  /> */}
+                  <SimpleDropdownComponent
+                    list={[
+                      {
+                        value: "Simple Product",
+                        label: "Simple Product",
+                      },
+                      {
+                        value: "variable Product",
+                        label: "Variable Product",
+                      },
+                    ]}
+                    id="tags"
+                    label="Tags"
+                    size="small"
+                    inputlabelshrink
+                    value={mainFormData.tags}
+                    error={errorObj.tags !== ""}
+                    helperText={errorObj.tags}
+                    placeholder="Select tags"
+                    onDropdownSelect={(value) => {
+                      handleDropdownChange(value, "tags");
+                    }}
+                    // error={errorObj.commision_mode !== ""}
+                    // helperText={errorObj.commision_mode}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -329,6 +357,7 @@ const ProductsLayout = ({
                     type="number"
                     error={errorObj.limit_per_order !== ""}
                     helperText={errorObj.limit_per_order}
+                    placeholder="Enter the order limit(eg.: 1)"
                   />
                 </Grid>
               </Grid>
@@ -431,7 +460,7 @@ const ProductsLayout = ({
                       text: "",
                     },
                     sub_category_id: {},
-                    tags: "",
+                    tags: {},
                     limit_per_order: "",
                   });
                 }}

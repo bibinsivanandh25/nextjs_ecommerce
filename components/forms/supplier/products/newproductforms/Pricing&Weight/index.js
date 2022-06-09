@@ -121,6 +121,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.sale_price}
             error={errorObj.sale_price !== ""}
+            placeholder="eg.: 100"
           />
         </Grid>
         <Grid item md={6}>
@@ -133,6 +134,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.mrp}
             error={errorObj.mrp !== ""}
+            placeholder="eg.: 100"
           />
         </Grid>
         <Grid item md={6}>
@@ -187,6 +189,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.delivery_charge}
             error={errorObj.delivery_charge !== ""}
+            placeholder="eg.:100"
           />
         </Grid>
         <Grid item md={12}>
@@ -199,6 +202,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.product_weight}
             error={errorObj.product_weight !== ""}
+            placeholder="eg.:200"
           />
         </Grid>
         <Grid item md={12}>
@@ -211,6 +215,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.length}
             error={errorObj.length !== ""}
+            placeholder="eg.: 200"
           />
         </Grid>
         <Grid item md={12}>
@@ -223,6 +228,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.height}
             error={errorObj.height !== ""}
+            placeholder="eg.: 200"
           />
         </Grid>
         <Grid item md={12}>
@@ -235,6 +241,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             type="number"
             helperText={errorObj.width}
             error={errorObj.width !== ""}
+            placeholder="eg.: 200"
           />
         </Grid>
         <Grid item md={12}>
