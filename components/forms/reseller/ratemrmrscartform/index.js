@@ -33,7 +33,7 @@ const RateMrMrsCartForm = () => {
 
   const handleSubmitClick = () => {
     if (validateForm()) {
-      console.log(comment, star);
+      console.log(comment);
     }
   };
 
