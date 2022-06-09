@@ -1,11 +1,10 @@
-import React, {  useState } from "react";
+import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Grid } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const Doughnutchart = ({ labels = [], data = [] }) => {
-
   const color = [
     "#8F1FF9",
     "#FD931B",
@@ -20,8 +19,8 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
     "#6A0F49",
     "#97EFE9",
   ];
-  let datas = {
-    labels: labels,
+  const datas = {
+    labels,
     datasets: [
       {
         data: [...data],
@@ -54,12 +53,12 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
               },
               tooltip: {
                 callbacks: {
-                  label: function (tooltipItem) {
-                    var label = tooltipItem.label ?? "";
+                  label(tooltipItem) {
+                    let label = tooltipItem.label ?? "";
                     if (label) {
                       label += ": ";
                     }
-                    label += tooltipItem.parsed + "%";
+                    label += `${tooltipItem.parsed}%`;
                     return label;
                   },
                 },

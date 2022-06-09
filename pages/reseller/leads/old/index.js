@@ -6,7 +6,8 @@ import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
 
 const OldLeads = () => {
-  let campaigns = [
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const campaigns = [
     {
       campaignType: "Quiz",
       campaignTitle: "Quiz1234",
@@ -28,7 +29,7 @@ const OldLeads = () => {
   ];
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Sl No ",
       align: "center",
       data_align: "center",
@@ -56,7 +57,7 @@ const OldLeads = () => {
       data_classname: "",
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: 1,
@@ -88,12 +89,10 @@ const OldLeads = () => {
       ),
     },
   ];
-
-  const [showCampaignModal, setShowCampaignModal] = useState(false);
   const [campaignDetail, setCampaignDetail] = useState([...campaigns]);
 
   useEffect(() => {
-    let temp = [];
+    const temp = [];
     campaignDetail.forEach((ele) => {
       temp.push({
         ...ele,
@@ -108,6 +107,7 @@ const OldLeads = () => {
       return (
         <div
           className="d-flex align-items-center py-3 border-bottom"
+          // eslint-disable-next-line react/no-array-index-key
           key={index}
         >
           <div>
@@ -115,9 +115,10 @@ const OldLeads = () => {
               isChecked={ele.isSelected}
               id={ele.campaignType}
               checkBoxClick={(id) => {
-                let arr = [...campaignDetail];
+                const arr = [...campaignDetail];
                 arr.forEach((item) => {
                   if (id === item.campaignType) {
+                    // eslint-disable-next-line no-param-reassign
                     ele.isSelected = !ele.isSelected;
                   }
                 });

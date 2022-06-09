@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CustomIcon from "services/iconUtils";
+import Box from "@mui/material";
 
-const { Box } = require("@mui/material");
 const ButtonTabsList = ({
   className = "w-100",
   activeTab = 0,
@@ -15,6 +15,7 @@ const ButtonTabsList = ({
       {tabsList.map((item, index) => {
         return (
           <Box
+            // eslint-disable-next-line react/no-array-index-key
             key={index}
             className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
               activeTab === index ? "bg-orange color-white" : "bg-light-gray"
@@ -31,11 +32,11 @@ const ButtonTabsList = ({
                   : ""
               }
             >
-              <div className={"d-flex justify-content-center  w-100"}>
+              <div className="d-flex justify-content-center  w-100">
                 {item.title}
               </div>
               {activeTab === index ? (
-                <div className={`position-absolute end-0 top-2`}>
+                <div className="position-absolute end-0 top-2">
                   <CustomIcon type="edit" className="fs-14" />
                   <CustomIcon type="delete" className="fs-14" />
                 </div>

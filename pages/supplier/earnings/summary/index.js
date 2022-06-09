@@ -1,16 +1,8 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+/* eslint-disable react/no-array-index-key */
+import { Box, Card, CardContent, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import BankDetails from "components/forms/supplier/myaccount/bankdetails";
-import AddBankDetails from "components/forms/supplier/myaccount/bankdetails/addbankdetails";
 import OrderDetails from "components/forms/supplier/myearnings/orderdetails";
 import { useEffect, useState } from "react";
 
@@ -105,7 +97,7 @@ const MyEarnings = () => {
             open={showAddBankModal}
             ModalWidth={1000}
             showFooter={false}
-            showHeader={true}
+            showHeader
             ModalTitle=""
             headerClassName="border-0"
             onCloseIconClick={() => setShowAddBankModal(false)}

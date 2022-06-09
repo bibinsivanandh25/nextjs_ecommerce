@@ -1,4 +1,3 @@
-import { TabList } from "@mui/lab";
 import { Grid, Typography } from "@mui/material";
 import axios from "axios";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
@@ -23,10 +22,6 @@ const WishList = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [productDetails, setProductDetails] = useState([]);
 
-  useEffect(() => {
-    getProducts();
-  }, [activeTab]);
-
   const getProducts = async () => {
     if (activeTab === 0) {
       await axios
@@ -39,7 +34,9 @@ const WishList = () => {
         });
     } else setProductDetails([]);
   };
-
+  useEffect(() => {
+    getProducts();
+  }, [activeTab]);
   return (
     <div>
       <div>

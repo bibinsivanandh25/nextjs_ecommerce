@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Button,
-  Grid,
-  Menu,
-  MenuItem,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -19,6 +11,7 @@ const ShareProductByPrice = () => {
   const [tableData, setTableData] = useState([]);
   const router = useRouter();
   const [showMenu, setShowMenu] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [showModal, setShowModal] = useState({
     show: false,
     id: null,

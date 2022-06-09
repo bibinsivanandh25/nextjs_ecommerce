@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import { Autocomplete, Chip, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -37,6 +38,7 @@ const InputFieldWithChip = ({
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               variant="outlined"
               label={option}

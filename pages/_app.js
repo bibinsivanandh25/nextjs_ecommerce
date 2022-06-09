@@ -5,13 +5,12 @@ import "../styles/width.scss";
 import "../styles/global.scss";
 import "../styles/colors.scss";
 import "../styles/font.scss";
-import dynamic from "next/dynamic";
+import Auth from "cokmponents/auth";
+import ToastComponent from "components/molecule/toastcomponent";
 import Layout from "../components/organism/Layout";
 import Loading from "../components/organism/Loading";
 import "nprogress/nprogress.css";
-import Auth from "components/auth";
 import "react-toastify/dist/ReactToastify.css";
-import ToastComponent from "components/molecule/toastcomponent";
 
 function MyApp({ Component, pageProps, router }) {
   if (router.pathname.startsWith("/auth/")) {

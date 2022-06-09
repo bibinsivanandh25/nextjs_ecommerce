@@ -98,7 +98,7 @@ const PaymentReports = () => {
         ]}
         Detailcolumns={[
           {
-            id: "col1", //id value in column should be presented in row as key
+            id: "col1", // id value in column should be presented in row as key
             label: "Date",
             minWidth: 100,
             align: "center",
@@ -128,7 +128,7 @@ const PaymentReports = () => {
         ]}
         summaryColumns={[
           {
-            id: "col1", //id value in column should be presented in row as key
+            id: "col1", // id value in column should be presented in row as key
             label: "Date",
             minWidth: 100,
             align: "center",

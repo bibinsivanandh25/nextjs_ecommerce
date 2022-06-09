@@ -1,7 +1,7 @@
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { assetsJson } from "public/assets";
+
 const items = [
   {
     src: "https://cdn.pixabay.com/photo/2017/11/29/13/28/a-discount-2986181_960_720.jpg",
@@ -32,8 +32,8 @@ function CarousalComponent({
       onChange={onChange}
       onClickItem={onClickItem}
       autoPlay={autoPlay}
-      dynamicHeight={true}
-      infiniteLoop={true}
+      dynamicHeight
+      infiniteLoop
       interval={interval}
       showThumbs={false}
       showStatus={false}

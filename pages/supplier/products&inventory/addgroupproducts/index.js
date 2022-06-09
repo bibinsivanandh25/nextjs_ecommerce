@@ -1,5 +1,7 @@
-import { Card, CardContent, Grid, Paper, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-unused-vars */
+import { Card, Box, CardContent, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
@@ -111,7 +113,7 @@ const AddGroupProducts = () => {
                       <div className="w-100 flex-wrap">
                         <Typography
                           className="h-4 word-break mnh-100 mxh-100"
-                          component={"div"}
+                          component="div"
                         >
                           {parentDetails.description}
                         </Typography>
@@ -135,19 +137,16 @@ const AddGroupProducts = () => {
                             <CardContent className="w-100 d-flex">
                               <Box className="w-40p">Image</Box>
                               <Box className="d-flex flex-column">
-                                <Typography component={"div"} className="h-3">
+                                <Typography component="div" className="h-3">
                                   {item.title}
                                 </Typography>
                                 {!item.active ? (
                                   <>
-                                    <Typography
-                                      component={"div"}
-                                      className="h-2"
-                                    >
+                                    <Typography component="div" className="h-2">
                                       {item.price}
                                     </Typography>
                                     <Typography
-                                      component={"div"}
+                                      component="div"
                                       className="fs-12 color-orange"
                                       onClick={() => {
                                         setChildDetails((pre) => {
@@ -182,7 +181,7 @@ const AddGroupProducts = () => {
                                       variant="standard"
                                     />
                                     <Typography
-                                      component={"div"}
+                                      component="div"
                                       className="fs-12 color-orange mt-1"
                                       onClick={() => {
                                         setChildDetails((pre) => {
@@ -218,8 +217,8 @@ const AddGroupProducts = () => {
       <Box className="d-flex justify-content-end mt-2">
         <ButtonComponent
           label="Clear"
-          variant={"outlined"}
-          size={"small"}
+          variant="outlined"
+          size="small"
           onBtnClick={() => {
             setFormData({
               partentproduct: {},
@@ -232,7 +231,7 @@ const AddGroupProducts = () => {
         />
         <ButtonComponent
           label="Submit"
-          size={"small"}
+          size="small"
           onBtnClick={handleSubmit}
         />
       </Box>

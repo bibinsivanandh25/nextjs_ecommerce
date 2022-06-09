@@ -142,29 +142,6 @@ const MrMrsCartProducts = () => {
     setTableRows(mapRowsToTable(tableData));
   }, [tableData]);
 
-  const tabList = [
-    {
-      label: "Active",
-      count: 2,
-    },
-    {
-      label: "Out of Stock",
-      count: 2,
-    },
-    {
-      label: "QC Pending",
-      count: 2,
-    },
-    {
-      label: "QC Rejected",
-      count: 2,
-    },
-    {
-      label: "Blacklisted",
-      count: 2,
-    },
-  ];
-
   return (
     <Paper sx={{ height: "100%" }}>
       <Typography

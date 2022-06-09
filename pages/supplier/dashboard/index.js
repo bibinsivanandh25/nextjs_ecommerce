@@ -18,7 +18,7 @@ const CustomTableComponent = ({ columns = [], rows = [] }) => {
       <Table>
         <TableHead>
           <TableRow className="border-bottom border-dashed">
-            {columns.map((item, index) => (
+            {columns.map((item) => (
               <TableCell
                 key={item.id}
                 align={item.align}
