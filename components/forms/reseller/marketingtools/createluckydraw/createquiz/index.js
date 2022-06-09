@@ -4,7 +4,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import { forwardRef, useEffect, useState, useImperativeHandle } from "react";
 
-const CreateQuiz = forwardRef(({}, ref) => {
+const CreateQuiz = forwardRef((_props, ref) => {
   const tempquestionObj = {
     question: "",
     options: {

@@ -7,13 +7,11 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { Button, Grid, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Button, Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
-import ButtonComponent from "../ButtonComponent";
 import styles from "./TableComponent.module.css";
 
 const EnhancedTableHead = (props) => {
@@ -40,7 +38,7 @@ const EnhancedTableHead = (props) => {
             />
           </TableCell>
         )}
-        {columns.map((column, index) => {
+        {columns.map((column) => {
           return (
             <TableCell
               key={column.id}
@@ -100,8 +98,6 @@ export default function TableComponent({
     id: "0",
     value: "All",
   });
-  const [fromDateOpen, setFromDateOpen] = useState(false);
-  const [toDateOpen, setToDateOpen] = useState(false);
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
   useEffect(() => {
@@ -492,7 +488,7 @@ export default function TableComponent({
                             key={column.id}
                             align={column.data_align}
                             className={`${column.data_classname} p-2`}
-                            style={column.data_style && column.data_style}
+                            style={column.data_style ?? {}}
                             sx={{ fontSize: 12 }}
                           >
                             {column.format && typeof value === "number"

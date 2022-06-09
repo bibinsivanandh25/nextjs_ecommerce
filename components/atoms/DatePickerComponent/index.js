@@ -2,7 +2,6 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { DesktopDatePicker } from "@mui/lab";
 

@@ -17,14 +17,7 @@ const ProgressBar = ({ showHeader = true }) => {
       path: "uploadmanifest",
     },
   ];
-  // console.log(
-  //   route.pathname.slice(
-  //     route.pathname.lastIndexOf("/") + 1,
-  //     route.pathname.length
-  //   )
-  // );
-  // console.log(route.pathname.split("/").pop());
-
+ 
   return (
     <div className={styles.progresscontainer}>
       {showHeader ? (

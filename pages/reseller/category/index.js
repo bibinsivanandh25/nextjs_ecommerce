@@ -353,6 +353,7 @@ const DisplaySet = ({ ele, handleClick }) => {
             width={100}
             height={100}
             layout={"responsive"}
+            alt=""
           />
         </CardActionArea>
       </Card>
@@ -361,7 +362,7 @@ const DisplaySet = ({ ele, handleClick }) => {
   );
 };
 
-const Category = ({}) => {
+const Category = () => {
   const [tabsList, setTabsList] = useState([
     { title: "women" },
     { title: "Men" },

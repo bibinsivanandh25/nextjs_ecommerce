@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, CardMedia } from "@mui/material";
+import { Box, Card, CardMedia } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { useRef } from "react";

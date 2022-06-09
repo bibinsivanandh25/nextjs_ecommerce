@@ -37,7 +37,7 @@ const CustomIcon = ({
     filter: FilterListIcon,
     delete: DeleteIcon,
     upload: FileUploadIcon,
-    download: FileDownloadIcon,
+    fileDownload: FileDownloadIcon,
     share: ShareIcon,
     edit: Edit,
     remove: RemoveRedEyeIcon,

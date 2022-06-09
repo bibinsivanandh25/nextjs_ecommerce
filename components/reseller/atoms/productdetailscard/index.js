@@ -189,7 +189,12 @@ const ProductDetailsCard = ({
           <Grid>
             <Grid container>
               <Grid item md={5} sm={4}>
-                <Image src={selectedProduct?.image} height={100} width={100} />
+                <Image
+                  src={selectedProduct?.image}
+                  height={100}
+                  width={100}
+                  alt=""
+                />
               </Grid>
               <Grid item md={6} sm={6}>
                 <Tooltip title={selectedProduct.title} placement="top">
@@ -288,7 +293,7 @@ const ProductDetailsCard = ({
                 id={ele.title}
                 onRadioChange={(e) => {
                   let arr = [...wishListCollection];
-                  arr.map((item) => {
+                  arr.forEach((item) => {
                     if (e.target.id === item.title) {
                       return (item.isSelected = true);
                     } else item.isSelected = false;
