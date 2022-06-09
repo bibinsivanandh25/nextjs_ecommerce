@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-nested-ternary */
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Box, Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -10,14 +13,14 @@ import { commisiondata } from "constants/constants";
 import TextEditor from "components/atoms/TextEditor";
 import AddIcon from "@mui/icons-material/Add";
 import { useState, useRef } from "react";
-import { format, parse } from "date-fns";
-import ProductModal from "./ProductModal";
-import CreateQuiz from "./CreateQuiz";
-import ScratchCardForm from "./createScratchCard";
-import SpinWheelForm from "./createSpinWheel";
+import { format } from "date-fns";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
+import CreateQuiz from "./CreateQuiz";
+import ScratchCardForm from "./createScratchCard";
+import SpinWheelForm from "./createSpinWheel";
+import ProductModal from "./ProductModal";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();
@@ -60,6 +63,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       formData.limit_per_coupon,
       formData.limit_per_customer
     );
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < maxLength; i++) {
       temp.push(
         <InputBox

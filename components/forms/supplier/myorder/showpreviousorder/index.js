@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import TableComponent from "components/atoms/TableComponent";
 import PrintIcon from "@mui/icons-material/Print";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -41,7 +43,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: "#23324234",
@@ -84,7 +86,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
         }}
       >
         <KeyboardArrowLeftIcon className="fw-bold fs-26" />
-        <label>Back</label>
+        <span>Back</span>
       </div>
       <Paper className="py-3">
         <TableComponent

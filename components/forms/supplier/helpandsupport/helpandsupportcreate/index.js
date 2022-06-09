@@ -1,18 +1,14 @@
-import { Upload } from "@mui/icons-material";
 import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import DropdownComponent from "components/atoms/DropdownComponent";
 import FileUploadModal from "components/atoms/FileUpload";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
-import { useRouter } from "next/router";
-import { Fragment, useRef, useState } from "react";
-import toastify from "services/utils/toastUtils";
+import { useState } from "react";
 
 const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
-  const inputField = useRef();
+  // const inputField = useRef();
 
   const issueTypes = [
     {
@@ -44,7 +40,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
       value: "Others",
     },
   ];
-  const route = useRouter();
+  // const route = useRouter();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [formValue, setFormValue] = useState({
     issueType: {},
@@ -59,7 +55,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
   });
   const validateFields = () => {
     let flag = false;
-    let errObj = {
+    const errObj = {
       issueType: "",
       subject: "",
       content: "",
@@ -205,7 +201,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
         </Grid>
       </div>
       <FileUploadModal
-        getUploadedFiles={(files) => {}}
+        getUploadedFiles={() => {}}
         showModal={showUploadModal}
         setShowModal={setShowUploadModal}
       />

@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Typography, Grid } from "@mui/material";
 
-const ViewPage = ({ data = {}, pageName = "" }) => {
+const ViewPage = ({ pageName = "" }) => {
   return (
     <Box className="w-100 p-3">
       <Typography className="h-5 fw-bold mb-2">

@@ -27,7 +27,7 @@ const ChangePassword = () => {
     } else if (!validationRegex.email.test(formValues.emailId)) {
       errObj.emailId = validateMessage.email;
     } else {
-      errObj["emailId"] = null;
+      errObj.emailId = null;
     }
     validatePassword("oldPassword");
     validatePassword("newPassword");

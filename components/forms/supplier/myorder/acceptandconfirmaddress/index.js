@@ -1,13 +1,19 @@
-import ButtonComponent from "../../../../atoms/ButtonComponent";
-import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/no-array-index-key */
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
+import ButtonComponent from "../../../../atoms/ButtonComponent";
 import AddAddressModal from "../../myaccount/addaddressmodal";
+
 const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
-  const [radioChecked, setRadioChecked] = useState(false);
+  // const [radioChecked, setRadioChecked] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [pickupDetails, setpickupDetails] = useState([
     {
@@ -137,7 +143,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
         </div>
         <Grid container spacing={1}>
           {getPickUpAdress()}
-          <Grid item xs={2}></Grid>
+          <Grid item xs={2} />
         </Grid>
       </Paper>
       {showAddAddress ? (

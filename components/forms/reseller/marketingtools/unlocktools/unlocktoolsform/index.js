@@ -24,7 +24,7 @@ const UnlockToolsForm = ({
             result[key] = value;
           }
         });
-        result["isRadioSelected"] = true;
+        result.isRadioSelected = true;
         return result;
       }
       return i;

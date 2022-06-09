@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddAddressModal from "components/forms/supplier/myaccount/addaddressmodal";
 
 const PickUpAddress = () => {
-  const [addressList, setAddressList] = useState([
+  const [addressList] = useState([
     { id: 1, name: "Perry", address: "#109, 3rd Cross, 4th Main, Tokyo" },
     { id: 2, name: "Angela", address: "#987, 1st Cross, 1st Main, Argentina" },
   ]);

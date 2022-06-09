@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -185,9 +189,8 @@ const RegistrationForm = ({
     const getData = () => {
       if (ele.type === "dropdown") {
         return val ? val.id : null;
-      } else {
-        return val;
       }
+      return val;
     };
     setFormValues((prev) => {
       return {
@@ -323,7 +326,7 @@ const RegistrationForm = ({
             <ButtonComponent
               label="Submit"
               onBtnClick={handleSubmit}
-              muiProps={"w-60p"}
+              muiProps="w-60p"
             />
             <span className="color-orange fs-12 mt-2 cursor-pointer">
               Resend OTP

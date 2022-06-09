@@ -1,3 +1,6 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import Bargraph from "components/atoms/Bar/Bargraph";
 import { LineChart } from "components/atoms/Linechart/Linechart";
@@ -40,7 +43,7 @@ const ResellerDashboardLayout = ({
   }));
 
   const getCount = () => {
-    const res = customerGraphData.reduce((a, b) => (a = a + b));
+    const res = customerGraphData.reduce((a, b) => (a += b));
     return res;
   };
 
@@ -107,11 +110,8 @@ const ResellerDashboardLayout = ({
             <Grid className="d-flex align-items-center">
               <Grid className="fs-12 fw-bold px-2 mt-3">Top 10 Referres</Grid>
               <Grid className="ms-auto">
-                <SelectComponent disableUnderline={true} list={monthsList} />
-                <SelectComponent
-                  disableUnderline={true}
-                  list={detailSelectList}
-                />
+                <SelectComponent disableUnderline list={monthsList} />
+                <SelectComponent disableUnderline list={detailSelectList} />
               </Grid>
             </Grid>
             <TableComponent

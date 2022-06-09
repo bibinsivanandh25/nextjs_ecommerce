@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Card, Grid } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 import Image from "next/image";
@@ -69,7 +70,7 @@ const OrderDetails = ({ showModal = false, setshowModal = () => {} }) => {
 
   return (
     <ModalComponent
-      ModalWidth={"90%"}
+      ModalWidth="90%"
       open={showModal}
       showClearBtn={false}
       showSaveBtn={false}

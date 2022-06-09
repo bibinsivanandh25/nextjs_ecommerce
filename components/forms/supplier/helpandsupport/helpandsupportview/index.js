@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
 import { Grid, Paper } from "@mui/material";

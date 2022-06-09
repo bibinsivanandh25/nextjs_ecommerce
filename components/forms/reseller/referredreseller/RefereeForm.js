@@ -78,19 +78,19 @@ const RefereeForm = ({
             <Box className="ms-3 mt-2">
               <Typography className="">
                 Last Month(april) Earnings:{" "}
-                <Typography component={"span"} className="color-dark-green">
+                <Typography component="span" className="color-dark-green">
                   123
                 </Typography>{" "}
               </Typography>
               <Typography className="">
                 Total Earnings Current Year:{" "}
-                <Typography component={"span"} className="color-dark-green">
+                <Typography component="span" className="color-dark-green">
                   123
                 </Typography>{" "}
               </Typography>
               <Typography className="">
                 Target to achive by EOY:{" "}
-                <Typography component={"span"} className="color-dark-green">
+                <Typography component="span" className="color-dark-green">
                   123
                 </Typography>{" "}
               </Typography>
@@ -125,7 +125,7 @@ const RefereeForm = ({
                       Commission Earned in {new Date(date).getFullYear() ?? ""}:{" "}
                       <Typography
                         className="fs-16 color-dark-green"
-                        component={"span"}
+                        component="span"
                       >
                         1234 Rs
                       </Typography>

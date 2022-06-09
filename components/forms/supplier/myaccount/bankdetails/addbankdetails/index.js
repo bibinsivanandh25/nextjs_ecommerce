@@ -3,7 +3,7 @@ import ModalComponent from "components/atoms/ModalComponent";
 import validateMessage from "constants/validateMessages";
 import Image from "next/image";
 import BankLogo from "public/assets/images/banklogo.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const AddBankDetails = ({
   BankDetails,
@@ -15,7 +15,7 @@ const AddBankDetails = ({
 
   const validateFields = () => {
     let flag = false;
-    let errObj = {
+    const errObj = {
       bankName: "",
       accountHolderName: "",
       accountNumber: "",
@@ -52,13 +52,13 @@ const AddBankDetails = ({
     if (!errObj.accountNumber.length) {
       if (
         BankDetails["Account Number"]?.toString() !==
-        BankDetails["ReBankAcc"]?.toString()
+        BankDetails.ReBankAcc?.toString()
       ) {
         errObj.reenterAccountNumber = "Account No. is not matching";
         flag = true;
       }
     }
-    if (!BankDetails["ReBankAcc"]?.length) {
+    if (!BankDetails.ReBankAcc?.length) {
       flag = true;
       errObj.reenterAccountNumber = validateMessage.field_required;
     }
@@ -80,7 +80,7 @@ const AddBankDetails = ({
         setErrorObj({});
       }}
       onSaveBtnClick={() => {
-        let error = validateFields();
+        const error = validateFields();
         if (!error) {
           setShowModal(false);
         } else {
