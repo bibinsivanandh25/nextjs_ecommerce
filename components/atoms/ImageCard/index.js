@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardHeader, CardMedia } from "@mui/material";
+import { Box, Card, CardMedia } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { useRef } from "react";
@@ -17,14 +17,14 @@ const ImageCard = ({
     <div className={`mt-2 mb-2 d-flex position-relative ${className}`}>
       {showClose && (
         <div
-          className="bg-light-gray rounded-circle fit-content float-right"
+          className="bg-light-gray rounded-circle fit-content float-right px-1"
           style={{
             position: "absolute",
             top: "-10px",
-            left: `${width - 10}px`,
+            left: `${width - 15}px`,
           }}
         >
-          <CloseIcon onClick={handleCloseClick} />
+          <CloseIcon fontSize="15px" onClick={handleCloseClick} />
         </div>
       )}
       <Card
@@ -51,7 +51,7 @@ const ImageCard = ({
               }}
             />
             <AddOutlinedIcon
-              className="color-light-gray"
+              className="color-light-gray cursor-pointer"
               onClick={() => {
                 inputRef.current.click();
               }}

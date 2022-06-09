@@ -11,9 +11,10 @@ export default function TextEditor({
   EditorHeight = "100px",
   getContent = () => {},
   content = "",
+  className = "w-95p",
 }) {
   return (
-    <div className="w-95p">
+    <div className={`${className}`}>
       <SunEditor
         className="bg-primary"
         height={EditorHeight}

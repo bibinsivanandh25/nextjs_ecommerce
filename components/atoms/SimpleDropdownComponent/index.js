@@ -1,6 +1,7 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import React, { useState } from "react";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const SimpleDropdownComponent = ({
   list = [],
@@ -10,19 +11,30 @@ const SimpleDropdownComponent = ({
   fullWidth = true,
   value = null,
   onDropdownSelect = () => {},
-  error = false,
   placeholder = "",
   fontSize = "",
   inputlabelshrink = false,
   className = "",
   helperText = null,
+  required = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
+
+  const theme = createTheme({
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: { color: "red", fontWeight: 700, fontSize: 22 },
+        },
+      },
+    },
+  });
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Autocomplete
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
         }}
         clearOnBlur={false}
@@ -49,11 +61,12 @@ const SimpleDropdownComponent = ({
               shrink: value?.id || inputValue ? true : inputlabelshrink,
               fontSize: fontSize && "0.8rem",
             }}
+            required={required}
             placeholder={placeholder}
           />
         )}
       />
-    </>
+    </ThemeProvider>
   );
 };
 

@@ -4,7 +4,7 @@ import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRound
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import styles from "./InvoiceCardComponent.module.css";
 
-const InvoiceCardComponent = ({}) => {
+const InvoiceCardComponent = () => {
   const data = {
     cardTitle: "list items",
     totalPrice: "99",

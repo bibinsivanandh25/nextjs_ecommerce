@@ -10,6 +10,7 @@ import { Grid, Paper } from "@mui/material";
 import OrderConfirmModal from "components/forms/supplier/myorder/orderconfirmodal";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
 import { useRouter } from "next/router";
+import CustomIcon from "services/iconUtils";
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();
   const [openModal, setOpenModal] = useState(false);
@@ -110,7 +111,7 @@ const AcceptandConfirmOrder = () => {
   let rows = [
     {
       id: "1",
-      col1: <Image src={logo} height={50} width={50} />,
+      col1: <Image src={logo} height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -120,14 +121,14 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent variant="oulined" label="cancel" />
-          <RemoveRedEyeIcon />
+          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
+          <CustomIcon type="remove" title="Detail" />
         </div>
       ),
     },
     {
-      id: "1",
-      col1: <Image src={logo} height={50} width={50} />,
+      id: "2",
+      col1: <Image src={logo} height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -137,15 +138,15 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent variant="oulined" label="cancel" />
-          <RemoveRedEyeIcon />
+          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
+          <CustomIcon type="remove" title="Detail" />
         </div>
       ),
     },
   ];
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper sx={{ p: 2 }} className="position-relative">
       <ProgressBar showHeader />
       {!showConfirmAdress ? (
         <div>
@@ -155,7 +156,11 @@ const AcceptandConfirmOrder = () => {
                 size={"small"}
                 list={[
                   { label: "Zero Commission", id: 1, value: "Zero Commission" },
-                  { label: "Full Commission", id: 2, value: "Full Commission" },
+                  {
+                    label: "Fixed Commission",
+                    id: 2,
+                    value: "Fixed Commission",
+                  },
                 ]}
                 onDropdownSelect={(val) => {
                   setDropDownValue(val);
@@ -181,14 +186,14 @@ const AcceptandConfirmOrder = () => {
 
           <Paper className="py-3 mt-3">
             <TableComponent
-              table_heading="34 Orders"
+              table_heading="34 New Orders"
               columns={columns}
               tableRows={rows}
             />
           </Paper>
         </div>
       ) : (
-        <AcceptandConfirmAddress />
+        <AcceptandConfirmAddress setshowConfirmAdress={setshowConfirmAdress} />
       )}
       {/* <OrderConfirmModal openModal={openModal} setOpenModal={setOpenModal} /> */}
     </Paper>

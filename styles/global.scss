@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 .overflow-y-scroll {
   overflow-y: auto;
 }
@@ -85,10 +86,6 @@
 
 .zIndex-1101 {
   z-index: 1101;
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .MuiDrawer-paper {
@@ -250,4 +247,18 @@ fieldset {
 
 .rounded-5 {
   border-radius: 15px;
+}
+
+div,
+span,
+p {
+  cursor: default;
+}
+
+.MyCustomButton:hover {
+  background-color: orange !important;
+}
+
+#canvas {
+  width: 500px !important;
 }

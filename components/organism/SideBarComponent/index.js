@@ -18,6 +18,7 @@ import { resellerMenu, supplierMenu } from "constants/navConstants";
 import { useSession } from "next-auth/react";
 import { Menu, MenuItem, MenuList } from "@mui/material";
 import { useRouter } from "next/router";
+import BreadCrumb from "components/atoms/BreadCrumb";
 
 const drawerWidth = 240;
 
@@ -189,8 +190,10 @@ const SideBarComponent = ({ children }) => {
   return (
     <Box
       sx={{
-        minWidth: "100vw",
+        minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
+        position: "relative",
+        top: "60px",
       }}
     >
       <CssBaseline />
@@ -312,14 +315,16 @@ const SideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxHeight: `calc(100vh - 60px)`,
           maxWidth: ` ${open ? "calc(100vw - 240px)" : "calc(100vw - 60px)"}`,
           marginLeft: ` ${open ? "240px" : "60px"}`,
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
         }}
-        className=" overflow-auto px-2 py-3 hide-scrollbar"
+        className=" overflow-auto p-4 py-3 hide-scrollbar"
       >
+        <Box className="mb-2">
+          <BreadCrumb />
+        </Box>
         {children}
       </Box>
     </Box>

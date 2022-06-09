@@ -1,3 +1,60 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb",
+    "plugin:prettier/recommended",
+    "plugin:@next/next/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react"],
+  "rules": {
+    "import/no-unresolved": "off",
+    "react/react-in-jsx-scope": 0,
+    "import/prefer-default-export": "off",
+    "react/jsx-filename-extension": 0,
+    "react/prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
+    "camelcase": 0,
+    "@next/next/no-img-element": 0,
+    "eqeqeq": 0,
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "keyword-spacing": 2
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+        "project": "./jsconfig.json"
+      },
+      "alias": {
+        "map": [
+          ["@/forms", "./components/forms"],
+          ["@/atoms", "./components/atoms"],
+          ["@/molecules", "./components/molecules"],
+          ["@/organisms", "./components/organisms"],
+          ["core/*", "./core/"],
+          ["constants/*", "./constants/*"],
+          ["services/*", "./services/"],
+          ["utils", "./utils/"],
+          ["styles/*", "./styles/*"]
+        ]
+      }
+    }
+  }
 }

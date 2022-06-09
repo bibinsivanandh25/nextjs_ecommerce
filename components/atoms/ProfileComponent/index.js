@@ -1,5 +1,5 @@
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
-import { Box, style } from "@mui/system";
+import { Box } from "@mui/system";
 import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
@@ -25,7 +25,9 @@ const ProfileComponent = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar className="cursor-pointer" sx={{ width: 32, height: 32 }}>
+              M
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>

@@ -27,11 +27,11 @@ const dummyData = [
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
   {
-    title: "coupons",
+    title: "Coupons",
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
   {
-    title: "orders",
+    title: "Orders",
     items: ["Manage Products", "Add Products", "Publish Products"],
   },
 ];
@@ -91,22 +91,34 @@ const StaffForm = ({ handlebackClick }) => {
     if (formData.firstName === "") {
       flag = true;
       errObj.firstName = validateMessage.field_required;
+    } else if (!validationRegex.name.test(formData.firstName)) {
+      flag = true;
+      errObj.firstName = validateMessage.alphabets;
     } else if (formData.firstName.length > 50) {
       flag = true;
-      errObj.firstName = validateMessage.alpha_numeric_max_50;
+      errObj.firstName = validateMessage.alphabets_50;
     }
     if (formData.last_Name === "") {
       flag = true;
       errObj.last_Name = validateMessage.field_required;
+    } else if (!validationRegex.name.test(formData.last_Name)) {
+      flag = true;
+      errObj.last_Name = validateMessage.alphabets;
     } else if (formData.last_Name.length > 50) {
       flag = true;
-      errObj.last_Name = validateMessage.alpha_numeric_max_50;
+      errObj.last_Name = validateMessage.alphabets_50;
     }
-    if (!validationRegex.mobile.test(formData.MobileNo)) {
+    if (!formData.MobileNo) {
+      flag = true;
+      errObj.MobileNo = validateMessage.field_required;
+    } else if (!validationRegex.mobile.test(formData.MobileNo)) {
       flag = true;
       errObj.MobileNo = validateMessage.mobile;
     }
-    if (!validationRegex.email.test(formData.email)) {
+    if (!formData.email) {
+      flag = true;
+      errObj.email = validateMessage.field_required;
+    } else if (!validationRegex.email.test(formData.email)) {
       flag = true;
       errObj.email = validateMessage.email;
     } else if (formData.email.length > 255) {
@@ -200,30 +212,30 @@ const StaffForm = ({ handlebackClick }) => {
                   error={errorObj.email !== ""}
                 />
               </Grid>
-              <Grid item sm={12}>
+              <Grid item sm={12} className="d-flex">
+                <span className="fs-14 my-2 fw-600 me-3">
+                  Custom Capability :
+                </span>
                 <CheckBoxComponent
-                  label="Custom Capability"
+                  label=""
                   isChecked={checkbox}
-                  checkBoxClick={(value) => {
-                    setCheckbox(value);
-                    value
-                      ? setCapabilities((pre) => {
-                          const temp = pre.map((item) => {
-                            return {
-                              ...item,
-                              items: [
-                                ...item.items.map((ele) => {
-                                  return {
-                                    ...ele,
-                                    selected: false,
-                                  };
-                                }),
-                              ],
-                            };
-                          });
-                          return temp;
-                        })
-                      : null;
+                  checkBoxClick={(_, value) => {
+                    setCapabilities((pre) => {
+                      const temp = pre.map((item) => {
+                        return {
+                          ...item,
+                          items: [
+                            ...item.items.map((ele) => {
+                              return {
+                                ...ele,
+                                selected: value,
+                              };
+                            }),
+                          ],
+                        };
+                      });
+                      return temp;
+                    });
                   }}
                   size="small"
                 />
@@ -241,7 +253,7 @@ const StaffForm = ({ handlebackClick }) => {
                 {item.items.map((ele, ind) => (
                   <Grid item container spacing={2} sm={12} key={ind}>
                     <Grid item sm={6} className="">
-                      <div className="d-flex justify-content-end align-items-center">
+                      <div className="d-flex justify-content-end align-items-center me-2">
                         {ele.name}
                       </div>
                     </Grid>
@@ -271,7 +283,7 @@ const StaffForm = ({ handlebackClick }) => {
               onBtnClick={handleSubmit}
               muiProps="ms-3"
             />
-            <ButtonComponent onBtnClick={handlebackClick} label="Cancle" />
+            <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
           </div>
         </Grid>
       </Grid>

@@ -1,5 +1,5 @@
 import { Upload } from "@mui/icons-material";
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import DropdownComponent from "components/atoms/DropdownComponent";
 import FileUploadModal from "components/atoms/FileUpload";
@@ -7,10 +7,11 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
+import { useRouter } from "next/router";
 import { Fragment, useRef, useState } from "react";
 import toastify from "services/utils/toastUtils";
 
-const HelpandsupportCreate = () => {
+const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
   const inputField = useRef();
 
   const issueTypes = [
@@ -43,6 +44,7 @@ const HelpandsupportCreate = () => {
       value: "Others",
     },
   ];
+  const route = useRouter();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [formValue, setFormValue] = useState({
     issueType: {},
@@ -76,28 +78,29 @@ const HelpandsupportCreate = () => {
     }
     if (formValue.content.replace(/<[^>]*>/g, "").length === 0) {
       errObj.content = validateMessage.field_required;
-      toastify("Content cannot be empty", "error");
-
       flag = true;
     }
     if (formValue.content.replace(/<[^>]*>/g, "").length > 255) {
       errObj.content = validateMessage.alpha_numeric_max_255;
-      toastify(validateMessage.alpha_numeric_max_255, "error");
       flag = true;
     }
     setErrorObj({ ...errObj });
+    if (!flag) {
+      // route.push("/supplier/helpandsupport");
+      setShowCreateComponent(false);
+    }
     return flag;
   };
 
   return (
-    <div className="w-100">
-      <p className="fs-16 fw-bold pb-2 border-bottom">
+    <Paper className="w-100 mnh-80vh">
+      <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">
-          (Any issues Please rise to us here)
+          (Any issues Please raise to us here)
         </span>
       </p>
-      <div className="my-3">
+      <div className="my-3 px-5">
         <Grid container className="d-flex align-items-center">
           <Grid item xs={2} className="fw-bold">
             Issue type :
@@ -158,7 +161,7 @@ const HelpandsupportCreate = () => {
           </Grid>
         </Grid>
       </div>
-      <div className="my-2 ">
+      <div className="my-2 ps-5">
         <div className="">
           <TextEditor
             getContent={(text) => {
@@ -168,9 +171,24 @@ const HelpandsupportCreate = () => {
               }));
             }}
           />
+          {errorObj.content && (
+            <p className="error" id="textbox-helper-text">
+              {errorObj.content}
+            </p>
+          )}
         </div>
-        <div className="my-3 ">
-          <span className="me-2">Attach File :</span>
+        <Grid container className="my-3">
+          <Grid item xs={6}>
+            <span className="me-2 fw-bold">Attach File :</span>
+            <ButtonComponent
+              label="Choose File"
+              color="#e8e8e8"
+              onBtnClick={() => {
+                // inputField.current.click();
+                setShowUploadModal(true);
+              }}
+            />
+          </Grid>
           {/* <input
             type="file"
             className=""
@@ -178,25 +196,20 @@ const HelpandsupportCreate = () => {
             ref={inputField}
             onChange={(e) => console.log(e.target.files[0])}
           /> */}
-          <ButtonComponent
-            label="choose file"
-            color="#e8e8e8"
-            onBtnClick={() => {
-              // inputField.current.click();
-              setShowUploadModal(true);
-            }}
-          />
-        </div>
-        <div className="d-flex flex-row-reverse">
-          <ButtonComponent label="Create Ticket" onBtnClick={validateFields} />
-        </div>
+          <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
+            <ButtonComponent
+              label="Create Ticket"
+              onBtnClick={validateFields}
+            />
+          </Grid>
+        </Grid>
       </div>
       <FileUploadModal
         getUploadedFiles={(files) => {}}
         showModal={showUploadModal}
         setShowModal={setShowUploadModal}
       />
-    </div>
+    </Paper>
   );
 };
 export default HelpandsupportCreate;

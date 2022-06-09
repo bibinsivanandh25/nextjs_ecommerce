@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 import CategoryScrollComponent from "components/atoms/CategoryScrollComponent";
+import ModalComponent from "components/atoms/ModalComponent";
 
 const HomeComponent = ({
   showMarginButton = false,
@@ -25,7 +26,11 @@ const HomeComponent = ({
         <Typography className="fw-bold">{productTitle}</Typography>
         <ProductDetailsCard
           products={[...products]}
+          getSelectedItem={(item) => {
+            console.log(item);
+          }}
           showMarginButton={showMarginButton}
+          get
         />
       </Box>
     </div>

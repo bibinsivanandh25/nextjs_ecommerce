@@ -38,10 +38,10 @@ const PickUpAddress = () => {
                 backgroundColor:
                   add.id === selectedAddress && "#F5E4D7 !important",
               }}
-              className="fs-16 bg-white rounded mnh-150 mxh-150 cursor-pointer"
+              className="fs-16 bg-white rounded mnh-150 mxh-150 "
             >
               <Grid item xs={11}>
-                <Grid item xs={12}>
+                <Grid item xs={12} className="cursor-pointer d-inline">
                   <CheckBoxComponent
                     label={`Address ${index + 1}`}
                     isChecked={add.id === selectedAddress}

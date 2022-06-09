@@ -7,7 +7,7 @@ const nextConfig = {
     return configCopy;
   },
   images: {
-    domains: ["fakestoreapi.com"],
+    domains: ["fakestoreapi.com", "mrmrscart.s3.ap-south-1.amazonaws.com"],
   },
 };
 module.exports = nextConfig;

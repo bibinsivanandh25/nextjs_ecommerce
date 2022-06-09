@@ -130,14 +130,20 @@ const SalesReport = () => {
         ]}
         summaryColumns={[
           {
-            id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
+            id: "col1", //id value in column should be presented in row as key
+            label: "Date",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
           },
           {
-            id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
+            id: "col2",
+            label: "No. of Sales",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
           },
         ]}
         summaryRows={[
@@ -174,6 +180,9 @@ const SalesReport = () => {
             background: "#ffcc29",
           },
         ]}
+        cardLabel="Month Wise Sales"
+        tableLabel1="Month Wise Sales Data"
+        tableLabel2="Month Wise Sales Summary"
       />
     </div>
   );

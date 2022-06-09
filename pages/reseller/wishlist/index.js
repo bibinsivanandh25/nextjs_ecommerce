@@ -53,6 +53,7 @@ const WishList = () => {
             className="w-100"
             tabsList={[...tabsList]}
             activeTab={activeTab}
+            showEditDelete
             getActiveTab={(tab) => {
               setActiveTab(tab);
             }}

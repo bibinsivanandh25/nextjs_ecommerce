@@ -6,7 +6,7 @@ import PickUpAddress from "components/forms/supplier/myaccount/pickupaddress";
 import React, { useEffect, useState } from "react";
 
 const MyAccount = () => {
-  let tabList = [
+  const tabList = [
     "My profile",
     "Bank Details",
     "Change Password",
@@ -17,13 +17,14 @@ const MyAccount = () => {
   const getSelectedMenuItem = () => {
     if (selectedMenu === 0) {
       return <MyProfile />;
-    } else if (selectedMenu === 1) return <BankDetails />;
-    else if (selectedMenu === 2) return <ChangePassword />;
-    else if (selectedMenu === 3) return <PickUpAddress />;
+    }
+    if (selectedMenu === 1) return <BankDetails />;
+    if (selectedMenu === 2) return <ChangePassword />;
+    if (selectedMenu === 3) return <PickUpAddress />;
   };
   return (
     <>
-      <Grid container className="list-unstyled  fs-14 mb-2">
+      <Grid container className="list-unstyled fs-14 py-3">
         {tabList.map((ele, ind) => {
           return (
             <Grid item xs={2} key={ind}>

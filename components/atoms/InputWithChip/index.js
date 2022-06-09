@@ -1,5 +1,5 @@
 import { Autocomplete, Chip, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const InputFieldWithChip = ({
   label = "",
@@ -14,8 +14,13 @@ const InputFieldWithChip = ({
   helperText = "",
   error = false,
   handleChange = () => {},
+  value = [],
 }) => {
-  const [InputValue, setInputValue] = useState("");
+  const [text, setText] = useState("");
+  useEffect(() => {
+    setText("");
+  }, [value]);
+
   return (
     <div className="App">
       <Autocomplete
@@ -23,10 +28,16 @@ const InputFieldWithChip = ({
         id="tags-filled"
         options={[]}
         freeSolo
+        value={value}
+        inputValue={text}
+        onInputChange={(e) => {
+          setText(e.target.value);
+        }}
         size={size}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip
+              key={index}
               variant="outlined"
               label={option}
               {...getTagProps({ index })}
@@ -48,15 +59,24 @@ const InputFieldWithChip = ({
             label={label}
             placeholder={placeholder}
             className={className}
+            // onBlur={(e) => {
+            //   if (e.target.value !== "") {
+            //     handleChange("", [...value, e.target.value]);
+            //   }
+            // }}
           />
         )}
+        onBlur={(e) => {
+          if (e.target.value !== "") {
+            console.log(e.target.value, "ppp");
+            handleChange("", [...value, e.target.value]);
+            setText("");
+          }
+        }}
         onChange={handleChange}
-        onInputChange={(e) => setInputValue(e.target.value)}
       />
     </div>
   );
 };
 
 export default InputFieldWithChip;
-
-//handleChange(event,dataArray)

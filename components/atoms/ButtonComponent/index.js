@@ -1,10 +1,5 @@
 import { Button } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import CustomIcon from "services/iconUtils";
 
 const ButtonComponent = ({
   label = "Button",
@@ -12,9 +7,8 @@ const ButtonComponent = ({
   onBtnClick = () => {},
   size = "small",
   muiProps = "",
-  color = "primary",
   showIcon = false,
-  iconColor = "#fff",
+  iconColorClass = "",
   iconSize = "20",
   iconName = "",
   iconOrintation = "start",
@@ -23,19 +17,9 @@ const ButtonComponent = ({
   bgColor = "bg-orange",
 }) => {
   const getIcon = () => {
-    if (iconName === "search") {
-      return <SearchIcon color={iconColor} size={iconSize} />;
-    } else if (iconName === "add") {
-      return <AddIcon color={iconColor} size={iconSize} />;
-    } else if (iconName === "filter") {
-      return <FilterListIcon color={iconColor} size={iconSize} />;
-    } else if (iconName === "delete") {
-      return <DeleteIcon color={iconColor} size={iconSize} />;
-    } else if (iconName === "upload") {
-      return <FileUploadIcon color={iconColor} size={iconSize} />;
-    } else if (iconName === "download") {
-      return <FileDownloadIcon color={iconColor} size={iconSize} />;
-    }
+    return (
+      <CustomIcon type={iconName} className={iconColorClass} size={iconSize} />
+    );
   };
   return (
     <Button
@@ -49,6 +33,9 @@ const ButtonComponent = ({
           ? `${borderColor} ${textColor}`
           : ""
       } ${muiProps}`}
+      sx={{
+        textTransform: "none",
+      }}
       startIcon={showIcon && iconOrintation === "start" ? getIcon() : <></>}
       endIcon={showIcon && iconOrintation === "end" ? getIcon() : <></>}
     >

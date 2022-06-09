@@ -1,31 +1,4 @@
-import { MenuOutlined, MoreVert } from "@mui/icons-material";
-import { Grid, MenuList, Paper } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bar";
-import Doughnutchart from "components/atoms/Doughnut/Doughnut";
-import BasicMenu from "components/atoms/Menu";
-import SelectComponent from "components/atoms/SelectComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import TableComponent from "components/atoms/TableComponent";
-import { useState } from "react";
 import ReportLayout from "../../../../components/forms/supplier/report/index";
-const columns = [
-  {
-    id: "col1", //id value in column should be presented in row as key
-    label: "Date",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col2",
-    label: "No. of Sales",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-];
 
 const PaymentReports = () => {
   return (
@@ -64,9 +37,7 @@ const PaymentReports = () => {
           "Nov",
           "Dec",
         ]}
-        doughnutData={[
-          1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
-        ]}
+        doughnutData={[10, 30, 50, 40, 60, 70, 30, 80, 90, 10, 20]}
         detailSelectList={[
           {
             id: 1,
@@ -202,11 +173,14 @@ const PaymentReports = () => {
             background: "#d83a56",
           },
           {
-            label: "Pending Payment",
+            label: "Pending Payments",
             value: "12,40,000",
             background: "#053742",
           },
         ]}
+        cardLabel="Month Wise Payment"
+        tableLabel1="Month Wise Payment Details"
+        tableLabel2="Payment Summary"
       />
     </div>
   );

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Grid } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
-  const [donoughtData, setDonoughtData] = useState({});
-  const [labelData, setLabelData] = useState([]);
+export const Doughnutchart = ({ labels = [], data = [] }) => {
 
   const color = [
     "#8F1FF9",
@@ -26,7 +24,6 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
     labels: labels,
     datasets: [
       {
-        // label: '# of Votes',
         data: [...data],
         backgroundColor: color,
         borderColor: color,
@@ -39,22 +36,43 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
     // <Cards>
     //   <Grid item xs={12}>
     <Grid container>
-      <Grid item md={6}>
+      <Grid item md={9}>
         <Doughnut
           data={datas}
           options={{
             plugins: {
-              legend: {
+              datalabels: {
                 display: false,
               },
+              legend: {
+                display: true,
+                labels: {
+                  usePointStyle: true,
+                },
+                position: "right",
+                align: "center",
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    var label = tooltipItem.label ?? "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    label += tooltipItem.parsed + "%";
+                    return label;
+                  },
+                },
+              },
             },
+
             maintainAspectRatio: false,
             rotation: 1.0 * Math.PI,
             cutout: 60,
           }}
         />
       </Grid>
-      <Grid item md={5} container>
+      {/* <Grid item md={5} container>
         {labels.map((ele, index) => {
           return (
             <Grid className="d-flex align-items-center" item md={6} key={index}>
@@ -74,7 +92,7 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
           );
           // });
         })}
-      </Grid>
+      </Grid> */}
     </Grid>
     //   </Grid>
     // </Cards>
