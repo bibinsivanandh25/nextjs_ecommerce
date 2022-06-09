@@ -39,6 +39,11 @@ const AddNewCoupons = () => {
         errObj[id] = validateMessage.field_required;
       } else if (validation && !validation.test(formValues[id])) {
         errObj[id] = errorMessage;
+      } else if (
+        id === "couponExpiryDate" &&
+        formValues[id].toString() === "Invalid Date"
+      ) {
+        errObj[id] = "Invalid Date";
       } else {
         errObj[id] = null;
       }
