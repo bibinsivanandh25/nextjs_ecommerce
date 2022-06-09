@@ -24,7 +24,7 @@ const MyAccount = () => {
   };
   return (
     <>
-      <Grid container className="list-unstyled  fs-14 mb-2">
+      <Grid container className="list-unstyled fs-14 py-3">
         {tabList.map((ele, ind) => {
           return (
             <Grid item xs={2} key={ind}>

@@ -212,9 +212,12 @@ const StaffForm = ({ handlebackClick }) => {
                   error={errorObj.email !== ""}
                 />
               </Grid>
-              <Grid item sm={12}>
+              <Grid item sm={12} className="d-flex">
+                <span className="fs-14 my-2 fw-600 me-3">
+                  Custom Capability :
+                </span>
                 <CheckBoxComponent
-                  label="Custom Capability"
+                  label=""
                   isChecked={checkbox}
                   checkBoxClick={(_, value) => {
                     setCapabilities((pre) => {
@@ -250,7 +253,7 @@ const StaffForm = ({ handlebackClick }) => {
                 {item.items.map((ele, ind) => (
                   <Grid item container spacing={2} sm={12} key={ind}>
                     <Grid item sm={6} className="">
-                      <div className="d-flex justify-content-end align-items-center">
+                      <div className="d-flex justify-content-end align-items-center me-2">
                         {ele.name}
                       </div>
                     </Grid>

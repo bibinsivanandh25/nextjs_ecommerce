@@ -5,3 +5,9 @@
   background-position: center;
   background-size: cover;
 }
+
+.profitLink {
+  font-size: 12px;
+  color: #1eaab3;
+  text-decoration: underline;
+}

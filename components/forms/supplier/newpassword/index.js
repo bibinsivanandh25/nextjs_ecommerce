@@ -28,7 +28,18 @@ const NewPasswordForm = ({
         errObj[id] = null;
       }
     };
-    validate(
+
+    const validateUser = (id, errMsg, valid1, valid2) => {
+      if (!formValues[id]) {
+        errObj[id] = validateMessage.field_required;
+      } else if (!valid1.test(formValues[id]) && !valid2.test(formValues[id])) {
+        errObj[id] = errMsg;
+      } else {
+        errObj[id] = null;
+      }
+    };
+
+    validateUser(
       "userId",
       validateMessage.userId,
       validationRegex.mobile,
@@ -65,49 +76,53 @@ const NewPasswordForm = ({
               userId: e.target.value,
             }));
           }}
-          error={Boolean(error["userId"])}
-          helperText={error["userId"]}
+          error={Boolean(error.userId)}
+          helperText={error.userId}
           inputlabelshrink
         />
       </div>
 
-      <InputBox
-        placeholder="Enter New Password"
-        value={formValues.password}
-        label="Enter New Password"
-        className="w-100 my-2"
-        size="small"
-        onInputChange={(e) => {
-          setFormValues((prev) => ({
-            ...prev,
-            password: e.target.value,
-          }));
-        }}
-        error={Boolean(error["password"])}
-        helperText={<div className="mxw-200">{error["password"]}</div>}
-        inputlabelshrink
-      />
+      <div style={{ width: "400px" }}>
+        <InputBox
+          placeholder="Enter New Password"
+          value={formValues.password}
+          label="Enter New Password"
+          className="w-100 my-2"
+          size="small"
+          onInputChange={(e) => {
+            setFormValues((prev) => ({
+              ...prev,
+              password: e.target.value,
+            }));
+          }}
+          error={Boolean(error.password)}
+          helperText={error.password}
+          inputlabelshrink
+        />
+      </div>
 
-      <InputBox
-        placeholder="Re-enter New Password"
-        value={formValues.rePassword}
-        label="Re-enter New Password"
-        className="w-100 my-2"
-        size="small"
-        onInputChange={(e) => {
-          setFormValues((prev) => ({
-            ...prev,
-            rePassword: e.target.value,
-          }));
-        }}
-        error={Boolean(error["rePassword"])}
-        helperText={error["rePassword"]}
-        inputlabelshrink
-      />
+      <div style={{ width: "400px" }}>
+        <InputBox
+          placeholder="Re-enter New Password"
+          value={formValues.rePassword}
+          label="Re-enter New Password"
+          className="w-100 my-2"
+          size="small"
+          onInputChange={(e) => {
+            setFormValues((prev) => ({
+              ...prev,
+              rePassword: e.target.value,
+            }));
+          }}
+          error={Boolean(error.rePassword)}
+          helperText={error.rePassword}
+          inputlabelshrink
+        />
+      </div>
       <ButtonComponent
         label="Submit"
         onBtnClick={handleSubmitBtnClick}
-        muiProps={"w-30p mx-auto"}
+        muiProps="w-30p mx-auto"
       />
     </div>
   );

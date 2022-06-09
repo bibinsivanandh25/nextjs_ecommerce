@@ -16,7 +16,7 @@ const validateMessage = {
   mobile: "Invalid Mobile Number",
   maxLength: "Max length should be",
   password:
-    "Minimum eight and maximum 10 characters, at least one uppercase letter, one lowercase letter, one number and one special character @ $ $",
+    "Minimum 8 and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character @ $ $",
   userId: "Invalid Email / Mobile Number",
   alphabets: "Only alpha characters are allowed",
   alphabets_50: "Max 50 alpha characters can be entered",

@@ -14,6 +14,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
 const CustomIcon = ({
   title = "",
@@ -22,7 +23,7 @@ const CustomIcon = ({
   color = "text-secondary",
   className = "",
   size = "",
-  placement = "",
+  placement = "top",
   muiProps = {},
   showColorOnHover = true,
 }) => {
@@ -42,6 +43,7 @@ const CustomIcon = ({
     remove: RemoveRedEyeIcon,
     more: MoreVert,
     filecopy: FileCopy,
+    notification: NotificationsNoneOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);
@@ -103,8 +105,7 @@ const CustomIcon = ({
   };
 
   return (
-    // <Tooltip title={title} placement={placement}>
-    <span title={title} data-bs-toggle="tooltip" data-bs-placement="top">
+    <Tooltip title={title} placement={placement}>
       <IconButton
         disableFocusRipple
         disableRipple
@@ -119,8 +120,7 @@ const CustomIcon = ({
       >
         {getIcon() || <></>}
       </IconButton>
-    </span>
-    // </Tooltip>
+    </Tooltip>
   );
 };
 

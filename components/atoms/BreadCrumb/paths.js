@@ -161,4 +161,6 @@ export const paths = [
   { title: "Customer Q & A", id: "customerq&a" },
   { title: "Help Center", id: "helpcenter" },
   { title: "Create", id: "create" },
+  { title: "My Account", id: "myaccount" },
+  { title: "Summary", id: "summary" },
 ];
