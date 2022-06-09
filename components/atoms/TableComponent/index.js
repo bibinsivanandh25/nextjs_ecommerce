@@ -19,6 +19,7 @@ import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
 import styles from "./TableComponent.module.css";
+import ButtonComponent from "../ButtonComponent";
 
 const EnhancedTableHead = (props) => {
   const {
@@ -316,7 +317,7 @@ export default function TableComponent({
       <Grid container>
         <Grid item container xs={4} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={4} xs={12}>
+            <Grid item sm={6} md={6} xs={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
@@ -333,11 +334,12 @@ export default function TableComponent({
           {showSearchbar && (
             <Grid
               item
-              md={8}
+              md={9}
               xs={12}
               container
               spacing={1}
               justifyContent="end"
+              alignItems="center"
             >
               <Grid item md={3}>
                 {showSearchFilter && (
@@ -413,16 +415,17 @@ export default function TableComponent({
               )}
               {showCustomButton && (
                 <Grid item sm={4} container>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    className="bg-orange"
-                    sx={{ textTransform: "none" }}
-                    fullWidth
-                    onClick={onCustomButtonClick}
-                  >
-                    {customButtonLabel}
-                  </Button>
+                  <div>
+                    <ButtonComponent
+                      // variant="contained"
+                      // size="small"
+                      // className="bg-orange"
+                      // sx={{ textTransform: "none" }}
+                      // fullWidth
+                      onBtnClick={onCustomButtonClick}
+                      label={customButtonLabel}
+                    />
+                  </div>
                 </Grid>
               )}
             </Grid>
