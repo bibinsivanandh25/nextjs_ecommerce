@@ -6,7 +6,6 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CustomIcon from "services/iconUtils";
 import validateMessage from "constants/validateMessages";
 import avatar from "../../../../../public/assets/images/man.png";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
@@ -115,7 +114,7 @@ const MyProfile = () => {
               <CustomIcon
                 type="edit"
                 title="Edit"
-                className={"fs-5"}
+                className="fs-5"
                 onIconClick={() => setShowUpdate(true)}
               />
             ) : null}
@@ -285,7 +284,7 @@ const MyProfile = () => {
               />
             </Grid>
           </Grid>
-          <Grid className={"mt-2"}>
+          <Grid className="mt-2">
             <ButtonComponent
               label="Update profile"
               onBtnClick={() => {

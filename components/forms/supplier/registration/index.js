@@ -174,7 +174,7 @@ const RegistrationForm = ({
         <Grid container item md={12}>
           <Grid container item md={4}>
             <Grid item md={12} className="fw-700">
-              Average Stock Count
+              Average Stock Count :
             </Grid>
             <Grid item md={12}>
               <RadiobuttonComponent

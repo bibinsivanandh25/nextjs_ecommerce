@@ -333,6 +333,13 @@ const Login = () => {
                   </div>
                 </div>
               </Grid>
+              <Grid item sm={12} container justifyContent="center">
+                <ButtonComponent
+                  label="Know your Profit here"
+                  muiProps={styles.profitLink}
+                  variant="undefined"
+                />
+              </Grid>
             </Grid>
           </div>
         </div>

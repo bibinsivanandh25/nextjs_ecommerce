@@ -4,8 +4,8 @@ import RegistrationForm from "components/forms/supplier/registration";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
 import { requiredValidator } from "services/validationUtils";
-import styles from "./Registration.module.css";
 import validationRegex from "services/utils/regexUtils";
+import styles from "./Registration.module.css";
 
 const Registration = () => {
   const formObj = {

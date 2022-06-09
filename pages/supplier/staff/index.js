@@ -112,7 +112,11 @@ const Staff = () => {
           </Box>
         </div>
         <Box className="mt-4">
-          <TableComponent tableRows={tempRows} columns={tableHeaders} />
+          <TableComponent
+            tableRows={tempRows}
+            columns={tableHeaders}
+            table_heading={`${tempRows.length} Staffs`}
+          />
         </Box>
       </Paper>
     </>
