@@ -1,4 +1,4 @@
-import { Box, Card, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
 import { useState } from "react";
@@ -25,9 +25,7 @@ const CategoryProductCard = ({ data = [] }) => {
         }}
       >
         <Image
-          src={
-            "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/flower.jpg"
-          }
+          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/flower.jpg"
           layout="fill"
           width={100}
           height={100}

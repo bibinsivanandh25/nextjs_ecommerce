@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Grid, MenuList, Paper } from "@mui/material";
+/* eslint-disable react/no-array-index-key */
+import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -140,7 +140,7 @@ const StaffForm = ({ handlebackClick }) => {
   };
 
   const handleSubmit = () => {
-    const flag = validate();
+    validate();
   };
 
   return (
