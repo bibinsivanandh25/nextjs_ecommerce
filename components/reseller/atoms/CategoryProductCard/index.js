@@ -31,6 +31,7 @@ const CategoryProductCard = ({ data = [] }) => {
           layout="fill"
           width={100}
           height={100}
+          alt=""
         />
         <Box
           className={`${
@@ -44,6 +45,7 @@ const CategoryProductCard = ({ data = [] }) => {
                   src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/watsapp-icon.png"
                   width={25}
                   height={25}
+                  alt=""
                 />
               </Box>
               <Box>icon</Box>

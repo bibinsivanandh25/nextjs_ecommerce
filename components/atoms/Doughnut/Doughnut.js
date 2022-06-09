@@ -26,7 +26,6 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
     labels: labels,
     datasets: [
       {
-        // label: '# of Votes',
         data: [...data],
         backgroundColor: color,
         borderColor: color,
@@ -58,32 +57,24 @@ export const Doughnutchart = ({ labels = [], data = [], height = "200px" }) => {
                 position: "right",
                 align: "center",
               },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    var label = tooltipItem.label ?? "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    label += tooltipItem.parsed + "%";
+                    return label;
+                  },
+                },
+              },
             },
+
             maintainAspectRatio: false,
             rotation: 1.0 * Math.PI,
             cutout: 60,
           }}
-          // options={{
-          //   responsive: true,
-          //   plugins: {
-          //     legend: {
-          //       display: true,
-          //       labels: {
-          //         usePointStyle: true,
-          //       },
-          //       position: "right",
-          //       align: "center",
-          //     },
-          //     title: {
-          //       display: true,
-          //       text: "tooltip",
-          //     },
-          //     labels: {
-          //       fontSize: 10,
-          //       usePointStyle: true,
-          //     },
-          //   },
-          // }}
         />
       </Grid>
       {/* <Grid item md={5} container>

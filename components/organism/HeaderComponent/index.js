@@ -19,9 +19,9 @@ const HeaderComponent = () => {
           <Image src={logo} alt="" width="100px" height="40px" />
         </Grid>
         <Grid item xs={3} className={styles.subcontainer}>
-          <ConfirmationNumberOutlinedIcon />
-          <EmailOutlinedIcon />
-          <NotificationsIcon />
+          <ConfirmationNumberOutlinedIcon className="cursor-pointer" />
+          <EmailOutlinedIcon className="cursor-pointer" />
+          <NotificationsIcon className="cursor-pointer" />
           <ProfileComponent />
         </Grid>
       </Grid>

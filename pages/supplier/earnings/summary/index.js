@@ -54,14 +54,6 @@ const MyEarnings = () => {
       <div className="border-bottom">
         <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
           <Box className="fs-16 fw-700 ps-4">Summary</Box>
-          <Box>
-            <ButtonComponent
-              label="Choose Bank"
-              onBtnClick={() => {
-                setShowAddBankModal(true);
-              }}
-            />
-          </Box>
         </Box>
       </div>
       <Box className="m-3 mt-4">

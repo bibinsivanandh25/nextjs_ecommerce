@@ -93,6 +93,7 @@ const AddBankDetails = ({
         <div className="fw-bold">Bank Details</div>
         <div className="my-2 ">
           <InputBox
+            required
             className="w-100"
             helperText={errorObj.bankName}
             error={errorObj.bankName?.length}
@@ -109,6 +110,7 @@ const AddBankDetails = ({
         </div>
         <div className="my-2 ">
           <InputBox
+            required
             helperText={errorObj.accountHolderName}
             error={errorObj.accountHolderName?.length}
             className="w-100"
@@ -125,6 +127,7 @@ const AddBankDetails = ({
         </div>
         <div className="my-2 ">
           <InputBox
+            required
             type="number"
             className="w-100"
             helperText={errorObj.accountNumber}
@@ -142,6 +145,7 @@ const AddBankDetails = ({
         </div>
         <div className="my-2 ">
           <InputBox
+            required
             type="number"
             className="w-100"
             size="small"
@@ -154,11 +158,16 @@ const AddBankDetails = ({
                 ReBankAcc: e.target.value,
               }));
             }}
-            value={BankDetails?.ReBankAcc}
+            value={
+              BankDetails?.ReBankAcc
+                ? BankDetails?.ReBankAcc
+                : BankDetails["Account Number"]
+            }
           />
         </div>
         <div className="my-2 ">
           <InputBox
+            required
             className="w-100"
             size="small"
             label="IFSC code"
