@@ -216,26 +216,23 @@ const StaffForm = ({ handlebackClick }) => {
                 <CheckBoxComponent
                   label="Custom Capability"
                   isChecked={checkbox}
-                  checkBoxClick={(id, value) => {
-                    setCheckbox(value);
-                    value
-                      ? setCapabilities((pre) => {
-                          const temp = pre.map((item) => {
-                            return {
-                              ...item,
-                              items: [
-                                ...item.items.map((ele) => {
-                                  return {
-                                    ...ele,
-                                    selected: false,
-                                  };
-                                }),
-                              ],
-                            };
-                          });
-                          return temp;
-                        })
-                      : null;
+                  checkBoxClick={(_, value) => {
+                    setCapabilities((pre) => {
+                      const temp = pre.map((item) => {
+                        return {
+                          ...item,
+                          items: [
+                            ...item.items.map((ele) => {
+                              return {
+                                ...ele,
+                                selected: value,
+                              };
+                            }),
+                          ],
+                        };
+                      });
+                      return temp;
+                    });
                   }}
                   size="small"
                 />

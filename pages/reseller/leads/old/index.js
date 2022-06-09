@@ -116,7 +116,7 @@ const OldLeads = () => {
               id={ele.campaignType}
               checkBoxClick={(id) => {
                 let arr = [...campaignDetail];
-                arr.map((item) => {
+                arr.forEach((item) => {
                   if (id === item.campaignType) {
                     ele.isSelected = !ele.isSelected;
                   }

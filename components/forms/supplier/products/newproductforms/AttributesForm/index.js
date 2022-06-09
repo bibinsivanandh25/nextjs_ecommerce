@@ -42,7 +42,7 @@ let attributes = [
   },
 ];
 
-const AttributesForm = forwardRef(({}, ref) => {
+const AttributesForm = forwardRef((_props, ref) => {
   const [attributesFormData, setAttributesFormData] = useState({});
   const [Attributes, setAttributes] = useState([...attributes]);
   const [selectedAttribute, setSelectedAttribute] = useState({});
@@ -91,7 +91,7 @@ const AttributesForm = forwardRef(({}, ref) => {
               id={ele.attribute}
               checkBoxClick={(id) => {
                 let arr = [...Attributes];
-                arr.map((ele, ind) => {
+                arr.forEach((ele, ind) => {
                   if (ele.attribute === id) {
                     ele.selected = !ele.selected;
                   }
@@ -166,7 +166,7 @@ const AttributesForm = forwardRef(({}, ref) => {
                   isChecked={ele.visibleOnProduct}
                   checkBoxClick={(id) => {
                     let arr = [...Attributes];
-                    arr.map((item) => {
+                    arr.forEach((item) => {
                       if (item.attribute === id) {
                         ele.visibleOnProduct = !ele.visibleOnProduct;
                       }

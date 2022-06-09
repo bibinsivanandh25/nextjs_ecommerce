@@ -7,7 +7,6 @@ const ButtonComponent = ({
   onBtnClick = () => {},
   size = "small",
   muiProps = "",
-  color = "primary",
   showIcon = false,
   iconColorClass = "",
   iconSize = "20",
