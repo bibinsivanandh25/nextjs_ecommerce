@@ -75,7 +75,7 @@ const FileUploadModal = ({
     >
       <>
         <Dropzone onDrop={handlefileDrop} noClick={true}>
-          {({ getRootProps, getInputProps }) => (
+          {({ getRootProps }) => (
             <div
               {...getRootProps()}
               style={{ border: "0.4px dashed #e56700", height: "180px" }}

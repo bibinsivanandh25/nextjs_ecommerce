@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import React, { useEffect, useState } from "react";
+import  {  useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -23,10 +23,10 @@ const DropdownComponent = (props) => {
     // value = [],
   } = props;
 
-  const [pendingValue, setPendingValue] = React.useState([]);
+  const [pendingValue, setPendingValue] = useState([]);
 
-  const handleDelete = (id) => {
-    const filtered = pendingValue.filter((i) => i.id !== id);
+  const handleDelete = (deleteId) => {
+    const filtered = pendingValue.filter((i) => i.id !== deleteId);
     setPendingValue(filtered);
     onDropdownSelect(filtered);
   };

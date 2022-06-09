@@ -1,5 +1,4 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import { Tooltip } from "@mui/material";
 
 import Menu from "@mui/material/Menu";
@@ -13,18 +12,12 @@ export default function BasicMenu({
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [MenuItems, setMenuItems] = React.useState([]);
-  const [showArrowIcon, setShowArrowIcon] = React.useState([]);
 
   React.useEffect(() => {
     if (menuList.length) {
       setMenuItems(() => {
         return menuList.map((item) => {
           return { label: item, sort: "ascending", showarrow: false };
-        });
-      });
-      setShowArrowIcon(() => {
-        return menuList.map((item) => {
-          return false;
         });
       });
     } else {
@@ -102,19 +95,7 @@ export default function BasicMenu({
       },
     },
   }));
-  const showIcon = (item) => {
-    let arr = [...MenuItems];
-    arr.forEach((ele) => {
-      debugger;
-      if (ele.label === item.label) {
-        // return { ...ele, showarrow: true };
-        setShowArrowIcon(true);
-      }
-      // else return { ...ele, showarrow: false };
-      else setShowArrowIcon(false);
-    });
-    // setMenuItems([...arr]);
-  };
+  
   return (
     <div>
       <Tooltip title="Details" placement="top">
@@ -136,7 +117,6 @@ export default function BasicMenu({
         }}
       >
         {MenuItems.map((item, index) => {
-          let flag = false;
           return (
             <MenuItem
               key={index}
@@ -147,15 +127,7 @@ export default function BasicMenu({
             >
               <div
                 onClick={() => getArrow(item)}
-                // onMouseLeave={() => {
-                //   flag = false;
-                //   setShowArrowIcon((pre) => {
-                //     const temp = [...pre];
-                //     temp[index] = false;
-                //     return [...temp];
-                //   });
-                // }}
-                className="d-flex w-100 justify-content-between"
+                  className="d-flex w-100 justify-content-between"
                 id="menuitem"
               >
                 <p>{item.label}</p>

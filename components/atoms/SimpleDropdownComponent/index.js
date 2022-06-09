@@ -11,7 +11,6 @@ const SimpleDropdownComponent = ({
   fullWidth = true,
   value = null,
   onDropdownSelect = () => {},
-  error = false,
   placeholder = "",
   fontSize = "",
   inputlabelshrink = false,
@@ -35,7 +34,7 @@ const SimpleDropdownComponent = ({
     <ThemeProvider theme={theme}>
       <Autocomplete
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
         }}
         clearOnBlur={false}

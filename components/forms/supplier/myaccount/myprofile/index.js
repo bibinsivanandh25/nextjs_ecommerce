@@ -1,14 +1,15 @@
 import { Grid } from "@mui/material";
-import ButtonComponent from "components/atoms/ButtonComponent";
-import InputBox from "components/atoms/InputBoxComponent";
 import Image from "next/image";
 import { useState } from "react";
-import avatar from "../../../../../public/assets/images/man.png";
-import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { EditOutlined } from "@mui/icons-material";
 import CustomIcon from "services/iconUtils";
+import validateMessage from "constants/validateMessages";
+import avatar from "../../../../../public/assets/images/man.png";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import InputBox from "@/atoms/InputBoxComponent";
+import ButtonComponent from "@/atoms/ButtonComponent";
+
 const formObj = {
   businessName: "",
   mail: "",

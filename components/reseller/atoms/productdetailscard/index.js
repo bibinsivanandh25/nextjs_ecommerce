@@ -293,7 +293,7 @@ const ProductDetailsCard = ({
                 id={ele.title}
                 onRadioChange={(e) => {
                   let arr = [...wishListCollection];
-                  arr.map((item) => {
+                  arr.forEach((item) => {
                     if (e.target.id === item.title) {
                       return (item.isSelected = true);
                     } else item.isSelected = false;

@@ -23,7 +23,7 @@ const SearchComponent = ({
         value={searchText}
         onInputChange={(e) => {
           setSearchText(e.target.value);
-          !showSearchBtn ? onSearchTextChange(e.target.value) : null;
+          !showSearchBtn && onSearchTextChange(e.target.value)
         }}
         onKeyDown={(e) => {
           if (!showSearchBtn && e.key === "Enter") {

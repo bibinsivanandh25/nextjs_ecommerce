@@ -1,6 +1,6 @@
 import { MenuOutlined, MoreVert } from "@mui/icons-material";
 import { Grid, MenuList, Paper } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bar";
+import Bargraph from "components/atoms/Bar/Bargraphgraph";
 import Doughnutchart from "components/atoms/Doughnut/Doughnut";
 import BasicMenu from "components/atoms/Menu";
 import SelectComponent from "components/atoms/SelectComponent";

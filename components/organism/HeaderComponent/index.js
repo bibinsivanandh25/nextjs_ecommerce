@@ -12,7 +12,7 @@ const HeaderComponent = () => {
   return (
     <Box
       className={`${styles.container} shadow-sm bg-white`}
-      sx={{ position: "sticky" }}
+      sx={{ position: "fixed", top: 0, left: 0, zIndex: "10", width: "100vw" }}
     >
       <Grid container spacing={2}>
         <Grid item xs={9}>
@@ -22,7 +22,7 @@ const HeaderComponent = () => {
           <ConfirmationNumberOutlinedIcon className="cursor-pointer" />
           <EmailOutlinedIcon className="cursor-pointer" />
           <NotificationsIcon className="cursor-pointer" />
-          <ProfileComponent />
+          <ProfileComponent className="cursor-pointer" />
         </Grid>
       </Grid>
     </Box>

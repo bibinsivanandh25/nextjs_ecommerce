@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React from "react";
 import ReactExport from "react-data-export";
 
 const { ExcelFile } = ReactExport;
@@ -29,10 +29,6 @@ const multiDataSet = [
 ];
 
 export default function App() {
-  // const [dataSet, setDataset] = useState([]);
-  // useEffect(() => {
-  //   setDataset(multiDataSet);
-  // }, [multiDataSet]);
   return (
     <div>
       <ExcelFile>

@@ -1,5 +1,5 @@
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
-import { Box, style } from "@mui/system";
+import { Box } from "@mui/system";
 import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
