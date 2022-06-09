@@ -367,7 +367,74 @@ const ProductsLayout = ({
                 label="Clear"
                 variant={"outlined"}
                 size={"small"}
-                onBtnClick={() => {}}
+                onBtnClick={() => {
+                  setFormData({
+                    mainform: {
+                      commision_mode: "",
+                      product_type: "",
+                      brand: "",
+                      short_description: {
+                        media: [],
+                        text: "",
+                      },
+                      long_description: {
+                        media: [],
+                        text: "",
+                      },
+                      sub_category_id: "",
+                      tags: "",
+                      limit_per_order: "",
+                    },
+                    inventory: {
+                      sku: "",
+                      stock_status: {},
+                      allow_backorders: {},
+                      stock_qty: "",
+                      back_Orders: "",
+                      shipping_class: "",
+                      product_title: "",
+                      business_processing_days: {},
+                      seo_title: "",
+                      meta_description: "",
+                      meta_keyword: [],
+                    },
+                    linked: {
+                      upSells: "",
+                      crossSells: "",
+                    },
+                    pricing: {
+                      sale_price: "",
+                      mrp: "",
+                      return_order_accepted: false,
+                      cash_on_accepted: "",
+                      product_weight: "",
+                      length: "",
+                      width: "",
+                      height: "",
+                      delivery_charge: "",
+                    },
+                    policy: {},
+                    grouped: {},
+                    variation: {},
+                    attribute: {},
+                  });
+                  setMainFormData({
+                    commision_mode: {},
+                    product_type: "",
+                    brand: "",
+                    short_description: {
+                      media: [],
+                      text: "",
+                    },
+                    long_description: {
+                      media: [],
+                      text: "",
+                    },
+                    sub_category_id: {},
+                    tags: "",
+                    limit_per_order: "",
+                  });
+                }}
                 muiProps="me-2"
               />
               {activeTab !== 0 ? (

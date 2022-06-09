@@ -65,7 +65,7 @@ const AddGroupProducts = () => {
     const flag = validate();
   };
   return (
-    <Paper className="mnh-75vh mxh-75vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
+    <Paper className="mnh-80vh mxh-80vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
       <Box className="d-flex">
         <Box className="d-flex flex-column w-30p mnw-200px me-3">
           <div className="mb-2">

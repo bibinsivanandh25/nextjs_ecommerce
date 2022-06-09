@@ -194,6 +194,7 @@ const NewProducts = () => {
   const handleSubmitClick = (data) => {
     console.log(data);
   };
+
   return (
     <Paper
       className="d-flex"
