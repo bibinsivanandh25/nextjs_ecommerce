@@ -43,7 +43,6 @@ const Bargraph = ({
       data,
       backgroundColor,
       hoverBackgroundColor,
-
       borderSkipped: false,
     });
     setDatasets([...temp]);

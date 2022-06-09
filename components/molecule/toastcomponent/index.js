@@ -1,5 +1,6 @@
 import { ToastContainer } from "react-toastify";
-const ToastComponent = (props) => {
+
+const ToastComponent = () => {
   return (
     <ToastContainer
       position="bottom-center"

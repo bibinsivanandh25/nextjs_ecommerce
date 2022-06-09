@@ -154,7 +154,7 @@ const ResellerDashboard = () => {
             col3: 20,
           },
         ]}
-        customerGraphData={[5, 10, 15, 20, 25, 30, 35, 40, 20, 10, 30]}
+        customerGraphData={[5, 10, 15, 20, 25, 30, 35, 10, 20, 10, 30]}
         cardDetails={[
           {
             label: "Total Sales",
@@ -182,7 +182,7 @@ const ResellerDashboard = () => {
             background: "#12DBAE",
           },
         ]}
-        barGraphHoverBackgroundColor="#4f98b5"
+        barGraphHoverBackgroundColor="#ea7d30"
         barGraphBackgroundColor="#1f78b4"
       />
     </>

@@ -1,4 +1,4 @@
-import { Box, Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -69,8 +69,8 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
         return ["policy", { ...productPolicyFormData }];
       },
       validate: () => {
-        //write validation logic here
-        //return true if validation is success else false
+        // write validation logic here
+        // return true if validation is success else false
         return validateForm();
       },
     };

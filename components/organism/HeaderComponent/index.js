@@ -1,12 +1,12 @@
-import { Grid } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, Grid } from "@mui/material";
+// import { Box } from "@mui/system";
 import Image from "next/image";
-import logo from "../../../public/assets/favicon.png";
-import styles from "./HeaderComponent.module.css";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ProfileComponent from "../../atoms/ProfileComponent";
+import logo from "../../../public/assets/favicon.png";
+import styles from "./HeaderComponent.module.css";
 
 const HeaderComponent = () => {
   return (
