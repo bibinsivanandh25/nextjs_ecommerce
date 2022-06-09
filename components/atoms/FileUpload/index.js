@@ -1,13 +1,13 @@
 import UploadIcon from "@mui/icons-material/Upload";
 import { useRef, useState } from "react";
 import Dropzone from "react-dropzone";
-import ModalComponent from "../ModalComponent";
-import ButtonComponent from "../ButtonComponent";
+import toastify from "services/utils/toastUtils";
 import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getBase64 } from "services/utils/functionUtils";
-import toastify from "services/utils/toastUtils";
+import ButtonComponent from "../ButtonComponent";
+import ModalComponent from "../ModalComponent";
 
 const FileUploadModal = ({
   showModal = false,
@@ -20,7 +20,7 @@ const FileUploadModal = ({
   const [binaryStr, setbinaryStr] = useState([]);
 
   const handlefileDrop = async (acceptedFiles) => {
-    let arr = [...binaryStr];
+    const arr = [...binaryStr];
     const reader = new FileReader();
 
     if (acceptedFiles.length !== 0 && acceptedFiles.length <= 5) {
@@ -69,12 +69,12 @@ const FileUploadModal = ({
       saveBtnText="Submit"
       open={showModal}
       headerClassName="border-bottom-0"
-      showCloseIcon={true}
+      showCloseIcon
       onCloseIconClick={() => setShowModal(false)}
       onSaveBtnClick={onSubmitClick}
     >
       <>
-        <Dropzone onDrop={handlefileDrop} noClick={true}>
+        <Dropzone onDrop={handlefileDrop} noClick>
           {({ getRootProps }) => (
             <div
               {...getRootProps()}
@@ -112,13 +112,14 @@ const FileUploadModal = ({
         <div className="d-flex mt-3">
           {binaryStr?.map((ele, ind) => {
             return (
+              // eslint-disable-next-line react/no-array-index-key
               <div className="position-relative" key={ind}>
                 <div className="mx-2">
                   <Image src={ele} width={60} height={60} alt="" />
                 </div>
                 <CloseIcon
                   onClick={() => {
-                    let temp = [...binaryStr];
+                    const temp = [...binaryStr];
                     temp.splice(ind, 1);
                     setbinaryStr([...temp]);
                   }}

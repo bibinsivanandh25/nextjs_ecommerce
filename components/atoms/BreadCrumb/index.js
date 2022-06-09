@@ -2,8 +2,8 @@ import { Grid } from "@mui/material";
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { paths } from "./paths";
 import CustomIcon from "services/iconUtils";
+import { paths } from "./paths";
 
 const BreadCrumb = () => {
   const route = useRouter();
@@ -17,7 +17,7 @@ const BreadCrumb = () => {
   return (
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
-        <Link href={"/"} passHref>
+        <Link href="/" passHref>
           <CustomIcon type="home" />
         </Link>
         {path.map((item, index) => {
@@ -26,6 +26,7 @@ const BreadCrumb = () => {
               ? `${completePath}${item}`
               : `${completePath}/${item}`;
           return (
+            // eslint-disable-next-line react/no-array-index-key
             <React.Fragment key={index}>
               <span>
                 <CustomIcon type="arrowforward" className="fs-12 mx-2" />

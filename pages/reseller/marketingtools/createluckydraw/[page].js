@@ -2,18 +2,17 @@ import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import { format, parse } from "date-fns";
-import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { useState } from "react";
 import GenericForm from "components/forms/reseller/marketingtools/createluckydraw";
 import ModalComponent from "components/atoms/ModalComponent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { useRouter } from "next/router";
 import ViewPage from "components/forms/reseller/marketingtools/createluckydraw/ViewPage";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Campaign Title",
       align: "center",
       data_align: "center",
@@ -90,7 +89,8 @@ const CreateQuiz = ({ pageName }) => {
       data_classname: "",
     },
   ];
-  let rows = [
+  const [showViewModal, setshowViewModal] = useState({});
+  const rows = [
     {
       id: "1",
       col1: "Quiz",
@@ -147,8 +147,6 @@ const CreateQuiz = ({ pageName }) => {
 
   const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showViewModal, setshowViewModal] = useState({});
-  const route = useRouter();
 
   return (
     <Paper className="mnh-80vh w-100 p-3">
@@ -170,6 +168,7 @@ const CreateQuiz = ({ pageName }) => {
               <ButtonComponent
                 variant="outlined"
                 label={`Create ${
+                  // eslint-disable-next-line no-nested-ternary
                   pageName === "createquiz"
                     ? "Quiz"
                     : pageName === "spinwheel"

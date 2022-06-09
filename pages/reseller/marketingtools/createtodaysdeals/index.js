@@ -8,7 +8,7 @@ import { useState } from "react";
 const CreateTodaysDeals = () => {
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Campaign Title",
       align: "center",
       data_align: "center",
@@ -85,7 +85,7 @@ const CreateTodaysDeals = () => {
       data_classname: "",
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: "Quiz",

@@ -1,4 +1,4 @@
-import { Box, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import ProductsLayout from "components/forms/supplier/products/newproductforms";
 import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
 import InventoryForm from "components/forms/supplier/products/newproductforms/InventoryForm";

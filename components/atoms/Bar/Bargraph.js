@@ -31,14 +31,8 @@ const Bargraph = ({
   showBarInfo = false,
   showXAxis = true,
   showGridY = true,
-  // colorOfMax = "",
 }) => {
   const [datasets, setDatasets] = useState([]);
-
-  // function getBgColors() {
-  //   var maxValue = Math.max.apply(this, data);
-  //   return data.map((a) => (a === maxValue ? colorOfMax : backgroundColor));
-  // }
 
   useEffect(() => {
     const temp = [];
@@ -110,7 +104,7 @@ const Bargraph = ({
   return (
     <div
       style={{
-        height: height,
+        height,
       }}
     >
       <Bar

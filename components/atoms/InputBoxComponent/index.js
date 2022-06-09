@@ -97,6 +97,7 @@ const InputBox = ({
         helperText={helperText}
         error={error}
         autoComplete={!showAutoCompleteOff && "off"}
+        // eslint-disable-next-line react/jsx-no-duplicate-props
         inputProps={textInputProps}
         required={required}
       />

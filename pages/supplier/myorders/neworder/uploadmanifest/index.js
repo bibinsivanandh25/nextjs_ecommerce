@@ -8,7 +8,7 @@ import { Paper, Tooltip } from "@mui/material";
 const UploadManifest = () => {
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Manifest ID",
 
       align: "center",
@@ -51,7 +51,7 @@ const UploadManifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: "#23324234",

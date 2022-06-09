@@ -27,6 +27,7 @@ const ButtonComponent = ({
       onClick={onBtnClick}
       size={size}
       className={`${
+        // eslint-disable-next-line no-nested-ternary
         variant === "contained"
           ? bgColor
           : variant === "outlined"

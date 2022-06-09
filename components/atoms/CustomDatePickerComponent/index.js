@@ -28,6 +28,7 @@ const CustomDatePickerComponent = ({
         onClose={() => setIsOpen(false)}
         value={value}
         onChange={onDateChange}
+        // eslint-disable-next-line no-unused-vars
         renderInput={({ inputRef, _inputProps, InputProps }) => (
           <Box
             ref={inputRef}

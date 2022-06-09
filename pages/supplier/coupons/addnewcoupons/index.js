@@ -3,9 +3,7 @@ import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
-import InputBoxComponent from "components/atoms/InputBoxComponent";
 import validateMessage from "constants/validateMessages";
-import validationRegex from "services/utils/regexUtils";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 const AddNewCoupons = () => {
@@ -270,7 +268,7 @@ const AddNewCoupons = () => {
               {selectedTab === "limits" && (
                 <>
                   <Grid item xs={11}>
-                    <InputBoxComponent
+                    <InputBox
                       placeholder="eg: Zero"
                       inputlabelshrink
                       label="Usage Limit Per Coupon"
@@ -284,7 +282,7 @@ const AddNewCoupons = () => {
                     />
                   </Grid>
                   <Grid item xs={11}>
-                    <InputBoxComponent
+                    <InputBox
                       placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
@@ -299,7 +297,7 @@ const AddNewCoupons = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <div className="d-flex h-100">
-                      <InputBoxComponent
+                      <InputBox
                         placeholder="eg: Unlimited Usage"
                         inputlabelshrink
                         label="Usage Limit Per User"

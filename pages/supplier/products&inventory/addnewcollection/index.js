@@ -1,10 +1,8 @@
-import { Box, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import VariationForm from "components/forms/supplier/products/newCollections/VariationForm";
 import ProductsLayout from "components/forms/supplier/products/newproductforms";
 import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
-import InventoryForm from "components/forms/supplier/products/newproductforms/InventoryForm";
 import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
-import PricingForm from "components/forms/supplier/products/newproductforms/Pricing&Weight";
 import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
 import { useEffect, useRef, useState } from "react";
 

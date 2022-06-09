@@ -182,6 +182,7 @@ const HelpAndSupport = () => {
 
   return (
     <>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {showCreateComponent ? (
         <HelpandsupportCreate setShowCreateComponent={setShowCreateComponent} />
       ) : showModal.show && showModal.type === "view" ? (

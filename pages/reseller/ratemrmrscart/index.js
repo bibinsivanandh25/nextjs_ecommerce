@@ -1,5 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import RateMrMrsCartForm from "components/forms/reseller/ratemrmrscartform";
+
 const RateMrMrsCart = () => {
   return (
     <Paper sx={{ px: 5, py: 4, height: "100%", minHeight: "80vh" }}>

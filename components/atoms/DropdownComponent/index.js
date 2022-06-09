@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import  {  useState } from "react";
+import { useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -39,6 +39,7 @@ const DropdownComponent = (props) => {
         options={list}
         disableCloseOnSelect
         getOptionLabel={(option) => option.label}
+        // eslint-disable-next-line no-shadow
         renderOption={(props, option, { selected }) => (
           <Grid {...props} justifyContent="space-between">
             <Checkbox
