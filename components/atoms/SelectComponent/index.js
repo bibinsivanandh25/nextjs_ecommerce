@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -12,9 +11,6 @@ export default function SelectComponent({
   return (
     // <Box sx={{ minWidth: 120 }}>
     <FormControl>
-      <InputLabel variant="standard" htmlFor="uncontrolled-native">
-        {label}
-      </InputLabel>
       <NativeSelect
         id="demo-select-small"
         disableUnderline
