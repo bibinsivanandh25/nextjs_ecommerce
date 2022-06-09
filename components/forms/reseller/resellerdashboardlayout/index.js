@@ -1,5 +1,5 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bargraphgraph";
+import Bargraph from "components/atoms/Bar/Bargraph";
 import { LineChart } from "components/atoms/Linechart/Linechart";
 import SelectComponent from "components/atoms/SelectComponent";
 import TableComponent from "components/atoms/TableComponent";

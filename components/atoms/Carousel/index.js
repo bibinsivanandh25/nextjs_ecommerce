@@ -1,19 +1,20 @@
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { assetsJson } from "public/assets";
 const items = [
   {
-    src: "https://img.freepik.com/free-photo/front-view-cyber-monday-shopping-cart-with-bags-copy-space_23-2148657638.jpg?t=st=1652684330~exp=1652684930~hmac=2120a68ea587be22dc154a616865cfb21e67264ede09272e6eaa6dac18beb505&w=826",
+    src: "https://cdn.pixabay.com/photo/2017/11/29/13/28/a-discount-2986181_960_720.jpg",
     altText: "Slide 1",
     // caption: "Slide 1",
   },
   {
-    src: "https://image.shutterstock.com/image-vector/web-development-coding-cross-platform-600w-1128653108.jpg",
+    src: "https://cdn.pixabay.com/photo/2019/10/25/11/07/halloween-4576779_960_720.png",
     // altText: "Slide 2",
     // caption: "Slide 2",
   },
   {
-    src: "https://image.shutterstock.com/image-vector/creation-responsive-internet-website-multiple-600w-1199480788.jpg",
+    src: "https://cdn.pixabay.com/photo/2018/12/09/11/24/sale-3864704_960_720.jpg",
     // altText: "Slide 3",
     // caption: "Slide 3",
   },
@@ -35,6 +36,7 @@ function CarousalComponent({
       infiniteLoop={true}
       interval={interval}
       showThumbs={false}
+      showStatus={false}
     >
       {items.map((value) => {
         return (
