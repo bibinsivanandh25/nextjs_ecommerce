@@ -1,5 +1,7 @@
-import { Box, Grid, Paper } from "@mui/material";
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-param-reassign */
+import { Grid } from "@mui/material";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -9,7 +11,7 @@ import InputFieldWithChip from "components/atoms/InputWithChip";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 
-let attributes = [
+const attributes = [
   {
     attribute: "brand",
     options: ["puma", "adidas"],
@@ -43,7 +45,7 @@ let attributes = [
 ];
 
 const AttributesForm = forwardRef((_props, ref) => {
-  const [attributesFormData, setAttributesFormData] = useState({});
+  // const [attributesFormData, setAttributesFormData] = useState({});
   const [Attributes, setAttributes] = useState([...attributes]);
   const [selectedAttribute, setSelectedAttribute] = useState({});
   const [showAddAttributeModal, setShowAttributeModal] = useState(false);
@@ -56,6 +58,35 @@ const AttributesForm = forwardRef((_props, ref) => {
     attributeName: "",
     values: "",
   });
+  const validateAttributeForms = () => {
+    let flag = true;
+    let errObj = {};
+    const temp = [];
+    Attributes.forEach((ele) => {
+      temp.push(ele.selected);
+      if (ele.selected) {
+        errObj = {
+          ...errObj,
+          [ele.attribute]: "",
+        };
+      }
+    });
+    if (!temp.some((item) => item)) {
+      flag = false;
+      toastify("Please select atleast one attribute", "error");
+    }
+
+    Object.keys(errObj).forEach((ele) => {
+      if (!selectedAttribute[ele] || !selectedAttribute[ele]?.length) {
+        errObj[ele] = validateMessage.field_required;
+        flag = false;
+      }
+    });
+
+    setFormErrorObj({ ...errObj });
+    return flag;
+    // console.log(errObj);
+  };
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
@@ -67,7 +98,7 @@ const AttributesForm = forwardRef((_props, ref) => {
 
   const getAttributeValues = () => {
     return Attributes.map((ele, index) => {
-      let options = [];
+      const options = [];
       ele.options.forEach((item, ind) => {
         options.push({
           id: ind + 1,
@@ -90,15 +121,15 @@ const AttributesForm = forwardRef((_props, ref) => {
               isChecked={ele.selected}
               id={ele.attribute}
               checkBoxClick={(id) => {
-                let arr = [...Attributes];
-                arr.forEach((ele, ind) => {
-                  if (ele.attribute === id) {
-                    ele.selected = !ele.selected;
+                const arr = [...Attributes];
+                arr.forEach((ele1) => {
+                  if (ele1.attribute === id) {
+                    ele1.selected = !ele1.selected;
                   }
-                  if (!ele.selected) {
+                  if (!ele1.selected) {
                     setSelectedAttribute((pre) => ({
                       ...pre,
-                      [ele.attribute]: [],
+                      [ele1.attribute]: [],
                     }));
                   }
                 });
@@ -165,7 +196,7 @@ const AttributesForm = forwardRef((_props, ref) => {
                   label="Visible on the product page"
                   isChecked={ele.visibleOnProduct}
                   checkBoxClick={(id) => {
-                    let arr = [...Attributes];
+                    const arr = [...Attributes];
                     arr.forEach((item) => {
                       if (item.attribute === id) {
                         ele.visibleOnProduct = !ele.visibleOnProduct;
@@ -180,36 +211,6 @@ const AttributesForm = forwardRef((_props, ref) => {
         </Grid>
       );
     });
-  };
-
-  const validateAttributeForms = () => {
-    let flag = true;
-    let errObj = {};
-    let temp = [];
-    Attributes.forEach((ele) => {
-      temp.push(ele.selected);
-      if (ele.selected) {
-        errObj = {
-          ...errObj,
-          [ele.attribute]: "",
-        };
-      }
-    });
-    if (!temp.some((item) => item)) {
-      flag = false;
-      toastify("Please select atleast one attribute", "error");
-    }
-
-    Object.keys(errObj).forEach((ele) => {
-      if (!selectedAttribute[ele] || !selectedAttribute[ele]?.length) {
-        errObj[ele] = validateMessage.field_required;
-        flag = false;
-      }
-    });
-
-    setFormErrorObj({ ...errObj });
-    return flag;
-    // console.log(errObj);
   };
 
   const validateField = () => {
@@ -268,7 +269,7 @@ const AttributesForm = forwardRef((_props, ref) => {
           });
         }}
         onSaveBtnClick={() => {
-          let error = validateField();
+          const error = validateField();
           if (error) {
             setShowAttributeModal(true);
           } else {
@@ -280,7 +281,7 @@ const AttributesForm = forwardRef((_props, ref) => {
           }
         }}
       >
-        <Grid container justifyContent={"center"} rowGap={2} className="my-4">
+        <Grid container justifyContent="center" rowGap={2} className="my-4">
           <Grid item sm={12} className="mx-5">
             <InputBoxComponent
               label="Name for the new Attribute"
