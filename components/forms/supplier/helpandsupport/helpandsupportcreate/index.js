@@ -7,10 +7,11 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
+import { useRouter } from "next/router";
 import { Fragment, useRef, useState } from "react";
 import toastify from "services/utils/toastUtils";
 
-const HelpandsupportCreate = () => {
+const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
   const inputField = useRef();
 
   const issueTypes = [
@@ -43,6 +44,7 @@ const HelpandsupportCreate = () => {
       value: "Others",
     },
   ];
+  const route = useRouter();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [formValue, setFormValue] = useState({
     issueType: {},
@@ -86,6 +88,10 @@ const HelpandsupportCreate = () => {
       flag = true;
     }
     setErrorObj({ ...errObj });
+    if (!flag) {
+      // route.push("/supplier/helpandsupport");
+      setShowCreateComponent(false);
+    }
     return flag;
   };
 

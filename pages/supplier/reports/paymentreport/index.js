@@ -37,9 +37,7 @@ const PaymentReports = () => {
           "Nov",
           "Dec",
         ]}
-        doughnutData={[
-          1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
-        ]}
+        doughnutData={[10, 30, 50, 40, 60, 70, 30, 80, 90, 10, 20]}
         detailSelectList={[
           {
             id: 1,
