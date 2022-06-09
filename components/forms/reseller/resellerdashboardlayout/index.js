@@ -135,14 +135,13 @@ const ResellerDashboardLayout = ({
           </Paper>
         </Grid>
         <Grid item xs={7}>
-          <Paper sx={{ py: 1 }}>
+          <Paper sx={{ py: 1, px: 4 }}>
             <Bargraph
               data={customerGraphData}
               labels={barGraphLabels}
               backgroundColor="#425568"
               hoverBackgroundColor={barGraphHoverBackgroundColor}
               barDirection="y"
-              showBarInfo
               height="300px"
               showXAxis={false}
               showGridY={false}
