@@ -1,3 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable consistent-return */
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -161,7 +167,7 @@ export default function TableComponent({
 
   const handleSelectAllClick = (event, checked) => {
     if (checked) {
-      const newSelecteds = rows.map((n, i) => n.id);
+      const newSelecteds = rows.map((n) => n.id);
       OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
       return;
@@ -457,9 +463,8 @@ export default function TableComponent({
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, i) => {
+                .map((row) => {
                   const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${i}`;
                   return (
                     <TableRow
                       hover
@@ -525,7 +530,7 @@ export default function TableComponent({
 // Sample prop data
 // const columns = [
 //   {
-//     id: "col1", //id value in column should be presented in row as key
+//     id: "col1", //  id value in column should be presented in row as key
 //     label: "Generated for",
 //     minWidth: 100,
 //     align: "center",

@@ -1,7 +1,6 @@
 import { Box, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
 

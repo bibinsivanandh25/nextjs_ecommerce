@@ -9,7 +9,7 @@ import TableComponent from "components/atoms/TableComponent";
 import { useState } from "react";
 // const columns = [
 //   {
-//     id: "col1", //id value in column should be presented in row as key
+//     id: "col1", //  id value in column should be presented in row as key
 //     label: "Date",
 //     minWidth: 100,
 //     align: "center",

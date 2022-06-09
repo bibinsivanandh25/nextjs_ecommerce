@@ -1,5 +1,4 @@
 import ResellerDashboardLayout from "components/forms/reseller/resellerdashboardlayout";
-import ReportLayout from "components/forms/supplier/report";
 
 const ResellerDashboard = () => {
   return (
@@ -111,7 +110,7 @@ const ResellerDashboard = () => {
         ]}
         Detailcolumns={[
           {
-            id: "col1", //id value in column should be presented in row as key
+            id: "col1", //  id value in column should be presented in row as key
             label: "Referee Name",
             minWidth: 100,
             align: "center",

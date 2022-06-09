@@ -1,11 +1,6 @@
-import { Grid, Paper, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import ImageCard from "components/atoms/ImageCard";
-import Image from "next/image";
-
+import { Box, Typography } from "@mui/material";
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 import CategoryScrollComponent from "components/atoms/CategoryScrollComponent";
-import ModalComponent from "components/atoms/ModalComponent";
 
 const HomeComponent = ({
   showMarginButton = false,

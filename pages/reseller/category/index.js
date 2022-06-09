@@ -1,18 +1,18 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Card,
   CardActionArea,
-  CardMedia,
   Grid,
   Paper,
   Typography,
 } from "@mui/material";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
 import CategoryScrollComponent from "components/atoms/CategoryScrollComponent";
-import ImageCard from "components/atoms/ImageCard";
 import SearchComponent from "components/atoms/SearchComponent";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CategoryProductCard from "components/reseller/atoms/CategoryProductCard";
 
@@ -352,12 +352,12 @@ const DisplaySet = ({ ele, handleClick }) => {
             }
             width={100}
             height={100}
-            layout={"responsive"}
+            layout="responsive"
             alt=""
           />
         </CardActionArea>
       </Card>
-      <Typography className={`h-4 cursor-pointer`}>{ele.label}</Typography>
+      <Typography className="h-4 cursor-pointer">{ele.label}</Typography>
     </Grid>
   );
 };

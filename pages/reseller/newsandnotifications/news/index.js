@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Button,
-  Grid,
-  Pagination,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { orange } from "@mui/material/colors";
+import { Grid, Pagination, Paper, Typography } from "@mui/material";
 import axios from "axios";
 import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
@@ -15,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const ResellerNews = () => {
   const [newsData, setNewsData] = useState([]);
-  const [dropDownValue, setDropDownValue] = useState({});
+  // const [dropDownValue, setDropDownValue] = useState({});
   const [popupDetails, setPopupDetails] = useState({ show: false });
   const [paginatedData, setPaginatedData] = useState([]);
   const [page, setPage] = useState(1);

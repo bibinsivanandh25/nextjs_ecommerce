@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -77,7 +78,7 @@ export const LineChart = ({
   return (
     <div
       style={{
-        height: height,
+        height,
       }}
     >
       <Line data={datas} options={options} />

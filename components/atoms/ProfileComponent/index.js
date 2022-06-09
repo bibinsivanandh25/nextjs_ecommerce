@@ -1,5 +1,11 @@
-import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
-import { Box } from "@mui/system";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";

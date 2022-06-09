@@ -61,14 +61,14 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
         saveBtnText="Draft"
         ClearBtnText="Publish"
       >
-        <Grid container justifyContent={"center"} className="my-3">
+        <Grid container justifyContent="center" className="my-3">
           <Grid item sm={5}>
             <div className="ms-4">
               <ImageCard
                 height={200}
                 width={200}
                 handleCloseClick={() => setImageUrl("")}
-                showClose={imageUrl.length ? true : false}
+                showClose={!!imageUrl.length}
                 imgSrc={imageUrl}
                 handleImageUpload={async (e) => {
                   const file = await getBase64(e.target.files[0]);
@@ -108,7 +108,7 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
             <div>
               <ImageCard
                 handleCloseClick={() => setImageUrl("")}
-                showClose={imageUrl.length ? true : false}
+                showClose={!!imageUrl.length}
                 imgSrc={imageUrl}
                 handleImageUpload={async (e) => {
                   const file = await getBase64(e.target.files[0]);

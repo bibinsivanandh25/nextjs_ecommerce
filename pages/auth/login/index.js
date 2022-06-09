@@ -9,10 +9,8 @@ import {
 } from "next-auth/react";
 import { useState } from "react";
 import Image from "next/image";
-import { Box } from "@mui/system";
 import {
-  Avatar,
-  Card,
+  Box,
   Grid,
   IconButton,
   Menu,
@@ -21,10 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { loginCall } from "services";
-import axios from "axios";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import logo from "../../../public/assets/favicon.png";
@@ -118,7 +113,6 @@ const SelectComponent = ({
 };
 
 const Login = () => {
-  const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [formValues, setFormValues] = useState({
     user: "",

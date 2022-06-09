@@ -1,4 +1,5 @@
-import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
+/* eslint-disable no-nested-ternary */
+import { Badge, Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -6,8 +7,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import HelpandsupportCreate from "components/forms/reseller/helpandsupport/helpandsupportcreate";
 import HelpAndSupportNotification from "components/forms/reseller/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/reseller/helpandsupport/helpandsupportview";
-import { red } from "@mui/material/colors";
-import ButtonComponent from "components/atoms/ButtonComponent";
 
 const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -45,9 +44,11 @@ const HelpAndSupport = () => {
   const getClassnames = (status) => {
     if (status?.toLowerCase().includes("open")) {
       return "text-success";
-    } else if (status.toLowerCase().includes("close")) {
+    }
+    if (status.toLowerCase().includes("close")) {
       return "text-danger";
-    } else if (status.toLowerCase().includes("pending")) {
+    }
+    if (status.toLowerCase().includes("pending")) {
       return "text-warning";
     }
     return "";
@@ -55,7 +56,7 @@ const HelpAndSupport = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row, index) => {
+    data.forEach((row) => {
       result.push({
         col1: row.dateAndTime,
         col2: <div className="w-200px">{row.ticketId}</div>,

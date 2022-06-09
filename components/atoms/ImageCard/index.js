@@ -42,7 +42,7 @@ const ImageCard = ({
         ) : (
           <Box className="rounded-circle p-1 bg-gray ">
             <input
-              type={"file"}
+              type="file"
               className="d-none"
               ref={inputRef}
               accept="image/*"

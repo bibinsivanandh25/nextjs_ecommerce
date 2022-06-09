@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 

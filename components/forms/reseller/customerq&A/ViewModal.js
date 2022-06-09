@@ -21,10 +21,10 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
           className="mt-1"
           container
           spacing={2}
-          alignItems={"center"}
-          justifyContent={"center"}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Grid item sm={3} textAlign={"end"}>
+          <Grid item sm={3} textAlign="end">
             <Typography className="h-5">Customer Id :</Typography>
           </Grid>
           <Grid item sm={7}>
@@ -35,10 +35,10 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
           className="my-1"
           container
           spacing={2}
-          alignItems={"center"}
-          justifyContent={"center"}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Grid item sm={3} textAlign={"end"}>
+          <Grid item sm={3} textAlign="end">
             <Typography className="h-5">Product Image :</Typography>
           </Grid>
           <Grid item sm={7} container spacing={0}>
@@ -88,10 +88,10 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
           className="my-1"
           container
           spacing={2}
-          alignItems={"center"}
-          justifyContent={"center"}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Grid item sm={3} textAlign={"end"}>
+          <Grid item sm={3} textAlign="end">
             <Typography className="h-5">Question :</Typography>
           </Grid>
           <Grid item sm={7}>
@@ -102,10 +102,10 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
           className="my-1"
           container
           spacing={2}
-          alignItems={"center"}
-          justifyContent={"center"}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Grid item sm={3} textAlign={"end"}>
+          <Grid item sm={3} textAlign="end">
             <Typography className="h-5">Date & Time :</Typography>
           </Grid>
           <Grid item sm={7}>

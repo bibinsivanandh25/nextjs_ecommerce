@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { FormGroup, FormControlLabel, Switch, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 
+// eslint-disable-next-line no-unused-vars
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
   height: 16,
@@ -59,7 +60,7 @@ const SwitchComponent = ({
         control={
           <Switch
             checked={checked}
-            onChange={(e) => {
+            onChange={() => {
               setChecked(!checked);
               ontoggle(!checked);
             }}

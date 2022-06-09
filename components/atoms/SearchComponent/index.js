@@ -1,7 +1,7 @@
+import { useState } from "react";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Box } from "@mui/material";
 import InputBox from "../InputBoxComponent";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { useState } from "react";
 
 const SearchComponent = ({
   placeholder = "",
@@ -23,7 +23,8 @@ const SearchComponent = ({
         value={searchText}
         onInputChange={(e) => {
           setSearchText(e.target.value);
-          !showSearchBtn && onSearchTextChange(e.target.value)
+          // eslint-disable-next-line no-unused-expressions
+          !showSearchBtn && onSearchTextChange(e.target.value);
         }}
         onKeyDown={(e) => {
           if (!showSearchBtn && e.key === "Enter") {

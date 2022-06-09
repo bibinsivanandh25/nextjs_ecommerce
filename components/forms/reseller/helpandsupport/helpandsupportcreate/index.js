@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import FileUploadModal from "components/atoms/FileUpload";
@@ -22,7 +23,7 @@ const HelpandsupportCreate = () => {
   });
   const validateFields = () => {
     let flag = false;
-    let errObj = {
+    const errObj = {
       subject: "",
       content: "",
     };

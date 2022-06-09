@@ -1,12 +1,13 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-use-before-define */
 import { Reply, RemoveRedEye } from "@mui/icons-material";
 import { Paper, Tooltip, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
 import MenuOption from "components/atoms/MenuOptions";
-import ModalComponent from "components/atoms/ModalComponent";
 import TableComponent from "components/atoms/TableComponent";
 import ReplyModal from "components/forms/reseller/customerq&A/ReplyModal";
 import ViewModal from "components/forms/reseller/customerq&A/ViewModal";
-import SubTabComponent from "components/molecule/SubTabComponent";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
 import styles from "./customerqna.module.css";
@@ -14,7 +15,7 @@ import styles from "./customerqna.module.css";
 const CustomerQnA = () => {
   const UnansweredColumns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Sl No",
       minWidth: 100,
       align: "center",
@@ -84,7 +85,7 @@ const CustomerQnA = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let UnansweredRows = [
+  const UnansweredRows = [
     {
       id: "1",
       col1: 1,
@@ -190,7 +191,7 @@ const CustomerQnA = () => {
 
   const answeredColumns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Sl No",
       minWidth: 100,
       align: "center",
@@ -260,7 +261,7 @@ const CustomerQnA = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let answeredRows = [
+  const answeredRows = [
     {
       id: "1",
       col1: 1,
@@ -388,18 +389,16 @@ const CustomerQnA = () => {
         </div>
       </div>
       <Paper className="py-2">
-        {
-          <TableComponent
-            tableRows={
-              tabType === "tab1" ? [...UnansweredRows] : [...answeredRows]
-            }
-            columns={
-              tabType === "tab1" ? [...UnansweredColumns] : [...answeredColumns]
-            }
-            showDateFilter
-            dateFilterColName={["col5"]}
-          />
-        }
+        <TableComponent
+          tableRows={
+            tabType === "tab1" ? [...UnansweredRows] : [...answeredRows]
+          }
+          columns={
+            tabType === "tab1" ? [...UnansweredColumns] : [...answeredColumns]
+          }
+          showDateFilter
+          dateFilterColName={["col5"]}
+        />
       </Paper>
       <ViewModal
         showViewModal={showViewModal}

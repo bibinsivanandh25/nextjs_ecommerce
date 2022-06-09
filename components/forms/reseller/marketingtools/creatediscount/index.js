@@ -1,4 +1,6 @@
-import { ArrowBack, ArrowBackIos, ArrowLeft } from "@mui/icons-material";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/no-array-index-key */
 import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
@@ -10,7 +12,6 @@ import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
-import validationRegex from "services/utils/regexUtils";
 
 const CreateDiscount = ({
   setShowCreateDiscount = () => {},
@@ -31,7 +32,7 @@ const CreateDiscount = ({
     subCategory: [],
   });
 
-  let ProductsDetails = [
+  const ProductsDetails = [
     {
       id: 1,
       title: "Sarree",
@@ -118,9 +119,10 @@ const CreateDiscount = ({
               isChecked={ele.isSelected}
               id={ele.id}
               checkBoxClick={(id) => {
-                let arr = [...Products];
+                const arr = [...Products];
                 arr.forEach((item) => {
                   if (item.id == id) {
+                    // eslint-disable-next-line no-param-reassign
                     item.isSelected = !item.isSelected;
                   }
                 });
@@ -154,21 +156,21 @@ const CreateDiscount = ({
     );
 
     if (!categoriesList.category.length) {
-      errObj["categories"] = validateMessage.field_required;
+      errObj.categories = validateMessage.field_required;
     } else if (!categoriesList.set.length) {
-      errObj["categories"] = "Set selection is required";
+      errObj.categories = "Set selection is required";
     } else if (!categoriesList.subCategory.length) {
-      errObj["categories"] = "Sub Category selection is required";
+      errObj.categories = "Sub Category selection is required";
     } else {
-      errObj["categories"] = null;
+      errObj.categories = null;
     }
 
     if (formValues?.content.replace(/<[^>]*>/g, "").length === 0) {
-      errObj["content"] = validateMessage.field_required;
+      errObj.content = validateMessage.field_required;
     } else if (formValues.content.replace(/<[^>]*>/g, "").length > 1000) {
-      errObj["content"] = validateMessage.alpha_numeric_max_1000;
+      errObj.content = validateMessage.alpha_numeric_max_1000;
     } else {
-      errObj["content"] = null;
+      errObj.content = null;
     }
     setError(errObj);
     let valid = true;
@@ -351,7 +353,7 @@ const CreateDiscount = ({
             start date:
             <input
               type="date"
-              value={"2021-12-01"}
+              value="2021-12-01"
               style={{
                 border: "none",
                 outline: "none",
@@ -364,7 +366,7 @@ const CreateDiscount = ({
             End Date:
             <input
               type="date"
-              value={"2021-12-01"}
+              value="2021-12-01"
               style={{
                 border: "none",
                 outline: "none",

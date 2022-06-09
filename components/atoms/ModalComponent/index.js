@@ -41,7 +41,7 @@ const ModalComponent = ({
     boxShadow: 24,
     borderRadius: "10px",
     outline: "none",
-    minWidth: minWidth,
+    minWidth,
   };
 
   return (
@@ -67,6 +67,7 @@ const ModalComponent = ({
                 }}
                 onClick={onCloseIconClick}
               />
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label className={`fs-12 fw-600 ${titleClassName}`}>
                 {ModalTitle}
               </label>

@@ -1,8 +1,9 @@
+/* eslint-disable react/no-array-index-key */
 import { Box, Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
-import { forwardRef, useEffect, useState, useImperativeHandle } from "react";
+import { forwardRef, useState, useImperativeHandle } from "react";
 
 const CreateQuiz = forwardRef((_props, ref) => {
   const tempquestionObj = {
