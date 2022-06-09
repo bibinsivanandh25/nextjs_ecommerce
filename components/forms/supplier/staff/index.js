@@ -168,6 +168,7 @@ const StaffForm = ({ handlebackClick }) => {
                   onInputChange={handleInputChange}
                   helperText={errorObj.firstName}
                   error={errorObj.firstName !== ""}
+                  placeholder="ed.: Sulesh"
                 />
               </Grid>
               <Grid item sm={12}>
@@ -182,6 +183,7 @@ const StaffForm = ({ handlebackClick }) => {
                   onInputChange={handleInputChange}
                   helperText={errorObj.last_Name}
                   error={errorObj.last_Name !== ""}
+                  placeholder="ed.: Sharma"
                 />
               </Grid>
               <Grid item sm={12}>
@@ -196,6 +198,7 @@ const StaffForm = ({ handlebackClick }) => {
                   onInputChange={handleInputChange}
                   helperText={errorObj.MobileNo}
                   error={errorObj.MobileNo !== ""}
+                  placeholder="ed.: 1234567890"
                 />
               </Grid>
               <Grid item sm={12}>
@@ -210,6 +213,7 @@ const StaffForm = ({ handlebackClick }) => {
                   onInputChange={handleInputChange}
                   helperText={errorObj.email}
                   error={errorObj.email !== ""}
+                  placeholder="ed.: sulesh@gmail.com"
                 />
               </Grid>
               <Grid item sm={12}>
