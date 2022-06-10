@@ -19,10 +19,10 @@ const supplierMenu = [
         path_name: "neworder",
         child: [
           {
-            title: "Accept & Confirm Address (00)",
+            title: "Accept & Confirm Orders (00)",
             navigate: true,
             logo: null,
-            path_name: "acceptandconfirmaddress",
+            path_name: "acceptandconfirmorders",
           },
           {
             title: "Generate Invoice & Manifest (00)",
@@ -197,6 +197,13 @@ const supplierMenu = [
     title: "News & Notifications",
     logo: "fas fa-shopping-cart",
     path_name: "newsandnotifications",
+    navigate: true,
+    child: [],
+  },
+  {
+    title: "Customer Q&A",
+    logo: "fas fa-shopping-cart",
+    path_name: "customerq&a",
     navigate: true,
     child: [],
   },

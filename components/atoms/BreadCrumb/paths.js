@@ -4,8 +4,8 @@ export const paths = [
     id: "registration",
   },
   {
-    title: "Accept & Confirm Address",
-    id: "acceptandconfirmaddress",
+    title: "Accept & Confirm Orders",
+    id: "acceptandconfirmorders",
   },
   {
     title: "Generate Invoice & Manifest",
@@ -163,4 +163,5 @@ export const paths = [
   { title: "Create", id: "create" },
   { title: "My Account", id: "myaccount" },
   { title: "Summary", id: "summary" },
+  { title: "Customer Q&A", id: "customerq&a" },
 ];
