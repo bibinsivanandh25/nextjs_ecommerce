@@ -235,6 +235,7 @@ const CreateDiscount = ({
             }}
             error={Boolean(error.categories)}
             helperText={error.categories}
+            showAutoCompleteOff="off"
           />
           {showListGroup ? (
             <Grid
@@ -243,7 +244,6 @@ const CreateDiscount = ({
               sm={12}
               className="position-absolute "
               sx={{
-                // zIndex: 100,
                 width: "98.5%",
                 top: 48,
               }}

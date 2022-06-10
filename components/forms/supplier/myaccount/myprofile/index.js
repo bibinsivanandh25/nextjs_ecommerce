@@ -110,14 +110,12 @@ const MyProfile = () => {
           <div>
             {" "}
             <span className="fs-20 fw-bold">Business Name </span>
-            {!showUpdate ? (
-              <CustomIcon
-                type="edit"
-                title="Edit"
-                className="fs-5"
-                onIconClick={() => setShowUpdate(true)}
-              />
-            ) : null}
+            <CustomIcon
+              type={!showUpdate ? "edit" : "close"}
+              title={!showUpdate ? "Edit" : "Close"}
+              className="fs-5"
+              onIconClick={() => setShowUpdate(!showUpdate)}
+            />
           </div>
           <span>user@gmail.com</span>
         </div>
