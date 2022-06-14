@@ -7,7 +7,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import styles from "./StarRatingComponent.module.css"
 
-const SingleStar = ({filled, index, setChangeStars, changeStars, setShowClear}) => {
+const SingleStar = ({filled, index, setChangeStars, changeStars}) => {
 
 
 
