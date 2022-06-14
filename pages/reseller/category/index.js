@@ -15,112 +15,92 @@ import Image from "next/image";
 import { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CategoryProductCard from "components/reseller/atoms/CategoryProductCard";
+import { assetsJson } from "public/assets";
 
 const CategoryItems = [
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
 ];
 const subCategoryItems = [

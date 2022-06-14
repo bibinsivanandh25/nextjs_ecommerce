@@ -250,7 +250,8 @@ const resellerMenu = [
     title: "My Earnings",
     logo: "fas fa-shopping-cart",
     path_name: "myearnings",
-    navigate: true,
+    navigate: false,
+    child: [{ title: "Summary", path_name: "summary", navigate: true }],
   },
   {
     title: "Wishlist",
@@ -261,7 +262,7 @@ const resellerMenu = [
   {
     title: "Customers",
     logo: "fas fa-shopping-cart",
-    path_name: "Customers",
+    path_name: "customers",
     navigate: true,
   },
   {
