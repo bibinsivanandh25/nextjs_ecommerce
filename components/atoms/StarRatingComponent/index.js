@@ -13,8 +13,8 @@ const SingleStar = ({filled, index, setChangeStars, changeStars, setShowClear}) 
 
     const fillStars = ()=>{
 
-        if (!changeStars[0])
-        setShowClear(true);
+        // if (!changeStars[0])
+        // setShowClear(true);
 
         const updatedArray = [];
         for (let i=0;i<=4;i++)
@@ -42,26 +42,30 @@ const SingleStar = ({filled, index, setChangeStars, changeStars, setShowClear}) 
     />:<StarBorderIcon className={styles.primaryColor}  onClick={fillStars}/>
 }
 
-const StarRatingComponent = () => {
+const StarRatingComponent = ({clearAllStars=()=>{}}) => {
     const [changeStars, setChangeStars] = useState([false, false, false,false,false]);
-    const [showClear, setShowClear] = useState(false);
+    // States for clearing the stars
+    // const [showClear, setShowClear] = useState(false);
+    const keys = ["1","2","3","4","5"];
 
-    const clearAllStars = ()=>{
-        setChangeStars((stars)=>{
-            const clearedArray = stars.map(()=>{
-                return false;
-            })
-            return clearedArray;
-        })
-        setShowClear(false);
-    }
+    // Logic for clear all stars
+    //-------------------------------------------
+    // const clearAllStars = ()=>{
+    //     setChangeStars((stars)=>{
+    //         const clearedArray = stars.map(()=>{
+    //             return false;
+    //         })
+    //         return clearedArray;
+    //     })
+    //     setShowClear(false);
+    // }
 
 return (<div>
 
     {changeStars.map((val, index)=>{
-        return <SingleStar filled={val} index={index} setChangeStars={setChangeStars}
+        return <SingleStar key={keys[index]} filled={val} index={index} setChangeStars={setChangeStars}
         changeStars={changeStars}
-        setShowClear={setShowClear}
+        
         />
     })}
     {/* Clear Button */}
