@@ -35,7 +35,7 @@ const BreadCrumb = () => {
                 <span
                   className={`${
                     path.length === index + 1 ? "color-orange" : ""
-                  } fs-14 mx-2`}
+                  } fs-14 mx-2 cursor-pointer`}
                 >
                   {paths.find((i) => i.id === item)?.title}
                 </span>
