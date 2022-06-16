@@ -18,6 +18,7 @@ const CheckBoxComponent = ({
   id = "checkbox",
   className = "",
   diableLabelClick = true,
+  checkedcolor = "#e56700",
 }) => {
   const getIcon = () => {
     if (showIcon && iconType === "normal" && varient === "filled") {
@@ -50,7 +51,7 @@ const CheckBoxComponent = ({
             checkedIcon={getCheckIcon()}
             sx={{
               "&.Mui-checked": {
-                color: "#e56700",
+                color: checkedcolor,
               },
               pointerEvents: "auto",
               cursor: "pointer",
