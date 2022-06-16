@@ -49,7 +49,7 @@ const CustomIcon = ({
   const [hover, setHover] = useState(false);
 
   const getIcon = () => {
-    let Component = Map[type];
+    const Component = Map[type];
     return (
       <Component
         className={`${color} ${className} ${
