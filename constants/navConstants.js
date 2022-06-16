@@ -19,10 +19,10 @@ const supplierMenu = [
         path_name: "neworder",
         child: [
           {
-            title: "Accept & Confirm Address (00)",
+            title: "Accept & Confirm Orders (00)",
             navigate: true,
             logo: null,
-            path_name: "acceptandconfirmaddress",
+            path_name: "acceptandconfirmorders",
           },
           {
             title: "Generate Invoice & Manifest (00)",
@@ -200,6 +200,13 @@ const supplierMenu = [
     navigate: true,
     child: [],
   },
+  {
+    title: "Customer Q&A",
+    logo: "fas fa-shopping-cart",
+    path_name: "customerq&a",
+    navigate: true,
+    child: [],
+  },
 ];
 
 const resellerMenu = [
@@ -243,7 +250,8 @@ const resellerMenu = [
     title: "My Earnings",
     logo: "fas fa-shopping-cart",
     path_name: "myearnings",
-    navigate: true,
+    navigate: false,
+    child: [{ title: "Summary", path_name: "summary", navigate: true }],
   },
   {
     title: "Wishlist",
@@ -254,7 +262,7 @@ const resellerMenu = [
   {
     title: "Customers",
     logo: "fas fa-shopping-cart",
-    path_name: "Customers",
+    path_name: "customers",
     navigate: true,
   },
   {

@@ -11,6 +11,7 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
@@ -44,6 +45,7 @@ const CustomIcon = ({
     more: MoreVert,
     filecopy: FileCopy,
     notification: NotificationsNoneOutlinedIcon,
+    close: CloseIcon,
   };
 
   const [hover, setHover] = useState(false);
@@ -59,49 +61,6 @@ const CustomIcon = ({
         {...muiProps}
       />
     );
-    // if (type === "view" || type === "visibility")
-    //   return (
-    //     <Component
-    //       Name="VisibilityIcon"
-    //       className={`${color} ${className}`}
-    //       size={size}
-    //     />
-    //   );
-    // if (type === "arrowforward")
-    //   return (
-    //     <ArrowForwardIosIcon
-    //       className={`${color} ${className} fs-12`}
-    //       size={size}
-    //     />
-    //   );
-    // if (type === "download")
-    //   return <DownloadIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "home")
-    //   return <HomeIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "search")
-    //   return <SearchIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "add")
-    //   return <AddIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "filter")
-    //   return <FilterListIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "delete")
-    //   return <DeleteIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "upload")
-    //   return <FileUploadIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "download")
-    //   return (
-    //     <FileDownloadIcon className={`${color} ${className}`} size={size} />
-    //   );
-    // if (type === "share")
-    //   return <ShareIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "edit")
-    //   return <Edit className={`${color} ${className}`} size={size} />;
-    // if (type === "remove")
-    //   return (
-    //     <RemoveRedEyeIcon className={`${color} ${className}`} size={size} />
-    //   );
-    // if (type === "more")
-    //   return <MoreVert className={`${color} ${className}`} size={size} />;
   };
 
   return (

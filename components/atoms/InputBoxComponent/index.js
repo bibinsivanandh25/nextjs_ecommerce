@@ -30,7 +30,7 @@ const InputBox = ({
   helperText = "",
   required = false,
   textInputProps = {},
-  showAutoCompleteOff = true,
+  showAutoCompleteOff = "on",
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -96,7 +96,7 @@ const InputBox = ({
         }}
         helperText={helperText}
         error={error}
-        autoComplete={!showAutoCompleteOff && "off"}
+        autoComplete={showAutoCompleteOff}
         // eslint-disable-next-line react/jsx-no-duplicate-props
         inputProps={textInputProps}
         required={required}

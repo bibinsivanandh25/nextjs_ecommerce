@@ -8,8 +8,8 @@ const ProgressBar = ({ showHeader = true }) => {
   const route = useRouter();
   const steps = [
     {
-      label: "Accept & confirm Address",
-      path: "acceptandconfirmaddress",
+      label: "Accept & confirm Orders",
+      path: "acceptandconfirmorders",
     },
     {
       label: "Generate Invoice & Manifest ",
