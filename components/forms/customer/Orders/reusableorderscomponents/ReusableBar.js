@@ -1,7 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
-import ButtonComponent from "@/atoms/ButtonComponent";
-import styles from "./Reusable.module.css";
 
 const ReusableBar = ({ children }) => {
   return (
