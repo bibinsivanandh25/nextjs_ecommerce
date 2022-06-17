@@ -265,12 +265,12 @@ const resellerMenu = [
     path_name: "customers",
     navigate: true,
   },
-  {
-    title: "Articles",
-    logo: "fas fa-shopping-cart",
-    path_name: "articles",
-    navigate: true,
-  },
+  // {
+  //   title: "Articles",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "articles",
+  //   navigate: true,
+  // },
   {
     title: "News & Notifications",
     logo: "fas fa-shopping-cart",

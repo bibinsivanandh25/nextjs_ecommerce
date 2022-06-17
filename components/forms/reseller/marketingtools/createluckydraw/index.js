@@ -185,21 +185,21 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
 
   return (
     <Box className="w-100">
-      <Box className="color-orange d-flex align-items-center h-4 ">
+      <Box className="color-orange d-flex align-items-center h-4  ">
         <Box
           onClick={() => {
             setShowGenericForm(false);
           }}
         >
-          <ArrowBackIosIcon className="fs-16" />
-          Back
+          <ArrowBackIosIcon className="fs-16 cursor-pointer" />
+          <span className="cursor-pointer"> Back</span>
         </Box>
       </Box>
       <Box className="d-flex mt-2">
         <Box className="d-flex flex-column flex-grow-1">
           <Box className="d-flex mb-3 ms-3">
             <div className="d-flex align-items-center h-5">
-              start date:
+              Start Date:
               <input
                 type="date"
                 value={format(new Date(formData.start_date), "yyyy-MM-dd")}
@@ -218,7 +218,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
               />
             </div>
             <div className="d-flex align-items-center h-5">
-              End date:
+              End Date:
               <input
                 type="date"
                 value={format(new Date(formData.end_date), "yyyy-MM-dd")}
@@ -238,7 +238,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             </div>
           </Box>
           <Box className=" mb-3 ms-3">
-            Whome you want to create the quiz
+            Whom you want to create the quiz
             <Box className="d-flex mt-1 ms-3">
               <CheckBoxComponent
                 label="New Customer"
@@ -275,7 +275,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 size="small"
               />
               <CheckBoxComponent
-                label="old Leads"
+                label="Old Leads"
                 isChecked={formData.quiz_users.includes("old Leads")}
                 checkBoxClick={(_, val) => {
                   setFormData((pre) => {
@@ -307,6 +307,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             }}
             variant="outlined"
           />
+          <Typography className="h-5 text-primary text-center cursor-pointer px-0 mt-1">
+            Guidelines to create
+          </Typography>
         </Box>
       </Box>
       <Box className="d-flex flex-column mx-3">
@@ -395,7 +398,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             </Grid>
             <Grid item md={3} className="w-100 d-flex align-items-center">
               <ButtonComponent
-                label="Choose product"
+                label="Choose Product"
                 onBtnClick={() => {
                   setShowProducts(true);
                 }}

@@ -87,7 +87,7 @@ const NewPasswordForm = ({
           placeholder="Enter New Password"
           value={formValues.password}
           label="Enter New Password"
-          className="w-100 my-2"
+          className="w-100 my-3"
           size="small"
           onInputChange={(e) => {
             setFormValues((prev) => ({

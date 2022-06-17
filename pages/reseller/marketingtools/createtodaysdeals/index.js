@@ -107,7 +107,7 @@ const CreateTodaysDeals = () => {
       ),
     },
     {
-      id: "1",
+      id: "2",
       col1: "Quiz",
       col2: "Fixed",
       col3: "Shirts",

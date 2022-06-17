@@ -13,7 +13,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
-import { FileCopy, MoreVert } from "@mui/icons-material";
+import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
@@ -46,6 +46,7 @@ const CustomIcon = ({
     filecopy: FileCopy,
     notification: NotificationsNoneOutlinedIcon,
     close: CloseIcon,
+    reply: Reply,
   };
 
   const [hover, setHover] = useState(false);

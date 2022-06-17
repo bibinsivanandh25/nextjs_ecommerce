@@ -53,8 +53,9 @@ const Articles = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, ind) => {
       result.push({
+        id: ind + 1,
         col1: row.purchaseid,
         col2: row.articleName,
         col3: row.Description,

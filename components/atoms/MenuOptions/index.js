@@ -26,7 +26,10 @@ export default function MenuOption({
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       > */}
-      <MoreVertIcon className={IconclassName} onClick={handleClick} />
+      <MoreVertIcon
+        className={`${IconclassName} cursor-pointer`}
+        onClick={handleClick}
+      />
       {/* </IconButton> */}
       <Menu
         anchorEl={anchorEl}
