@@ -7,6 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import HelpandsupportCreate from "components/forms/reseller/helpandsupport/helpandsupportcreate";
 import HelpAndSupportNotification from "components/forms/reseller/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/reseller/helpandsupport/helpandsupportview";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const HelpAndSupport = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -197,14 +198,13 @@ const HelpAndSupport = () => {
                 </p>
               </Grid>
               <Grid item sx={{ p: 2 }}>
-                <Button
+                <ButtonComponent
                   variant="contained"
                   className="bg-orange"
                   size="small"
-                  onClick={() => setShowCreateComponent(true)}
-                >
-                  Create Tickets
-                </Button>
+                  onBtnClick={() => setShowCreateComponent(true)}
+                  label='Create Tickets'
+                />
               </Grid>
             </Grid>
             <Grid item xs={12} sx={{ my: 5, px: 2 }}>

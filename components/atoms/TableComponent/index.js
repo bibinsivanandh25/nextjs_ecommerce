@@ -91,6 +91,8 @@ export default function TableComponent({
   tHeadBgColor = "",
   showDateFilter = false,
   dateFilterColName = [],
+  customDropDownPlaceholder='',
+  searchBarPlaceHolderText='Search'
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -101,9 +103,9 @@ export default function TableComponent({
     { label: "All", id: "0", value: "All" },
   ]);
   const [searchFilter, setSearchFilter] = useState({
-    label: "All",
-    id: "0",
-    value: "All",
+    // label: "All",
+    // id: "0",
+    // value: "All",
   });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
@@ -292,7 +294,7 @@ export default function TableComponent({
           <Grid item md={3}>
             <InputBox
               value={searchText}
-              label="Search"
+              label='Search'
               // className="w-100"
               size="small"
               onInputChange={(e) => {
@@ -346,22 +348,25 @@ export default function TableComponent({
                   <SimpleDropdownComponent
                     list={[...searchFilterList]}
                     size="small"
-                    label="Search Filter"
+                    // label="Search Filter"
                     value={searchFilter}
                     onDropdownSelect={(value) => {
-                      setSearchFilter(
-                        value === null
-                          ? { label: "All", id: 0, value: "All" }
-                          : { ...value }
-                      );
+                      setSearchFilter(value)
+                      // setSearchFilter(
+                      //   value === null
+                      //     ? { label: "All", id: 0, value: "All" }
+                      //     : { ...value }
+                      // );
                     }}
+                    placeholder={customDropDownPlaceholder}
+
                   />
                 )}
               </Grid>
               <Grid item md={searchBarSizeMd}>
                 <InputBox
                   value={searchText}
-                  label="Search"
+                  label={searchBarPlaceHolderText}
                   className="w-100"
                   size="small"
                   onInputChange={(e) => {
