@@ -8,11 +8,18 @@ const StarRatingComponentReceivingRating = ({ rating }) => {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
-    const theRating = rating.toString();
-    const ratingArray = theRating.split(".");
+    const theRating = rating >= 0 && rating <= 5 ? rating.toString() : null;
+    const ratingArray = theRating?.split(".");
     // eslint-disable-next-line radix
-    const fullStars = parseInt(ratingArray[0]);
+    const fullStars = parseInt(ratingArray ? ratingArray[0] : 0);
     const hStars = [];
+
+    if (fullStars === 0) {
+      for (let i = 0; i < 5; i += 1)
+        hStars.push(<StarBorderIcon className={styles.primaryColor} />);
+
+      setStars([...hStars]);
+    }
 
     if (fullStars > 0 && fullStars <= 5) {
       if (ratingArray.length > 1) {
