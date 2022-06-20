@@ -16,6 +16,8 @@ import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import GridViewIcon from "@mui/icons-material/GridView";
+import TableRowsIcon from "@mui/icons-material/TableRows";
 
 const CustomIcon = ({
   title = "",
@@ -46,6 +48,8 @@ const CustomIcon = ({
     filecopy: FileCopy,
     notification: NotificationsNoneOutlinedIcon,
     close: CloseIcon,
+    gridview: GridViewIcon,
+    tablerows: TableRowsIcon,
   };
 
   const [hover, setHover] = useState(false);
