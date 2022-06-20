@@ -8,13 +8,16 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
 import { useState } from "react";
 import { ArrowForward } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const Header = () => {
-  const [isSignedIn] = useState(false);
+  const route = useRouter();
+
+  const [isSignedIn] = useState(true);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -229,12 +232,20 @@ const Header = () => {
                     Sign Out
                   </Typography>
                 </Box>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    route.push("/customer/accountdetails");
+                  }}
+                >
                   <Typography className="h-5 cursor-pointer">
                     Account Details
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    route.push("/customer/orders");
+                  }}
+                >
                   <Typography className="h-5 cursor-pointer">
                     Your Orders
                   </Typography>
@@ -249,7 +260,9 @@ const Header = () => {
                     Switch Profiles
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => route.push("/customer/helpandsupport")}
+                >
                   <Typography className="h-5 cursor-pointer">
                     Help & Support
                   </Typography>

@@ -13,7 +13,7 @@ const BreadCrumb = () => {
       ? []
       : route.pathname.substring(1).split("/");
   path.splice(0, 1);
-  if (path[path.length - 1].startsWith("[")) {
+  if (path.length && path[path.length - 1].startsWith("[")) {
     const pLength = path.length - 1;
     const str = path[pLength];
     path[pLength] = route.query[`${str.substring(1, str.length - 1)}`];
