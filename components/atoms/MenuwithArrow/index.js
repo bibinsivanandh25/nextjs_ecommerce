@@ -33,7 +33,7 @@ export default function MenuwithArrow({
         id="account-menu"
         open={open}
         onClose={handleClose}
-        // onClick={handleClose}
+        onClick={handleClose}
         PaperProps={{
           elevation: 0,
           sx: {
