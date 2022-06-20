@@ -157,6 +157,9 @@ export const paths = [
   { title: "Create discount coupons", id: "creatediscountcoupons" },
   { title: "Create Today's Deal", id: "createtodaysdeals" },
   { title: "Create Lucky Draw", id: "createluckydraw" },
+  { title: "Create Quiz", id: "createquiz" },
+  { title: "Create Spin Wheel", id: "spinwheel" },
+  { title: "Create Scratch Card", id: "scratchcard" },
   { title: "Challenges", id: "challenges" },
   { title: "Customer Q & A", id: "customerq&a" },
   { title: "Help Center", id: "helpcenter" },
@@ -164,4 +167,5 @@ export const paths = [
   { title: "My Account", id: "myaccount" },
   { title: "Summary", id: "summary" },
   { title: "Customer Q&A", id: "customerq&a" },
+  { title: "Rate MrMrsCart", id: "ratemrmrscart" },
 ];

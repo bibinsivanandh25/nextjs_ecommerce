@@ -1,13 +1,15 @@
-import ButtonComponent from "@/atoms/ButtonComponent";
 import { Typography, Box, Checkbox } from "@mui/material";
 import React from "react";
-import styles from "./MyOrders.module.css";
 import { makeStyles } from "@mui/styles";
 import Paper from "@mui/material/Paper";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
+import styles from "./MyOrders.module.css";
+import ButtonComponent from "@/atoms/ButtonComponent";
+
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
 const useStyles = makeStyles({
   checkBoxPaddingMargin: {
     // paddingTop: "0px",

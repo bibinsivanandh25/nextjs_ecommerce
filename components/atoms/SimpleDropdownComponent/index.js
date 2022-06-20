@@ -17,6 +17,7 @@ const SimpleDropdownComponent = ({
   className = "",
   helperText = null,
   required = false,
+  removeRadius = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -43,11 +44,23 @@ const SimpleDropdownComponent = ({
         size={size}
         fullWidth={fullWidth}
         getOptionLabel={(option) => option.label || ""}
-        sx={{
-          "& .MuiAutocomplete-input, & .MuiInputLabel-root": {
-            fontSize,
-          },
-        }}
+        sx={
+          !removeRadius
+            ? {
+                "& .MuiAutocomplete-input, & .MuiInputLabel-root": {
+                  fontSize,
+                },
+              }
+            : {
+                "& .MuiAutocomplete-input, & .MuiInputLabel-root": {
+                  fontSize,
+                },
+                "& .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root": {
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                },
+              }
+        }
         onInputChange={(e) => setInputValue(e?.target?.value)}
         className={className}
         renderInput={(params) => (
@@ -58,7 +71,7 @@ const SimpleDropdownComponent = ({
             error={Boolean(helperText)}
             helperText={helperText}
             InputLabelProps={{
-              shrink: value?.id || inputValue ? true : inputlabelshrink,
+              shrink: value || inputValue ? true : inputlabelshrink,
               fontSize: fontSize && "0.8rem",
             }}
             required={required}

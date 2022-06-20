@@ -26,7 +26,7 @@ const ReusableBar = ({ children }) => {
             Ship ID
           </Typography>
           <Typography className="fs-14" variantMapping={<p />}>
-            Sharath{/*Component Required Here*/}
+            Sharath
           </Typography>
         </Box>
       </Box>
@@ -40,7 +40,7 @@ const ReusableBar = ({ children }) => {
             View Order Details
           </a>
           <Typography className="ms-2" variant="p">
-            Invoice {/*Invoice Component will be here*/}
+            Invoice
           </Typography>
         </Typography>
       </Box>

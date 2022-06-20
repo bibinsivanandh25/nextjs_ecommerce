@@ -13,6 +13,9 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
     useState(false);
   const [showCreateArticleModal, setShowCreateArticleModal] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [ArticleTitleValue, setArticalTitleValue] = useState("");
+  // const [categoryValue, setCatergoryValue] = useState([]);
+  // const [externalLinkvalue, setExternalLinkValue] = useState("");
   return (
     <div>
       <ModalComponent
@@ -60,6 +63,10 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
         footerClassName="justify-content-end border-top"
         saveBtnText="Draft"
         ClearBtnText="Publish"
+        clearBtnVariant="contained"
+        saveBtnVariant="outlined"
+        clearBtnClassName="px-4"
+        saveBtnClassName="px-4"
       >
         <Grid container justifyContent="center" className="my-3">
           <Grid item sm={5}>
@@ -80,13 +87,28 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
           <Grid item sm={6}>
             <div className="mt-2">
               <div>
-                <InputBox size="small" label="Article Title" />
+                <InputBox
+                  id="outlined-basic"
+                  variant="outlined"
+                  value={ArticleTitleValue}
+                  size="small"
+                  label="Article Title"
+                  onInputChange={(e) => setArticalTitleValue(e.target.value)}
+                />
               </div>
               <div className="my-3">
-                <SimpleDropdownComponent label="category" size="small" />
+                <SimpleDropdownComponent
+                  label="category"
+                  size="small"
+                  variant="outlined"
+                />
               </div>
               <div>
-                <InputBox size="small" label="External Link" />
+                <InputBox
+                  size="small"
+                  label="External Link"
+                  variant="outlined"
+                />
               </div>
             </div>
           </Grid>
@@ -99,11 +121,18 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
           setShowCreateArticleModal(false);
           setShowModal(false);
         }}
-        showFooter={false}
+        showFooter
         headerClassName="color-orange"
         ModalWidth={900}
+        footerClassName="justify-content-end border-top"
+        saveBtnText="Draft"
+        ClearBtnText="Publish"
+        clearBtnVariant="contained"
+        saveBtnVariant="outlined"
+        clearBtnClassName="px-4"
+        saveBtnClassName="px-4"
       >
-        <Grid className="d-flex my-3">
+        <Grid className="d-flex mt-4 mb-5 ">
           <Grid className="">
             <div>
               <ImageCard
@@ -120,19 +149,35 @@ const AddNewArticleModal = ({ showModal = false, setShowModal = () => {} }) => {
           <Grid className="mx-4">
             <div className="mt-2">
               <div>
-                <InputBox size="small" label="Article Title" />
+                <InputBox
+                  size="small"
+                  label="Article Title *"
+                  variant="outlined"
+                />
               </div>
               <div className="my-3">
-                <SimpleDropdownComponent label="category" size="small" />
+                <SimpleDropdownComponent
+                  label="category"
+                  size="small"
+                  variant="outlined"
+                />
               </div>
               <div>
-                <InputBox size="small" label="Tags" />
+                <InputBox size="small" label="Tags" variant="outlined" />
               </div>
               <div className="my-3">
-                <SimpleDropdownComponent label="Visibility" size="small" />
+                <SimpleDropdownComponent
+                  label="Visibility"
+                  size="small"
+                  variant="outlined"
+                />
               </div>
               <div>
-                <InputBox size="small" label="External Link" />
+                <InputBox
+                  size="small"
+                  label="External Link"
+                  variant="outlined"
+                />
               </div>
             </div>
           </Grid>
