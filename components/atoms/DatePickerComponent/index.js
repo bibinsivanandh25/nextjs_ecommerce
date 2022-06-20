@@ -16,6 +16,7 @@ const DatePickerComponent = ({
   helperText = null,
   inputlabelshrink = false,
   required = false,
+  className = "",
 }) => {
   const theme = createTheme({
     components: {
@@ -48,6 +49,7 @@ const DatePickerComponent = ({
               error={error}
               helperText={helperText}
               required={required}
+              className={className}
             />
           )}
           errorText={error}
