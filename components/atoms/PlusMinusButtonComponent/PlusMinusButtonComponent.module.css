@@ -1,0 +1,10 @@
+.divStyle {
+    color: #6c757d;
+    border: 1.5px solid #6c757d;
+    border-radius: 0.3rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 120px;
+    height: 40px;
+}

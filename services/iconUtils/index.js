@@ -16,6 +16,7 @@ import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const CustomIcon = ({
   title = "",
@@ -46,6 +47,7 @@ const CustomIcon = ({
     filecopy: FileCopy,
     notification: NotificationsNoneOutlinedIcon,
     close: CloseIcon,
+    lineArrowIcon: ArrowForwardIcon,
   };
 
   const [hover, setHover] = useState(false);
