@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
-import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
-import SearchComponent from "../../../../components/atoms/SearchComponent";
+// import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
+import SearchComponent from "../../../components/atoms/SearchComponent";
 import MyOrders from "@/forms/customer/Orders/myorders/MyOrders";
 import NotYetShipped from "@/forms/customer/Orders/notyetshipped/NotYetShipped";
 import CancelledOrder from "@/forms/customer/Orders/cancelledorders/CancelledOrder";
+
 const Orders = () => {
   const [selectedLink, setSelectedLink] = useState("orders");
   return (

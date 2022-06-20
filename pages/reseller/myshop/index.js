@@ -232,7 +232,7 @@ const MyShop = () => {
           onSaveBtnClick={handleSubmit}
           footerClassName="border-top d-flex flex-row-reverse"
           saveBtnClassName="ms-2 w-25"
-          clearBtnClassName='w-25'
+          clearBtnClassName="w-25"
           footerPadding="p-3"
           saveBtnText="Submit"
           onClearBtnClick={() => {

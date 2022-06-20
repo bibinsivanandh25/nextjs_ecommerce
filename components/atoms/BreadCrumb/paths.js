@@ -164,5 +164,5 @@ export const paths = [
   { title: "My Account", id: "myaccount" },
   { title: "Summary", id: "summary" },
   { title: "Customer Q&A", id: "customerq&a" },
-  {title:"Rate MrMrsCart",id:"ratemrmrscart"}
+  { title: "Rate MrMrsCart", id: "ratemrmrscart" },
 ];

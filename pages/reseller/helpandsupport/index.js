@@ -203,7 +203,7 @@ const HelpAndSupport = () => {
                   className="bg-orange"
                   size="small"
                   onBtnClick={() => setShowCreateComponent(true)}
-                  label='Create Tickets'
+                  label="Create Tickets"
                 />
               </Grid>
             </Grid>

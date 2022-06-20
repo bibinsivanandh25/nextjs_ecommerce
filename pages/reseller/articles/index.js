@@ -141,7 +141,7 @@ const Articles = () => {
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
-          table_heading='2 Confirmed Orders'
+            table_heading="2 Confirmed Orders"
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"
@@ -149,10 +149,10 @@ const Articles = () => {
             showCustomSearchButton
             onCustomSearchButtonClick={() => setShowModal(true)}
             searchBarSizeMd={4}
-            OnSelectionChange={(value)=>{
-              console.log(value);
+            OnSelectionChange={(ele) => {
+              console.log(ele);
             }}
-            customDropDownPlaceholder='Select Categories'
+            customDropDownPlaceholder="Select Categories"
           />
           <Menu
             id="basic-menu"

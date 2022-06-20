@@ -212,7 +212,7 @@ const Customer = () => {
           columns={columns}
           showCheckbox={false}
           tableRows={[...rows]}
-          searchBarPlaceHolderText='Search by anything'
+          searchBarPlaceHolderText="Search by anything"
         />
       </Box>
 
