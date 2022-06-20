@@ -37,8 +37,8 @@ const ButtonComponent = ({
       sx={{
         textTransform: "none",
       }}
-      startIcon={showIcon && iconOrintation === "start" ? getIcon() : <></>}
-      endIcon={showIcon && iconOrintation === "end" ? getIcon() : <></>}
+      startIcon={(showIcon && iconOrintation) === "start" ? getIcon() : <></>}
+      endIcon={(showIcon && iconOrintation) === "end" ? getIcon() : <></>}
     >
       {label}
     </Button>
