@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-use-before-define */
-import { Reply, RemoveRedEye } from "@mui/icons-material";
 import { Paper, Tooltip, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
 import MenuOption from "components/atoms/MenuOptions";
@@ -10,6 +9,7 @@ import ReplyModal from "components/forms/reseller/customerq&A/ReplyModal";
 import ViewModal from "components/forms/reseller/customerq&A/ViewModal";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
+import CustomIcon from "services/iconUtils";
 import styles from "./customerqna.module.css";
 
 const CustomerQnA = () => {
@@ -126,9 +126,18 @@ const CustomerQnA = () => {
       col5: "25 may 2021, 21:22",
       col6: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
-          <Reply className="fs-5" onClick={() => setShowReplyModal(true)} />
-          <RemoveRedEye
+          {/* <Reply className="fs-5" /> */}
+
+          <CustomIcon
+            type="reply"
+            title="Reply"
             className="fs-5"
+            onIconClick={() => setShowReplyModal(true)}
+          />
+          <CustomIcon
+            type="view"
+            title="View"
+            className="fs-5 mx-2"
             onClick={() => setShowViewModal(true)}
           />
           <MenuOption
@@ -178,8 +187,20 @@ const CustomerQnA = () => {
       col5: "25 may 2022, 21:22",
       col6: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
-          <Reply className="fs-5" />
-          <RemoveRedEye className="fs-5" />
+          {/* <Reply className="fs-5" /> */}
+
+          <CustomIcon
+            type="reply"
+            title="Reply"
+            className="fs-5"
+            onIconClick={() => setShowReplyModal(true)}
+          />
+          <CustomIcon
+            type="view"
+            title="View"
+            className="fs-5 mx-2"
+            onClick={() => setShowViewModal(true)}
+          />
           <MenuOption
             IconclassName="fs-5"
             getSelectedItem={(ele) => console.log(ele)}
@@ -303,7 +324,9 @@ const CustomerQnA = () => {
       col8: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
           {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
+          <CustomIcon
+            type="view"
+            title="View"
             className="fs-5"
             onClick={() => setShowViewModal(true)}
           />
@@ -355,7 +378,12 @@ const CustomerQnA = () => {
       col8: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
           {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye className="fs-5" />
+          <CustomIcon
+            type="view"
+            title="View"
+            className="fs-5"
+            onClick={() => setShowViewModal(true)}
+          />
           <MenuOption
             IconclassName="fs-5"
             getSelectedItem={(ele) => console.log(ele)}
@@ -372,7 +400,7 @@ const CustomerQnA = () => {
     <div>
       <div className="d-flex tabcontainer">
         <div
-          className={`px-4 py-1 border fs-14 ${
+          className={`px-4 py-1 border fs-14 cursor-pointer ${
             tabType === "tab1" ? styles.activeTab : styles.inActivetab
           }`}
           onClick={() => setTabType("tab1")}
@@ -380,7 +408,7 @@ const CustomerQnA = () => {
           Unanswered
         </div>
         <div
-          className={`px-4 py-1 border fs-14 ${
+          className={`px-4 py-1 border fs-14 cursor-pointer ${
             tabType === "tab2" ? styles.activeTab : styles.inActivetab
           }`}
           onClick={() => setTabType("tab2")}

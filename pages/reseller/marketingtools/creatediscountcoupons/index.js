@@ -1,9 +1,10 @@
-import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
+// import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
 import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import CreateDiscount from "components/forms/reseller/marketingtools/creatediscount";
 import { useState } from "react";
+import CustomIcon from "services/iconUtils";
 
 const CreateDiscountCoupons = () => {
   const columns = [
@@ -99,16 +100,15 @@ const CreateDiscountCoupons = () => {
       col9: "Approved",
       col10: "Active",
       col11: (
-        <div className="d-flex justify-content-between">
-          <RemoveRedEye className="fs-18" />
-          <WhatsApp className="fs-16" />
-          <Share className="fs-16" />
-          <Delete className="fs-16" />
+        <div className="d-flex justify-content-center">
+          <CustomIcon type="remove" className="fs-16" />
+          <CustomIcon type="share" className="fs-16 mx-1" />
+          <CustomIcon type="delete" className="fs-16" />
         </div>
       ),
     },
     {
-      id: "1",
+      id: "2",
       col1: "Quiz",
       col2: "Fixed",
       col3: "Shirts",
@@ -120,11 +120,10 @@ const CreateDiscountCoupons = () => {
       col9: "Approved",
       col10: "Active",
       col11: (
-        <div className="d-flex justify-content-between">
-          <RemoveRedEye className="fs-18" />
-          <WhatsApp className="fs-16" />
-          <Share className="fs-16" />
-          <Delete className="fs-16" />
+        <div className="d-flex justify-content-center">
+          <CustomIcon type="remove" className="fs-16" />
+          <CustomIcon type="share" className="fs-16 mx-1" />
+          <CustomIcon type="delete" className="fs-16" />
         </div>
       ),
     },
@@ -138,12 +137,12 @@ const CreateDiscountCoupons = () => {
         <div>
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
-              <Typography className="h-6 fw-bold">
+              <Typography className="fs-12 fw-bold">
                 Subscription Start Date & time:{Date()}
               </Typography>
             </Grid>
             <Grid>
-              <Typography className="h-6 fw-bold">
+              <Typography className="fs-12 fw-bold">
                 Subscription End Date & time:{Date()}
               </Typography>
             </Grid>
@@ -160,7 +159,7 @@ const CreateDiscountCoupons = () => {
                   width: "fit-content",
                   mx: "auto",
                 }}
-                className="h-6 text-primary cursor-pointer py-1"
+                className="h-5 text-primary cursor-pointer py-1"
               >
                 Guidelines to Create
               </Typography>

@@ -58,7 +58,7 @@ const ModalComponent = ({
               <CloseIcon
                 className={`${
                   showPositionedClose
-                    ? "position-absolute rounded-circle bg-orange border text-white p-1 fs-3 ms-3 border-white"
+                    ? "position-absolute rounded-circle bg-orange border text-white p-1 fs-3 ms-3 border-white cursor-pointer "
                     : "d-none"
                 }`}
                 style={{
