@@ -193,11 +193,11 @@ const CreateDiscount = ({
       <div
         className={
           btnText.toLowerCase() == "view Today's Deal".toLowerCase()
-            ? "h-5 text-primary text-end text-decoration-underline"
+            ? "h-5 text-primary text-end text-decoration-underline me-3 "
             : "d-none"
         }
       >
-        Guidelines to Create
+        <span className="cursor-pointer me-5"> Guidelines to Create</span>
       </div>
       {showBackBtn && (
         <span
@@ -209,7 +209,7 @@ const CreateDiscount = ({
           {"< "}Back
         </span>
       )}
-      <Grid container spacing={1}>
+      <Grid container spacing={1} className="mt-1">
         <Grid item sm={2}>
           <SimpleDropdownComponent
             size="small"
@@ -325,7 +325,7 @@ const CreateDiscount = ({
         <Grid item sm={3} className="d-flex align-items-between ">
           <div>
             <ButtonComponent
-              muiProps="me-1 fs-12 py-2 "
+              muiProps=" fs-12 px-4 py-2"
               label="Create"
               size="medium"
               onBtnClick={handleCreateBtnClick}
@@ -333,7 +333,7 @@ const CreateDiscount = ({
           </div>
           <div>
             <ButtonComponent
-              muiProps="py-2 fs-12"
+              muiProps="py-2 fs-12 mx-2"
               size="medium"
               label={btnText}
               variant="outlined"
@@ -350,7 +350,7 @@ const CreateDiscount = ({
       {showDateAndTime && (
         <div className="d-flex w-75 justify-content-between mt-2">
           <div className="d-flex align-items-center h-5">
-            start date:
+            Start Date:
             <input
               type="date"
               value="2021-12-01"

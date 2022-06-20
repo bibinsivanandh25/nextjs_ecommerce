@@ -1,12 +1,15 @@
+/* eslint-disable import/no-named-as-default */
+/* eslint-disable import/no-named-as-default-member */
 /* eslint-disable no-nested-ternary */
-import { Badge, Button, Grid, Paper } from "@mui/material";
+import { Badge, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import HelpandsupportCreate from "components/forms/reseller/helpandsupport/helpandsupportcreate";
 import HelpAndSupportNotification from "components/forms/reseller/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/reseller/helpandsupport/helpandsupportview";
+// import CustomIcon from "services/iconUtils";
+import CustomIcon from "services/iconUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const HelpAndSupport = () => {
@@ -57,8 +60,9 @@ const HelpAndSupport = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, ind) => {
       result.push({
+        id: ind + 1,
         col1: row.dateAndTime,
         col2: <div className="w-200px">{row.ticketId}</div>,
         col3: <div className="w-200px">{row.subject}</div>,
@@ -66,9 +70,11 @@ const HelpAndSupport = () => {
         col5: (
           <Grid container sx={{ maxWidth: 100 }}>
             <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
-              <VisibilityIcon
+              <CustomIcon
+                type="view"
+                title="View"
                 className="text-secondary cursor-pointer"
-                onClick={() => {
+                onIconClick={() => {
                   setShowModal({
                     show: true,
                     id: row.ticketId,
@@ -102,19 +108,19 @@ const HelpAndSupport = () => {
               </Badge>
             </Grid>
             <Grid item xs={4}>
-              <Button
+              <ButtonComponent
                 size="small"
-                className="color-orange fs-12"
-                onClick={() =>
+                muiProps="fs-12"
+                variant="outlined"
+                onBtnClick={() =>
                   setShowModal({
                     show: true,
                     id: row.ticketId,
                     type: "reply",
                   })
                 }
-              >
-                Reply
-              </Button>
+                label="Reply"
+              />
             </Grid>
           </Grid>
         ),
@@ -126,6 +132,7 @@ const HelpAndSupport = () => {
   useEffect(() => {
     const rows = [
       {
+        id: 1,
         ticketId: "#123458",
         issueType: "123456",
         dateAndTime: "12-01-2022, 04:45 AM",
@@ -139,6 +146,7 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
+        id: 2,
         ticketId: "#123456",
         issueType: "123456",
         dateAndTime: "12-01-2022, 07:09 AM",
@@ -152,6 +160,7 @@ const HelpAndSupport = () => {
         orderQuantity: 1,
       },
       {
+        id: 3,
         ticketId: "#123459",
         issueType: "123423",
         dateAndTime: "12-01-2023, 08:43 PM",
@@ -200,17 +209,16 @@ const HelpAndSupport = () => {
               <Grid item sx={{ p: 2 }}>
                 <ButtonComponent
                   variant="contained"
-                  className="bg-orange"
                   size="small"
                   onBtnClick={() => setShowCreateComponent(true)}
-                  label='Create Tickets'
+                  label="Create Tickets"
                 />
               </Grid>
             </Grid>
             <Grid item xs={12} sx={{ my: 5, px: 2 }}>
-              <Paper>
+              <Paper className="py-2">
                 <TableComponent
-                  table_heading=""
+                  table_heading="43 Reviews"
                   columns={columns}
                   tableRows={tableRows}
                   showSearchFilter={false}

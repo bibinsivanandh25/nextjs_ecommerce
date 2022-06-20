@@ -13,11 +13,12 @@ import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
-import { FileCopy, MoreVert } from "@mui/icons-material";
+import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import GridViewIcon from "@mui/icons-material/GridView";
 import TableRowsIcon from "@mui/icons-material/TableRows";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const CustomIcon = ({
   title = "",
@@ -50,6 +51,8 @@ const CustomIcon = ({
     close: CloseIcon,
     gridview: GridViewIcon,
     tablerows: TableRowsIcon,
+    reply: Reply,
+    lineArrowIcon: ArrowForwardIcon,
   };
 
   const [hover, setHover] = useState(false);

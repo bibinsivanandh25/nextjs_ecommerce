@@ -91,8 +91,8 @@ export default function TableComponent({
   tHeadBgColor = "",
   showDateFilter = false,
   dateFilterColName = [],
-  customDropDownPlaceholder='',
-  searchBarPlaceHolderText='Search'
+  customDropDownPlaceholder = "",
+  searchBarPlaceHolderText = "Search",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -294,7 +294,7 @@ export default function TableComponent({
           <Grid item md={3}>
             <InputBox
               value={searchText}
-              label='Search'
+              label="Search"
               // className="w-100"
               size="small"
               onInputChange={(e) => {
@@ -351,7 +351,7 @@ export default function TableComponent({
                     // label="Search Filter"
                     value={searchFilter}
                     onDropdownSelect={(value) => {
-                      setSearchFilter(value)
+                      setSearchFilter(value);
                       // setSearchFilter(
                       //   value === null
                       //     ? { label: "All", id: 0, value: "All" }
@@ -359,7 +359,6 @@ export default function TableComponent({
                       // );
                     }}
                     placeholder={customDropDownPlaceholder}
-
                   />
                 )}
               </Grid>

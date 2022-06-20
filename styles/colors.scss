@@ -47,7 +47,9 @@
 .border-gray {
     border-color: #F0F0F0 !important;
 }
-
+.border-white{
+    border-color: #fff !important;
+}
 .bg-light-green {
     background-color: #e2ffd4 !important;
 }
@@ -86,4 +88,7 @@
 }
 .color-dark-gray {
     color:#797878
+}
+.bg-transparent{
+    background: transparent !important;
 }

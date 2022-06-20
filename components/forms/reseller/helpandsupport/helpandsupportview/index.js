@@ -112,7 +112,7 @@ const HelpandsupportView = ({ selectedData }) => {
               />
             </>
           </Grid>
-          <Grid item className="d-flex justify-content-end">
+          <Grid item className="d-flex justify-content-end me-5">
             <ButtonComponent
               label="Send Reply"
               onBtnClick={handleCreateBtnClick}

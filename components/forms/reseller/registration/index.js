@@ -211,7 +211,7 @@ const RegistrationForm = ({
           className="mt-5"
         >
           <Grid item xs={12}>
-            <p className="color-orange d-flex justify-content-center fw-600">
+            <p className="color-orange d-flex justify-content-center fw-600 mb-2">
               Already have a referral code? You have more chance to win
               Prize&apos;s & Discounts.
             </p>
@@ -246,6 +246,9 @@ const RegistrationForm = ({
             <p
               className="color-orange ms-2 cursor-pointer"
               onClick={() => setDisplayType("registration")}
+              style={{
+                textDecoration: "underline",
+              }}
             >
               Click here
             </p>

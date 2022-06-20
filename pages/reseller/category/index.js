@@ -310,7 +310,7 @@ const productList = [
     profit_earned: "25",
   },
 ];
-const fliterDropDownValues=[
+const fliterDropDownValues = [
   {
     label: "Fixed margin",
     value: "Fixed margin",
@@ -319,7 +319,7 @@ const fliterDropDownValues=[
     label: "Dynamic margin",
     value: "Dynamic margin",
   },
-]
+];
 const DisplaySet = ({ ele, handleClick }) => {
   return (
     <Grid
@@ -362,7 +362,7 @@ const Category = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]);
   const [selectedSets, setSelectedSets] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const  [dropDownValue,setDropDownValue]=useState([])
+  const [dropDownValue, setDropDownValue] = useState([]);
   return (
     <Paper className="w-100 d-flex flex-column h-100 hide-scrollbar p-3 pb-0">
       {!selectedSubCategory.length ? (
@@ -372,23 +372,23 @@ const Category = () => {
             <Box className="d-flex w-50 d-flex justify-content-end align-items-center">
               <Box className="me-3 w-50">
                 <SimpleDropdownComponent
-                size="small"
-                value={dropDownValue}
-                placeholder='Filter by'
-                list={fliterDropDownValues}
-                onDropdownSelect={(value)=>{
-                  setDropDownValue(value)
-                }}
+                  size="small"
+                  value={dropDownValue}
+                  placeholder="Filter by"
+                  list={fliterDropDownValues}
+                  onDropdownSelect={(value) => {
+                    setDropDownValue(value);
+                  }}
                 />
               </Box>
-             <Box className="">
-             <SearchComponent
-                placeholder='Search'
-                handleBtnSearch={(val) => {
-                  console.log(val);
-                }}
-              />
-             </Box>
+              <Box className="">
+                <SearchComponent
+                  placeholder="Search"
+                  handleBtnSearch={(val) => {
+                    console.log(val);
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
           <Box className="w-100 mb-3">

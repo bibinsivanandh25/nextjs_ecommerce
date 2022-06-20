@@ -27,9 +27,9 @@ const RefereeForm = ({
   return (
     <Box className="w-100">
       <Box className="d-flex border-bottom border-bottom-dark justify-content-between p-3 pb-1 align-items-center">
-        <Typography className="h-3">Referred Reseller</Typography>
+        <Typography className="h-4 fw-bold">Reseller Name</Typography>
         <Box onClick={() => setSelectedReseller({})}>
-          <Typography className="h-4 d-flex align-items-center">
+          <Typography className="h-4 d-flex align-items-center cursor-pointer">
             <ArrowBackIosIcon className="fs-16" />
             Back
           </Typography>
@@ -53,7 +53,7 @@ const RefereeForm = ({
           </Box>
           <Box className="ms-2 mt-3">
             <Typography className="h-4">
-              Name:{" "}
+              Name of Referee:{" "}
               <Typography className="h-4" component="span">
                 Abc
               </Typography>
@@ -75,28 +75,30 @@ const RefereeForm = ({
         <Card variant="outlined" className="mt-3">
           <CardContent>
             <Typography className="h-4 fw-bold">Sales History</Typography>
-            <Box className="ms-3 mt-2">
-              <Typography className="">
-                Last Month(april) Earnings:{" "}
-                <Typography component="span" className="color-dark-green">
+            <Box className="mt-2">
+              <Typography className="fw-bold h-5 ">
+                Last Month(april) Earnings :{" "}
+                <Typography component="span" className="color-dark-green mx-2">
                   123
                 </Typography>{" "}
               </Typography>
-              <Typography className="">
-                Total Earnings Current Year:{" "}
-                <Typography component="span" className="color-dark-green">
+              <Typography className="fw-bold h-5 my-1 ">
+                Total Earnings Current Year :{" "}
+                <Typography component="span" className="color-dark-green mx-2">
                   123
                 </Typography>{" "}
               </Typography>
-              <Typography className="">
-                Target to achive by EOY:{" "}
-                <Typography component="span" className="color-dark-green">
+              <Typography className="fw-bold h-5 ">
+                Target to achive by EOY :{" "}
+                <Typography component="span" className="text-danger mx-2">
                   123
                 </Typography>{" "}
               </Typography>
-              <Box className="d-flex flex-column w-50">
-                <Box className="d-flex justify-content-between">
-                  <Typography className="h-4">Year wise sales</Typography>
+              <Box className="d-flex flex-column w-50 ">
+                <Box className="d-flex justify-content-between align-items-center">
+                  <Typography className="h-5 fw-bold">
+                    Year wise sales
+                  </Typography>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
                       views={["year"]}
