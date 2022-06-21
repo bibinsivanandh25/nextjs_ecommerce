@@ -4,7 +4,10 @@ import StarHalfIcon from "@mui/icons-material/StarHalf";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import styles from "./StarRatingComponentReceiving.module.css";
 
-const StarRatingComponentReceivingRating = ({ rating }) => {
+const StarRatingComponentReceivingRating = ({
+  rating,
+  fontSize = "medium",
+}) => {
   const [stars, setStars] = useState([]);
 
   useEffect(() => {
@@ -16,7 +19,9 @@ const StarRatingComponentReceivingRating = ({ rating }) => {
 
     if (fullStars === 0) {
       for (let i = 0; i < 5; i += 1)
-        hStars.push(<StarBorderIcon className={styles.primaryColor} />);
+        hStars.push(
+          <StarBorderIcon fontSize={fontSize} className={styles.primaryColor} />
+        );
 
       setStars([...hStars]);
     }
@@ -24,20 +29,36 @@ const StarRatingComponentReceivingRating = ({ rating }) => {
     if (fullStars > 0 && fullStars <= 5) {
       if (ratingArray.length > 1) {
         for (let i = 1; i <= fullStars; i += 1) {
-          hStars.push(<StarIcon className={styles.primaryColor} />);
+          hStars.push(
+            <StarIcon fontSize={fontSize} className={styles.primaryColor} />
+          );
         }
-        hStars.push(<StarHalfIcon className={styles.primaryColor} />);
+        hStars.push(
+          <StarHalfIcon fontSize={fontSize} className={styles.primaryColor} />
+        );
 
         for (let i = fullStars + 2; i <= 5; i += 1)
-          hStars.push(<StarBorderIcon className={styles.primaryColor} />);
+          hStars.push(
+            <StarBorderIcon
+              fontSize={fontSize}
+              className={styles.primaryColor}
+            />
+          );
 
         setStars([...hStars]);
       } else {
         for (let i = 0; i < fullStars; i += 1)
-          hStars.push(<StarIcon className={styles.primaryColor} />);
+          hStars.push(
+            <StarIcon fontSize={fontSize} className={styles.primaryColor} />
+          );
 
         for (let i = fullStars + 1; i <= 5; i += 1)
-          hStars.push(<StarBorderIcon className={styles.primaryColor} />);
+          hStars.push(
+            <StarBorderIcon
+              fontSize={fontSize}
+              className={styles.primaryColor}
+            />
+          );
 
         setStars([...hStars]);
       }
