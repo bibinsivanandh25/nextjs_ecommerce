@@ -19,10 +19,19 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import GridViewIcon from "@mui/icons-material/GridView";
 import TableRowsIcon from "@mui/icons-material/TableRows";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import BalanceIcon from "@mui/icons-material/Balance";
+import ViewCarouselOutlinedIcon from "@mui/icons-material/ViewCarouselOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 
 const CustomIcon = ({
   title = "",
   onIconClick = () => {},
+  onMouseEnter = () => {},
+  onMouseLeave = () => {},
   type = "",
   color = "text-secondary",
   className = "",
@@ -53,6 +62,13 @@ const CustomIcon = ({
     tablerows: TableRowsIcon,
     reply: Reply,
     lineArrowIcon: ArrowForwardIcon,
+    favoriteBorderIcon: FavoriteBorderIcon,
+    viewCarouselIcon: ViewCarouselIcon,
+    viewCarouselOutlinedIcon: ViewCarouselOutlinedIcon,
+    localMallIcon: LocalMallOutlinedIcon,
+    balanceIcon: BalanceIcon,
+    visibilityOutlinedIcon: VisibilityOutlinedIcon,
+    airportShuttleOutlinedIcon: AirportShuttleOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);
@@ -78,9 +94,11 @@ const CustomIcon = ({
         onClick={onIconClick}
         onMouseEnter={() => {
           setHover(true);
+          onMouseEnter();
         }}
         onMouseLeave={() => {
           setHover(false);
+          onMouseLeave();
         }}
         sx={{ p: 0 }}
       >

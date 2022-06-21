@@ -55,7 +55,7 @@ function MenuWithCheckbox({
   btnClassName = "",
   btnText = "Filter",
   handleCheckboxClick = () => {},
-  btncolor = "primary",
+  btncolor = "inherit",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
