@@ -29,6 +29,7 @@ const ModalComponent = ({
   clearBtnVariant = "outlined",
   saveBtnVariant = "contained",
   showPositionedClose = false,
+  iconStyle = {},
 }) => {
   const style = {
     position: "absolute",
@@ -61,17 +62,17 @@ const ModalComponent = ({
                     ? "position-absolute rounded-circle bg-orange border text-white p-1 fs-3 ms-3 border-white cursor-pointer "
                     : "d-none"
                 }`}
-                style={{
-                  top: "-10px",
-                  right: "-10px",
-                }}
+                style={{ top: "-10px", right: "-10px" }}
                 onClick={onCloseIconClick}
               />
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
               <label className={`fs-12 fw-600 ${titleClassName}`}>
                 {ModalTitle}
               </label>
-              <div className={showCloseIcon ? "" : "d-none"}>
+              <div
+                className={showCloseIcon ? "" : "d-none"}
+                style={{ ...iconStyle }}
+              >
                 <CloseIcon
                   onClick={onCloseIconClick}
                   className="cursor-pointer text-black"

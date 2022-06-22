@@ -111,7 +111,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         <p className="fs-20 fw-600">{data.title}</p>
       </Box>
       <Box className="">
-        <StarRatingComponentReceivingRating fontSize="fs-16" rating={4} />
+        <StarRatingComponentReceivingRating fontSize="small" rating={4} />
         <span className="fs-16"> 192 Rating</span>
       </Box>
       <Box className="align-self-center">
