@@ -299,14 +299,32 @@ function SearchedProduct() {
       )}
       {viewModalOpen && (
         <ModalComponent
+          showCloseIcon
           showClearBtn={false}
           showSaveBtn={false}
           open={viewModalOpen}
           onCloseIconClick={() => setViewModalOpen(false)}
-          showHeader={false}
+          // showHeader={false}
           ModalWidth={700}
+          ModalTitle=""
+          headerClassName=""
+          iconStyle={{
+            right: "0",
+            top: "-25px",
+            position: "absolute",
+          }}
         >
           <Box className="p-2">
+            {/* <CustomIcon
+              title="close"
+              type="close"
+              className="fs-26"
+              onIconClick={() => {
+                setViewModalOpen(false);
+              }}
+              showColorOnHover
+              style={{ position: "absolute" }}
+            /> */}
             <Box className="row d-flex">
               <Box className="col-5">
                 <Image
@@ -321,7 +339,7 @@ function SearchedProduct() {
                     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
                     <div
-                      className="border rounded w-25 h-19p"
+                      className="w-25 h-19p"
                       onClick={() => handleImageClick(item)}
                     >
                       <Image
@@ -329,7 +347,7 @@ function SearchedProduct() {
                         width={100}
                         height={100}
                         alt=""
-                        className="rounded img-fluid bg-white"
+                        className="border rounded"
                         style={{ cursor: "pointer" }}
                       />
                     </div>
@@ -337,7 +355,11 @@ function SearchedProduct() {
                 </div>
               </Box>
               <Box className="col-7">
-                <p>dsf</p>
+                <p className="fs-16 fw-500">
+                  Portronics SoundDrum Plus a 15W POR-1040 Bluetooth 5.0
+                  Portable Stereo Speaker Comes with Boosted Bass, Equaliser
+                  Function.
+                </p>
               </Box>
             </Box>
           </Box>
