@@ -30,6 +30,8 @@ const ModalComponent = ({
   saveBtnVariant = "contained",
   showPositionedClose = false,
   iconStyle = {},
+  closeIconClasName = "cursor-pointer text-black",
+  headerBorder = "1px solid #e6e6e6",
 }) => {
   const style = {
     position: "absolute",
@@ -53,7 +55,7 @@ const ModalComponent = ({
             <div
               className={`d-flex justify-content-between align-items-center px-4 py-2 position-relative ${headerClassName}`}
               style={{
-                borderBottom: "1px solid #e6e6e6",
+                borderBottom: headerBorder,
               }}
             >
               <CloseIcon
@@ -75,7 +77,7 @@ const ModalComponent = ({
               >
                 <CloseIcon
                   onClick={onCloseIconClick}
-                  className="cursor-pointer text-black"
+                  className={closeIconClasName}
                 />
               </div>
             </div>

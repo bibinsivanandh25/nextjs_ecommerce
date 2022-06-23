@@ -25,7 +25,12 @@ const iconListData = [
     title: "Search",
   },
 ];
-function CustomerProductgModal({ data = {}, handleIconClick = () => {} }) {
+
+function CustomerProductgModal({
+  data = {},
+  handleIconClick = () => {},
+  viewType = "",
+}) {
   const [hover, setHover] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const mouseEnter = (name) => {
@@ -35,13 +40,19 @@ function CustomerProductgModal({ data = {}, handleIconClick = () => {} }) {
     setIconColor((prev) => ({ ...prev, [name]: false }));
   };
   return (
-    <Box className="w-100 d-flex flex-column bg-white p-1 rounded">
+    <Box
+      className={
+        viewType === "row"
+          ? "w-100 d-flex bg-white p-1 rounded border my-2"
+          : "w-100 d-flex flex-column bg-white p-1 rounded"
+      }
+    >
       <Paper
         elevation={hover ? 6 : 3}
         sx={{
           position: "relative",
-          width: "100%",
-          height: "30vh",
+          width: viewType === "row" ? "20%" : "100%",
+          height: viewType === "row" ? "25vh" : "30vh",
         }}
         onMouseEnter={() => {
           setHover(true);
@@ -106,8 +117,17 @@ function CustomerProductgModal({ data = {}, handleIconClick = () => {} }) {
           </Box>
         </Box>
       </Paper>
-      <Box className="my-1 h-150">
-        <p className="fs-20 fw-600">{data.title}</p>
+      <Box className={viewType === "row" ? "ms-3 h-150 w-100 " : "my-1 h-150 "}>
+        <Box
+          className={viewType === "row" ? "d-flex justify-content-between" : ""}
+        >
+          <p className="fs-20 fw-600">{data.title}</p>
+          {data.offerFlag && viewType === "row" && (
+            <Badge className="text-danger fs-12">
+              Offer ends in 09h 42min 2sec
+            </Badge>
+          )}
+        </Box>
         <p
           className="fs-14 text-secondary"
           style={{
@@ -151,7 +171,11 @@ function CustomerProductgModal({ data = {}, handleIconClick = () => {} }) {
         ) : (
           <p className="h-30 pt-3 fw-600"> &#8377;{data.actualCost}</p>
         )}
-        <div className="d-flex">
+        <div
+          className={
+            viewType === "row" ? "d-flex justify-content-end me-3" : "d-flex"
+          }
+        >
           <div className="ms-2 me-3">
             <CustomIcon
               type="view"
@@ -171,7 +195,7 @@ function CustomerProductgModal({ data = {}, handleIconClick = () => {} }) {
             <span className="fs-12"> 23445</span>
           </div>
         </div>
-        {data.offerFlag && (
+        {data.offerFlag && viewType === "Grid" && (
           <Box className="d-flex justify-content-end">
             <p className="text-danger fs-12"> Offer ends in 09h 42min 2sec</p>
           </Box>
