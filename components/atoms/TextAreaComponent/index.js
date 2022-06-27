@@ -15,6 +15,7 @@ const TextAreaComponent = ({
   value = "",
   error = false,
   helperText = null,
+  placeholder = "",
 }) => {
   return (
     <div className={`${widthClassName}`}>
@@ -41,6 +42,7 @@ const TextAreaComponent = ({
         onChange={onChange}
         name={name}
         value={value}
+        placeholder={placeholder}
       />
       {error && (
         <p className="error" id="textbox-helper-text">
