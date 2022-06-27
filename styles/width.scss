@@ -59,6 +59,10 @@
   max-height: 100vh;
 }
 
+.mxh-95vh {
+  max-height: 90vh !important;
+}
+
 .mnh-80vh {
   min-height: 80vh
 }
@@ -271,6 +275,27 @@
   width: 150px;
 }
 
+.h-150 {
+min-height: 150px;
+}
+
+.h-30 {
+  min-height: 50px;
+}
+
+.w-130px {
+  min-width: 290px !important;
+}
+
+.w-25p {
+  width: 25% !important;
+}
+
+.h-19p {
+height: 19% !important;
+}
+
 .w-20p{
   width: 20%;
 }
+
