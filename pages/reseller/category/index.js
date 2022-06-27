@@ -1,126 +1,107 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Card,
   CardActionArea,
-  CardMedia,
   Grid,
   Paper,
   Typography,
 } from "@mui/material";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
 import CategoryScrollComponent from "components/atoms/CategoryScrollComponent";
-import ImageCard from "components/atoms/ImageCard";
 import SearchComponent from "components/atoms/SearchComponent";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import CategoryProductCard from "components/reseller/atoms/CategoryProductCard";
+import { assetsJson } from "public/assets";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const CategoryItems = [
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "sarees",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Kurtas",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
   {
     name: "Makeups",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+    image: assetsJson.saree_reseller_home,
   },
 ];
 const subCategoryItems = [
@@ -329,7 +310,16 @@ const productList = [
     profit_earned: "25",
   },
 ];
-
+const fliterDropDownValues = [
+  {
+    label: "Fixed margin",
+    value: "Fixed margin",
+  },
+  {
+    label: "Dynamic margin",
+    value: "Dynamic margin",
+  },
+];
 const DisplaySet = ({ ele, handleClick }) => {
   return (
     <Grid
@@ -352,12 +342,12 @@ const DisplaySet = ({ ele, handleClick }) => {
             }
             width={100}
             height={100}
-            layout={"responsive"}
+            layout="responsive"
             alt=""
           />
         </CardActionArea>
       </Card>
-      <Typography className={`h-4 cursor-pointer`}>{ele.label}</Typography>
+      <Typography className="h-4 cursor-pointer">{ele.label}</Typography>
     </Grid>
   );
 };
@@ -372,19 +362,33 @@ const Category = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]);
   const [selectedSets, setSelectedSets] = useState([]);
   const [searchText, setSearchText] = useState("");
-
+  const [dropDownValue, setDropDownValue] = useState([]);
   return (
     <Paper className="w-100 d-flex flex-column h-100 hide-scrollbar p-3 pb-0">
       {!selectedSubCategory.length ? (
         <>
           <Box className="d-flex justify-content-between align-items-center mb-2">
             <Typography className="h-4 fw-bold">Top Categories</Typography>
-            <Box className="d-flex">
-              <SearchComponent
-                handleBtnSearch={(val) => {
-                  console.log(val);
-                }}
-              />
+            <Box className="d-flex w-50 d-flex justify-content-end align-items-center">
+              <Box className="me-3 w-50">
+                <SimpleDropdownComponent
+                  size="small"
+                  value={dropDownValue}
+                  placeholder="Filter by"
+                  list={fliterDropDownValues}
+                  onDropdownSelect={(value) => {
+                    setDropDownValue(value);
+                  }}
+                />
+              </Box>
+              <Box className="">
+                <SearchComponent
+                  placeholder="Search"
+                  handleBtnSearch={(val) => {
+                    console.log(val);
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
           <Box className="w-100 mb-3">

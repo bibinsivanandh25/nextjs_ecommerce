@@ -1,10 +1,6 @@
-import styled from "@emotion/styled";
-import { Description } from "@mui/icons-material";
-import { TextField } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { height, width } from "@mui/system";
 import ButtonComponent from "../ButtonComponent";
 import styles from "./textAreaComponent.module.css";
+
 const TextAreaComponent = ({
   legend = "description",
   onChange = () => {},
@@ -28,6 +24,7 @@ const TextAreaComponent = ({
           styles.fieldset
         } ${error && "error-border"}`}
       >
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label className={`${styles.legend} fs-14 ${error && "error-text"}`}>
           {legend}
         </label>

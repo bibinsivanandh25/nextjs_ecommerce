@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import ModalComponent from "components/atoms/ModalComponent";
@@ -167,9 +168,8 @@ const AddAddressModal = (props) => {
     const getData = () => {
       if (ele.type === "dropdown") {
         return val ? val.id : null;
-      } else {
-        return val;
       }
+      return val;
     };
     setFormValues((prev) => {
       return {
@@ -200,7 +200,7 @@ const AddAddressModal = (props) => {
       }}
       onSaveBtnClick={handleSave}
       minHeightClassName="mxh-500"
-      ModalWidth={"60%"}
+      ModalWidth="60%"
       footerClassName="justify-content-end border-top me-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"

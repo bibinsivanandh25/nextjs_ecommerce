@@ -12,14 +12,14 @@ const RateMrMrsCartForm = () => {
   const validateForm = () => {
     const errObj = { ...error };
     if (!value) {
-      errObj["star"] = validateMessage.field_required;
+      errObj.star = validateMessage.field_required;
     } else {
-      errObj["star"] = null;
+      errObj.star = null;
     }
     if (!comment) {
-      errObj["comment"] = validateMessage.field_required;
+      errObj.comment = validateMessage.field_required;
     } else {
-      errObj["comment"] = null;
+      errObj.comment = null;
     }
     setError({ ...errObj });
     let valid = true;
@@ -33,7 +33,7 @@ const RateMrMrsCartForm = () => {
 
   const handleSubmitClick = () => {
     if (validateForm()) {
-      console.log(comment, star);
+      console.log(comment);
     }
   };
 

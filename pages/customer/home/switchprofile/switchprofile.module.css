@@ -1,0 +1,14 @@
+.avtarSize{
+    width: 56px !important;
+    height: 56px !important;
+}
+
+.iconCss{
+    width: 40px !important;
+    height: 40px !important;
+    color: #707070;
+}
+
+.hide{
+    visibility: hidden;
+}

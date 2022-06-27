@@ -1,9 +1,7 @@
-import { Box, Grid, Paper } from "@mui/material";
-import InputBox from "components/atoms/InputBoxComponent";
+import { Grid } from "@mui/material";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { formatValue } from "@syncfusion/ej2-react-maps";
 import validateMessage from "constants/validateMessages";
 
 const LinkedForm = forwardRef(({ formData }, ref) => {
@@ -31,6 +29,23 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       return { ...prev, [key]: value };
     });
   };
+  const validateFormvalues = () => {
+    let flag = true;
+    const errObj = {
+      upSells: "",
+      crossSells: "",
+    };
+    if (!linkedFormData.upSells?.value) {
+      errObj.upSells = validateMessage.field_required;
+      flag = false;
+    }
+    if (!linkedFormData.crossSells?.value) {
+      errObj.crossSells = validateMessage.field_required;
+      flag = false;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
@@ -53,23 +68,6 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
     },
   ];
 
-  const validateFormvalues = () => {
-    let flag = true;
-    let errObj = {
-      upSells: "",
-      crossSells: "",
-    };
-    if (!linkedFormData.upSells?.value) {
-      errObj.upSells = validateMessage.field_required;
-      flag = false;
-    }
-    if (!linkedFormData.crossSells?.value) {
-      errObj.crossSells = validateMessage.field_required;
-      flag = false;
-    }
-    setErrorObj({ ...errObj });
-    return flag;
-  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} container spacing={2}>

@@ -30,19 +30,22 @@ const InputBox = ({
   helperText = "",
   required = false,
   textInputProps = {},
+  showAutoCompleteOff = "on",
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
       return <Visibility />;
-    } else if (iconName === "visibleOff") {
-      return <VisibilityOff />;
-    } else if (iconName === "arrowDown") {
-      return <KeyboardArrowDownIcon />;
-    } else if (iconName === "arrowUp") {
-      return <KeyboardArrowUpIcon />;
-    } else {
-      return null;
     }
+    if (iconName === "visibleOff") {
+      return <VisibilityOff />;
+    }
+    if (iconName === "arrowDown") {
+      return <KeyboardArrowDownIcon />;
+    }
+    if (iconName === "arrowUp") {
+      return <KeyboardArrowUpIcon />;
+    }
+    return null;
   };
 
   const theme = createTheme({
@@ -93,6 +96,8 @@ const InputBox = ({
         }}
         helperText={helperText}
         error={error}
+        autoComplete={showAutoCompleteOff}
+        // eslint-disable-next-line react/jsx-no-duplicate-props
         inputProps={textInputProps}
         required={required}
       />

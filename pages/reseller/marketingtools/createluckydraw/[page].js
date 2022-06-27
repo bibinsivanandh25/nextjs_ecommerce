@@ -1,19 +1,18 @@
-import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import { format, parse } from "date-fns";
-import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { useState } from "react";
 import GenericForm from "components/forms/reseller/marketingtools/createluckydraw";
 import ModalComponent from "components/atoms/ModalComponent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import { useRouter } from "next/router";
 import ViewPage from "components/forms/reseller/marketingtools/createluckydraw/ViewPage";
+import CustomIcon from "services/iconUtils";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Campaign Title",
       align: "center",
       data_align: "center",
@@ -90,7 +89,8 @@ const CreateQuiz = ({ pageName }) => {
       data_classname: "",
     },
   ];
-  let rows = [
+  const [showViewModal, setshowViewModal] = useState({});
+  const rows = [
     {
       id: "1",
       col1: "Quiz",
@@ -103,22 +103,23 @@ const CreateQuiz = ({ pageName }) => {
       col8: "Regular",
       col9: "Approved",
       col10: "Active",
+
       col11: (
-        <div className="d-flex justify-content-between">
-          <RemoveRedEye
-            className="fs-18"
-            onClick={() => {
+        <div className="d-flex justify-content-center">
+          <CustomIcon
+            type="remove"
+            className="fs-16"
+            onIconClick={() => {
               setshowViewModal(rows.filter((item) => item.id === "1")[0]);
             }}
           />
-          <WhatsApp className="fs-16" />
-          <Share className="fs-16" />
-          <Delete className="fs-16" />
+          <CustomIcon type="share" className="fs-16 mx-1" />
+          <CustomIcon type="delete" className="fs-16" />
         </div>
       ),
     },
     {
-      id: "10",
+      id: "2",
       col1: "Quiz",
       col2: "Fixed",
       col3: "Shirts",
@@ -130,16 +131,16 @@ const CreateQuiz = ({ pageName }) => {
       col9: "Approved",
       col10: "Active",
       col11: (
-        <div className="d-flex justify-content-between">
-          <RemoveRedEye
-            className="fs-18"
-            onClick={() => {
-              setshowViewModal(rows.filter((item) => item.id === "10")[0]);
+        <div className="d-flex justify-content-center">
+          <CustomIcon
+            type="remove"
+            className="fs-16"
+            onIconClick={() => {
+              setshowViewModal(rows.filter((item) => item.id === "2")[0]);
             }}
           />
-          <WhatsApp className="fs-16" />
-          <Share className="fs-16" />
-          <Delete className="fs-16" />
+          <CustomIcon type="share" className="fs-16 mx-1" />
+          <CustomIcon type="delete" className="fs-16" />
         </div>
       ),
     },
@@ -147,8 +148,6 @@ const CreateQuiz = ({ pageName }) => {
 
   const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showViewModal, setshowViewModal] = useState({});
-  const route = useRouter();
 
   return (
     <Paper className="mnh-80vh w-100 p-3">
@@ -156,13 +155,13 @@ const CreateQuiz = ({ pageName }) => {
         <div>
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
-              <Typography className="h-6 fw-bold">
+              <Typography className="fs-12 fw-bold">
                 Subscription Start Date & time:
                 {format(new Date(), "dd/mm/yyyy")}
               </Typography>
             </Grid>
             <Grid>
-              <Typography className="h-6 fw-bold">
+              <Typography className="fs-12 fw-bold">
                 Subscription End Date & time:{format(new Date(), "dd/mm/yyyy")}
               </Typography>
             </Grid>
@@ -170,6 +169,7 @@ const CreateQuiz = ({ pageName }) => {
               <ButtonComponent
                 variant="outlined"
                 label={`Create ${
+                  // eslint-disable-next-line no-nested-ternary
                   pageName === "createquiz"
                     ? "Quiz"
                     : pageName === "spinwheel"
@@ -185,7 +185,7 @@ const CreateQuiz = ({ pageName }) => {
                   width: "fit-content",
                   mx: "auto",
                 }}
-                className="h-6 text-primary cursor-pointer py-1"
+                className="h-5 text-primary cursor-pointer py-1"
               >
                 Guidelines to Create
               </Typography>
@@ -217,11 +217,11 @@ const CreateQuiz = ({ pageName }) => {
                   <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
                 </Box>
 
-                <Typography className="h-4">
+                <Typography className="h-4 text-center">
                   Be cautious that creating quiz does not create any loss to you
                 </Typography>
                 <ButtonComponent
-                  label="Proced"
+                  label="Proceed"
                   onBtnClick={() => {
                     setShowModal(false);
                     setShowGenericForm(true);

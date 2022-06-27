@@ -1,7 +1,5 @@
-import { Grid, Tooltip, Typography } from "@mui/material";
-import ImageCard from "components/atoms/ImageCard";
+import { Tooltip } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
-import { assetsJson } from "public/assets";
 
 const ReplyModal = ({
   showReplyModal = false,
@@ -39,7 +37,7 @@ const ReplyModal = ({
             width: "100%",
             outline: "none",
           }}
-        ></textarea>
+        />
       </div>
     </ModalComponent>
   );

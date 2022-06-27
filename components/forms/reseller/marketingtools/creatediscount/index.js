@@ -1,4 +1,6 @@
-import { ArrowBack, ArrowBackIos, ArrowLeft } from "@mui/icons-material";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/no-array-index-key */
 import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
@@ -10,7 +12,6 @@ import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
 import { assetsJson } from "public/assets";
 import { useState } from "react";
-import validationRegex from "services/utils/regexUtils";
 
 const CreateDiscount = ({
   setShowCreateDiscount = () => {},
@@ -31,7 +32,7 @@ const CreateDiscount = ({
     subCategory: [],
   });
 
-  let ProductsDetails = [
+  const ProductsDetails = [
     {
       id: 1,
       title: "Sarree",
@@ -118,9 +119,10 @@ const CreateDiscount = ({
               isChecked={ele.isSelected}
               id={ele.id}
               checkBoxClick={(id) => {
-                let arr = [...Products];
+                const arr = [...Products];
                 arr.forEach((item) => {
                   if (item.id == id) {
+                    // eslint-disable-next-line no-param-reassign
                     item.isSelected = !item.isSelected;
                   }
                 });
@@ -154,21 +156,21 @@ const CreateDiscount = ({
     );
 
     if (!categoriesList.category.length) {
-      errObj["categories"] = validateMessage.field_required;
+      errObj.categories = validateMessage.field_required;
     } else if (!categoriesList.set.length) {
-      errObj["categories"] = "Set selection is required";
+      errObj.categories = "Set selection is required";
     } else if (!categoriesList.subCategory.length) {
-      errObj["categories"] = "Sub Category selection is required";
+      errObj.categories = "Sub Category selection is required";
     } else {
-      errObj["categories"] = null;
+      errObj.categories = null;
     }
 
     if (formValues?.content.replace(/<[^>]*>/g, "").length === 0) {
-      errObj["content"] = validateMessage.field_required;
+      errObj.content = validateMessage.field_required;
     } else if (formValues.content.replace(/<[^>]*>/g, "").length > 1000) {
-      errObj["content"] = validateMessage.alpha_numeric_max_1000;
+      errObj.content = validateMessage.alpha_numeric_max_1000;
     } else {
-      errObj["content"] = null;
+      errObj.content = null;
     }
     setError(errObj);
     let valid = true;
@@ -191,11 +193,11 @@ const CreateDiscount = ({
       <div
         className={
           btnText.toLowerCase() == "view Today's Deal".toLowerCase()
-            ? "h-5 text-primary text-end text-decoration-underline"
+            ? "h-5 text-primary text-end text-decoration-underline me-3 "
             : "d-none"
         }
       >
-        Guidelines to Create
+        <span className="cursor-pointer me-5"> Guidelines to Create</span>
       </div>
       {showBackBtn && (
         <span
@@ -207,7 +209,7 @@ const CreateDiscount = ({
           {"< "}Back
         </span>
       )}
-      <Grid container spacing={1}>
+      <Grid container spacing={1} className="mt-1">
         <Grid item sm={2}>
           <SimpleDropdownComponent
             size="small"
@@ -233,6 +235,7 @@ const CreateDiscount = ({
             }}
             error={Boolean(error.categories)}
             helperText={error.categories}
+            showAutoCompleteOff="off"
           />
           {showListGroup ? (
             <Grid
@@ -241,7 +244,6 @@ const CreateDiscount = ({
               sm={12}
               className="position-absolute "
               sx={{
-                // zIndex: 100,
                 width: "98.5%",
                 top: 48,
               }}
@@ -323,7 +325,7 @@ const CreateDiscount = ({
         <Grid item sm={3} className="d-flex align-items-between ">
           <div>
             <ButtonComponent
-              muiProps="me-1 fs-12 py-2 "
+              muiProps=" fs-12 px-4 py-2"
               label="Create"
               size="medium"
               onBtnClick={handleCreateBtnClick}
@@ -331,7 +333,7 @@ const CreateDiscount = ({
           </div>
           <div>
             <ButtonComponent
-              muiProps="py-2 fs-12"
+              muiProps="py-2 fs-12 mx-2"
               size="medium"
               label={btnText}
               variant="outlined"
@@ -348,10 +350,10 @@ const CreateDiscount = ({
       {showDateAndTime && (
         <div className="d-flex w-75 justify-content-between mt-2">
           <div className="d-flex align-items-center h-5">
-            start date:
+            Start Date:
             <input
               type="date"
-              value={"2021-12-01"}
+              value="2021-12-01"
               style={{
                 border: "none",
                 outline: "none",
@@ -364,7 +366,7 @@ const CreateDiscount = ({
             End Date:
             <input
               type="date"
-              value={"2021-12-01"}
+              value="2021-12-01"
               style={{
                 border: "none",
                 outline: "none",

@@ -1,12 +1,12 @@
-import { Box, Grid, Paper, Tooltip } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
 import CustomIcon from "services/iconUtils";
+
 const columns = [
   {
-    id: "col1", //id value in column should be presented in row as key
+    id: "col1", //  id value in column should be presented in row as key
     label: "Upload ID",
     minWidth: 100,
     align: "center",
@@ -49,7 +49,7 @@ const columns = [
     // data_style: { paddingLeft: "7%" },
   },
 ];
-let rows = [
+const rows = [
   {
     id: "1",
     col1: "#23324234",

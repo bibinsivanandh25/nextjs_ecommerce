@@ -1,17 +1,14 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-shadow */
+/* eslint-disable radix */
+/* eslint-disable no-unused-vars */
+import { Grid, Paper, Typography } from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
-import styles from "./InvoiceCardComponent.module.css";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
-import {
-  allowback_orders,
-  back_orders,
-  business_processing_days,
-  shipping_class,
-  stock_status,
-} from "../../../../../../../constants/constants";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
@@ -21,6 +18,13 @@ import InputFieldWithChip from "components/atoms/InputWithChip";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
+import {
+  allowback_orders,
+  business_processing_days,
+  shipping_class,
+  stock_status,
+} from "../../../../../../../constants/constants";
+import styles from "./InvoiceCardComponent.module.css";
 
 const GroupVariationForm = forwardRef(
   ({ formData = {}, setShowGroupVariant = () => {} }, ref) => {
@@ -272,7 +276,6 @@ const GroupVariationForm = forwardRef(
 
     const handleSubmit = () => {
       const flag = validate();
-      console.log({ variationData });
     };
 
     return (
@@ -294,6 +297,7 @@ const GroupVariationForm = forwardRef(
             {Object.keys(variationData).map((item, index) => {
               return (
                 <div
+                  // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   style={{
                     height: variationData[item].expand ? "100%" : "fit-content",
@@ -704,6 +708,7 @@ const GroupVariationForm = forwardRef(
                           <Grid container className="w-100" spacing={2}>
                             {Object.keys(optionsValue).map((ele, index) => {
                               return (
+                                // eslint-disable-next-line react/no-array-index-key
                                 <Grid item md={12} container key={index}>
                                   <Grid
                                     item
@@ -1088,14 +1093,14 @@ const GroupVariationForm = forwardRef(
         <div className="d-flex justify-content-end mb-3 me-3">
           <ButtonComponent
             label="Cancle"
-            variant={"outlined"}
-            size={"small"}
+            variant="outlined"
+            size="small"
             onBtnClick={() => {}}
             muiProps="me-2"
           />
           <ButtonComponent
             label="Submit"
-            size={"small"}
+            size="small"
             onBtnClick={handleSubmit}
             muiProps="me-2"
           />

@@ -1,5 +1,7 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/no-array-index-key */
 import * as React from "react";
-import { styled, useTheme, Theme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import { useMemo, useState } from "react";
@@ -16,7 +18,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import { resellerMenu, supplierMenu } from "constants/navConstants";
 import { useSession } from "next-auth/react";
-import { Menu, MenuItem, MenuList } from "@mui/material";
+import { MenuItem, MenuList } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 
@@ -59,36 +61,6 @@ const Drawer = styled(MuiDrawer, {
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
 }));
-
-const mapList = (role) => {
-  const addId = (id, item, path) => {
-    if (!item?.child?.length) {
-      return {
-        ...item,
-        id: id,
-        selected: false,
-        path_name: `${path}/${item.path_name}`,
-      };
-    } else {
-      return {
-        ...item,
-        id: id,
-        selected: false,
-        path_name: `${path}/${item.path_name}`,
-        child: [
-          ...item.child.map((ele, index) => {
-            return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
-          }),
-        ],
-      };
-    }
-  };
-  const tempList = role === "Supplier" ? supplierMenu : resellerMenu;
-  const list = [...tempList].map((item, index) => {
-    return addId(index, item, `/${getBasePath(role)}`);
-  });
-  return [...list];
-};
 const getBasePath = (role) => {
   switch (role) {
     case "Supplier":
@@ -99,18 +71,49 @@ const getBasePath = (role) => {
       return "customer";
   }
 };
+const mapList = (role) => {
+  const addId = (id, item, path) => {
+    if (!item?.child?.length) {
+      return {
+        ...item,
+        id,
+        selected: false,
+        path_name: `${path}/${item.path_name}`,
+      };
+    }
+    return {
+      ...item,
+      id,
+      selected: false,
+      path_name: `${path}/${item.path_name}`,
+      child: [
+        ...item.child.map((ele, index) => {
+          return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
+        }),
+      ],
+    };
+  };
+  const tempList = role === "Supplier" ? supplierMenu : resellerMenu;
+  const list = [...tempList].map((item, index) => {
+    return addId(index, item, `/${getBasePath(role)}`);
+  });
+  return [...list];
+};
+
 const SideBarComponent = ({ children }) => {
   const { data: session } = useSession();
-  const theme = useTheme();
+  // const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [menuList, setMenuList] = useState([...mapList(session.user.role)]);
-  const [selected, setSelected] = useState({});
-  const [pathName, setPathName] = useState(getBasePath(session.user.role));
+  const [menuList, setMenuList] = useState([
+    ...mapList(session?.user?.role || "customer"),
+  ]);
   const route = useRouter();
 
   useMemo(() => {
-    setMenuList([...mapList(session.user.role)]);
-  }, [session.user.role]);
+    if (session && session.user) {
+      setMenuList([...mapList(session.user.role)]);
+    }
+  }, [session]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -168,21 +171,6 @@ const SideBarComponent = ({ children }) => {
               ) : null}
             </MenuItem>
           );
-          // }
-          // return (
-          //   <MenuItem sx={getMenuStyles(item)} className="d-block">
-          //     {item.title}
-          //     <MenuList
-          //       key={index}
-          //       sx={{
-          //         minHeight: 40,
-          //         px: 2.5,
-          //       }}
-          //     >
-          //       {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}
-          //     </MenuList>
-          //   </MenuItem>
-          // );
         })}
       </div>
     );
@@ -194,11 +182,12 @@ const SideBarComponent = ({ children }) => {
         maxWidth: "100vw",
         position: "relative",
         top: "60px",
+        display: "flex",
       }}
     >
       <CssBaseline />
 
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} className="shadow position-fixed">
         <Box
           className="overflow-y-scroll hide-scrollbar"
           sx={{
@@ -320,7 +309,7 @@ const SideBarComponent = ({ children }) => {
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
         }}
-        className=" overflow-auto p-4 py-3 hide-scrollbar"
+        className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
       >
         <Box className="mb-2">
           <BreadCrumb />

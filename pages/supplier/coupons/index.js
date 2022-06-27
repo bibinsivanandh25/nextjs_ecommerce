@@ -1,4 +1,6 @@
-import { Button, Grid, Paper } from "@mui/material";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -69,38 +71,15 @@ const Coupons = () => {
   const getClassnames = (status) => {
     if (status?.toLowerCase() === "published") {
       return "text-success";
-    } else if (status.toLowerCase().includes("expire")) {
+    }
+    if (status.toLowerCase().includes("expire")) {
       return "text-danger";
-    } else if (status.toLowerCase().includes("not")) {
+    }
+    if (status.toLowerCase().includes("not")) {
       return "text-primary";
     }
     return "";
   };
-
-  const filterByType = React.useCallback(() => {
-    if (dropdownFilter && dropdownFilter.id) {
-      switch (dropdownFilter?.id) {
-        case "Fixed Product Discount":
-          setTableRows(
-            tableRows?.filter((row) => row["col2"] === "Fixed Product Discount")
-          );
-          break;
-        case "Scratch Card":
-          setTableRows(
-            tableRows?.filter((row) => row["col2"] === "Scratch Card")
-          );
-          break;
-        default:
-          setTableRows(mapRowsToTable(tableData));
-      }
-    } else {
-      setTableRows(mapRowsToTable(tableData));
-    }
-  }, [dropdownFilter]);
-
-  useEffect(() => {
-    filterByType();
-  }, [dropdownFilter]);
 
   const mapRowsToTable = (data) => {
     const result = [];
@@ -108,7 +87,7 @@ const Coupons = () => {
       result.push({
         col1: row.couponcode,
         col2: row.discounttype,
-        col3: row.amount + "%",
+        col3: `${row.amount}%`,
         col4: row.usagelimit || "-",
         col5: row.expiredate,
         col6: (
@@ -129,6 +108,29 @@ const Coupons = () => {
     });
     return result;
   };
+
+  const filterByType = React.useCallback(() => {
+    if (dropdownFilter && dropdownFilter.id) {
+      switch (dropdownFilter?.id) {
+        case "Fixed Product Discount":
+          setTableRows(
+            tableRows?.filter((row) => row.col2 === "Fixed Product Discount")
+          );
+          break;
+        case "Scratch Card":
+          setTableRows(tableRows?.filter((row) => row.col2 === "Scratch Card"));
+          break;
+        default:
+          setTableRows(mapRowsToTable(tableData));
+      }
+    } else {
+      setTableRows(mapRowsToTable(tableData));
+    }
+  }, [dropdownFilter]);
+
+  useEffect(() => {
+    filterByType();
+  }, [dropdownFilter]);
 
   useEffect(() => {
     const rows = [

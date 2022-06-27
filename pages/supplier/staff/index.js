@@ -1,13 +1,12 @@
-import { Box, Grid, MenuList, Paper } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
 
 const tableHeaders = [
   {
-    id: "col1", //id value in column should be presented in row as key
+    id: "col1", // id value in column should be presented in row as key
     label: "Staff ID",
     minWidth: 100,
     align: "center",
@@ -15,7 +14,7 @@ const tableHeaders = [
     data_classname: "",
   },
   {
-    id: "col2", //id value in column should be presented in row as key
+    id: "col2", // id value in column should be presented in row as key
     label: "Tab Access",
     minWidth: 100,
     align: "center",
@@ -23,7 +22,7 @@ const tableHeaders = [
     data_classname: "",
   },
   {
-    id: "col3", //id value in column should be presented in row as key
+    id: "col3", // id value in column should be presented in row as key
     label: "Name",
     minWidth: 100,
     align: "center",
@@ -31,7 +30,7 @@ const tableHeaders = [
     data_classname: "",
   },
   {
-    id: "col4", //id value in column should be presented in row as key
+    id: "col4", // id value in column should be presented in row as key
     label: "E-mail",
     minWidth: 100,
     align: "center",
@@ -39,7 +38,7 @@ const tableHeaders = [
     data_classname: "",
   },
   {
-    id: "col5", //id value in column should be presented in row as key
+    id: "col5", // id value in column should be presented in row as key
     label: "Action",
     align: "center",
     data_align: "center",
@@ -92,7 +91,7 @@ const tempRows = [
 
 const Staff = () => {
   const router = useRouter();
-  const [addStaff, setAddStaff] = useState(false);
+  // const [addStaff, setAddStaff] = useState(false);
   const handleBtnClick = () => {
     // setAddStaff((pre) => !pre);
     router.push("/supplier/staff/addstaff");
@@ -112,7 +111,11 @@ const Staff = () => {
           </Box>
         </div>
         <Box className="mt-4">
-          <TableComponent tableRows={tempRows} columns={tableHeaders} />
+          <TableComponent
+            tableRows={tempRows}
+            columns={tableHeaders}
+            table_heading={`${tempRows.length} Staffs`}
+          />
         </Box>
       </Paper>
     </>

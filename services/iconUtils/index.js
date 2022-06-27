@@ -11,18 +11,32 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import ShareIcon from "@mui/icons-material/Share";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
-import { FileCopy, MoreVert } from "@mui/icons-material";
+import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
 import { useState } from "react";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import GridViewIcon from "@mui/icons-material/GridView";
+import TableRowsIcon from "@mui/icons-material/TableRows";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
+import BalanceIcon from "@mui/icons-material/Balance";
+import ViewCarouselOutlinedIcon from "@mui/icons-material/ViewCarouselOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 
 const CustomIcon = ({
   title = "",
   onIconClick = () => {},
+  onMouseEnter = () => {},
+  onMouseLeave = () => {},
   type = "",
   color = "text-secondary",
   className = "",
   size = "",
-  placement = "",
+  placement = "top",
   muiProps = {},
   showColorOnHover = true,
 }) => {
@@ -42,12 +56,25 @@ const CustomIcon = ({
     remove: RemoveRedEyeIcon,
     more: MoreVert,
     filecopy: FileCopy,
+    notification: NotificationsNoneOutlinedIcon,
+    close: CloseIcon,
+    gridview: GridViewIcon,
+    tablerows: TableRowsIcon,
+    reply: Reply,
+    lineArrowIcon: ArrowForwardIcon,
+    favoriteBorderIcon: FavoriteBorderIcon,
+    viewCarouselIcon: ViewCarouselIcon,
+    viewCarouselOutlinedIcon: ViewCarouselOutlinedIcon,
+    localMallIcon: LocalMallOutlinedIcon,
+    balanceIcon: BalanceIcon,
+    visibilityOutlinedIcon: VisibilityOutlinedIcon,
+    airportShuttleOutlinedIcon: AirportShuttleOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);
 
   const getIcon = () => {
-    let Component = Map[type];
+    const Component = Map[type];
     return (
       <Component
         className={`${color} ${className} ${
@@ -57,70 +84,27 @@ const CustomIcon = ({
         {...muiProps}
       />
     );
-    // if (type === "view" || type === "visibility")
-    //   return (
-    //     <Component
-    //       Name="VisibilityIcon"
-    //       className={`${color} ${className}`}
-    //       size={size}
-    //     />
-    //   );
-    // if (type === "arrowforward")
-    //   return (
-    //     <ArrowForwardIosIcon
-    //       className={`${color} ${className} fs-12`}
-    //       size={size}
-    //     />
-    //   );
-    // if (type === "download")
-    //   return <DownloadIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "home")
-    //   return <HomeIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "search")
-    //   return <SearchIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "add")
-    //   return <AddIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "filter")
-    //   return <FilterListIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "delete")
-    //   return <DeleteIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "upload")
-    //   return <FileUploadIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "download")
-    //   return (
-    //     <FileDownloadIcon className={`${color} ${className}`} size={size} />
-    //   );
-    // if (type === "share")
-    //   return <ShareIcon className={`${color} ${className}`} size={size} />;
-    // if (type === "edit")
-    //   return <Edit className={`${color} ${className}`} size={size} />;
-    // if (type === "remove")
-    //   return (
-    //     <RemoveRedEyeIcon className={`${color} ${className}`} size={size} />
-    //   );
-    // if (type === "more")
-    //   return <MoreVert className={`${color} ${className}`} size={size} />;
   };
 
   return (
-    // <Tooltip title={title} placement={placement}>
-    <span title={title} data-bs-toggle="tooltip" data-bs-placement="top">
+    <Tooltip title={title} placement={placement}>
       <IconButton
         disableFocusRipple
         disableRipple
         onClick={onIconClick}
         onMouseEnter={() => {
           setHover(true);
+          onMouseEnter();
         }}
         onMouseLeave={() => {
           setHover(false);
+          onMouseLeave();
         }}
         sx={{ p: 0 }}
       >
         {getIcon() || <></>}
       </IconButton>
-    </span>
-    // </Tooltip>
+    </Tooltip>
   );
 };
 

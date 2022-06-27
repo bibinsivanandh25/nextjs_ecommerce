@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable array-callback-return */
 import * as React from "react";
 import { Tooltip } from "@mui/material";
 
@@ -27,6 +30,7 @@ export default function BasicMenu({
 
   const getArrow = (item) => {
     let arr = [...MenuItems];
+    // eslint-disable-next-line consistent-return
     arr = arr.map((ele) => {
       if (ele.label === item.label) {
         if (item.sort === "ascending") {
@@ -34,7 +38,8 @@ export default function BasicMenu({
             ...ele,
             sort: "descending",
           };
-        } else if (item.sort === "descending") {
+        }
+        if (item.sort === "descending") {
           return {
             ...ele,
             sort: "ascending",
@@ -95,7 +100,7 @@ export default function BasicMenu({
       },
     },
   }));
-  
+
   return (
     <div>
       <Tooltip title="Details" placement="top">
@@ -119,15 +124,18 @@ export default function BasicMenu({
         {MenuItems.map((item, index) => {
           return (
             <MenuItem
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               onClick={() => {
                 handleClose();
                 getSelectedValue(item);
               }}
             >
+              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div
                 onClick={() => getArrow(item)}
-                  className="d-flex w-100 justify-content-between"
+                className="d-flex w-100 justify-content-between"
                 id="menuitem"
               >
                 <p>{item.label}</p>

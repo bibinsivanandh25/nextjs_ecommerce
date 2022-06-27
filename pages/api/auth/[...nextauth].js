@@ -1,8 +1,6 @@
-import axios from "axios";
+/* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { loginCall } from "services";
-import toastify from "services/utils/toastUtils";
 
 const options = {
   providers: [
@@ -12,7 +10,7 @@ const options = {
       //   username: { label: "UserName", type: "text" },
       //   password: { label: "Password", type: "password" },
       // },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // if (credentials.username && credentials.password) {
         //   const { data, errRes } = await axios
         //     .post("http://10.10.20.18:8082/api/v1/authenticate", {
@@ -79,7 +77,7 @@ const options = {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
+      if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
   },
@@ -89,5 +87,6 @@ const options = {
 
 export default async function auth(req, res) {
   // Do whatever you want here, before the request is passed down to `NextAuth`
+  // eslint-disable-next-line no-return-await
   return await NextAuth(req, res, options);
 }

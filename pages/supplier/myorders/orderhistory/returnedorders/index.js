@@ -95,7 +95,8 @@ const ReturnedOrders = () => {
   const getClassnames = (status) => {
     if (status?.toLowerCase().includes("live")) {
       return "text-success";
-    } else if (status.toLowerCase().includes("fail")) {
+    }
+    if (status.toLowerCase().includes("fail")) {
       return "text-danger";
     }
     return "";
@@ -206,13 +207,11 @@ const ReturnedOrders = () => {
       switch (dropdownFilter?.id) {
         case "single":
           setTableRows(
-            tableRows?.filter((row) => parseInt(row["col7"], 10) === 1)
+            tableRows?.filter((row) => parseInt(row.col7, 10) === 1)
           );
           break;
         case "multiple":
-          setTableRows(
-            tableRows?.filter((row) => parseInt(row["col7"], 10) > 1)
-          );
+          setTableRows(tableRows?.filter((row) => parseInt(row.col7, 10) > 1));
           break;
         default:
           setTableRows(mapRowsToTable(tableData));

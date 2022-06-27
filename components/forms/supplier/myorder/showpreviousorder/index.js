@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import TableComponent from "components/atoms/TableComponent";
 import PrintIcon from "@mui/icons-material/Print";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -7,7 +9,7 @@ import { Paper, Tooltip } from "@mui/material";
 const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Invoice ID",
       minWidth: 100,
       align: "center",
@@ -41,7 +43,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: "#23324234",
@@ -84,7 +86,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {} }) => {
         }}
       >
         <KeyboardArrowLeftIcon className="fw-bold fs-26" />
-        <label>Back</label>
+        <span>Back</span>
       </div>
       <Paper className="py-3">
         <TableComponent

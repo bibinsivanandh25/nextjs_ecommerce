@@ -51,9 +51,9 @@ const MyCollections = () => {
         col2: row.commissionmode,
         col3: row.producttype,
         col4: row.category,
-        col5: row.transferprice + " Rs",
-        col6: row.mrp + " Rs",
-        col7: row.productweight + " gms",
+        col5: `${row.transferprice} Rs`,
+        col6: `${row.mrp} Rs`,
+        col7: `${row.productweight} gms`,
         col8: row.productvolume,
       });
     });

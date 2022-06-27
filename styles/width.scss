@@ -59,6 +59,10 @@
   max-height: 100vh;
 }
 
+.mxh-95vh {
+  max-height: 90vh !important;
+}
+
 .mnh-80vh {
   min-height: 80vh
 }
@@ -111,12 +115,20 @@
   width: 20% !important;
 }
 
+.w-40p{
+  width: 40% !important;
+}
+
 .w-25px {
   width: 25px !important;
 }
 
 .h-25px {
   height: 25px !important;
+}
+
+.h-135px{
+  height: 135px !important;
 }
 
 .w-80p {
@@ -215,6 +227,10 @@
   width: 200px !important
 }
 
+.w-135px{
+  width: 135px !important;
+}
+
 .mnw-200px {
   min-width: 200px !important;
 }
@@ -236,7 +252,7 @@
 }
 
 .mnh-100vh {
-  min-height: 100vh
+  min-height: 100vh;
 }
 
 .mnw-100vh {
@@ -254,3 +270,32 @@
 .w-300px {
   width: 300px;
 }
+
+.w-100px {
+  width: 150px;
+}
+
+.h-150 {
+min-height: 150px;
+}
+
+.h-30 {
+  min-height: 50px;
+}
+
+.w-130px {
+  min-width: 290px !important;
+}
+
+.w-25p {
+  width: 25% !important;
+}
+
+.h-19p {
+height: 19% !important;
+}
+
+.w-20p{
+  width: 20%;
+}
+

@@ -1,14 +1,6 @@
-import {
-  forwardRef,
-  useRef,
-  useState,
-  Paper,
-  useImperativeHandle,
-} from "react";
+import { forwardRef, useState, useImperativeHandle } from "react";
 import { Box, Typography } from "@mui/material";
-import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import { assetsJson } from "public/assets";
 import ScratchCardComponent from "components/forms/reseller/marketingtools/createluckydraw/createScratchCard/ScratchCard";
 
 const ScratchCardForm = forwardRef((_props, ref) => {

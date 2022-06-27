@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -17,7 +18,7 @@ export default function MenuOption({
     setAnchorEl(null);
   };
   return (
-    <React.Fragment>
+    <>
       {/* <IconButton
         onClick={handleClick}
         size="small"
@@ -25,7 +26,10 @@ export default function MenuOption({
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
       > */}
-      <MoreVertIcon className={IconclassName} onClick={handleClick} />
+      <MoreVertIcon
+        className={`${IconclassName} cursor-pointer`}
+        onClick={handleClick}
+      />
       {/* </IconButton> */}
       <Menu
         anchorEl={anchorEl}
@@ -70,6 +74,6 @@ export default function MenuOption({
           );
         })}
       </Menu>
-    </React.Fragment>
+    </>
   );
 }

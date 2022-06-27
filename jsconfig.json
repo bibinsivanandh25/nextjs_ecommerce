@@ -1,6 +1,15 @@
 {
-    "compilerOptions": {
-      "baseUrl": "."
-    },
-    "include": ["."]
-  }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "react",
+    "paths": {
+      "@/constants": ["constants/index"],
+      "@/forms/*": ["components/forms/*"],
+      "@/atoms/*": ["components/atoms/*"],
+      "@/molecules/*": ["components/molecules/*"],
+      "@/organisms/*": ["components/organisms/*"],
+      "@core/*": ["core/*"]
+    }
+  },
+  "include": ["."]
+}

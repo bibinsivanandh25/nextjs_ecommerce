@@ -12,29 +12,29 @@ const CheckBoxComponent = ({
   indeterminate = false,
   checkBoxClick = () => {},
   size = "small",
-  varient = "normal", //filled or normal
+  varient = "normal", //  filled or normal
   showIcon = false,
-  iconType = "normal", //normal or circled
+  iconType = "normal", // normal or circled
   id = "checkbox",
   className = "",
   diableLabelClick = true,
+  checkedcolor = "#e56700",
 }) => {
   const getIcon = () => {
     if (showIcon && iconType === "normal" && varient === "filled") {
       return <CheckBoxIcon />;
-    } else if (showIcon && iconType === "circled") {
-      return <RadioButtonUncheckedIcon />;
-    } else {
-      return <CheckBoxOutlineBlankIcon />;
     }
+    if (showIcon && iconType === "circled") {
+      return <RadioButtonUncheckedIcon />;
+    }
+    return <CheckBoxOutlineBlankIcon />;
   };
 
   const getCheckIcon = () => {
     if (showIcon && iconType === "circled") {
       return <CheckCircleIcon />;
-    } else {
-      return <CheckBoxIcon />;
     }
+    return <CheckBoxIcon />;
   };
 
   return (
@@ -51,7 +51,7 @@ const CheckBoxComponent = ({
             checkedIcon={getCheckIcon()}
             sx={{
               "&.Mui-checked": {
-                color: "#e56700",
+                color: checkedcolor,
               },
               pointerEvents: "auto",
               cursor: "pointer",

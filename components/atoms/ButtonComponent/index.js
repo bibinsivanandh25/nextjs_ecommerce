@@ -15,6 +15,7 @@ const ButtonComponent = ({
   borderColor = "border-orange",
   textColor = "color-orange",
   bgColor = "bg-orange",
+  fullWidth = false,
 }) => {
   const getIcon = () => {
     return (
@@ -27,6 +28,7 @@ const ButtonComponent = ({
       onClick={onBtnClick}
       size={size}
       className={`${
+        // eslint-disable-next-line no-nested-ternary
         variant === "contained"
           ? bgColor
           : variant === "outlined"
@@ -36,8 +38,9 @@ const ButtonComponent = ({
       sx={{
         textTransform: "none",
       }}
-      startIcon={showIcon && iconOrintation === "start" ? getIcon() : <></>}
-      endIcon={showIcon && iconOrintation === "end" ? getIcon() : <></>}
+      startIcon={(showIcon && iconOrintation) === "start" ? getIcon() : <></>}
+      endIcon={(showIcon && iconOrintation) === "end" ? getIcon() : <></>}
+      fullWidth={fullWidth}
     >
       {label}
     </Button>

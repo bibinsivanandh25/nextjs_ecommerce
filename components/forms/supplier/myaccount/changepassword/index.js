@@ -27,7 +27,7 @@ const ChangePassword = () => {
     } else if (!validationRegex.email.test(formValues.emailId)) {
       errObj.emailId = validateMessage.email;
     } else {
-      errObj["emailId"] = null;
+      errObj.emailId = null;
     }
     validatePassword("oldPassword");
     validatePassword("newPassword");
@@ -66,6 +66,7 @@ const ChangePassword = () => {
           error={Boolean(error?.emailId)}
           helperText={error?.emailId}
           type="email"
+          inputlabelshrink
         />
       </Grid>
       <Grid item xs={12}>
@@ -83,6 +84,7 @@ const ChangePassword = () => {
           error={Boolean(error?.oldPassword)}
           helperText={error?.oldPassword}
           type="password"
+          inputlabelshrink
         />
       </Grid>
       <Grid item xs={12}>
@@ -100,6 +102,7 @@ const ChangePassword = () => {
           error={Boolean(error?.newPassword)}
           helperText={error?.newPassword}
           type="password"
+          inputlabelshrink
         />
       </Grid>
       <Grid item xs={12}>
@@ -117,6 +120,7 @@ const ChangePassword = () => {
           error={Boolean(error?.reEnterPassword)}
           helperText={error?.reEnterPassword}
           type="password"
+          inputlabelshrink
         />
       </Grid>
       <Grid xs={12} item>

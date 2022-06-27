@@ -1,15 +1,16 @@
-import { MenuOutlined, MoreVert } from "@mui/icons-material";
-import { Grid, MenuList, Paper } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bargraphgraph";
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
+import { Grid, Paper } from "@mui/material";
+import Bargraph from "components/atoms/Bar/Bargraph";
 import Doughnutchart from "components/atoms/Doughnut/Doughnut";
 import BasicMenu from "components/atoms/Menu";
 import SelectComponent from "components/atoms/SelectComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { useState } from "react";
 // const columns = [
 //   {
-//     id: "col1", //id value in column should be presented in row as key
+//     id: "col1", //  id value in column should be presented in row as key
 //     label: "Date",
 //     minWidth: 100,
 //     align: "center",
@@ -85,9 +86,8 @@ const ReportLayout = ({
   const [summarytableRows, setsummaryTableRows] = useState([...summaryRows]);
 
   const sortTable = (val) => {
-    console.log(val, "val");
     let sortCol;
-    let rows = [...tableRows];
+    const rows = [...tableRows];
     if (val.label === "Sort By Sale Count") {
       sortCol = "col2";
     } else if (val.label === "Sort By Date") {
@@ -98,7 +98,8 @@ const ReportLayout = ({
       rows.sort((a, b) => {
         if (a[sortCol] > b[sortCol]) {
           return -1;
-        } else if (a[sortCol] < b[sortCol]) {
+        }
+        if (a[sortCol] < b[sortCol]) {
           return 1;
         }
       });
@@ -106,7 +107,8 @@ const ReportLayout = ({
       rows.sort((a, b) => {
         if (a[sortCol] < b[sortCol]) {
           return -1;
-        } else if (a[sortCol] > b[sortCol]) {
+        }
+        if (a[sortCol] > b[sortCol]) {
           return 1;
         }
       });
@@ -114,9 +116,8 @@ const ReportLayout = ({
     setTableRows([...rows]);
   };
   const sortSummaryTable = (val) => {
-    console.log(val, "val");
     let sortCol;
-    let rows = [...tableRows];
+    const rows = [...tableRows];
     if (val.label === "Sort By Price") {
       sortCol = "col2";
     } else if (val.label === "Sort By Date") {
@@ -127,7 +128,8 @@ const ReportLayout = ({
       rows.sort((a, b) => {
         if (a[sortCol] > b[sortCol]) {
           return -1;
-        } else if (a[sortCol] < b[sortCol]) {
+        }
+        if (a[sortCol] < b[sortCol]) {
           return 1;
         }
       });
@@ -135,7 +137,8 @@ const ReportLayout = ({
       rows.sort((a, b) => {
         if (a[sortCol] < b[sortCol]) {
           return -1;
-        } else if (a[sortCol] > b[sortCol]) {
+        }
+        if (a[sortCol] > b[sortCol]) {
           return 1;
         }
       });
@@ -195,10 +198,7 @@ const ReportLayout = ({
             <Grid className="d-flex align-items-center ">
               <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
               <Grid className="ms-auto ">
-                <SelectComponent
-                  disableUnderline={true}
-                  list={detailSelectList}
-                />
+                <SelectComponent disableUnderline list={detailSelectList} />
               </Grid>
               <Grid className="mt-3 cursor-pointer ">
                 {/* <MoreVert /> */}
@@ -224,14 +224,11 @@ const ReportLayout = ({
               <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
               <Grid className="d-flex justify-content-between align-items-center">
                 <SelectComponent
-                  disableUnderline={true}
+                  disableUnderline
                   list={summaryStatusList}
                   label="Status"
                 />
-                <SelectComponent
-                  disableUnderline={true}
-                  list={summarySelectList}
-                />
+                <SelectComponent disableUnderline list={summarySelectList} />
                 <Grid className="mt-3 cursor-pointer">
                   <BasicMenu
                     menuList={summaryMenuList}

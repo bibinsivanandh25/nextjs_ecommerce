@@ -3,9 +3,8 @@ import ModalComponent from "components/atoms/ModalComponent";
 import RegistrationForm from "components/forms/supplier/registration";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
-import { requiredValidator } from "services/validationUtils";
-import styles from "./Registration.module.css";
 import validationRegex from "services/utils/regexUtils";
+import styles from "./Registration.module.css";
 
 const Registration = () => {
   const formObj = {
@@ -23,7 +22,7 @@ const Registration = () => {
   };
   const [formValues, setFormValues] = useState(formObj);
   const [errorObj, setErrorObj] = useState({ ...formObj });
-  const [showModal, setShowModal] = useState(false);
+  const [showModal] = useState(false);
 
   const validateForm = () => {
     let flag = false;
@@ -96,27 +95,26 @@ const Registration = () => {
 
   const handleSubmit = async () => {
     const flag = validateForm();
-    console.log(flag);
     if (!flag) {
-      const payload = {
-        firstName: formValues.firstName,
-        lastName: formValues.lastName,
-        businessName: formValues.businessName,
-        email: formValues.mail,
-        mobileNumber: formValues.mobile,
-        city: formValues.city,
-        gstin: formValues.gstin,
-        role: "SUPPLIER",
-        averageStockCount: formValues.stockCount,
-        website: formValues.site,
-        websiteLink: formValues.siteLink,
-        categoryData: [
-          {
-            categoryId: formValues.mainCat.value,
-            categoryName: formValues.mainCat.id,
-          },
-        ],
-      };
+      // const payload = {
+      //   firstName: formValues.firstName,
+      //   lastName: formValues.lastName,
+      //   businessName: formValues.businessName,
+      //   email: formValues.mail,
+      //   mobileNumber: formValues.mobile,
+      //   city: formValues.city,
+      //   gstin: formValues.gstin,
+      //   role: "SUPPLIER",
+      //   averageStockCount: formValues.stockCount,
+      //   website: formValues.site,
+      //   websiteLink: formValues.siteLink,
+      //   categoryData: [
+      //     {
+      //       categoryId: formValues.mainCat.value,
+      //       categoryName: formValues.mainCat.id,
+      //     },
+      //   ],
+      // };
       // const { data, errRes } = await axios
       //   .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
       //   .then((res) => {

@@ -1,19 +1,21 @@
-import { Box, Grid, Paper } from "@mui/material";
+/* eslint-disable consistent-return */
+/* eslint-disable react/no-array-index-key */
+import { Box, Grid } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
 import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
+import InputBox from "components/atoms/InputBoxComponent";
+import TextAreaComponent from "components/atoms/TextAreaComponent";
+import { getBase64 } from "services/utils/functionUtils";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
+import FileUploadModal from "components/atoms/FileUpload";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import {
   commisiondata,
   product_type,
 } from "../../../../../constants/constants";
-import InputBox from "components/atoms/InputBoxComponent";
-import TextAreaComponent from "components/atoms/TextAreaComponent";
-import { getBase64 } from "services/utils/functionUtils";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
-import validateMessage from "constants/validateMessages";
-import toastify from "services/utils/toastUtils";
-import FileUploadModal from "components/atoms/FileUpload";
 
 const ProductsLayout = ({
   formData = {},
@@ -21,23 +23,14 @@ const ProductsLayout = ({
   handleSubmitClick = () => {},
   tabsList = [],
   formsRef = null,
+  // type = "",
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
-  const handleNextClick = () => {
-    const flag = formsRef.current.validate();
-    if (validateForm() && flag) {
-      const temp = formsRef.current.handleSendFormData();
-      setFormData((prev) => {
-        return { ...prev, [temp[0]]: temp[1] };
-      });
-      setactiveTab((prev) => prev + 1);
-    }
-  };
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
-  const [commisionData, setCommisionData] = useState([...commisiondata]);
+  const [commisionData] = useState([...commisiondata]);
   const [mainFormData, setMainFormData] = useState({
     commision_mode: null,
     product_type: "",
@@ -70,7 +63,6 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
   });
-
   const validateForm = () => {
     const errObj = {
       commision_mode: "",
@@ -127,6 +119,17 @@ const ProductsLayout = ({
     }
     setErrorObj({ ...errObj });
     return !flag;
+  };
+
+  const handleNextClick = () => {
+    const flag = formsRef.current.validate();
+    if (validateForm() && flag) {
+      const temp = formsRef.current.handleSendFormData();
+      setFormData((prev) => {
+        return { ...prev, [temp[0]]: temp[1] };
+      });
+      setactiveTab((prev) => prev + 1);
+    }
   };
 
   useEffect(() => {
@@ -340,8 +343,8 @@ const ProductsLayout = ({
                   <div className="d-flex justify-content-end">
                     <ButtonComponent
                       label="Create tag"
-                      variant={"outlined"}
-                      size={"small"}
+                      variant="outlined"
+                      size="small"
                       onBtnClick={() => {}}
                       muiProps="m-0 p-0 fs-10"
                     />
@@ -394,8 +397,8 @@ const ProductsLayout = ({
             <Box className="d-flex justify-content-end me-3 mb-2">
               <ButtonComponent
                 label="Clear"
-                variant={"outlined"}
-                size={"small"}
+                variant="outlined"
+                size="small"
                 onBtnClick={() => {
                   setFormData({
                     mainform: {
@@ -469,8 +472,8 @@ const ProductsLayout = ({
               {activeTab !== 0 ? (
                 <ButtonComponent
                   label="Previous"
-                  variant={"outlined"}
-                  size={"small"}
+                  variant="outlined"
+                  size="small"
                   onBtnClick={() => {
                     setactiveTab((prev) => prev - 1);
                   }}
@@ -479,7 +482,7 @@ const ProductsLayout = ({
               ) : null}
               <ButtonComponent
                 label={activeTab === 5 ? "Submit" : "Next"}
-                size={"small"}
+                size="small"
                 onBtnClick={
                   activeTab === 5
                     ? () => {

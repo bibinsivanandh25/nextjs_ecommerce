@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -185,9 +189,8 @@ const RegistrationForm = ({
     const getData = () => {
       if (ele.type === "dropdown") {
         return val ? val.id : null;
-      } else {
-        return val;
       }
+      return val;
     };
     setFormValues((prev) => {
       return {
@@ -208,7 +211,7 @@ const RegistrationForm = ({
           className="mt-5"
         >
           <Grid item xs={12}>
-            <p className="color-orange d-flex justify-content-center fw-600">
+            <p className="color-orange d-flex justify-content-center fw-600 mb-2">
               Already have a referral code? You have more chance to win
               Prize&apos;s & Discounts.
             </p>
@@ -243,6 +246,9 @@ const RegistrationForm = ({
             <p
               className="color-orange ms-2 cursor-pointer"
               onClick={() => setDisplayType("registration")}
+              style={{
+                textDecoration: "underline",
+              }}
             >
               Click here
             </p>
@@ -323,7 +329,7 @@ const RegistrationForm = ({
             <ButtonComponent
               label="Submit"
               onBtnClick={handleSubmit}
-              muiProps={"w-60p"}
+              muiProps="w-60p"
             />
             <span className="color-orange fs-12 mt-2 cursor-pointer">
               Resend OTP

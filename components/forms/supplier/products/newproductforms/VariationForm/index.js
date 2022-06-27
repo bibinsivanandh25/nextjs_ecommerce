@@ -1,4 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
+/* eslint-disable no-prototype-builtins */
 import { Grid, Typography } from "@mui/material";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
@@ -73,16 +75,16 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
         return ["variation", { ...variationFormData }];
       },
       validate: () => {
-        //write validation logic here
-        //return true if validation is success else false
+        // write validation logic here
+        // return true if validation is success else false
         return validateForm();
       },
     };
   });
 
-  function getUniqueListBy(arr, key) {
-    return [...new Map(arr.map((item) => [item[key], item])).values()];
-  }
+  // function getUniqueListBy(arr, key) {
+  //   return [...new Map(arr.map((item) => [item[key], item])).values()];
+  // }
 
   useEffect(() => {
     if (formData && formData.attribute) {
@@ -133,9 +135,8 @@ const VariationForm = forwardRef(({ formData = {} }, ref) => {
     const getData = () => {
       if (ele.type === "dropdown") {
         return val ? val.id : null;
-      } else {
-        return val;
       }
+      return val;
     };
     setVariationFormData((prev) => {
       return {

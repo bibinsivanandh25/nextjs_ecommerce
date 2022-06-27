@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-undef */
+/* eslint-disable no-use-before-define */
 import React, {
   forwardRef,
   useImperativeHandle,
@@ -8,7 +12,6 @@ import React, {
 const WheelSpin = forwardRef(
   (
     {
-      spin_wheel = null,
       segments,
       segColors,
       winningSegment,
@@ -31,7 +34,6 @@ const WheelSpin = forwardRef(
     const timerDelay = segments.length;
     let angleCurrent = 0;
     let angleDelta = 0;
-    let canvasContext = null;
     let maxSpeed = Math.PI / `${segments.length}`;
     const upTime = segments.length * upDuration;
     const downTime = segments.length * downDuration;
@@ -141,7 +143,7 @@ const WheelSpin = forwardRef(
       ctx.translate(centerX, centerY);
       ctx.rotate((lastAngle + angle) / 2);
       ctx.fillStyle = contrastColor;
-      ctx.font = "bold 1.5em " + fontFamily;
+      ctx.font = `bold 1.5em ${fontFamily}`;
       ctx.fillText(value.substr(0, 21), size / 2 + 20, 0);
       ctx.restore();
     };
@@ -155,7 +157,7 @@ const WheelSpin = forwardRef(
       ctx.strokeStyle = primaryColor;
       ctx.textBaseline = "middle";
       ctx.textAlign = "center";
-      ctx.font = "1em " + fontFamily;
+      ctx.font = `1em ${fontFamily}`;
       for (let i = 1; i <= len; i++) {
         const angle = PI2 * (i / len) + angleCurrent;
         drawSegment(i - 1, lastAngle, angle);
@@ -170,7 +172,7 @@ const WheelSpin = forwardRef(
       ctx.lineWidth = 10;
       ctx.strokeStyle = contrastColor;
       ctx.fill();
-      ctx.font = "bold 1em " + fontFamily;
+      ctx.font = `bold 1em ${fontFamily}`;
       ctx.fillStyle = contrastColor;
       ctx.textAlign = "center";
       ctx.fillText(buttonText, centerX, centerY + 3);
@@ -202,11 +204,11 @@ const WheelSpin = forwardRef(
         segments.length -
         Math.floor((change / (Math.PI * 2)) * segments.length) -
         1;
-      if (i < 0) i = i + segments.length;
+      if (i < 0) i += segments.length;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = primaryColor;
-      ctx.font = "bold 1.5em " + fontFamily;
+      ctx.font = `bold 1.5em ${fontFamily}`;
       currentSegment = segments[i];
       isStarted &&
         ctx.fillText(currentSegment, centerX + 10, centerY + size + 50);

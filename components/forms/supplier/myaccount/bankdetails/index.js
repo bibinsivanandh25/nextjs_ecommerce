@@ -1,11 +1,13 @@
-import ButtonComponent from "../../../../atoms/ButtonComponent";
-import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/no-array-index-key */
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import AddBankDetails from "./addbankdetails";
+
 const BankDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBankDetails, setSelectedBankDetails] = useState([]);
@@ -14,28 +16,28 @@ const BankDetails = () => {
       "Bank Name": "ICICI Bank",
       "Account Holder Name": "Madhusudhan Agrahar1",
       "Account Number": 1234567890,
-      "IFSC code": "ICIC000001",
+      "IFSC code": "ICIC0000001",
       isChecked: false,
     },
     {
       "Bank Name": "ICICI Bank",
       "Account Holder Name": "Madhusudhan Agrahar2",
       "Account Number": 1234567890,
-      "IFSC code": "ICIC000001",
+      "IFSC code": "ICIC0000001",
       isChecked: false,
     },
     {
       "Bank Name": "ICICI Bank",
       "Account Holder Name": "Madhusudhan Agrahar3",
       "Account Number": 1234567890,
-      "IFSC code": "ICIC000001",
+      "IFSC code": "ICIC0000001",
       isChecked: false,
     },
     {
       "Bank Name": "ICICI Bank",
       "Account Holder Name": "Madhusudhan Agrahar4",
       "Account Number": 1234567890,
-      "IFSC code": "ICIC000001",
+      "IFSC code": "ICIC0000001",
       isChecked: false,
     },
   ]);
@@ -121,7 +123,7 @@ const BankDetails = () => {
         >
           <AddCircleIcon className="text-secondary fs-1" />
         </Grid>
-        <Grid item xs={2}></Grid>
+        <Grid item xs={2} />
       </Grid>
       <AddBankDetails
         BankDetails={selectedBankDetails}

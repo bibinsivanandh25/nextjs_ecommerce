@@ -53,8 +53,9 @@ const Articles = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, ind) => {
       result.push({
+        id: ind + 1,
         col1: row.purchaseid,
         col2: row.articleName,
         col3: row.Description,
@@ -141,6 +142,7 @@ const Articles = () => {
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
+            table_heading="2 Confirmed Orders"
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"
@@ -148,6 +150,10 @@ const Articles = () => {
             showCustomSearchButton
             onCustomSearchButtonClick={() => setShowModal(true)}
             searchBarSizeMd={4}
+            OnSelectionChange={(ele) => {
+              console.log(ele);
+            }}
+            customDropDownPlaceholder="Select Categories"
           />
           <Menu
             id="basic-menu"

@@ -1,12 +1,13 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-lone-blocks */
 import { Grid, Paper, Slider, Tooltip, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
-import { CopyAllOutlined, Favorite, FileCopy, Star } from "@mui/icons-material";
+import { Favorite, FileCopy, Star } from "@mui/icons-material";
 import ModalComponent from "components/atoms/ModalComponent";
 import { useState } from "react";
-import InputBox from "components/atoms/InputBoxComponent";
 import styled from "@emotion/styled";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
@@ -189,7 +190,12 @@ const ProductDetailsCard = ({
           <Grid>
             <Grid container>
               <Grid item md={5} sm={4}>
-                <Image src={selectedProduct?.image} height={100} width={100} />
+                <Image
+                  src={selectedProduct?.image}
+                  height={100}
+                  width={100}
+                  alt=""
+                />
               </Grid>
               <Grid item md={6} sm={6}>
                 <Tooltip title={selectedProduct.title} placement="top">
@@ -226,7 +232,7 @@ const ProductDetailsCard = ({
                       setMargin(e.target.value);
                       console.log(e.target.value);
                     }}
-                    valueLabelFormat={margin + "%"}
+                    valueLabelFormat={`${margin}%`}
                   />
                 </div>
               </div>
@@ -287,11 +293,16 @@ const ProductDetailsCard = ({
                 isChecked={ele.isSelected}
                 id={ele.title}
                 onRadioChange={(e) => {
-                  let arr = [...wishListCollection];
+                  const arr = [...wishListCollection];
+                  // eslint-disable-next-line consistent-return
                   arr.forEach((item) => {
                     if (e.target.id === item.title) {
+                      // eslint-disable-next-line no-return-assign
+                      // eslint-disable-next-line no-param-reassign
                       return (item.isSelected = true);
-                    } else item.isSelected = false;
+                    }
+                    // eslint-disable-next-line no-param-reassign
+                    item.isSelected = false;
                   });
                   setwishListCollection([...arr]);
                 }}
@@ -305,10 +316,6 @@ const ProductDetailsCard = ({
             iconName="add"
             label="Add New Collection"
             variant="outlined"
-            onBtnClick={() => {
-              if (wishListCollection.length < 5) {
-              }
-            }}
             muiProps="fs-10"
           />
         </div>

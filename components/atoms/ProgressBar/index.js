@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "./Progress.module.css";
+
 const ProgressBar = ({ showHeader = true }) => {
   const route = useRouter();
   const steps = [
     {
-      label: "Accept & confirm Address",
-      path: "acceptandconfirmaddress",
+      label: "Accept & confirm Orders",
+      path: "acceptandconfirmorders",
     },
     {
       label: "Generate Invoice & Manifest ",
@@ -17,7 +20,7 @@ const ProgressBar = ({ showHeader = true }) => {
       path: "uploadmanifest",
     },
   ];
- 
+
   return (
     <div className={styles.progresscontainer}>
       {showHeader ? (
@@ -35,6 +38,7 @@ const ProgressBar = ({ showHeader = true }) => {
                   ? styles.active
                   : ""
               }
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
             >
               <Link href={item.path}>
@@ -49,4 +53,4 @@ const ProgressBar = ({ showHeader = true }) => {
 };
 export default ProgressBar;
 
-//steps [{label:''}]
+// steps [{label:''}]

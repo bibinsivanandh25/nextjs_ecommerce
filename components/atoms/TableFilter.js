@@ -1,6 +1,6 @@
 import React from "react";
-import ButtonComponent from "./ButtonComponent";
 import { Grid } from "@mui/material";
+import ButtonComponent from "./ButtonComponent";
 
 export default function TableFilter({ showdelete = true }) {
   return (
@@ -13,7 +13,7 @@ export default function TableFilter({ showdelete = true }) {
       {showdelete && (
         <ButtonComponent
           spacing={2}
-          showIcon={true}
+          showIcon
           iconName="delete"
           iconSize="17"
           label="Delete"
@@ -25,7 +25,7 @@ export default function TableFilter({ showdelete = true }) {
       )}
       <ButtonComponent
         spacing={2}
-        showIcon={true}
+        showIcon
         iconName="filter"
         iconSize="17"
         label="Filter"
@@ -35,7 +35,7 @@ export default function TableFilter({ showdelete = true }) {
         variant="text"
       />
       <ButtonComponent
-        showIcon={true}
+        showIcon
         iconName="add"
         iconSize="15"
         label="New User"

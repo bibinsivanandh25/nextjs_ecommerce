@@ -1,26 +1,22 @@
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import logo from "../../../../../public/assets/logo.jpeg";
 import Image from "next/image";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
-import { Grid, Paper } from "@mui/material";
-import OrderConfirmModal from "components/forms/supplier/myorder/orderconfirmodal";
+import { Paper } from "@mui/material";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
-import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
+import logo from "../../../../../public/assets/logo.jpeg";
+
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [showConfirmAdress, setshowConfirmAdress] = useState(false);
 
-  const router = useRouter();
-  console.log(router.query);
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Image",
       // minWidth: 50,
       align: "center",
@@ -108,7 +104,7 @@ const AcceptandConfirmOrder = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: <Image src={logo} height={50} width={50} alt="" />,
@@ -153,7 +149,7 @@ const AcceptandConfirmOrder = () => {
           <div className="d-flex justify-content-end">
             <div className="w-25">
               <SimpleDropdownComponent
-                size={"small"}
+                size="small"
                 list={[
                   { label: "Zero Commission", id: 1, value: "Zero Commission" },
                   {

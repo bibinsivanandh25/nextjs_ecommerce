@@ -55,6 +55,7 @@ const InvoiceCardComponent = () => {
             </Grid>
             {data.detailed_price_list.map((item, index) => {
               return (
+                // eslint-disable-next-line react/no-array-index-key
                 <Grid item container key={index}>
                   <Grid item md={6}>
                     <Typography className="fs-12">{item.name}</Typography>

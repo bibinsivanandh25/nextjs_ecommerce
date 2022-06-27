@@ -47,7 +47,12 @@
 .border-gray {
     border-color: #F0F0F0 !important;
 }
-
+.border-white{
+    border-color: #fff !important;
+}
+.border-black{
+    border-color: rgb(17, 16, 16) !important;
+}
 .bg-light-green {
     background-color: #e2ffd4 !important;
 }
@@ -80,4 +85,13 @@
 }
 .bg-red{
     background-color: #bf1e2e;
+}
+.bg-dark-gray {
+    background-color: #797878;
+}
+.color-dark-gray {
+    color:#797878
+}
+.bg-transparent{
+    background: transparent !important;
 }

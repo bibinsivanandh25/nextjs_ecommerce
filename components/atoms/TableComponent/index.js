@@ -1,3 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable consistent-return */
 import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,12 +13,13 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import CheckBoxComponent from "../CheckboxComponent";
 import { Button, Grid } from "@mui/material";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import styles from "./TableComponent.module.css";
+import ButtonComponent from "../ButtonComponent";
 
 const EnhancedTableHead = (props) => {
   const {
@@ -38,7 +45,7 @@ const EnhancedTableHead = (props) => {
             />
           </TableCell>
         )}
-        {columns.map((column, index) => {
+        {columns.map((column) => {
           return (
             <TableCell
               key={column.id}
@@ -84,6 +91,8 @@ export default function TableComponent({
   tHeadBgColor = "",
   showDateFilter = false,
   dateFilterColName = [],
+  customDropDownPlaceholder = "",
+  searchBarPlaceHolderText = "Search",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -94,12 +103,10 @@ export default function TableComponent({
     { label: "All", id: "0", value: "All" },
   ]);
   const [searchFilter, setSearchFilter] = useState({
-    label: "All",
-    id: "0",
-    value: "All",
+    // label: "All",
+    // id: "0",
+    // value: "All",
   });
-  const [fromDateOpen, setFromDateOpen] = useState(false);
-  const [toDateOpen, setToDateOpen] = useState(false);
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
   useEffect(() => {
@@ -121,11 +128,11 @@ export default function TableComponent({
   }, [columns]);
 
   const requestSearch = (searchval) => {
-    let filteredData =
+    const filteredData =
       searchFilter.label === "All" || searchFilter.label === ""
         ? rows.filter((value) => {
             let flag = false;
-            let dataarray = Object.values(value);
+            const dataarray = Object.values(value);
             dataarray.splice(0, 1);
             let index;
             dataarray.forEach((ele) => {
@@ -146,7 +153,7 @@ export default function TableComponent({
                 .indexOf(searchval.toLowerCase()) > -1
             )
               return true;
-            else return false;
+            return false;
           });
 
     setRows(filteredData);
@@ -163,7 +170,7 @@ export default function TableComponent({
 
   const handleSelectAllClick = (event, checked) => {
     if (checked) {
-      const newSelecteds = rows.map((n, i) => n.id);
+      const newSelecteds = rows.map((n) => n.id);
       OnSelectionChange(newSelecteds);
       setSelected(newSelecteds);
       return;
@@ -198,11 +205,11 @@ export default function TableComponent({
 
   useEffect(() => {
     if (dateValue.from && dateValue.to) {
-      var startDate = new Date(dateValue.from);
-      var endDate = new Date(dateValue.to);
-      var resultProductData = tableRows.filter(function (a) {
-        for (let i of dateFilterColName) {
-          var date = new Date(a[i]);
+      const startDate = new Date(dateValue.from);
+      const endDate = new Date(dateValue.to);
+      const resultProductData = tableRows.filter(function (a) {
+        for (const i of dateFilterColName) {
+          const date = new Date(a[i]);
           return date >= startDate && date <= endDate;
         }
       });
@@ -310,14 +317,9 @@ export default function TableComponent({
 
     return (
       <Grid container>
-        <Grid
-          item
-          container
-          xs={showCustomSearchButton ? 4 : 6}
-          justifyContent="start"
-        >
+        <Grid item container xs={4} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={5} xs={12}>
+            <Grid item sm={6} md={6} xs={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
@@ -330,47 +332,46 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid
-          item
-          container
-          // xs={showCustomSearchButton ? 8 : 6}
-          justifyContent={"end"}
-        >
+        <Grid item container xs={8} justifyContent="end">
           {showSearchbar && (
             <Grid
               item
-              md={8}
+              md={9}
               xs={12}
               container
               spacing={1}
               justifyContent="end"
+              alignItems="center"
             >
               <Grid item md={3}>
                 {showSearchFilter && (
                   <SimpleDropdownComponent
                     list={[...searchFilterList]}
-                    size={"small"}
-                    label="Search Filter"
+                    size="small"
+                    // label="Search Filter"
                     value={searchFilter}
                     onDropdownSelect={(value) => {
-                      setSearchFilter(
-                        value === null
-                          ? { label: "All", id: 0, value: "All" }
-                          : { ...value }
-                      );
+                      setSearchFilter(value);
+                      // setSearchFilter(
+                      //   value === null
+                      //     ? { label: "All", id: 0, value: "All" }
+                      //     : { ...value }
+                      // );
                     }}
+                    placeholder={customDropDownPlaceholder}
                   />
                 )}
               </Grid>
               <Grid item md={searchBarSizeMd}>
                 <InputBox
                   value={searchText}
-                  label="Search"
+                  label={searchBarPlaceHolderText}
                   className="w-100"
                   size="small"
                   onInputChange={(e) => {
                     setsearchText(e.target.value);
                   }}
+                  showAutoCompleteOff={false}
                 />
               </Grid>
               <Grid item xs={!showCustomSearchButton && 1}>
@@ -418,16 +419,17 @@ export default function TableComponent({
               )}
               {showCustomButton && (
                 <Grid item sm={4} container>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    className="bg-orange"
-                    sx={{ textTransform: "none" }}
-                    fullWidth
-                    onClick={onCustomButtonClick}
-                  >
-                    {customButtonLabel}
-                  </Button>
+                  <div>
+                    <ButtonComponent
+                      // variant="contained"
+                      // size="small"
+                      // className="bg-orange"
+                      // sx={{ textTransform: "none" }}
+                      // fullWidth
+                      onBtnClick={onCustomButtonClick}
+                      label={customButtonLabel}
+                    />
+                  </div>
                 </Grid>
               )}
             </Grid>
@@ -468,9 +470,8 @@ export default function TableComponent({
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, i) => {
+                .map((row) => {
                   const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${i}`;
                   return (
                     <TableRow
                       hover
@@ -533,10 +534,10 @@ export default function TableComponent({
   );
 }
 
-//Sample prop data
+// Sample prop data
 // const columns = [
 //   {
-//     id: "col1", //id value in column should be presented in row as key
+//     id: "col1", //  id value in column should be presented in row as key
 //     label: "Generated for",
 //     minWidth: 100,
 //     align: "center",

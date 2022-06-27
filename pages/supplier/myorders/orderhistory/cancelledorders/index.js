@@ -133,13 +133,11 @@ const CancelledOrders = () => {
       switch (dropdownFilter?.id) {
         case "single":
           setTableRows(
-            tableRows?.filter((row) => parseInt(row["col7"], 10) === 1)
+            tableRows?.filter((row) => parseInt(row.col7, 10) === 1)
           );
           break;
         case "multiple":
-          setTableRows(
-            tableRows?.filter((row) => parseInt(row["col7"], 10) > 1)
-          );
+          setTableRows(tableRows?.filter((row) => parseInt(row.col7, 10) > 1));
           break;
         default:
           setTableRows(mapRowsToTable(tableData));

@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddAddressModal from "components/forms/supplier/myaccount/addaddressmodal";
 
 const PickUpAddress = () => {
-  const [addressList, setAddressList] = useState([
+  const [addressList] = useState([
     { id: 1, name: "Perry", address: "#109, 3rd Cross, 4th Main, Tokyo" },
     { id: 2, name: "Angela", address: "#987, 1st Cross, 1st Main, Argentina" },
   ]);
@@ -38,10 +38,10 @@ const PickUpAddress = () => {
                 backgroundColor:
                   add.id === selectedAddress && "#F5E4D7 !important",
               }}
-              className="fs-16 bg-white rounded mnh-150 mxh-150 cursor-pointer"
+              className="fs-16 bg-white rounded mnh-150 mxh-150 "
             >
               <Grid item xs={11}>
-                <Grid item xs={12}>
+                <Grid item xs={12} className="cursor-pointer d-inline">
                   <CheckBoxComponent
                     label={`Address ${index + 1}`}
                     isChecked={add.id === selectedAddress}

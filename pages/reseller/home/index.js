@@ -1,18 +1,13 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import axios from "axios";
 import CarouselComponent from "components/atoms/Carousel";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import Image from "next/image";
-import ImageCard from "components/atoms/ImageCard";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShareIcon from "@mui/icons-material/Share";
-import ButtonComponent from "components/atoms/ButtonComponent";
 import HomeComponent from "components/forms/reseller/home";
 
-let categories = [
+const categories = [
   {
     name: "Casual Shirt",
     image:
@@ -108,9 +103,7 @@ let categories = [
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [dropDownValue, setDropDownValue] = useState([]);
-  useEffect(() => {
-    getproducts();
-  }, []);
+
   const getproducts = async () => {
     await axios
       .get("https://fakestoreapi.com/products")
@@ -121,6 +114,10 @@ const Home = () => {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    getproducts();
+  }, []);
 
   return (
     <div>

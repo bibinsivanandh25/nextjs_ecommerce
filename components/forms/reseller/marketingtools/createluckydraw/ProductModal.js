@@ -10,9 +10,11 @@ const ProductModal = ({
   onCloseClick = () => {},
   submitBtnClick = () => {},
 }) => {
+  // eslint-disable-next-line no-unused-vars
   const [productArray, setproductArray] = useState([]);
   const displayProducts = () => {
     const temp = [];
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < 30; i++) {
       temp.push(
         <Grid
@@ -25,12 +27,12 @@ const ProductModal = ({
             imgSrc={assetsJson.saree_reseller_home}
             showClose={false}
           />
-          <Typography className="text-center">{"ele.title"}</Typography>
+          <Typography className="text-center">ele.title</Typography>
           <Typography className="text-center color-dark-green h-5 fw-bold">
-            {"ele.discount"}
+            ele.discount
           </Typography>
           <div className="ms-2">
-            <CheckBoxComponent isChecked={false} checkBoxClick={(id) => {}} />
+            <CheckBoxComponent isChecked={false} checkBoxClick={() => {}} />
           </div>
         </Grid>
       );

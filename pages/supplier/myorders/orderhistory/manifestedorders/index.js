@@ -5,7 +5,7 @@ import CustomIcon from "services/iconUtils";
 
 const ManifestedOrders = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [dropdownFilter, setDropdownFilter] = useState({});
+  // const [dropdownFilter, setDropdownFilter] = useState({});
   const [tableData, setTableData] = useState([]);
   const columns = [
     {

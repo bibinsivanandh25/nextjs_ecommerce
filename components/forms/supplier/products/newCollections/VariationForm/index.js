@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Box, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ImageCard from "components/atoms/ImageCard";
@@ -6,10 +7,7 @@ import { forwardRef, useState } from "react";
 import { getBase64 } from "services/utils/functionUtils";
 
 const VariationForm = forwardRef(
-  (
-    { setShowGroupVariant = () => {}, setFormData = () => {}, formData = {} },
-    ref
-  ) => {
+  ({ setShowGroupVariant = () => {}, setFormData = () => {} }) => {
     const [showModal, setShowModal] = useState(false);
     const [imagedata, setImageData] = useState([]);
     const [showImageModal, setShowImageModal] = useState(false);
@@ -36,13 +34,13 @@ const VariationForm = forwardRef(
             showClearBtn={false}
             showSaveBtn={false}
             open={showModal}
-            showHeader={true}
+            showHeader
             onCloseIconClick={() => {}}
             headerClassName="border-0"
             minHeightClassName="mnh-100 p-4  d-flex justify-content-center"
           >
             <div className="d-flex w-100 align-items-center flex-column">
-              <Typography component={"div"} className="h-4">
+              <Typography component="div" className="h-4">
                 Copy same details to all products?
               </Typography>
               <Box className="d-flex mt-3 w-100 justify-content-center">

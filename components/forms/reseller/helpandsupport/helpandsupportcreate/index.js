@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import FileUploadModal from "components/atoms/FileUpload";
@@ -22,7 +23,7 @@ const HelpandsupportCreate = () => {
   });
   const validateFields = () => {
     let flag = false;
-    let errObj = {
+    const errObj = {
       subject: "",
       content: "",
     };
@@ -54,7 +55,7 @@ const HelpandsupportCreate = () => {
       <p className="fs-16 fw-bold pb-2 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">
-          (Any issues Please rise to us here)
+          (Any issues Please raise to us here)
         </span>
       </p>
       <div className="my-3">

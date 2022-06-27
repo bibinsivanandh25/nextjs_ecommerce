@@ -16,11 +16,6 @@ const MultiSelectComponent = ({
   helperText = "",
   error = false,
 }) => {
-  //list
-  // [
-  //     { id: 3, title: "The Godfather: Part II", year: 1974 },
-  // { id: 13, title: "Forrest Gump", year: 1994, checked: false },
-  // ]
   return (
     <Autocomplete
       multiple

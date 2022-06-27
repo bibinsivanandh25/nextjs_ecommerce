@@ -20,6 +20,7 @@ export default function Googlemap() {
       }}
     >
       <WrappedMap
+        // eslint-disable-next-line react/jsx-curly-brace-presence
         googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places`}
         loadingElement={<div style={{ height: `100%` }}>loading</div>}
         containerElement={<div style={{ height: `400px` }} />}

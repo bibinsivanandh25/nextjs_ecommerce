@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
@@ -9,7 +9,6 @@ import validateMessage from "constants/validateMessages";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import {
   allowback_orders,
-  back_orders,
   business_processing_days,
   shipping_class,
   stock_status,
@@ -77,7 +76,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       if (inventoryFormData.stock_qty === "") {
         flag = true;
         errObj.stock_qty = validateMessage.field_required;
-      } else if (parseInt(inventoryFormData.stock_qty) < 1) {
+      } else if (parseInt(inventoryFormData.stock_qty, 10) < 1) {
         flag = true;
         errObj.stock_qty = "Stock Qty must be greater then or equal to 1";
       }
@@ -136,7 +135,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["inventory", { ...inventoryFormData }];
       },
-      validate: validate,
+      validate,
     };
   });
   return (

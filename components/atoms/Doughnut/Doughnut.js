@@ -1,11 +1,10 @@
-import React, {  useState } from "react";
+import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { Grid } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 export const Doughnutchart = ({ labels = [], data = [] }) => {
-
   const color = [
     "#8F1FF9",
     "#FD931B",
@@ -20,11 +19,10 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
     "#6A0F49",
     "#97EFE9",
   ];
-  let datas = {
-    labels: labels,
+  const datas = {
+    labels,
     datasets: [
       {
-        // label: '# of Votes',
         data: [...data],
         backgroundColor: color,
         borderColor: color,
@@ -53,32 +51,24 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
                 position: "right",
                 align: "center",
               },
+              tooltip: {
+                callbacks: {
+                  label(tooltipItem) {
+                    let label = tooltipItem.label ?? "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    label += `${tooltipItem.parsed}%`;
+                    return label;
+                  },
+                },
+              },
             },
+
             maintainAspectRatio: false,
             rotation: 1.0 * Math.PI,
             cutout: 60,
           }}
-          // options={{
-          //   responsive: true,
-          //   plugins: {
-          //     legend: {
-          //       display: true,
-          //       labels: {
-          //         usePointStyle: true,
-          //       },
-          //       position: "right",
-          //       align: "center",
-          //     },
-          //     title: {
-          //       display: true,
-          //       text: "tooltip",
-          //     },
-          //     labels: {
-          //       fontSize: 10,
-          //       usePointStyle: true,
-          //     },
-          //   },
-          // }}
         />
       </Grid>
       {/* <Grid item md={5} container>

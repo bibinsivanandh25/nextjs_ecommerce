@@ -1,5 +1,8 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-param-reassign */
 import { Typography } from "@mui/material";
-import Image from "next/image";
+// import Image from "next/image";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
@@ -72,6 +75,7 @@ const ListGroupComponent = ({
       ) : null}
       <div className="mxh-200 overflow-y-scroll hide-scrollbar">
         {list.map((item, index) => (
+          // eslint-disable-next-line jsx-a11y/click-events-have-key-events
           <div
             className="border-bottom d-flex "
             onClick={() => {

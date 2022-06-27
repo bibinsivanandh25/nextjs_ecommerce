@@ -1,21 +1,23 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
-import logo from "../../../../../public/assets/logo.jpeg";
-import ProgressBar from "../../../../../components/atoms/ProgressBar";
-import styles from "./Generateinvoiceandmanifest.module.css";
 import Image from "next/image";
 import { useState } from "react";
 import ShowPreviousInvoices from "components/forms/supplier/myorder/showpreviousorder";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import ProgressBar from "../../../../../components/atoms/ProgressBar";
+import logo from "../../../../../public/assets/logo.jpeg";
+import styles from "./Generateinvoiceandmanifest.module.css";
+
 const Generateinvoiceandmanifest = () => {
   const [showInvoices, setShowInvoices] = useState(false);
   const route = useRouter();
   const columns = [
     {
-      id: "col1", //id value in column should be presented in row as key
+      id: "col1", //  id value in column should be presented in row as key
       label: "Image",
       minWidth: 100,
       align: "center",
@@ -94,7 +96,7 @@ const Generateinvoiceandmanifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  let rows = [
+  const rows = [
     {
       id: "1",
       col1: <Image src={logo} height={50} width={50} />,

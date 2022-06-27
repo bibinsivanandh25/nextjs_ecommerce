@@ -48,7 +48,7 @@ const MySharedCategory = () => {
               <SimpleDropdownComponent
                 value={dropDownValue}
                 size="small"
-                label="Filter by Category"
+                placeholder="Filter by Category"
                 list={[
                   {
                     label: "Fixed Commission",

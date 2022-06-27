@@ -1,5 +1,9 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
 import { Button, Grid, Paper, Typography } from "@mui/material";
-import Bargraph from "components/atoms/Bar/Bargraphgraph";
+import Bargraph from "components/atoms/Bar/Bargraph";
 import { LineChart } from "components/atoms/Linechart/Linechart";
 import SelectComponent from "components/atoms/SelectComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -40,7 +44,7 @@ const ResellerDashboardLayout = ({
   }));
 
   const getCount = () => {
-    const res = customerGraphData.reduce((a, b) => (a = a + b));
+    const res = customerGraphData.reduce((a, b) => (a += b));
     return res;
   };
 
@@ -107,11 +111,8 @@ const ResellerDashboardLayout = ({
             <Grid className="d-flex align-items-center">
               <Grid className="fs-12 fw-bold px-2 mt-3">Top 10 Referres</Grid>
               <Grid className="ms-auto">
-                <SelectComponent disableUnderline={true} list={monthsList} />
-                <SelectComponent
-                  disableUnderline={true}
-                  list={detailSelectList}
-                />
+                <SelectComponent disableUnderline list={monthsList} />
+                <SelectComponent disableUnderline list={detailSelectList} />
               </Grid>
             </Grid>
             <TableComponent
@@ -135,14 +136,13 @@ const ResellerDashboardLayout = ({
           </Paper>
         </Grid>
         <Grid item xs={7}>
-          <Paper sx={{ py: 1 }}>
+          <Paper sx={{ py: 1, px: 4 }}>
             <Bargraph
               data={customerGraphData}
               labels={barGraphLabels}
               backgroundColor="#425568"
               hoverBackgroundColor={barGraphHoverBackgroundColor}
               barDirection="y"
-              showBarInfo
               height="300px"
               showXAxis={false}
               showGridY={false}

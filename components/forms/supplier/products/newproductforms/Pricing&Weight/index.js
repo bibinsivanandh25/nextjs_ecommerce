@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InvoiceCardComponent from "components/atoms/InvoiceCardComponent";
@@ -67,8 +67,8 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.product_weight = validateMessage.field_required;
     } else if (
-      parseInt(pricingFormData.product_weight) > 100000 ||
-      parseInt(pricingFormData.product_weight) < 100
+      parseInt(pricingFormData.product_weight, 10) > 100000 ||
+      parseInt(pricingFormData.product_weight, 10) < 100
     ) {
       flag = true;
       errObj.product_weight = "weight should be between 100 to 100000 grams";
@@ -94,7 +94,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       handleSendFormData: () => {
         return ["pricing", { ...pricingFormData }];
       },
-      validate: validate,
+      validate,
     };
   });
 

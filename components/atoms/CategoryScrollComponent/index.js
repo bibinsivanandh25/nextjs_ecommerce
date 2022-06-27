@@ -11,6 +11,7 @@ const CategoryScrollComponent = ({ categories = [] }) => {
             style={{
               minWidth: "120px",
             }}
+            // eslint-disable-next-line react/no-array-index-key
             key={index}
           >
             <ImageCard imgSrc={ele.image} showClose={false} />

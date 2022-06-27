@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Paper, Box, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import ModalComponent from "components/atoms/ModalComponent";
@@ -211,6 +212,7 @@ const Customer = () => {
           columns={columns}
           showCheckbox={false}
           tableRows={[...rows]}
+          searchBarPlaceHolderText="Search by anything"
         />
       </Box>
 

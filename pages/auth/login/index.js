@@ -1,5 +1,4 @@
 // import { providers, signIn, getSession, csrfToken } from "next-auth/client";
-import styles from "./Login.module.css";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import {
@@ -10,24 +9,21 @@ import {
 } from "next-auth/react";
 import { useState } from "react";
 import Image from "next/image";
-import { Box } from "@mui/system";
 import {
-  Avatar,
-  Card,
+  Box,
   Grid,
   IconButton,
   Menu,
   MenuItem,
+  Paper,
   Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import logo from "../../../public/assets/favicon.png";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { loginCall } from "services";
-import axios from "axios";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
+import logo from "../../../public/assets/favicon.png";
+import styles from "./Login.module.css";
 
 const options = ["Supplier", "Reseller", "Customer"];
 
@@ -56,11 +52,12 @@ const SelectComponent = ({
           aria-controls={open ? "user-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
+          sx={{ pl: 0, pt: 0 }}
         >
           <div style={{ background: "white" }}>
             <ArrowDropDownIcon />
           </div>
-          <span className="color-white">Choose your profile</span>
+          <span className="color-white mx-2 fs-16">Choose your profile</span>
         </IconButton>
       </Box>
       <Menu
@@ -116,7 +113,6 @@ const SelectComponent = ({
 };
 
 const Login = () => {
-  const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [formValues, setFormValues] = useState({
     user: "",
@@ -212,13 +208,16 @@ const Login = () => {
         selectedIndex={selectedIndex}
         setSelectedIndex={setSelectedIndex}
       />
-      <Card sx={{ background: "rgba(1,1,1,0.5)" }}>
+      <Paper elevation={6} sx={{ background: "rgba(1,1,1,0.4)" }}>
         <div className="w-400px p-5 ">
           <Image src={logo} style={{ width: "100%", height: "50px" }} alt="" />
           <Typography varient="h1" className="text-center color-white">
             A Multi Ecommerce Store
           </Typography>
-          <Typography varient="h4" className="text-center mt-3 color-white">
+          <Typography
+            varient="h4"
+            className="text-center mt-3 color-white fs-14"
+          >
             Choose your profile
           </Typography>
           {/* <div className="d-flex flex-column justify-content-center">
@@ -263,7 +262,11 @@ const Login = () => {
                   className="w-100"
                   placeholder="Enter your E-mail Id / Mobile No."
                   InputProps={{
-                    style: { fontSize: "14px", color: "#fff" },
+                    style: {
+                      fontSize: "14px",
+                      color: "#fff",
+                      borderColor: "#fff",
+                    },
                   }}
                   inputlabelshrink
                   helperText={errorObj.user}
@@ -273,7 +276,7 @@ const Login = () => {
               <Grid item sm={12}>
                 <InputBox
                   value={formValues.password}
-                  label="password"
+                  label="Password"
                   onInputChange={(e) => {
                     setFormValues((prev) => ({
                       ...prev,
@@ -293,24 +296,35 @@ const Login = () => {
               </Grid>
               <Grid item md={12}>
                 <div className="d-flex justify-content-between">
-                  <Link href={"/auth/login/otplogin"} passHref>
+                  <Link href="/auth/login/otplogin" passHref>
                     <span className="color-orange fs-12 cursor-pointer">
                       Login with OTP
                     </span>
                   </Link>
-                  <Link href={"/auth/forgotpassword"} passHref>
+                  <Link href="/auth/forgotpassword" passHref>
                     <span className="color-orange fs-12 cursor-pointer">
-                      Forgot password
+                      Forgot password?
                     </span>
                   </Link>
                 </div>
               </Grid>
               <Grid item sm={12}>
                 <div className="d-flex flex-column align-items-center justify-content-center w-100">
-                  <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
+                  <ButtonComponent
+                    label="Login"
+                    onBtnClick={handleSubmit}
+                    muiProps="w-100px"
+                  />
                   <div>
-                    <span className="fs-11">Don&apos;t have an account?</span>
-                    <Link href={"/auth/supplier/registration"} passHref>
+                    <span className="fs-11 color-white mx-2">
+                      Don&apos;t have an account?
+                    </span>
+                    <Link
+                      href={`/auth/${options[
+                        selectedIndex
+                      ].toLocaleLowerCase()}/registration`}
+                      passHref
+                    >
                       <span className="color-orange fs-11 cursor-pointer">
                         Register
                       </span>
@@ -318,10 +332,17 @@ const Login = () => {
                   </div>
                 </div>
               </Grid>
+              <Grid item sm={12} container justifyContent="center">
+                <ButtonComponent
+                  label="Know your Profit here"
+                  muiProps={styles.profitLink}
+                  variant="undefined"
+                />
+              </Grid>
             </Grid>
           </div>
         </div>
-      </Card>
+      </Paper>
     </div>
   );
 };

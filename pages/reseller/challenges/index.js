@@ -14,7 +14,7 @@ const Challenges = () => {
         <Grid item sm={4}>
           <Paper className="ps-4 pe-2 pt-4 pb-2">
             <Typography className=" mb-3 color-orange">
-              Created by: Jaganath
+              Created By: Jaganath
             </Typography>
             <Typography>
               Sharath - 40000 RS target for April 2022 completing will get a
@@ -28,7 +28,7 @@ const Challenges = () => {
         <Grid item sm={4}>
           <Paper className="ps-4 pe-2 pt-4 pb-2">
             <Typography className=" mb-3 color-orange">
-              Created by: Jaganath
+              Created By: Jaganath
             </Typography>
             <Typography>
               Sharath - 40000 RS target for April 2022 completing will get a
@@ -42,7 +42,7 @@ const Challenges = () => {
         <Grid item sm={4}>
           <Paper className="ps-4 pe-2 pt-4 pb-2">
             <Typography className=" mb-3 color-orange">
-              Created by: Jaganath
+              Created By: Jaganath
             </Typography>
             <Typography>
               Sharath - 40000 RS target for April 2022 completing will get a

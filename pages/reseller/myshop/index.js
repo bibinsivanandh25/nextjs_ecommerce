@@ -12,7 +12,7 @@ import Image from "next/image";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { getBase64 } from "services/utils/functionUtils";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -82,7 +82,6 @@ const MyShop = () => {
 
   const handleSubmit = () => {
     if (!validate()) {
-      console.log({ formData });
       setShowEditModal(false);
       setErrorObj({ shop_name: "", margin: "" });
     }
@@ -229,11 +228,13 @@ const MyShop = () => {
           open
           ModalTitle="Edit Shop"
           minHeightClassName=""
-          ClearBtnText="Cancle"
+          ClearBtnText="Cancel"
           onSaveBtnClick={handleSubmit}
           footerClassName="border-top d-flex flex-row-reverse"
-          saveBtnClassName="ms-2"
+          saveBtnClassName="ms-2 w-25"
+          clearBtnClassName="w-25"
           footerPadding="p-3"
+          saveBtnText="Submit"
           onClearBtnClick={() => {
             setFormData({ shop_name: "", margin: "" });
             setShowEditModal(false);
@@ -280,7 +281,7 @@ const MyShop = () => {
                     };
                   });
                 }}
-                valueLabelFormat={formData.margin + "%"}
+                valueLabelFormat={`${formData.margin}%`}
               />
             </Box>
           </Box>

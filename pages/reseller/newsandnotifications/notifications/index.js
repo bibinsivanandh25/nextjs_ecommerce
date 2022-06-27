@@ -155,6 +155,7 @@ const ResellerNotifications = () => {
 
   return (
     <Paper sx={{ p: 2, height: "100%", minHeight: "80vh" }}>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {showModal.show && showModal.type === "reply" ? (
         <ResellerNotificationView
           show={showModal.show}

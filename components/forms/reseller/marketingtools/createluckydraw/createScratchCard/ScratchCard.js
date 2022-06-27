@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ScratchCard from "react-scratchcard";
 
 const ScratchCardComponent = ({ children }) => {

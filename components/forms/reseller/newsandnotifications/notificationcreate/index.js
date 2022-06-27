@@ -17,26 +17,24 @@ const ResellerNotificationCreate = () => {
   const validateForm = () => {
     const errObj = { ...error };
     if (!notificationData.subject) {
-      errObj["subject"] = validateMessage.field_required;
+      errObj.subject = validateMessage.field_required;
     } else {
-      errObj["subject"] = null;
+      errObj.subject = null;
     }
     if (type !== "referral") {
       if (!notificationData.content) {
-        errObj["content"] = validateMessage.field_required;
+        errObj.content = validateMessage.field_required;
       } else if (!/^.{1,1000}$/.test(notificationData.content)) {
-        errObj["content"] = validateMessage.field_required;
+        errObj.content = validateMessage.field_required;
       } else {
-        errObj["content"] = null;
+        errObj.content = null;
       }
+    } else if (!editorContent) {
+      errObj.content = validateMessage.field_required;
+    } else if (!/^.{1,1000}$/.test(editorContent)) {
+      errObj.content = validateMessage.field_required;
     } else {
-      if (!editorContent) {
-        errObj["content"] = validateMessage.field_required;
-      } else if (!/^.{1,1000}$/.test(editorContent)) {
-        errObj["content"] = validateMessage.field_required;
-      } else {
-        errObj["content"] = null;
-      }
+      errObj.content = null;
     }
     setError({ ...errObj });
     let valid = true;
