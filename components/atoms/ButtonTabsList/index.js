@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
+import { Delete, Edit } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import CustomIcon from "services/iconUtils";
 
 const ButtonTabsList = ({
   className = "w-100",
@@ -28,8 +28,8 @@ const ButtonTabsList = ({
               </div>
               {showEditDelete && activeTab === index ? (
                 <div className="position-absolute end-0 top-2">
-                  <CustomIcon type="edit" className="fs-14" />
-                  <CustomIcon type="delete" className="fs-14" />
+                  <Edit className="fs-14 cursor-pointer" />
+                  <Delete className="fs-14 cursor-pointer" />
                 </div>
               ) : null}
             </div>

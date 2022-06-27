@@ -50,8 +50,9 @@ const ShareProductByPrice = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, ind) => {
       result.push({
+        id: ind + 1,
         col1: row.campaignTitle,
         col2: row.marginType,
         col3: row.category,

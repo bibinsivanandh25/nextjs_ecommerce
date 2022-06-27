@@ -3,12 +3,12 @@
 import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import TableComponent from "components/atoms/TableComponent";
 import { assetsJson } from "public/assets";
 import Image from "next/image";
 import { useState } from "react";
 import RefereeForm from "components/forms/reseller/referredreseller/RefereeForm";
+import CustomIcon from "services/iconUtils";
 
 const ReferredReseller = () => {
   const [selectedReseller, setSelectedReseller] = useState({});
@@ -113,7 +113,7 @@ const ReferredReseller = () => {
       col8: <Typography className="text-success">6000 rs(1.8%)</Typography>,
       col9: (
         <Tooltip title="Details">
-          <VisibilityIcon className="cursor-pointer" onClick={() => {}} />
+          <CustomIcon type="view" />
         </Tooltip>
       ),
     },
