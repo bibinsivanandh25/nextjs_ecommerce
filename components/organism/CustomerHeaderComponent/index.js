@@ -13,11 +13,13 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SwitchProfile from "@/forms/customer/switchprofile";
 
 const Header = () => {
   const route = useRouter();
 
   const [isSignedIn] = useState(true);
+  const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -250,12 +252,12 @@ const Header = () => {
                     Your Orders
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => route.push("/customer/wishlist")}>
                   <Typography className="h-5 cursor-pointer">
                     Your Wishlist
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => setShowSwitchProfile(true)}>
                   <Typography className="h-5 cursor-pointer">
                     Switch Profiles
                   </Typography>
@@ -293,6 +295,10 @@ const Header = () => {
           </MenuwithArrow>
         </div>
       </div>
+      <SwitchProfile
+        showSwitchProfile={showSwitchProfile}
+        setShowSwitchProfile={setShowSwitchProfile}
+      />
     </div>
   );
 };
