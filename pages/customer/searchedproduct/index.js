@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box, Grid, Pagination } from "@mui/material";
@@ -9,10 +10,7 @@ import MenuWithCheckbox from "@/atoms/MenuWithCheckbox";
 import CustomerProductgModal from "@/forms/customer/searchedproduct/CustomerProductCard";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
-import ModalComponent from "@/atoms/ModalComponent";
-import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
-import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import InputBox from "@/atoms/InputBoxComponent";
+import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const listDatas = [
@@ -189,31 +187,26 @@ const data = [
     offerFlag: false,
   },
 ];
-const viewImageData = [
+
+const comparProductData = [
   {
-    links:
+    id: 1,
+    imageLink:
       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG",
   },
   {
-    links:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/person.jpg",
+    id: 2,
+    imageLink: "",
   },
   {
-    links:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg",
+    id: 3,
+    imageLink: "",
+  },
+  {
+    id: 4,
+    imageLink: "",
   },
 ];
-const viewModalIcons = [
-  {
-    iconName: "favoriteBorderIcon",
-    title: "Favorite",
-  },
-  {
-    iconName: "localMallIcon",
-    title: "Favorite",
-  },
-];
-
 function SearchedProduct() {
   // checkbox data
   const [checkedValue, setCheckedValue] = useState([]);
@@ -222,13 +215,6 @@ function SearchedProduct() {
   const [productData, setProductData] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [viewModalImage, setViewModalImage] = useState([]);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [viewModalRadioActual, setViewModalRadioActual] = useState(true);
-  const [viewModalRadioFree, setViewModalRadioFree] = useState(false);
-  const [viewModalInput, setViewModalInput] = useState("");
-  const [count, setCount] = useState(1);
-  const [iconcolor, setIconColor] = useState({});
   const [comparDrawer, setComparDrawer] = useState(false);
 
   // pagination
@@ -265,20 +251,7 @@ function SearchedProduct() {
     }
   }, [viewIconClick]);
 
-  const mouseEnter = (name) => {
-    setIconColor((prev) => ({ ...prev, [name]: true }));
-  };
-  const mouseLeave = (name) => {
-    setIconColor((prev) => ({ ...prev, [name]: false }));
-  };
-
-  const handleImageClick = (value) => {
-    setSelectedImage(value);
-  };
-
   useEffect(() => {
-    setViewModalImage(viewImageData);
-    setSelectedImage(viewImageData[0]);
     setCheckedValue(listDatas);
     setSearchedCheckValue(searchlListData);
     if (viewIconClick) {
@@ -340,51 +313,48 @@ function SearchedProduct() {
   const onSimilerIconClick = (value) => {
     console.log(value);
   };
-  const handleMinusClick = () => {
-    setCount((prev) => (prev > 1 ? prev - 1 : 1));
-  };
-  const handlePlusClick = () => {
-    setCount((prev) => prev + 1);
-  };
+
   return (
     <Box className="body-bg mnh-100vh">
       <Box className="row">
         <Box className="d-flex justify-content-end mt-1">
-          <Box
-            className={
-              viewIconClick
-                ? "border align-self-center bg-dark-gray p-1"
-                : "border align-self-center p-1 "
-            }
-          >
-            <CustomIcon
-              title="RowView"
-              type="tablerows"
-              className="fs-26"
-              onIconClick={() => {
-                setViewIconClick(true);
-              }}
-              showColorOnHover={false}
-              color={viewIconClick ? "color-white" : "color-dark-gray"}
-            />
-          </Box>
-          <Box
-            className={
-              viewIconClick
-                ? "border align-self-center p-1"
-                : "border align-self-center bg-dark-gray p-1"
-            }
-          >
-            <CustomIcon
-              title="GridView"
-              type="gridview"
-              className="fs-26"
-              onIconClick={() => {
-                setViewIconClick(false);
-              }}
-              showColorOnHover={false}
-              color={viewIconClick ? "color-dark-gray" : "color-white"}
-            />
+          <Box className="d-flex border p-1 rounde">
+            <Box
+              className={
+                viewIconClick
+                  ? " align-self-center bg-dark-gray p-1 rounded"
+                  : " align-self-center p-1 rounded "
+              }
+            >
+              <CustomIcon
+                title="RowView"
+                type="tablerows"
+                className="fs-26"
+                onIconClick={() => {
+                  setViewIconClick(true);
+                }}
+                showColorOnHover={false}
+                color={viewIconClick ? "color-white" : "color-dark-gray"}
+              />
+            </Box>
+            <Box
+              className={
+                viewIconClick
+                  ? " align-self-center p-1 rounded"
+                  : " align-self-center bg-dark-gray p-1 rounded"
+              }
+            >
+              <CustomIcon
+                title="GridView"
+                type="gridview"
+                className="fs-26"
+                onIconClick={() => {
+                  setViewIconClick(false);
+                }}
+                showColorOnHover={false}
+                color={viewIconClick ? "color-dark-gray" : "color-white"}
+              />
+            </Box>
           </Box>
           <Box>
             <MenuWithCheckbox
@@ -409,18 +379,18 @@ function SearchedProduct() {
         <Box className="d-flex justify-content-end mt-3">
           <p className="text-danger fs-14"> Offer ends in 09h 42min 2sec</p>
         </Box>
-        <Box className="w-100 overflow-y-scroll hide-scrollbar">
-          <Box className="d-flex ">
+        <Box className="vp-height overflow-y-scroll hide-scrollbar">
+          <Box className="d-flex w-100 ">
             <Grid
               container={!viewIconClick}
               spacing={2}
-              className=" mx-auto ms-0"
+              className=" mx-auto ms-0 "
               sx={{
                 width: `calc(100% - 10px)`,
               }}
             >
-              {productData.map((item) => (
-                <Grid item md={4} lg={3} sm={6}>
+              {productData.map((item, index) => (
+                <Grid item md={4} lg={3} sm={6} key={index}>
                   <CustomerProductgModal
                     data={item}
                     handleIconClick={(value) => onIconClick(value)}
@@ -443,7 +413,6 @@ function SearchedProduct() {
           </Box>
         </Box>
       </Box>
-
       <DrawerComponent
         openDrawer={showDrawer}
         width="500px"
@@ -458,8 +427,8 @@ function SearchedProduct() {
             width: `calc(100% - 10px)`,
           }}
         >
-          {productData.map((item) => (
-            <Grid item md={6} sm={6}>
+          {productData.map((item, index) => (
+            <Grid item md={6} sm={6} key={index}>
               <SimilarProducts
                 data={item}
                 handleIconClick={(value) => onSimilerIconClick(value)}
@@ -470,176 +439,10 @@ function SearchedProduct() {
       </DrawerComponent>
 
       {viewModalOpen && (
-        <ModalComponent
-          showCloseIcon
-          showClearBtn={false}
-          showSaveBtn={false}
-          open={viewModalOpen}
-          onCloseIconClick={() => setViewModalOpen(false)}
-          // showHeader={false}
-          ModalWidth={700}
-          ModalTitle=""
-          headerClassName=""
-          iconStyle={{
-            right: "0",
-            top: "-25px",
-            position: "absolute",
-            color: "#fff !important",
-          }}
-          closeIconClasName="cursor-pointer color-white"
-          headerBorder=""
-        >
-          <Box className="p-2">
-            <Box className="row d-flex">
-              <Box className="col-5">
-                <Image
-                  src={selectedImage.links}
-                  width="250px"
-                  height="250px"
-                  alt=""
-                  className="rounded bg-white"
-                />
-                <div style={{ position: "absolute", top: 30, left: 240 }}>
-                  <Box className="d-flex flex-row-reverse p-2">
-                    <Box className="d-flex flex-column">
-                      {viewModalIcons.map((item, index) => (
-                        <Box
-                          sx={{
-                            zIndex: "100",
-                            padding: "1px",
-                            width: "25px",
-                            height: "25px",
-                          }}
-                          className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                            iconcolor[item.iconName] ? "bg-orange" : "bg-white"
-                          }`}
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={index}
-                        >
-                          <CustomIcon
-                            type={item.iconName}
-                            className="fs-18"
-                            // onIconClick={() => {
-                            //   handleIconClick(item.iconName);
-                            // }}
-                            showColorOnHover={false}
-                            onMouseEnter={() => mouseEnter(item.iconName)}
-                            onMouseLeave={() => mouseLeave(item.iconName)}
-                            color={
-                              iconcolor[item.iconName]
-                                ? "text-white"
-                                : "text-secondary"
-                            }
-                          />
-                        </Box>
-                      ))}
-                    </Box>
-                  </Box>
-                </div>
-                <div className="d-flex justify-content-evenly">
-                  {viewModalImage.map((item) => (
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-                    <div
-                      className="w-25 h-19p"
-                      onClick={() => handleImageClick(item)}
-                    >
-                      <Image
-                        src={item.links}
-                        width={100}
-                        height={100}
-                        alt=""
-                        className="border rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Box>
-              <Box className="col-7">
-                <p className="fs-14 fw-600">
-                  Portronics SoundDrum Plus a 15W POR-1040 Bluetooth 5.0
-                  Portable Stereo Speaker Comes with Boosted Bass, Equaliser
-                  Function.
-                </p>
-                <Box className="mt-1 mb-1">
-                  <StarRatingComponentReceivingRating
-                    rating={3}
-                    fontSize="medium"
-                  />
-                  <p className="fs-10 fw-400">
-                    129 Rating | 22 Answered Questions
-                  </p>
-                </Box>
-                <Box>
-                  <RadiobuttonComponent
-                    isChecked={viewModalRadioActual}
-                    label="767.54 - 911.99 (Actual Product cost)"
-                    size="small"
-                    onRadioChange={() => {
-                      setViewModalRadioActual(true);
-                      setViewModalRadioFree(false);
-                    }}
-                  />
-                  <RadiobuttonComponent
-                    isChecked={viewModalRadioFree}
-                    label="1000 - 1400 (with free delivery & Return)"
-                    size="small"
-                    onRadioChange={() => {
-                      setViewModalRadioFree(true);
-                      setViewModalRadioActual(false);
-                    }}
-                  />
-                </Box>
-                <Box>
-                  <InputBox
-                    value={viewModalInput}
-                    placeholder="Enter pincode & check if its deliverable"
-                    className="w-75"
-                    onInputChange={(e) => {
-                      setViewModalInput(e.target.value);
-                    }}
-                  />
-                </Box>
-                <Box className="d-flex mt-1">
-                  <Box
-                    className=" d-flex w-30p  justify-content-center align-items-center px-2 py-1 rounded"
-                    style={{ border: "1px solid #292929" }}
-                  >
-                    <div
-                      style={{ width: "20px", height: "20px" }}
-                      className="border rounded-circle me-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
-                      onClick={() => handleMinusClick()}
-                    >
-                      -
-                    </div>
-                    <span>{count}</span>
-                    <div
-                      style={{ width: "20px", height: "20px" }}
-                      className="border rounded-circle ms-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
-                      onClick={() => handlePlusClick()}
-                    >
-                      +
-                    </div>
-                  </Box>
-                  <Box className="ms-5">
-                    <ButtonComponent
-                      borderColor="border-black"
-                      bgColor="bg-white"
-                      textColor="color-black"
-                      label="Add to Cart"
-                      variant="outlined"
-                      size="medium"
-                    />
-                  </Box>
-                </Box>
-                <Box className="w-75 mt-1">
-                  <ButtonComponent size="medium" label="Buy Now" fullWidth />
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        </ModalComponent>
+        <ViewModalComponent
+          setViewModalOpen={setViewModalOpen}
+          viewModalOpen={viewModalOpen}
+        />
       )}
       <DrawerComponent
         openDrawer={comparDrawer}
@@ -648,7 +451,47 @@ function SearchedProduct() {
         headerBorder={false}
         onClose={() => setComparDrawer(false)}
       >
-        <p>Compare Products</p>
+        <Box
+          className="px-4 py-2 d-flex justify-content-between mnh-25p"
+          style={{ height: "150px" }}
+        >
+          <Box className="align-self-center">
+            <p className="fw-600 fs-18">Compare Products</p>
+            <p>( 1 Product )</p>
+          </Box>
+          {comparProductData.map((item) => (
+            <Box className="d-flex justify-content-center border mnw-150">
+              <Box className="align-self-center border p-3 rounded-circle">
+                {item.imageLink ? (
+                  <Image
+                    src={item.imageLink}
+                    // layout="fill"
+                    alt=""
+                    className="rounded bg-white"
+                    style={{ aspectRatio: 1 / 1 }}
+                    width="25vw"
+                    height="25vh"
+                  />
+                ) : (
+                  <CustomIcon type="add" className="" />
+                )}
+              </Box>
+            </Box>
+          ))}
+
+          <Box className="align-self-center">
+            <ButtonComponent
+              label="Clear All"
+              variant="outlined"
+              borderColor="border-gray "
+              bgColor="bg-white"
+              textColor="color-black"
+              size="medium"
+              muiProps="me-3"
+            />
+            <ButtonComponent label="Start Compare" size="medium" />
+          </Box>
+        </Box>
       </DrawerComponent>
     </Box>
   );

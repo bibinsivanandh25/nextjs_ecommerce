@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -92,14 +93,14 @@ function MenuWithCheckbox({
         open={open}
         onClose={handleClose}
       >
-        <>
-          {listData.map((val) => {
+        <div>
+          {listData.map((val, ind) => {
             return (
-              <div>
+              <div key={ind}>
                 <span className="ms-1">{val.title}</span>
-                {val.datas.map((item) => {
+                {val.datas.map((item, index) => {
                   return (
-                    <MenuItem disableRipple>
+                    <MenuItem disableRipple key={index}>
                       <FormGroup>
                         <CheckBoxComponent
                           isChecked={item.isChecked}
@@ -116,7 +117,7 @@ function MenuWithCheckbox({
               </div>
             );
           })}
-        </>
+        </div>
       </StyledMenu>
     </div>
   );
