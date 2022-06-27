@@ -64,10 +64,9 @@ function CustomerProductgModal({
         <Image
           src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG"
           layout="fill"
-          width={100}
-          height={100}
           alt=""
           className="rounded bg-white"
+          style={{ aspectRatio: 1 / 1 }}
         />
         {data.flag && (
           <Badge
@@ -178,19 +177,21 @@ function CustomerProductgModal({
         >
           <div className="ms-2 me-3">
             <CustomIcon
+              title="View Count"
               type="view"
               className="fs-18"
               onIconClick={() => {}}
-              showColorOnHover
+              showColorOnHover={false}
             />
             <span className="fs-12"> 23445</span>
           </div>
           <div>
             <CustomIcon
+              title="Total Order"
               type="airportShuttleOutlinedIcon"
               className="fs-18"
               onIconClick={() => {}}
-              showColorOnHover
+              showColorOnHover={false}
             />
             <span className="fs-12"> 23445</span>
           </div>
