@@ -19,10 +19,9 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           inputRef={firstInputRef}
           onInputChange={(e) => {
             if (e.target.value !== "") secondInputRef.current.focus();
-            // const temp = e.target.value + otp.slice(1, 4);
-            // setotp(temp);
           }}
           onKeyDown={(e) => {
+            debugger;
             if (e.keyCode == 8 || e.keyCode == 46) {
               const temp = `x${otp.slice(1, 4)}`;
               setotp(temp);
@@ -30,7 +29,8 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
               // thirdInputRef.current.focus();
               const temp = String.fromCharCode(e.keyCode) + otp.slice(1, 4);
               setotp(temp);
-              // secondInputRef.current.focus();
+            } else if (e.keyCode === 39) {
+              secondInputRef.current.focus();
             }
           }}
           value={otp.charAt(0) === "x" ? "" : otp.charAt(0)}
@@ -46,10 +46,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           className="w-100"
           inputRef={secondInputRef}
           onInputChange={(e) => {
-            // debugger;
             if (e.target.value !== "") thirdInputRef.current.focus();
-            // const temp = otp.slice(0, 1) + e.target.value + otp.slice(2, 4);
-            // setotp(temp);
           }}
           onKeyDown={(e) => {
             if (e.keyCode == 8 || e.keyCode == 46) {
@@ -60,14 +57,18 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
                 setotp(temp);
               }
             } else if (e.keyCode >= 48 && e.keyCode <= 57) {
-              // thirdInputRef.current.focus();
               const temp =
                 otp.slice(0, 1) +
                 String.fromCharCode(e.keyCode) +
                 otp.slice(2, 4);
               setotp(temp);
+            } else if (e.keyCode === 39) {
+              thirdInputRef.current.focus();
+            } else if (e.keyCode === 37) {
+              firstInputRef.current.focus();
             }
           }}
+          value={otp.charAt(1) === "x" ? "" : otp.charAt(1)}
         />
       </div>
       <div
@@ -81,8 +82,6 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           inputRef={thirdInputRef}
           onInputChange={(e) => {
             if (e.target.value !== "") fourthInputRef.current.focus();
-            // const temp = otp.slice(0, 2) + e.target.value + otp.slice(3, 4);
-            // setotp(temp);
           }}
           onKeyDown={(e) => {
             if (e.keyCode == 8 || e.keyCode == 46) {
@@ -99,8 +98,13 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
                 String.fromCharCode(e.keyCode) +
                 otp.slice(3, 4);
               setotp(temp);
+            } else if (e.keyCode === 39) {
+              fourthInputRef.current.focus();
+            } else if (e.keyCode === 37) {
+              secondInputRef.current.focus();
             }
           }}
+          value={otp.charAt(2) === "x" ? "" : otp.charAt(2)}
         />
       </div>
       <div
@@ -127,8 +131,11 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
             } else if (e.keyCode >= 48 && e.keyCode <= 57) {
               const temp = otp.slice(0, 3) + String.fromCharCode(e.keyCode);
               setotp(temp);
+            } else if (e.keyCode === 37) {
+              thirdInputRef.current.focus();
             }
           }}
+          value={otp.charAt(3) === "x" ? "" : otp.charAt(3)}
         />
       </div>
     </div>
