@@ -192,6 +192,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               }}
               helperText={errorObj.stock_status}
               error={errorObj.stock_status !== ""}
+              placeholder="Select stock status"
             />
           </div>
           <div className="mx-2">
@@ -231,6 +232,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                 type="number"
                 helperText={errorObj.stock_qty}
                 error={errorObj.stock_qty && errorObj.stock_qty !== ""}
+                placeholder="Enter stock quantity"
               />
             </Grid>
             {/* <Grid item md={6}>
@@ -263,6 +265,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             }}
             helperText={errorObj.shipping_class}
             error={errorObj.shipping_class !== ""}
+            placeholder="Select shipping class"
           />
         </Grid>
         <Grid item md={12}>
@@ -274,6 +277,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             inputlabelshrink
             helperText={errorObj.product_title}
             error={errorObj.product_title !== ""}
+            placeholder="Enter product title"
           />
         </Grid>
         <Grid item md={12}>
@@ -296,6 +300,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               errorObj.business_processing_days &&
               errorObj.business_processing_days !== null
             }
+            placeholder="Select processing days"
           />
         </Grid>
         <Grid item md={12}>
@@ -307,6 +312,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             inputlabelshrink
             helperText={errorObj.seo_title}
             error={errorObj.seo_title && errorObj.seo_title !== ""}
+            placeholder="Enter SEO title"
           />
         </Grid>
         <Grid item md={12}>
@@ -320,6 +326,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             error={
               errorObj.meta_description && errorObj.meta_description !== ""
             }
+            placeholder="Enter meta description"
           />
         </Grid>
         <Grid item md={12}>
@@ -336,6 +343,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             }}
             helperText={errorObj.meta_keyword}
             error={errorObj.meta_keyword !== ""}
+            placeholder="Enter keywords"
           />
         </Grid>
       </Grid>

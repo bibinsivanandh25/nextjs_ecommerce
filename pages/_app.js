@@ -21,6 +21,15 @@ function MyApp({ Component, pageProps, router }) {
       </>
     );
   }
+  if (router.pathname === "/" || router.pathname.startsWith("/customer")) {
+    return (
+      <SessionProvider session={pageProps.session}>
+        <ToastComponent />
+        <Loading />
+        <Layout Component={Component} pageProps={pageProps} />
+      </SessionProvider>
+    );
+  }
 
   return (
     <SessionProvider session={pageProps.session}>
