@@ -2,7 +2,7 @@ import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
-import AddIcon from "@mui/icons-material/Add";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import testImage from "../../../../../public/assets/test-image.jpg";
 import styles from "./compareproducts.module.css";
@@ -36,9 +36,9 @@ const ComapareProducts = () => {
       productDescription:
         "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum",
       productRatingReviews: (
-        <StarRatingComponentReceivingRating fontSize="small" />
+        <StarRatingComponentReceivingRating fontSize="small" rating={3.5} />
       ),
-      noOfReviews: "(23 Reviews)",
+      noOfReviews: "(23676777 Reviews)",
       productSku: "2112asdvasvasvds",
       productColor: "--",
       productSize: "--",
@@ -60,7 +60,7 @@ const ComapareProducts = () => {
       productSize: "--",
     },
     {
-      id: 3,
+      id: 4,
       productName: "Product Name",
       productImage: testImage,
       productPrice: "Rs. 235",
@@ -76,7 +76,7 @@ const ComapareProducts = () => {
       productSize: "--",
     },
     {
-      id: 3,
+      id: 5,
       productName: "Product Name",
       productImage: testImage,
       productPrice: "Rs. 235",
@@ -207,7 +207,7 @@ const ComapareProducts = () => {
               className={`w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center ${border}`}
             >
               <Box>
-                <AddIcon
+                <AddRoundedIcon
                   className={`color-dark-gray cursor-pointer ${fonsSizeFourRem} ${border} rounded-circle`}
                 />
               </Box>
