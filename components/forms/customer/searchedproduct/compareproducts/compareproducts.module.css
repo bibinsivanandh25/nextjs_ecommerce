@@ -1,58 +1,15 @@
-.paddingTop100{
-    padding-top: 100px;
-}
-.paddingBottom100{
-    padding-bottom: 100px;
-}
-
-.paddingTop15{
-    padding-top: 15px;
-}
-.paddingBottom15{
-    padding-bottom: 15px;
-}
-
-.alignCenter{
-    align-self: center;
-}
-
-.borderBottomNone{
-    border-bottom: none !important;
-}
-
-.borderRight{
-    border-right: 0.5px solid rgba(224, 224, 224, 1);
-}
 
 .border{
     border: 0.5px solid rgba(224, 224, 224, 1);
 }
 
-.colorGray{
-    color: rgba(224, 224, 224, 1) !important;
-}
-.colorMoreGray {
-    color: rgb(203, 201, 201) !important;
-}
-
-.fonsSizeFiveRem{
+.fonsSizeFourRem{
     font-size: 4rem !important;
-}
-
-.paddingEndFive{
-    padding-right: 7rem !important;
-}
-
-.marginAuto{
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .height150{
     height: 150px;
 }
 
-.width150{
-    width: 150px;
-}
+
 

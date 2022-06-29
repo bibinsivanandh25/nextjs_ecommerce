@@ -8,7 +8,7 @@ import testImage from "../../../../../public/assets/test-image.jpg";
 import styles from "./compareproducts.module.css";
 
 const ComapareProducts = () => {
-  const { border, fonsSizeFiveRem, height150 } = styles;
+  const { border, fonsSizeFourRem, height150 } = styles;
 
   const [theItems, setTheItems] = useState([
     {
@@ -204,11 +204,11 @@ const ComapareProducts = () => {
         >
           <Box className="w-100 h-100 d-flex justify-content-center align-items-center">
             <Box
-              className={`w-75 h-25 d-flex justify-content-center align-items-center ${border}`}
+              className={`w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center ${border}`}
             >
-              <Box className="">
+              <Box>
                 <AddIcon
-                  className={`color-dark-gray ${fonsSizeFiveRem} ${border} rounded-circle`}
+                  className={`color-dark-gray cursor-pointer ${fonsSizeFourRem} ${border} rounded-circle`}
                 />
               </Box>
             </Box>
