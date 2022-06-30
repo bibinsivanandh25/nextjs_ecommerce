@@ -68,7 +68,7 @@ const CategoryProductCard = ({ data = [] }) => {
           Actual cost: <span className="fw-bold">{data.actualCost}</span>
         </Typography>
         <Typography className="fs-14">
-          Free Delivary: <span className="fw-bold">{data.freeDelivary}</span>
+          Free Delivery: <span className="fw-bold">{data.freeDelivary}</span>
         </Typography>
       </Box>
       {data?.no_of_Design > 1 ? (
