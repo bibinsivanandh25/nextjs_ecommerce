@@ -162,12 +162,25 @@ const ComapareProducts = () => {
   };
 
   const returnDivs = () => {
-    return <>{getCompareProducts()}</>;
+    return (
+      <Box overflow="scroll" className="d-flex">
+        {getCompareProducts()}
+        <Box sx={{ minWidth: "250px" }} className="border w-250px mnh-80vh">
+          <Box className="w-100 h-100 d-flex justify-content-center align-items-center">
+            <Box className="w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center border">
+              <Box>
+                <AddRoundedIcon className="color-dark-gray cursor-pointer border h-1 rounded-circle" />
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    );
   };
 
   return (
     <>
-      <Box overflow="scroll" className="d-flex">
+      <Box className="d-flex">
         <Box
           sx={{
             minWidth: "250px",
@@ -192,15 +205,6 @@ const ComapareProducts = () => {
           <Typography className="h-30 fw-bold fs-14">Size</Typography>
         </Box>
         {returnDivs()}
-        <Box sx={{ minWidth: "250px" }} className=" border w-250px mnh-80vh">
-          <Box className="w-100 h-100 d-flex justify-content-center align-items-center">
-            <Box className="w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center border">
-              <Box>
-                <AddRoundedIcon className="color-dark-gray cursor-pointer border h-1 rounded-circle" />
-              </Box>
-            </Box>
-          </Box>
-        </Box>
       </Box>
     </>
   );
