@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import styles from "./PlusMinusButtonComponent.module.css";
+import { Typography } from "@mui/material";
 
-const PlusMinusButtonComponent = () => {
+const PlusMinusButtonComponent = ({ className = "", countClassName = "" }) => {
   const [count, setCount] = useState(1);
   return (
-    <div className={`${styles.divStyle}`}>
+    <div className="d-flex align-items-center">
       <RemoveCircleOutlineOutlinedIcon
-        className="cursor-pointer"
-        fontSize="small"
+        className={`cursor-pointer ${className}`}
         onClick={() => {
           if (count > 1)
             // eslint-disable-next-line no-shadow
@@ -19,11 +18,12 @@ const PlusMinusButtonComponent = () => {
               return count;
             });
         }}
-      />{" "}
-      {count}{" "}
+      />
+      <Typography className={`py-0 border mx-1 ${countClassName}`}>
+        {count}
+      </Typography>
       <AddCircleOutlineOutlinedIcon
-        className="cursor-pointer"
-        fontSize="small"
+        className={`cursor-pointer ${className}`}
         onClick={() => {
           // eslint-disable-next-line no-shadow
           setCount((count) => {

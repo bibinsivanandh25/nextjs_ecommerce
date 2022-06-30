@@ -3,9 +3,11 @@ import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ButtonTabsList from "@/atoms/ButtonTabsList";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
+import InputBox from "@/atoms/InputBoxComponent";
 
 const WishList = () => {
   const list = [
@@ -14,6 +16,7 @@ const WishList = () => {
     { title: "Wishlist 3" },
   ];
   const [products, setProducts] = useState([]);
+  const [hover, setHover] = useState(false);
 
   const getproducts = async () => {
     await axios
@@ -32,7 +35,7 @@ const WishList = () => {
     return products.map((ele, index) => {
       return (
         <Paper
-          className="d-flex justify-content-between ms-3 mb-2 rounded-1 align-items-center"
+          className="d-flex justify-content-between ms-3 mb-2 p-2 rounded-1 align-items-center"
           key={index}
         >
           <Box className="d-flex">
@@ -41,7 +44,10 @@ const WishList = () => {
             </Box>
             <Box className="ps-2">
               <Typography className="fw-bold h-5">{ele.title}</Typography>
-              <StarRatingComponentReceivingRating rating={3} className="h-4" />
+              <StarRatingComponentReceivingRating
+                rating={ele.rating.rate}
+                className="h-4"
+              />
               <Typography className="h-5">
                 {ele.rating.count} Reviews
               </Typography>
@@ -72,26 +78,42 @@ const WishList = () => {
     });
   };
   return (
-    <Box className="d-flex xjustify-content-between">
-      <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
-        <ButtonTabsList tabsList={list} />
-        <Box className="mt-3">
-          <ButtonComponent
-            label="Add new wishlist"
-            variant="outlined"
-            muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-            borderColor="border-orange"
-            textColor="color-orange"
-          />
+    <Box>
+      <Box className="d-flex justify-content-between align-items-center mb-2">
+        <Typography variant="h-3" className="fw-bold">
+          Your Lists
+        </Typography>
+        <Box className="d-flex align-items-center w-50">
+          <InputBox size="small" placeholder="Search this list" />
+          <Box
+            className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
+            // onClick={handleSearch}
+          >
+            <SearchOutlinedIcon className="text-white p-1 fs-1" />
+          </Box>
         </Box>
-      </Paper>
-      <Box
-        className="w-100 overflow-y-scroll hide-scrollbar"
-        sx={{
-          maxHeight: "79vh !important",
-        }}
-      >
-        {getList()}
+      </Box>
+      <Box className="d-flex justify-content-between">
+        <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
+          <ButtonTabsList tabsList={list} />
+          <Box className="mt-3">
+            <ButtonComponent
+              label="Add new wishlist"
+              variant="outlined"
+              muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
+              borderColor="border-orange"
+              textColor="color-orange"
+            />
+          </Box>
+        </Paper>
+        <Box
+          className="w-100 overflow-y-scroll hide-scrollbar"
+          sx={{
+            maxHeight: "72vh !important",
+          }}
+        >
+          {getList()}
+        </Box>
       </Box>
     </Box>
   );
