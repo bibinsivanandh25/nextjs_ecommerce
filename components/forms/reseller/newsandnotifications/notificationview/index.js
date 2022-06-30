@@ -23,7 +23,7 @@ const ResellerNotificationView = ({ notificationDetails }) => {
         </p>
         <p className="mx-3">
           {" "}
-          <span> Ticket Id</span> :{" "}
+          <span> Notification Id</span> :{" "}
           <span className="fw-bold"> {notificationDetails.notificationId}</span>
         </p>
         <p className="mx-3">
