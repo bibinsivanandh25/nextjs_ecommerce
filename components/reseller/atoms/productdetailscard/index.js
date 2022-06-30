@@ -41,6 +41,8 @@ const ProductDetailsCard = ({
     },
   ]);
 
+  const [isChecked, setIsChecked] = useState(false);
+
   const CustomSlider = styled(Slider)({
     color: "#e46c0b",
     // height: 8,
@@ -230,7 +232,6 @@ const ProductDetailsCard = ({
                     valueLabelDisplay="on"
                     onChange={(e) => {
                       setMargin(e.target.value);
-                      console.log(e.target.value);
                     }}
                     valueLabelFormat={`${margin}%`}
                   />
@@ -255,7 +256,13 @@ const ProductDetailsCard = ({
               }
             >
               {!showLink ? (
-                <CheckBoxComponent label="Want to add today's deal" />
+                <CheckBoxComponent
+                  checkBoxClick={() => {
+                    setIsChecked(!isChecked);
+                  }}
+                  isChecked={isChecked}
+                  label="Want to add today's deal"
+                />
               ) : null}
               <ButtonComponent
                 label={showLink ? "Close" : "Save"}
@@ -283,7 +290,7 @@ const ProductDetailsCard = ({
         }}
         showClearBtn={false}
         saveBtnText="submit"
-        footerClassName="justify-content-end"
+        footerClassName="d-flex justify-content-center"
       >
         {wishListCollection.map((ele, index) => {
           return (
