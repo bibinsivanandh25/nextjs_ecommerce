@@ -16,7 +16,6 @@ const WishList = () => {
     { title: "Wishlist 3" },
   ];
   const [products, setProducts] = useState([]);
-  const [hover, setHover] = useState(false);
 
   const getproducts = async () => {
     await axios
