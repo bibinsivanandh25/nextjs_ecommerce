@@ -109,8 +109,8 @@ const ReferredReseller = () => {
       col4: "ABCD",
       col5: "500",
       col6: "400 rs",
-      col7: <Typography className="text-success">200(+10.21%)</Typography>,
-      col8: <Typography className="text-success">6000 rs(1.8%)</Typography>,
+      col7: <Typography className="text-success">200 (+10.21%)</Typography>,
+      col8: <Typography className="text-success">6000 rs (1.8%)</Typography>,
       col9: (
         <Tooltip title="Details">
           <VisibilityIcon className="cursor-pointer" onClick={() => {}} />
