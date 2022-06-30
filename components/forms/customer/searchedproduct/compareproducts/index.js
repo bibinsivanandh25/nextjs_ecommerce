@@ -5,11 +5,8 @@ import Image from "next/image";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import testImage from "../../../../../public/assets/test-image.jpg";
-import styles from "./compareproducts.module.css";
 
 const ComapareProducts = () => {
-  const { border, fonsSizeFourRem, height150 } = styles;
-
   const [theItems, setTheItems] = useState([
     {
       id: 1,
@@ -111,10 +108,7 @@ const ComapareProducts = () => {
     };
     return theItems.map((val, index) => {
       return (
-        <Box
-          sx={{ minWidth: "250px" }}
-          className="rounded-1 border w-250px mnh-80vh"
-        >
+        <Box sx={{ minWidth: "250px" }} className=" border w-250px mnh-80vh">
           <Box className="mnh-200 mb-4 d-flex justify-content-center">
             <Box>
               <Box className="text-center mt-2 mb-3">
@@ -144,7 +138,7 @@ const ComapareProducts = () => {
           <Typography className="h-30 fs-14 text-center color-dark-green">
             {val.productAvailability}
           </Typography>
-          <Box className={`${height150}`}>
+          <Box className="mnh-150 mxh-150">
             <Typography className="ps-1 pe-1 text-center h-5 color-dark-green ">
               {checklengthAndReturn(val.productDescription)}
             </Typography>
@@ -178,7 +172,7 @@ const ComapareProducts = () => {
           sx={{
             minWidth: "250px",
           }}
-          className="rounded-1 ps-2 border w-250px  mnh-80vh position-sticky top-0 start-0
+          className=" ps-2 border w-250px  mnh-80vh position-sticky top-0 start-0
           bg-white zIndex-1
           "
         >
@@ -187,7 +181,7 @@ const ComapareProducts = () => {
           </Box>
           <Typography className=" fw-bold fs-14 h-30">Price</Typography>
           <Typography className="h-30 fw-bold fs-14">AvailabIlity</Typography>
-          <Box className={`${height150}`}>
+          <Box className="mxh-150 mnh-150">
             <Typography className="fw-bold fs-14">Description</Typography>
           </Box>
           <Typography className="h-30 fw-bold fs-14">
@@ -198,18 +192,11 @@ const ComapareProducts = () => {
           <Typography className="h-30 fw-bold fs-14">Size</Typography>
         </Box>
         {returnDivs()}
-        <Box
-          sx={{ minWidth: "250px" }}
-          className="rounded-1 border w-250px mnh-80vh"
-        >
+        <Box sx={{ minWidth: "250px" }} className=" border w-250px mnh-80vh">
           <Box className="w-100 h-100 d-flex justify-content-center align-items-center">
-            <Box
-              className={`w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center ${border}`}
-            >
+            <Box className="w-75 cursor-pointer h-25 d-flex justify-content-center align-items-center border">
               <Box>
-                <AddRoundedIcon
-                  className={`color-dark-gray cursor-pointer ${fonsSizeFourRem} ${border} rounded-circle`}
-                />
+                <AddRoundedIcon className="color-dark-gray cursor-pointer border h-1 rounded-circle" />
               </Box>
             </Box>
           </Box>
