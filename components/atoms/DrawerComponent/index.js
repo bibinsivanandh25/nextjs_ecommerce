@@ -14,6 +14,7 @@ const DrawerComponent = ({
   width = "500px",
   headerBorder = true,
   openDrawer,
+  enter = 500,
 }) => {
   return (
     <Drawer
@@ -27,9 +28,9 @@ const DrawerComponent = ({
       elevation={elevation}
       hideBackdrop={hideBackdrop}
       transitionDuration={{
-        appear: 1000,
+        appear: 500,
         exit: 500,
-        enter: 1000,
+        enter,
       }}
     >
       <Box className="m-1" sx={{ width }}>

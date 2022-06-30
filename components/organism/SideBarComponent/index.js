@@ -104,14 +104,16 @@ const SideBarComponent = ({ children }) => {
   const { data: session } = useSession();
   // const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [menuList, setMenuList] = useState([...mapList(session.user.role)]);
-  // const [selected, setSelected] = useState({});
-  // const [pathName, setPathName] = useState(getBasePath(session.user.role));
+  const [menuList, setMenuList] = useState([
+    ...mapList(session?.user?.role || "customer"),
+  ]);
   const route = useRouter();
 
   useMemo(() => {
-    setMenuList([...mapList(session.user.role)]);
-  }, [session.user.role]);
+    if (session && session.user) {
+      setMenuList([...mapList(session.user.role)]);
+    }
+  }, [session]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -169,21 +171,6 @@ const SideBarComponent = ({ children }) => {
               ) : null}
             </MenuItem>
           );
-          // }
-          // return (
-          //   <MenuItem sx={getMenuStyles(item)} className="d-block">
-          //     {item.title}
-          //     <MenuList
-          //       key={index}
-          //       sx={{
-          //         minHeight: 40,
-          //         px: 2.5,
-          //       }}
-          //     >
-          //       {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}
-          //     </MenuList>
-          //   </MenuItem>
-          // );
         })}
       </div>
     );
@@ -200,11 +187,12 @@ const SideBarComponent = ({ children }) => {
           route.pathname[route.pathname.length - 1] === "/"
             ? "60px"
             : "80px",
+        display: "flex",
       }}
     >
       <CssBaseline />
 
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} className="shadow position-fixed">
         <Box
           className="overflow-y-scroll hide-scrollbar"
           sx={{
@@ -326,7 +314,7 @@ const SideBarComponent = ({ children }) => {
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
         }}
-        className=" overflow-auto p-4 py-3 hide-scrollbar"
+        className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
       >
         <Box className="mb-2">
           <BreadCrumb />

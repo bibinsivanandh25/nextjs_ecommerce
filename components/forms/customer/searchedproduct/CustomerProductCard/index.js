@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Badge, Box, Paper } from "@mui/material";
-import Image from "next/image";
+// import Image from "next/image";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
+import CarousalComponent from "@/atoms/Carousel";
 
 const iconListData = [
   {
@@ -25,6 +27,23 @@ const iconListData = [
     title: "Search",
   },
 ];
+const images = [
+  {
+    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    altText: "Slide 1",
+    // caption: "Slide 1",
+  },
+  {
+    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    // altText: "Slide 2",
+    // caption: "Slide 2",
+  },
+  {
+    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    // altText: "Slide 3",
+    // caption: "Slide 3",
+  },
+];
 
 function CustomerProductgModal({
   data = {},
@@ -40,43 +59,103 @@ function CustomerProductgModal({
     setIconColor((prev) => ({ ...prev, [name]: false }));
   };
   return (
-    <Box
+    <div
       className={
         viewType === "row"
-          ? "w-100 d-flex bg-white p-1 rounded border my-2"
-          : "w-100 d-flex flex-column bg-white p-1 rounded"
+          ? "w-100 d-flex bg-white p-1 rounded border my-2 "
+          : "w-100 d-flex flex-column bg-white p-1 rounded "
       }
     >
       <Paper
-        elevation={hover ? 6 : 3}
+        elevation={hover ? 3 : 0}
         sx={{
-          position: "relative",
           width: viewType === "row" ? "20%" : "100%",
           height: viewType === "row" ? "25vh" : "30vh",
-        }}
-        onMouseEnter={() => {
-          setHover(true);
         }}
         onMouseLeave={() => {
           setHover(false);
         }}
+        onMouseEnter={() => {
+          setHover(true);
+        }}
+        style={{ position: "relative" }}
       >
-        <Image
-          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG"
-          layout="fill"
-          alt=""
-          className="rounded bg-white"
-          style={{ aspectRatio: 1 / 1 }}
-        />
-        {data.flag && (
-          <Badge
-            style={{ borderTopLeftRadius: "4px" }}
-            className="bg-orange fs-12 align-top text-white px-2"
-          >
-            Best Seller
-          </Badge>
-        )}
-
+        {/* {hover ? (
+          <>
+            <div className="poistion-relative">
+              <CarousalComponent
+                interval={1500}
+                autoPlay={hover}
+                stopOnHover={false}
+                dynamicHeight={false}
+                images={images}
+                showIndicators={hover}
+                carouselImageHeight={viewType === "Grid" ? "30vh" : "25vh"}
+              />
+            </div>
+            {data.flag && (
+              <Badge
+                style={{
+                  borderTopLeftRadius: "4px",
+                  position: "absolute",
+                  top: 3,
+                }}
+                className="bg-orange fs-12 text-white px-2 ms-1"
+              >
+                Best Seller
+              </Badge>
+            )}
+          </>
+        ) : (
+          <>
+            <Image
+              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+              layout="fill"
+              alt=""
+              className={
+                hover ? "rounded bg-white " : "rounded bg-white  opacity-75"
+              }
+            />
+            {data.flag && (
+              <Badge
+                style={{
+                  borderTopLeftRadius: "4px",
+                  position: "absolute",
+                  top: 3,
+                }}
+                className="bg-orange fs-12 align-top text-white px-2 ms-1"
+              >
+                Best Seller
+              </Badge>
+            )}
+          </>
+        )} */}
+        <>
+          <div className="poistion-relative">
+            <CarousalComponent
+              interval={1500}
+              autoPlay={hover}
+              stopOnHover={false}
+              dynamicHeight={false}
+              images={images}
+              showIndicators={hover}
+              carouselImageMaxHeight={viewType === "Grid" ? "30vh" : "0"}
+              carouselImageMinHeight={viewType === "Grid" ? "0" : "25vh"}
+            />
+          </div>
+          {data.flag && (
+            <Badge
+              style={{
+                borderTopLeftRadius: "4px",
+                position: "absolute",
+                top: 3,
+              }}
+              className="bg-orange fs-12 text-white px-2 ms-1"
+            >
+              Best Seller
+            </Badge>
+          )}
+        </>
         <Box
           className={hover ? "d-block" : "d-none"}
           style={{ position: "absolute", top: 10, right: 0 }}
@@ -202,7 +281,7 @@ function CustomerProductgModal({
           </Box>
         )}
       </Box>
-    </Box>
+    </div>
   );
 }
 
