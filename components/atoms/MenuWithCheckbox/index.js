@@ -57,6 +57,7 @@ function MenuWithCheckbox({
   btnText = "Filter",
   handleCheckboxClick = () => {},
   btncolor = "inherit",
+  borderStyle = "1px solid #707070",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -81,6 +82,7 @@ function MenuWithCheckbox({
         endIcon={<KeyboardArrowDownIcon className="ms-5" />}
         className={btnClassName}
         color={btncolor}
+        sx={{ border: borderStyle }}
       >
         {btnText}
       </Button>

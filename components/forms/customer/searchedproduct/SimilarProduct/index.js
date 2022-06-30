@@ -52,7 +52,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         }}
       >
         <Image
-          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG"
+          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
           layout="fill"
           width={100}
           height={100}
