@@ -72,7 +72,7 @@ const ReferredReseller = () => {
     },
     {
       id: "col8",
-      label: "Monthly COmmission",
+      label: "Monthly Commission",
       // minWidth: 170,
       align: "center",
       data_align: "center",
