@@ -26,6 +26,13 @@ function CarousalComponent({
   onClickItem = () => {},
   autoPlay = true,
   interval = 2000,
+  stopOnHover = true,
+  dynamicHeight = true,
+  images = items,
+  carouselImageMaxHeight = "50vh",
+  carouselImageMinHeight = "0",
+  carouselImageMinWidth = "100%",
+  showIndicators = true,
 }) {
   return (
     <Carousel
@@ -33,19 +40,30 @@ function CarousalComponent({
       onChange={onChange}
       onClickItem={onClickItem}
       autoPlay={autoPlay}
-      dynamicHeight
+      dynamicHeight={dynamicHeight}
       infiniteLoop
       interval={interval}
       showThumbs={false}
       showStatus={false}
+      stopOnHover={stopOnHover}
+      showIndicators={showIndicators}
     >
-      {items.map((value) => {
-        return (
-          <div>
-            <img src={value.src} alt="" style={{ maxHeight: "50vh" }} />
-          </div>
-        );
-      })}
+      {images &&
+        images.map((value) => {
+          return (
+            <div>
+              <img
+                src={value.src}
+                alt=""
+                style={{
+                  maxHeight: carouselImageMaxHeight,
+                  minHeight: carouselImageMinHeight,
+                  minWidth: carouselImageMinWidth,
+                }}
+              />
+            </div>
+          );
+        })}
     </Carousel>
   );
 }
