@@ -4,7 +4,7 @@ import React from "react";
 
 const Notification = ({ data = {} }) => {
   return (
-    <div className="border rounded me-4 mb-3">
+    <div className="border rounded me-4">
       <Card className="d-flex">
         {data.imagesrc && (
           <CardMedia
@@ -19,9 +19,9 @@ const Notification = ({ data = {} }) => {
             <Typography gutterBottom variant="h5" component="div">
               Lizard
             </Typography>
-            <Typography>
+            <Box className="">
               <DateRange />
-            </Typography>
+            </Box>
           </Box>
           <Box className="mb-2">
             <span className="fs-12">25 Jun 2022 | 10 min read</span>

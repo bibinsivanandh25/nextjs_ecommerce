@@ -5,7 +5,7 @@ import ButtonComponent from "../ButtonComponent";
 
 const ModalComponent = ({
   children,
-  titleClassName = "",
+  titleClassName = "fs-12",
   ModalTitle = "Modal Title",
   ModalWidth = 500,
   showFooter = true,
@@ -68,7 +68,7 @@ const ModalComponent = ({
                 onClick={onCloseIconClick}
               />
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label className={`fs-12 fw-600 ${titleClassName}`}>
+              <label className={` fw-600 ${titleClassName}`}>
                 {ModalTitle}
               </label>
               <div
