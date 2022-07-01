@@ -328,11 +328,14 @@ const DisplaySet = ({ ele, handleClick }) => {
       lg={2}
       key={ele.id}
       className="p-2 d-flex flex-column align-items-center"
-      onClick={() => {
-        handleClick(ele);
-      }}
     >
-      <Card elevation={2} className="w-100 h-100">
+      <Card
+        elevation={2}
+        className="w-100 h-100"
+        onClick={() => {
+          handleClick(ele);
+        }}
+      >
         <CardActionArea>
           <Image
             src={
