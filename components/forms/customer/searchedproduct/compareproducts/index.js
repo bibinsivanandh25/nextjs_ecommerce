@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import testImage from "../../../../../public/assets/test-image.jpg";
 
-const ComapareProducts = () => {
+const ComapareProducts = ({ handleBackclick = () => {} }) => {
   const [theItems, setTheItems] = useState([
     {
       id: 1,
@@ -184,6 +187,17 @@ const ComapareProducts = () => {
 
   return (
     <>
+      <Box>
+        <div
+          className="d-flex"
+          onClick={() => {
+            handleBackclick();
+          }}
+        >
+          <CustomIcon type="keyboardBackspaceIcon" />
+          <p className="cursor-pointer">Back</p>
+        </div>
+      </Box>
       <Box className="d-flex">
         <Box
           sx={{

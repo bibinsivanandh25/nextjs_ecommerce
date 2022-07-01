@@ -27,6 +27,8 @@ import ViewCarouselOutlinedIcon from "@mui/icons-material/ViewCarouselOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 import Remove from "@mui/icons-material/Remove";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { RiShareForwardFill } from "react-icons/ri";
 
 const CustomIcon = ({
@@ -72,6 +74,8 @@ const CustomIcon = ({
     visibilityOutlinedIcon: VisibilityOutlinedIcon,
     airportShuttleOutlinedIcon: AirportShuttleOutlinedIcon,
     removeIcon: Remove,
+    checkCircleIcon: CheckCircleIcon,
+    keyboardBackspaceIcon: KeyboardBackspaceIcon,
     riShareForwardFill: RiShareForwardFill,
   };
 
