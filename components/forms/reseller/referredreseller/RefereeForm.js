@@ -77,7 +77,7 @@ const RefereeForm = ({
             <Typography className="h-4 fw-bold">Sales History</Typography>
             <Box className="mt-2">
               <Typography className="fw-bold h-5 ">
-                Last Month(april) Earnings :{" "}
+                Last Month (April) Earnings :{" "}
                 <Typography component="span" className="color-dark-green mx-2">
                   123
                 </Typography>{" "}

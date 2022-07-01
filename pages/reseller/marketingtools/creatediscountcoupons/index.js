@@ -138,12 +138,12 @@ const CreateDiscountCoupons = () => {
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
               <Typography className="fs-12 fw-bold">
-                Subscription Start Date & time:{Date()}
+                Subscription Start Date & time : {Date()}
               </Typography>
             </Grid>
             <Grid>
               <Typography className="fs-12 fw-bold">
-                Subscription End Date & time:{Date()}
+                Subscription End Date & time : {Date()}
               </Typography>
             </Grid>
             <Grid>

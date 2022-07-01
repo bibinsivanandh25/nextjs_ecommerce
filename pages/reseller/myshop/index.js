@@ -94,7 +94,7 @@ const MyShop = () => {
           <Box className="d-flex">
             <Paper
               elevation={3}
-              className="mxh-200 mnw-150 rounded bg-info position-relative"
+              className="mxh-200 mnw-150 rounded bg-info position-relative me-3"
               sx={{ width: "10vw", height: "20vh" }}
             >
               <Image
@@ -134,7 +134,7 @@ const MyShop = () => {
                 <Typography className="h-3">Shop Name</Typography>
                 <Typography className="h-4">Shop Code: #12345</Typography>
               </Box>
-              <ButtonComponent label="View Shop" />
+              <ButtonComponent muiProps="fs-14" label="View Shop" />
             </Box>
           </Box>
           <Box className="d-flex flex-column justify-content-between">

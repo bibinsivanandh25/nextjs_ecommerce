@@ -116,6 +116,7 @@ const HelpandsupportView = ({ selectedData }) => {
             <ButtonComponent
               label="Send Reply"
               onBtnClick={handleCreateBtnClick}
+              muiProps="me-2"
             />
           </Grid>
         </Grid>
