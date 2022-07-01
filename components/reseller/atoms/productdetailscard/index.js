@@ -11,6 +11,7 @@ import { useState } from "react";
 import styled from "@emotion/styled";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
+import StarIcon from "@mui/icons-material/Star";
 
 const ProductDetailsCard = ({
   products = [],
@@ -40,6 +41,8 @@ const ProductDetailsCard = ({
       isSelected: false,
     },
   ]);
+
+  const [isChecked, setIsChecked] = useState(false);
 
   const CustomSlider = styled(Slider)({
     color: "#e46c0b",
@@ -204,9 +207,14 @@ const ProductDetailsCard = ({
                   </Typography>
                 </Tooltip>
                 <div>
-                  <span className="fs-12 bg-orange px-2 rounded-1 text-white me-2">
-                    {selectedProduct?.rating?.rate} *
-                  </span>
+                  <div className="d-flex w-25 align-items-end fs-12 bg-orange px-2 rounded-1 text-white me-2 justify-content-between h-20p">
+                    <div className="align-self-center">
+                      {selectedProduct?.rating?.rate}
+                    </div>
+                    <div>
+                      <StarIcon className="fs-12" />
+                    </div>
+                  </div>
                   <span className="fs-12 text-secondary">
                     ({selectedProduct?.rating?.count} Ratings)
                   </span>
@@ -230,7 +238,6 @@ const ProductDetailsCard = ({
                     valueLabelDisplay="on"
                     onChange={(e) => {
                       setMargin(e.target.value);
-                      console.log(e.target.value);
                     }}
                     valueLabelFormat={`${margin}%`}
                   />
@@ -255,7 +262,13 @@ const ProductDetailsCard = ({
               }
             >
               {!showLink ? (
-                <CheckBoxComponent label="Want to add today's deal" />
+                <CheckBoxComponent
+                  checkBoxClick={() => {
+                    setIsChecked(!isChecked);
+                  }}
+                  isChecked={isChecked}
+                  label="Want to add today's deal"
+                />
               ) : null}
               <ButtonComponent
                 label={showLink ? "Close" : "Save"}
@@ -283,7 +296,7 @@ const ProductDetailsCard = ({
         }}
         showClearBtn={false}
         saveBtnText="submit"
-        footerClassName="justify-content-end"
+        footerClassName="d-flex justify-content-center"
       >
         {wishListCollection.map((ele, index) => {
           return (
