@@ -86,7 +86,7 @@ const ModalComponent = ({
             {children}
           </div>
           {showFooter ? (
-            <div className={`${footerPadding} d-flex  ${footerClassName}`}>
+            <div className={`${footerPadding} ${footerClassName}`}>
               {showSaveBtn ? (
                 <ButtonComponent
                   onBtnClick={onSaveBtnClick}

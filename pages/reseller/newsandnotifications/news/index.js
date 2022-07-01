@@ -64,7 +64,7 @@ const ResellerNews = () => {
         </Grid>
         <Grid item container spacing={2} xs={12} sx={{ my: 5, px: 2 }}>
           {paginatedData.map((ele) => (
-            <Grid xs={6} item key={ele.id} onClick={() => handleCardClick(ele)}>
+            <Grid xs={6} item key={ele.id}>
               <Grid
                 container
                 sx={{
@@ -79,7 +79,8 @@ const ResellerNews = () => {
                       height={100}
                       width={100}
                       alt=""
-                      className="ms-2"
+                      className="ms-2 cursor-pointer"
+                      onClick={() => handleCardClick(ele)}
                     />
                   </Grid>
                   <Grid

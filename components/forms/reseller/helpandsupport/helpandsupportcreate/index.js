@@ -82,7 +82,7 @@ const HelpandsupportCreate = () => {
       </div>
       <div className="my-2">
         <div className="">
-          {type === " customer" ? (
+          {type === "customer" ? (
             <TextEditor
               getContent={(text) => {
                 setFormValue((pre) => ({

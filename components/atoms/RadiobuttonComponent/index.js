@@ -12,6 +12,7 @@ export default function RadiobuttonComponent({
   disabled = false,
   className = "",
   size = "medium",
+  radioClassName = "",
 }) {
   return (
     <FormControlLabel
@@ -21,6 +22,7 @@ export default function RadiobuttonComponent({
       className={className}
       control={
         <Radio
+          className={radioClassName}
           size={size}
           onClick={onRadioChange}
           id={id}

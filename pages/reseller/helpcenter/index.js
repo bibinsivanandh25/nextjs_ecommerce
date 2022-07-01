@@ -8,6 +8,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export default function SimpleAccordion() {
   return (
     <div className="mx-5">
+      <Typography variant="h6" className="color-orange fw-bold py-2 px-1">
+        FAQ
+      </Typography>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}

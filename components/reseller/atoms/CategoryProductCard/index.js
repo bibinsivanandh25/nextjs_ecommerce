@@ -56,7 +56,7 @@ const CategoryProductCard = ({ data = [] }) => {
         <Box className="d-flex align-items-center px-2 justify-content-between w-100">
           <Typography className="h-3">{data.title}</Typography>
           <Typography className="fw-600 fs-14 color-dark-green">
-            Earn {data.profit_earned}
+            Earn &#x20B9;{data.profit_earned}
           </Typography>
         </Box>
       </Box>
@@ -68,7 +68,7 @@ const CategoryProductCard = ({ data = [] }) => {
           Actual cost: <span className="fw-bold">{data.actualCost}</span>
         </Typography>
         <Typography className="fs-14">
-          Free Delivary: <span className="fw-bold">{data.freeDelivary}</span>
+          Free Delivery: <span className="fw-bold">{data.freeDelivary}</span>
         </Typography>
       </Box>
       {data?.no_of_Design > 1 ? (

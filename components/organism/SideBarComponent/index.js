@@ -22,7 +22,7 @@ import { MenuItem, MenuList } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 
-const drawerWidth = 240;
+const drawerWidth = 245;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -125,43 +125,56 @@ const SideBarComponent = ({ children }) => {
   const getMenuStyles = (item) => {
     return {
       opacity: open ? 1 : 0,
-      color: item?.child?.length ? "#e56700" : "gray",
+      color: item?.selected ? "#e56700" : "gray",
       fontSize: item?.child?.length ? 14 : 11,
-      fontWeight: item?.child?.length ? 500 : 600,
+      fontWeight: item?.selected ? "bold" : "",
       pl: 0,
     };
   };
 
   const getSubMenuList = (data = []) => {
     return (
-      <div>
+      <>
         {data.map((item, index) => {
           // if (!item.selected) {
           return (
-            <MenuItem sx={getMenuStyles(item)} key={index} className="d-block">
-              <Box
-                id={item.id}
-                onClick={(e) => {
-                  if (item.navigate) {
-                    route.push(`${item.path_name}`);
-                  }
-                  e.stopPropagation();
-                  // if (item?.child?.length) {
-                  setMenuList((pre) => {
-                    const temp = JSON.parse(JSON.stringify(pre));
-                    temp.forEach((ele) => {
-                      if (ele.selected && ele?.child?.length) {
-                        if (e.target.id.split("_").length === 2) {
-                          ele.child[index].selected =
-                            !ele.child[index].selected;
-                        }
+            <MenuItem
+              onClick={(e) => {
+                if (item.navigate) {
+                  route.push(`${item.path_name}`);
+                }
+                e.stopPropagation();
+                // if (item?.child?.length) {
+                setMenuList((pre) => {
+                  const temp = JSON.parse(JSON.stringify(pre));
+                  temp.forEach((ele) => {
+                    if (ele.selected && ele?.child?.length) {
+                      if (e.target.id.split("_").length === 2) {
+                        ele.child[index].selected = !ele.child[index].selected;
+                      } else if (e.target.id.split("_").length === 3) {
+                        ele.child[`${e.target.id.split("_")[1]}`].child.forEach(
+                          (element) => {
+                            element.selected = false;
+                          }
+                        );
+                        ele.child[`${e.target.id.split("_")[1]}`].child[
+                          index
+                        ].selected =
+                          !ele.child[`${e.target.id.split("_")[1]}`].child[
+                            index
+                          ].selected;
                       }
-                    });
-                    return temp;
+                    }
                   });
-                  // }
-                }}
-              >
+                  return temp;
+                });
+                // }
+              }}
+              sx={getMenuStyles(item)}
+              key={index}
+              className="d-block"
+            >
+              <Box id={item.id} className="fs-13 cursor-pointer">
                 {item.title}
               </Box>
               {item.selected && item?.child?.length ? (
@@ -172,7 +185,7 @@ const SideBarComponent = ({ children }) => {
             </MenuItem>
           );
         })}
-      </div>
+      </>
     );
   };
   return (
@@ -181,7 +194,12 @@ const SideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "60px",
+        top:
+          route.pathname.startsWith("/reseller") ||
+          route.pathname.startsWith("/supplier") ||
+          route.pathname[route.pathname.length - 1] === "/"
+            ? "60px"
+            : "80px",
         display: "flex",
       }}
     >
@@ -189,16 +207,19 @@ const SideBarComponent = ({ children }) => {
 
       <Drawer variant="permanent" open={open} className="shadow position-fixed">
         <Box
-          className="overflow-y-scroll hide-scrollbar"
+          className="hide-scrollbar "
           sx={{
             maxHeight: `calc(100vh - 60px)`,
-            overflowX: "hidden",
+            // overflowX: "hidden",
           }}
         >
           <Box
             className={`d-flex ${
               open ? "justify-content-end" : "justify-content-center"
             }`}
+            // style={{
+            //   position: "fixed",
+            // }}
           >
             <IconButton
               color="inherit"
@@ -222,90 +243,107 @@ const SideBarComponent = ({ children }) => {
               <ChevronLeftIcon />
             </IconButton>
           </Box>
-          <List>
-            {menuList.map((item, index) => {
-              return (
-                <ListItem key={index} disablePadding sx={{ display: "block" }}>
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={() => {
-                      if (item.navigate) {
-                        route.push(`${item.path_name}`);
-                      }
-                      setMenuList((pre) => {
-                        const setSelectedToFalse = (data) => {
-                          data.forEach((element) => {
-                            if (element?.child?.length) {
-                              element.child = setSelectedToFalse(
-                                JSON.parse(JSON.stringify([...element.child]))
-                              );
-                            }
-                            element.selected = false;
-                          });
-                          return data;
-                        };
-                        const temp = setSelectedToFalse(
-                          JSON.parse(JSON.stringify([...pre]))
-                        );
-                        temp[index].selected = true;
-                        return [...temp];
-                      });
-                    }}
+          <Box className="overflow-y-scroll h-100 hide-scrollbar">
+            <List className="" style={{ paddingBottom: "50px" }}>
+              {menuList.map((item, index) => {
+                return (
+                  <ListItem
+                    key={index}
+                    disablePadding
+                    sx={{ display: "block" }}
+                    className="cursor-pointer"
                   >
-                    <ListItemIcon
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: item.selected && "#e56700",
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: open ? 1.5 : 2.5,
+                      }}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (item.navigate) {
+                          route.push(`${item.path_name}`);
+                        }
+                        setMenuList((pre) => {
+                          const setSelectedToFalse = (data) => {
+                            data.forEach((element) => {
+                              if (element?.child?.length) {
+                                element.child = setSelectedToFalse(
+                                  JSON.parse(JSON.stringify([...element.child]))
+                                );
+                              }
+                              element.selected = false;
+                            });
+                            return data;
+                          };
+                          const temp = setSelectedToFalse(
+                            JSON.parse(JSON.stringify([...pre]))
+                          );
+                          temp[index].selected = true;
+                          return [...temp];
+                        });
                       }}
                     >
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="text"
-                          fontWeight={600}
-                          fontSize={14}
-                          color={item.selected && "#e56700"}
-                        >
-                          {item.title}
-                        </Typography>
-                      }
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                  {item.selected && item?.child?.length ? (
-                    <div>
-                      <MenuList
-                        key={index}
+                      <ListItemIcon
                         sx={{
-                          minHeight: 40,
-                          px: 2.5,
+                          minWidth: 0,
+                          mr: open ? 1 : "auto",
+                          justifyContent: "center",
+                          color: item.selected && "#e56700",
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <InboxIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        className="cursor-pointer"
+                        primary={
+                          <Typography
+                            className="cursor-pointer"
+                            variant="text"
+                            fontWeight={600}
+                            fontSize={13}
+                            color={item.selected && "#e56700"}
+                          >
+                            {item.title}
+                          </Typography>
+                        }
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                    {item.selected && item?.child?.length ? (
+                      <div
+                        style={{
+                          display: open ? "block" : "none",
                         }}
                       >
-                        {getSubMenuList(
-                          JSON.parse(JSON.stringify([...item.child]))
-                        )}
-                      </MenuList>
-                    </div>
-                  ) : null}
-                </ListItem>
-              );
-            })}
-          </List>
+                        <MenuList
+                          key={index}
+                          sx={{
+                            minHeight: 40,
+                            px: 2.5,
+                            marginLeft: "40px",
+                            padding: "0px",
+                          }}
+                        >
+                          {getSubMenuList(
+                            JSON.parse(JSON.stringify([...item.child]))
+                          )}
+                        </MenuList>
+                      </div>
+                    ) : null}
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Box>
         </Box>
       </Drawer>
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 240px)" : "calc(100vw - 60px)"}`,
-          marginLeft: ` ${open ? "240px" : "60px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 245px)" : "calc(100vw - 60px)"}`,
+          marginLeft: ` ${open ? "245px" : "60px"}`,
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
         }}

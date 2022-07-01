@@ -42,7 +42,9 @@
 .mnh-400 {
   min-height: 400px;
 }
-
+.mnh-250{
+  min-height: 250px;
+}
 .mnh-500 {
   min-height: 500px;
 }
@@ -67,6 +69,9 @@
   min-height: 80vh
 }
 
+.mnh-79vh{
+  min-height: 79vh
+}
 .mxh-130 {
   max-height: 130px;
 }
@@ -136,7 +141,7 @@
 }
 
 .w-95p {
-  width: 95%;
+  width: 95% !important;
 }
 
 .h-92 {

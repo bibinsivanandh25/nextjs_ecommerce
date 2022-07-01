@@ -103,9 +103,9 @@ export default function TableComponent({
     { label: "All", id: "0", value: "All" },
   ]);
   const [searchFilter, setSearchFilter] = useState({
-    // label: "All",
-    // id: "0",
-    // value: "All",
+    label: "All",
+    id: "0",
+    value: "All",
   });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
@@ -175,6 +175,7 @@ export default function TableComponent({
       setSelected(newSelecteds);
       return;
     }
+    OnSelectionChange([]);
     setSelected([]);
   };
 
@@ -317,7 +318,7 @@ export default function TableComponent({
 
     return (
       <Grid container>
-        <Grid item container xs={4} justifyContent="start">
+        <Grid item container xs={3} justifyContent="start">
           {table_heading && (
             <Grid item sm={6} md={6} xs={12}>
               <Typography
@@ -332,7 +333,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid item container xs={8} justifyContent="end">
+        <Grid item container xs={9} justifyContent="end">
           {showSearchbar && (
             <Grid
               item
@@ -387,7 +388,7 @@ export default function TableComponent({
                 <Grid item xs={3}>
                   <Button
                     variant="contained"
-                    className={`${
+                    className={`fs-12 ${
                       disableCustomSearchButton ? "" : "bg-orange"
                     }`}
                     sx={{ textTransform: "none" }}

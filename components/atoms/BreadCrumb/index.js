@@ -18,7 +18,6 @@ const BreadCrumb = () => {
     const str = path[pLength];
     path[pLength] = route.query[`${str.substring(1, str.length - 1)}`];
   }
-  console.log({ path });
   return (
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
@@ -36,7 +35,17 @@ const BreadCrumb = () => {
               <span>
                 <CustomIcon type="arrowforward" className="fs-12 mx-2" />
               </span>
-              <Link href={`${completePath}`} passHref>
+              {item.navigate ? (
+                <Link href={`${completePath}`} passHref>
+                  <span
+                    className={`${
+                      path.length === index + 1 ? "color-orange" : ""
+                    } fs-14 mx-2 cursor-pointer`}
+                  >
+                    {paths.find((i) => i.id === item)?.title}
+                  </span>
+                </Link>
+              ) : (
                 <span
                   className={`${
                     path.length === index + 1 ? "color-orange" : ""
@@ -44,7 +53,7 @@ const BreadCrumb = () => {
                 >
                   {paths.find((i) => i.id === item)?.title}
                 </span>
-              </Link>
+              )}
             </React.Fragment>
           );
         })}

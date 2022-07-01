@@ -20,7 +20,7 @@ const cardData = [
     amount: "10000",
   },
   {
-    title: "Cycle wise Payment",
+    title: "Cycle Wise Payment",
     description: "Total money paid till date",
     amount: "10000",
   },
@@ -74,7 +74,7 @@ const MyEarnings = () => {
                       </Typography>
                       <ButtonComponent
                         muiProps="p-1 h-75"
-                        label="View Order details"
+                        label="View Order Details"
                         variant="outlined"
                         onBtnClick={() => {
                           setShowOrderDetails(true);

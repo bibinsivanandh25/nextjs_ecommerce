@@ -117,7 +117,7 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
+          <ButtonComponent muiProps="fs-12" variant="outlined" label="Cancel" />
           <CustomIcon type="remove" title="Detail" />
         </div>
       ),
@@ -134,7 +134,7 @@ const AcceptandConfirmOrder = () => {
       col8: "500",
       col9: (
         <div className="d-flex justify-content-between align-items-center">
-          <ButtonComponent muiProps="fs-10" variant="outlined" label="cancel" />
+          <ButtonComponent muiProps="fs-12" variant="outlined" label="Cancel" />
           <CustomIcon type="remove" title="Detail" />
         </div>
       ),
