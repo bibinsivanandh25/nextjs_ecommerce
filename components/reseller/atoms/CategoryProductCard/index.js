@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
 import { useState } from "react";
+import CustomIcon from "services/iconUtils";
 import styles from "./CategoryProductCard.module.css";
 
 const CategoryProductCard = ({ data = [] }) => {
@@ -36,18 +37,37 @@ const CategoryProductCard = ({ data = [] }) => {
             !hover ? styles.hoverCard_none : styles.hoverCard_block
           }`}
         >
-          <Box className="d-flex flex-row-reverse p-2">
-            <Box className="d-flex flex-column">
+          <Box className="d-flex flex-row-reverse h-75 p-2">
+            <Box className="d-flex flex-column ">
               <Box>
                 <Image
                   src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/watsapp-icon.png"
-                  width={25}
-                  height={25}
+                  width={32}
+                  height={32}
                   alt=""
+                  className="rounded-circle"
                 />
               </Box>
-              <Box>icon</Box>
-              <Box>icon</Box>
+              <Box
+                className={`text-center d-flex justify-content-center align-items-center w-100 h-25 rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
+              >
+                <CustomIcon
+                  showColorOnHover={false}
+                  type="riShareForwardFill"
+                  color={styles.icon}
+                  className="fs-18"
+                />
+              </Box>
+              <Box
+                className={`text-center d-flex justify-content-center align-items-center w-100 h-25 rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
+              >
+                <CustomIcon
+                  showColorOnHover={false}
+                  type="search"
+                  color={styles.icon}
+                  className="fs-18"
+                />{" "}
+              </Box>
             </Box>
           </Box>
         </Box>

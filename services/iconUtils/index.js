@@ -29,6 +29,7 @@ import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlin
 import Remove from "@mui/icons-material/Remove";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { RiShareForwardFill } from "react-icons/ri";
 
 const CustomIcon = ({
   title = "",
@@ -75,6 +76,7 @@ const CustomIcon = ({
     removeIcon: Remove,
     checkCircleIcon: CheckCircleIcon,
     keyboardBackspaceIcon: KeyboardBackspaceIcon,
+    riShareForwardFill: RiShareForwardFill,
   };
 
   const [hover, setHover] = useState(false);

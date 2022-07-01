@@ -383,7 +383,7 @@ const MyNotification = () => {
           }}
           ModalTitle="View"
           titleClassName=" fs-18 color-orange"
-          footerClassName="justify-content-end"
+          footerClassName="d-flex justify-content-end"
           ClearBtnText="Cancel"
           saveBtnText="Reply"
           ModalWidth={700}
@@ -437,7 +437,7 @@ const MyNotification = () => {
           }}
           ModalTitle="Capture question asked by customer here......"
           titleClassName=" fs-18"
-          footerClassName="justify-content-end mb-3"
+          footerClassName="d-flex justify-content-end mb-3"
           ClearBtnText="Cancel"
           saveBtnText="Update"
           ModalWidth={700}
@@ -467,7 +467,7 @@ const MyNotification = () => {
           }}
           ModalTitle="Capture question asked by customer here......"
           titleClassName=" fs-18"
-          footerClassName="justify-content-end mb-3"
+          footerClassName="d-flex justify-content-end mb-3"
           ClearBtnText="Cancel"
           saveBtnText="Submit"
           ModalWidth={700}
