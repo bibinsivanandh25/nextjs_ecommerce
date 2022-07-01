@@ -13,11 +13,13 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SwitchProfile from "@/forms/customer/switchprofile";
 
 const Header = () => {
   const route = useRouter();
 
   const [isSignedIn] = useState(true);
+  const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -160,6 +162,9 @@ const Header = () => {
               sx={{
                 m: "0.08rem",
               }}
+              onClick={() => {
+                route.push("/customer/searchedproduct");
+              }}
               className="bg-orange d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
             >
               <SearchOutlinedIcon className="text-white fs-4" />
@@ -192,7 +197,7 @@ const Header = () => {
         </div>
         <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Favourite" Header="List">
+          <MenuwithArrow subHeader="Store" Header="List">
             <MenuItem>
               <input />
             </MenuItem>
@@ -205,7 +210,10 @@ const Header = () => {
             & Orders
           </Typography>
         </div>
-        <FiShoppingCart className="fs-2 cursor-pointer" />
+        <FiShoppingCart
+          className="fs-2 cursor-pointer"
+          onClick={() => route.push("/customer/cart")}
+        />
         <div className="cursor-pointer position-ralative">
           <MenuwithArrow subHeader="Hello, sign In" Header="Account & Lists">
             {!isSignedIn ? (
@@ -250,12 +258,12 @@ const Header = () => {
                     Your Orders
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => route.push("/customer/wishlist")}>
                   <Typography className="h-5 cursor-pointer">
                     Your Wishlist
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem onClick={() => setShowSwitchProfile(true)}>
                   <Typography className="h-5 cursor-pointer">
                     Switch Profiles
                   </Typography>
@@ -267,7 +275,9 @@ const Header = () => {
                     Help & Support
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => route.push("/customer/mynotification")}
+                >
                   <Typography className="h-5 cursor-pointer">
                     Notification center
                   </Typography>
@@ -293,6 +303,10 @@ const Header = () => {
           </MenuwithArrow>
         </div>
       </div>
+      <SwitchProfile
+        showSwitchProfile={showSwitchProfile}
+        setShowSwitchProfile={setShowSwitchProfile}
+      />
     </div>
   );
 };

@@ -110,7 +110,7 @@ const Generateinvoiceandmanifest = () => {
       col9: "500",
     },
     {
-      id: "1",
+      id: "2",
       col1: <Image src={logo} height={50} width={50} />,
       col2: "#23234342",
       col3: "#23234342",
@@ -147,7 +147,7 @@ const Generateinvoiceandmanifest = () => {
               lg={7}
               className="d-flex align-items-center justify-content-end"
             >
-              <p className="fs-12 fw-bold">Shipping Partner:</p>
+              <p className="fs-12 fw-bold">Shipping Partner :&nbsp;</p>
               <div className="w-25">
                 <SimpleDropdownComponent label="All" size="small" />
               </div>

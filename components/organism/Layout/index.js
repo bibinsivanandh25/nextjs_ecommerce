@@ -2,11 +2,14 @@ import React from "react";
 import Head from "next/head";
 // import { useSession } from "next-auth/react";
 import { Box } from "@mui/material";
+import { useRouter } from "next/router";
 import HeaderComponent from "../HeaderComponent";
 import SideBarComponent from "../SideBarComponent";
+import Header from "../CustomerHeaderComponent";
 
 const Layout = ({ Component, pageProps }) => {
   // const { data: session } = useSession();
+  const route = useRouter();
   return (
     <>
       <Head>
@@ -19,7 +22,13 @@ const Layout = ({ Component, pageProps }) => {
           <div className="spinner" />
         </div>
         <div className="h-100">
-          <HeaderComponent />
+          {route.pathname.startsWith("/supplier") ||
+          route.pathname.startsWith("/reseller") ||
+          route.pathname[route.pathname.length - 1] === "/" ? (
+            <HeaderComponent />
+          ) : (
+            <Header />
+          )}
         </div>
         <Box className="mnw-100vw">
           <SideBarComponent>

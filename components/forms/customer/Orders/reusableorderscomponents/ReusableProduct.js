@@ -3,7 +3,6 @@ import Image from "next/image";
 import React from "react";
 
 const ReusableProduct = ({ children, product }) => {
-  console.log("Children ", children);
   return (
     <Box
       className={`d-flex ${

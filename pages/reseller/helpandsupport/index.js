@@ -112,13 +112,14 @@ const HelpAndSupport = () => {
                 size="small"
                 muiProps="fs-12"
                 variant="outlined"
-                onBtnClick={() =>
+                onBtnClick={() => {
                   setShowModal({
                     show: true,
                     id: row.ticketId,
                     type: "reply",
-                  })
-                }
+                  });
+                  setSelectedData(row);
+                }}
                 label="Reply"
               />
             </Grid>

@@ -31,6 +31,7 @@ const InputBox = ({
   required = false,
   textInputProps = {},
   showAutoCompleteOff = "on",
+  labelColorWhite = null,
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -70,6 +71,7 @@ const InputBox = ({
         className={className}
         InputLabelProps={{
           shrink: inputlabelshrink || value,
+          sx: labelColorWhite,
         }}
         inputRef={inputRef}
         onKeyDown={onKeyDown}
@@ -92,6 +94,7 @@ const InputBox = ({
               </IconButton>
             </InputAdornment>
           ),
+
           ...InputProps,
         }}
         helperText={helperText}

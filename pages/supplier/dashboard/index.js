@@ -10,7 +10,7 @@ import {
   TableBody,
 } from "@mui/material";
 import React from "react";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import CustomIcon from "services/iconUtils";
 
 const CustomTableComponent = ({ columns = [], rows = [] }) => {
   return (
@@ -109,7 +109,7 @@ const Dashboard = () => {
         col2: "10 days",
         col3: "12 days",
         col4: "2 days",
-        col5: <VisibilityOutlinedIcon />,
+        col5: <CustomIcon type="view" />,
       },
 
       {
@@ -119,7 +119,7 @@ const Dashboard = () => {
         col3: `Order Received : 20, Cancelled : 9 (0.8 %) Orders Received :
         4,454 5%`,
         col4: "",
-        col5: <VisibilityOutlinedIcon />,
+        col5: <CustomIcon type="view" />,
       },
       {
         id: "3",
@@ -128,7 +128,7 @@ const Dashboard = () => {
         col3: `Order Received : 20, Cancelled : 9 (0.8 %) Orders Received :
         4,454 5%`,
         col4: "",
-        col5: <VisibilityOutlinedIcon />,
+        col5: <CustomIcon type="view" />,
       },
     ],
   };
@@ -183,7 +183,7 @@ const Dashboard = () => {
         col2: "07",
         col3: "500 Rs.",
         col4: "24-05-2022 12:12",
-        col5: <VisibilityOutlinedIcon />,
+        col5: <CustomIcon type="view" />,
       },
     ],
   };

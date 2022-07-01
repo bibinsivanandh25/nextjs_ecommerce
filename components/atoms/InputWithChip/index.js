@@ -30,6 +30,7 @@ const InputFieldWithChip = ({
         options={[]}
         freeSolo
         value={value}
+        disableClearable
         inputValue={text}
         onInputChange={(e) => {
           setText(e.target.value);

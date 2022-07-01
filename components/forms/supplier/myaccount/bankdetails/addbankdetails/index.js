@@ -158,11 +158,7 @@ const AddBankDetails = ({
                 ReBankAcc: e.target.value,
               }));
             }}
-            value={
-              BankDetails?.ReBankAcc
-                ? BankDetails?.ReBankAcc
-                : BankDetails["Account Number"]
-            }
+            value={BankDetails?.ReBankAcc ? BankDetails?.ReBankAcc : ""}
           />
         </div>
         <div className="my-2 ">

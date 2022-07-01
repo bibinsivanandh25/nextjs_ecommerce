@@ -271,6 +271,7 @@ const Login = () => {
                   inputlabelshrink
                   helperText={errorObj.user}
                   error={errorObj.user !== ""}
+                  labelColorWhite={{ color: "#fff" }}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -292,6 +293,7 @@ const Login = () => {
                   type="password"
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
+                  labelColorWhite={{ color: "#fff" }}
                 />
               </Grid>
               <Grid item md={12}>

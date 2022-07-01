@@ -300,8 +300,9 @@ const ProductDetailsCard = ({
       >
         {wishListCollection.map((ele, index) => {
           return (
-            <div key={index}>
+            <div key={index} className="mb-2">
               <RadiobuttonComponent
+                radioClassName="p-1"
                 label={ele.title}
                 isChecked={ele.isSelected}
                 id={ele.title}

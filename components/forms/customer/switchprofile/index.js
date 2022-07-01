@@ -6,15 +6,27 @@ import DoneIcon from "@mui/icons-material/Done";
 import ModalComponent from "@/atoms/ModalComponent";
 import styles from "./switchprofile.module.css";
 
-const SwitchProfile = () => {
+const SwitchProfile = ({
+  showSwitchProfile = false,
+  setShowSwitchProfile = () => {},
+}) => {
   return (
-    <ModalComponent showHeader={false} showFooter={false} open>
+    <ModalComponent
+      showHeader={false}
+      showFooter={false}
+      open={showSwitchProfile}
+    >
       <Box className="pt-3 pb-3">
         <Box className="d-flex justify-content-between align-items-center pb-2">
-          <Typography variant="h6" className="fw-bold ps-3">
+          <Typography variant="h6" className="fw-bold ps-3 ">
             Switch Profile
           </Typography>
-          <Typography className="color-blue pe-3 fs-18">Signout</Typography>
+          <Typography
+            className="color-blue pe-3 fs-18 cursor-pointer"
+            onClick={() => setShowSwitchProfile(false)}
+          >
+            Signout
+          </Typography>
         </Box>
         <Box sx={{ borderBottom: "0.5px solid black" }}>{null}</Box>
       </Box>
