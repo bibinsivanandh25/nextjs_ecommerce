@@ -1,8 +1,7 @@
-import { Badge, Box, Paper } from "@mui/material";
+import { Badge, Box, Paper, Rating } from "@mui/material";
 import Image from "next/image";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
-import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 
 const iconListData = [
   {
@@ -110,8 +109,8 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
       <Box className="my-1 align-self-center mt-2">
         <p className="fs-20 fw-600">{data.title}</p>
       </Box>
-      <Box className="">
-        <StarRatingComponentReceivingRating fontSize="small" rating={4} />
+      <Box className="d-flex">
+        <Rating name="half-rating" value={4} readOnly />
         <span className="fs-16"> 192 Rating</span>
       </Box>
       <Box className="align-self-center">

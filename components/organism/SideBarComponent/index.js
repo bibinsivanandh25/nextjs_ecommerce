@@ -31,6 +31,8 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: "hidden",
+  position: "fixed",
+  top: "60px",
 });
 
 const closedMixin = (theme) => ({
@@ -43,6 +45,8 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
+  position: "fixed",
+  top: "60px",
 });
 
 const Drawer = styled(MuiDrawer, {
