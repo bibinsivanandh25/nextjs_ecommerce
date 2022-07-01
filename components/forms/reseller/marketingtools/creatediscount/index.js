@@ -242,10 +242,11 @@ const CreateDiscount = ({
               item
               container
               sm={12}
-              className="position-absolute "
+              className="position-absolute"
               sx={{
                 width: "98.5%",
                 top: 48,
+                zIndex: 1000,
               }}
             >
               <>

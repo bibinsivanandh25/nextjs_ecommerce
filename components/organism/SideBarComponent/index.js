@@ -181,7 +181,12 @@ const SideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "60px",
+        top:
+          route.pathname.startsWith("/reseller") ||
+          route.pathname.startsWith("/supplier") ||
+          route.pathname[route.pathname.length - 1] === "/"
+            ? "60px"
+            : "80px",
         display: "flex",
       }}
     >

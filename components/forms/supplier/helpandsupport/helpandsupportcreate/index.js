@@ -87,7 +87,6 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
     }
     return flag;
   };
-
   return (
     <Paper className="w-100 mnh-80vh">
       <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
