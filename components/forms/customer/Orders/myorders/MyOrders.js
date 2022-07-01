@@ -1,7 +1,8 @@
 import { Typography, Box, Checkbox } from "@mui/material";
-import React from "react";
 import { makeStyles } from "@mui/styles";
 import Paper from "@mui/material/Paper";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
@@ -53,19 +54,19 @@ const SingleProductTrackDetails = () => {
   );
 };
 
-const ProductDetailsPlusTrackDetails = () => {
+const ProductDetailsPlusTrackDetails = ({ product }) => {
   const classes = useStyles();
   return (
     <Box className="d-flex justify-content-between px-2">
       {/* <SingleProductDetails /> */}
-      <ReusableProduct>
+      <ReusableProduct product={product}>
         <Checkbox
           classes={{ root: classes.checkBoxPaddingMargin }}
           className="ps-0 py-1"
           {...label}
           disableRipple
         />
-        <Typography className="mb-1" variantMapping={<p />}>
+        <Typography className="mb-1">
           <small>Return window will close on 20 - Aug - 2021</small>
         </Typography>
         <ButtonComponent
@@ -82,6 +83,23 @@ const ProductDetailsPlusTrackDetails = () => {
 };
 
 const MyOrders = () => {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    await axios
+      .get("https://fakestoreapi.com/products")
+      .then((data) => {
+        // console.log(data.data);
+        setProducts([...data.data]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <Box>
       <Box className="d-flex align-items-center mb-3">
@@ -98,14 +116,20 @@ const MyOrders = () => {
       </Box>
       <ReusableBar>
         <ButtonComponent label="Cancel Order" variant="outlined" />
-        <ButtonComponent label="Return Products" muiProps="ms-2" />
+        <ButtonComponent label="Return Orders" muiProps="ms-2" />
       </ReusableBar>
       <Box className="ms-3 pb-2">
-        <Typography className="fs-16 fw-bold" variantMapping={<p />}>
+        <Typography className="fs-16 fw-bold">
           Dilevered 2 - Aug - 2021
         </Typography>
       </Box>
-      <ProductDetailsPlusTrackDetails />
+      {products.map((product) => {
+        return (
+          <Box key={product.id} className="mt-4">
+            <ProductDetailsPlusTrackDetails product={product} />
+          </Box>
+        );
+      })}
     </Box>
   );
 };
