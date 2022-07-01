@@ -1,18 +1,24 @@
 import { Box, Typography } from "@mui/material";
+import Image from "next/image";
 import React from "react";
 
-const ReusableProduct = ({ children }) => {
+const ReusableProduct = ({ children, product }) => {
+  console.log("Children ", children);
   return (
     <Box
       className={`d-flex ${
         children ? "align-items-center" : "align-items-start"
       }`}
     >
-      <Box className="align-self-start">{children ? children[0] : null}</Box>
+      <Box className="align-self-start">
+        {children ? children[0] || children : null}
+      </Box>
       <Box className="w-135px h-135px">
-        <img
+        <Image
           className="d-block w-100 h-100 img-fluid rounded-1"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXMWvWQyO6_SDsIxDQ33qBmWSgyUAiNPYfGY804qa6&s"
+          width="120"
+          height="120"
+          src={product.image}
           alt="product"
         />
       </Box>
@@ -21,7 +27,7 @@ const ReusableProduct = ({ children }) => {
           Supplier Name: Buisness Name
         </Typography>
         <Typography className="mb-1 fs-16 fw-bold" variantMapping={<p />}>
-          Product Name
+          {product.title}
         </Typography>
         {children ? children[1] : null}
         {children ? children[2] : null}
