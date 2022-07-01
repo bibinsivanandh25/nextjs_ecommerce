@@ -108,7 +108,11 @@ const ComapareProducts = () => {
     };
     return theItems.map((val, index) => {
       return (
-        <Box sx={{ minWidth: "250px" }} className=" border w-250px mnh-80vh">
+        <Box
+          sx={{ minWidth: "250px" }}
+          key={val.id}
+          className=" border w-250px mnh-80vh"
+        >
           <Box className="mnh-200 mb-4 d-flex justify-content-center">
             <Box>
               <Box className="text-center mt-2 mb-3">
