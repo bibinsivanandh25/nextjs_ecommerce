@@ -1,9 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import axios from "axios";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 
 const CancelledOrder = () => {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    await axios
+      .get("https://fakestoreapi.com/products")
+      .then((data) => {
+        // console.log(data.data);
+        setProducts([...data.data]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <Box>
       <Box>
@@ -18,9 +36,13 @@ const CancelledOrder = () => {
       >
         Cancelled
       </Typography>
-      <Box className="ms-3">
-        <ReusableProduct />
-      </Box>
+      {products.map((product) => {
+        return (
+          <Box key={product.id} className="ms-3 mt-4">
+            <ReusableProduct product={product} />
+          </Box>
+        );
+      })}
     </Box>
   );
 };
