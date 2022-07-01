@@ -4,6 +4,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const Cart = () => {
   const [products, setProducts] = useState([]);
@@ -130,6 +131,9 @@ const Cart = () => {
               Your Total Savings on this Order is 10000
             </Typography>
           </Paper>
+          <Box className="mt-3 w-100 px-2">
+            <ButtonComponent label="Place Order" muiProps="w-100" />
+          </Box>
         </Grid>
       ) : null}
     </Grid>
