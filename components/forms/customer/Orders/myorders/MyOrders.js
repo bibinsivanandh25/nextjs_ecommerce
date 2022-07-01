@@ -1,5 +1,4 @@
-import { Typography, Box, Checkbox } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -8,24 +7,7 @@ import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import styles from "./MyOrders.module.css";
 import ButtonComponent from "@/atoms/ButtonComponent";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-const useStyles = makeStyles({
-  checkBoxPaddingMargin: {
-    // paddingTop: "0px",
-    // marginTop: "-3px",
-    // paddingLeft: "0px",
-    verticalAlign: "top",
-    alignItems: "top",
-    "&:hover": {
-      background: "none",
-    },
-    "&:focus": {
-      background: "none",
-    },
-  },
-});
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const list = [
   { label: "Last 30 days" },
@@ -55,16 +37,17 @@ const SingleProductTrackDetails = () => {
 };
 
 const ProductDetailsPlusTrackDetails = ({ product }) => {
-  const classes = useStyles();
+  const [checked, setChecked] = useState(false);
   return (
     <Box className="d-flex justify-content-between px-2">
       {/* <SingleProductDetails /> */}
       <ReusableProduct product={product}>
-        <Checkbox
-          classes={{ root: classes.checkBoxPaddingMargin }}
-          className="ps-0 py-1"
-          {...label}
-          disableRipple
+        <CheckBoxComponent
+          isChecked={checked}
+          checkBoxClick={() => {
+            setChecked(!checked);
+          }}
+          className="color-blue"
         />
         <Typography className="mb-1">
           <small>Return window will close on 20 - Aug - 2021</small>
@@ -110,7 +93,7 @@ const MyOrders = () => {
             label="Past 3 Months"
           />
         </Box>
-        <Typography variantMapping={<p />} className="ms-2 fs-14">
+        <Typography className="ms-2 fs-14">
           <span className="fw-bold fs-16">2 Orders</span> placed
         </Typography>
       </Box>

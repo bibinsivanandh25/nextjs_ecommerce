@@ -1,30 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Box, Checkbox, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Typography } from "@mui/material";
 import axios from "axios";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+const CheckBox = () => {
+  const [checked, setChecked] = useState(false);
 
-const useStyles = makeStyles({
-  checkBoxPaddingMargin: {
-    // paddingTop: "0px",
-    // marginTop: "-3px",
-    // paddingLeft: "0px",
-    verticalAlign: "top",
-    alignItems: "top",
-    "&:hover": {
-      background: "none",
-    },
-    "&:focus": {
-      background: "none",
-    },
-  },
-});
+  return (
+    <CheckBoxComponent
+      isChecked={checked}
+      checkBoxClick={() => {
+        setChecked(!checked);
+      }}
+      className="color-blue"
+    />
+  );
+};
+
 const NotYetShipped = () => {
-  const classes = useStyles();
   const [products, setProducts] = useState([]);
 
   const getProducts = async () => {
@@ -62,12 +58,7 @@ const NotYetShipped = () => {
         return (
           <Box className="ms-3 mt-4">
             <ReusableProduct product={product}>
-              <Checkbox
-                classes={{ root: classes.checkBoxPaddingMargin }}
-                className="ps-0 py-1"
-                {...label}
-                disableRipple
-              />
+              <CheckBox />
               <Typography className="mb-1">
                 <small>Return window will close on 20 - Aug - 2021</small>
               </Typography>
