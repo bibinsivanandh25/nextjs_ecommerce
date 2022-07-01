@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
@@ -20,8 +22,6 @@ const OtpLogIn = () => {
       setotp("xxxx");
     };
   }, []);
-
-  useEffect(() => console.log("otp", otp), [otp]);
 
   const handleSubmit = () => {
     router.push("/");
@@ -67,6 +67,15 @@ const OtpLogIn = () => {
                 />
                 <span className="color-orange fs-12 mt-2 cursor-pointer">
                   Resend OTP
+                </span>
+                <span
+                  className="color-orange fs-12 mt-2 cursor-pointer"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setotp("xxxx");
+                  }}
+                >
+                  Wrong Number
                 </span>
               </div>
             </>
