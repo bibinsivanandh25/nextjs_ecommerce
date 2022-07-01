@@ -1,30 +1,13 @@
-import { Typography, Box, Checkbox } from "@mui/material";
-import React from "react";
-import { makeStyles } from "@mui/styles";
+import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import styles from "./MyOrders.module.css";
 import ButtonComponent from "@/atoms/ButtonComponent";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-const useStyles = makeStyles({
-  checkBoxPaddingMargin: {
-    // paddingTop: "0px",
-    // marginTop: "-3px",
-    // paddingLeft: "0px",
-    verticalAlign: "top",
-    alignItems: "top",
-    "&:hover": {
-      background: "none",
-    },
-    "&:focus": {
-      background: "none",
-    },
-  },
-});
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const list = [
   { label: "Last 30 days" },
@@ -53,19 +36,20 @@ const SingleProductTrackDetails = () => {
   );
 };
 
-const ProductDetailsPlusTrackDetails = () => {
-  const classes = useStyles();
+const ProductDetailsPlusTrackDetails = ({ product }) => {
+  const [checked, setChecked] = useState(false);
   return (
     <Box className="d-flex justify-content-between px-2">
       {/* <SingleProductDetails /> */}
-      <ReusableProduct>
-        <Checkbox
-          classes={{ root: classes.checkBoxPaddingMargin }}
-          className="ps-0 py-1"
-          {...label}
-          disableRipple
+      <ReusableProduct product={product}>
+        <CheckBoxComponent
+          isChecked={checked}
+          checkBoxClick={() => {
+            setChecked(!checked);
+          }}
+          className="color-blue"
         />
-        <Typography className="mb-1" variantMapping={<p />}>
+        <Typography className="mb-1">
           <small>Return window will close on 20 - Aug - 2021</small>
         </Typography>
         <ButtonComponent
@@ -82,6 +66,23 @@ const ProductDetailsPlusTrackDetails = () => {
 };
 
 const MyOrders = () => {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    await axios
+      .get("https://fakestoreapi.com/products")
+      .then((data) => {
+        // console.log(data.data);
+        setProducts([...data.data]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <Box>
       <Box className="d-flex align-items-center mb-3">
@@ -92,20 +93,26 @@ const MyOrders = () => {
             label="Past 3 Months"
           />
         </Box>
-        <Typography variantMapping={<p />} className="ms-2 fs-14">
+        <Typography className="ms-2 fs-14">
           <span className="fw-bold fs-16">2 Orders</span> placed
         </Typography>
       </Box>
       <ReusableBar>
         <ButtonComponent label="Cancel Order" variant="outlined" />
-        <ButtonComponent label="Return Products" muiProps="ms-2" />
+        <ButtonComponent label="Return Orders" muiProps="ms-2" />
       </ReusableBar>
       <Box className="ms-3 pb-2">
-        <Typography className="fs-16 fw-bold" variantMapping={<p />}>
+        <Typography className="fs-16 fw-bold">
           Dilevered 2 - Aug - 2021
         </Typography>
       </Box>
-      <ProductDetailsPlusTrackDetails />
+      {products.map((product) => {
+        return (
+          <Box key={product.id} className="mt-4">
+            <ProductDetailsPlusTrackDetails product={product} />
+          </Box>
+        );
+      })}
     </Box>
   );
 };
