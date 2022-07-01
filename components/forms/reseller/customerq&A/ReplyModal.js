@@ -21,13 +21,13 @@ const ReplyModal = ({
           </div>
         </Tooltip>
       }
-      footerClassName="justify-content-start  flex-row-reverse"
+      footerClassName="justify-content-start flex-row-reverse"
       ClearBtnText="Cancel"
       saveBtnClassName="mx-2"
       saveBtnText="Reply"
       onCloseIconClick={() => setShowReplyModal(false)}
     >
-      <div className="p-3 my-4">
+      <div className="pt-4 pb-1">
         <textarea
           placeholder="Reply here"
           className="rounded-3 p-2 h-5"

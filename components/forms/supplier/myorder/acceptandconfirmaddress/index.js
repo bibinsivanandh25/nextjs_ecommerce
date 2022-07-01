@@ -4,10 +4,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import { useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import CustomIcon from "services/iconUtils";
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import ButtonComponent from "../../../../atoms/ButtonComponent";
 import AddAddressModal from "../../myaccount/addaddressmodal";
@@ -96,13 +95,17 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
             xs={1}
             className="d-flex flex-column justify-content-between my-2 ms-auto"
           >
-            <EditIcon
-              onClick={() => {
+            <CustomIcon
+              type="edit"
+              title="edit"
+              onIconClick={() => {
                 handleEditClick(index);
               }}
             />
-            <DeleteIcon
-              onClick={() => {
+            <CustomIcon
+              type="delete"
+              title="delete"
+              onIconClick={() => {
                 handleDeleteClick(index);
               }}
             />

@@ -104,7 +104,7 @@ const Staff = () => {
             <Box className="fs-16 fw-700 ps-4">Manage Staff</Box>
             <Box>
               <ButtonComponent
-                label="Add new Staffs"
+                label="Add New Staffs"
                 onBtnClick={handleBtnClick}
               />
             </Box>
