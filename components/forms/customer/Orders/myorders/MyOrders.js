@@ -15,6 +15,7 @@ import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import styles from "./MyOrders.module.css";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import CancelOrReturnModal from "../CancelOrReturnModal";
 import ModalComponent from "@/atoms/ModalComponent";
 // import {
 //   Timeline,
@@ -80,6 +81,8 @@ const ProductDetailsPlusTrackDetails = ({
   product,
   setSellerFeedbackModal,
   setProductFeedbackType,
+  setSelectedProduct = () => {},
+  selectedProduct = [],
 }) => {
   const [checked, setChecked] = useState(false);
   const [trackPackage, setTrackPackage] = useState(false);
@@ -92,6 +95,10 @@ const ProductDetailsPlusTrackDetails = ({
             isChecked={checked}
             checkBoxClick={() => {
               setChecked(!checked);
+              console.log(product, "propdutd");
+              const temp = [...selectedProduct];
+              temp.push(product);
+              setSelectedProduct([...temp]);
             }}
             className="color-blue"
           />
@@ -161,6 +168,8 @@ const ProductDetailsPlusTrackDetails = ({
 
 const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
   const [products, setProducts] = useState([]);
+  const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState([]);
   const getProducts = async () => {
     await axios
       .get("https://fakestoreapi.com/products")
@@ -172,6 +181,7 @@ const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
         console.log(err);
       });
   };
+  console.log(selectedProduct, "sad");
 
   useEffect(() => {
     getProducts();
@@ -192,7 +202,11 @@ const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
       </Box>
       <ReusableBar>
         <ButtonComponent label="Cancel Order" variant="outlined" />
-        <ButtonComponent label="Return Orders" muiProps="ms-2" />
+        <ButtonComponent
+          label="Return Orders"
+          muiProps="ms-2"
+          onBtnClick={() => setShowCancelOrReturnModal(true)}
+        />
       </ReusableBar>
       <Box className="ms-3 pb-2">
         <Typography className="fs-16 fw-bold">
@@ -204,12 +218,19 @@ const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
           <Box key={product.id} className="mt-4">
             <ProductDetailsPlusTrackDetails
               product={product}
+              setSelectedProduct={setSelectedProduct}
+              selectedProduct={selectedProduct}
               setSellerFeedbackModal={setSellerFeedbackModal}
               setProductFeedbackType={setProductFeedbackType}
             />
           </Box>
         );
       })}
+      <CancelOrReturnModal
+        showModal={showCancelOrReturnModal}
+        setShowModal={setShowCancelOrReturnModal}
+        products={[...selectedProduct]}
+      />
     </Box>
   );
 };
