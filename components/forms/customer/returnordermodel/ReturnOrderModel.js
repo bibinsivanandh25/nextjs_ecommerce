@@ -8,10 +8,10 @@ const ReturnOrderModel = ({ allFree }) => {
   const [freeReturn, setFreeReturn] = useState(false);
 
   const theArray = [
-    { isFree: true },
-    { isFree: false, returnPrice: 123 },
-    { isFree: false, returnPrice: 300 },
-    { isFree: true },
+    { id: 1, isFree: true },
+    { id: 2, isFree: false, returnPrice: 123 },
+    { id: 3, isFree: false, returnPrice: 300 },
+    { id: 4, isFree: true },
   ];
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const ReturnOrderModel = ({ allFree }) => {
       >
         {theArray.map((val) => {
           return (
-            <Box className="mt-3 d-flex justify-content-between">
+            <Box key={val.id} className="mt-3 d-flex justify-content-between">
               <Box>
                 <Typography className="fs-14">
                   <span className="fw-bold">Estimated Pickup date:</span> 24 -
