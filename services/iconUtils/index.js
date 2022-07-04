@@ -28,6 +28,8 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 import Remove from "@mui/icons-material/Remove";
 import { RiShareForwardFill } from "react-icons/ri";
+import DoneIcon from "@mui/icons-material/Done";
+import ViewInArIcon from "@mui/icons-material/ViewInAr";
 
 const CustomIcon = ({
   title = "",
@@ -73,6 +75,8 @@ const CustomIcon = ({
     airportShuttleOutlinedIcon: AirportShuttleOutlinedIcon,
     removeIcon: Remove,
     riShareForwardFill: RiShareForwardFill,
+    doneIcon: DoneIcon,
+    viewInArIcon: ViewInArIcon,
   };
 
   const [hover, setHover] = useState(false);
