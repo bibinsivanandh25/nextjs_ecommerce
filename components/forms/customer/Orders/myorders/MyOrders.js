@@ -166,7 +166,12 @@ const ProductDetailsPlusTrackDetails = ({
   );
 };
 
-const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
+const MyOrders = ({
+  setSellerFeedbackModal,
+  setProductFeedbackType,
+  setShowReturnOrder,
+  setReturnProducts,
+}) => {
   const [products, setProducts] = useState([]);
   const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState([]);
@@ -226,11 +231,15 @@ const MyOrders = ({ setSellerFeedbackModal, setProductFeedbackType }) => {
           </Box>
         );
       })}
-      <CancelOrReturnModal
-        showModal={showCancelOrReturnModal}
-        setShowModal={setShowCancelOrReturnModal}
-        products={[...selectedProduct]}
-      />
+      {showCancelOrReturnModal ? (
+        <CancelOrReturnModal
+          showModal={showCancelOrReturnModal}
+          setShowReturnOrder={setShowReturnOrder}
+          setShowModal={setShowCancelOrReturnModal}
+          products={[...selectedProduct]}
+          setReturnProducts={setReturnProducts}
+        />
+      ) : null}
     </Box>
   );
 };

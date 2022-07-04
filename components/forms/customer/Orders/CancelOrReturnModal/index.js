@@ -13,22 +13,20 @@ const CancelOrReturnModal = ({
   showModal = false,
   setShowModal = () => {},
   products = [],
+  setShowReturnOrder = () => {},
+  setReturnProducts = () => {},
 }) => {
-  const [returnProducts, setReturnProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState([]);
 
   useEffect(() => {
-    setReturnProducts([...products]);
-  }, [products]);
-
-  useEffect(() => {
-    const temp = [...returnProducts];
+    const temp = [...products];
     temp.forEach((ele) => {
       ele.isSelected = true;
     });
-    setReturnProducts([...temp]);
-  }, []);
+    setSelectedProduct([...temp]);
+  }, [products]);
   const getProducts = () => {
-    return returnProducts.map((ele) => {
+    return selectedProduct.map((ele) => {
       return (
         <Box className="mb-3 px-5">
           <Box className="d-flex justify-content-between">
@@ -39,14 +37,14 @@ const CancelOrReturnModal = ({
                 id={ele.id}
                 checkedcolor="#1492e6"
                 checkBoxClick={(id) => {
-                  const temp = [...returnProducts];
+                  const temp = [...selectedProduct];
                   temp.forEach((item) => {
                     if (item.id == id) {
                       ele.isSelected = !ele.isSelected;
                     }
                   });
                   console.log(temp);
-                  setReturnProducts([...temp]);
+                  setSelectedProduct([...temp]);
                 }}
               />
               <Typography component="" className="fs-6 fw-bold">
@@ -85,7 +83,10 @@ const CancelOrReturnModal = ({
       );
     });
   };
-
+  const getSelectedItems = () => {
+    const temp = selectedProduct.filter((ele) => ele.isSelected);
+    setReturnProducts([...temp]);
+  };
   return (
     <ModalComponent
       open={showModal}
@@ -97,6 +98,10 @@ const CancelOrReturnModal = ({
       saveBtnVariant="outlined"
       ClearBtnText="Continue"
       saveBtnText="Cancel"
+      onClearBtnClick={() => {
+        setShowReturnOrder(true);
+        getSelectedItems();
+      }}
     >
       <Typography className="fw-bold text-center">
         Are you sure want to Return these products?
