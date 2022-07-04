@@ -5,6 +5,7 @@ import CustomIcon from "services/iconUtils";
 import Image from "next/image";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
@@ -64,6 +65,7 @@ const ViewModalComponent = ({
     freeDelivery: true,
     freeFastDeliery: false,
   });
+  const route = useRouter();
   //  Delivery Modal
   const handleReturnCheckBoxClick = () => {
     if (returnCheckBox) {
@@ -487,7 +489,9 @@ const ViewModalComponent = ({
               <ButtonComponent
                 size="medium"
                 label="Proceed to Checkout"
-                // onBtnClick={}
+                onBtnClick={() => {
+                  route.push("/customer/checkoutorder");
+                }}
               />
             </Box>
           </Box>

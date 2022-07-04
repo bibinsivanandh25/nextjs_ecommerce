@@ -131,7 +131,7 @@ const Cart = () => {
               Your Total Savings on this Order is 10000
             </Typography>
           </Paper>
-          <Box className="mt-3 w-100 px-2">
+          <Box className="mt-3 w-100 ps-2">
             <ButtonComponent label="Place Order" muiProps="w-100" />
           </Box>
         </Grid>

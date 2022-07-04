@@ -11,6 +11,7 @@ import DrawerComponent from "@/atoms/DrawerComponent";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 
 const listDatas = [
   {
@@ -217,9 +218,10 @@ function SearchedProduct() {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   // comparProduct
   const [comparDrawer, setComparDrawer] = useState(false);
-  const [comparedProduct, setComapredProduct] = useState([]);
+  const [comparedProduct, setCompredProduct] = useState([]);
+  const [comparModalOpen, setComparModalOpan] = useState(false);
   useEffect(() => {
-    setComapredProduct(comparProductData);
+    setCompredProduct(comparProductData);
   }, []);
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
@@ -229,7 +231,7 @@ function SearchedProduct() {
       }
       return item;
     });
-    setComapredProduct(final);
+    setCompredProduct(final);
   };
   const compareClearAll = () => {};
 
@@ -324,204 +326,219 @@ function SearchedProduct() {
       setViewModalOpen(true);
     } else if (value === "balanceIcon") {
       setComparDrawer(true);
-      setComapredProduct(comparProductData);
+      setCompredProduct(comparProductData);
     }
   };
   const onSimilerIconClick = () => {};
   return (
     <Box className="mnh-100vh">
-      <Box className="row">
-        <Box className="d-flex justify-content-end mt-1">
-          <Box
-            className="d-flex px-1 rounded"
-            style={{ border: "1px solid #707070" }}
+      {!comparModalOpen ? (
+        <Box className="row">
+          <Box className="d-flex justify-content-end mt-1">
+            <Box
+              className="d-flex px-1 rounded"
+              style={{ border: "1px solid #707070" }}
+            >
+              <Box
+                className={
+                  viewIconClick
+                    ? " align-self-center bg-dark-gray p-1 rounded cursor-pointer"
+                    : " align-self-center p-1 rounded cursor-pointer"
+                }
+                onClick={() => {
+                  setViewIconClick(true);
+                }}
+              >
+                <CustomIcon
+                  title=""
+                  type="tablerows"
+                  className="fs-20 w-30 cursor-pointer"
+                  showColorOnHover={false}
+                  color={viewIconClick ? "color-white" : "color-dark-gray"}
+                />
+              </Box>
+              <Box
+                className={
+                  viewIconClick
+                    ? " align-self-center p-1 rounded cursor-pointer"
+                    : " align-self-center bg-dark-gray p-1 rounded cursor-pointer"
+                }
+                onClick={() => {
+                  setViewIconClick(false);
+                }}
+              >
+                <CustomIcon
+                  title=""
+                  type="gridview"
+                  className="fs-20 w-30 cursor-pointer"
+                  showColorOnHover={false}
+                  color={viewIconClick ? "color-dark-gray" : "color-white"}
+                />
+              </Box>
+            </Box>
+            <Box>
+              <MenuWithCheckbox
+                btnText="Sort by"
+                listData={checkedValue}
+                handleCheckboxClick={(id, value, title) => {
+                  handleCheckboxsClick(id, value, title);
+                }}
+                btnClassName="mx-2"
+              />
+            </Box>
+            <Box>
+              <MenuWithCheckbox
+                btnText="Filters"
+                listData={searchedCheckValue}
+                handleCheckboxClick={(id, value, title) => {
+                  handleSearchFilterClick(id, value, title);
+                }}
+                btnClassName="mx-2"
+              />
+            </Box>
+          </Box>
+          <Box className="d-flex justify-content-end mt-3">
+            <p className="text-danger fs-14"> Offer ends in 09h 42min 2sec</p>
+          </Box>
+          <Box className="">
+            <Box className="d-flex w-100 ">
+              <Grid
+                container={!viewIconClick}
+                spacing={2}
+                className=" mx-auto ms-0 "
+                sx={{
+                  width: `calc(100% - 10px)`,
+                }}
+              >
+                {productData.map((item, index) => (
+                  <Grid item md={4} lg={3} sm={6} key={index}>
+                    <div>
+                      <CustomerProductgModal
+                        data={item}
+                        handleIconClick={(value) => onIconClick(value)}
+                        viewType={viewIconClick ? "row" : "Grid"}
+                      />
+                    </div>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            <Box className="d-flex justify-content-center mt-3 mb-2">
+              <Pagination
+                count={pageCount}
+                variant="outlined"
+                shape="rounded"
+                onChange={(e, pagenumber) => {
+                  setPage(pagenumber);
+                }}
+                page={page}
+              />
+            </Box>
+          </Box>
+          <DrawerComponent
+            openDrawer={showDrawer}
+            width="500px"
+            modalTitle="Similar Products"
+            onClose={() => setShowDrawer(false)}
           >
-            <Box
-              className={
-                viewIconClick
-                  ? " align-self-center bg-dark-gray p-1 rounded cursor-pointer"
-                  : " align-self-center p-1 rounded cursor-pointer"
-              }
-              onClick={() => {
-                setViewIconClick(true);
-              }}
-            >
-              <CustomIcon
-                title=""
-                type="tablerows"
-                className="fs-20 w-30 cursor-pointer"
-                showColorOnHover={false}
-                color={viewIconClick ? "color-white" : "color-dark-gray"}
-              />
-            </Box>
-            <Box
-              className={
-                viewIconClick
-                  ? " align-self-center p-1 rounded cursor-pointer"
-                  : " align-self-center bg-dark-gray p-1 rounded cursor-pointer"
-              }
-              onClick={() => {
-                setViewIconClick(false);
-              }}
-            >
-              <CustomIcon
-                title=""
-                type="gridview"
-                className="fs-20 w-30 cursor-pointer"
-                showColorOnHover={false}
-                color={viewIconClick ? "color-dark-gray" : "color-white"}
-              />
-            </Box>
-          </Box>
-          <Box>
-            <MenuWithCheckbox
-              btnText="Sort by"
-              listData={checkedValue}
-              handleCheckboxClick={(id, value, title) => {
-                handleCheckboxsClick(id, value, title);
-              }}
-              btnClassName="mx-2"
-            />
-          </Box>
-          <Box>
-            <MenuWithCheckbox
-              btnText="Filters"
-              listData={searchedCheckValue}
-              handleCheckboxClick={(id, value, title) => {
-                handleSearchFilterClick(id, value, title);
-              }}
-              btnClassName="mx-2"
-            />
-          </Box>
-        </Box>
-        <Box className="d-flex justify-content-end mt-3">
-          <p className="text-danger fs-14"> Offer ends in 09h 42min 2sec</p>
-        </Box>
-        <Box className="">
-          <Box className="d-flex w-100 ">
             <Grid
-              container={!viewIconClick}
+              container
               spacing={2}
-              className=" mx-auto ms-0 "
+              className="mx-auto ms-0 mt-2"
               sx={{
                 width: `calc(100% - 10px)`,
               }}
             >
               {productData.map((item, index) => (
-                <Grid item md={4} lg={3} sm={6} key={index}>
-                  <div>
-                    <CustomerProductgModal
-                      data={item}
-                      handleIconClick={(value) => onIconClick(value)}
-                      viewType={viewIconClick ? "row" : "Grid"}
-                    />
-                  </div>
+                <Grid item md={6} sm={6} key={index}>
+                  <SimilarProducts
+                    data={item}
+                    handleIconClick={(value) => onSimilerIconClick(value)}
+                  />
                 </Grid>
               ))}
             </Grid>
-          </Box>
-          <Box className="d-flex justify-content-center mt-3 mb-2">
-            <Pagination
-              count={pageCount}
-              variant="outlined"
-              shape="rounded"
-              onChange={(e, pagenumber) => {
-                setPage(pagenumber);
-              }}
-              page={page}
-            />
-          </Box>
-        </Box>
-      </Box>
-      <DrawerComponent
-        openDrawer={showDrawer}
-        width="500px"
-        modalTitle="Similar Products"
-        onClose={() => setShowDrawer(false)}
-      >
-        <Grid
-          container
-          spacing={2}
-          className="mx-auto ms-0 mt-2"
-          sx={{
-            width: `calc(100% - 10px)`,
-          }}
-        >
-          {productData.map((item, index) => (
-            <Grid item md={6} sm={6} key={index}>
-              <SimilarProducts
-                data={item}
-                handleIconClick={(value) => onSimilerIconClick(value)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </DrawerComponent>
+          </DrawerComponent>
 
-      {viewModalOpen && (
-        <ViewModalComponent
-          setViewModalOpen={setViewModalOpen}
-          viewModalOpen={viewModalOpen}
+          {viewModalOpen && (
+            <ViewModalComponent
+              setViewModalOpen={setViewModalOpen}
+              viewModalOpen={viewModalOpen}
+            />
+          )}
+          <DrawerComponent
+            openDrawer={comparDrawer}
+            anchor="bottom"
+            width="vp-width"
+            headerBorder={false}
+            onClose={() => setComparDrawer(false)}
+            enter={300}
+          >
+            <Box
+              className="px-4 py-2 d-flex justify-content-between mnh-25p mx-4"
+              style={{ height: "150px" }}
+            >
+              <Box className="align-self-center ">
+                <p className="fw-600 fs-18">Compare Products</p>
+                <p>( 1 Product )</p>
+              </Box>
+              {comparedProduct &&
+                comparedProduct.map((item) => (
+                  <Box className="d-flex justify-content-center border rounded mnw-150">
+                    {item.imageLink ? (
+                      <>
+                        <Image
+                          src={item?.imageLink}
+                          alt=""
+                          className="rounded bg-white"
+                          style={{ position: "relative" }}
+                          width="150%"
+                          height="100%"
+                        />
+
+                        <CustomIcon
+                          type="close"
+                          className="position-absolute compareProductTop fs-18"
+                          onIconClick={() => handleCloseIconClick(item.id)}
+                        />
+                      </>
+                    ) : (
+                      <Box className="align-self-center border p-3 rounded-circle cursor-pointer">
+                        <CustomIcon type="add" className="" />
+                      </Box>
+                    )}
+                  </Box>
+                ))}
+              <Box className="align-self-center">
+                <ButtonComponent
+                  label="Clear All"
+                  variant="outlined"
+                  borderColor="border-gray "
+                  bgColor="bg-white"
+                  textColor="color-black"
+                  size="medium"
+                  muiProps="me-3"
+                  onBtnClick={() => compareClearAll()}
+                />
+                <ButtonComponent
+                  label="Start Compare"
+                  size="medium"
+                  onBtnClick={() => {
+                    setComparModalOpan(true);
+                    setComparDrawer(false);
+                  }}
+                />
+              </Box>
+            </Box>
+          </DrawerComponent>
+        </Box>
+      ) : (
+        <ComapareProducts
+          handleBackclick={() => {
+            setComparModalOpan(false);
+          }}
         />
       )}
-      <DrawerComponent
-        openDrawer={comparDrawer}
-        anchor="bottom"
-        width="vp-width "
-        headerBorder={false}
-        onClose={() => setComparDrawer(false)}
-        enter={300}
-      >
-        <Box
-          className="px-4 py-2 d-flex justify-content-between mnh-25p mx-4"
-          style={{ height: "150px" }}
-        >
-          <Box className="align-self-center ">
-            <p className="fw-600 fs-18">Compare Products</p>
-            <p>( 1 Product )</p>
-          </Box>
-          {comparedProduct &&
-            comparedProduct.map((item) => (
-              <Box className="d-flex justify-content-center border rounded mnw-150">
-                {item.imageLink ? (
-                  <>
-                    <Image
-                      src={item?.imageLink}
-                      alt=""
-                      className="rounded bg-white"
-                      style={{ position: "relative" }}
-                      width="150%"
-                      height="100%"
-                    />
-
-                    <CustomIcon
-                      type="close"
-                      className="position-absolute compareProductTop fs-18"
-                      onIconClick={() => handleCloseIconClick(item.id)}
-                    />
-                  </>
-                ) : (
-                  <Box className="align-self-center border p-3 rounded-circle cursor-pointer">
-                    <CustomIcon type="add" className="" />
-                  </Box>
-                )}
-              </Box>
-            ))}
-          <Box className="align-self-center">
-            <ButtonComponent
-              label="Clear All"
-              variant="outlined"
-              borderColor="border-gray "
-              bgColor="bg-white"
-              textColor="color-black"
-              size="medium"
-              muiProps="me-3"
-              onBtnClick={() => compareClearAll()}
-            />
-            <ButtonComponent label="Start Compare" size="medium" />
-          </Box>
-        </Box>
-      </DrawerComponent>
     </Box>
   );
 }
