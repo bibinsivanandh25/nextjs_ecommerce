@@ -1,6 +1,6 @@
 import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const categories = [
   {
@@ -245,17 +245,40 @@ const returnAllCategories = () => {
                         <Typography className="fs-14 fw-bold">
                           {valTwo.setName}
                         </Typography>
-                        <Grid container className="mt-1" spacing={1}>
+                        <Grid container className="pt-1" spacing={1}>
                           {valTwo.setSubcategories.map((valThree) => {
+                            const [hover, setHover] = useState(false);
                             return (
                               <Grid item xs={4}>
-                                {valThree.length <= 12 ? (
-                                  <Typography className="fs-12 text-truncate">
+                                {valThree.length <= 16 ? (
+                                  <Typography
+                                    onMouseOver={() => {
+                                      setHover(true);
+                                    }}
+                                    onMouseOut={() => {
+                                      setHover(false);
+                                    }}
+                                    className={`fs-12 text-truncate cursor-pointer ${
+                                      hover ? "text-decoration-underline" : ""
+                                    }
+                                      `}
+                                  >
                                     {valThree}
                                   </Typography>
                                 ) : (
-                                  <Tooltip title={valThree}>
-                                    <Typography className="fs-12 cursor-pointer text-truncate">
+                                  <Tooltip title={valThree} placement="top">
+                                    <Typography
+                                      onMouseOver={() => {
+                                        setHover(true);
+                                      }}
+                                      onMouseOut={() => {
+                                        setHover(false);
+                                      }}
+                                      className={`fs-12 text-truncate cursor-pointer ${
+                                        hover ? "text-decoration-underline" : ""
+                                      }
+                                      `}
+                                    >
                                       {valThree}
                                     </Typography>
                                   </Tooltip>
