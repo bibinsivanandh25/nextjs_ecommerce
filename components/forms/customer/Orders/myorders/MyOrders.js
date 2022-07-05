@@ -95,10 +95,9 @@ const ProductDetailsPlusTrackDetails = ({
             isChecked={checked}
             checkBoxClick={() => {
               setChecked(!checked);
-              console.log(product, "propdutd");
               const temp = [...selectedProduct];
               temp.push(product);
-              setSelectedProduct([...temp]);
+              setSelectedProduct([...new Set(temp)]);
             }}
             className="color-blue"
           />

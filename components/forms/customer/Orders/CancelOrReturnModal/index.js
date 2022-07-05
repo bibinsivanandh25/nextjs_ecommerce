@@ -73,7 +73,7 @@ const CancelOrReturnModal = ({
           </Box>
           <Box className="d-flex justify-content-between align-items-center">
             <Typography className="fw-bold h-5">
-              Reason for Cancellation :{" "}
+              Reason for Returning :{" "}
             </Typography>
             <Box className="w-70p">
               <SimpleDropdownComponent size="small" />
@@ -103,10 +103,10 @@ const CancelOrReturnModal = ({
         getSelectedItems();
       }}
     >
-      <Typography className="fw-bold text-center">
+      <Typography className="fw-bold text-center my-2">
         Are you sure want to Return these products?
       </Typography>
-      <Box>{getProducts()}</Box>
+      <Box className="mxh-400 overflow-auto ">{getProducts()}</Box>
     </ModalComponent>
   );
 };
