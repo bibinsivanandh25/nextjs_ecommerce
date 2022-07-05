@@ -4,13 +4,10 @@
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
-import OrderSuccessModal from "@/forms/customer/OrderSuccessModal";
 
-const CheckOutOrder = () => {
+const OrderReturn = ({ returnProducts = [] }) => {
   const [addressList, setAddressList] = useState([
     {
       id: 1,
@@ -51,86 +48,38 @@ const CheckOutOrder = () => {
   ]);
   const [showDeliveryAddress, setShowDeliveryAddress] = useState(true);
   const [showOrderSummary, setshowOrderSummary] = useState(false);
-  const [showApplyCoupon, setShowApplyCoupon] = useState(false);
   const [products, setProducts] = useState([]);
-  const [selectedDeliveryAddress, setselectedDeliveryAddress] = useState({});
-  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
+  const [setselectedDeliveryAddress] = useState({});
+  const [setShowOrderSuccessModal] = useState(false);
 
-  const getproducts = async () => {
-    await axios
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setProducts([...data.data]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   useEffect(() => {
-    getproducts();
-  }, []);
+    setProducts([...returnProducts]);
+  }, [returnProducts]);
 
   const getOrderSummary = () => {
-    return products.map((ele, ind) => {
+    return products.map((ele) => {
       return (
-        <Box className="mx-2">
+        <Box className="mx-2 my-3">
           <Grid container key={ele.id}>
             <Grid item sm={2} className="">
               <Image src={ele.image} height={85} width={85} />
-              <Box className="mt-2">
-                <PlusMinusButtonComponent
-                  className="fs-5"
-                  countClassName="px-3"
-                />
-              </Box>
             </Grid>
             <Grid item sm={7}>
               <Typography className="color-orange">
                 Supplier Name: Business Name
               </Typography>
-              <Typography className="h-5  my-2">{ele.title}</Typography>
-              <Typography component="span" className="fw-bold me-2">
-                ₹{ele.price}
+              <Typography className="h-5  my-1">{ele.title}</Typography>
+              <Typography component="span" className="h-5 me-2">
+                Order Type :
               </Typography>
-              <Typography
-                component="span"
-                className="h-5 text-decoration-line-through"
-              >
-                ₹ {ele.price * 4}
+              <Typography component="span" className="h-5">
+                Actual Cost
               </Typography>
-              <div className="mt-3">
-                <Typography
-                  component="span"
-                  className="h-5 fw-bold mx-2 cursor-pointer"
-                  onClick={() => {
-                    const temp = [...products];
-                    temp.splice(ind, 1);
-                    setProducts([...temp]);
-                  }}
-                >
-                  Remove
-                </Typography>
-                <Typography component="span" className="fw-bold h-5">
-                  Edit
-                </Typography>
-              </div>
-            </Grid>
-            <Grid item sm={3} justifyContent="flex-end" className="ps-3">
-              <Typography className="h-5 text-end mb-3 fw-bold">
-                Delivery in 6-7 Days
-              </Typography>
-              <Typography className="h-5 fw-bold">
-                Order Type : Free Delivery & Return
-              </Typography>
-              <Typography className="h-5 fw-bold">
-                Delivery Charge : Free{" "}
-              </Typography>
-              <Typography className="h-5 fw-bold">
-                Return Charge : Free
+              <Typography className="h-5">
+                Return Charges : <span className="text-danger">₹123</span>
               </Typography>
             </Grid>
           </Grid>
-          <Divider variant="middle" light className="my-2" />
         </Box>
       );
     });
@@ -180,7 +129,7 @@ const CheckOutOrder = () => {
                   </Typography>
                 </Box>
                 {ele.isSelected ? (
-                  <ButtonComponent label="Deliver Here" />
+                  <ButtonComponent label="Pickup Here" />
                 ) : null}
               </Box>
             </Box>
@@ -286,7 +235,7 @@ const CheckOutOrder = () => {
                 </Box>
                 <Box>
                   <Typography className="text-secondary fw-bold h-5">
-                    Delivery Address
+                    Pickup Address
                   </Typography>
                 </Box>
               </Box>
@@ -306,12 +255,6 @@ const CheckOutOrder = () => {
             <Divider variant="middle" />
             <Box className="py-2">{getDeliveryAddress()}</Box>
           </Paper>
-          {showDeliveryAddress ? (
-            <Paper className="my-2 px-4 py-2 color-orange h-5">
-              {" "}
-              + Add New Address
-            </Paper>
-          ) : null}
           <Paper className="my-2">
             <Box className="d-flex justify-content-between align-items-center px-2 rounded-0">
               <Box className="d-flex my-2">
@@ -322,11 +265,11 @@ const CheckOutOrder = () => {
                 </Box>
                 <Box>
                   <Typography className="text-secondary fw-bold h-5">
-                    Order Summary
+                    Return Order Summary
                   </Typography>
                 </Box>
               </Box>
-              {/* <Box>
+              <Box>
                 {showDeliveryAddress ? (
                   <ButtonComponent
                     label="Continue"
@@ -334,88 +277,56 @@ const CheckOutOrder = () => {
                     onBtnClick={() => setShowDeliveryAddress(false)}
                   />
                 ) : null}
-              </Box> */}
+              </Box>
             </Box>
             <Divider variant="middle" />
-            <Box className="py-2 mxh-250 overflow-auto hide-scrollbar">
+            <Box className="py-2 mxh-300 overflow-auto hide-scrollbar">
               {showOrderSummary ? getOrderSummary() : null}
             </Box>
           </Paper>
-          {showApplyCoupon ? (
-            <Paper className="d-flex align-items-center p-2">
-              <Typography className="h-5">
-                Do You have additional Coupons ?
-              </Typography>
-              <Box className="d-flex ">
-                <Box className="mx-3">
-                  <input
-                    className="mx-2 w-100"
-                    style={{
-                      outline: "none",
-                    }}
-                    placeholder="Enter coupon code"
-                  />
-                </Box>
-                <ButtonComponent label="Apply" />
-              </Box>
-            </Paper>
-          ) : null}
-          <Paper className="d-flex justify-content-between align-items-center p-2 mt-2">
+
+          <Paper className="d-flex justify-content-between align-items-center p-2">
             <Typography>
-              Order confirmation will be sent to{" "}
+              Return Order confirmation will be sent to{" "}
               <span className="fw-bold">xyz.gmail.com</span>{" "}
             </Typography>
             <ButtonComponent
-              label={showApplyCoupon ? "Place Order" : "Continue"}
+              label="Continue"
               onBtnClick={() => {
-                if (!showApplyCoupon) {
-                  setShowApplyCoupon(true);
-                } else {
-                  setShowOrderSuccessModal(true);
-                }
+                setShowOrderSuccessModal(true);
               }}
             />
           </Paper>
-          <OrderSuccessModal
-            showModal={showOrderSuccessModal}
-            setShowModal={setShowOrderSuccessModal}
-            address={selectedDeliveryAddress}
-            products={products}
-          />
         </Box>
       </Grid>
       {products.length ? (
         <Grid item sm={3}>
           <Paper className="ms-2 p-2">
             <Typography className="text-secondary h-5 fw-bold">
-              Price Details
+              Return Order Charges
             </Typography>
             <Divider />
             <Box className="d-flex justify-content-between align-items-center">
-              <Typography className="h-5 fw-bold my-2">
-                Price ({products.length} items)
+              <Typography className="h-5  my-2">
+                Total item for return shipment
               </Typography>
-              <Typography className="h-5 fw-bold">{getTotalPrice()}</Typography>
+              <Typography className="h-5 ">{products.length}</Typography>
             </Box>
-            <Box className="d-flex justify-content-between align-items-center">
-              <Typography className="h-5 fw-bold my-2">
-                Delivery Charges
+            <Box className="d-flex justify-content-between">
+              <Typography className="h-5  my-2">
+                Return Shipment Charges
               </Typography>
-              <Typography className="text-success h-5">Free</Typography>
+              <Typography className="h-5  my-2">Rs.123</Typography>
             </Box>
             <Divider />
             <Box className="d-flex justify-content-between align-items-center my-2">
-              <Typography className="h-5 fw-bold">Total Payable</Typography>
+              <Typography className="h-5 fw-bold">Total payable</Typography>
               <Typography className="h-5 fw-bold">{getTotalPrice()}</Typography>
             </Box>
-            <Divider />
-            <Typography className="text-success text-center h-5 my-2">
-              Your Total Savings on this Order is 10000
-            </Typography>
           </Paper>
         </Grid>
       ) : null}
     </Grid>
   );
 };
-export default CheckOutOrder;
+export default OrderReturn;
