@@ -306,6 +306,12 @@ const CheckOutOrder = () => {
             <Divider variant="middle" />
             <Box className="py-2">{getDeliveryAddress()}</Box>
           </Paper>
+          {showDeliveryAddress ? (
+            <Paper className="my-2 px-4 py-2 color-orange h-5">
+              {" "}
+              + Add New Address
+            </Paper>
+          ) : null}
           <Paper className="my-2">
             <Box className="d-flex justify-content-between align-items-center px-2 rounded-0">
               <Box className="d-flex my-2">
@@ -320,7 +326,7 @@ const CheckOutOrder = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Box>
+              {/* <Box>
                 {showDeliveryAddress ? (
                   <ButtonComponent
                     label="Continue"
@@ -328,10 +334,10 @@ const CheckOutOrder = () => {
                     onBtnClick={() => setShowDeliveryAddress(false)}
                   />
                 ) : null}
-              </Box>
+              </Box> */}
             </Box>
             <Divider variant="middle" />
-            <Box className="py-2 mxh-300 overflow-auto hide-scrollbar">
+            <Box className="py-2 mxh-250 overflow-auto hide-scrollbar">
               {showOrderSummary ? getOrderSummary() : null}
             </Box>
           </Paper>
@@ -354,18 +360,19 @@ const CheckOutOrder = () => {
               </Box>
             </Paper>
           ) : null}
-          <Paper className="d-flex justify-content-between align-items-center p-2">
+          <Paper className="d-flex justify-content-between align-items-center p-2 mt-2">
             <Typography>
               Order confirmation will be sent to{" "}
               <span className="fw-bold">xyz.gmail.com</span>{" "}
             </Typography>
             <ButtonComponent
-              label="Place Order"
+              label={showApplyCoupon ? "Place Order" : "Continue"}
               onBtnClick={() => {
                 if (!showApplyCoupon) {
                   setShowApplyCoupon(true);
+                } else {
+                  setShowOrderSuccessModal(true);
                 }
-                setShowOrderSuccessModal(true);
               }}
             />
           </Paper>

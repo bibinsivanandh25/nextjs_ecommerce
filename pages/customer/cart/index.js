@@ -26,7 +26,7 @@ const Cart = () => {
   const getCartList = () => {
     return products.map((ele, ind) => {
       return (
-        <Box className="mx-2">
+        <Box className="mx-2 py-1">
           <Grid container key={ind + 1}>
             <Grid item sm={2} className="">
               <Image src={ele.image} height={85} width={85} />
@@ -100,7 +100,13 @@ const Cart = () => {
   return (
     <Grid container>
       <Grid item sm={9}>
-        <Paper className="w-100">{getCartList()}</Paper>
+        <Paper className="w-100">
+          <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2">
+            <Typography className="h-5 text-secondary">My Cart</Typography>
+            <ButtonComponent muiProps=" p-0" label="Choose Address" />
+          </Box>
+          {getCartList()}
+        </Paper>
       </Grid>
       {products.length ? (
         <Grid item sm={3}>

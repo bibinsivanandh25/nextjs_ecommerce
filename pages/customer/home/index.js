@@ -4,6 +4,7 @@ import { FaTicketAlt } from "react-icons/fa";
 import HotDealsOfTheDay from "@/forms/customer/HotDealsOfTheDay";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/TopTrending";
+import TopCategories from "@/forms/customer/TopCategories";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
@@ -181,6 +182,9 @@ const Home = () => {
         <Grid item sm={4} className="py-3 ps-1">
           <TopTrending />
         </Grid>
+      </Grid>
+      <Grid>
+        <TopCategories />
       </Grid>
     </div>
   );
