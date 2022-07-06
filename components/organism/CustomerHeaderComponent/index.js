@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -125,8 +127,15 @@ const Header = () => {
           background: "#fae1cc",
         }}
       >
-        <div>
-          <Typography className="fs-5">LOGO Store Name</Typography>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            route.push("/customer/home");
+          }}
+        >
+          <Typography className="fs-5 cursor-pointer">
+            LOGO Store Name
+          </Typography>
         </div>
         <div className="d-flex align-items-center  rounded">
           <div
