@@ -30,6 +30,8 @@ import Remove from "@mui/icons-material/Remove";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { RiShareForwardFill } from "react-icons/ri";
+import DoneIcon from "@mui/icons-material/Done";
+import ViewInArIcon from "@mui/icons-material/ViewInAr";
 
 const CustomIcon = ({
   title = "",
@@ -77,6 +79,8 @@ const CustomIcon = ({
     checkCircleIcon: CheckCircleIcon,
     keyboardBackspaceIcon: KeyboardBackspaceIcon,
     riShareForwardFill: RiShareForwardFill,
+    doneIcon: DoneIcon,
+    viewInArIcon: ViewInArIcon,
   };
 
   const [hover, setHover] = useState(false);
