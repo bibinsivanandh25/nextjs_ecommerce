@@ -11,7 +11,7 @@ const CategoryCards = ({
 }) => {
   return (
     <Box className="position-relative d-inline" onClick={clickCardCategory}>
-      <Image height={height} width={width} src={src} />
+      <Image height={height} width={width} src={src} layout="fixed" />
       <Typography
         className="fs-14 fw-bold mt-1 text-center position-absolute top-10"
         sx={{ bottom: "10px", left: "50%", transform: "translateX(-50%)" }}

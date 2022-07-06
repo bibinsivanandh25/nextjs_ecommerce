@@ -5,6 +5,7 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
@@ -33,6 +34,7 @@ const HotDealsOfTheDay = () => {
   const [count, setCount] = useState(1);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const route = useRouter();
   // viewModal
   useEffect(() => {
     setViewModalImage(viewImageData);
@@ -48,7 +50,9 @@ const HotDealsOfTheDay = () => {
   const handlePlusClick = () => {
     setCount((prev) => prev + 1);
   };
-  const handleBuyNowClick = () => {};
+  const handleBuyNowClick = () => {
+    route.push("/customer/checkoutorder");
+  };
 
   const getPageDots = () => {
     const arr = [1, 2, 3, 4, 5];
