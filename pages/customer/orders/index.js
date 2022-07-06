@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Box, Rating, Typography } from "@mui/material";
 // import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import CustomIcon from "services/iconUtils";
@@ -17,6 +17,8 @@ const Orders = () => {
   const [sellerFeedbackmModal, setSellerFeedbackModal] = useState(false);
   const [productFeedbackType, setProductFeedbackType] = useState("");
   const [feedbackRating, setFeedbackRating] = useState(0);
+  const inputRef = useRef(null);
+
   return (
     <Box>
       <Box className="d-flex align-items-center pb-3">
@@ -69,7 +71,7 @@ const Orders = () => {
           Cancelled Orders
         </Typography>
       </Box>
-      {sellerFeedbackmModal ? (
+      {sellerFeedbackmModal && selectedLink === "orders" ? (
         productFeedbackType === "product" ? (
           <Box>
             <div
@@ -106,15 +108,41 @@ const Orders = () => {
                     style={{ outline: "1px solid gray" }}
                   />
                 </Box>
-                <Box className="border mxh-150 mxw-100px mxh-100">
-                  <Box className="d-flex justify-content-center ">
-                    <CustomIcon
-                      type="add"
-                      className="h-1"
-                      color="text-black"
-                      showColorOnHover={false}
-                    />
+
+                <Box
+                  className="mnw-100px rounded"
+                  style={{ border: "1px dotted gray" }}
+                >
+                  <Box
+                    className="d-flex justify-content-center"
+                    style={{ height: "100px", alignItems: "center" }}
+                  >
+                    <Box>
+                      <input
+                        type="file"
+                        className="d-none"
+                        ref={inputRef}
+                        accept="image/*"
+                        // onChange={(e) => {
+                        // }}
+                      />
+                      <CustomIcon
+                        type="add"
+                        className="h-1"
+                        color="text-black"
+                        showColorOnHover={false}
+                        onIconClick={() => {
+                          inputRef.current.click();
+                        }}
+                      />
+                    </Box>
                   </Box>
+                </Box>
+                <Box className="d-flex justify-content-end">
+                  <ButtonComponent
+                    label="Submit Feedback"
+                    muiProps="px-3 py-2"
+                  />
                 </Box>
               </Box>
             </Box>
