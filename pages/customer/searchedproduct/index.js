@@ -401,7 +401,7 @@ function SearchedProduct() {
             <p className="text-danger fs-14"> Offer ends in 09h 42min 2sec</p>
           </Box>
           <Box className="">
-            <Box className="d-flex w-100 ">
+            <Box className="d-flex ">
               <Grid
                 container={!viewIconClick}
                 spacing={2}
@@ -444,7 +444,7 @@ function SearchedProduct() {
             <Grid
               container
               spacing={2}
-              className="mx-auto ms-0 mt-2"
+              className="mx-auto ms-0 mt-2 mb-2 ps-1 pe-3"
               sx={{
                 width: `calc(100% - 10px)`,
               }}

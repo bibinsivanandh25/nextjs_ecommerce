@@ -1,11 +1,6 @@
-import {
-  Typography,
-  Box,
-  // Stepper,
-  // Step,
-  // StepLabel,
-  // StepContent,
-} from "@mui/material";
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/self-closing-comp */
+import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -17,14 +12,6 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import CancelOrReturnModal from "../CancelOrReturnModal";
 import ModalComponent from "@/atoms/ModalComponent";
-// import {
-//   Timeline,
-//   TimelineConnector,
-//   TimelineContent,
-//   TimelineDot,
-//   TimelineItem,
-//   TimelineSeparator,
-// } from "@mui/lab";
 
 const list = [
   { label: "Last 30 days" },
@@ -33,7 +20,61 @@ const list = [
   { label: "2018" },
   { label: "Archive Orders" },
 ];
-
+const datas = [
+  {
+    id: 1,
+    title: "Ordered",
+    date: "Fri 2nd Jul 2021",
+    flag: true,
+    trackedData: [
+      {
+        id: 1,
+        value: "Your Order has been placed.",
+        date: "Fri 2nd Jul 2021-2:19 pm",
+        flag: true,
+      },
+      {
+        id: 2,
+        value: "Seller has processed your order.",
+        date: "Fri 9nd Jul 2021-2:19 pm",
+        flag: true,
+      },
+      {
+        id: 3,
+        value: "Your item has been picked up by courier partner",
+        date: "Mon 15nd Jul 2021-2:19 pm",
+        flag: true,
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Shipped",
+    date: "Tue 12nd Jul 2021",
+    flag: true,
+    trackedData: [
+      {
+        id: 1,
+        value: "Your item has been shipped",
+        date: "Fri 2nd Jul 2021-2:19 pm",
+        flag: true,
+      },
+    ],
+  },
+  {
+    id: 3,
+    flag: true,
+    date: "Mon 22nd Jul 2021",
+    title: "Out for Delivery",
+    trackedData: [
+      {
+        id: 1,
+        value: "Your item is out for delivery",
+        flag: false,
+      },
+    ],
+  },
+];
 const SingleProductTrackDetails = ({
   setTrackPackage,
   setSellerFeedbackModal,
@@ -127,37 +168,77 @@ const ProductDetailsPlusTrackDetails = ({
           ModalTitle="Order Details"
           showFooter={false}
           titleClassName="fs-18 fw-600"
+          minHeightClassName="mnh-400"
         >
-          <Box>
-            {/* <Stepper orientation="vertical" activeStep={0}>
-              <Step sx={{ color: "orange" }}>
-                <StepLabel>Hiii</StepLabel>
-                <StepContent>sfsdgsgr</StepContent>
-                <StepContent sx={{ color: "red" }}>sfsdgsgr</StepContent>
-                <StepContent>sfsdgsgr</StepContent>
-                <StepContent>sfsdgsgr</StepContent>
-                <StepContent>sfsdgsgr</StepContent>
-              </Step>
-              <Step>
-                <StepLabel>Hiii</StepLabel>
-                <StepContent>sfsdgsgr</StepContent>
-              </Step>
-            </Stepper> */}
-            {/* <Timeline>
-              <TimelineItem>
-                <TimelineSeparator>
-                  <TimelineDot sx={{ backgroundColor: "orange" }} />
-                  <TimelineConnector sx={{ backgroundColor: "orange" }} />
-                </TimelineSeparator>
-                <TimelineContent>
-                  Eat
-                  <Typography>Because you need strength</Typography>
-                  <Typography>Because you need strength</Typography>
-                  <Typography>Because you need strength</Typography>
-                  <Typography>Because you need strength</Typography>
-                </TimelineContent>
-              </TimelineItem>
-            </Timeline> */}
+          <Box className="pt-3">
+            {datas.map((item, ind) => (
+              <Box className="position-relative">
+                {item.id !== 1 && (
+                  <div
+                    className="position-absolute"
+                    style={{
+                      height: "7px",
+                      border: item.flag
+                        ? "1px solid #E56700"
+                        : "1px solid gray",
+                      top: 0,
+                      left: 6,
+                    }}
+                  ></div>
+                )}
+                <div className="d-flex ">
+                  <div
+                    style={{
+                      height: "15px",
+                      width: "15px",
+                      border: item.flag
+                        ? "1px solid #E56700"
+                        : "1px solid gray",
+                      borderRadius: "50%",
+                      backgroundColor: item.flag ? "#E56700" : "gray",
+                    }}
+                    className="mt-1"
+                  ></div>
+                  <div>
+                    <span className="ps-4 fw-600">{item.title}</span>
+                    <span className="fs-12 color-dark-gray ps-2">
+                      {item.date}
+                    </span>
+                  </div>
+                </div>
+                {datas.length - 1 > ind && (
+                  <div
+                    className="position-absolute"
+                    style={{
+                      height: "6px",
+                      border: item.flag
+                        ? "1px solid #E56700"
+                        : "1px solid gray",
+                      top: 19,
+                      left: 6,
+                    }}
+                  ></div>
+                )}
+                {item.trackedData.map((val) => (
+                  <div
+                    style={{
+                      borderLeft:
+                        datas.length - 1 > ind
+                          ? val.flag
+                            ? "2px solid #E56700"
+                            : "2px solid gray"
+                          : "",
+                      marginLeft: "6px",
+                      paddingLeft: "2.1rem",
+                    }}
+                    className="py-2"
+                  >
+                    <p className="text-bold fw-600 fs-14">{val.value}</p>
+                    <p className="fs-12 color-dark-gray ">{val.date}</p>
+                  </div>
+                ))}
+              </Box>
+            ))}
           </Box>
         </ModalComponent>
       )}
@@ -198,6 +279,7 @@ const MyOrders = ({
             list={list}
             size="small"
             label="Past 3 Months"
+            inputlabelshrink
           />
         </Box>
         <Typography className="ms-2 fs-14">
