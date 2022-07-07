@@ -154,7 +154,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Name"
-                value={defaultFormData.name}
+                value={defaultFormData?.name}
                 onInputChange={(e) => {
                   handleInputChange(e, "name");
                 }}
@@ -166,7 +166,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Mobile Number"
-                value={defaultFormData.mobilenumber}
+                value={defaultFormData?.mobilenumber}
                 onInputChange={(e) => {
                   handleInputChange(e, "mobilenumber");
                 }}
@@ -180,7 +180,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Pincode"
-                value={defaultFormData.pincode}
+                value={defaultFormData?.pincode}
                 onInputChange={(e) => {
                   handleInputChange(e, "pincode");
                 }}
@@ -192,7 +192,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Location"
-                value={defaultFormData.location}
+                value={defaultFormData?.location}
                 onInputChange={(e) => {
                   handleInputChange(e, "location");
                 }}
@@ -206,7 +206,7 @@ const NewAddress = ({
               <InputBox
                 size="large"
                 label="Address"
-                value={defaultFormData.address}
+                value={defaultFormData?.address}
                 onInputChange={(e) => {
                   handleInputChange(e, "address");
                 }}
@@ -219,7 +219,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="City / District / Town"
-                value={defaultFormData.city}
+                value={defaultFormData?.city}
                 onInputChange={(e) => {
                   handleInputChange(e, "city");
                 }}
@@ -232,7 +232,7 @@ const NewAddress = ({
                 size="small"
                 list={options}
                 label="State"
-                value={defaultFormData.state}
+                value={defaultFormData?.state}
                 onDropdownSelect={(val) => {
                   handleInputChange(val, "state");
                 }}
@@ -243,7 +243,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Land mark (Optional)"
-                value={defaultFormData.landmark}
+                value={defaultFormData?.landmark}
                 onInputChange={(e) => {
                   handleInputChange(e, "landmark");
                 }}
@@ -253,7 +253,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Alternate No. (Optional)"
-                value={defaultFormData.alternatenumber}
+                value={defaultFormData?.alternatenumber}
                 onInputChange={(e) => {
                   handleInputChange(e, "alternatenumber");
                 }}
@@ -263,7 +263,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Latitude Value (Optional)"
-                value={defaultFormData.latitudvalue}
+                value={defaultFormData?.latitudvalue}
                 onInputChange={(e) => {
                   handleInputChange(e, "latitudvalue");
                 }}
@@ -273,7 +273,7 @@ const NewAddress = ({
               <InputBox
                 size="small"
                 label="Longitude Value (Optional)"
-                value={defaultFormData.longitudevalue}
+                value={defaultFormData?.longitudevalue}
                 onInputChange={(e) => {
                   handleInputChange(e, "longitudevalue");
                 }}
@@ -285,7 +285,7 @@ const NewAddress = ({
             <RadiobuttonComponent
               size="small"
               label="Home"
-              isChecked={defaultFormData.addresstype === "home"}
+              isChecked={defaultFormData?.addresstype === "home"}
               onRadioChange={() => {
                 handleInputChange("home", "addresstype");
               }}
@@ -294,7 +294,7 @@ const NewAddress = ({
               size="small"
               label="Office"
               className="ms-4"
-              isChecked={defaultFormData.addresstype === "office"}
+              isChecked={defaultFormData?.addresstype === "office"}
               onRadioChange={() => {
                 handleInputChange("office", "addresstype");
               }}

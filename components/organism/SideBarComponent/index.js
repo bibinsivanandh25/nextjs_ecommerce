@@ -24,94 +24,104 @@ import BreadCrumb from "components/atoms/BreadCrumb";
 
 const drawerWidth = 245;
 
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-  position: "fixed",
-  top: "60px",
-});
+const SideBarComponent = ({ children }) => {
+  const route = useRouter();
 
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-  position: "fixed",
-  top: "60px",
-});
+  const openedMixin = (theme) => ({
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: "hidden",
+    position: "fixed",
+    top:
+      route.pathname.startsWith("/reseller") ||
+      route.pathname.startsWith("/supplier") ||
+      route.pathname[route.pathname.length - 1] === "/"
+        ? "60px"
+        : "80px",
+  });
 
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-const getBasePath = (role) => {
-  switch (role) {
-    case "Supplier":
-      return "supplier";
-    case "Reseller":
-      return "reseller";
-    default:
-      return "customer";
-  }
-};
-const mapList = (role) => {
-  const addId = (id, item, path) => {
-    if (!item?.child?.length) {
+  const closedMixin = (theme) => ({
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: "hidden",
+    width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up("sm")]: {
+      width: `calc(${theme.spacing(8)} + 1px)`,
+    },
+    position: "fixed",
+    top:
+      route.pathname.startsWith("/reseller") ||
+      route.pathname.startsWith("/supplier") ||
+      route.pathname[route.pathname.length - 1] === "/"
+        ? "60px"
+        : "80px",
+  });
+  const Drawer = styled(MuiDrawer, {
+    shouldForwardProp: (prop) => prop !== "open",
+  })(({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: "nowrap",
+    boxSizing: "border-box",
+    ...(open && {
+      ...openedMixin(theme),
+      "& .MuiDrawer-paper": openedMixin(theme),
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      "& .MuiDrawer-paper": closedMixin(theme),
+    }),
+  }));
+  const getBasePath = (role) => {
+    switch (role) {
+      case "Supplier":
+        return "supplier";
+      case "Reseller":
+        return "reseller";
+      default:
+        return "customer";
+    }
+  };
+  const mapList = (role) => {
+    const addId = (id, item, path) => {
+      if (!item?.child?.length) {
+        return {
+          ...item,
+          id,
+          selected: false,
+          path_name: `${path}/${item.path_name}`,
+        };
+      }
       return {
         ...item,
         id,
         selected: false,
         path_name: `${path}/${item.path_name}`,
+        child: [
+          ...item.child.map((ele, index) => {
+            return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
+          }),
+        ],
       };
-    }
-    return {
-      ...item,
-      id,
-      selected: false,
-      path_name: `${path}/${item.path_name}`,
-      child: [
-        ...item.child.map((ele, index) => {
-          return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
-        }),
-      ],
     };
+    const tempList = role === "Supplier" ? supplierMenu : resellerMenu;
+    const list = [...tempList].map((item, index) => {
+      return addId(index, item, `/${getBasePath(role)}`);
+    });
+    return [...list];
   };
-  const tempList = role === "Supplier" ? supplierMenu : resellerMenu;
-  const list = [...tempList].map((item, index) => {
-    return addId(index, item, `/${getBasePath(role)}`);
-  });
-  return [...list];
-};
 
-const SideBarComponent = ({ children }) => {
   const { data: session } = useSession();
   // const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [menuList, setMenuList] = useState([
     ...mapList(session?.user?.role || "customer"),
   ]);
-  const route = useRouter();
 
   useMemo(() => {
     if (session && session.user) {
