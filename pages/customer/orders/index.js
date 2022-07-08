@@ -26,9 +26,7 @@ const Orders = () => {
       {!showReturnOrder ? (
         <Box>
           <Box className="d-flex align-items-center pb-3">
-            <Typography className="fw-bold fs-14 w-50" variantMapping={<p />}>
-              Your Orders
-            </Typography>
+            <Typography className="fw-bold fs-14 w-50">Your Orders</Typography>
             <Box className="w-50">
               <SearchComponent fullWidth placeholder="Search Orders" />
             </Box>
