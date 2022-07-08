@@ -63,7 +63,7 @@ function CustomerProductgModal({
       className={
         viewType === "row"
           ? "w-100 d-flex bg-white p-1 rounded border my-2 "
-          : "w-100 d-flex flex-column bg-white p-1 rounded "
+          : "w-95p d-flex flex-column bg-white py-1 px-2 rounded  "
       }
     >
       <Paper
@@ -195,11 +195,13 @@ function CustomerProductgModal({
           </Box>
         </Box>
       </Paper>
-      <Box className={viewType === "row" ? "ms-3 h-150 w-100 " : "my-1 h-150 "}>
+      <Box
+        className={viewType === "row" ? "ms-3 h-150 w-100 " : "my-1 h-150 ps-2"}
+      >
         <Box
           className={viewType === "row" ? "d-flex justify-content-between" : ""}
         >
-          <p className="fs-20 fw-600">{data.title}</p>
+          <p className="fs-18 fw-600">{data.title}</p>
           {data.offerFlag && viewType === "row" && (
             <Badge className="text-danger fs-12">
               Offer ends in 09h 42min 2sec
@@ -207,7 +209,7 @@ function CustomerProductgModal({
           )}
         </Box>
         <p
-          className="fs-14 text-secondary"
+          className="fs-12 text-secondary"
           style={{
             textOverflow: "ellipsis",
             overflow: "hidden",
@@ -227,7 +229,15 @@ function CustomerProductgModal({
                 whiteSpace: "nowrap",
               }}
             >
-              <span className="fs-12 text-secondary">Actual Cost :</span>
+              <span
+                className={
+                  viewType === "row"
+                    ? "fs-12 text-secondary"
+                    : "fs-10 text-secondary"
+                }
+              >
+                Actual Cost :
+              </span>
               <span className="fs-12 fw-500">
                 &#8377;{data.actualCost} - &#8377;555 MRP : 2500 (56% Off)
               </span>
@@ -240,14 +250,22 @@ function CustomerProductgModal({
                 whiteSpace: "nowrap",
               }}
             >
-              <span className="fs-12 text-secondary">Actual Cost :</span>
+              <span
+                className={
+                  viewType === "row"
+                    ? "fs-12 text-secondary"
+                    : "fs-10 text-secondary"
+                }
+              >
+                Free Delivary :
+              </span>
               <span className="fs-12 fw-500">
                 &#8377;{data.freeDelivary} - &#8377;555 MRP : 2500 (56% Off)
               </span>
             </div>
           </div>
         ) : (
-          <p className="h-30 pt-3 fw-600"> &#8377;{data.actualCost}</p>
+          <p className="h-30 pt-3 fw-600 fs-16"> &#8377;{data.actualCost}</p>
         )}
         <div
           className={
@@ -258,7 +276,7 @@ function CustomerProductgModal({
             <CustomIcon
               title="View Count"
               type="view"
-              className="fs-18"
+              className="fs-14"
               onIconClick={() => {}}
               showColorOnHover={false}
             />
@@ -268,7 +286,7 @@ function CustomerProductgModal({
             <CustomIcon
               title="Total Order"
               type="airportShuttleOutlinedIcon"
-              className="fs-18"
+              className="fs-14"
               onIconClick={() => {}}
               showColorOnHover={false}
             />

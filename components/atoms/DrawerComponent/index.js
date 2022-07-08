@@ -39,7 +39,7 @@ const DrawerComponent = ({
             borderBottom: headerBorder ? "1px solid #707070" : "",
           }}
         >
-          <Typography className="fs-26 fw-600 color-black">
+          <Typography className="fs-20 fw-600 color-black">
             {modalTitle}
           </Typography>
         </Box>

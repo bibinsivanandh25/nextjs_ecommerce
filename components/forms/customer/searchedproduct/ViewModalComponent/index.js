@@ -255,21 +255,35 @@ const ViewModalComponent = ({
                 className=" d-flex w-30p  justify-content-center align-items-center px-2 py-1 rounded"
                 style={{ border: "1px solid #292929" }}
               >
-                <div
+                {/* <div
                   style={{ width: "20px", height: "20px" }}
                   className="border rounded-circle me-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
                   onClick={() => handleMinusClick()}
                 >
                   -
+                </div> */}
+                <div className="me-3" onClick={() => handleMinusClick()}>
+                  <CustomIcon
+                    type="removeIcon"
+                    className="border rounded-circle fs-20"
+                    showColorOnHover={false}
+                  />
                 </div>
                 <span>{count}</span>
-                <div
+                <div className="ms-3" onClick={() => handlePlusClick()}>
+                  <CustomIcon
+                    type="add"
+                    className="border rounded-circle  fs-20"
+                    showColorOnHover={false}
+                  />
+                </div>
+                {/* <div
                   style={{ width: "20px", height: "20px" }}
                   className="border rounded-circle ms-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
                   onClick={() => handlePlusClick()}
                 >
                   +
-                </div>
+                </div> */}
               </Box>
               <Box className="ms-5">
                 <ButtonComponent
