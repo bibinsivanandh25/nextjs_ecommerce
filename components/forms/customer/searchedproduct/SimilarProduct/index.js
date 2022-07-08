@@ -41,7 +41,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         sx={{
           position: "relative",
           width: "90%",
-          height: "27vh",
+          height: "170px",
           marginLeft: "0.65rem",
         }}
         onMouseEnter={() => {
