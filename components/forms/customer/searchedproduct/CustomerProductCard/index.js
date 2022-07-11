@@ -1,10 +1,25 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import { Badge, Box, Paper } from "@mui/material";
+import { Badge, Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
+import makeStyles from "@mui/styles/makeStyles";
+import { AirportShuttleOutlined, RemoveRedEye } from "@mui/icons-material";
 import CarousalComponent from "@/atoms/Carousel";
 
+const useStyles = makeStyles(() => ({
+  arrow: {
+    "&:before": {
+      border: "1px solid #E6E8ED",
+    },
+    color: "#fff",
+  },
+  tooltip: {
+    backgroundColor: "#fff",
+    border: "1px solid #E6E8ED",
+    color: "#4A4A4A",
+  },
+}));
 const iconListData = [
   {
     iconName: "viewCarouselOutlinedIcon",
@@ -58,6 +73,8 @@ function CustomerProductgModal({
   const mouseLeave = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: false }));
   };
+  // tooltip css changed
+  const classes = useStyles();
   return (
     <div
       className={
@@ -70,7 +87,7 @@ function CustomerProductgModal({
         elevation={hover ? 3 : 0}
         sx={{
           width: viewType === "row" ? "20%" : "100%",
-          height: viewType === "row" ? "25vh" : "30vh",
+          height: viewType === "row" ? "170px" : "200px",
         }}
         onMouseLeave={() => {
           setHover(false);
@@ -139,8 +156,8 @@ function CustomerProductgModal({
               dynamicHeight={false}
               images={images}
               showIndicators={hover}
-              carouselImageMaxHeight={viewType === "Grid" ? "30vh" : "0"}
-              carouselImageMinHeight={viewType === "Grid" ? "0" : "25vh"}
+              carouselImageMaxHeight={viewType === "Grid" ? "200px" : "0"}
+              carouselImageMinHeight={viewType === "Grid" ? "200px" : "170px"}
             />
           </div>
           {data.flag && (
@@ -272,26 +289,28 @@ function CustomerProductgModal({
             viewType === "row" ? "d-flex justify-content-end me-3" : "d-flex"
           }
         >
-          <div className="ms-2 me-3">
-            <CustomIcon
-              title="View Count"
-              type="view"
-              className="fs-14"
-              onIconClick={() => {}}
-              showColorOnHover={false}
-            />
-            <span className="fs-12"> 23445</span>
-          </div>
-          <div>
-            <CustomIcon
-              title="Total Order"
-              type="airportShuttleOutlinedIcon"
-              className="fs-14"
-              onIconClick={() => {}}
-              showColorOnHover={false}
-            />
-            <span className="fs-12"> 23445</span>
-          </div>
+          <Tooltip
+            title="View Count"
+            placement="top"
+            arrow
+            classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
+          >
+            <div className="ms-2 me-3">
+              <RemoveRedEye className="fs-14 color-gray " />
+              <span className="fs-12"> 23445</span>
+            </div>
+          </Tooltip>
+          <Tooltip
+            title="Total Order"
+            placement="top"
+            arrow
+            classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
+          >
+            <div>
+              <AirportShuttleOutlined className="fs-14 color-gray" />
+              <span className="fs-12"> 23445</span>
+            </div>
+          </Tooltip>
         </div>
         {data.offerFlag && viewType === "Grid" && (
           <Box className="d-flex justify-content-end">
