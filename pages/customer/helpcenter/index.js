@@ -57,7 +57,7 @@ export default function CustomizedAccordions() {
         onChange={handleChange("panel1")}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>About MrMrsCart</Typography>
+          <Typography className="fw-bold">About MrMrsCart</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -73,7 +73,7 @@ export default function CustomizedAccordions() {
         onChange={handleChange("panel2")}
       >
         <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <Typography>Placing Orders</Typography>
+          <Typography className="fw-bold">Placing Orders</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -89,7 +89,7 @@ export default function CustomizedAccordions() {
         onChange={handleChange("panel3")}
       >
         <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-          <Typography>Payments</Typography>
+          <Typography className="fw-bold">Payments</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -105,7 +105,7 @@ export default function CustomizedAccordions() {
         onChange={handleChange("panel4")}
       >
         <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
-          <Typography>Cancellations</Typography>
+          <Typography className="fw-bold">Cancellations</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>

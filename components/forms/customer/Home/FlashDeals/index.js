@@ -27,7 +27,7 @@ const FlashDeals = () => {
       return (
         <Paper
           className="mx-1"
-          onClick={() => route.push("/customer/searchedproducts")}
+          onClick={() => route.push("/customer/searchedproduct")}
         >
           <CategoryCards categoryTitle={ele} height={150} width={150} />
         </Paper>
