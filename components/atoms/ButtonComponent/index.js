@@ -16,6 +16,7 @@ const ButtonComponent = ({
   textColor = "color-orange",
   bgColor = "bg-orange",
   fullWidth = false,
+  disabled = false,
 }) => {
   const getIcon = () => {
     return (
@@ -41,6 +42,7 @@ const ButtonComponent = ({
       startIcon={(showIcon && iconOrintation) === "start" ? getIcon() : <></>}
       endIcon={(showIcon && iconOrintation) === "end" ? getIcon() : <></>}
       fullWidth={fullWidth}
+      disabled={disabled}
     >
       {label}
     </Button>

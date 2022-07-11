@@ -1,10 +1,13 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Box, Grid, Pagination } from "@mui/material";
+import { Box, Button, Grid, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import Image from "next/image";
+import { makeStyles } from "@mui/styles";
 import MenuWithCheckbox from "@/atoms/MenuWithCheckbox";
 import CustomerProductgModal from "@/forms/customer/searchedproduct/CustomerProductCard";
 import DrawerComponent from "@/atoms/DrawerComponent";
@@ -208,6 +211,15 @@ const comparProductData = [
     imageLink: "",
   },
 ];
+const useStyles = makeStyles(() => ({
+  selected: {
+    "& .Mui-selected": {
+      color: "#E56700",
+      border: "1px solid #E56700",
+    },
+  },
+}));
+// .... rest of code
 function SearchedProduct() {
   // checkbox data
   const [checkedValue, setCheckedValue] = useState([]);
@@ -330,6 +342,14 @@ function SearchedProduct() {
     }
   };
   const onSimilerIconClick = () => {};
+  const handlePreviousbtnClick = () => {
+    setPage((prev) => (prev <= 1 ? prev : prev - 1));
+  };
+  const handleNextbtnClick = () => {
+    setPage((prev) => (prev < pageCount ? prev + 1 : prev));
+  };
+  const classes = useStyles();
+
   return (
     <Box className="mnh-100vh">
       {!comparModalOpen ? (
@@ -424,6 +444,19 @@ function SearchedProduct() {
               </Grid>
             </Box>
             <Box className="d-flex justify-content-center mt-3 mb-2">
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBack />}
+                className={`py-0 align-self-center fs-12 me-2 ${
+                  page <= 1 ? `` : `border-black text-black`
+                }`}
+                disabled={page <= 1 ? true : false}
+                onClick={() => {
+                  handlePreviousbtnClick();
+                }}
+              >
+                Previous
+              </Button>
               <Pagination
                 count={pageCount}
                 variant="outlined"
@@ -432,7 +465,23 @@ function SearchedProduct() {
                   setPage(pagenumber);
                 }}
                 page={page}
+                hideNextButton
+                hidePrevButton
+                classes={{ root: classes.selected }}
               />
+              <Button
+                variant="outlined"
+                endIcon={<ArrowForward />}
+                className={`py-0 align-self-center ms-2 fs-12 ${
+                  page < pageCount ? `border-black text-black` : ``
+                }`}
+                disabled={page < pageCount ? false : true}
+                onClick={() => {
+                  handleNextbtnClick();
+                }}
+              >
+                Next
+              </Button>
             </Box>
           </Box>
           <DrawerComponent
