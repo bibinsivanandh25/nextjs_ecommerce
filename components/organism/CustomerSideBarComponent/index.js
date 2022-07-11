@@ -1,16 +1,15 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
-import { styled } from "@mui/material/styles";
+// import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
+// import MuiDrawer from "@mui/material/Drawer";
 import { useState } from "react";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -23,51 +22,51 @@ import { customerMenu } from "constants/navConstants";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Paper, Popper } from "@mui/material";
 
-const drawerWidth = 245;
+// const drawerWidth = 245;
 
 const CustomerSideBarComponent = ({ children }) => {
   //   const route = useRouter();
 
-  const openedMixin = (theme) => ({
-    width: drawerWidth,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: "hidden",
-    position: "fixed",
-    top: "80px",
-  });
+  //   const openedMixin = (theme) => ({
+  //     width: drawerWidth,
+  //     transition: theme.transitions.create("width", {
+  //       easing: theme.transitions.easing.sharp,
+  //       duration: theme.transitions.duration.enteringScreen,
+  //     }),
+  //     overflowX: "hidden",
+  //     position: "fixed",
+  //     top: "80px",
+  //   });
 
-  const closedMixin = (theme) => ({
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: "hidden",
-    width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
-    },
-    position: "fixed",
-    top: "80px",
-  });
-  const Drawer = styled(MuiDrawer, {
-    shouldForwardProp: (prop) => prop !== "open",
-  })(({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-    boxSizing: "border-box",
-    ...(open && {
-      ...openedMixin(theme),
-      "& .MuiDrawer-paper": openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      "& .MuiDrawer-paper": closedMixin(theme),
-    }),
-  }));
+  //   const closedMixin = (theme) => ({
+  //     transition: theme.transitions.create("width", {
+  //       easing: theme.transitions.easing.sharp,
+  //       duration: theme.transitions.duration.leavingScreen,
+  //     }),
+  //     overflowX: "hidden",
+  //     width: `calc(${theme.spacing(7)} + 1px)`,
+  //     [theme.breakpoints.up("sm")]: {
+  //       width: `calc(${theme.spacing(8)} + 1px)`,
+  //     },
+  //     position: "fixed",
+  //     top: "80px",
+  //   });
+  //   const Drawer = styled(MuiDrawer, {
+  //     shouldForwardProp: (prop) => prop !== "open",
+  //   })(({ theme, open }) => ({
+  //     width: drawerWidth,
+  //     flexShrink: 0,
+  //     whiteSpace: "nowrap",
+  //     boxSizing: "border-box",
+  //     ...(open && {
+  //       ...openedMixin(theme),
+  //       "& .MuiDrawer-paper": openedMixin(theme),
+  //     }),
+  //     ...(!open && {
+  //       ...closedMixin(theme),
+  //       "& .MuiDrawer-paper": closedMixin(theme),
+  //     }),
+  //   }));
 
   const mapList = () => {
     const addId = (id, item, path) => {
@@ -103,13 +102,13 @@ const CustomerSideBarComponent = ({ children }) => {
   const [menuList, setMenuList] = useState([...mapList("customer")]);
   const [hover, setHover] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedItem, setSelectedItem] = useState();
+  //   const [selectedItem, setSelectedItem] = useState();
 
-  const handleClick = (event, title) => {
+  const handleClick = (event) => {
     console.log(event);
     setHover(true);
     setAnchorEl(event.target);
-    setSelectedItem(title);
+    // setSelectedItem(title);
   };
 
   const handleDrawerOpen = () => {
