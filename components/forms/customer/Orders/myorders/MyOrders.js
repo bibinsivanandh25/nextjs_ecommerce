@@ -63,7 +63,27 @@ const datas = [
   },
   {
     id: 3,
+    title: "Delivery",
+    date: "Tue 12nd Jul 2021",
     flag: true,
+    trackedData: [
+      {
+        id: 1,
+        value: "Your item has been shipped",
+        date: "Fri 2nd Jul 2021-2:19 pm",
+        flag: false,
+      },
+      {
+        id: 1,
+        value: "Your item has been shipped",
+        date: "Fri 2nd Jul 2021-2:19 pm",
+        flag: false,
+      },
+    ],
+  },
+  {
+    id: 4,
+    flag: false,
     date: "Mon 22nd Jul 2021",
     title: "Out for Delivery",
     trackedData: [

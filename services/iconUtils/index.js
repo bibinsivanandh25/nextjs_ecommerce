@@ -32,6 +32,7 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { RiShareForwardFill } from "react-icons/ri";
 import DoneIcon from "@mui/icons-material/Done";
 import ViewInArIcon from "@mui/icons-material/ViewInAr";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const CustomIcon = ({
   title = "",
@@ -81,6 +82,7 @@ const CustomIcon = ({
     riShareForwardFill: RiShareForwardFill,
     doneIcon: DoneIcon,
     viewInArIcon: ViewInArIcon,
+    arrowBackIcon: ArrowBackIcon,
   };
 
   const [hover, setHover] = useState(false);

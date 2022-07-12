@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -77,15 +78,23 @@ const Orders = () => {
           {sellerFeedbackmModal ? (
             productFeedbackType === "product" ? (
               <Box>
-                <div
-                  className="d-flex fw-600"
-                  onClick={() => {
-                    setSellerFeedbackModal(false);
-                    setProductFeedbackType("");
-                  }}
-                >
-                  <CustomIcon type="keyboardBackspaceIcon" />
-                  <p className="cursor-pointer">Back</p>
+                <div className="d-flex fw-600">
+                  <CustomIcon
+                    type="keyboardBackspaceIcon"
+                    onIconClick={() => {
+                      setSellerFeedbackModal(false);
+                      setProductFeedbackType("");
+                    }}
+                  />
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setSellerFeedbackModal(false);
+                      setProductFeedbackType("");
+                    }}
+                  >
+                    Back
+                  </p>
                 </div>
                 <Box className="mt-3 ms-3 w-75 bg-white ps-3 rounded pe-2 ">
                   <h4>Rate Seller</h4>
@@ -151,15 +160,23 @@ const Orders = () => {
               </Box>
             ) : (
               <Box>
-                <div
-                  className="d-flex fw-600"
-                  onClick={() => {
-                    setSellerFeedbackModal(false);
-                    setProductFeedbackType("");
-                  }}
-                >
-                  <CustomIcon type="keyboardBackspaceIcon" />
-                  <p className="cursor-pointer">Back</p>
+                <div className="d-flex fw-600">
+                  <CustomIcon
+                    type="keyboardBackspaceIcon"
+                    onIconClick={() => {
+                      setSellerFeedbackModal(false);
+                      setProductFeedbackType("");
+                    }}
+                  />
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setSellerFeedbackModal(false);
+                      setProductFeedbackType("");
+                    }}
+                  >
+                    Back
+                  </p>
                 </div>
                 <Box className="mt-3 ms-3 w-75 bg-white ps-3 rounded pe-2 ">
                   <h4>Rate Seller</h4>
