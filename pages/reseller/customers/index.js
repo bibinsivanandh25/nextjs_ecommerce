@@ -138,7 +138,7 @@ const Customer = () => {
       col9: (
         <div className="d-flex justify-content-evenly">
           <NotificationsIcon
-            className="color-blue"
+            className="color-blue cursor-pointer"
             onClick={() => {
               setshowNotifyModal(true);
               setselectedRow({ id: 2, name: "suhil" });
@@ -149,6 +149,7 @@ const Customer = () => {
             height={20}
             src={assetsJson["whatsapp-icon"]}
             alt="alt"
+            className="cursor-pointer"
           />
         </div>
       ),

@@ -26,6 +26,13 @@ import BalanceIcon from "@mui/icons-material/Balance";
 import ViewCarouselOutlinedIcon from "@mui/icons-material/ViewCarouselOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
+import Remove from "@mui/icons-material/Remove";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { RiShareForwardFill } from "react-icons/ri";
+import DoneIcon from "@mui/icons-material/Done";
+import ViewInArIcon from "@mui/icons-material/ViewInAr";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const CustomIcon = ({
   title = "",
@@ -69,6 +76,13 @@ const CustomIcon = ({
     balanceIcon: BalanceIcon,
     visibilityOutlinedIcon: VisibilityOutlinedIcon,
     airportShuttleOutlinedIcon: AirportShuttleOutlinedIcon,
+    removeIcon: Remove,
+    checkCircleIcon: CheckCircleIcon,
+    keyboardBackspaceIcon: KeyboardBackspaceIcon,
+    riShareForwardFill: RiShareForwardFill,
+    doneIcon: DoneIcon,
+    viewInArIcon: ViewInArIcon,
+    arrowBackIcon: ArrowBackIcon,
   };
 
   const [hover, setHover] = useState(false);

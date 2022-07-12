@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -14,12 +17,14 @@ import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import SwitchProfile from "@/forms/customer/switchprofile";
+import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
 
   const [isSignedIn] = useState(true);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
+  const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -98,14 +103,20 @@ const Header = () => {
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-4 ">
         <div className="d-flex align-items-center">
           <p className="h-6">Hello Customer</p>
-          <p className="ps-2 cursor-pointer d-flex align-items-center">
+          <p
+            className="ps-2 cursor-pointer d-flex align-items-center"
+            onClick={() => setShowSelectAddress(true)}
+          >
             <LocationOnIcon />
             Select Your Address
           </p>
         </div>
         <div>MrMrsCart Logo</div>
         <div className="d-flex align-items-center">
-          <div className="px-4">
+          <div
+            className="px-4"
+            onClick={() => route.push("/customer/helpcenter")}
+          >
             <Typography className="h-6 ps-1">Help</Typography>
             <Typography className="h-5 cursor-pointer">Center</Typography>
           </div>
@@ -125,8 +136,15 @@ const Header = () => {
           background: "#fae1cc",
         }}
       >
-        <div>
-          <Typography className="fs-5">LOGO Store Name</Typography>
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            route.push("/customer/home");
+          }}
+        >
+          <Typography className="fs-5 cursor-pointer">
+            LOGO Store Name
+          </Typography>
         </div>
         <div className="d-flex align-items-center  rounded">
           <div
@@ -162,6 +180,9 @@ const Header = () => {
               sx={{
                 m: "0.08rem",
               }}
+              onClick={() => {
+                route.push("/customer/searchedproduct");
+              }}
               className="bg-orange d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
             >
               <SearchOutlinedIcon className="text-white fs-4" />
@@ -194,7 +215,7 @@ const Header = () => {
         </div>
         <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Favourite" Header="List">
+          <MenuwithArrow subHeader="Store" Header="List">
             <MenuItem>
               <input />
             </MenuItem>
@@ -207,7 +228,10 @@ const Header = () => {
             & Orders
           </Typography>
         </div>
-        <FiShoppingCart className="fs-2 cursor-pointer" />
+        <FiShoppingCart
+          className="fs-2 cursor-pointer"
+          onClick={() => route.push("/customer/cart")}
+        />
         <div className="cursor-pointer position-ralative">
           <MenuwithArrow subHeader="Hello, sign In" Header="Account & Lists">
             {!isSignedIn ? (
@@ -269,7 +293,9 @@ const Header = () => {
                     Help & Support
                   </Typography>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                  onClick={() => route.push("/customer/mynotification")}
+                >
                   <Typography className="h-5 cursor-pointer">
                     Notification center
                   </Typography>
@@ -298,6 +324,10 @@ const Header = () => {
       <SwitchProfile
         showSwitchProfile={showSwitchProfile}
         setShowSwitchProfile={setShowSwitchProfile}
+      />
+      <ChooseAddress
+        showModal={showSelectAddress}
+        setShowModal={setShowSelectAddress}
       />
     </div>
   );

@@ -4,6 +4,15 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { FormControlLabel } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+// import makeStyles from "@mui/styles/makeStyles";
+
+// const useStyles = makeStyles({
+//   root: {
+//     "& .MuiFormControlLabel-label": {
+//       fontSize: "10px",
+//     },
+//   },
+// });
 
 const CheckBoxComponent = ({
   label = "",
@@ -19,7 +28,12 @@ const CheckBoxComponent = ({
   className = "",
   diableLabelClick = true,
   checkedcolor = "#e56700",
+  labelColor = "",
+  lableFontSize = "",
+  lableFontWeight = "",
 }) => {
+  // const classes = useStyles();
+
   const getIcon = () => {
     if (showIcon && iconType === "normal" && varient === "filled") {
       return <CheckBoxIcon />;
@@ -41,7 +55,13 @@ const CheckBoxComponent = ({
     <div>
       <FormControlLabel
         label={label}
-        style={{ pointerEvents: diableLabelClick && "none" }}
+        style={{
+          pointerEvents: diableLabelClick && "none",
+          fontWeight: lableFontWeight,
+          fontSize: lableFontSize,
+          color: labelColor,
+        }}
+        // classes={{ root: classes.root }}
         control={
           <Checkbox
             id={id}

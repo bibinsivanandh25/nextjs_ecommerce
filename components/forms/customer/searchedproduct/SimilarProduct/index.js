@@ -1,8 +1,7 @@
-import { Badge, Box, Paper } from "@mui/material";
+import { Badge, Box, Paper, Rating } from "@mui/material";
 import Image from "next/image";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
-import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 
 const iconListData = [
   {
@@ -41,8 +40,9 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         elevation={hover ? 6 : 3}
         sx={{
           position: "relative",
-          width: "100%",
-          height: "30vh",
+          width: "90%",
+          height: "170px",
+          marginLeft: "0.65rem",
         }}
         onMouseEnter={() => {
           setHover(true);
@@ -52,7 +52,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         }}
       >
         <Image
-          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG"
+          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
           layout="fill"
           width={100}
           height={100}
@@ -108,14 +108,14 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         </Box>
       </Paper>
       <Box className="my-1 align-self-center mt-2">
-        <p className="fs-20 fw-600">{data.title}</p>
+        <p className="fs-16 fw-600">{data.title}</p>
       </Box>
-      <Box className="">
-        <StarRatingComponentReceivingRating fontSize="small" rating={4} />
-        <span className="fs-16"> 192 Rating</span>
+      <Box className="d-flex justify-content-center">
+        <Rating name="half-rating" value={4} readOnly />
+        <span className="fs-12 mt-1"> 192 Rating</span>
       </Box>
       <Box className="align-self-center">
-        <span className="fw-600 fs-18">RS. 897.00</span>
+        <span className="fw-600 fs-14">RS. 897.00</span>
       </Box>
     </Box>
   );

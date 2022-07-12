@@ -23,7 +23,7 @@ const ResellerNotificationView = ({ notificationDetails }) => {
         </p>
         <p className="mx-3">
           {" "}
-          <span> Ticket Id</span> :{" "}
+          <span> Notification Id</span> :{" "}
           <span className="fw-bold"> {notificationDetails.notificationId}</span>
         </p>
         <p className="mx-3">
@@ -51,7 +51,7 @@ const ResellerNotificationView = ({ notificationDetails }) => {
         )}
         <Grid
           container
-          className="my-2"
+          className="my-2 w-90p"
           item
           xs={12}
           justifyContent="space-between"
@@ -72,7 +72,7 @@ const ResellerNotificationView = ({ notificationDetails }) => {
               }}
             />
           </Grid>
-          <Grid item className="d-flex justify-content-end">
+          <Grid item className="">
             <ButtonComponent label="Send Reply" onBtnClick={() => {}} />
           </Grid>
         </Grid>

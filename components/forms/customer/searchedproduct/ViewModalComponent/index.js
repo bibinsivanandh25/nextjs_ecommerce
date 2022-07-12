@@ -5,11 +5,13 @@ import CustomIcon from "services/iconUtils";
 import Image from "next/image";
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import ModalComponent from "@/atoms/ModalComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const viewModalIcons = [
   {
@@ -24,7 +26,7 @@ const viewModalIcons = [
 const viewImageData = [
   {
     links:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG",
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
   },
   {
     links:
@@ -46,7 +48,53 @@ const ViewModalComponent = ({
   const [viewModalRadioFree, setViewModalRadioFree] = useState(false);
   const [viewModalInput, setViewModalInput] = useState("");
   const [count, setCount] = useState(1);
+  // Delivery Modal
+  const [buyNow, setBuyNow] = useState(false);
+  const [deliveryOptions, setDelivaryOptions] = useState({
+    delivery: true,
+    fastDeliery: false,
+  });
+  const [returnOptions, setReturnOptions] = useState({
+    return: false,
+    fastReturn: false,
+  });
+  const [returnCheckBox, setReturnCheckBox] = useState(false);
+  // Choose Delivery options
+  const [ChooseDelivryOpen, setChooseDelivryOpen] = useState(false);
+  const [freeDeliveryOptions, seFreetDelivaryOptions] = useState({
+    freeDelivery: true,
+    freeFastDeliery: false,
+  });
+  const route = useRouter();
+  //  Delivery Modal
+  const handleReturnCheckBoxClick = () => {
+    if (returnCheckBox) {
+      setReturnOptions({
+        return: false,
+        fastReturn: false,
+      });
+    } else {
+      setReturnOptions({
+        return: true,
+        fastReturn: false,
+      });
+    }
+    setReturnCheckBox(!returnCheckBox);
+  };
+  const handleCloseIonClick = () => {
+    setReturnCheckBox(false);
+    setReturnOptions({
+      return: false,
+      fastReturn: false,
+    });
+    setBuyNow(false);
+  };
+  // Choose Delivery options
+  const handleProcedClick = () => {
+    setChooseDelivryOpen(true);
+  };
 
+  // viewModal
   useEffect(() => {
     setViewModalImage(viewImageData);
     setSelectedImage(viewImageData[0]);
@@ -65,6 +113,9 @@ const ViewModalComponent = ({
   };
   const handlePlusClick = () => {
     setCount((prev) => prev + 1);
+  };
+  const handleBuyNowClick = () => {
+    setBuyNow(true);
   };
   return (
     <ModalComponent
@@ -204,21 +255,35 @@ const ViewModalComponent = ({
                 className=" d-flex w-30p  justify-content-center align-items-center px-2 py-1 rounded"
                 style={{ border: "1px solid #292929" }}
               >
-                <div
+                {/* <div
                   style={{ width: "20px", height: "20px" }}
                   className="border rounded-circle me-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
                   onClick={() => handleMinusClick()}
                 >
                   -
+                </div> */}
+                <div className="me-3" onClick={() => handleMinusClick()}>
+                  <CustomIcon
+                    type="removeIcon"
+                    className="border rounded-circle fs-20"
+                    showColorOnHover={false}
+                  />
                 </div>
                 <span>{count}</span>
-                <div
+                <div className="ms-3" onClick={() => handlePlusClick()}>
+                  <CustomIcon
+                    type="add"
+                    className="border rounded-circle  fs-20"
+                    showColorOnHover={false}
+                  />
+                </div>
+                {/* <div
                   style={{ width: "20px", height: "20px" }}
                   className="border rounded-circle ms-3 fs-12 d-flex align-items-center justify-content-center cursor-pointer"
                   onClick={() => handlePlusClick()}
                 >
                   +
-                </div>
+                </div> */}
               </Box>
               <Box className="ms-5">
                 <ButtonComponent
@@ -232,11 +297,220 @@ const ViewModalComponent = ({
               </Box>
             </Box>
             <Box className="w-75 mt-1">
-              <ButtonComponent size="medium" label="Buy Now" fullWidth />
+              <ButtonComponent
+                size="medium"
+                label="Buy Now"
+                fullWidth
+                onBtnClick={() => handleBuyNowClick()}
+              />
             </Box>
           </Box>
         </Box>
       </Box>
+      {buyNow && (
+        <ModalComponent
+          open={buyNow}
+          onCloseIconClick={() => {
+            handleCloseIonClick();
+          }}
+          showCloseIcon
+          showClearBtn={false}
+          showSaveBtn={false}
+          ModalTitle=""
+          headerClassName=""
+          iconStyle={{
+            right: "0",
+            top: "-25px",
+            position: "absolute",
+            color: "#fff !important",
+          }}
+          closeIconClasName="cursor-pointer color-white"
+          headerBorder=""
+          ModalWidth={450}
+        >
+          <Box className="">
+            <Box className="ps-2" style={{ borderTop: "1px solid #797878" }}>
+              <CheckBoxComponent
+                label="Choose Delivery options"
+                size="large"
+                labelColor="#144F9D"
+                lableFontSize="fs-26"
+                lableFontWeight="fw-700"
+                isChecked
+              />
+              <Box className="ms-1">
+                <RadiobuttonComponent
+                  size="medium"
+                  label="₹83 - Delivery by wed, sep 22"
+                  isChecked={deliveryOptions.delivery}
+                  onRadioChange={() => {
+                    setDelivaryOptions({
+                      delivery: true,
+                      fastDeliery: false,
+                    });
+                  }}
+                />
+                <RadiobuttonComponent
+                  size="medium"
+                  label="₹183 - Fastest delivery by sunday , sep 18"
+                  isChecked={deliveryOptions.fastDeliery}
+                  onRadioChange={() => {
+                    setDelivaryOptions({
+                      delivery: false,
+                      fastDeliery: true,
+                    });
+                  }}
+                />
+              </Box>
+            </Box>
+            <Box className="ps-2" style={{ borderTop: "1px solid #797878" }}>
+              <CheckBoxComponent
+                label="Choose Return Shipment"
+                size="large"
+                labelColor="#144F9D"
+                lableFontSize="10px"
+                lableFontWeight="fw-700"
+                isChecked={returnCheckBox}
+                checkBoxClick={() => handleReturnCheckBoxClick()}
+              />
+              <Box className="ms-1">
+                <RadiobuttonComponent
+                  disabled={!returnCheckBox}
+                  size="medium"
+                  label="₹83 - Product Return Charges"
+                  isChecked={returnOptions.return}
+                  onRadioChange={() => {
+                    setReturnOptions({
+                      return: true,
+                      fastReturn: false,
+                    });
+                  }}
+                />
+                <RadiobuttonComponent
+                  disabled={!returnCheckBox}
+                  size="medium"
+                  label="₹183 - Product fast Return"
+                  isChecked={returnOptions.fastReturn}
+                  onRadioChange={() => {
+                    setReturnOptions({
+                      return: false,
+                      fastReturn: true,
+                    });
+                  }}
+                />
+              </Box>
+            </Box>
+            <Box className="d-flex justify-content-center">
+              <span className="mt-1">Final Price - &nbsp;</span>
+              <span style={{ color: "#e56700", fontSize: "24px" }}>
+                1,240/-
+              </span>
+            </Box>
+            <Box className="d-flex justify-content-center mt-2">
+              <Box className="me-3 ">
+                <ButtonComponent
+                  borderColor="border-black"
+                  bgColor="bg-white"
+                  textColor="color-black"
+                  label="Add to Cart"
+                  variant="outlined"
+                  size="medium"
+                />
+              </Box>
+              <ButtonComponent
+                size="medium"
+                label="Proceed to Checkout"
+                onBtnClick={() => handleProcedClick()}
+              />
+            </Box>
+          </Box>
+        </ModalComponent>
+      )}
+      {ChooseDelivryOpen && (
+        <ModalComponent
+          open={ChooseDelivryOpen}
+          onCloseIconClick={() => {
+            setChooseDelivryOpen(false);
+          }}
+          showCloseIcon
+          showClearBtn={false}
+          showSaveBtn={false}
+          ModalTitle=""
+          headerClassName=""
+          iconStyle={{
+            right: "0",
+            top: "-25px",
+            position: "absolute",
+            color: "#fff !important",
+          }}
+          closeIconClasName="cursor-pointer color-white"
+          headerBorder=""
+          ModalWidth={450}
+        >
+          <Box>
+            <CheckBoxComponent
+              label="Choose Delivery options"
+              size="large"
+              labelColor="#144F9D"
+              lableFontSize="fs-26"
+              lableFontWeight="fw-700"
+              isChecked
+            />
+            <Box className="ms-1">
+              <RadiobuttonComponent
+                size="medium"
+                label="₹FreeDelivery by wed, sep 22"
+                isChecked={freeDeliveryOptions.freeDelivery}
+                onRadioChange={() => {
+                  seFreetDelivaryOptions({
+                    freeDelivery: true,
+                    freeFastDeliery: false,
+                  });
+                }}
+              />
+              <RadiobuttonComponent
+                size="medium"
+                label="₹42 - Fastest delivery by sunday , sep 18"
+                isChecked={freeDeliveryOptions.freeFastDeliery}
+                onRadioChange={() => {
+                  seFreetDelivaryOptions({
+                    freeDelivery: false,
+                    freeFastDeliery: true,
+                  });
+                }}
+              />
+            </Box>
+            <Box
+              className="d-flex justify-content-center mt-1"
+              style={{ borderBottom: "1px solid #797878" }}
+            >
+              <span className="mt-1">Final Price - &nbsp;</span>
+              <span style={{ color: "#e56700", fontSize: "24px" }}>
+                1,240/-
+              </span>
+            </Box>
+            <Box className="d-flex justify-content-center mt-2">
+              <Box className="me-3 ">
+                <ButtonComponent
+                  borderColor="border-black"
+                  bgColor="bg-white"
+                  textColor="color-black"
+                  label="Add to Cart"
+                  variant="outlined"
+                  size="medium"
+                />
+              </Box>
+              <ButtonComponent
+                size="medium"
+                label="Proceed to Checkout"
+                onBtnClick={() => {
+                  route.push("/customer/checkoutorder");
+                }}
+              />
+            </Box>
+          </Box>
+        </ModalComponent>
+      )}
     </ModalComponent>
   );
 };

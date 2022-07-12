@@ -14,6 +14,7 @@ const DrawerComponent = ({
   width = "500px",
   headerBorder = true,
   openDrawer,
+  enter = 500,
 }) => {
   return (
     <Drawer
@@ -27,14 +28,18 @@ const DrawerComponent = ({
       elevation={elevation}
       hideBackdrop={hideBackdrop}
       transitionDuration={{
-        appear: 1000,
+        appear: 500,
         exit: 500,
-        enter: 1000,
+        enter,
       }}
     >
       <Box className="m-1" sx={{ width }}>
-        <Box sx={{ borderBottom: headerBorder ? "1px solid #707070" : "" }}>
-          <Typography className="fs-26 fw-600 color-black">
+        <Box
+          sx={{
+            borderBottom: headerBorder ? "1px solid #707070" : "",
+          }}
+        >
+          <Typography className="fs-20 fw-600 color-black">
             {modalTitle}
           </Typography>
         </Box>

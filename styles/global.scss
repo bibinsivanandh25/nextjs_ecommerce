@@ -89,11 +89,6 @@
   z-index: 1101;
 }
 
-.MuiDrawer-paper {
-  top: auto !important;
-  border-right: none;
-  position: static;
-}
 
 .se-btn-tray {
   display: block !important;
@@ -250,10 +245,6 @@ fieldset {
   border-radius: 15px;
 }
 
-.rounded-1 {
-  border-radius: 4px;
-}
-
 div,
 span,
 p {
@@ -271,3 +262,10 @@ p {
 .opacity-point8{
 opacity: 0.8;
 }
+
+.compareProductTop {
+  top: -10px !important;
+  background-color: white !important;
+  border-radius: 50% !important;
+}
+

@@ -5,7 +5,7 @@ import ButtonComponent from "../ButtonComponent";
 
 const ModalComponent = ({
   children,
-  titleClassName = "",
+  titleClassName = "fs-12",
   ModalTitle = "Modal Title",
   ModalWidth = 500,
   showFooter = true,
@@ -21,7 +21,7 @@ const ModalComponent = ({
   showCloseIcon = true,
   onCloseIconClick = () => {},
   open = false,
-  footerClassName = "align-center",
+  footerClassName = "justify-content-center",
   footerPadding = "px-4 py-2",
   headerClassName = "",
   clearBtnClassName = "",
@@ -68,7 +68,7 @@ const ModalComponent = ({
                 onClick={onCloseIconClick}
               />
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label className={`fs-12 fw-600 ${titleClassName}`}>
+              <label className={` fw-600 ${titleClassName}`}>
                 {ModalTitle}
               </label>
               <div
@@ -86,7 +86,7 @@ const ModalComponent = ({
             {children}
           </div>
           {showFooter ? (
-            <div className={`${footerPadding} d-flex  ${footerClassName}`}>
+            <div className={`${footerPadding} d-flex ${footerClassName}`}>
               {showSaveBtn ? (
                 <ButtonComponent
                   onBtnClick={onSaveBtnClick}
