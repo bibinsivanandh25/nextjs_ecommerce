@@ -21,7 +21,6 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
-
   const [isSignedIn] = useState(true);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
@@ -237,7 +236,13 @@ const Header = () => {
             {!isSignedIn ? (
               <div className="px-2">
                 <div className="d-flex justify-content-center w-100 my-2">
-                  <ButtonComponent label="Sign In" muiProps="px-5" />
+                  <ButtonComponent
+                    label="Sign In"
+                    muiProps="px-5"
+                    onBtnClick={() => {
+                      route.replace("/auth/customer/signin");
+                    }}
+                  />
                 </div>
                 <div className="d-flex justify-content-between align-items-center ">
                   <Typography className="h-5 cursor-pointer me-2">
