@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-return-assign */
@@ -16,12 +17,13 @@ import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import SwitchProfile from "@/forms/customer/switchprofile";
+import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
-
   const [isSignedIn] = useState(true);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
+  const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -100,14 +102,20 @@ const Header = () => {
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-4 ">
         <div className="d-flex align-items-center">
           <p className="h-6">Hello Customer</p>
-          <p className="ps-2 cursor-pointer d-flex align-items-center">
+          <p
+            className="ps-2 cursor-pointer d-flex align-items-center"
+            onClick={() => setShowSelectAddress(true)}
+          >
             <LocationOnIcon />
             Select Your Address
           </p>
         </div>
         <div>MrMrsCart Logo</div>
         <div className="d-flex align-items-center">
-          <div className="px-4">
+          <div
+            className="px-4"
+            onClick={() => route.push("/customer/helpcenter")}
+          >
             <Typography className="h-6 ps-1">Help</Typography>
             <Typography className="h-5 cursor-pointer">Center</Typography>
           </div>
@@ -228,7 +236,13 @@ const Header = () => {
             {!isSignedIn ? (
               <div className="px-2">
                 <div className="d-flex justify-content-center w-100 my-2">
-                  <ButtonComponent label="Sign In" muiProps="px-5" />
+                  <ButtonComponent
+                    label="Sign In"
+                    muiProps="px-5"
+                    onBtnClick={() => {
+                      route.replace("/auth/customer/signin");
+                    }}
+                  />
                 </div>
                 <div className="d-flex justify-content-between align-items-center ">
                   <Typography className="h-5 cursor-pointer me-2">
@@ -315,6 +329,10 @@ const Header = () => {
       <SwitchProfile
         showSwitchProfile={showSwitchProfile}
         setShowSwitchProfile={setShowSwitchProfile}
+      />
+      <ChooseAddress
+        showModal={showSelectAddress}
+        setShowModal={setShowSelectAddress}
       />
     </div>
   );
