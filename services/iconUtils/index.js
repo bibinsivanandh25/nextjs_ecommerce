@@ -33,6 +33,7 @@ import { RiShareForwardFill } from "react-icons/ri";
 import DoneIcon from "@mui/icons-material/Done";
 import ViewInArIcon from "@mui/icons-material/ViewInAr";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const CustomIcon = ({
   title = "",
@@ -83,6 +84,7 @@ const CustomIcon = ({
     doneIcon: DoneIcon,
     viewInArIcon: ViewInArIcon,
     arrowBackIcon: ArrowBackIcon,
+    whatsAppIcon: WhatsAppIcon,
   };
 
   const [hover, setHover] = useState(false);
