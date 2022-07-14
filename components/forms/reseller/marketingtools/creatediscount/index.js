@@ -420,6 +420,7 @@ const CreateDiscount = ({
       </div>
       <div className="mt-2">
         <TextEditor
+          placeholder="Description for the Discount Products..."
           getContent={(text) => {
             setFormValues((prev) => ({
               ...prev,

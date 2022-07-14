@@ -178,7 +178,7 @@ const CreateDiscountCoupons = () => {
       ) : (
         <CreateDiscount
           setShowCreateDiscount={setShowCreateDiscount}
-          btnText="View Discount Price"
+          btnText="View Discount Product"
         />
       )}
     </div>

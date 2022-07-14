@@ -66,7 +66,11 @@ const RateMrMrsCartForm = () => {
         </p>
       )}
       <div className="d-flex justify-content-end my-2">
-        <ButtonComponent label="Submit" onBtnClick={handleSubmitClick} />
+        <ButtonComponent
+          label="Submit"
+          onBtnClick={handleSubmitClick}
+          muiProps="px-4"
+        />
       </div>
     </>
   );

@@ -171,7 +171,12 @@ const ResellerNotificationCreate = () => {
               </>
             )}
           </Grid>
-          <Grid item className="d-flex justify-content-end">
+          <Grid
+            item
+            className={`d-flex justify-content-end ${
+              type === "customer" && `mt-4`
+            }`}
+          >
             <ButtonComponent
               label="Create Notification"
               onBtnClick={handleBtnClick}
@@ -179,12 +184,6 @@ const ResellerNotificationCreate = () => {
           </Grid>
         </Grid>
       </div>
-      <div
-        className="ms-4"
-        dangerouslySetInnerHTML={{
-          __html: editorContent,
-        }}
-      />
     </>
   );
 };
