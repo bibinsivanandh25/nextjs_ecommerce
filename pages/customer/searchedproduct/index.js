@@ -219,8 +219,9 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-// .... rest of code
 function SearchedProduct() {
+  const classes = useStyles();
+
   // checkbox data
   const [checkedValue, setCheckedValue] = useState([]);
   const [searchedCheckValue, setSearchedCheckValue] = useState([]);
@@ -348,8 +349,6 @@ function SearchedProduct() {
   const handleNextbtnClick = () => {
     setPage((prev) => (prev < pageCount ? prev + 1 : prev));
   };
-  const classes = useStyles();
-
   return (
     <Box className="mnh-100vh">
       {!comparModalOpen ? (
@@ -458,6 +457,7 @@ function SearchedProduct() {
                 Previous
               </Button>
               <Pagination
+                classes={{ root: classes.selected }}
                 count={pageCount}
                 variant="outlined"
                 shape="rounded"
@@ -467,7 +467,6 @@ function SearchedProduct() {
                 page={page}
                 hideNextButton
                 hidePrevButton
-                classes={{ root: classes.selected }}
               />
               <Button
                 variant="outlined"
