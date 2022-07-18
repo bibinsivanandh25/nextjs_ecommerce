@@ -21,6 +21,7 @@ import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
 import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
+import PaginationComponent from "../AdminPagination";
 
 const useStyles = makeStyles({
   stickyCol: {
@@ -138,6 +139,7 @@ export default function TableComponent({
   dateFilterColName = [],
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
+  paginationType = "default",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -587,20 +589,23 @@ export default function TableComponent({
             </TableBody>
           </Table>
         </TableContainer>
-        {showPagination && (
-          <Grid>
-            <TablePagination
-              className="justify-content-start d-flex"
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Grid>
-        )}
+        {showPagination &&
+          (paginationType === "default" ? (
+            <Grid>
+              <TablePagination
+                className="justify-content-start d-flex"
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Grid>
+          ) : (
+            <PaginationComponent tableCount={rows.length} />
+          ))}
       </Grid>
     </div>
   );
