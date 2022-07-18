@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import { useRouter } from "next/router";
 import HeaderComponent from "../HeaderComponent";
 import SideBarComponent from "../SideBarComponent";
+import CustomerSideBarComponent from "../CustomerSideBarComponent";
 import Header from "../CustomerHeaderComponent";
 
 const Layout = ({ Component, pageProps }) => {
@@ -31,11 +32,19 @@ const Layout = ({ Component, pageProps }) => {
           )}
         </div>
         <Box className="mnw-100vw">
-          <SideBarComponent>
-            {/* <Box className="w-100 h-100 p-2 pb-1"> */}
-            <Component {...pageProps} />
-            {/* </Box> */}
-          </SideBarComponent>
+          {route.pathname.startsWith("/supplier") ||
+          route.pathname.startsWith("/reseller") ||
+          route.pathname[route.pathname.length - 1] === "/" ? (
+            <SideBarComponent>
+              {/* <Box className="w-100 h-100 p-2 pb-1"> */}
+              <Component {...pageProps} />
+              {/* </Box> */}
+            </SideBarComponent>
+          ) : (
+            <CustomerSideBarComponent>
+              <Component {...pageProps} />
+            </CustomerSideBarComponent>
+          )}
         </Box>
       </div>
     </>

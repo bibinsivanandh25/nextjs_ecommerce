@@ -4,7 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import NewAddress from "@/forms/customer/address";
+import NewAddress from "@/forms/customer/address/AddNewAddress";
 
 const addressData = [
   {
@@ -47,8 +47,7 @@ const addressData = [
     longitudevalue: "",
   },
 ];
-const Address = () => {
-  const [modalOpen, setModalOpen] = useState(true);
+const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [newAddressModal, setNewAddressModal] = useState(false);
   const [defaultFormData, setDefaultFormData] = useState({
@@ -88,9 +87,9 @@ const Address = () => {
   return (
     <div>
       <ModalComponent
-        open={modalOpen}
+        open={showModal}
         onCloseIconClick={() => {
-          setModalOpen(false);
+          setShowModal(false);
         }}
         ModalTitle="Choose your Location"
         titleClassName="fs-18 fw-600"
@@ -161,4 +160,4 @@ const Address = () => {
   );
 };
 
-export default Address;
+export default ChooseAddress;

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-return-assign */
@@ -9,19 +10,22 @@ import { FiShoppingCart } from "react-icons/fi";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
 import { useState } from "react";
-import { ArrowForward } from "@mui/icons-material";
+import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import SwitchProfile from "@/forms/customer/switchprofile";
+import ModalComponent from "@/atoms/ModalComponent";
+import InputBox from "@/atoms/InputBoxComponent";
+import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
-
   const [isSignedIn] = useState(true);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
+  const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -49,46 +53,62 @@ const Header = () => {
       checked: false,
     },
   ]);
+  const [showStoreModal, setShowStoreModal] = useState(false);
+  const [newStore, setNewStore] = useState("");
 
   const getStores = () => {
-    return stores.map((ele) => {
-      return (
-        <MenuItem
-          className="d-flex justify-content-between py-0 px-3"
-          key={ele.id}
-        >
-          <CheckBoxComponent
-            checkedcolor="#54ce3c"
-            iconType="circled"
-            showIcon
-            id={ele.id}
-            label={
-              <Typography className="h-5 cursor-pointer">
-                {ele.label}
-              </Typography>
-            }
-            isChecked={ele.checked}
-            checkBoxClick={(id) => {
-              const arr = [...stores];
-              setStores((pre) => {
-                if (pre.id == id) {
-                  return (pre.checked = true);
+    return (
+      <>
+        {stores.map((ele) => {
+          return (
+            <MenuItem
+              className="d-flex justify-content-between py-0 px-3"
+              key={ele.id}
+            >
+              <CheckBoxComponent
+                checkedcolor="#54ce3c"
+                iconType="circled"
+                showIcon
+                id={ele.id}
+                label={
+                  <Typography className="h-5 cursor-pointer">
+                    {ele.label}
+                  </Typography>
                 }
-                return (pre.checked = false);
-              });
-              arr.map((item) => {
-                if (item.id == id) {
-                  return (item.checked = true);
-                }
-                return (item.checked = false);
-              });
-              setStores([...arr]);
+                isChecked={ele.checked}
+                checkBoxClick={(id) => {
+                  const arr = [...stores];
+                  setStores((pre) => {
+                    if (pre.id == id) {
+                      return (pre.checked = true);
+                    }
+                    return (pre.checked = false);
+                  });
+                  arr.map((item) => {
+                    if (item.id == id) {
+                      return (item.checked = true);
+                    }
+                    return (item.checked = false);
+                  });
+                  setStores([...arr]);
+                }}
+              />
+              <CustomIcon type="delete" />
+            </MenuItem>
+          );
+        })}
+        <Box className="d-flex justify-content-end pe-4 ">
+          <Typography
+            className="color-orange fs-14 cursor-pointer"
+            onClick={() => {
+              setShowStoreModal(true);
             }}
-          />
-          <CustomIcon type="delete" />
-        </MenuItem>
-      );
-    });
+          >
+            Add new store <Add className="fs-16" />
+          </Typography>
+        </Box>
+      </>
+    );
   };
   return (
     <div
@@ -100,14 +120,20 @@ const Header = () => {
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-4 ">
         <div className="d-flex align-items-center">
           <p className="h-6">Hello Customer</p>
-          <p className="ps-2 cursor-pointer d-flex align-items-center">
+          <p
+            className="ps-2 cursor-pointer d-flex align-items-center"
+            onClick={() => setShowSelectAddress(true)}
+          >
             <LocationOnIcon />
             Select Your Address
           </p>
         </div>
         <div>MrMrsCart Logo</div>
         <div className="d-flex align-items-center">
-          <div className="px-4">
+          <div
+            className="px-4"
+            onClick={() => route.push("/customer/helpcenter")}
+          >
             <Typography className="h-6 ps-1">Help</Typography>
             <Typography className="h-5 cursor-pointer">Center</Typography>
           </div>
@@ -228,7 +254,13 @@ const Header = () => {
             {!isSignedIn ? (
               <div className="px-2">
                 <div className="d-flex justify-content-center w-100 my-2">
-                  <ButtonComponent label="Sign In" muiProps="px-5" />
+                  <ButtonComponent
+                    label="Sign In"
+                    muiProps="px-5"
+                    onBtnClick={() => {
+                      route.replace("/auth/customer/signin");
+                    }}
+                  />
                 </div>
                 <div className="d-flex justify-content-between align-items-center ">
                   <Typography className="h-5 cursor-pointer me-2">
@@ -315,6 +347,37 @@ const Header = () => {
       <SwitchProfile
         showSwitchProfile={showSwitchProfile}
         setShowSwitchProfile={setShowSwitchProfile}
+      />
+      {showStoreModal && (
+        <ModalComponent
+          onCloseIconClick={() => {
+            setShowStoreModal(false);
+          }}
+          open={showStoreModal}
+          ModalTitle="Add New Store"
+          titleClassName="fw-600 fs-16"
+          footerClassName="justify-content-end"
+          onSaveBtnClick={() => {
+            setShowStoreModal(false);
+          }}
+          onClearBtnClick={() => {
+            setNewStore("");
+          }}
+        >
+          <Box className="py-3">
+            <Typography className="mb-1">New Store Name</Typography>
+            <InputBox
+              value={newStore}
+              onInputChange={(e) => {
+                setNewStore(e.target.value);
+              }}
+            />
+          </Box>
+        </ModalComponent>
+      )}
+      <ChooseAddress
+        showModal={showSelectAddress}
+        setShowModal={setShowSelectAddress}
       />
     </div>
   );

@@ -10,13 +10,14 @@ export default function TextEditor({
   getContent = () => {},
   content = "",
   className = "w-95p",
+  placeholder = "Add a Reply...",
 }) {
   return (
     <div className={`${className}`}>
       <SunEditor
         className="bg-primary"
         height={EditorHeight}
-        placeholder="Add a Reply..."
+        placeholder={placeholder}
         name="content"
         defaultValue={content}
         onChange={(text) => {

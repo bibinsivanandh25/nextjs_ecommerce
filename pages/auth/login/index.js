@@ -319,7 +319,7 @@ const Login = () => {
                   />
                   <div>
                     <span className="fs-11 color-white mx-2">
-                      Don&apos;t have an account?
+                      Don&apos;t have an account ?
                     </span>
                     <Link
                       href={`/auth/${options[

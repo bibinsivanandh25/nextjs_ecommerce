@@ -32,6 +32,7 @@ const TopTrending = () => {
             <Box className="me-1">
               <Image
                 src={item.image}
+                layout="fixed"
                 width={75}
                 height={75}
                 className="border rounded"

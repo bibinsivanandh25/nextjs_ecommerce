@@ -13,6 +13,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import MyOrders from "@/forms/customer/Orders/myorders/MyOrders";
 import OrderReturn from "@/forms/customer/OrderReturn";
+import ReturnedOrders from "@/forms/customer/Orders/returnedorders/ReturnedOrders";
 
 const Orders = () => {
   const [selectedLink, setSelectedLink] = useState("orders");
@@ -39,7 +40,7 @@ const Orders = () => {
               className={
                 selectedLink === "orders"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
-                  : "fs-14 fw-bold"
+                  : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
                 if (selectedLink !== "orders") setSelectedLink("orders");
@@ -52,7 +53,7 @@ const Orders = () => {
               className={
                 selectedLink === "notYetShipped"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
-                  : "fs-14 fw-bold"
+                  : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
                 if (selectedLink !== "notYetShipped")
@@ -66,13 +67,26 @@ const Orders = () => {
               className={
                 selectedLink === "cancelled"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
-                  : "fs-14 fw-bold"
+                  : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
                 if (selectedLink !== "cancelled") setSelectedLink("cancelled");
               }}
             >
               Cancelled Orders
+            </Typography>
+            <Typography
+              href="##"
+              className={
+                selectedLink === "return"
+                  ? "color-orange text-decoration-underline fs-14 fw-bold"
+                  : "fs-14 fw-bold cursor-pointer"
+              }
+              onClick={() => {
+                if (selectedLink !== "return") setSelectedLink("return");
+              }}
+            >
+              Returned Orders
             </Typography>
           </Box>
           {sellerFeedbackmModal ? (
@@ -220,6 +234,7 @@ const Orders = () => {
               </Box>
               <Box>{selectedLink === "notYetShipped" && <NotYetShipped />}</Box>
               <Box>{selectedLink === "cancelled" && <CancelledOrder />}</Box>
+              <Box>{selectedLink === "return" && <ReturnedOrders />}</Box>
             </>
           )}
         </Box>
