@@ -567,7 +567,8 @@ export default function TableComponent({
                             sx={{
                               fontSize: 12,
                               left:
-                                column.position === "sticky"
+                                column.position === "sticky" &&
+                                index !== columns.length - 1
                                   ? `${minWidthCount - column.minWidth}px`
                                   : "",
                               right:
