@@ -275,6 +275,7 @@ const MyOrders = ({
   const [products, setProducts] = useState([]);
   const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState([]);
+  const [modalType, setModalType] = useState("");
   const getProducts = async () => {
     await axios
       .get("https://fakestoreapi.com/products")
@@ -307,11 +308,21 @@ const MyOrders = ({
         </Typography>
       </Box>
       <ReusableBar>
-        <ButtonComponent label="Cancel Order" variant="outlined" />
+        <ButtonComponent
+          label="Cancel Order"
+          variant="outlined"
+          onBtnClick={() => {
+            setShowCancelOrReturnModal(true);
+            setModalType("cancel");
+          }}
+        />
         <ButtonComponent
           label="Return Orders"
           muiProps="ms-2"
-          onBtnClick={() => setShowCancelOrReturnModal(true)}
+          onBtnClick={() => {
+            setShowCancelOrReturnModal(true);
+            setModalType("return");
+          }}
         />
       </ReusableBar>
       <Box className="ms-3 pb-2">
@@ -339,6 +350,7 @@ const MyOrders = ({
           setShowModal={setShowCancelOrReturnModal}
           products={[...selectedProduct]}
           setReturnProducts={setReturnProducts}
+          modalType={modalType}
         />
       ) : null}
     </Box>

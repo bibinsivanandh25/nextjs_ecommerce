@@ -63,7 +63,7 @@ const ShareProductByPrice = () => {
           <Grid container sx={{ maxWidth: 100 }}>
             <Grid item xs={3} sx={{ px: 0, mx: 0 }}>
               <VisibilityIcon
-                className="text-secondary cursor-pointer"
+                className="text-secondary cursor-pointer fs-16"
                 onClick={() =>
                   setShowModal({
                     show: true,
@@ -75,7 +75,7 @@ const ShareProductByPrice = () => {
             </Grid>
             <Grid item xs={3}>
               <Download
-                className="text-secondary cursor-pointer"
+                className="text-secondary cursor-pointer fs-16"
                 onClick={() =>
                   setShowModal({
                     show: true,
@@ -87,7 +87,7 @@ const ShareProductByPrice = () => {
             </Grid>
             <Grid item xs={3}>
               <Share
-                className="text-secondary cursor-pointer"
+                className="text-secondary cursor-pointer fs-16"
                 onClick={(event) => {
                   setShowMenu(event.currentTarget);
                   setShowModal({
@@ -100,7 +100,7 @@ const ShareProductByPrice = () => {
             </Grid>
             <Grid item xs={3}>
               <Delete
-                className="text-secondary cursor-pointer"
+                className="text-secondary cursor-pointer fs-16"
                 onClick={() =>
                   setShowModal({
                     show: true,

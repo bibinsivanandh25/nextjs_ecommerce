@@ -63,7 +63,6 @@ const WheelSpin = forwardRef(
         canvas.setAttribute("id", "canvas");
         document.getElementById("wheel").appendChild(canvas);
       }
-      canvasContext = canvas.getContext("2d");
     };
     const spin = () => {
       isStarted = true;

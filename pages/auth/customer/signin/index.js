@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
+import { signIn } from "next-auth/react";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import styles from "./signin.module.css";
 import favicon from "../../../../public/assets/favicon.png";
@@ -44,7 +45,16 @@ const SignIn = () => {
   };
 
   const handleSubmit = () => {
-    validateForm();
+    const flag = validateForm();
+    if (!flag) {
+      signIn("credentials", {
+        username: formValues.mobileNoOrEmail,
+        password: formValues.password,
+        role: "customer",
+        roleId: 3,
+        callbackUrl: "/customer/home",
+      });
+    }
   };
 
   return (
@@ -63,7 +73,7 @@ const SignIn = () => {
             </Typography>
             <Box className="ps-2">
               <ButtonComponent
-                label="Sign up"
+                label="Sign Up"
                 variant="outlined"
                 muiProps="bg-transparent color-white fs-12"
                 borderColor="border-white"
@@ -117,7 +127,7 @@ const SignIn = () => {
           />
           <Box className="mt-3 d-flex justify-content-center">
             <ButtonComponent
-              label="Sign Up"
+              label="Sign In"
               muiProps="px-4 py-2"
               onBtnClick={handleSubmit}
             />
