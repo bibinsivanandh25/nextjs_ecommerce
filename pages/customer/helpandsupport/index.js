@@ -1,210 +1,276 @@
-import { Grid, Paper } from "@mui/material";
-import ButtonComponent from "components/atoms/ButtonComponent";
-import FileUploadModal from "components/atoms/FileUpload";
-import InputBox from "components/atoms/InputBoxComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import TextEditor from "components/atoms/TextEditor";
-import validateMessage from "constants/validateMessages";
-import { useState } from "react";
+import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
+import TableComponent from "components/atoms/TableComponent";
+import React, { useEffect, useState } from "react";
+import CustomIcon from "services/iconUtils";
+import HelpandsupportCreate from "@/forms/customer/helpandsupport/CreateTicket";
+import HelpandsupportView from "@/forms/customer/helpandsupport/helpandsupportview";
+import ModalComponent from "@/atoms/ModalComponent";
 
-const Helpandsupport = () => {
-  // const inputField = useRef();
+const HelpAndSupport = () => {
+  const [tableRows, setTableRows] = useState([]);
+  const [showCreateComponent, setShowCreateComponent] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [selectedData, setSelectedData] = useState(null);
+  const [showModal, setShowModal] = useState({
+    show: false,
+    id: null,
+  });
 
-  const issueTypes = [
+  const columns = [
     {
-      label: "Order",
-      value: "Order",
+      id: "col1", //  id value in column should be presented in row as key
+      label: "Date and Time",
+      align: "center",
+      data_align: "center",
+      data_classname: "",
     },
     {
-      label: "Return and Refund",
-      value: "Return and Refund",
+      id: "col2",
+      label: "Ticket ID",
+      align: "center",
+      data_align: "center",
+      data_classname: "",
     },
     {
-      label: "Logistic",
-      value: "Logistic",
+      id: "col3",
+      label: "Subject",
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
     },
     {
-      label: "Cancellation and Refund",
-      value: "Cancellation and Refund",
+      id: "col4",
+      label: "Status",
+      minWidth: 50,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
     },
     {
-      label: "Profile",
-      value: "Profile",
-    },
-    {
-      label: "Payment Settlement",
-      value: "Payment Settlement",
-    },
-    {
-      label: "Others",
-      value: "Others",
+      id: "col5",
+      label: "Action",
+      minWidth: 50,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
     },
   ];
-  // const route = useRouter();
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [formValue, setFormValue] = useState({
-    issueType: {},
-    OrderID: "",
-    subject: "",
-    content: "",
-  });
-  const [errorObj, setErrorObj] = useState({
-    issueType: "",
-    subject: "",
-    content: "",
-  });
-  const validateFields = () => {
-    let flag = false;
-    const errObj = {
-      issueType: "",
-      subject: "",
-      content: "",
-    };
-    if (!formValue.issueType?.value?.length) {
-      errObj.issueType = validateMessage.field_required;
-      flag = true;
+
+  const getClassnames = (status) => {
+    if (status?.toLowerCase().includes("open")) {
+      return "text-success";
     }
-    if (!formValue.subject) {
-      errObj.subject = validateMessage.field_required;
-      flag = true;
+    if (status.toLowerCase().includes("close")) {
+      return "text-danger";
     }
-    if (formValue.subject.length > 50) {
-      errObj.subject = validateMessage.alpha_numeric_max_50;
-      flag = true;
+    if (status.toLowerCase().includes("pending")) {
+      return "text-warning";
     }
-    if (formValue.content.replace(/<[^>]*>/g, "").length === 0) {
-      errObj.content = validateMessage.field_required;
-      flag = true;
-    }
-    if (formValue.content.replace(/<[^>]*>/g, "").length > 255) {
-      errObj.content = validateMessage.alpha_numeric_max_255;
-      flag = true;
-    }
-    setErrorObj({ ...errObj });
-    if (!flag) {
-      // route.push("/supplier/helpandsupport");
-    }
-    return flag;
+    return "";
   };
 
+  const getParagraph = (param1, param2) => {
+    return (
+      <Grid container my={1}>
+        <Grid item xs={2}>
+          {param1}
+        </Grid>
+        <Grid item xs={1}>
+          :
+        </Grid>
+        <Grid item xs={9}>
+          {param2}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const mapRowsToTable = (data) => {
+    const result = [];
+    data.forEach((row, index) => {
+      result.push({
+        id: index + 1,
+        col1: row.date,
+        col2: row.ticketId,
+        col3: row.subject,
+        col4: <div className={getClassnames(row.status)}>{row.status}</div>,
+        col5: (
+          <Grid className="d-flex justify-content-center">
+            <Grid>
+              <CustomIcon
+                type="view"
+                title="View"
+                className="me-2"
+                onIconClick={() => {
+                  setShowModal({
+                    show: true,
+                    type: "view",
+                  });
+                  setSelectedData(row);
+                }}
+              />
+            </Grid>
+            <Grid classNamw="mx-2">
+              <Badge
+                variant="dot"
+                sx={{
+                  "& .MuiBadge-badge": {
+                    color: "red",
+                    backgroundColor: "red",
+                  },
+                }}
+              >
+                <CustomIcon
+                  type="notification"
+                  onIconClick={() => {
+                    setShowModal({
+                      show: true,
+                      id: row.ticketId,
+                      type: "notification",
+                    });
+                    setSelectedData(row);
+                  }}
+                />
+              </Badge>
+            </Grid>
+            <Grid>
+              <Typography
+                className="h-5 color-orange ms-2"
+                onClick={() => {
+                  setShowModal({
+                    show: true,
+                    id: row.ticketId,
+                    type: "reply",
+                  });
+                  setSelectedData(row);
+                }}
+              >
+                Reply
+              </Typography>
+            </Grid>
+          </Grid>
+        ),
+      });
+    });
+    return result;
+  };
+
+  useEffect(() => {
+    const rows = [
+      {
+        date: "24 jun 2020",
+        ticketId: "#23324234",
+        subject: "lorem ipsum...",
+        status: "open",
+        col5: (
+          <div className="d-flex justify-content-center align-items-center">
+            <CustomIcon type="view" />
+            <CustomIcon type="notification" className="mx-2" />
+            <Typography className="h-5 color-orange">Reply</Typography>
+          </div>
+        ),
+      },
+      {
+        date: "24 jun 2020",
+        ticketId: "#23324234",
+        subject: "lorem ipsum...",
+        status: "pending",
+        col5: (
+          <div className="d-flex justify-content-center align-items-center">
+            <CustomIcon type="view" />
+            <CustomIcon type="notification" className="mx-2" />
+            <Typography className="h-5 color-orange">Reply</Typography>
+          </div>
+        ),
+      },
+    ];
+    setTableData(rows);
+  }, []);
+
+  useEffect(() => {
+    setTableRows(mapRowsToTable(tableData));
+  }, [tableData]);
+
   return (
-    <Paper className="w-100 mnh-80vh">
-      <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
-        Help & support{" "}
-        <span className="fs-12 fw-normal text-secondary">
-          (Any issues Please raise to us here)
-        </span>
-      </p>
-      <div className="my-3 px-5">
-        <Grid container className="d-flex align-items-center">
-          <Grid item xs={2} className="fw-bold">
-            Issue type :
+    <>
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {showCreateComponent ? (
+        <HelpandsupportCreate setShowCreateComponent={setShowCreateComponent} />
+      ) : showModal.show && showModal.type === "reply" ? (
+        <HelpandsupportView
+          selectedData={selectedData}
+          setShowView={setShowModal}
+        />
+      ) : (
+        <Paper>
+          <Grid container>
+            <Grid
+              container
+              item
+              xs={12}
+              justifyContent="space-between"
+              className="border-bottom"
+            >
+              <Grid item sx={{ p: 2 }}>
+                <p>
+                  <span className="fs-16 fw-bold px-3">Help & Support</span>
+                  <span className="fs-12 fw-normal text-secondary">
+                    (We ensure to solve your issues within 3 working days)
+                  </span>
+                </p>
+              </Grid>
+              <Grid item sx={{ p: 2 }}>
+                <Button
+                  variant="contained"
+                  className="bg-orange"
+                  size="small"
+                  onClick={() => setShowCreateComponent(true)}
+                >
+                  Create Tickets
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sx={{ my: 5, px: 2 }}>
+              <Paper className="pt-3">
+                <TableComponent
+                  table_heading=""
+                  columns={columns}
+                  tableRows={tableRows}
+                  showCheckbox={false}
+                  showSearchFilter={false}
+                />
+              </Paper>
+            </Grid>
+
+            <ModalComponent
+              open={showModal.show && showModal.type === "view"}
+              ModalTitle="Admin Reply"
+              showFooter={false}
+              onCloseIconClick={() => setShowModal({ show: false, id: null })}
+              minHeightClassName="mnh-300 mxh-300"
+              ModalWidth={800}
+            >
+              <Grid container my={2}>
+                <Grid xs={12} item className="fs-15 fw-500">
+                  {getParagraph("Date & Time", "12-03-2021, 04:23 AM")}
+                  {getParagraph("Ticket ID", "#12445")}
+                  {getParagraph(
+                    "Subject",
+                    "Request for refund has not approved yet"
+                  )}
+                  {getParagraph("Reply from admin", "12-03-2021, 04:23 AM")}
+                  {getParagraph("Attached File", "12-03-2021, 04:23 AM")}
+                </Grid>
+              </Grid>
+            </ModalComponent>
           </Grid>
-          <Grid item xs={8}>
-            <SimpleDropdownComponent
-              size="small"
-              value={formValue.issueType}
-              helperText={errorObj.issueType}
-              error={errorObj.issueType.length}
-              list={[...issueTypes]}
-              onDropdownSelect={(value) => {
-                // setSelectedIssue({ ...value });
-                setFormValue((pre) => ({
-                  ...pre,
-                  issueType: { ...value },
-                }));
-              }}
-            />
-          </Grid>
-        </Grid>
-        <Grid container className="d-flex align-items-center my-3">
-          <Grid item xs={2} className="fw-bold">
-            Order Id :
-          </Grid>
-          <Grid item xs={8}>
-            <InputBox
-              className="w-100"
-              size="small"
-              value={formValue.OrderID}
-              onInputChange={(e) => {
-                setFormValue((pre) => ({
-                  ...pre,
-                  OrderID: e.target.value,
-                }));
-              }}
-            />
-          </Grid>
-        </Grid>
-        <Grid container className="d-flex align-items-center">
-          <Grid item xs={2} className="fw-bold">
-            Subject :
-          </Grid>
-          <Grid item xs={8}>
-            <InputBox
-              helperText={errorObj.subject}
-              error={errorObj.subject.length}
-              className="w-100"
-              size="small"
-              value={formValue.subject}
-              onInputChange={(e) => {
-                setFormValue((pre) => ({
-                  ...pre,
-                  subject: e.target.value,
-                }));
-              }}
-            />
-          </Grid>
-        </Grid>
-      </div>
-      <div className="my-2 ps-5">
-        <div className="">
-          <TextEditor
-            getContent={(text) => {
-              setFormValue((pre) => ({
-                ...pre,
-                content: text,
-              }));
-            }}
-          />
-          {errorObj.content && (
-            <p className="error" id="textbox-helper-text">
-              {errorObj.content}
-            </p>
-          )}
-        </div>
-        <Grid container className="my-3">
-          <Grid item xs={6}>
-            <span className="me-2 fw-bold">Attach File :</span>
-            <ButtonComponent
-              label="Choose File"
-              color="#e8e8e8"
-              onBtnClick={() => {
-                // inputField.current.click();
-                setShowUploadModal(true);
-              }}
-            />
-          </Grid>
-          {/* <input
-            type="file"
-            className=""
-            hidden
-            ref={inputField}
-            onChange={(e) => console.log(e.target.files[0])}
-          /> */}
-          <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
-            <ButtonComponent
-              label="Create Ticket"
-              onBtnClick={validateFields}
-            />
-          </Grid>
-        </Grid>
-      </div>
-      <FileUploadModal
-        getUploadedFiles={() => {}}
-        showModal={showUploadModal}
-        setShowModal={setShowUploadModal}
-      />
-    </Paper>
+        </Paper>
+      )}
+    </>
   );
 };
-export default Helpandsupport;
+
+export default HelpAndSupport;

@@ -8,8 +8,10 @@ import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import ReturnOrderModel from "../../returnordermodel/ReturnOrderModel";
 
 const CancelOrReturnModal = ({
+  modalType = "cancel",
   showModal = false,
   setShowModal = () => {},
   products = [],
@@ -17,6 +19,7 @@ const CancelOrReturnModal = ({
   setReturnProducts = () => {},
 }) => {
   const [selectedProduct, setSelectedProduct] = useState([]);
+  const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
 
   useEffect(() => {
     const temp = [...products];
@@ -59,7 +62,9 @@ const CancelOrReturnModal = ({
                 </Typography>
                 <Typography>
                   <Typography component="span" className="h-5">
-                    Return shipment charges :
+                    {modalType === "return"
+                      ? "Return shipment charges : "
+                      : "Cancellation Charges :"}
                   </Typography>
                   <Typography component="span" className="text-success h-5">
                     Free
@@ -73,7 +78,7 @@ const CancelOrReturnModal = ({
           </Box>
           <Box className="d-flex justify-content-between align-items-center">
             <Typography className="fw-bold h-5">
-              Reason for Returning :{" "}
+              Reason for {modalType === "return" ? "Returning" : "Cancelling"} :{" "}
             </Typography>
             <Box className="w-70p">
               <SimpleDropdownComponent size="small" />
@@ -99,14 +104,20 @@ const CancelOrReturnModal = ({
       ClearBtnText="Continue"
       saveBtnText="Cancel"
       onClearBtnClick={() => {
-        setShowReturnOrder(true);
+        if (modalType === "return") setShowReturnOrder(true);
+        else setShowOrderSuccessModal(true);
         getSelectedItems();
       }}
     >
       <Typography className="fw-bold text-center my-2">
-        Are you sure want to Return these products?
+        Are you sure want to {modalType === "return" ? "Return" : " Cancel"}
+        &nbsp;these products?
       </Typography>
       <Box className="mxh-400 overflow-auto ">{getProducts()}</Box>
+      <ReturnOrderModel
+        showModal={showOrderSuccessModal}
+        setShowModal={setShowOrderSuccessModal}
+      />
     </ModalComponent>
   );
 };

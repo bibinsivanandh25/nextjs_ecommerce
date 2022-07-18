@@ -49,6 +49,7 @@ const options = {
       },
     }),
   ],
+
   pages: {
     signIn: "/auth/login",
   },
@@ -73,6 +74,7 @@ const options = {
     //   }
     //   return "/loginerror";
     // },
+
     redirect: async ({ url, baseUrl }) => {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;

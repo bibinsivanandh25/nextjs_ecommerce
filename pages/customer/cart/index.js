@@ -5,9 +5,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Cart = () => {
   const [products, setProducts] = useState([]);
+  const [showChooseAddress, setShowChooseAddress] = useState(false);
 
   const getproducts = async () => {
     await axios
@@ -103,7 +105,11 @@ const Cart = () => {
         <Paper className="w-100">
           <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2">
             <Typography className="h-5 text-secondary">My Cart</Typography>
-            <ButtonComponent muiProps=" p-0" label="Choose Address" />
+            <ButtonComponent
+              muiProps="p-0"
+              label="Choose Address"
+              onBtnClick={() => setShowChooseAddress(true)}
+            />
           </Box>
           {getCartList()}
         </Paper>
@@ -140,6 +146,10 @@ const Cart = () => {
           <Box className="mt-3 w-100 ps-2">
             <ButtonComponent label="Place Order" muiProps="w-100" />
           </Box>
+          <ChooseAddress
+            showModal={showChooseAddress}
+            setShowModal={setShowChooseAddress}
+          />
         </Grid>
       ) : null}
     </Grid>

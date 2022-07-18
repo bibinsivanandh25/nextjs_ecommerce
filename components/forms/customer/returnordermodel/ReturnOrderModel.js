@@ -4,7 +4,11 @@ import CustomIcon from "services/iconUtils";
 import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 
-const ReturnOrderModel = ({ allFree }) => {
+const ReturnOrderModel = ({
+  allFree,
+  showModal = false,
+  setShowModal = () => {},
+}) => {
   const [freeReturn, setFreeReturn] = useState(false);
 
   const theArray = [
@@ -74,11 +78,12 @@ const ReturnOrderModel = ({ allFree }) => {
     <Box>
       <ModalComponent
         ModalWidth={700}
-        open
+        open={showModal}
         showClearBtn={false}
         showSaveBtn={false}
         showFooter
         ModalTitle=""
+        onCloseIconClick={() => setShowModal(false)}
       >
         <Box>
           <Box className="d-flex align-items-center mt-3">

@@ -9,6 +9,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
 import OrderSuccessModal from "@/forms/customer/OrderSuccessModal";
+import NewAddress from "@/forms/customer/address/AddNewAddress";
 
 const CheckOutOrder = () => {
   const [addressList, setAddressList] = useState([
@@ -55,7 +56,21 @@ const CheckOutOrder = () => {
   const [products, setProducts] = useState([]);
   const [selectedDeliveryAddress, setselectedDeliveryAddress] = useState({});
   const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
-
+  const [showAddNewAddress, setShowAddNewAddress] = useState(false);
+  const [defaultFormData, setDefaultFormData] = useState({
+    name: "",
+    mobilenumber: "",
+    pincode: "",
+    location: "",
+    address: "",
+    city: "",
+    state: {},
+    landmark: "",
+    alternatenumber: "",
+    latitudvalue: "",
+    longitudevalue: "",
+    addresstype: "",
+  });
   const getproducts = async () => {
     await axios
       .get("https://fakestoreapi.com/products")
@@ -307,7 +322,10 @@ const CheckOutOrder = () => {
             <Box className="py-2">{getDeliveryAddress()}</Box>
           </Paper>
           {showDeliveryAddress ? (
-            <Paper className="my-2 px-4 py-2 color-orange h-5">
+            <Paper
+              className="my-2 px-4 py-2 color-orange h-5 cursor-pointer"
+              onClick={() => setShowAddNewAddress(true)}
+            >
               {" "}
               + Add New Address
             </Paper>
@@ -413,6 +431,12 @@ const CheckOutOrder = () => {
               Your Total Savings on this Order is 10000
             </Typography>
           </Paper>
+          <NewAddress
+            defaultFormData={defaultFormData}
+            setDefaultFormData={setDefaultFormData}
+            newAddressModal={showAddNewAddress}
+            setNewAddressModal={setShowAddNewAddress}
+          />
         </Grid>
       ) : null}
     </Grid>

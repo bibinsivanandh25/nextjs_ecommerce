@@ -9,5 +9,14 @@ const nextConfig = {
   images: {
     domains: ["fakestoreapi.com", "mrmrscart.s3.ap-south-1.amazonaws.com"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/customer/home",
+        permanent: true,
+      },
+    ];
+  },
 };
 module.exports = nextConfig;
