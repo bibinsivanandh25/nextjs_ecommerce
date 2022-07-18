@@ -1,13 +1,13 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
-const ReusableBar = ({ children }) => {
+const ReusableBar = ({ children, ordersplaced = " Orders Placed" }) => {
   return (
     <Box className="d-flex align-items-center justify-content-between bg-light-orange1 p-2 mb-3">
       <Box className="w-50 d-flex justify-content-start">
         <Box className="ms-1">
           <Typography className="fs-14" variantMapping={<p />}>
-            Orders Placed
+            {ordersplaced}
           </Typography>
           <Typography className="fs-14" variantMapping={<p />}>
             02 Sep 2021
