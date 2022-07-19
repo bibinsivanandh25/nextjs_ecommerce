@@ -16,6 +16,7 @@ import {
   commisiondata,
   product_type,
 } from "../../../../../constants/constants";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const ProductsLayout = ({
   formData = {},
@@ -63,6 +64,10 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
   });
+
+  const [openModal, setOpenModal] = useState(false);
+  const [tagInputValue, setTagInputValue] = useState("");
+
   const validateForm = () => {
     const errObj = {
       commision_mode: "",
@@ -345,7 +350,9 @@ const ProductsLayout = ({
                       label="Create tag"
                       variant="outlined"
                       size="small"
-                      onBtnClick={() => {}}
+                      onBtnClick={() => {
+                        setOpenModal(true);
+                      }}
                       muiProps="m-0 p-0 fs-10"
                     />
                   </div>
@@ -515,6 +522,34 @@ const ProductsLayout = ({
           setShowGroupVariant={setShowGroupVariant}
         />
       )}
+      <ModalComponent
+        open={openModal}
+        ModalTitle="Create Tag"
+        titleClassName="color-orange fs-14"
+        footerPadding="py-3 pe-2"
+        footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
+        saveBtnClassName="px-4 ms-2"
+        clearBtnClassName="px-4"
+        saveBtnText="Submit"
+        ClearBtnText="Cancel"
+        onCloseIconClick={() => {
+          setOpenModal(false);
+        }}
+        onClearBtnClick={() => {
+          setOpenModal(false);
+        }}
+      >
+        <Box className="mt-4 w-75 mx-auto">
+          <InputBox
+            variant="standard"
+            onInputChange={(e) => {
+              setTagInputValue(e.target.value);
+            }}
+            placeholder="Tag Name"
+            value={tagInputValue}
+          />
+        </Box>
+      </ModalComponent>
     </>
   );
 };
