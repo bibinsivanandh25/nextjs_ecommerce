@@ -19,7 +19,7 @@ const NavTabComponent = ({
       <Box className="border rounded py-2 d-flex justify-content-between">
         {listData.map((item) => (
           <p
-            className={`cursor-pointer ps-3 pe-3 ${
+            className={`cursor-pointer fs-14 ps-3 pe-3 ${
               selectedId === item.id && `color-orange`
             }`}
             onClick={() => {
@@ -35,7 +35,7 @@ const NavTabComponent = ({
       </Box>
       <Box className="d-flex ms-4">
         <Box className="d-flex align-items-center">
-          <span>From Date :</span>
+          <span className="fs-14">From Date :</span>
         </Box>
         <CustomDatePickerComponent
           value={fromDate}
@@ -46,7 +46,7 @@ const NavTabComponent = ({
       </Box>
       <Box className="d-flex ms-4">
         <Box className="d-flex align-items-center">
-          <span>To Date :</span>
+          <span className="fs-14">To Date :</span>
         </Box>
         <CustomDatePickerComponent
           value={toDate}
