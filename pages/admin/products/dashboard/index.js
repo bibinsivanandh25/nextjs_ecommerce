@@ -75,6 +75,59 @@ const ProductDashboard = () => {
     [2, "Jockey", "Night Wear", "Sharan", "1200 Rs."],
   ];
 
+  const returnCards = () => {
+    return cards.map((card, index) => {
+      return (
+        <Grid item xs={3} key={card.id}>
+          <CardComponent>
+            <Box className="p-2">
+              <Typography className="fs-12 color-dark-gray">
+                {card.newProducts}
+              </Typography>
+              <Box className="d-flex justify-content-between align-items-center mt-1">
+                <Typography className="fs-14 fw-bold">
+                  {card.fixedMargin}
+                </Typography>
+                <Box className="d-flex align-items-center">
+                  <Box className="border border-success rounded">
+                    <CustomIcon
+                      className="h-20p  text-success"
+                      size="small"
+                      type="trendingUpOutlinedIcon"
+                      showColorOnHover={false}
+                    />
+                  </Box>
+                  <Typography className="fs-12 text-success ms-1">
+                    {card.incrementPercentage}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box className="d-flex justify-content-between align-items-center mt-1">
+                <Typography className="fs-14 fw-bold">
+                  {card.zeroComission}
+                </Typography>
+                <Box className="d-flex align-items-center">
+                  <Box className="border border-danger rounded">
+                    <CustomIcon
+                      className="h-20p text-danger"
+                      size="small"
+                      type="trendingDownOutlinedIcon"
+                      showColorOnHover={false}
+                    />
+                  </Box>
+                  <Typography className="fs-12 text-danger ms-1">
+                    {card.decrementPercentage}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </CardComponent>
+        </Grid>
+      );
+    });
+  };
+
   return (
     <Box>
       <Box className="mb-3">
@@ -86,114 +139,67 @@ const ProductDashboard = () => {
           setToDate={setToDate}
         />
       </Box>
-      <Grid container columnSpacing={2} className="mb-3">
-        {cards.map((card, index) => {
-          return (
-            <Grid item xs={3} key={card.id}>
-              <CardComponent>
-                <Box className="p-2">
-                  <Typography className="fs-12 color-dark-gray">
-                    {card.newProducts}
-                  </Typography>
-                  <Box className="d-flex justify-content-between align-items-center mt-1">
-                    <Typography className="fs-14 fw-bold">
-                      {card.fixedMargin}
-                    </Typography>
-                    <Box className="d-flex align-items-center">
-                      <Box className="border border-success rounded">
-                        <CustomIcon
-                          className="h-20p  text-success"
-                          size="small"
-                          type="trendingUpOutlinedIcon"
-                          showColorOnHover={false}
-                        />
-                      </Box>
-                      <Typography className="fs-12 text-success ms-1">
-                        {card.incrementPercentage}
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <Box className="d-flex justify-content-between align-items-center mt-1">
-                    <Typography className="fs-14 fw-bold">
-                      {card.zeroComission}
-                    </Typography>
-                    <Box className="d-flex align-items-center">
-                      <Box className="border border-danger rounded">
-                        <CustomIcon
-                          className="h-20p text-danger"
-                          size="small"
-                          type="trendingDownOutlinedIcon"
-                          showColorOnHover={false}
-                        />
-                      </Box>
-                      <Typography className="fs-12 text-danger ms-1">
-                        {card.decrementPercentage}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardComponent>
-            </Grid>
-          );
-        })}
-      </Grid>
-      <Paper className="p-4">
-        <Box className="d-flex justify-content-between">
-          <Typography className="fs-14 fw-bold ms-3">
-            Newly added Products
-          </Typography>
-          <Typography className="fs-14 me-3">
-            <span
-              onClick={() => {
-                setfixedMarginSelected(!fixedMarginSelected);
-              }}
-              className={`${
-                fixedMarginSelected ? "color-blue" : ""
-              } cursor-pointer`}
-            >
-              Fixed Margin
-            </span>
-            <span className="px-2">|</span>
-            <span
-              onClick={() => {
-                setfixedMarginSelected(!fixedMarginSelected);
-              }}
-              className={`${
-                !fixedMarginSelected ? "color-blue" : ""
-              } cursor-pointer`}
-            >
-              Zero Comission
-            </span>
-          </Typography>
-        </Box>
-        <TableComponent
-          showCheckbox={false}
-          columns={columns}
-          showPagination={false}
-          tableRows={rows}
-          showSearchbar={false}
-        />
-        <Box className="d-flex justify-content-center pt-2 mt-2">
-          {rows.length > 10 ? (
-            <Typography className="color-blue">View All</Typography>
-          ) : null}
-        </Box>
-      </Paper>
-      <Paper className="p-4 mt-3">
-        <Box>
-          <Typography className="fs-14 fw-bold ms-3">
-            Top 10 Repeated Orders
-          </Typography>
-        </Box>
-        <TableComponent
-          showCheckbox={false}
-          columns={columnsTwo}
-          showPagination={false}
-          tableRows={rowsTwo}
-          showSearchbar={false}
-        />
-      </Paper>
+      <Box className="mxh-75">
+        <Grid container columnSpacing={2} className="mb-3">
+          {returnCards()}
+        </Grid>
+        <Paper className="p-4">
+          <Box className="d-flex justify-content-between">
+            <Typography className="fs-14 fw-bold ms-3">
+              Newly added Products
+            </Typography>
+            <Typography className="fs-14 me-3">
+              <span
+                onClick={() => {
+                  setfixedMarginSelected(!fixedMarginSelected);
+                }}
+                className={`${
+                  fixedMarginSelected ? "color-blue" : ""
+                } cursor-pointer`}
+              >
+                Fixed Margin
+              </span>
+              <span className="px-2">|</span>
+              <span
+                onClick={() => {
+                  setfixedMarginSelected(!fixedMarginSelected);
+                }}
+                className={`${
+                  !fixedMarginSelected ? "color-blue" : ""
+                } cursor-pointer`}
+              >
+                Zero Comission
+              </span>
+            </Typography>
+          </Box>
+          <TableComponent
+            showCheckbox={false}
+            columns={columns}
+            showPagination={false}
+            tableRows={rows}
+            showSearchbar={false}
+          />
+          <Box className="d-flex justify-content-center pt-2 mt-2">
+            {rows.length > 10 ? (
+              <Typography className="color-blue">View All</Typography>
+            ) : null}
+          </Box>
+        </Paper>
+        <Paper className="p-4 mt-3">
+          <Box>
+            <Typography className="fs-14 fw-bold ms-3">
+              Top 10 Repeated Orders
+            </Typography>
+          </Box>
+          <TableComponent
+            showCheckbox={false}
+            columns={columnsTwo}
+            showPagination={false}
+            tableRows={rowsTwo}
+            showSearchbar={false}
+          />
+        </Paper>
+      </Box>
     </Box>
   );
 };
