@@ -42,7 +42,7 @@ const PaginationComponent = ({ tableCount = 0 }) => {
                 : Math.ceil(tableCount / recordsPerPage)
             }
             page={currentPage}
-            size="large"
+            // size="medium"
             onChange={handlePageChange}
           />
         </Stack>
@@ -58,6 +58,7 @@ const PaginationComponent = ({ tableCount = 0 }) => {
             autoWidth
             // label="Age"
             size="small"
+            className="p-0"
           >
             <MenuItem value={10}>10</MenuItem>
             <MenuItem value={20}>20</MenuItem>

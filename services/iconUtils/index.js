@@ -34,6 +34,8 @@ import DoneIcon from "@mui/icons-material/Done";
 import ViewInArIcon from "@mui/icons-material/ViewInAr";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import TrendingDownOutlinedIcon from "@mui/icons-material/TrendingDownOutlined";
+import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 
 const CustomIcon = ({
   title = "",
@@ -85,6 +87,8 @@ const CustomIcon = ({
     viewInArIcon: ViewInArIcon,
     arrowBackIcon: ArrowBackIcon,
     whatsAppIcon: WhatsAppIcon,
+    trendingDownOutlinedIcon: TrendingDownOutlinedIcon,
+    trendingUpOutlinedIcon: TrendingUpOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);
