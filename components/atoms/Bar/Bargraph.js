@@ -1,5 +1,5 @@
-import { Bar } from "react-chartjs-2";
-import { useEffect, useState } from "react";
+import { Bar, getElementAtEvent } from "react-chartjs-2";
+import { useEffect, useRef, useState } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
   Chart as ChartJS,
@@ -30,16 +30,26 @@ const Bargraph = ({
   barDirection = "x",
   showBarInfo = false,
   showXAxis = true,
+  showYaxisTicks = true,
+  showXaxisTicks = true,
   showGridY = true,
 }) => {
   const [datasets, setDatasets] = useState([]);
+  const chartRef = useRef();
+  const onClick = (event) => {
+    const element = getElementAtEvent(chartRef.current, event);
+    if (!element.length) return;
+    const { datasetIndex, index } = element[0];
+    console.log(datasets[datasetIndex].data[index]);
+    console.log(labels[index]);
+  };
 
   useEffect(() => {
     const temp = [];
     temp.push({
       barThickness: 15,
       borderRadius: 0,
-      label: "amount",
+      // label: "amount",
       data,
       backgroundColor,
       hoverBackgroundColor,
@@ -79,6 +89,9 @@ const Bargraph = ({
         grid: {
           display: false,
         },
+        ticks: {
+          display: showXaxisTicks,
+        },
         title: {
           display: true,
           labelString: "Y text",
@@ -91,6 +104,9 @@ const Bargraph = ({
           display: showGridY,
           lineWidth: 0.7,
           // color: "black",
+        },
+        ticks: {
+          display: showYaxisTicks,
         },
         title: {
           display: true,
@@ -108,6 +124,8 @@ const Bargraph = ({
       }}
     >
       <Bar
+        onClick={onClick}
+        ref={chartRef}
         data={{
           labels,
           datasets,
