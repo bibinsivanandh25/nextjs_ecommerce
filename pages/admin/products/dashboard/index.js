@@ -29,6 +29,7 @@ const ProductDashboard = () => {
       zeroComission: "Zero Comission (15789)",
       incrementPercentage: "24%",
       decrementPercentage: "12%",
+      color: "#1492e6",
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ const ProductDashboard = () => {
       zeroComission: "By Subcategory (15789)",
       incrementPercentage: "34%",
       decrementPercentage: "12%",
+      color: "#e56700",
     },
     {
       id: 3,
@@ -45,6 +47,7 @@ const ProductDashboard = () => {
       zeroComission: "Zero Comission (15789)",
       incrementPercentage: "22%",
       decrementPercentage: "12%",
+      color: "#ff00a2",
     },
   ]);
 
@@ -79,7 +82,7 @@ const ProductDashboard = () => {
     return cards.map((card, index) => {
       return (
         <Grid item xs={3} key={card.id}>
-          <CardComponent>
+          <CardComponent boxColor={card.color}>
             <Box className="p-2">
               <Typography className="fs-12 color-dark-gray">
                 {card.newProducts}
