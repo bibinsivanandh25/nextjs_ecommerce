@@ -26,25 +26,21 @@ import PaginationComponent from "../AdminPagination";
 const useStyles = makeStyles({
   stickyCol: {
     position: "sticky",
-    background: "#f0f0f0",
     boxShadow: "-10px 0px 10px 1px #aaaaaa",
     zIndex: "1000",
   },
   stickyrow: {
     position: "sticky",
-    background: "#ffffff",
     boxShadow: "-10px 0px 10px 1px #aaaaaa",
     zIndex: "1000",
   },
   lastCol: {
     position: "sticky",
     zIndex: "1000",
-    background: "#f0f0f0",
   },
   lastrow: {
     position: "sticky",
     zIndex: "1000",
-    background: "#ffffff",
   },
 });
 
@@ -58,6 +54,7 @@ const EnhancedTableHead = (props) => {
     columns,
     showCellBorders,
     tHeadBgColor,
+    stickyCheckBox,
   } = props;
   let minWidthCount = 0;
   const getStickyClass = (position, index) => {
@@ -71,7 +68,13 @@ const EnhancedTableHead = (props) => {
     <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
         {showCheckbox && (
-          <TableCell padding="checkbox">
+          <TableCell
+            padding="checkbox"
+            className={`${
+              stickyCheckBox ? classes.stickyCol : ""
+            } ${tHeadBgColor}`}
+            sx={{ left: 0 }}
+          >
             <CheckBoxComponent
               checkBoxClick={onSelectAllClick}
               isindeterminate={numSelected > 0 && numSelected < rowCount}
@@ -87,7 +90,10 @@ const EnhancedTableHead = (props) => {
               key={column.id}
               align={column.align}
               style={{ minWidth: column.minWidth }}
-              className={`fw-600 p-2 ${getStickyClass(column.position, index)}`}
+              className={`fw-600 p-2 ${getStickyClass(
+                column.position,
+                index
+              )} ${tHeadBgColor}`}
               sx={{
                 fontSize: 13,
                 left:
@@ -140,6 +146,7 @@ export default function TableComponent({
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
   paginationType = "default",
+  stickyCheckBox = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -526,6 +533,7 @@ export default function TableComponent({
               columns={columns}
               showCellBorders={showCellBorders}
               tHeadBgColor={tHeadBgColor}
+              stickyCheckBox={stickyCheckBox}
             />
             <TableBody>
               {rows
@@ -542,7 +550,13 @@ export default function TableComponent({
                       selected={isItemSelected}
                     >
                       {showCheckbox && (
-                        <TableCell padding="checkbox">
+                        <TableCell
+                          padding="checkbox"
+                          className={`${
+                            stickyCheckBox ? classes.stickyrow : ""
+                          } bg-white`}
+                          sx={{ left: 0 }}
+                        >
                           <CheckBoxComponent
                             isChecked={isItemSelected}
                             label=""
