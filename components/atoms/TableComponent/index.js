@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography";
 import { Button, Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
+import { BsFillPinAngleFill } from "react-icons/bs";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
@@ -56,8 +57,10 @@ const EnhancedTableHead = (props) => {
     rowCount,
     showCheckbox,
     columns,
+    setColumns,
     showCellBorders,
     tHeadBgColor,
+    draggableHeader,
   } = props;
   let minWidthCount = 0;
   const getStickyClass = (position, index) => {
@@ -67,6 +70,35 @@ const EnhancedTableHead = (props) => {
     if (position === "sticky" && index === columns.length - 1)
       return classes.lastCol;
   };
+  const handleDragStart = (e, id) => {
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    if (e.target.id === e.dataTransfer.getData("text/plain")) return false;
+    const tempCol = JSON.parse(JSON.stringify(columns));
+    let dragStartIndex = null;
+    const pinnedColumnsList = {};
+    const dropedObj = tempCol.filter((item, index) => {
+      if (item.pinned) {
+        pinnedColumnsList[`${index}`] = { ...item };
+      }
+      if (item.id === e.dataTransfer.getData("text/plain")) {
+        dragStartIndex = index;
+        return { ...item };
+      }
+    })[0];
+    tempCol.splice(dragStartIndex, 1);
+    tempCol.splice(dropIndex, 0, { ...dropedObj });
+    const temp = tempCol.filter((ele) => {
+      if (!ele.pinned) return { ...ele };
+    });
+    Object.entries(pinnedColumnsList).forEach((item) => {
+      temp.splice(item[0], 0, { ...item[1] });
+    });
+    setColumns(JSON.parse(JSON.stringify(temp)));
+  };
+
   return (
     <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
@@ -85,8 +117,66 @@ const EnhancedTableHead = (props) => {
           return (
             <TableCell
               key={column.id}
+              id={column.id}
               align={column.align}
-              style={{ minWidth: column.minWidth }}
+              style={{
+                minWidth: column.minWidth,
+                cursor:
+                  (column.position && column.position === "sticky") ||
+                  column.pinned
+                    ? "default"
+                    : "move",
+              }}
+              draggable={
+                draggableHeader &&
+                !column.pinned &&
+                column.showPin &&
+                !(column.position && column.position === "sticky")
+              }
+              onDragStart={(e) => handleDragStart(e, column.id)}
+              onDrop={(e) => {
+                if (
+                  !(column.position && column.position === "sticky") &&
+                  !column.pinned
+                )
+                  handleDrop(e, index);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDragEnter={(e) => {
+                e.preventDefault();
+              }}
+              onMouseEnter={() => {
+                setColumns((prev) => {
+                  return [
+                    ...prev.map((ele, ind) => {
+                      if (ind === index) {
+                        return {
+                          ...ele,
+                          showPin: true,
+                        };
+                      }
+                      return { ...ele };
+                    }),
+                  ];
+                });
+              }}
+              onMouseLeave={() => {
+                setColumns((prev) => {
+                  return [
+                    ...prev.map((ele, ind) => {
+                      if (ind === index) {
+                        return {
+                          ...ele,
+                          showPin: false,
+                        };
+                      }
+                      return { ...ele };
+                    }),
+                  ];
+                });
+              }}
               className={`fw-600 p-2 ${getStickyClass(column.position, index)}`}
               sx={{
                 fontSize: 13,
@@ -101,6 +191,28 @@ const EnhancedTableHead = (props) => {
               }}
             >
               {column.label}
+              {!(column.position && column.position === "sticky") &&
+                (column.showPin || column.pinned) && (
+                  <BsFillPinAngleFill
+                    color={column.pinned ? "#e56700" : "#000000"}
+                    className="ms-2 cursor-pointer"
+                    onClick={() => {
+                      setColumns((prev) => {
+                        return [
+                          ...prev.map((ele, ind) => {
+                            if (ind === index) {
+                              return {
+                                ...ele,
+                                pinned: !ele.pinned,
+                              };
+                            }
+                            return { ...ele };
+                          }),
+                        ];
+                      });
+                    }}
+                  />
+                )}
             </TableCell>
           );
         })}
@@ -115,6 +227,7 @@ export default function TableComponent({
   table_heading = "",
   tableRows = [],
   columns = [],
+  setColumns = () => {},
   showSearchbar = true,
   OnSelectionChange = () => {},
   showCustomButton = false,
@@ -140,6 +253,7 @@ export default function TableComponent({
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
   paginationType = "default",
+  draggableHeader = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -155,6 +269,19 @@ export default function TableComponent({
     value: "All",
   });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
+
+  useEffect(() => {
+    if (draggableHeader) {
+      const tempCol = columns.map((item) => {
+        return {
+          ...item,
+          showPin: false,
+          pinned: false,
+        };
+      });
+      setColumns([...tempCol]);
+    }
+  }, [draggableHeader]);
 
   useEffect(() => {
     setRows(tableRows);
@@ -488,7 +615,6 @@ export default function TableComponent({
   };
 
   const classes = useStyles();
-  let minWidthCount = 0;
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";
     if (position === "sticky" && index !== columns.length - 1)
@@ -526,12 +652,15 @@ export default function TableComponent({
               columns={columns}
               showCellBorders={showCellBorders}
               tHeadBgColor={tHeadBgColor}
+              draggableHeader={draggableHeader}
+              setColumns={setColumns}
             />
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   const isItemSelected = isSelected(row.id);
+                  let minWidthCount = 0;
                   return (
                     <TableRow
                       hover

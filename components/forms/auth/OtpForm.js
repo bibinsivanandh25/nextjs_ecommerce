@@ -21,7 +21,6 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
             if (e.target.value !== "") secondInputRef.current.focus();
           }}
           onKeyDown={(e) => {
-            debugger;
             if (e.keyCode == 8 || e.keyCode == 46) {
               const temp = `x${otp.slice(1, 4)}`;
               setotp(temp);
