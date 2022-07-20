@@ -1,23 +1,23 @@
 import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import { Grid } from "@mui/material";
+import CircleIcon from "@mui/icons-material/Circle";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function PieChart({
-  data = [4, 9, 3, 5, 2, 3],
-  labels = ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-  backgroundColor = [],
-  borderColor = [],
+  data = [], // [{label:"",value:number, bgColor:""}]
   showBarInfo = false,
+  minHeight = "mnh-200",
 }) {
   const datas = {
-    labels,
+    labels: data.map((ele) => ele.label),
     datasets: [
       {
-        data,
-        backgroundColor,
-        borderColor,
+        data: data.map((ele) => ele.value),
+        backgroundColor: data.map((ele) => ele.bgColor),
+        borderColor: data.map((ele) => ele.bgColor),
         borderWidth: 1,
       },
     ],
@@ -35,7 +35,7 @@ export function PieChart({
         display: showBarInfo,
       },
       legend: {
-        display: true,
+        display: false,
         position: "right",
         borderRadius: "50%",
         labels: {
@@ -47,5 +47,44 @@ export function PieChart({
     },
     maintainAspectRatio: false,
   };
-  return <Pie data={datas} options={options} />;
+  const getLegends = () => {
+    return data.map((ele) => {
+      return (
+        <Grid
+          container
+          item
+          md={12}
+          spacing={2}
+          className="fw-bold h-5"
+          alignItems="center"
+        >
+          <Grid item sm={1}>
+            <CircleIcon
+              className="fw-bold"
+              style={{
+                color: ele.bgColor,
+              }}
+            />
+          </Grid>
+          <Grid item sm={7}>
+            {ele.label}
+          </Grid>
+          <Grid item sm={4}>
+            : {ele.value}
+          </Grid>
+        </Grid>
+      );
+    });
+  };
+
+  return (
+    <Grid container>
+      <Grid item sm={12} md={7} className={minHeight}>
+        <Pie data={datas} options={options} />
+      </Grid>
+      <Grid item sm={12} md={5} container>
+        {getLegends()}
+      </Grid>
+    </Grid>
+  );
 }
