@@ -279,17 +279,23 @@ const DashBoard = () => {
     {
       type: "supplier",
       data: [245, 25, 234],
-      labels: ["Red", "Blue", "Yellow"],
+      labels: ["#c33f0f", "#fc9874", "#efa263"],
+      backgroundColor: ["#c33f0f", "#fc9874", "#efa263"],
+      borderColor: ["#c33f0f", "#fc9874", "#efa263"],
     },
     {
       type: "reseller",
       data: [245, 225, 34],
-      labels: ["Blue", "Yellow", "Red"],
+      labels: ["#fc9874", "#efa263", "#c33f0f"],
+      backgroundColor: ["#fc9874", "#efa263", "#c33f0f"],
+      borderColor: ["#fc9874", "#efa263", "#c33f0f"],
     },
     {
       type: "customer",
       data: [245, 25, 234],
-      labels: ["Yellow", "Red", "Blue"],
+      labels: ["#efa263", "#c33f0f", "#fc9874"],
+      backgroundColor: ["#efa263", "#c33f0f", "#fc9874"],
+      borderColor: ["#efa263", "#c33f0f", "#fc9874"],
     },
   ]);
   const [pieChartSelect, setPiechartSelect] = useState("supplier");
@@ -313,9 +319,13 @@ const DashBoard = () => {
   return (
     <Box className="">
       <Box
-        className="shadow p-2 w-100"
+        className="p-2 w-100 shadow-sm"
         // className="shadow p-2 w-100 position-fixed bg-white"
         // sx={{ top: 80, zIndex: "10" }}
+        // sx={{
+        //   boxShadow:
+        //     "rgba(17, 17, 26, 0.05) 0px 4px 2px, rgba(17, 17, 26, 0.05) 0px 8px 50px",
+        // }}
       >
         <NavTabComponent
           listData={navData}
@@ -326,14 +336,18 @@ const DashBoard = () => {
         />
       </Box>
       <Box className="">
-        <Grid container spacing={1} className="mt-3">
+        <Grid
+          container
+          spacing={1}
+          className="mt-3 d-flex justify-content-center"
+        >
           {cardData.map((item) => (
-            <Grid item xs={2} md={2} className=" cursor-pointer">
+            <Grid item lg={2} md={3} sm={6} xs={6} className=" cursor-pointer">
               <CardComponent className="" boxColor={item.color}>
-                <Typography className="fs-12 fw-500 color-gray ps-1">
+                <Typography className="h-6 pt-1 fw-500 color-gray ps-1">
                   {item.title}
                 </Typography>
-                <Typography className="fw-600 fs-26 py-3 d-flex justify-content-center">
+                <Typography className="fw-600 h-2 py-2 d-flex justify-content-center">
                   {item.rate}
                 </Typography>
               </CardComponent>
@@ -348,16 +362,16 @@ const DashBoard = () => {
               labels={barGraphLabels}
               backgroundColor="#1f78b4"
               hoverBackgroundColor="#1f78b4"
-              borderRadius={{ topRight: 5, topLeft: 5 }}
+              borderRadius={{ topRight: 10, topLeft: 10 }}
             />
           </Paper>
         </Box>
         <Box className="mt-2">
-          <Grid container spacing={2}>
+          <Grid container spacing={2} className="d-flex justify-content-center">
             {subCardData.map((items) => (
-              <Grid item xs={2}>
+              <Grid item xs={6} sm={6} md={3} lg={2}>
                 <CardComponent boxColor={items.color} bottomShadow="2px">
-                  <Typography className="fs-16 fw-600 py-2 ps-1">
+                  <Typography className="h-5 fw-bold py-2 ps-1 d-flex justify-content-center">
                     {items.title}
                   </Typography>
                 </CardComponent>
@@ -459,54 +473,58 @@ const DashBoard = () => {
                   </Typography>
                 </Box>
               </Box>
-              {pieChartSelect === "supplier" && (
-                <Box className="d-flex justify-content-end mt-1">
-                  <Typography
-                    className={`border-end pe-2 h-5 cursor-pointer ${
-                      supplierSubTittle === "day" && `color-light-blue`
-                    }`}
-                    onClick={() => {
-                      setSupplierSubTittle("day");
-                    }}
-                  >
-                    Day
-                  </Typography>
-                  <Typography
-                    className={`ms-2 border-end pe-2 h-5 cursor-pointer ${
-                      supplierSubTittle === "week" && `color-light-blue`
-                    }`}
-                    onClick={() => {
-                      setSupplierSubTittle("week");
-                    }}
-                  >
-                    Week
-                  </Typography>
-                  <Typography
-                    className={`ms-2 border-end pe-2 h-5 cursor-pointer ${
-                      supplierSubTittle === "month" && `color-light-blue`
-                    }`}
-                    onClick={() => {
-                      setSupplierSubTittle("month");
-                    }}
-                  >
-                    Month
-                  </Typography>
-                  <Typography
-                    className={`ms-2 h-5 cursor-pointer ${
-                      supplierSubTittle === "year" && `color-light-blue`
-                    }`}
-                    onClick={() => {
-                      setSupplierSubTittle("year");
-                    }}
-                  >
-                    Year
-                  </Typography>
-                </Box>
-              )}
+              <Box className="mnh-20px">
+                {pieChartSelect === "supplier" && (
+                  <Box className="d-flex justify-content-end mt-1">
+                    <Typography
+                      className={`border-end pe-2 h-5 cursor-pointer ${
+                        supplierSubTittle === "day" && `color-light-blue`
+                      }`}
+                      onClick={() => {
+                        setSupplierSubTittle("day");
+                      }}
+                    >
+                      Day
+                    </Typography>
+                    <Typography
+                      className={`ms-2 border-end pe-2 h-5 cursor-pointer ${
+                        supplierSubTittle === "week" && `color-light-blue`
+                      }`}
+                      onClick={() => {
+                        setSupplierSubTittle("week");
+                      }}
+                    >
+                      Week
+                    </Typography>
+                    <Typography
+                      className={`ms-2 border-end pe-2 h-5 cursor-pointer ${
+                        supplierSubTittle === "month" && `color-light-blue`
+                      }`}
+                      onClick={() => {
+                        setSupplierSubTittle("month");
+                      }}
+                    >
+                      Month
+                    </Typography>
+                    <Typography
+                      className={`ms-2 h-5 cursor-pointer ${
+                        supplierSubTittle === "year" && `color-light-blue`
+                      }`}
+                      onClick={() => {
+                        setSupplierSubTittle("year");
+                      }}
+                    >
+                      Year
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
               <Box className="mnh-250">
                 <PieChart
                   data={selectedPieChart?.data}
                   labels={selectedPieChart?.labels}
+                  backgroundColor={selectedPieChart?.backgroundColor}
+                  borderColor={selectedPieChart?.borderColor}
                 />
               </Box>
             </Paper>

@@ -1,6 +1,6 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { PieChart } from "@/atoms/PieChart";
 import Bargraph from "@/atoms/Bar/Bargraph";
+import { PieChart } from "@/atoms/PieChart";
 import TableComponent from "@/atoms/TableComponent";
 
 const DashBoard = () => {

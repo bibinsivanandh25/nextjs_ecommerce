@@ -19,7 +19,7 @@ const NavTabComponent = ({
       <Box className="border rounded py-2 d-flex justify-content-between">
         {listData.map((item) => (
           <p
-            className={`cursor-pointer fs-14 ps-3 pe-3 ${
+            className={`cursor-pointer h-5 ps-3 pe-3 ${
               selectedId === item.id && `color-orange`
             }`}
             onClick={() => {
