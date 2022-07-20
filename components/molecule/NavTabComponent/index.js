@@ -7,12 +7,16 @@ import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
 
 const NavTabComponent = ({
   listData = [],
-  fromDate = "",
-  toDate = "",
-  setFromDate = () => {},
-  setToDate = () => {},
+  // fromDate = "",
+  // toDate = "",
+  // setFromDate = () => {},
+  // setToDate = () => {},
+  getFromDate = () => {},
+  getToDate = () => {},
 }) => {
   const [selectedId, setSelectedId] = useState(1);
+  const [fromDate, setFromDate] = useState();
+  const [toDate, setToDate] = useState();
 
   return (
     <Box className="d-flex">
@@ -34,24 +38,26 @@ const NavTabComponent = ({
         ))}
       </Box>
       <Box className="d-flex ms-4">
-        <Box className="d-flex align-items-center">
-          <span className="fs-14">From Date :</span>
+        <Box className="d-flex align-items-center h-5">
+          <span>From Date :</span>
         </Box>
         <CustomDatePickerComponent
           value={fromDate}
           onDateChange={(val) => {
             setFromDate(val);
+            getFromDate(val);
           }}
         />
       </Box>
       <Box className="d-flex ms-4">
-        <Box className="d-flex align-items-center">
-          <span className="fs-14">To Date :</span>
+        <Box className="d-flex align-items-center h-5">
+          <span>To Date :</span>
         </Box>
         <CustomDatePickerComponent
           value={toDate}
           onDateChange={(val) => {
             setToDate(val);
+            getToDate(val);
           }}
         />
       </Box>

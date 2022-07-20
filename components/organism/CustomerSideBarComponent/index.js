@@ -25,69 +25,13 @@ import { Fade, Paper, Popper } from "@mui/material";
 // const drawerWidth = 245;
 
 const CustomerSideBarComponent = ({ children }) => {
-  //   const route = useRouter();
-
-  //   const openedMixin = (theme) => ({
-  //     width: drawerWidth,
-  //     transition: theme.transitions.create("width", {
-  //       easing: theme.transitions.easing.sharp,
-  //       duration: theme.transitions.duration.enteringScreen,
-  //     }),
-  //     overflowX: "hidden",
-  //     position: "fixed",
-  //     top: "80px",
-  //   });
-
-  //   const closedMixin = (theme) => ({
-  //     transition: theme.transitions.create("width", {
-  //       easing: theme.transitions.easing.sharp,
-  //       duration: theme.transitions.duration.leavingScreen,
-  //     }),
-  //     overflowX: "hidden",
-  //     width: `calc(${theme.spacing(7)} + 1px)`,
-  //     [theme.breakpoints.up("sm")]: {
-  //       width: `calc(${theme.spacing(8)} + 1px)`,
-  //     },
-  //     position: "fixed",
-  //     top: "80px",
-  //   });
-  //   const Drawer = styled(MuiDrawer, {
-  //     shouldForwardProp: (prop) => prop !== "open",
-  //   })(({ theme, open }) => ({
-  //     width: drawerWidth,
-  //     flexShrink: 0,
-  //     whiteSpace: "nowrap",
-  //     boxSizing: "border-box",
-  //     ...(open && {
-  //       ...openedMixin(theme),
-  //       "& .MuiDrawer-paper": openedMixin(theme),
-  //     }),
-  //     ...(!open && {
-  //       ...closedMixin(theme),
-  //       "& .MuiDrawer-paper": closedMixin(theme),
-  //     }),
-  //   }));
-
   const mapList = () => {
     const addId = (id, item, path) => {
-      //   if (!item?.child?.length) {
-      //     return {
-      //       ...item,
-      //       id,
-      //       selected: false,
-      //       path_name: `${path}/${item.path_name}`,
-      //     };
-      //   }
       return {
         ...item,
         id,
         selected: false,
         path_name: `${path}/${item.path_name}`,
-        // child: [
-        //   ...item.child.map((ele, index) => {
-        //     return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
-        //   }),
-        // ],
       };
     };
     const tempList = customerMenu;
@@ -97,7 +41,6 @@ const CustomerSideBarComponent = ({ children }) => {
     return [...list];
   };
 
-  // const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [menuList, setMenuList] = useState([...mapList("customer")]);
   const [hover, setHover] = useState(false);
@@ -105,10 +48,8 @@ const CustomerSideBarComponent = ({ children }) => {
   //   const [selectedItem, setSelectedItem] = useState();
 
   const handleClick = (event) => {
-    console.log(event);
     setHover(true);
     setAnchorEl(event.target);
-    // setSelectedItem(title);
   };
 
   const handleDrawerOpen = () => {
@@ -119,72 +60,6 @@ const CustomerSideBarComponent = ({ children }) => {
     setOpen(false);
   };
 
-  //   const getMenuStyles = (item) => {
-  //     return {
-  //       opacity: open ? 1 : 0,
-  //       color: item?.selected ? "#e56700" : "gray",
-  //       fontSize: item?.child?.length ? 14 : 11,
-  //       fontWeight: item?.selected ? "bold" : "",
-  //       pl: 0,
-  //     };
-  //   };
-
-  //   const getSubMenuList = (data = []) => {
-  //     return (
-  //       <>
-  //         {data.map((item, index) => {
-  //           // if (!item.selected) {
-  //           return (
-  //             <MenuItem
-  //               onClick={(e) => {
-  //                 if (item.navigate) {
-  //                   route.push(`${item.path_name}`);
-  //                 }
-  //                 e.stopPropagation();
-  //                 // if (item?.child?.length) {
-  //                 setMenuList((pre) => {
-  //                   const temp = JSON.parse(JSON.stringify(pre));
-  //                   temp.forEach((ele) => {
-  //                     if (ele.selected && ele?.child?.length) {
-  //                       if (e.target.id.split("_").length === 2) {
-  //                         ele.child[index].selected = !ele.child[index].selected;
-  //                       } else if (e.target.id.split("_").length === 3) {
-  //                         ele.child[`${e.target.id.split("_")[1]}`].child.forEach(
-  //                           (element) => {
-  //                             element.selected = false;
-  //                           }
-  //                         );
-  //                         ele.child[`${e.target.id.split("_")[1]}`].child[
-  //                           index
-  //                         ].selected =
-  //                           !ele.child[`${e.target.id.split("_")[1]}`].child[
-  //                             index
-  //                           ].selected;
-  //                       }
-  //                     }
-  //                   });
-  //                   return temp;
-  //                 });
-  //                 // }
-  //               }}
-  //               sx={getMenuStyles(item)}
-  //               key={index}
-  //               className="d-block"
-  //             >
-  //               <Box id={item.id} className="fs-13 cursor-pointer">
-  //                 {item.title}
-  //               </Box>
-  //               {/* {item.selected && item?.child?.length ? (
-  //                 <MenuList>
-  //                   {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}
-  //                 </MenuList>
-  //               ) : null} */}
-  //             </MenuItem>
-  //           );
-  //         })}
-  //       </>
-  //     );
-  //   };
   return (
     <Box
       sx={{
@@ -211,9 +86,6 @@ const CustomerSideBarComponent = ({ children }) => {
             className={`d-flex ${
               open ? "justify-content-end" : "justify-content-center"
             }`}
-            // style={{
-            //   position: "fixed",
-            // }}
           >
             <IconButton
               color="inherit"
@@ -300,15 +172,6 @@ const CustomerSideBarComponent = ({ children }) => {
                               fontWeight={600}
                               fontSize={13}
                               color={item.selected && "#e56700"}
-
-                              // onMouseLeave={() => setHover(false)}
-                              // onMouseEnter={(e) => {
-                              //   setHover(true);
-                              //   setPagePosition({
-                              //     x: e.pageX,
-                              //     y: e.pageY - 88 + "px",
-                              //   });
-                              // }}
                             >
                               {item.title}
                             </Typography>
@@ -317,27 +180,6 @@ const CustomerSideBarComponent = ({ children }) => {
                         />
                       ) : null}
                     </ListItemButton>
-                    {/* {item.selected && item?.child?.length ? (
-                      <div
-                        style={{
-                          display: open ? "block" : "none",
-                        }}
-                      >
-                        <MenuList
-                          key={index}
-                          sx={{
-                            minHeight: 40,
-                            px: 2.5,
-                            marginLeft: "40px",
-                            padding: "0px",
-                          }}
-                        >
-                          {getSubMenuList(
-                            JSON.parse(JSON.stringify([...item.child]))
-                          )}
-                        </MenuList>
-                      </div>
-                    ) : null} */}
                   </Box>
                 );
               })}
@@ -358,7 +200,15 @@ const CustomerSideBarComponent = ({ children }) => {
         <Box className="mb-2">
           <BreadCrumb />
         </Box>
-        {children}
+        <Box
+          sx={{
+            maxHeight: "calc(100vh - 150px)",
+            overflowY: "scroll",
+          }}
+          className="hide-scrollbar "
+        >
+          {children}
+        </Box>
       </Box>
 
       <Popper

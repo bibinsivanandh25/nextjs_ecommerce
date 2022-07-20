@@ -1,8 +1,10 @@
 import React from "react";
 import Head from "next/head";
 // import { useSession } from "next-auth/react";
+// import { useUserInfo } from "services/hooks";
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
+// import { signOut } from "next-auth/react";
 import HeaderComponent from "../HeaderComponent";
 import SideBarComponent from "../SideBarComponent";
 import CustomerSideBarComponent from "../CustomerSideBarComponent";
@@ -11,6 +13,12 @@ import Header from "../CustomerHeaderComponent";
 const Layout = ({ Component, pageProps }) => {
   // const { data: session } = useSession();
   const route = useRouter();
+  // const userInfo = useUserInfo();
+  // useEffect(() => {
+  //   if (userInfo && !route.pathname.includes(userInfo?.role.toLowerCase())) {
+  //     signOut();
+  //   }
+  // }, [userInfo]);
   return (
     <>
       <Head>
