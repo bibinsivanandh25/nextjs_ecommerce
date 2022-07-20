@@ -361,12 +361,20 @@ const SideBarComponent = ({ children }) => {
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
         }}
-        className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
+        className=" p-4 py-3 w-100"
       >
         <Box className="mb-2">
           <BreadCrumb />
         </Box>
-        {children}
+        <Box
+          sx={{
+            maxHeight: "calc(100vh - 130px)",
+            overflowY: "scroll",
+          }}
+          className="hide-scrollbar "
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

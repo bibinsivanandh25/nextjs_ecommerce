@@ -15,6 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { Button, Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { makeStyles } from "@mui/styles";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
@@ -22,7 +23,33 @@ import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
 import PaginationComponent from "../AdminPagination";
 
+const useStyles = makeStyles({
+  stickyCol: {
+    position: "sticky",
+    background: "#f0f0f0",
+    boxShadow: "-10px 0px 10px 1px #aaaaaa",
+    zIndex: "1000",
+  },
+  stickyrow: {
+    position: "sticky",
+    background: "#ffffff",
+    boxShadow: "-10px 0px 10px 1px #aaaaaa",
+    zIndex: "1000",
+  },
+  lastCol: {
+    position: "sticky",
+    zIndex: "1000",
+    background: "#f0f0f0",
+  },
+  lastrow: {
+    position: "sticky",
+    zIndex: "1000",
+    background: "#ffffff",
+  },
+});
+
 const EnhancedTableHead = (props) => {
+  const classes = useStyles();
   const {
     onSelectAllClick,
     numSelected,
@@ -32,7 +59,14 @@ const EnhancedTableHead = (props) => {
     showCellBorders,
     tHeadBgColor,
   } = props;
-
+  let minWidthCount = 0;
+  const getStickyClass = (position, index) => {
+    if (!position || position === "") return "";
+    if (position === "sticky" && index !== columns.length - 1)
+      return classes.stickyCol;
+    if (position === "sticky" && index === columns.length - 1)
+      return classes.lastCol;
+  };
   return (
     <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
@@ -46,14 +80,25 @@ const EnhancedTableHead = (props) => {
             />
           </TableCell>
         )}
-        {columns.map((column) => {
+        {columns.map((column, index) => {
+          minWidthCount += column.minWidth;
           return (
             <TableCell
               key={column.id}
               align={column.align}
-              style={{ top: 57, minWidth: column.minWidth }}
-              className="fw-600 p-2"
-              sx={{ fontSize: 13 }}
+              style={{ minWidth: column.minWidth }}
+              className={`fw-600 p-2 ${getStickyClass(column.position, index)}`}
+              sx={{
+                fontSize: 13,
+                left:
+                  column.position === "sticky" && index !== columns.length - 1
+                    ? `${minWidthCount - column.minWidth}px`
+                    : "",
+                right:
+                  column.position === "sticky" && index === columns.length - 1
+                    ? 0
+                    : "",
+              }}
             >
               {column.label}
             </TableCell>
@@ -442,6 +487,16 @@ export default function TableComponent({
     );
   };
 
+  const classes = useStyles();
+  let minWidthCount = 0;
+  const getStickyClass = (position, index) => {
+    if (!position || position === "") return "";
+    if (position === "sticky" && index !== columns.length - 1)
+      return classes.stickyrow;
+    if (position === "sticky" && index === columns.length - 1)
+      return classes.lastrow;
+  };
+
   return (
     <div>
       <Grid
@@ -452,7 +507,9 @@ export default function TableComponent({
       >
         {showDateFilter ? getDateFilter() : getNormalFilter()}
 
-        <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
+        <TableContainer
+          sx={{ maxHeight: tableMaxHeight, mt: 3, position: "relative" }}
+        >
           <Table
             sx={{
               [`& .${tableCellClasses.root}`]: {
@@ -496,15 +553,30 @@ export default function TableComponent({
                         </TableCell>
                       )}
 
-                      {columns.map((column) => {
+                      {columns.map((column, index) => {
                         const value = row[column.id];
+                        minWidthCount += column.minWidth;
                         return (
                           <TableCell
                             key={column.id}
                             align={column.data_align}
-                            className={`${column.data_classname} p-2`}
+                            className={`${
+                              column.data_classname
+                            } ${getStickyClass(column.position, index)} p-2`}
                             style={column.data_style ?? {}}
-                            sx={{ fontSize: 12 }}
+                            sx={{
+                              fontSize: 12,
+                              left:
+                                column.position === "sticky" &&
+                                index !== columns.length - 1
+                                  ? `${minWidthCount - column.minWidth}px`
+                                  : "",
+                              right:
+                                column.position === "sticky" &&
+                                index === columns.length - 1
+                                  ? 0
+                                  : "",
+                            }}
                           >
                             {column.format && typeof value === "number"
                               ? column.format(value)
