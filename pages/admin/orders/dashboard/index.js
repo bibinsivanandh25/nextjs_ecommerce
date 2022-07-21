@@ -1,6 +1,8 @@
+import NavTabComponent from "components/molecule/NavTabComponent";
+import { useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { PieChart } from "@/atoms/PieChart";
 import Bargraph from "@/atoms/Bar/Bargraph";
+import { PieChart } from "@/atoms/PieChart";
 import TableComponent from "@/atoms/TableComponent";
 
 const DashBoard = () => {
@@ -422,6 +424,14 @@ const DashBoard = () => {
       },
     },
   ];
+  // eslint-disable-next-line no-unused-vars
+  const [navData, setNavData] = useState([
+    { id: 1, title: "Today" },
+    { id: 2, title: "Yesterday" },
+    { id: 3, title: "Last 7 days" },
+    { id: 4, title: "Last month" },
+    { id: 5, title: "Last year" },
+  ]);
 
   const getProductsInfo = () => {
     return productInfo.map((ele, ind) => {
@@ -464,27 +474,44 @@ const DashBoard = () => {
   };
   return (
     <Box className="">
+      <Box className="my-2 p-1">
+        <NavTabComponent
+          listData={navData}
+          getFromDate={(val) => console.log(val)}
+        />
+      </Box>
       <Grid container className="px-3" spacing={2}>
         <Grid item md={6} sm={12} className="">
           <Paper className="py-4 mnh-300">
             <Typography className="fw-bold ms-2">Total Orders : 690</Typography>
-            <div className="mnh-200">
+            <div className="">
               <PieChart
-                backgroundColor={[
-                  "#5500d4",
-                  "#00d455",
-                  "#ffd42a",
-                  "#0066ff",
-                  "#ff5599",
-                  "#e56700",
-                ]}
-                borderColor={[
-                  "#5500d4",
-                  "#00d455",
-                  "#ffd42a",
-                  "#0066ff",
-                  "#ff5599",
-                  "#e56700",
+                data={[
+                  {
+                    label: "On Hold",
+                    value: 200,
+                    bgColor: "#5500d4",
+                  },
+                  {
+                    label: "Payment Completed",
+                    value: 249,
+                    bgColor: "#00d455",
+                  },
+                  {
+                    label: "Accepted",
+                    value: 20,
+                    bgColor: "#ffd42a",
+                  },
+                  {
+                    label: "Delivered",
+                    value: 200,
+                    bgColor: "#0066ff",
+                  },
+                  {
+                    label: "Return Requests",
+                    value: 29,
+                    bgColor: "#ff5599",
+                  },
                 ]}
               />
             </div>
@@ -497,6 +524,14 @@ const DashBoard = () => {
       <Grid container className="px-3 my-2" spacing={2}>
         <Grid item md={6} sm={12}>
           <Paper>
+            <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
+              <Typography className="h-5 fw-bold">Total Orders: 690</Typography>
+              <div className="h-5">
+                <span className="color-blue">categories </span>
+                <span>|</span>
+                <span> subcategories</span>
+              </div>
+            </div>
             <div className="w-90p">
               <Bargraph
                 barDirection="y"
@@ -520,6 +555,77 @@ const DashBoard = () => {
         </Grid>
         <Grid item md={6} sm={12}>
           <Paper>
+            <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
+              <Typography className="h-5 fw-bold">
+                Returnable Products: 690
+              </Typography>
+              <div className="h-5">
+                <span className="color-blue">categories </span>
+                <span>|</span>
+                <span> subcategories</span>
+              </div>
+            </div>
+            <div className="w-90p">
+              <Bargraph
+                backgroundColor="#444b66"
+                hoverBackgroundColor="#e56700"
+                barDirection="y"
+                labels={[
+                  "cloths",
+                  "Gadgets",
+                  " Accessories",
+                  "Apparels",
+                  "kitchen ware",
+                  "stationary",
+                  "laptops",
+                ]}
+                data={[20, 30, 40, 50, 60, 35, 60]}
+                showGridY={false}
+                showXaxisTicks={false}
+              />
+            </div>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container className="px-3 my-2" spacing={2}>
+        <Grid item md={6} sm={12}>
+          <Paper>
+            <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
+              <Typography className="h-5 fw-bold">
+                Total Order Returned: 690
+              </Typography>
+              <div className="h-5">
+                <span className="color-blue">categories </span>
+                <span>|</span>
+                <span> subcategories</span>
+              </div>
+            </div>
+            <div className="w-90p">
+              <Bargraph
+                barDirection="y"
+                labels={[
+                  "cloths",
+                  "Gadgets",
+                  " Accessories",
+                  "Apparels",
+                  "kitchen ware",
+                  "stationary",
+                  "laptops",
+                ]}
+                backgroundColor="#444b66"
+                hoverBackgroundColor="#e56700"
+                data={[20, 30, 40, 50, 60, 35, 60]}
+                showGridY={false}
+                showXaxisTicks={false}
+              />
+            </div>
+          </Paper>
+        </Grid>
+        <Grid item md={6} sm={12}>
+          <Paper>
+            <div className=" bg-light-grey p-2">
+              <Typography className="h-5 fw-bold">Total Orders: 690</Typography>
+            </div>
             <div className="w-90p">
               <Bargraph
                 backgroundColor="#444b66"

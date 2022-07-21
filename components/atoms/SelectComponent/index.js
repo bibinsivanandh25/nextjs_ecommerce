@@ -2,7 +2,11 @@ import * as React from "react";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
 
-export default function SelectComponent({ list = [], defaultValue = "" }) {
+export default function SelectComponent({
+  list = [],
+  defaultValue = "",
+  className = "",
+}) {
   return (
     // <Box sx={{ minWidth: 120 }}>
     <FormControl>
@@ -13,6 +17,7 @@ export default function SelectComponent({ list = [], defaultValue = "" }) {
         inputProps={{
           id: "uncontrolled-native",
         }}
+        className={className}
       >
         {/* <option value=""></option> */}
         {list.map((item) => (
