@@ -33,6 +33,7 @@ const Bargraph = ({
   showYaxisTicks = true,
   showXaxisTicks = true,
   showGridY = true,
+  borderRadius = 0,
 }) => {
   const [datasets, setDatasets] = useState([]);
   const chartRef = useRef();
@@ -48,7 +49,7 @@ const Bargraph = ({
     const temp = [];
     temp.push({
       barThickness: 15,
-      borderRadius: 0,
+      borderRadius,
       // label: "amount",
       data,
       backgroundColor,
