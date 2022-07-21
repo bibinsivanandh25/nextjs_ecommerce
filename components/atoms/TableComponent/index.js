@@ -27,17 +27,15 @@ import PaginationComponent from "../AdminPagination";
 const useStyles = makeStyles({
   stickyCol: {
     position: "sticky",
-    boxShadow: "-10px 0px 10px 1px #aaaaaa",
-    zIndex: "1000",
+    zIndex: "1010",
   },
   stickyrow: {
     position: "sticky",
-    boxShadow: "-10px 0px 10px 1px #aaaaaa",
     zIndex: "1000",
   },
   lastCol: {
     position: "sticky",
-    zIndex: "1000",
+    zIndex: "1010",
   },
   lastrow: {
     position: "sticky",
@@ -59,7 +57,7 @@ const EnhancedTableHead = (props) => {
     draggableHeader,
     stickyCheckBox,
   } = props;
-  let minWidthCount = 0;
+  let minWidthCount = stickyCheckBox ? 47 : 0;
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";
     if (position === "sticky" && index !== columns.length - 1)
@@ -247,7 +245,7 @@ export default function TableComponent({
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
   searchBarSizeMd = 7,
-  tableMaxHeight = 440,
+  tableMaxHeight = 450,
   showCustomSearchButton = false,
   customSearchButtonLabel = "",
   onCustomSearchButtonClick = () => {},
@@ -261,6 +259,7 @@ export default function TableComponent({
   paginationType = "default",
   draggableHeader = false,
   stickyCheckBox = false,
+  stickyHeader = true,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -644,6 +643,7 @@ export default function TableComponent({
           sx={{ maxHeight: tableMaxHeight, mt: 3, position: "relative" }}
         >
           <Table
+            stickyHeader={stickyHeader}
             sx={{
               [`& .${tableCellClasses.root}`]: {
                 borderBottom: !showCellBorders && "none",
@@ -662,13 +662,14 @@ export default function TableComponent({
               draggableHeader={draggableHeader}
               setColumns={setColumns}
               stickyCheckBox={stickyCheckBox}
+              // stickyHeader={stickyHeader}
             />
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   const isItemSelected = isSelected(row.id);
-                  let minWidthCount = 0;
+                  let minWidthCount = stickyCheckBox ? 47 : 0;
                   return (
                     <TableRow
                       hover
