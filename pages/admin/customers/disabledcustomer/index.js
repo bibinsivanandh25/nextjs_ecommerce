@@ -1,15 +1,15 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box, TextField, Typography } from "@mui/material";
 import React, { useRef, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
-import ModalComponent from "@/atoms/ModalComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
+import ModalComponent from "@/atoms/ModalComponent";
 import TextEditor from "@/atoms/TextEditor";
 
-const activeCustomer = [
+const disabledCustomer = [
   {
     id: "col1",
     label: "S.NO",
@@ -55,6 +55,14 @@ const activeCustomer = [
   },
   {
     id: "col6",
+    label: "Refered Reseller",
+    minWidth: 150,
+    align: "start",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col7",
     label: "Linked also as Vendor",
     minWidth: 200,
     align: "start",
@@ -62,7 +70,7 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col7",
+    id: "col8",
     label: "Total Orders",
     minWidth: 150,
     align: "center",
@@ -70,7 +78,7 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col8",
+    id: "col9",
     label: "Total Amount Spend",
     minWidth: 150,
     align: "center",
@@ -78,7 +86,7 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col9",
+    id: "col10",
     label: "Recent Order",
     minWidth: 150,
     align: "start",
@@ -86,7 +94,7 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col10",
+    id: "col11",
     label: "Login Status",
     minWidth: 150,
     align: "center",
@@ -94,7 +102,15 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col11",
+    id: "col12",
+    label: "Reason",
+    minWidth: 150,
+    align: "start",
+    data_align: "start",
+    data_classname: "",
+  },
+  {
+    id: "col13",
     label: "Browsing History",
     minWidth: 150,
     align: "center",
@@ -102,7 +118,15 @@ const activeCustomer = [
     data_classname: "",
   },
   {
-    id: "col12",
+    id: "col14",
+    label: "Comments",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col15",
     label: "Action",
     minWidth: 150,
     align: "center",
@@ -111,44 +135,39 @@ const activeCustomer = [
     position: "sticky",
   },
 ];
-// const activeCustomerTab = [
-//   {
-//     id: 1,
-//     lable: "Details",
-//   },
-//   {
-//     id: 2,
-//     lable: "Address",
-//   },
-//   {
-//     id: 3,
-//     lable: "Browsing History",
-//   },
-// ];
-const ActiveCustomer = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false);
+
+const DisabledCustomer = () => {
   const [discountModalOpen, setDiscountModalOpen] = useState(false);
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
   const [addNotesModalOpen, setAddNotesModalOpen] = useState(false);
   const inputRef = useRef(null);
-  // const [viewModalOpen,setViewModalOpen]=useState(false)
-  const activeCustomerData = [
+  const disabledCustomerRow = [
     {
       col1: "1",
       col2: (
         <Typography className="cursor-pointer text-decoration-underline color-light-blue h-5 d-inline text-start">
-          #12345
+          #1234345
         </Typography>
       ),
-      col3: "Rohan",
+      col3: "Balu",
       col4: (
         <Box className="text-start">
-          <Typography className="h-5">rohan223423@gmail.com</Typography>
-          <Typography className="h-5">9496699934</Typography>
+          <Typography className="h-5">balu223423@gmail.com</Typography>
+          <Typography className="h-5">9496689934</Typography>
         </Box>
       ),
-      col5: "10/05/1992",
+      col5: "12/05/1998",
       col6: (
+        <Box className="text-decoration-underline color-light-blue text-center">
+          <Typography className="h-5 cursor-pointer fit-content">
+            #1234
+          </Typography>
+          <Typography className="h-5 cursor-pointer fit-content">
+            Rohan
+          </Typography>
+        </Box>
+      ),
+      col7: (
         <Box className="text-decoration-underline color-light-blue text-center">
           <Typography className="h-5 cursor-pointer fit-content">
             Vendor
@@ -158,9 +177,9 @@ const ActiveCustomer = () => {
           </Typography>
         </Box>
       ),
-      col7: "85",
-      col8: "₹ 34500",
-      col9: (
+      col8: "85",
+      col9: "₹ 34500",
+      col10: (
         <Box className="text-center">
           <Typography className="h-5 cursor-pointer fit-content">
             #34555
@@ -170,9 +189,11 @@ const ActiveCustomer = () => {
           </Typography>
         </Box>
       ),
-      col10: "12/05/2022 - 8.09",
-      col11: "Recently viewed items",
-      col12: (
+      col11: "12/05/2022 - 8.09",
+      col12: "I Don't Know....",
+      col13: "Recently viewed items",
+      col14: "NO",
+      col15: (
         <Box>
           <CustomIcon type="view" className="fs-18 me-2" />
           <MenuOption
@@ -208,44 +229,14 @@ const ActiveCustomer = () => {
       <Box className="mt-1">
         <TableComponent
           showDateFilter
-          showDateFilterBtn
-          //   table_heading="Active Customers"
-          dateFilterBtnName="Create Customer"
           stickyCheckBox
-          columns={activeCustomer}
+          columns={disabledCustomer}
           tHeadBgColor="bg-white"
           showCheckbox
-          tableRows={activeCustomerData}
+          tableRows={disabledCustomerRow}
           draggableHeader={false}
-          dateFilterBtnClick={() => {
-            setCreateModalOpen(true);
-          }}
         />
       </Box>
-      {createModalOpen && (
-        <ModalComponent
-          open={createModalOpen}
-          onCloseIconClick={() => {
-            setCreateModalOpen(false);
-          }}
-          ModalTitle="Invite Customer"
-          titleClassName="color-orange h-4"
-          footerClassName="justify-content-end border-top"
-          ClearBtnText="Cancel"
-          saveBtnText="Submit"
-          onClearBtnClick={() => {
-            setCreateModalOpen(false);
-          }}
-        >
-          <Box className="p-4">
-            <TextField
-              label="Enter Mail ID / ph. number"
-              variant="standard"
-              fullWidth
-            />
-          </Box>
-        </ModalComponent>
-      )}
       {discountModalOpen && (
         <ModalComponent
           open={discountModalOpen}
@@ -325,4 +316,4 @@ const ActiveCustomer = () => {
   );
 };
 
-export default ActiveCustomer;
+export default DisabledCustomer;
