@@ -133,7 +133,10 @@ const ProductDashboard = () => {
 
   return (
     <Box>
-      <Box className="mb-3">
+      <Box
+        className="mb-3 position-fixed bg-white"
+        sx={{ zIndex: 0, top: "80px" }}
+      >
         <NavTabComponent
           listData={navData}
           fromDate={fromDate}
