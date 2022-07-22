@@ -33,6 +33,7 @@ const Layout = ({ Component, pageProps }) => {
         <div className="h-100">
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||
+          route.pathname.startsWith("/admin") ||
           route.pathname[route.pathname.length - 1] === "/" ? (
             <HeaderComponent />
           ) : (
@@ -42,6 +43,7 @@ const Layout = ({ Component, pageProps }) => {
         <Box className="mnw-100vw">
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||
+          route.pathname.startsWith("/admin") ||
           route.pathname[route.pathname.length - 1] === "/" ? (
             <SideBarComponent>
               {/* <Box className="w-100 h-100 p-2 pb-1"> */}

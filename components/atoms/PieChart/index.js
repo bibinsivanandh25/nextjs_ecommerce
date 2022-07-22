@@ -58,7 +58,7 @@ export function PieChart({
           className="fw-bold h-5"
           alignItems="center"
         >
-          <Grid item sm={1}>
+          <Grid item sm={2}>
             <CircleIcon
               className="fw-bold"
               style={{
@@ -66,7 +66,7 @@ export function PieChart({
               }}
             />
           </Grid>
-          <Grid item sm={7}>
+          <Grid item sm={6}>
             {ele.label}
           </Grid>
           <Grid item sm={4}>

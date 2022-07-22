@@ -12,6 +12,7 @@ const OrderSummary = () => {
       align: "center",
       data_align: "center",
       data_classname: "",
+      position: "sticky",
     },
     {
       id: "col2",

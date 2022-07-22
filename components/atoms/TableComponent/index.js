@@ -27,19 +27,19 @@ import PaginationComponent from "../AdminPagination";
 const useStyles = makeStyles({
   stickyCol: {
     position: "sticky",
-    zIndex: "1010",
+    zIndex: "1010 !important",
   },
   stickyrow: {
     position: "sticky",
-    zIndex: "1000",
+    zIndex: "1000 !important",
   },
   lastCol: {
     position: "sticky",
-    zIndex: "1010",
+    zIndex: "1010 !important",
   },
   lastrow: {
     position: "sticky",
-    zIndex: "1000",
+    zIndex: "1000 !important",
   },
 });
 
