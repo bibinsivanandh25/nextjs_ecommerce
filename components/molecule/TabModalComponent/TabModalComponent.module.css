@@ -1,0 +1,123 @@
+.backgroundStyle {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.modalStyle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 25%);
+  background: white;
+  border: 0px solid white;
+  outline: none;
+  z-index: 11;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.tabContainer {
+  display: flex;
+  position: absolute;
+  top: -30px;
+  left: 0px;
+}
+
+.tabStyle {
+  padding: 3px 16px 3px 15px;
+  background: #f0f0f0;
+  border-radius: 10px 10px 0 0;
+  /* min-width: 100px; */
+  position: relative;
+  text-align: center;
+}
+
+.activeTab {
+  color: #e56700;
+  font-weight: 600;
+  background: white;
+  padding: 3px 16px 3px 15px;
+  border-radius: 10px 10px 0 0;
+  /* min-width: 100px; */
+  position: relative;
+  text-align: center;
+}
+
+.activeTab::before {
+  box-shadow: 10px 0px 0 #fff;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: -17px;
+  background: #f0f0f0;
+  border-bottom-right-radius: 13px;
+  height: 20px;
+  width: 18px;
+  z-index: 1;
+}
+.activeTab::after {
+  box-shadow: -8px 2px 0 #ffffff;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 14px;
+  right: -15px;
+  background: #f0f0f0;
+  border-bottom-left-radius: 17px;
+  height: 17px;
+  width: 15px;
+  z-index: 1;
+}
+.firstActiveTab {
+  color: #e56700;
+  font-weight: 600;
+  background: white;
+  padding: 3px 16px 3px 15px;
+  border-radius: 10px 10px 0 0;
+  /* min-width: 100px; */
+  position: relative;
+  text-align: center;
+}
+
+.firstActiveTab::after {
+  box-shadow: -8px 2px 0 #ffffff;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 14px;
+  right: -15px;
+  background: #f0f0f0;
+  border-bottom-left-radius: 17px;
+  height: 17px;
+  width: 15px;
+  z-index: 1;
+}
+.lastActiveTab {
+  color: #e56700;
+  font-weight: 600;
+  background: white;
+  padding: 3px 16px 3px 15px;
+  border-radius: 10px 10px 0 0;
+  /* min-width: 100px; */
+  position: relative;
+  text-align: center;
+}
+
+.lastActiveTab::before {
+  box-shadow: 10px 0px 0 #fff;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: -17px;
+  background: #f0f0f0;
+  border-bottom-right-radius: 13px;
+  height: 20px;
+  width: 18px;
+  z-index: 1;
+}

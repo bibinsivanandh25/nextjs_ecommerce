@@ -22,7 +22,7 @@ const CardComponent = ({
           ? `${boxColor} 0px ${bottomShadow} , ${boxColor} 0px 5px 10px`
           : "",
         borderRadius: "5px",
-        transition: "2s ease-in-out",
+        transition: "0.3s ease-in-out",
       }}
       onMouseEnter={() => {
         setHover(true);

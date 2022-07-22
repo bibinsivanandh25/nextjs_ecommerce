@@ -15,28 +15,96 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { Button, Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { makeStyles } from "@mui/styles";
+import { BsFillPinAngleFill } from "react-icons/bs";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
 import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
+import PaginationComponent from "../AdminPagination";
+
+const useStyles = makeStyles({
+  stickyCol: {
+    position: "sticky",
+    zIndex: "1010",
+  },
+  stickyrow: {
+    position: "sticky",
+    zIndex: "1000",
+  },
+  lastCol: {
+    position: "sticky",
+    zIndex: "1010",
+  },
+  lastrow: {
+    position: "sticky",
+    zIndex: "1000",
+  },
+});
 
 const EnhancedTableHead = (props) => {
+  const classes = useStyles();
   const {
     onSelectAllClick,
     numSelected,
     rowCount,
     showCheckbox,
     columns,
+    setColumns,
     showCellBorders,
     tHeadBgColor,
+    draggableHeader,
+    stickyCheckBox,
   } = props;
+  let minWidthCount = stickyCheckBox ? 47 : 0;
+  const getStickyClass = (position, index) => {
+    if (!position || position === "") return "";
+    if (position === "sticky" && index !== columns.length - 1)
+      return classes.stickyCol;
+    if (position === "sticky" && index === columns.length - 1)
+      return classes.lastCol;
+  };
+  const handleDragStart = (e, id) => {
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    if (e.target.id === e.dataTransfer.getData("text/plain")) return false;
+    const tempCol = JSON.parse(JSON.stringify(columns));
+    let dragStartIndex = null;
+    const pinnedColumnsList = {};
+    const dropedObj = tempCol.filter((item, index) => {
+      if (item.pinned) {
+        pinnedColumnsList[`${index}`] = { ...item };
+      }
+      if (item.id === e.dataTransfer.getData("text/plain")) {
+        dragStartIndex = index;
+        return { ...item };
+      }
+    })[0];
+    tempCol.splice(dragStartIndex, 1);
+    tempCol.splice(dropIndex, 0, { ...dropedObj });
+    const temp = tempCol.filter((ele) => {
+      if (!ele.pinned) return { ...ele };
+    });
+    Object.entries(pinnedColumnsList).forEach((item) => {
+      temp.splice(item[0], 0, { ...item[1] });
+    });
+    setColumns(JSON.parse(JSON.stringify(temp)));
+  };
 
   return (
     <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
         {showCheckbox && (
-          <TableCell padding="checkbox">
+          <TableCell
+            padding="checkbox"
+            className={`${
+              stickyCheckBox ? classes.stickyCol : ""
+            } ${tHeadBgColor}`}
+            sx={{ left: 0 }}
+          >
             <CheckBoxComponent
               checkBoxClick={onSelectAllClick}
               isindeterminate={numSelected > 0 && numSelected < rowCount}
@@ -45,16 +113,110 @@ const EnhancedTableHead = (props) => {
             />
           </TableCell>
         )}
-        {columns.map((column) => {
+        {columns.map((column, index) => {
+          minWidthCount += column.minWidth;
           return (
             <TableCell
               key={column.id}
+              id={column.id}
               align={column.align}
-              style={{ top: 57, minWidth: column.minWidth }}
-              className="fw-600 p-2"
-              sx={{ fontSize: 13 }}
+              style={{
+                minWidth: column.minWidth,
+                cursor:
+                  (column.position && column.position === "sticky") ||
+                  column.pinned
+                    ? "default"
+                    : "move",
+              }}
+              draggable={
+                draggableHeader &&
+                !column.pinned &&
+                column.showPin &&
+                !(column.position && column.position === "sticky")
+              }
+              onDragStart={(e) => handleDragStart(e, column.id)}
+              onDrop={(e) => {
+                if (
+                  !(column.position && column.position === "sticky") &&
+                  !column.pinned
+                )
+                  handleDrop(e, index);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDragEnter={(e) => {
+                e.preventDefault();
+              }}
+              onMouseEnter={() => {
+                setColumns((prev) => {
+                  return [
+                    ...prev.map((ele, ind) => {
+                      if (ind === index) {
+                        return {
+                          ...ele,
+                          showPin: true,
+                        };
+                      }
+                      return { ...ele };
+                    }),
+                  ];
+                });
+              }}
+              onMouseLeave={() => {
+                setColumns((prev) => {
+                  return [
+                    ...prev.map((ele, ind) => {
+                      if (ind === index) {
+                        return {
+                          ...ele,
+                          showPin: false,
+                        };
+                      }
+                      return { ...ele };
+                    }),
+                  ];
+                });
+              }}
+              className={`fw-600 p-2 ${getStickyClass(
+                column.position,
+                index
+              )} ${tHeadBgColor !== "" ? tHeadBgColor : "bg-white"}`}
+              sx={{
+                fontSize: 13,
+                left:
+                  column.position === "sticky" && index !== columns.length - 1
+                    ? `${minWidthCount - column.minWidth}px`
+                    : "",
+                right:
+                  column.position === "sticky" && index === columns.length - 1
+                    ? 0
+                    : "",
+              }}
             >
               {column.label}
+              {!(column.position && column.position === "sticky") &&
+                (column.showPin || column.pinned) && (
+                  <BsFillPinAngleFill
+                    color={column.pinned ? "#e56700" : "#000000"}
+                    className="ms-2 cursor-pointer"
+                    onClick={() => {
+                      setColumns((prev) => {
+                        return [
+                          ...prev.map((ele, ind) => {
+                            if (ind === index) {
+                              return {
+                                ...ele,
+                                pinned: !ele.pinned,
+                              };
+                            }
+                            return { ...ele };
+                          }),
+                        ];
+                      });
+                    }}
+                  />
+                )}
             </TableCell>
           );
         })}
@@ -69,6 +231,7 @@ export default function TableComponent({
   table_heading = "",
   tableRows = [],
   columns = [],
+  setColumns = () => {},
   showSearchbar = true,
   OnSelectionChange = () => {},
   showCustomButton = false,
@@ -82,7 +245,7 @@ export default function TableComponent({
   showSearchFilter = true,
   showCustomDropdownWithSearch = false,
   searchBarSizeMd = 7,
-  tableMaxHeight = 440,
+  tableMaxHeight = 450,
   showCustomSearchButton = false,
   customSearchButtonLabel = "",
   onCustomSearchButtonClick = () => {},
@@ -93,6 +256,10 @@ export default function TableComponent({
   dateFilterColName = [],
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
+  paginationType = "default",
+  draggableHeader = false,
+  stickyCheckBox = false,
+  stickyHeader = true,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -108,6 +275,19 @@ export default function TableComponent({
     value: "All",
   });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
+
+  useEffect(() => {
+    if (draggableHeader) {
+      const tempCol = columns.map((item) => {
+        return {
+          ...item,
+          showPin: false,
+          pinned: false,
+        };
+      });
+      setColumns([...tempCol]);
+    }
+  }, [draggableHeader]);
 
   useEffect(() => {
     setRows(tableRows);
@@ -440,6 +620,15 @@ export default function TableComponent({
     );
   };
 
+  const classes = useStyles();
+  const getStickyClass = (position, index) => {
+    if (!position || position === "") return "";
+    if (position === "sticky" && index !== columns.length - 1)
+      return classes.stickyrow;
+    if (position === "sticky" && index === columns.length - 1)
+      return classes.lastrow;
+  };
+
   return (
     <div>
       <Grid
@@ -450,8 +639,11 @@ export default function TableComponent({
       >
         {showDateFilter ? getDateFilter() : getNormalFilter()}
 
-        <TableContainer sx={{ maxHeight: tableMaxHeight, mt: 3 }}>
+        <TableContainer
+          sx={{ maxHeight: tableMaxHeight, mt: 3, position: "relative" }}
+        >
           <Table
+            stickyHeader={stickyHeader}
             sx={{
               [`& .${tableCellClasses.root}`]: {
                 borderBottom: !showCellBorders && "none",
@@ -467,12 +659,17 @@ export default function TableComponent({
               columns={columns}
               showCellBorders={showCellBorders}
               tHeadBgColor={tHeadBgColor}
+              draggableHeader={draggableHeader}
+              setColumns={setColumns}
+              stickyCheckBox={stickyCheckBox}
+              // stickyHeader={stickyHeader}
             />
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   const isItemSelected = isSelected(row.id);
+                  let minWidthCount = stickyCheckBox ? 47 : 0;
                   return (
                     <TableRow
                       hover
@@ -483,7 +680,13 @@ export default function TableComponent({
                       selected={isItemSelected}
                     >
                       {showCheckbox && (
-                        <TableCell padding="checkbox">
+                        <TableCell
+                          padding="checkbox"
+                          className={`${
+                            stickyCheckBox ? classes.stickyrow : ""
+                          } bg-white`}
+                          sx={{ left: 0 }}
+                        >
                           <CheckBoxComponent
                             isChecked={isItemSelected}
                             label=""
@@ -494,15 +697,33 @@ export default function TableComponent({
                         </TableCell>
                       )}
 
-                      {columns.map((column) => {
+                      {columns.map((column, index) => {
                         const value = row[column.id];
+                        minWidthCount += column.minWidth;
                         return (
                           <TableCell
                             key={column.id}
                             align={column.data_align}
-                            className={`${column.data_classname} p-2`}
+                            className={`${
+                              column.data_classname
+                            } ${getStickyClass(
+                              column.position,
+                              index
+                            )} bg-white p-2`}
                             style={column.data_style ?? {}}
-                            sx={{ fontSize: 12 }}
+                            sx={{
+                              fontSize: 12,
+                              left:
+                                column.position === "sticky" &&
+                                index !== columns.length - 1
+                                  ? `${minWidthCount - column.minWidth}px`
+                                  : "",
+                              right:
+                                column.position === "sticky" &&
+                                index === columns.length - 1
+                                  ? 0
+                                  : "",
+                            }}
                           >
                             {column.format && typeof value === "number"
                               ? column.format(value)
@@ -516,20 +737,23 @@ export default function TableComponent({
             </TableBody>
           </Table>
         </TableContainer>
-        {showPagination && (
-          <Grid>
-            <TablePagination
-              className="justify-content-start d-flex"
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Grid>
-        )}
+        {showPagination &&
+          (paginationType === "default" ? (
+            <Grid>
+              <TablePagination
+                className="justify-content-start d-flex"
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Grid>
+          ) : (
+            <PaginationComponent tableCount={rows.length} />
+          ))}
       </Grid>
     </div>
   );
