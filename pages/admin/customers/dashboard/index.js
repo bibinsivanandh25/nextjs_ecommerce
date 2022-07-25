@@ -147,12 +147,10 @@ const CustomerDashBoard = () => {
               </Grid>
               <Grid item xs={5} className="d-flex justify-content-end mt-2">
                 <SelectComponent
-                  disableUnderline={false}
                   list={monthsList}
                   className="border rounded ps-2"
                 />
                 <SelectComponent
-                  disableUnderline={false}
                   list={monthsList}
                   className="border rounded ms-2 ps-2"
                 />
