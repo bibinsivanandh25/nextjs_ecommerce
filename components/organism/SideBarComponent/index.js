@@ -366,12 +366,18 @@ const SideBarComponent = ({ children }) => {
         }}
         className=" p-4 py-3 w-100"
       >
-        <Box className="mb-2">
+        <Box
+          className={`mb-2 ${
+            route.pathname.startsWith("/admin") ? "d-none" : ""
+          }`}
+        >
           <BreadCrumb />
         </Box>
         <Box
           sx={{
-            maxHeight: "calc(100vh - 130px)",
+            maxHeight: route.pathname.startsWith("/admin")
+              ? "calc(100vh - 95px)"
+              : "calc(100vh - 130px)",
             overflowY: "scroll",
           }}
           className="hide-scrollbar "
