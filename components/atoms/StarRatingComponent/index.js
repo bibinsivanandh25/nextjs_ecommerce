@@ -5,7 +5,6 @@
 import React, { useState } from "react";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
-import styles from "./StarRatingComponent.module.css";
 
 const SingleStar = ({ filled, index, setChangeStars, changeStars }) => {
   const fillStars = () => {
@@ -31,9 +30,9 @@ const SingleStar = ({ filled, index, setChangeStars, changeStars }) => {
   };
 
   return filled ? (
-    <StarIcon className={styles.primaryColor} onClick={unFillStars} />
+    <StarIcon className="color-orange" onClick={unFillStars} />
   ) : (
-    <StarBorderIcon className={styles.primaryColor} onClick={fillStars} />
+    <StarBorderIcon className="color-orange" onClick={fillStars} />
   );
 };
 

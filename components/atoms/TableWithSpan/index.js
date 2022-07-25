@@ -12,14 +12,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
-import { Button, Grid } from "@mui/material";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+// import Typography from "@mui/material/Typography";
+import { Grid } from "@mui/material";
+// import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
-import { BsFillPinAngleFill } from "react-icons/bs";
 import CheckBoxComponent from "../CheckboxComponent";
-import SimpleDropdownComponent from "../SimpleDropdownComponent";
-import InputBox from "../InputBoxComponent";
+// import SimpleDropdownComponent from "../SimpleDropdownComponent";
+// import InputBox from "../InputBoxComponent";
 import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
 import PaginationComponent from "../AdminPagination";
@@ -41,6 +40,14 @@ const useStyles = makeStyles({
     position: "sticky",
     zIndex: "1000 !important",
   },
+  borderParent: {
+    borderLeft: "1px solid rgba(224, 224, 224, 1)",
+    borderTop: "1px solid rgba(224, 224, 224, 1)",
+  },
+  borderChild: {
+    borderLeft: "1px solid rgba(224, 224, 224, 1)",
+    borderBottom: "none !important",
+  },
 });
 
 const EnhancedTableHead = (props) => {
@@ -51,10 +58,9 @@ const EnhancedTableHead = (props) => {
     rowCount,
     showCheckbox,
     columns,
-    setColumns,
+    column2,
     showCellBorders,
     tHeadBgColor,
-    draggableHeader,
     stickyCheckBox,
   } = props;
   let minWidthCount = stickyCheckBox ? 47 : 0;
@@ -65,45 +71,23 @@ const EnhancedTableHead = (props) => {
     if (position === "sticky" && index === columns.length - 1)
       return classes.lastCol;
   };
-  const handleDragStart = (e, id) => {
-    e.dataTransfer.setData("text/plain", id);
-  };
-
-  const handleDrop = (e, dropIndex) => {
-    if (e.target.id === e.dataTransfer.getData("text/plain")) return false;
-    const tempCol = JSON.parse(JSON.stringify(columns));
-    let dragStartIndex = null;
-    const pinnedColumnsList = {};
-    const dropedObj = tempCol.filter((item, index) => {
-      if (item.pinned) {
-        pinnedColumnsList[`${index}`] = { ...item };
-      }
-      if (item.id === e.dataTransfer.getData("text/plain")) {
-        dragStartIndex = index;
-        return { ...item };
-      }
-    })[0];
-    tempCol.splice(dragStartIndex, 1);
-    tempCol.splice(dropIndex, 0, { ...dropedObj });
-    const temp = tempCol.filter((ele) => {
-      if (!ele.pinned) return { ...ele };
-    });
-    Object.entries(pinnedColumnsList).forEach((item) => {
-      temp.splice(item[0], 0, { ...item[1] });
-    });
-    setColumns(JSON.parse(JSON.stringify(temp)));
-  };
 
   return (
     <TableHead className={`${showCellBorders && "border-top"} ${tHeadBgColor}`}>
       <TableRow>
         {showCheckbox && (
           <TableCell
+            rowSpan={column2[0]?.rowSpan ? column2[0].rowSpan : 1}
             padding="checkbox"
             className={`${
               stickyCheckBox ? classes.stickyCol : ""
             } ${tHeadBgColor}`}
-            sx={{ left: 0 }}
+            sx={{
+              left: 0,
+              borderTop: "1px solid rgba(224, 224, 224, 1)",
+              borderBottom: "none",
+              pl: 3,
+            }}
           >
             <CheckBoxComponent
               checkBoxClick={onSelectAllClick}
@@ -113,6 +97,41 @@ const EnhancedTableHead = (props) => {
             />
           </TableCell>
         )}
+        {column2.map((ele, index) => {
+          minWidthCount += ele.minWidth;
+
+          return (
+            <TableCell
+              style={{
+                minWidth: ele.minWidth,
+              }}
+              className={`fw-600 p-2 text-center  ${getStickyClass(
+                ele.position,
+                index
+              )} ${tHeadBgColor !== "" ? tHeadBgColor : "bg-white"}`}
+              sx={{
+                fontSize: 13,
+                left:
+                  ele.position === "sticky" && index !== column2.length - 1
+                    ? `${minWidthCount - ele.minWidth}px`
+                    : "",
+                right:
+                  ele.position === "sticky" && index === column2.length - 1
+                    ? 0
+                    : "",
+                borderBottom: ele.rowSpan ? "none" : "",
+              }}
+              // className="text-center"
+              rowSpan={ele.rowSpan ? ele.rowSpan : 1}
+              colSpan={ele.colSpan ? ele.colSpan : 1}
+              classes={{ root: classes.borderParent }}
+            >
+              {ele.label}
+            </TableCell>
+          );
+        })}
+      </TableRow>
+      <TableRow>
         {columns.map((column, index) => {
           minWidthCount += column.minWidth;
           return (
@@ -120,63 +139,10 @@ const EnhancedTableHead = (props) => {
               key={column.id}
               id={column.id}
               align={column.align}
+              rowSpan={column.rowSpan ? column.rowSpan : 1}
+              colSpan={column.colSpan ? column.colSpan : 1}
               style={{
                 minWidth: column.minWidth,
-                cursor:
-                  (column.position && column.position === "sticky") ||
-                  column.pinned
-                    ? "default"
-                    : "move",
-              }}
-              draggable={
-                draggableHeader &&
-                !column.pinned &&
-                column.showPin &&
-                !(column.position && column.position === "sticky")
-              }
-              onDragStart={(e) => handleDragStart(e, column.id)}
-              onDrop={(e) => {
-                if (
-                  !(column.position && column.position === "sticky") &&
-                  !column.pinned
-                )
-                  handleDrop(e, index);
-              }}
-              onDragOver={(e) => {
-                e.preventDefault();
-              }}
-              onDragEnter={(e) => {
-                e.preventDefault();
-              }}
-              onMouseEnter={() => {
-                setColumns((prev) => {
-                  return [
-                    ...prev.map((ele, ind) => {
-                      if (ind === index) {
-                        return {
-                          ...ele,
-                          showPin: true,
-                        };
-                      }
-                      return { ...ele };
-                    }),
-                  ];
-                });
-              }}
-              onMouseLeave={() => {
-                setColumns((prev) => {
-                  return [
-                    ...prev.map((ele, ind) => {
-                      if (ind === index) {
-                        return {
-                          ...ele,
-                          showPin: false,
-                        };
-                      }
-                      return { ...ele };
-                    }),
-                  ];
-                });
               }}
               className={`fw-600 p-2 ${getStickyClass(
                 column.position,
@@ -193,30 +159,9 @@ const EnhancedTableHead = (props) => {
                     ? 0
                     : "",
               }}
+              classes={{ root: classes.borderChild }}
             >
               {column.label}
-              {!(column.position && column.position === "sticky") &&
-                (column.showPin || column.pinned) && (
-                  <BsFillPinAngleFill
-                    color={column.pinned ? "#e56700" : "#000000"}
-                    className="ms-2 cursor-pointer"
-                    onClick={() => {
-                      setColumns((prev) => {
-                        return [
-                          ...prev.map((ele, ind) => {
-                            if (ind === index) {
-                              return {
-                                ...ele,
-                                pinned: !ele.pinned,
-                              };
-                            }
-                            return { ...ele };
-                          }),
-                        ];
-                      });
-                    }}
-                  />
-                )}
             </TableCell>
           );
         })}
@@ -231,66 +176,52 @@ export default function TableComponent({
   table_heading = "",
   tableRows = [],
   columns = [],
+  column2 = [],
   setColumns = () => {},
-  showSearchbar = true,
   OnSelectionChange = () => {},
-  showCustomButton = false,
-  showCustomDropdown = false,
-  customButtonLabel = "",
-  customDropdownLabel = "",
-  customDropdownList = [],
-  customDropdownValue = {},
-  onCustomButtonClick = () => {},
-  onCustomDropdownChange = () => {},
-  showSearchFilter = true,
-  showCustomDropdownWithSearch = false,
-  searchBarSizeMd = 7,
   tableMaxHeight = 450,
-  showCustomSearchButton = false,
-  customSearchButtonLabel = "",
-  onCustomSearchButtonClick = () => {},
-  disableCustomSearchButton = false,
   showCellBorders = true,
   tHeadBgColor = "",
   showDateFilter = false,
   dateFilterColName = [],
-  customDropDownPlaceholder = "",
-  searchBarPlaceHolderText = "Search",
   paginationType = "default",
   draggableHeader = false,
   stickyCheckBox = false,
-  showDateFilterBtn = false,
-  dateFilterBtnName = "Add",
-  dateFilterBtnClick = () => {},
   stickyHeader = true,
+  showButton = false,
+  buttonLabel = "button",
+  onBtnClick = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
+  const [filteredColumns, setfilteredColumns] = useState([]);
   const [searchText, setsearchText] = useState("");
-  const [searchFilterList, setSearchFilterList] = useState([
-    { label: "All", id: "0", value: "All" },
-  ]);
-  const [searchFilter, setSearchFilter] = useState({
-    label: "All",
-    id: "0",
-    value: "All",
-  });
+  // const [searchFilterList, setSearchFilterList] = useState([
+  //   { label: "All", id: "0", value: "All" },
+  // ]);
+  // const [searchFilter, setSearchFilter] = useState({
+  //   label: "All",
+  //   id: "0",
+  //   value: "All",
+  // });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
   useEffect(() => {
-    if (draggableHeader) {
-      const tempCol = columns.map((item) => {
-        return {
-          ...item,
-          showPin: false,
-          pinned: false,
-        };
-      });
-      setColumns([...tempCol]);
-    }
-  }, [draggableHeader]);
+    let arr = [...column2, ...columns];
+    arr = arr.filter((ele) => {
+      return ele.id;
+    });
+    arr = arr.sort((a, b) => {
+      return parseInt(a.id.split("col")[1], 10) >
+        parseInt(b.id.split("col")[1], 10)
+        ? 1
+        : -1;
+    });
+    console.log({ arr });
+    setfilteredColumns([...arr]);
+  }, [column2, columns]);
 
   useEffect(() => {
     setRows(tableRows);
@@ -300,47 +231,47 @@ export default function TableComponent({
     if (searchText === "") setRows(tableRows);
   }, [searchText, tableRows]);
 
-  useEffect(() => {
-    const temp = columns.filter((item) => {
-      if (!item.hasOwnProperty("isFilter"))
-        return { label: item.label, id: item.id, value: item.label };
-    });
-    setSearchFilterList(() => {
-      return [{ label: "All", id: "0", value: "All" }, ...temp];
-    });
-  }, [columns]);
+  // useEffect(() => {
+  //   const temp = columns.filter((item) => {
+  //     if (!item.hasOwnProperty("isFilter"))
+  //       return { label: item.label, id: item.id, value: item.label };
+  //   });
+  //   setSearchFilterList(() => {
+  //     return [{ label: "All", id: "0", value: "All" }, ...temp];
+  //   });
+  // }, [columns]);
 
-  const requestSearch = (searchval) => {
-    const filteredData =
-      searchFilter.label === "All" || searchFilter.label === ""
-        ? rows.filter((value) => {
-            let flag = false;
-            const dataarray = Object.values(value);
-            dataarray.splice(0, 1);
-            let index;
-            dataarray.forEach((ele) => {
-              index =
-                typeof ele === "string" &&
-                ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
-              if (index) {
-                flag = true;
-              }
-            });
-            return flag;
-          })
-        : rows.filter((value) => {
-            if (
-              typeof value[`${searchFilter.id}`] === "string" &&
-              value[`${searchFilter.id}`]
-                .toLowerCase()
-                .indexOf(searchval.toLowerCase()) > -1
-            )
-              return true;
-            return false;
-          });
+  // const requestSearch = (searchval) => {
+  //   const filteredData =
+  //     searchFilter.label === "All" || searchFilter.label === ""
+  //       ? rows.filter((value) => {
+  //           let flag = false;
+  //           const dataarray = Object.values(value);
+  //           dataarray.splice(0, 1);
+  //           let index;
+  //           dataarray.forEach((ele) => {
+  //             index =
+  //               typeof ele === "string" &&
+  //               ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
+  //             if (index) {
+  //               flag = true;
+  //             }
+  //           });
+  //           return flag;
+  //         })
+  //       : rows.filter((value) => {
+  //           if (
+  //             typeof value[`${searchFilter.id}`] === "string" &&
+  //             value[`${searchFilter.id}`]
+  //               .toLowerCase()
+  //               .indexOf(searchval.toLowerCase()) > -1
+  //           )
+  //             return true;
+  //           return false;
+  //         });
 
-    setRows(filteredData);
-  };
+  //   setRows(filteredData);
+  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -383,9 +314,9 @@ export default function TableComponent({
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const handleSearch = () => {
-    if (searchText !== "") requestSearch(searchText);
-  };
+  // const handleSearch = () => {
+  //   if (searchText !== "") requestSearch(searchText);
+  // };
 
   useEffect(() => {
     if (dateValue.from && dateValue.to) {
@@ -405,7 +336,7 @@ export default function TableComponent({
 
   const getDateFilter = () => {
     return (
-      <Grid container justifyContent="end" alignItems="center">
+      <Grid container item justifyContent="end" alignItems="center">
         <span className="fs-12">From date:</span>
         <input
           type="date"
@@ -453,184 +384,9 @@ export default function TableComponent({
           size="small"
           onChange={(e) => {
             setsearchText(e.target.value);
-            handleSearch();
+            // handleSearch();
           }}
         />
-        {showDateFilterBtn && (
-          <Grid item>
-            <ButtonComponent
-              variant="contained"
-              label={dateFilterBtnName}
-              muiProps="fs-12 ms-1"
-              onBtnClick={() => {
-                dateFilterBtnClick();
-              }}
-            />
-          </Grid>
-        )}
-      </Grid>
-    );
-  };
-
-  const getNormalFilter = () => {
-    if (showCustomDropdownWithSearch) {
-      return (
-        <Grid container justifyContent="end" spacing={2}>
-          <Grid item sm={6} md={2}>
-            <SimpleDropdownComponent
-              list={customDropdownList}
-              size="small"
-              label={customDropdownLabel}
-              value={customDropdownValue}
-              onDropdownSelect={(value) => {
-                onCustomDropdownChange(value);
-              }}
-            />
-          </Grid>
-          <Grid item md={3}>
-            <InputBox
-              value={searchText}
-              label="Search"
-              // className="w-100"
-              size="small"
-              onInputChange={(e) => {
-                setsearchText(e.target.value);
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <div
-              style={{ width: "35px", height: "38px" }}
-              className="bg-orange d-flex justify-content-center align-items-center rounded"
-              onClick={handleSearch}
-            >
-              <SearchOutlinedIcon style={{ color: "white" }} />
-            </div>
-          </Grid>
-        </Grid>
-      );
-    }
-
-    return (
-      <Grid container>
-        <Grid item container xs={3} justifyContent="start">
-          {table_heading && (
-            <Grid item sm={6} md={6} xs={12}>
-              <Typography
-                sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-                // variant="h6"
-                id="tableTitle"
-                component="div"
-                className="fw-bold"
-              >
-                {table_heading}
-              </Typography>
-            </Grid>
-          )}
-        </Grid>
-        <Grid item container xs={9} justifyContent="end">
-          {showSearchbar && (
-            <Grid
-              item
-              md={9}
-              xs={12}
-              container
-              spacing={1}
-              justifyContent="end"
-              alignItems="center"
-            >
-              <Grid item md={3}>
-                {showSearchFilter && (
-                  <SimpleDropdownComponent
-                    list={[...searchFilterList]}
-                    size="small"
-                    // label="Search Filter"
-                    value={searchFilter}
-                    onDropdownSelect={(value) => {
-                      setSearchFilter(value);
-                      // setSearchFilter(
-                      //   value === null
-                      //     ? { label: "All", id: 0, value: "All" }
-                      //     : { ...value }
-                      // );
-                    }}
-                    placeholder={customDropDownPlaceholder}
-                  />
-                )}
-              </Grid>
-              <Grid item md={searchBarSizeMd}>
-                <InputBox
-                  value={searchText}
-                  label={searchBarPlaceHolderText}
-                  className="w-100"
-                  size="small"
-                  onInputChange={(e) => {
-                    setsearchText(e.target.value);
-                  }}
-                  showAutoCompleteOff={false}
-                />
-              </Grid>
-              <Grid item xs={!showCustomSearchButton && 1}>
-                <div
-                  style={{ width: "40px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
-                  onClick={handleSearch}
-                >
-                  <SearchOutlinedIcon style={{ color: "white" }} />
-                </div>
-              </Grid>
-              {showCustomSearchButton && (
-                <Grid item xs={3}>
-                  <Button
-                    variant="contained"
-                    className={`fs-12 ${
-                      disableCustomSearchButton ? "" : "bg-orange"
-                    }`}
-                    sx={{ textTransform: "none" }}
-                    fullWidth
-                    onClick={onCustomSearchButtonClick}
-                    disabled={disableCustomSearchButton}
-                  >
-                    {customSearchButtonLabel}
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          )}
-
-          {(showCustomDropdown || showCustomButton) && (
-            <Grid item container xs={12} spacing={2} justifyContent="right">
-              {showCustomDropdown && (
-                <Grid item sm={4} container>
-                  <SimpleDropdownComponent
-                    list={customDropdownList}
-                    size="small"
-                    label={customDropdownLabel}
-                    value={customDropdownValue}
-                    onDropdownSelect={(value) => {
-                      onCustomDropdownChange(value);
-                    }}
-                  />
-                </Grid>
-              )}
-              {showCustomButton && (
-                <Grid item sm={4} container>
-                  <div>
-                    <ButtonComponent
-                      // variant="contained"
-                      // size="small"
-                      // className="bg-orange"
-                      // sx={{ textTransform: "none" }}
-                      // fullWidth
-                      onBtnClick={onCustomButtonClick}
-                      label={customButtonLabel}
-                    />
-                  </div>
-                </Grid>
-              )}
-            </Grid>
-          )}
-        </Grid>
       </Grid>
     );
   };
@@ -652,7 +408,17 @@ export default function TableComponent({
           pr: { xs: 1, sm: 1 },
         }}
       >
-        {showDateFilter ? getDateFilter() : getNormalFilter()}
+        <Grid className="d-flex justify-content-between align-items-center">
+          <Grid className="color-orange">{table_heading}</Grid>
+          <Grid container>{showDateFilter ? getDateFilter() : null}</Grid>
+          <Grid>
+            {showButton ? (
+              <ButtonComponent label={buttonLabel} onBtnClick={onBtnClick} />
+            ) : (
+              ""
+            )}
+          </Grid>
+        </Grid>
 
         <TableContainer
           sx={{ maxHeight: tableMaxHeight, mt: 3, position: "relative" }}
@@ -672,6 +438,7 @@ export default function TableComponent({
               rowCount={rows.length}
               showCheckbox={showCheckbox}
               columns={columns}
+              column2={[...column2]}
               showCellBorders={showCellBorders}
               tHeadBgColor={tHeadBgColor}
               draggableHeader={draggableHeader}
@@ -700,7 +467,7 @@ export default function TableComponent({
                           className={`${
                             stickyCheckBox ? classes.stickyrow : ""
                           } bg-white`}
-                          sx={{ left: 0 }}
+                          sx={{ left: 0, pl: 3 }}
                         >
                           <CheckBoxComponent
                             isChecked={isItemSelected}
@@ -712,7 +479,7 @@ export default function TableComponent({
                         </TableCell>
                       )}
 
-                      {columns.map((column, index) => {
+                      {filteredColumns.map((column, index) => {
                         const value = row[column.id];
                         minWidthCount += column.minWidth;
                         return (

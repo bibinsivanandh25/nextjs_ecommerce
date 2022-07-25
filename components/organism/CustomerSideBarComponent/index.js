@@ -78,7 +78,7 @@ const CustomerSideBarComponent = ({ children }) => {
           sx={{
             maxHeight: `calc(100vh - 60px)`,
             minHeight: `calc(100vh - 60px)`,
-            maxWidth: open ? "225px" : "75px",
+            maxWidth: open ? "225px" : "65px",
             overflow: "hidden",
           }}
         >
@@ -190,7 +190,7 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 210px)" : "calc(100vw - 60px)"}`,
+          maxWidth: ` ${open ? "calc(100vw - 205px)" : "calc(100vw - 50px)"}`,
           marginLeft: ` ${open ? "210px" : "60px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
@@ -202,7 +202,7 @@ const CustomerSideBarComponent = ({ children }) => {
         </Box>
         <Box
           sx={{
-            maxHeight: "calc(100vh - 150px)",
+            maxHeight: "calc(100vh - 140px)",
             overflowY: "scroll",
           }}
           className="hide-scrollbar "
