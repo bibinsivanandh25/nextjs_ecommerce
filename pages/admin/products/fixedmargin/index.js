@@ -30,6 +30,9 @@ const FixedMargin = () => {
     discounts: "",
   });
 
+  const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
+  const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
+
   const titles = [
     "Products to approve (48)",
     "Drafts (23)",
@@ -88,60 +91,60 @@ const FixedMargin = () => {
   ];
 
   const [rowsDataObjects, setRowDataObjects] = useState([
-    {
-      id: 1,
-      col1: "#345345 SKM Tex",
-      col2: {
-        imgSrc: [
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        ],
-        imgCount: 10,
-      },
-      col3: "Show 20 words max",
-      col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 1200, mrpPrice: 1500 },
-      col9: "PUMA",
-      col10: "nothing",
-    },
-    {
-      id: 2,
-      col1: "#345345 SKM hi Tex",
-      col2: {
-        imgSrc: [
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        ],
-        imgCount: 10,
-      },
-      col3: "Show 20 words max",
-      col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 100, mrpPrice: 200 },
-      col9: "PUMA",
-      col10: "nothing",
-    },
-    {
-      id: 3,
-      col1: "#345345 SKM hello Tex",
-      col2: {
-        imgSrc: [
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        ],
-        imgCount: 10,
-      },
-      col3: "Show 20 words max",
-      col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 1300, mrpPrice: 2000 },
-      col9: "PUMA",
-      col10: "nothing",
-    },
+    // {
+    //   id: 1,
+    //   col1: "#345345 SKM Tex",
+    //   col2: {
+    //     imgSrc: [
+    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    //     ],
+    //     imgCount: 10,
+    //   },
+    //   col3: "Show 20 words max",
+    //   col4: "--",
+    //   col5: "Gym Eqipment (10%) - Rowing Belt",
+    //   col6: "0.500gms/0.720gms",
+    //   col7: 150,
+    //   col8: { salePrice: 1200, mrpPrice: 1500 },
+    //   col9: "PUMA",
+    //   col10: "nothing",
+    // },
+    // {
+    //   id: 2,
+    //   col1: "#345345 SKM hi Tex",
+    //   col2: {
+    //     imgSrc: [
+    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    //     ],
+    //     imgCount: 10,
+    //   },
+    //   col3: "Show 20 words max",
+    //   col4: "--",
+    //   col5: "Gym Eqipment (10%) - Rowing Belt",
+    //   col6: "0.500gms/0.720gms",
+    //   col7: 150,
+    //   col8: { salePrice: 100, mrpPrice: 200 },
+    //   col9: "PUMA",
+    //   col10: "nothing",
+    // },
+    // {
+    //   id: 3,
+    //   col1: "#345345 SKM hello Tex",
+    //   col2: {
+    //     imgSrc: [
+    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    //     ],
+    //     imgCount: 10,
+    //   },
+    //   col3: "Show 20 words max",
+    //   col4: "--",
+    //   col5: "Gym Eqipment (10%) - Rowing Belt",
+    //   col6: "0.500gms/0.720gms",
+    //   col7: 150,
+    //   col8: { salePrice: 1300, mrpPrice: 2000 },
+    //   col9: "PUMA",
+    //   col10: "nothing",
+    // },
   ]);
 
   // const editModalInputBoxLabels = [
@@ -192,7 +195,14 @@ const FixedMargin = () => {
         ),
         col2: (
           <Box className="d-flex align-items-end justify-content-center">
-            <Box className="h-30 border d-flex justify-content-center">
+            <Box
+              onClick={() => {
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+                setImageIndexForImageModal(0);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
               <Image
                 src={val.col2.imgSrc[0]}
                 width="50"
@@ -293,23 +303,76 @@ const FixedMargin = () => {
     });
   };
 
-  // const returnEditModalInputBoxes = () => {
-  //   return editModalInputBoxLabels.map((label, index) => {
-  //     const [value, setValue] = useState("");
-  //     return (
-  //       <Grid item xs={6}>
-  //         <InputBox
-  //           value={value}
-  //           label={label}
-  //           onInputChange={(e) => {
-  //             setValue(e.target.value);
-  //           }}
-  //           inputlabelshrink
-  //         />
-  //       </Grid>
-  //     );
-  //   });
-  // };
+  const returnImagesInArray = () => {
+    return imageArray?.map((val, index) => {
+      return (
+        <Grid item xs={3}>
+          <Image src={imageArray[index]} width={100} height={100} />
+        </Grid>
+      );
+    });
+  };
+
+  const handleSaveBtnClickOfEditModal = () => {
+    if (modalId === null) {
+      const tempObject = {
+        id: rowsDataObjects.length,
+        col1: productDetails.vendorIdOrName,
+        col2: {
+          imgSrc: imageArray,
+          imgCount: imageArray.length,
+        },
+        col3: productDetails.productTitle,
+        col4: productDetails.sku,
+        col5: productDetails.categorySubcategory,
+        col6: productDetails.weightOrVolume,
+        col7: productDetails.totalStock,
+        col8: {
+          salePrice: getSalePrice(),
+          mrpPrice: getMrpPrice(),
+        },
+        col9: "PUMA",
+        col10: "nothing",
+      };
+
+      const tempArray = [...rowsDataObjects];
+      tempArray.push(tempObject);
+      setRowDataObjects([...tempArray]);
+      setOpenEditModal(false);
+    } else if (modalId !== null) {
+      const tempObject = {
+        id: rowsDataObjects.length,
+        col1: productDetails.vendorIdOrName,
+        col2: {
+          imgSrc: imageArray,
+          imgCount: imageArray.length,
+        },
+        col3: productDetails.productTitle,
+        col4: productDetails.sku,
+        col5: productDetails.categorySubcategory,
+        col6: productDetails.weightOrVolume,
+        col7: productDetails.totalStock,
+        col8: {
+          salePrice: getSalePrice(),
+          mrpPrice: getMrpPrice(),
+        },
+        col9: "PUMA",
+        col10: "nothing",
+      };
+
+      const tempArray = [...rowsDataObjects];
+      tempArray.splice(modalId, 1, tempObject);
+      setRowDataObjects([...tempArray]);
+      setOpenEditModal(false);
+    }
+  };
+
+  const handleInputChanges = (e) => {
+    setProductDetails({
+      ...productDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <>
@@ -332,6 +395,7 @@ const FixedMargin = () => {
               });
               setImageArray([]);
               setOpenEditModal(true);
+              setModalId(null);
             }}
           />
         </Box>
@@ -345,6 +409,7 @@ const FixedMargin = () => {
           />
         </Box>
       </Box>
+      {/* Edit Modal Component */}
       <ModalComponent
         open={openEditModal}
         ModalTitle="Edit Product"
@@ -359,57 +424,7 @@ const FixedMargin = () => {
         }}
         minHeightClassName="mxh-500"
         onSaveBtnClick={() => {
-          if (modalId === null) {
-            const tempObject = {
-              id: rowsDataObjects.length,
-              col1: productDetails.vendorIdOrName,
-              col2: {
-                imgSrc: imageArray,
-                imgCount: imageArray.length,
-              },
-              col3: productDetails.productTitle,
-              col4: productDetails.sku,
-              col5: productDetails.categorySubcategory,
-              col6: productDetails.weightOrVolume,
-              col7: productDetails.totalStock,
-              col8: {
-                salePrice: getSalePrice(),
-                mrpPrice: getMrpPrice(),
-              },
-              col9: "PUMA",
-              col10: "nothing",
-            };
-
-            const tempArray = [...rowsDataObjects];
-            tempArray.push(tempObject);
-            setRowDataObjects([...tempArray]);
-            setOpenEditModal(false);
-          } else if (modalId !== null) {
-            const tempObject = {
-              id: rowsDataObjects.length,
-              col1: productDetails.vendorIdOrName,
-              col2: {
-                imgSrc: imageArray,
-                imgCount: imageArray.length,
-              },
-              col3: productDetails.productTitle,
-              col4: productDetails.sku,
-              col5: productDetails.categorySubcategory,
-              col6: productDetails.weightOrVolume,
-              col7: productDetails.totalStock,
-              col8: {
-                salePrice: getSalePrice(),
-                mrpPrice: getMrpPrice(),
-              },
-              col9: "PUMA",
-              col10: "nothing",
-            };
-
-            const tempArray = [...rowsDataObjects];
-            tempArray.splice(modalId, 1, tempObject);
-            setRowDataObjects([...tempArray]);
-            setOpenEditModal(false);
-          }
+          handleSaveBtnClickOfEditModal();
         }}
       >
         <Grid container className="my-1" spacing={4}>
@@ -418,11 +433,9 @@ const FixedMargin = () => {
               value={productDetails.vendorIdOrName}
               label="VendorID/Name"
               inputlabelshrink
+              name="vendorIdOrName"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  vendorIdOrName: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -431,11 +444,9 @@ const FixedMargin = () => {
               value={productDetails.productTitle}
               label="Product Title"
               inputlabelshrink
+              name="productTitle"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  productTitle: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -444,11 +455,9 @@ const FixedMargin = () => {
               value={productDetails.sku}
               label="SKU"
               inputlabelshrink
+              name="sku"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  sku: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -457,11 +466,9 @@ const FixedMargin = () => {
               value={productDetails.categorySubcategory}
               label="Category/Subcategory"
               inputlabelshrink
+              name="categorySubcategory"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  categorySubcategory: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -470,11 +477,9 @@ const FixedMargin = () => {
               value={productDetails.weightOrVolume}
               label="Weight/Volume"
               inputlabelshrink
+              name="weightOrVolume"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  weightOrVolume: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -483,11 +488,9 @@ const FixedMargin = () => {
               value={productDetails.totalStock}
               label="Total Stock"
               inputlabelshrink
+              name="totalStock"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  totalStock: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -496,11 +499,9 @@ const FixedMargin = () => {
               value={productDetails.salePriceAndMrp}
               label="Sale Price/MRP"
               inputlabelshrink
+              name="salePriceAndMrp"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  salePriceAndMrp: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -509,11 +510,9 @@ const FixedMargin = () => {
               value={productDetails.discounts}
               label="Discounts"
               inputlabelshrink
+              name="discounts"
               onInputChange={(e) => {
-                setProductDetails({
-                  ...productDetails,
-                  discounts: e.target.value,
-                });
+                handleInputChanges(e);
               }}
             />
           </Grid>
@@ -524,13 +523,7 @@ const FixedMargin = () => {
               Add Images
             </Typography>
             <Grid container>
-              {imageArray?.map((val, index) => {
-                return (
-                  <Grid item xs={3}>
-                    <Image src={imageArray[index]} width={100} height={100} />
-                  </Grid>
-                );
-              })}
+              {returnImagesInArray()}
               <Grid item xs={3}>
                 <label htmlFor="image-upload" className="d-block">
                   <Box
@@ -551,6 +544,74 @@ const FixedMargin = () => {
                 </label>
               </Grid>
             </Grid>
+          </Box>
+        </Box>
+      </ModalComponent>
+      {/* Images Modal Component */}
+      <ModalComponent
+        open={openImagesArrayModal}
+        showHeader={false}
+        showFooter={false}
+      >
+        <Box className="position-absolute end-0">
+          <CustomIcon
+            onIconClick={() => {
+              setOpenImagesArrayModal(false);
+            }}
+            type="close"
+          />
+        </Box>
+        <Box className="d-flex justify-content-center align-items-center">
+          <Box
+            sx={{
+              position: "absolute",
+              left: "-50px",
+            }}
+            className={` rounded-circle p-2 ${
+              imageIndexForImageModal === 0 ? "bg-gray" : "bg-white"
+            }`}
+            onClick={() => {
+              if (imageIndexForImageModal > 0) {
+                setImageIndexForImageModal((index) => {
+                  const theIndex = index - 1;
+                  return theIndex;
+                });
+              }
+            }}
+          >
+            <CustomIcon showColorOnHover={false} type="arrowBackIosNewIcon" />
+          </Box>
+          {openImagesArrayModal && (
+            <Image
+              src={
+                rowsDataObjects[modalId].col2.imgSrc[imageIndexForImageModal]
+              }
+              width={400}
+              height={400}
+            />
+          )}
+          <Box
+            sx={{
+              position: "absolute",
+              right: "-50px",
+            }}
+            className={` rounded-circle p-2 ${
+              rowsDataObjects[modalId]?.col2.imgSrc.length - 1 ===
+              imageIndexForImageModal
+                ? "bg-gray"
+                : "bg-white"
+            }`}
+            onClick={() => {
+              if (
+                imageIndexForImageModal <
+                rowsDataObjects[modalId].col2.imgSrc.length - 1
+              ) {
+                const nextIndex = imageIndexForImageModal + 1;
+                setImageIndexForImageModal(nextIndex);
+              }
+            }}
+          >
+            <CustomIcon showColorOnHover={false} type="arrowforward" />
           </Box>
         </Box>
       </ModalComponent>
