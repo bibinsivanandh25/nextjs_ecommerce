@@ -38,6 +38,7 @@ const SideBarComponent = ({ children }) => {
     top:
       route.pathname.startsWith("/reseller") ||
       route.pathname.startsWith("/supplier") ||
+      route.pathname.startsWith("/admin") ||
       route.pathname[route.pathname.length - 1] === "/"
         ? "60px"
         : "80px",
@@ -57,6 +58,7 @@ const SideBarComponent = ({ children }) => {
     top:
       route.pathname.startsWith("/reseller") ||
       route.pathname.startsWith("/supplier") ||
+      route.pathname.startsWith("/admin") ||
       route.pathname[route.pathname.length - 1] === "/"
         ? "60px"
         : "80px",
@@ -211,6 +213,7 @@ const SideBarComponent = ({ children }) => {
         top:
           route.pathname.startsWith("/reseller") ||
           route.pathname.startsWith("/supplier") ||
+          route.pathname.startsWith("/admin") ||
           route.pathname[route.pathname.length - 1] === "/"
             ? "60px"
             : "80px",
