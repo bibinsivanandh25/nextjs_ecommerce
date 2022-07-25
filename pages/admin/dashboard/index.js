@@ -200,12 +200,6 @@ const DashBoard = () => {
       rate: "₹ 1,12,345",
       color: "#ff4500",
     },
-    {
-      id: 6,
-      title: "Total Orders",
-      rate: "₹ 1,12,345",
-      color: "#ff4500",
-    },
   ]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -278,24 +272,63 @@ const DashBoard = () => {
   const [pieChartData, setPieChartData] = useState([
     {
       type: "supplier",
-      data: [245, 25, 234],
-      labels: ["#c33f0f", "#fc9874", "#efa263"],
-      backgroundColor: ["#c33f0f", "#fc9874", "#efa263"],
-      borderColor: ["#c33f0f", "#fc9874", "#efa263"],
+      data: [
+        {
+          label: "Total count",
+          value: 243,
+          bgColor: "#e56700",
+        },
+        {
+          label: "New count",
+          value: 23,
+          bgColor: "#cf2a1e",
+        },
+        {
+          label: "Old count",
+          value: 150,
+          bgColor: "#efa263",
+        },
+      ],
     },
     {
       type: "reseller",
-      data: [245, 225, 34],
-      labels: ["#fc9874", "#efa263", "#c33f0f"],
-      backgroundColor: ["#fc9874", "#efa263", "#c33f0f"],
-      borderColor: ["#fc9874", "#efa263", "#c33f0f"],
+      data: [
+        {
+          label: "Total count",
+          value: 243,
+          bgColor: "#cf2a1e",
+        },
+        {
+          label: "New count",
+          value: 23,
+          bgColor: "#e56700",
+        },
+        {
+          label: "Old count",
+          value: 150,
+          bgColor: "#efa263",
+        },
+      ],
     },
     {
       type: "customer",
-      data: [245, 25, 234],
-      labels: ["#efa263", "#c33f0f", "#fc9874"],
-      backgroundColor: ["#efa263", "#c33f0f", "#fc9874"],
-      borderColor: ["#efa263", "#c33f0f", "#fc9874"],
+      data: [
+        {
+          label: "Total count",
+          value: 243,
+          bgColor: "#efa263",
+        },
+        {
+          label: "New count",
+          value: 23,
+          bgColor: "#cf2a1e",
+        },
+        {
+          label: "Old count",
+          value: 150,
+          bgColor: "#e56700",
+        },
+      ],
     },
   ]);
   const [pieChartSelect, setPiechartSelect] = useState("supplier");
@@ -339,7 +372,7 @@ const DashBoard = () => {
         <Grid
           container
           spacing={1}
-          className="mt-3 d-flex justify-content-center"
+          className="mt-3 d-flex justify-content-evenly"
         >
           {cardData.map((item) => (
             <Grid item lg={2} md={3} sm={6} xs={6} className=" cursor-pointer">
@@ -436,7 +469,7 @@ const DashBoard = () => {
           </Grid>
         </Grid>
         <Grid container item xs={12} className="mt-2" spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={6} className="mb-2">
             <Paper elevation={3} className="p-2">
               <Box className="d-flex justify-content-between">
                 <Typography className="fw-600">Counts</Typography>
@@ -525,6 +558,7 @@ const DashBoard = () => {
                   labels={selectedPieChart?.labels}
                   backgroundColor={selectedPieChart?.backgroundColor}
                   borderColor={selectedPieChart?.borderColor}
+                  minHeight="mnh-250"
                 />
               </Box>
             </Paper>

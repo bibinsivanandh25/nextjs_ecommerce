@@ -259,6 +259,9 @@ export default function TableComponent({
   paginationType = "default",
   draggableHeader = false,
   stickyCheckBox = false,
+  showDateFilterBtn = false,
+  dateFilterBtnName = "Add",
+  dateFilterBtnClick = () => {},
   stickyHeader = true,
 }) {
   const [page, setPage] = useState(0);
@@ -453,6 +456,18 @@ export default function TableComponent({
             handleSearch();
           }}
         />
+        {showDateFilterBtn && (
+          <Grid item>
+            <ButtonComponent
+              variant="contained"
+              label={dateFilterBtnName}
+              muiProps="fs-12 ms-1"
+              onBtnClick={() => {
+                dateFilterBtnClick();
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
     );
   };

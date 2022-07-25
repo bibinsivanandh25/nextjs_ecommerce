@@ -36,6 +36,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import TrendingDownOutlinedIcon from "@mui/icons-material/TrendingDownOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const CustomIcon = ({
   title = "",
@@ -89,6 +90,7 @@ const CustomIcon = ({
     whatsAppIcon: WhatsAppIcon,
     trendingDownOutlinedIcon: TrendingDownOutlinedIcon,
     trendingUpOutlinedIcon: TrendingUpOutlinedIcon,
+    notificationsIcon: NotificationsIcon,
   };
 
   const [hover, setHover] = useState(false);
