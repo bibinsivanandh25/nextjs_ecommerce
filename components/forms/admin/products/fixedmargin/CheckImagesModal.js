@@ -5,12 +5,12 @@ import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 
 const CheckImagesModal = ({
-  openImagesArrayModal,
-  setOpenImagesArrayModal,
-  imageIndexForImageModal,
-  setImageIndexForImageModal,
-  rowsDataObjects,
-  modalId,
+  openImagesArrayModal = false,
+  setOpenImagesArrayModal = () => {},
+  imageIndexForImageModal = 0,
+  setImageIndexForImageModal = () => {},
+  rowsDataObjects = [],
+  modalId = 0,
 }) => {
   return (
     <div>

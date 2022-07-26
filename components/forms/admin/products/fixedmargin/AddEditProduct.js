@@ -7,15 +7,15 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 
 const AddEditProductModal = ({
-  openEditModal,
-  setOpenEditModal,
-  productDetails,
-  setImageArray,
-  setProductDetails,
-  imageArray,
-  setRowDataObjects,
-  modalId,
-  rowsDataObjects,
+  openEditModal = false,
+  setOpenEditModal = () => {},
+  productDetails = {},
+  setImageArray = () => {},
+  setProductDetails = () => {},
+  imageArray = [],
+  setRowDataObjects = () => {},
+  modalId = 0,
+  rowsDataObjects = [],
 }) => {
   const onImgeChange = (event) => {
     if (event.target.files && event.target.files[0]) {

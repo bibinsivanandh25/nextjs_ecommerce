@@ -5,10 +5,10 @@ import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const AcceptRejectModal = ({
-  rowsDataObjects,
-  modalId,
+  rowsDataObjects = [],
+  modalId = 0,
   openAcceptRejectModal,
-  setOpenAcceptRejectModal,
+  setOpenAcceptRejectModal = () => {},
 }) => {
   const returnImages = () => {
     return rowsDataObjects[modalId]?.col2.imgSrc.map((val) => {

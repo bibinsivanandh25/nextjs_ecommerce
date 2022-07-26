@@ -10,6 +10,8 @@ import MenuOption from "@/atoms/MenuOptions";
 import AddEditProductModal from "@/forms/admin/products/fixedmargin/AddEditProduct";
 import CheckImagesModal from "@/forms/admin/products/fixedmargin/CheckImagesModal";
 import AcceptRejectModal from "@/forms/admin/products/fixedmargin/AcceptRejectModal";
+import ViewProducts from "@/forms/admin/products/fixedmargin/ViewProducts";
+import RaiseQueryModal from "@/forms/admin/products/fixedmargin/RaiseQueryModal";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -33,6 +35,8 @@ const FixedMargin = () => {
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
 
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
+  const [showViewProducts, setShowViewProducts] = useState(false);
+  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
 
   const titles = [
     "Products to approve (48)",
@@ -92,24 +96,24 @@ const FixedMargin = () => {
   ];
 
   const [rowsDataObjects, setRowDataObjects] = useState([
-    // {
-    //   id: 1,
-    //   col1: "#345345 SKM Tex",
-    //   col2: {
-    //     imgSrc: [
-    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    //     ],
-    //     imgCount: 10,
-    //   },
-    //   col3: "Show 20 words max",
-    //   col4: "--",
-    //   col5: "Gym Eqipment (10%) - Rowing Belt",
-    //   col6: "0.500gms/0.720gms",
-    //   col7: 150,
-    //   col8: { salePrice: 1200, mrpPrice: 1500 },
-    //   col9: "PUMA",
-    //   col10: "nothing",
-    // },
+    {
+      id: 1,
+      col1: "#345345 SKM Tex",
+      col2: {
+        imgSrc: [
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+        ],
+        imgCount: 10,
+      },
+      col3: "Show 20 words max",
+      col4: "--",
+      col5: "Gym Eqipment (10%) - Rowing Belt",
+      col6: "0.500gms/0.720gms",
+      col7: 150,
+      col8: { salePrice: 1200, mrpPrice: 1500 },
+      col9: "PUMA",
+      col10: "nothing",
+    },
     // {
     //   id: 2,
     //   col1: "#345345 SKM hi Tex",
@@ -178,6 +182,11 @@ const FixedMargin = () => {
       setModalId(index);
       setOpenAcceptRejectModal(true);
     }
+
+    if (ele === "Raise Query") {
+      setModalId(index);
+      setOpenRaiseQueryModal(true);
+    }
   };
 
   const theTableRowsData = () => {
@@ -221,7 +230,11 @@ const FixedMargin = () => {
         col9: "PUMA",
         col10: (
           <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon type="view" className="fs-18" />
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => setShowViewProducts(true)}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 console.log("Index", index);
@@ -265,37 +278,41 @@ const FixedMargin = () => {
 
   return (
     <>
-      <Box>
-        <Box className="d-flex mt-3">{returnTabs()}</Box>
-        <Box className="mt-3">
-          <TableComponent
-            columns={tableColumns}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            tableRows={tableRows}
-            // showSearchbar={false}
-            showDateFilterBtn
-            showDateFilter
-            dateFilterBtnName="+ New Product"
-            dateFilterBtnClick={() => {
-              setProductDetails({
-                vendorIdOrName: "",
-                images: "",
-                productTitle: "",
-                sku: "",
-                categorySubcategory: "",
-                weightOrVolume: "",
-                totalStock: "",
-                salePriceAndMrp: "",
-                discounts: "",
-              });
-              setImageArray([]);
-              setOpenEditModal(true);
-              setModalId(null);
-            }}
-          />
+      {!showViewProducts ? (
+        <Box>
+          <Box className="d-flex mt-3">{returnTabs()}</Box>
+          <Box className="mt-3">
+            <TableComponent
+              columns={tableColumns}
+              tHeadBgColor="bg-light-gray"
+              showPagination={false}
+              tableRows={tableRows}
+              // showSearchbar={false}
+              showDateFilterBtn
+              showDateFilter
+              dateFilterBtnName="+ New Product"
+              dateFilterBtnClick={() => {
+                setProductDetails({
+                  vendorIdOrName: "",
+                  images: "",
+                  productTitle: "",
+                  sku: "",
+                  categorySubcategory: "",
+                  weightOrVolume: "",
+                  totalStock: "",
+                  salePriceAndMrp: "",
+                  discounts: "",
+                });
+                setImageArray([]);
+                setOpenEditModal(true);
+                setModalId(null);
+              }}
+            />
+          </Box>
         </Box>
-      </Box>
+      ) : (
+        <ViewProducts setShowViewProduct={setShowViewProducts} />
+      )}
       {/* Edit Modal Component */}
       <AddEditProductModal
         openEditModal={openEditModal}
@@ -323,6 +340,11 @@ const FixedMargin = () => {
         setOpenAcceptRejectModal={setOpenAcceptRejectModal}
         modalId={modalId}
         rowsDataObjects={rowsDataObjects}
+      />
+      {/* Raise Query Modal */}
+      <RaiseQueryModal
+        openRaiseQueryModal={openRaiseQueryModal}
+        setOpenRaiseQueryModal={setOpenRaiseQueryModal}
       />
     </>
   );
