@@ -1,16 +1,15 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import styles from "./fixedmargin.module.css";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import ModalComponent from "@/atoms/ModalComponent";
-import InputBox from "@/atoms/InputBoxComponent";
-import ButtonComponent from "@/atoms/ButtonComponent";
+import AddEditProductModal from "@/forms/admin/products/fixedmargin/AddEditProduct";
+import CheckImagesModal from "@/forms/admin/products/fixedmargin/CheckImagesModal";
+import AcceptRejectModal from "@/forms/admin/products/fixedmargin/AcceptRejectModal";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -32,6 +31,8 @@ const FixedMargin = () => {
 
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
+
+  const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
 
   const titles = [
     "Products to approve (48)",
@@ -147,17 +148,6 @@ const FixedMargin = () => {
     // },
   ]);
 
-  // const editModalInputBoxLabels = [
-  //   "Vendor ID/Name",
-  //   "Product Title",
-  //   "SKU",
-  //   "Category/Subcategory",
-  //   "Weight/Volume",
-  //   "Total Stock",
-  //   "Sale Price/MRP",
-  //   "Discounts",
-  // ];
-
   const onClickOfMenuItem = (ele, index) => {
     if (ele === "Edit") {
       setProductDetails({
@@ -182,6 +172,11 @@ const FixedMargin = () => {
       const tempArray = [...rowsDataObjects];
       tempArray.splice(index, 1);
       setRowDataObjects([...tempArray]);
+    }
+
+    if (ele === "Accept/Reject") {
+      setModalId(index);
+      setOpenAcceptRejectModal(true);
     }
   };
 
@@ -250,41 +245,6 @@ const FixedMargin = () => {
     theTableRowsData();
   }, [rowsDataObjects]);
 
-  const getMrpPrice = () => {
-    let mrpPrice = 0;
-    if (productDetails.salePriceAndMrp) {
-      const tempArray = productDetails.salePriceAndMrp.split("/");
-      console.log(tempArray);
-      mrpPrice = tempArray[1];
-      console.log(mrpPrice);
-    }
-    return parseInt(mrpPrice, 10);
-  };
-  const getSalePrice = () => {
-    let salePrice = 0;
-    if (productDetails.salePriceAndMrp) {
-      const tempArray = productDetails.salePriceAndMrp.split("/");
-      console.log(tempArray);
-      salePrice = tempArray[0];
-      console.log(salePrice);
-    }
-    return parseInt(salePrice, 10);
-  };
-
-  const onImgeChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        console.log("The result", e.target.result);
-        const theImagesArray = [...imageArray];
-        theImagesArray.push(e.target.result);
-        setImageArray([...theImagesArray]);
-        setProductDetails({ ...productDetails, images: theImagesArray });
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  };
-
   const returnTabs = () => {
     return titles.map((val, index) => {
       return (
@@ -303,85 +263,21 @@ const FixedMargin = () => {
     });
   };
 
-  const returnImagesInArray = () => {
-    return imageArray?.map((val, index) => {
-      return (
-        <Grid item xs={3}>
-          <Image src={imageArray[index]} width={100} height={100} />
-        </Grid>
-      );
-    });
-  };
-
-  const handleSaveBtnClickOfEditModal = () => {
-    if (modalId === null) {
-      const tempObject = {
-        id: rowsDataObjects.length,
-        col1: productDetails.vendorIdOrName,
-        col2: {
-          imgSrc: imageArray,
-          imgCount: imageArray.length,
-        },
-        col3: productDetails.productTitle,
-        col4: productDetails.sku,
-        col5: productDetails.categorySubcategory,
-        col6: productDetails.weightOrVolume,
-        col7: productDetails.totalStock,
-        col8: {
-          salePrice: getSalePrice(),
-          mrpPrice: getMrpPrice(),
-        },
-        col9: "PUMA",
-        col10: "nothing",
-      };
-
-      const tempArray = [...rowsDataObjects];
-      tempArray.push(tempObject);
-      setRowDataObjects([...tempArray]);
-      setOpenEditModal(false);
-    } else if (modalId !== null) {
-      const tempObject = {
-        id: rowsDataObjects.length,
-        col1: productDetails.vendorIdOrName,
-        col2: {
-          imgSrc: imageArray,
-          imgCount: imageArray.length,
-        },
-        col3: productDetails.productTitle,
-        col4: productDetails.sku,
-        col5: productDetails.categorySubcategory,
-        col6: productDetails.weightOrVolume,
-        col7: productDetails.totalStock,
-        col8: {
-          salePrice: getSalePrice(),
-          mrpPrice: getMrpPrice(),
-        },
-        col9: "PUMA",
-        col10: "nothing",
-      };
-
-      const tempArray = [...rowsDataObjects];
-      tempArray.splice(modalId, 1, tempObject);
-      setRowDataObjects([...tempArray]);
-      setOpenEditModal(false);
-    }
-  };
-
-  const handleInputChanges = (e) => {
-    setProductDetails({
-      ...productDetails,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
     <>
       <Box>
         <Box className="d-flex mt-3">{returnTabs()}</Box>
-        <Box className="mt-2">
-          <ButtonComponent
-            label="+ New Product"
-            onBtnClick={() => {
+        <Box className="mt-3">
+          <TableComponent
+            columns={tableColumns}
+            tHeadBgColor="bg-light-gray"
+            showPagination={false}
+            tableRows={tableRows}
+            // showSearchbar={false}
+            showDateFilterBtn
+            showDateFilter
+            dateFilterBtnName="+ New Product"
+            dateFilterBtnClick={() => {
               setProductDetails({
                 vendorIdOrName: "",
                 images: "",
@@ -399,222 +295,35 @@ const FixedMargin = () => {
             }}
           />
         </Box>
-        <Box className="">
-          <TableComponent
-            columns={tableColumns}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            tableRows={tableRows}
-            showSearchbar={false}
-          />
-        </Box>
       </Box>
       {/* Edit Modal Component */}
-      <ModalComponent
-        open={openEditModal}
-        ModalTitle="Edit Product"
-        titleClassName="fw-bold fs-14 color-orange"
-        footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
-        ClearBtnText="Reset"
-        saveBtnText="Update"
-        saveBtnClassName="ms-1"
-        ModalWidth={650}
-        onCloseIconClick={() => {
-          setOpenEditModal(false);
-        }}
-        minHeightClassName="mxh-500"
-        onSaveBtnClick={() => {
-          handleSaveBtnClickOfEditModal();
-        }}
-      >
-        <Grid container className="my-1" spacing={4}>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.vendorIdOrName}
-              label="VendorID/Name"
-              inputlabelshrink
-              name="vendorIdOrName"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.productTitle}
-              label="Product Title"
-              inputlabelshrink
-              name="productTitle"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.sku}
-              label="SKU"
-              inputlabelshrink
-              name="sku"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.categorySubcategory}
-              label="Category/Subcategory"
-              inputlabelshrink
-              name="categorySubcategory"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.weightOrVolume}
-              label="Weight/Volume"
-              inputlabelshrink
-              name="weightOrVolume"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.totalStock}
-              label="Total Stock"
-              inputlabelshrink
-              name="totalStock"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.salePriceAndMrp}
-              label="Sale Price/MRP"
-              inputlabelshrink
-              name="salePriceAndMrp"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <InputBox
-              value={productDetails.discounts}
-              label="Discounts"
-              inputlabelshrink
-              name="discounts"
-              onInputChange={(e) => {
-                handleInputChanges(e);
-              }}
-            />
-          </Grid>
-        </Grid>
-        <Box>
-          <Box className="d-flex align-items-center mt-3">
-            <Typography className="fs-14 text-center color-gray w-25">
-              Add Images
-            </Typography>
-            <Grid container>
-              {returnImagesInArray()}
-              <Grid item xs={3}>
-                <label htmlFor="image-upload" className="d-block">
-                  <Box
-                    width={100}
-                    height={100}
-                    className="rounded d-flex justify-content-center align-items-center border cursor-pointer"
-                  >
-                    <AddCircleOutlineOutlinedIcon className="color-gray" />
-
-                    <input
-                      type="file"
-                      id="image-upload"
-                      accept="image/png, image/jpeg"
-                      className="d-none"
-                      onChange={onImgeChange}
-                    />
-                  </Box>
-                </label>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </ModalComponent>
+      <AddEditProductModal
+        openEditModal={openEditModal}
+        setOpenEditModal={setOpenEditModal}
+        productDetails={productDetails}
+        setImageArray={setImageArray}
+        setProductDetails={setProductDetails}
+        imageArray={imageArray}
+        setRowDataObjects={setRowDataObjects}
+        modalId={modalId}
+        rowsDataObjects={rowsDataObjects}
+      />
       {/* Images Modal Component */}
-      <ModalComponent
-        open={openImagesArrayModal}
-        showHeader={false}
-        showFooter={false}
-      >
-        <Box className="position-absolute end-0">
-          <CustomIcon
-            onIconClick={() => {
-              setOpenImagesArrayModal(false);
-            }}
-            type="close"
-          />
-        </Box>
-        <Box className="d-flex justify-content-center align-items-center">
-          <Box
-            sx={{
-              position: "absolute",
-              left: "-50px",
-            }}
-            className={` rounded-circle p-2 ${
-              imageIndexForImageModal === 0 ? "bg-gray" : "bg-white"
-            }`}
-            onClick={() => {
-              if (imageIndexForImageModal > 0) {
-                setImageIndexForImageModal((index) => {
-                  const theIndex = index - 1;
-                  return theIndex;
-                });
-              }
-            }}
-          >
-            <CustomIcon showColorOnHover={false} type="arrowBackIosNewIcon" />
-          </Box>
-          {openImagesArrayModal && (
-            <Image
-              src={
-                rowsDataObjects[modalId].col2.imgSrc[imageIndexForImageModal]
-              }
-              width={400}
-              height={400}
-            />
-          )}
-          <Box
-            sx={{
-              position: "absolute",
-              right: "-50px",
-            }}
-            className={` rounded-circle p-2 ${
-              rowsDataObjects[modalId]?.col2.imgSrc.length - 1 ===
-              imageIndexForImageModal
-                ? "bg-gray"
-                : "bg-white"
-            }`}
-            onClick={() => {
-              if (
-                imageIndexForImageModal <
-                rowsDataObjects[modalId].col2.imgSrc.length - 1
-              ) {
-                const nextIndex = imageIndexForImageModal + 1;
-                setImageIndexForImageModal(nextIndex);
-              }
-            }}
-          >
-            <CustomIcon showColorOnHover={false} type="arrowforward" />
-          </Box>
-        </Box>
-      </ModalComponent>
+      <CheckImagesModal
+        openImagesArrayModal={openImagesArrayModal}
+        setOpenImagesArrayModal={setOpenImagesArrayModal}
+        imageIndexForImageModal={imageIndexForImageModal}
+        setImageIndexForImageModal={setImageIndexForImageModal}
+        rowsDataObjects={rowsDataObjects}
+        modalId={modalId}
+      />
+      {/* Accept Reject Modal */}
+      <AcceptRejectModal
+        openAcceptRejectModal={openAcceptRejectModal}
+        setOpenAcceptRejectModal={setOpenAcceptRejectModal}
+        modalId={modalId}
+        rowsDataObjects={rowsDataObjects}
+      />
     </>
   );
 };
