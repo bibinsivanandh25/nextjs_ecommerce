@@ -107,7 +107,7 @@ const MyCollections = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} sx={{ my: 5, px: 2 }}>
-          <Paper>
+          <Paper className="pt-2">
             <TableComponent
               table_heading=""
               columns={columns}

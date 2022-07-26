@@ -532,7 +532,7 @@ export default function TableComponent({
       <Grid container>
         <Grid item container xs={3} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={6} xs={12}>
+            <Grid item xs={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"

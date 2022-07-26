@@ -1,10 +1,13 @@
 import { Typography } from "@mui/material";
 import CustomIcon from "services/iconUtils";
+import { useState } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
+import ViewActiveResellers from "@/forms/admin/Resellers/ViewActiveResellers";
 
 const ActiveResellers = () => {
+  const [showActiveResellerView, setShowActiveResellerView] = useState(false);
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -133,7 +136,11 @@ const ActiveResellers = () => {
       col3: "1",
       col13: (
         <div className="d-flex justify-content-center align-items-center ">
-          <CustomIcon type="view" title="view" />
+          <CustomIcon
+            type="view"
+            title="view"
+            onIconClick={() => setShowActiveResellerView(true)}
+          />
           <MenuOption
             options={[
               "Edit",
@@ -161,7 +168,11 @@ const ActiveResellers = () => {
       col3: "2",
       col13: (
         <div className="d-flex justify-content-center align-items-center ">
-          <CustomIcon type="view" title="view" />
+          <CustomIcon
+            type="view"
+            title="view"
+            onIconClick={() => setShowActiveResellerView(true)}
+          />
           <MenuOption
             options={[
               "Edit",
@@ -185,15 +196,21 @@ const ActiveResellers = () => {
   ];
   return (
     <div>
-      <TableComponent
-        table_heading="Active Resellers"
-        showDateFilter
-        stickyCheckBox
-        stickyHeader
-        tableRows={[...rows]}
-        columns={[...columns]}
-        tHeadBgColor="bg-gray-1"
-      />
+      {!showActiveResellerView ? (
+        <TableComponent
+          table_heading="Active Resellers"
+          showDateFilter
+          stickyCheckBox
+          stickyHeader
+          tableRows={[...rows]}
+          columns={[...columns]}
+          tHeadBgColor="bg-gray-1"
+        />
+      ) : (
+        <ViewActiveResellers
+          setShowActiveResellerView={setShowActiveResellerView}
+        />
+      )}
     </div>
   );
 };
