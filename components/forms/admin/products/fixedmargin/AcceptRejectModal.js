@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const AcceptRejectModal = ({
   rowsDataObjects,
@@ -12,7 +13,7 @@ const AcceptRejectModal = ({
   const returnImages = () => {
     return rowsDataObjects[modalId]?.col2.imgSrc.map((val) => {
       return (
-        <Grid item xs={2} className="ms-2">
+        <Grid item xs={2} className="ms-2 text-center">
           {" "}
           <Image src={val} width={50} height={50} />{" "}
         </Grid>
@@ -25,7 +26,7 @@ const AcceptRejectModal = ({
     console.log("Mrp price ", mrpPrice);
     const diff = mrpPrice - salePrice;
     const fraction = diff / mrpPrice;
-    return fraction * 100;
+    return Math.round(fraction * 100);
   };
 
   return (
@@ -34,13 +35,14 @@ const AcceptRejectModal = ({
         open={openAcceptRejectModal}
         ModalTitle="View Product"
         titleClassName="fw-bold fs-14 color-orange"
-        footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reject"
         saveBtnText="Approve"
         saveBtnClassName="ms-1"
         onCloseIconClick={() => {
           setOpenAcceptRejectModal(false);
         }}
+        showFooter={false}
+        ModalWidth={550}
       >
         <Box className="ms-5">
           <Box>
@@ -119,6 +121,38 @@ const AcceptRejectModal = ({
               Star Date - End Date
             </Typography>
           </Box>
+        </Box>
+        <Box className="mt-3 ps-3 border-top py-2">
+          <ButtonComponent
+            muiProps="fs-12 color-gray"
+            variant="text"
+            label="flag"
+          />
+          <Tooltip title="Merge to flag">
+            <ButtonComponent
+              muiProps="fs-12 color-gray"
+              variant="text"
+              label="Merge to flag"
+            />
+          </Tooltip>
+          <ButtonComponent
+            muiProps="fs-12 color-gray"
+            variant="text"
+            label="Raise Query"
+          />
+          <ButtonComponent
+            muiProps="fs-12 color-gray"
+            variant="text"
+            label="Cancel"
+          />
+          <ButtonComponent
+            muiProps="fs-12"
+            borderColor="border-danger"
+            textColor="text-danger"
+            variant="outlined"
+            label="Reject"
+          />
+          <ButtonComponent muiProps="fs-12 ms-2" label="Approve" />
         </Box>
       </ModalComponent>
     </>
