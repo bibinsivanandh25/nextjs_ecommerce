@@ -93,7 +93,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
         onClick={() => {
           setShowCreateComponent(false);
         }}
-        className="fw-bold fs-14 cursor-pointer"
+        className="fw-bold mb-2 fs-14 cursor-pointer color-orange"
       >
         {"<"}Back
       </Typography>
