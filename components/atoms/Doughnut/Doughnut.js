@@ -4,7 +4,12 @@ import { Doughnut } from "react-chartjs-2";
 import { Grid } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-export const Doughnutchart = ({ labels = [], data = [] }) => {
+export const Doughnutchart = ({
+  labels = [],
+  data = [],
+  className = "",
+  cutout = "60",
+}) => {
   const color = [
     "#8F1FF9",
     "#FD931B",
@@ -35,7 +40,7 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
     // <Cards>
     //   <Grid item xs={12}>
     <Grid container>
-      <Grid item md={9}>
+      <Grid item md={9} className={className}>
         <Doughnut
           data={datas}
           options={{
@@ -67,7 +72,7 @@ export const Doughnutchart = ({ labels = [], data = [] }) => {
 
             maintainAspectRatio: false,
             rotation: 1.0 * Math.PI,
-            cutout: 60,
+            cutout,
           }}
         />
       </Grid>

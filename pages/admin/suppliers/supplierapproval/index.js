@@ -5,9 +5,8 @@ import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
-
 import ModalComponent from "@/atoms/ModalComponent";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import NotificationModal from "@/forms/admin/suppliers/supplierapprovalmodals/notify";
 
 const tableColumn = [
   {
@@ -245,19 +244,10 @@ const SupplierApproval = () => {
         </ModalComponent>
       )}
       {notifyModalOpen && (
-        <ModalComponent
-          open={notifyModalOpen}
-          onCloseIconClick={() => {
-            setNotifyModalOpen(false);
-          }}
-          ModalTitle="Notify"
-          titleClassName="h-5 color-orange"
-          showFooter={false}
-        >
-          <Box>
-            <CheckBoxComponent />
-          </Box>
-        </ModalComponent>
+        <NotificationModal
+          notifyModalOpen={notifyModalOpen}
+          setNotifyModalOpen={setNotifyModalOpen}
+        />
       )}
     </Box>
   );
