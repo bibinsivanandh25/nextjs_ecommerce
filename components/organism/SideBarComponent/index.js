@@ -166,6 +166,9 @@ const SideBarComponent = ({ children }) => {
                   temp.forEach((ele) => {
                     if (ele.selected && ele?.child?.length) {
                       if (e.target.id.split("_").length === 2) {
+                        ele.child.forEach((element) => {
+                          element.selected = false;
+                        });
                         ele.child[index].selected = !ele.child[index].selected;
                       } else if (e.target.id.split("_").length === 3) {
                         ele.child[`${e.target.id.split("_")[1]}`].child.forEach(
@@ -363,15 +366,22 @@ const SideBarComponent = ({ children }) => {
           marginLeft: ` ${open ? "245px" : "60px"}`,
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
+          minHeight: "calc(100vh - 60px)",
         }}
-        className=" p-4 py-3 w-100"
+        className=" p-4 py-3 w-100 body-bg"
       >
-        <Box className="mb-2">
+        <Box
+          className={`mb-2 ${
+            route.pathname.startsWith("/admin") ? "d-none" : ""
+          }`}
+        >
           <BreadCrumb />
         </Box>
         <Box
           sx={{
-            maxHeight: "calc(100vh - 130px)",
+            maxHeight: route.pathname.startsWith("/admin")
+              ? "calc(100vh - 95px)"
+              : "calc(100vh - 130px)",
             overflowY: "scroll",
           }}
           className="hide-scrollbar "

@@ -277,7 +277,12 @@ const Header = () => {
                   <Typography className="fw-bold fs-14">
                     Your Account
                   </Typography>
-                  <Typography className="color-orange fs-14">
+                  <Typography
+                    className="color-orange fs-14"
+                    onClick={() => {
+                      route.push("/auth/login");
+                    }}
+                  >
                     Sign Out
                   </Typography>
                 </Box>
