@@ -68,7 +68,7 @@ const MyEarnings = () => {
                       {item.description}
                     </Typography>
                     <div className="d-flex justify-content-between align-items-end p-2">
-                      <Typography variant="h4" className="fw-700">
+                      <Typography variant="h4" className="fw-700 color-orange">
                         {"\u20A8"}
                         {item.amount}
                       </Typography>
