@@ -25,6 +25,7 @@ export const LineChart = ({
   height = "200px",
   showYAxis = true,
   lineColor = "#C100C1",
+  showYGrid = true,
 }) => {
   const options = {
     plugins: {
@@ -52,7 +53,7 @@ export const LineChart = ({
           text: "Amount",
         },
         grid: {
-          display: true,
+          display: showYGrid,
           lineWidth: 1,
           color: "#f5f4f5",
         },
