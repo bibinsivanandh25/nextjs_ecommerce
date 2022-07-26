@@ -405,69 +405,86 @@ export default function TableComponent({
 
   const getDateFilter = () => {
     return (
-      <Grid container justifyContent="end" alignItems="center">
-        <span className="fs-12">From date:</span>
-        <input
-          type="date"
-          value={dateValue.from}
-          className={styles.dateinput}
-          style={{
-            border: "none",
-            outline: "none",
-            display: "flex",
-            flexDirection: "row-reverse",
-          }}
-          onChange={(e) => {
-            setDateValue((prev) => ({
-              ...prev,
-              from: e.target.value,
-            }));
-          }}
-          // max={dateValue.to}
-        />
-        <span className="fs-12">To date:</span>
-        <input
-          type="date"
-          value={dateValue.to}
-          className={styles.dateinput}
-          style={{
-            border: "none",
-            outline: "none",
-            display: "flex",
-            flexDirection: "row-reverse",
-          }}
-          onChange={(e) => {
-            setDateValue((prev) => ({
-              ...prev,
-              to: e.target.value,
-            }));
-          }}
-          // min={dateValue.from}
-        />
-        <input
-          type="text"
-          placeholder="Search"
-          className={`${styles.searchInput} w-300px`}
-          value={searchText}
-          label="Search"
-          size="small"
-          onChange={(e) => {
-            setsearchText(e.target.value);
-            handleSearch();
-          }}
-        />
-        {showDateFilterBtn && (
-          <Grid item>
-            <ButtonComponent
-              variant="contained"
-              label={dateFilterBtnName}
-              muiProps="fs-12 ms-1"
-              onBtnClick={() => {
-                dateFilterBtnClick();
-              }}
-            />
-          </Grid>
-        )}
+      <Grid container>
+        <Grid item container xs={3} justifyContent="start">
+          {table_heading && (
+            <Grid item sm={6} md={6} xs={12}>
+              <Typography
+                sx={{ flex: "1 1 100%", py: { sm: 1 } }}
+                // variant="h6"
+                id="tableTitle"
+                component="div"
+                className="fw-bold"
+              >
+                {table_heading}
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+        <Grid container justifyContent="end" alignItems="center" item xs={9}>
+          <span className="fs-12">From date:</span>
+          <input
+            type="date"
+            value={dateValue.from}
+            className={styles.dateinput}
+            style={{
+              border: "none",
+              outline: "none",
+              display: "flex",
+              flexDirection: "row-reverse",
+            }}
+            onChange={(e) => {
+              setDateValue((prev) => ({
+                ...prev,
+                from: e.target.value,
+              }));
+            }}
+            // max={dateValue.to}
+          />
+          <span className="fs-12">To date:</span>
+          <input
+            type="date"
+            value={dateValue.to}
+            className={styles.dateinput}
+            style={{
+              border: "none",
+              outline: "none",
+              display: "flex",
+              flexDirection: "row-reverse",
+            }}
+            onChange={(e) => {
+              setDateValue((prev) => ({
+                ...prev,
+                to: e.target.value,
+              }));
+            }}
+            // min={dateValue.from}
+          />
+          <input
+            type="text"
+            placeholder="Search"
+            className={`${styles.searchInput} w-300px`}
+            value={searchText}
+            label="Search"
+            size="small"
+            onChange={(e) => {
+              setsearchText(e.target.value);
+              handleSearch();
+            }}
+          />
+          {showDateFilterBtn && (
+            <Grid item>
+              <ButtonComponent
+                variant="contained"
+                label={dateFilterBtnName}
+                muiProps="fs-12 ms-1"
+                onBtnClick={() => {
+                  dateFilterBtnClick();
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
       </Grid>
     );
   };
@@ -515,7 +532,7 @@ export default function TableComponent({
       <Grid container>
         <Grid item container xs={3} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={6} xs={12}>
+            <Grid item xs={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"

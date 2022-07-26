@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import CustomIcon from "services/iconUtils";
 import { useState } from "react";
 import TableComponent from "@/atoms/TableWithSpan";
-import DeliveryChargesModal from "@/forms/admin/DeliveryCharges";
+import DeliveryChargesModal from "@/forms/admin/DeliveryManagement/DeliveryCharges";
 
 const DeliveryCharge = () => {
   const [showEditModal, setShowEditModal] = useState(false);
