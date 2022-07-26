@@ -208,7 +208,7 @@ const HelpAndSupport = () => {
               <Grid item sx={{ p: 2 }}>
                 <Button
                   variant="contained"
-                  className="bg-orange"
+                  className="bg-orange text-capitalize"
                   size="small"
                   onClick={() => setShowCreateComponent(true)}
                 >
