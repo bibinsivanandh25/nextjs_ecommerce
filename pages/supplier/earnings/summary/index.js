@@ -69,7 +69,7 @@ const MyEarnings = () => {
                     </Typography>
                     <div className="d-flex justify-content-between align-items-end p-2">
                       <Typography variant="h4" className="fw-700 color-orange">
-                        {"\u20A8"}
+                        &#8377;
                         {item.amount}
                       </Typography>
                       <ButtonComponent
