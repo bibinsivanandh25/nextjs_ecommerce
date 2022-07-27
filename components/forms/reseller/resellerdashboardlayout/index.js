@@ -63,9 +63,15 @@ const ResellerDashboardLayout = ({
               <Typography className="fs-12" align="center">
                 {ele.label}
               </Typography>
-              <Typography className="fs-2" align="center">
-                {ele.value}
-              </Typography>
+              {ind === 0 || ind === 1 || ind === 2 ? (
+                <Typography className="fs-20" align="center">
+                  &#8377; {ele.value}
+                </Typography>
+              ) : (
+                <Typography className="fs-20" align="center">
+                  {ele.value}
+                </Typography>
+              )}
             </Paper>
           </Grid>
         </>
