@@ -13,6 +13,7 @@ const NavTabComponent = ({
   // setToDate = () => {},
   getFromDate = () => {},
   getToDate = () => {},
+  onTabCilck = () => {},
 }) => {
   const [selectedId, setSelectedId] = useState(1);
   const [fromDate, setFromDate] = useState();
@@ -28,6 +29,7 @@ const NavTabComponent = ({
             }`}
             onClick={() => {
               setSelectedId(item.id);
+              onTabCilck(item.title);
             }}
             style={{
               borderRight: listData?.length > item.id ? "1px solid gray" : "",

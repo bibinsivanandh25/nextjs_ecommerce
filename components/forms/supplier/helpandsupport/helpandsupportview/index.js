@@ -43,7 +43,7 @@ const HelpandsupportView = ({ selectedData }) => {
   };
 
   return (
-    <Paper className="mnh-80vh">
+    <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <p className="fs-16 fw-bold p-3 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>

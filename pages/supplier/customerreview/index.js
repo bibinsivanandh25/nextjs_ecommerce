@@ -173,7 +173,7 @@ const CustomerReview = () => {
   };
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <Typography
         variant="h6"
         fontWeight="bold"

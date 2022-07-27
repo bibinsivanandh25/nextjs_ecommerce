@@ -15,7 +15,7 @@ const PickUpAddress = () => {
   const [selectId, setSelectId] = useState({ type: null, id: null });
 
   return (
-    <>
+    <div className="mnh-70vh overflow-auto hide-scrollbar bg-white p-2 rounded">
       <Grid container item xs={12} sx={{ py: 1 }} spacing={3}>
         <Grid xs={6} item>
           <Box
@@ -84,7 +84,7 @@ const PickUpAddress = () => {
           setSelectId={setSelectId}
         />
       )}
-    </>
+    </div>
   );
 };
 
