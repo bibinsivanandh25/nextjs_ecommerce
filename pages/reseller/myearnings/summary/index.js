@@ -67,10 +67,9 @@ const MyEarnings = () => {
                     >
                       {item.description}
                     </Typography>
-                    <div className="d-flex justify-content-between align-items-end p-2">
-                      <Typography variant="h4" className="fw-700">
-                        {"\u20A8"}
-                        {item.amount}
+                    <div className="d-flex justify-content-between align-items-end p-2 mt-3">
+                      <Typography variant="h4" className="fw-700 color-orange">
+                        ₹ {item.amount}
                       </Typography>
                       <ButtonComponent
                         muiProps="p-1 h-75"
