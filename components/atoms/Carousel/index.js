@@ -51,7 +51,7 @@ function CarousalComponent({
       {images &&
         images.map((value) => {
           return (
-            <div className="bg-white">
+            <div>
               <img
                 src={value.src}
                 alt=""
