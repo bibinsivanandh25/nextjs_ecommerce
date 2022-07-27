@@ -139,10 +139,10 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
               <Box className="fs-14 text-center">{val.productName}</Box>
             </Box>
           </Box>
-          <Typography className="h-30 fs-14 fw-bold color-blue text-center">
+          <Typography className="h-50 fs-14 fw-bold color-blue text-center">
             {val.productPrice}
           </Typography>
-          <Typography className="h-30 fs-14 text-center color-dark-green">
+          <Typography className="h-50 fs-14 text-center color-dark-green">
             {val.productAvailability}
           </Typography>
           <Box className="mnh-150 mxh-150">
@@ -150,17 +150,17 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
               {checklengthAndReturn(val.productDescription)}
             </Typography>
           </Box>
-          <Box className="h-30 d-flex justify-content-around">
+          <Box className="h-50 d-flex justify-content-around">
             {val.productRatingReviews}
             <Typography className="fs-14">{val.noOfReviews}</Typography>
           </Box>
-          <Typography className="h-30 fs-14 text-center">
+          <Typography className="h-50 fs-14 text-center">
             {val.productSku}
           </Typography>
-          <Typography className="h-30 fs-14 text-center">
+          <Typography className="h-50 fs-14 text-center">
             {val.productColor}
           </Typography>
-          <Typography className="h-30 fs-14 text-center">
+          <Typography className="h-50 fs-14 text-center">
             {val.productSize}
           </Typography>
         </Box>
@@ -210,17 +210,17 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
           <Box className="mnh-200 mb-4 d-flex align-items-center">
             <Typography className="fw-bold fs-14">Product</Typography>
           </Box>
-          <Typography className=" fw-bold fs-14 h-30">Price</Typography>
-          <Typography className="h-30 fw-bold fs-14">AvailabIlity</Typography>
+          <Typography className=" fw-bold fs-14 h-50">Price</Typography>
+          <Typography className="h-50 fw-bold fs-14">AvailabIlity</Typography>
           <Box className="mxh-150 mnh-150">
             <Typography className="fw-bold fs-14">Description</Typography>
           </Box>
-          <Typography className="h-30 fw-bold fs-14">
+          <Typography className="h-50 fw-bold fs-14">
             Ratings & Reviews
           </Typography>
-          <Typography className="h-30 fw-bold fs-14">SKU</Typography>
-          <Typography className="h-30 fw-bold fs-14">Color</Typography>
-          <Typography className="h-30 fw-bold fs-14">Size</Typography>
+          <Typography className="h-50 fw-bold fs-14">SKU</Typography>
+          <Typography className="h-50 fw-bold fs-14">Color</Typography>
+          <Typography className="h-50 fw-bold fs-14">Size</Typography>
         </Box>
         {returnDivs()}
       </Box>

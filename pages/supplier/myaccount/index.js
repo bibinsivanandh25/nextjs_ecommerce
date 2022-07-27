@@ -25,7 +25,7 @@ const MyAccount = () => {
     if (selectedMenu === 3) return <PickUpAddress />;
   };
   return (
-    <>
+    <div className="mxh-80vh mnh-80vh">
       <Grid container className="list-unstyled fs-14 py-3">
         {tabList.map((ele, ind) => {
           return (
@@ -45,7 +45,7 @@ const MyAccount = () => {
         })}
       </Grid>
       {getSelectedMenuItem()}
-    </>
+    </div>
   );
 };
 export default MyAccount;

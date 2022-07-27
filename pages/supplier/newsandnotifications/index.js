@@ -52,23 +52,23 @@ const notificationData = [
 ];
 const NewsandNotifications = () => {
   return (
-    <Box>
+    <Box className="bg-white p-2 rounded">
       <Grid
         container
         display="flex"
         justifyContent="space-between"
         className="px-3 border-bottom pb-3"
       >
-        <Grid item sm={4}>
+        <Grid item sm={4} className="d-flex align-self-center">
           <Typography className="h-4 fw-bold">Notification&apos;s</Typography>
         </Grid>
-        <Grid item lg={2} md={3} sm={6}>
+        <Grid item lg={2} md={3} sm={6} className="me-2">
           <SimpleDropdownComponent placeholder="Filter by type" size="small" />
         </Grid>
       </Grid>
-      <Grid container>
+      <Grid container className="ps-3">
         {notificationData.map((data) => (
-          <Grid item lg={6} sm={6} className="mt-3">
+          <Grid item lg={6} md={6} sm={12} className="mt-3">
             <div className="border rounded me-4">
               <Card className="d-flex">
                 {data.imagesrc && (

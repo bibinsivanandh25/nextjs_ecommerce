@@ -88,7 +88,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
     return flag;
   };
   return (
-    <Paper className="w-100 mnh-80vh">
+    <Paper className="w-100 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">
