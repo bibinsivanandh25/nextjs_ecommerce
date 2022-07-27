@@ -132,7 +132,7 @@ const NewProducts = () => {
       <HomeComponent
         categories={[...categories]}
         products={[...products]}
-        productTitle="Newly added Products"
+        productTitle="Newly Added Products"
         showMarginButton
       />
     </div>
