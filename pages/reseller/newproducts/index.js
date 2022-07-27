@@ -116,7 +116,7 @@ const NewProducts = () => {
     getproducts();
   }, []);
   return (
-    <div>
+    <div className="bg-white p-2 rounded">
       <CarouselComponent />
       <Box className="mt-2 d-flex justify-content-end align-items-center">
         <Box className="d-flex m-3 align-items-center">

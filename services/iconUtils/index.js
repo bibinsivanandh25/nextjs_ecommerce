@@ -38,6 +38,7 @@ import TrendingDownOutlinedIcon from "@mui/icons-material/TrendingDownOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 
 const CustomIcon = ({
   title = "",
@@ -93,6 +94,7 @@ const CustomIcon = ({
     trendingUpOutlinedIcon: TrendingUpOutlinedIcon,
     arrowBackIosNewIcon: ArrowBackIosNewIcon,
     notificationsIcon: NotificationsIcon,
+    confirmationNumberOutlinedIcon: ConfirmationNumberOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);
