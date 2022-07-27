@@ -394,7 +394,7 @@ const Category = () => {
               </Box>
             </Box>
           </Box>
-          <Box className="mxh-65vh overflow-auto hide-scrollbar">
+          <Box className="">
             <Box className="w-100 mb-3">
               <Box className="d-flex mxw-85vw overflow-x-scroll hide-scrollbar mx-auto">
                 <CategoryScrollComponent categories={CategoryItems} />
@@ -423,7 +423,10 @@ const Category = () => {
                   activeTab={activeTabs.id}
                 />
               </Box>
-              <Box className="d-flex mxh-50vh overflow-y-scroll hide-scrollbar">
+              <Box
+                sx={{ maxHeight: "40vh" }}
+                className="d-flex overflow-y-scroll hide-scrollbar"
+              >
                 <Grid container className="w-100 p-3" spacing={2}>
                   {!selectedSets.length
                     ? setItems.map((ele, index) => {
