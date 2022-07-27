@@ -185,7 +185,7 @@ const HelpAndSupport = () => {
   return (
     <>
       {showCreateComponent ? (
-        <Paper sx={{ height: "75vh" }} className="p-2">
+        <Paper className="p-2 mxh-80vh mnh-80vh">
           <HelpandsupportCreate
             setShowCreateComponent={setShowCreateComponent}
           />
@@ -194,7 +194,7 @@ const HelpAndSupport = () => {
         (showModal.type === "view" || showModal.type === "reply") ? (
         <HelpandsupportView selectedData={selectedData} />
       ) : (
-        <Paper sx={{ height: "75vh" }} className="overflow-auto hide-scrollbar">
+        <Paper className="overflow-auto hide-scrollbar mxh-80vh mnh-80vh">
           <Grid container>
             <Grid
               container

@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import CreateDiscount from "components/forms/reseller/marketingtools/creatediscount";
@@ -133,52 +133,56 @@ const CreateTodaysDeals = () => {
   return (
     <div>
       {!showCreateDiscount ? (
-        <div>
-          <Grid className="d-flex justify-content-between align-items-center my-2">
-            <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription Start Date & time:{Date()}
-              </Typography>
+        <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+          <div>
+            <Grid className="d-flex justify-content-between align-items-center my-2">
+              <Grid>
+                <Typography className="fs-12 fw-bold">
+                  Subscription Start Date & time:{Date()}
+                </Typography>
+              </Grid>
+              <Grid>
+                <Typography className="fs-12 fw-bold">
+                  Subscription End Date & time:{Date()}
+                </Typography>
+              </Grid>
+              <Grid>
+                <ButtonComponent
+                  variant="outlined"
+                  label="Create Today's Deal"
+                  onBtnClick={() => {
+                    setShowCreateDiscount(true);
+                  }}
+                />
+                <Typography
+                  sx={{
+                    width: "fit-content",
+                    mx: "auto",
+                  }}
+                  className="h-5 text-primary cursor-pointer py-1"
+                >
+                  Guidelines to Create
+                </Typography>
+              </Grid>
             </Grid>
             <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription End Date & time:{Date()}
-              </Typography>
-            </Grid>
-            <Grid>
-              <ButtonComponent
-                variant="outlined"
-                label="Create Today's Deal"
-                onBtnClick={() => {
-                  setShowCreateDiscount(true);
-                }}
+              <TableComponent
+                tableRows={[...rows]}
+                columns={[...columns]}
+                showCheckbox
+                showSearchFilter={false}
+                showSearchbar={false}
               />
-              <Typography
-                sx={{
-                  width: "fit-content",
-                  mx: "auto",
-                }}
-                className="h-5 text-primary cursor-pointer py-1"
-              >
-                Guidelines to Create
-              </Typography>
             </Grid>
-          </Grid>
-          <Grid>
-            <TableComponent
-              tableRows={[...rows]}
-              columns={[...columns]}
-              showCheckbox
-              showSearchFilter={false}
-              showSearchbar={false}
-            />
-          </Grid>
-        </div>
+          </div>
+        </Paper>
       ) : (
-        <CreateDiscount
-          setShowCreateDiscount={setShowCreateDiscount}
-          btnText="View Today's Deal"
-        />
+        <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+          <CreateDiscount
+            setShowCreateDiscount={setShowCreateDiscount}
+            btnText="View Today's Deal"
+          />
+        </Paper>
       )}
     </div>
   );

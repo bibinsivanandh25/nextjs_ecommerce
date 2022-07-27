@@ -8,7 +8,7 @@ import { Paper } from "@mui/material";
 
 export default function SimpleAccordion() {
   return (
-    <Paper className="mnh-75vh overflow-auto hide-scrollbar">
+    <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar">
       <div className="mx-5">
         <Typography variant="h6" className="color-orange fw-bold py-2 px-1">
           FAQ

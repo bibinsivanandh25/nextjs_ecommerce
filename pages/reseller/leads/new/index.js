@@ -152,7 +152,7 @@ const NewLeads = () => {
     },
   ];
   return (
-    <Paper className="p-2 mnh-75vh mxh-75vh overflow-auto hide-scrollbar">
+    <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <div>
         <TableComponent
           tableRows={[...rows]}
