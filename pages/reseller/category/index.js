@@ -367,7 +367,7 @@ const Category = () => {
   const [searchText, setSearchText] = useState("");
   const [dropDownValue, setDropDownValue] = useState([]);
   return (
-    <Paper className="w-100 d-flex flex-column h-100 hide-scrollbar p-3 pb-0">
+    <Paper className="w-100 d-flex flex-column p-3 pb-0">
       {!selectedSubCategory.length ? (
         <>
           <Box className="d-flex justify-content-between align-items-center mb-2">
@@ -394,60 +394,65 @@ const Category = () => {
               </Box>
             </Box>
           </Box>
-          <Box className="w-100 mb-3">
-            <Box className="d-flex mxw-85vw overflow-x-scroll hide-scrollbar mx-auto">
-              <CategoryScrollComponent categories={CategoryItems} />
+          <Box className="">
+            <Box className="w-100 mb-3">
+              <Box className="d-flex mxw-85vw overflow-x-scroll hide-scrollbar mx-auto">
+                <CategoryScrollComponent categories={CategoryItems} />
+              </Box>
             </Box>
-          </Box>
-          {selectedSets.length ? (
-            <Box className="mb-3">
-              <Typography
-                className="h-5 color-orange cursor-pointer d-flex align-items-center"
-                onClick={() => {
-                  setSelectedSets([]);
-                }}
+            {selectedSets.length ? (
+              <Box className="mb-3">
+                <Typography
+                  className="h-5 color-orange cursor-pointer d-flex align-items-center"
+                  onClick={() => {
+                    setSelectedSets([]);
+                  }}
+                >
+                  <ArrowBackIosIcon className="fs-16" />
+                  Back
+                </Typography>
+              </Box>
+            ) : null}
+            <Box className="w-100 d-flex ">
+              <Box className="d-flex mnw-150 mxw-200 w-20p">
+                <ButtonTabsList
+                  tabsList={tabsList}
+                  getActiveTab={(val) => {
+                    setActiveTabs({ ...tabsList[val], id: val });
+                  }}
+                  activeTab={activeTabs.id}
+                />
+              </Box>
+              <Box
+                sx={{ maxHeight: "40vh" }}
+                className="d-flex overflow-y-scroll hide-scrollbar"
               >
-                <ArrowBackIosIcon className="fs-16" />
-                Back
-              </Typography>
-            </Box>
-          ) : null}
-          <Box className="w-100 d-flex ">
-            <Box className="d-flex mnw-150 mxw-200 w-20p">
-              <ButtonTabsList
-                tabsList={tabsList}
-                getActiveTab={(val) => {
-                  setActiveTabs({ ...tabsList[val], id: val });
-                }}
-                activeTab={activeTabs.id}
-              />
-            </Box>
-            <Box className="d-flex mxh-50vh overflow-y-scroll hide-scrollbar">
-              <Grid container className="w-100 p-3" spacing={2}>
-                {!selectedSets.length
-                  ? setItems.map((ele, index) => {
-                      return (
-                        <DisplaySet
-                          ele={ele}
-                          key={index}
-                          handleClick={(val) => {
-                            setSelectedSets([{ ...val }]);
-                          }}
-                        />
-                      );
-                    })
-                  : subCategoryItems.map((ele, index) => {
-                      return (
-                        <DisplaySet
-                          ele={ele}
-                          key={index}
-                          handleClick={(val) => {
-                            setSelectedSubCategory([{ ...val }]);
-                          }}
-                        />
-                      );
-                    })}
-              </Grid>
+                <Grid container className="w-100 p-3" spacing={2}>
+                  {!selectedSets.length
+                    ? setItems.map((ele, index) => {
+                        return (
+                          <DisplaySet
+                            ele={ele}
+                            key={index}
+                            handleClick={(val) => {
+                              setSelectedSets([{ ...val }]);
+                            }}
+                          />
+                        );
+                      })
+                    : subCategoryItems.map((ele, index) => {
+                        return (
+                          <DisplaySet
+                            ele={ele}
+                            key={index}
+                            handleClick={(val) => {
+                              setSelectedSubCategory([{ ...val }]);
+                            }}
+                          />
+                        );
+                      })}
+                </Grid>
+              </Box>
             </Box>
           </Box>
         </>

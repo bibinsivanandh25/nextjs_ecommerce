@@ -109,6 +109,62 @@ const Articles = () => {
         status: "UK24",
         date: "17/12/2020",
       },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
+      {
+        productType: "Simple Product",
+        articleName: "#45523232",
+        Description: "Bag",
+        Link: "SL 9083",
+        status: "UK24",
+        date: "17/12/2020",
+      },
     ];
     setTableData(rows);
   }, []);
@@ -137,9 +193,9 @@ const Articles = () => {
   ];
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper className="">
       <SubTabComponent value={value} setValue={setValue} tabList={tabList} />
-      <Box p={2}>
+      <Box p={2} className=" mxh-65vh hide-scrollbar   overflow-auto">
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
             table_heading="2 Confirmed Orders"
