@@ -76,7 +76,10 @@ const UnlockToolsCombo = () => {
   ];
 
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper
+      sx={{ p: 3 }}
+      className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       <UnlockToolsForm
         heading="Marketing tools - Get Subscribed and start Attracting your customers
         with Discount & Games"

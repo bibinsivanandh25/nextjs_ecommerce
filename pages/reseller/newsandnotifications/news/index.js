@@ -59,10 +59,14 @@ const ResellerNews = () => {
             </Typography>
           </Grid>
           <Grid item sx={{ p: 2 }} className="d-flex justify-content-end w-75">
-            <SimpleDropdownComponent label="Filter by type" className="w-25" />
+            <SimpleDropdownComponent
+              label="Filter by type"
+              className="w-25"
+              size="small"
+            />
           </Grid>
         </Grid>
-        <Grid item container spacing={2} xs={12} sx={{ my: 5, px: 2 }}>
+        <Grid item container spacing={2} xs={12} sx={{ my: 2, px: 2 }}>
           {paginatedData.map((ele) => (
             <Grid xs={6} item key={ele.id}>
               <Grid
@@ -89,7 +93,7 @@ const ResellerNews = () => {
                     zeroMinWidth
                     className="fs-14 fw-bold"
                   >
-                    <Typography color="navy" className="fw-600 fs-14">
+                    <Typography className="fw-600 fs-16">
                       {ele.title}
                     </Typography>
                     <Typography color="gray" className="fs-14">

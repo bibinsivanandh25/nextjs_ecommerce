@@ -115,7 +115,9 @@ const UnlockToolsForm = ({
 
   return (
     <>
-      <Typography className="color-orange h-4 fw-bold">{heading}</Typography>
+      <Typography className="color-orange h-4 fw-bold ps-3 mb-1">
+        {heading}
+      </Typography>
       <Typography className="fs-14 px-3">
         Generate sample content from the upload wizard. The samples generator
         automatically generated a suit of analytic content based on upload work
