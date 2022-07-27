@@ -77,7 +77,7 @@ const rows = [
 
 const AddInventory = () => {
   return (
-    <Paper>
+    <Paper className="mnh-80vh overflow-auto hide-scrollbar mxh-80">
       <div className="fs-14 fw-bold border-bottom p-3 mb-3">
         Get Started by Adding Products
       </div>
