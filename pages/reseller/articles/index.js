@@ -195,7 +195,7 @@ const Articles = () => {
   return (
     <Paper className="">
       <SubTabComponent value={value} setValue={setValue} tabList={tabList} />
-      <Box p={2} className=" mxh-65vh hide-scrollbar   overflow-auto">
+      <Box p={2} className=" mxh-70vh mnh-70vh hide-scrollbar overflow-auto">
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
             table_heading="2 Confirmed Orders"

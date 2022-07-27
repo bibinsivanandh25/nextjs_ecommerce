@@ -424,7 +424,7 @@ const Category = () => {
                 />
               </Box>
               <Box
-                sx={{ maxHeight: "40vh" }}
+                sx={{ maxHeight: "45vh" }}
                 className="d-flex overflow-y-scroll hide-scrollbar"
               >
                 <Grid container className="w-100 p-3" spacing={2}>

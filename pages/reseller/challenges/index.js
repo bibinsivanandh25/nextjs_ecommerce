@@ -7,7 +7,7 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 const Challenges = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   return (
-    <Paper className="mnh-75vh overflow-auto hide-scrollbar mxh-75vh">
+    <Paper sx={{ height: "80vh" }} className="overflow-auto hide-scrollbar">
       <Box>
         <Grid className="d-flex justify-content-between align-items-center py-3 border-bottom ">
           <Typography variant="h-4" className="fw-bold px-4">
