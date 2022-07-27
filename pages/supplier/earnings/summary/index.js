@@ -74,7 +74,7 @@ const MyEarnings = () => {
                       </Typography>
                       <ButtonComponent
                         muiProps="p-1 h-75"
-                        label="View Order details"
+                        label="View Order Details"
                         variant="outlined"
                         onBtnClick={() => {
                           setShowOrderDetails(true);

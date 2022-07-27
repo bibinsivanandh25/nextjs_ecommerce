@@ -187,7 +187,7 @@ const supplierMenu = [
     ],
   },
   {
-    title: "Help & support",
+    title: "Help & Support",
     logo: "fas fa-shopping-cart",
     path_name: "helpandsupport",
     navigate: true,
@@ -304,7 +304,7 @@ const resellerMenu = [
     navigate: false,
     child: [
       {
-        title: "Create discount coupons",
+        title: "Create Discount Coupons",
         logo: "",
         navigate: true,
         path_name: "creatediscountcoupons",
@@ -328,7 +328,7 @@ const resellerMenu = [
             path_name: "createquiz",
           },
           {
-            title: "Spin wheel",
+            title: "Spin Wheel",
             logo: "",
             navigate: true,
             path_name: "spinwheel",
@@ -362,7 +362,7 @@ const resellerMenu = [
         ],
       },
       {
-        title: "Share Product by price",
+        title: "Share Product By Price",
         logo: "",
         navigate: true,
         path_name: "shareproductbyprice",

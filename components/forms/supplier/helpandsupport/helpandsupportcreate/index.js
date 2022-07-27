@@ -94,7 +94,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
           onClick={() => {
             setShowCreateComponent(false);
           }}
-          className="fw-bold mb-2 fs-14 ms-3 cursor-pointer color-orange"
+          className="fw-bold mb-2 fs-14 ms-3 cursor-pointer color-orange py-1"
         >
           {"<"}Back
         </Typography>

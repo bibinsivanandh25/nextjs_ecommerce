@@ -185,7 +185,10 @@ const MyProducts = () => {
   ];
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper
+      sx={{ height: "100%" }}
+      className="mnh-80vh overflow-auto hide-scrollbar mxh-80"
+    >
       <SubTabComponent value={value} setValue={setValue} tabList={tabList} />
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>

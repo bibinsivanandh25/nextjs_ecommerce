@@ -161,7 +161,7 @@ const SalesReport = () => {
         cardDetails={[
           {
             label: "Net Revenue",
-            value: "54,233.00",
+            value: " ₹54,233.00",
             background: "#19b79c",
           },
           {
@@ -171,7 +171,7 @@ const SalesReport = () => {
           },
           {
             label: "Revenue Today",
-            value: " 2000",
+            value: "₹ 2000",
             background: "#f58634",
           },
           {
