@@ -89,7 +89,10 @@ const MyShop = () => {
 
   return (
     <>
-      <Card variant="outlined">
+      <Card
+        className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+        variant="outlined"
+      >
         <Box className="m-3 d-flex justify-content-between">
           <Box className="d-flex">
             <Paper
@@ -248,7 +251,7 @@ const MyShop = () => {
         >
           <Box className="w-100 h-100 d-flex flex-column p-4">
             <InputBox
-              label="Shop Name"
+              label="Shopl Name"
               onInputChange={(e) => {
                 setFormData((pre) => {
                   return {
