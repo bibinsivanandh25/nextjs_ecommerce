@@ -12,12 +12,6 @@ import styles from "./HeaderComponent.module.css";
 
 const HeaderComponent = () => {
   const router = useRouter();
-  // const [currentPage, setCurrentPage] = useState("");
-  // useEffect(() => {
-  //   const path = router.pathname.split("/");
-  //   setCurrentPage(path.at(1));
-  // }, []);
-
   return (
     <Box
       className={`${styles.container} shadow-sm bg-white`}
