@@ -167,89 +167,91 @@ const ReportLayout = ({
     });
   };
   return (
-    <Grid>
-      <Grid container spacing={3}>
-        {getCardDetails()}
-      </Grid>
-      <Grid container spacing={3} className="mt-2">
-        <Grid item xs={6}>
-          <Paper sx={{ borderRadius: 4 }}>
-            <p className="fs-12 fw-bold px-4 pt-2 mb-2">{cardLabel}</p>
-            <Bargraph
-              data={barGraphData}
-              labels={barGraphLabels}
-              backgroundColor={barGraphBackgroundColor}
-              hoverBackgroundColor={barGraphHoverBackgroundColor}
-            />
-          </Paper>
+    <Paper>
+      <Grid className="p-3">
+        <Grid container spacing={3}>
+          {getCardDetails()}
         </Grid>
-        <Grid item xs={6}>
-          <Paper className="h-100" sx={{ borderRadius: 4 }}>
-            <p className="fs-12 fw-bold px-4 pt-2 ">{cardLabel} (%)</p>
-            <Grid className="mt-5 w-100">
-              <Doughnutchart labels={doughnutLabels} data={doughnutData} />
-            </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
-      <Grid container spacing={3} className="mt-2">
-        <Grid item xs={5}>
-          <Paper sx={{ borderRadius: 4 }}>
-            <Grid className="d-flex align-items-center ">
-              <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
-              <Grid className="ms-auto ">
-                <SelectComponent disableUnderline list={detailSelectList} />
+        <Grid container spacing={3} className="mt-2">
+          <Grid item xs={6}>
+            <Paper sx={{ borderRadius: 4 }}>
+              <p className="fs-12 fw-bold px-4 pt-2 mb-2">{cardLabel}</p>
+              <Bargraph
+                data={barGraphData}
+                labels={barGraphLabels}
+                backgroundColor={barGraphBackgroundColor}
+                hoverBackgroundColor={barGraphHoverBackgroundColor}
+              />
+            </Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className="h-100" sx={{ borderRadius: 4 }}>
+              <p className="fs-12 fw-bold px-4 pt-2 ">{cardLabel} (%)</p>
+              <Grid className="mt-5 w-100">
+                <Doughnutchart labels={doughnutLabels} data={doughnutData} />
               </Grid>
-              <Grid className="mt-3 cursor-pointer ">
-                {/* <MoreVert /> */}
-                <BasicMenu
-                  menuList={detailMenuList}
-                  getSelectedValue={(item) => {
-                    sortTable(item);
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <TableComponent
-              showSearchFilter={false}
-              showSearchbar={false}
-              columns={[...Detailcolumns]}
-              tableRows={[...tableRows]}
-            />
-          </Paper>
+            </Paper>
+          </Grid>
         </Grid>
-        <Grid item xs={7}>
-          <Paper sx={{ borderRadius: 4 }}>
-            <Grid className="d-flex align-items-center justify-content-between">
-              <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
-              <Grid className="d-flex justify-content-between align-items-center">
-                <SelectComponent
-                  disableUnderline
-                  list={summaryStatusList}
-                  label="Status"
-                />
-                <SelectComponent disableUnderline list={summarySelectList} />
-                <Grid className="mt-3 cursor-pointer">
+        <Grid container spacing={3} className="mt-2">
+          <Grid item xs={6}>
+            <Paper sx={{ borderRadius: 4 }}>
+              <Grid className="d-flex align-items-center ">
+                <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
+                <Grid className="ms-auto ">
+                  <SelectComponent disableUnderline list={detailSelectList} />
+                </Grid>
+                <Grid className="mt-3 cursor-pointer ">
+                  {/* <MoreVert /> */}
                   <BasicMenu
-                    menuList={summaryMenuList}
+                    menuList={detailMenuList}
                     getSelectedValue={(item) => {
-                      sortSummaryTable(item);
+                      sortTable(item);
                     }}
                   />
                 </Grid>
               </Grid>
-            </Grid>
+              <TableComponent
+                showSearchFilter={false}
+                showSearchbar={false}
+                columns={[...Detailcolumns]}
+                tableRows={[...tableRows]}
+              />
+            </Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper sx={{ borderRadius: 4 }}>
+              <Grid className="d-flex align-items-center justify-content-between">
+                <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
+                <Grid className="d-flex justify-content-between align-items-center">
+                  <SelectComponent
+                    disableUnderline
+                    list={summaryStatusList}
+                    label="Status"
+                  />
+                  <SelectComponent disableUnderline list={summarySelectList} />
+                  <Grid className="mt-3 cursor-pointer">
+                    <BasicMenu
+                      menuList={summaryMenuList}
+                      getSelectedValue={(item) => {
+                        sortSummaryTable(item);
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
-            <TableComponent
-              showSearchFilter={false}
-              showSearchbar={false}
-              tableRows={[...summarytableRows]}
-              columns={[...summaryColumns]}
-            />
-          </Paper>
+              <TableComponent
+                showSearchFilter={false}
+                showSearchbar={false}
+                tableRows={[...summarytableRows]}
+                columns={[...summaryColumns]}
+              />
+            </Paper>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </Paper>
   );
 };
 export default ReportLayout;

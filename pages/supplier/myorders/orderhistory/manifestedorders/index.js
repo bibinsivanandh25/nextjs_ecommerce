@@ -129,7 +129,10 @@ const ManifestedOrders = () => {
   }, [tableData]);
 
   return (
-    <Paper sx={{ p: 2, height: "100%" }}>
+    <Paper
+      sx={{ p: 2, height: "100%" }}
+      className="mnh-80vh overflow-auto hide-scrollbar mxh-80"
+    >
       <Paper sx={{ px: 0, py: 2 }}>
         <TableComponent
           table_heading={`Manifested Orders (${tableRows.length})`}

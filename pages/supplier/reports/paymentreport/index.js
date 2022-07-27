@@ -159,7 +159,7 @@ const PaymentReports = () => {
         cardDetails={[
           {
             label: "Total Payment Amount",
-            value: "54,233.00",
+            value: "₹ 54,233.00",
             background: "#59698b",
           },
           {
@@ -169,12 +169,12 @@ const PaymentReports = () => {
           },
           {
             label: "Refunded",
-            value: " 2000.00",
+            value: "₹ 2000.00",
             background: "#d83a56",
           },
           {
             label: "Pending Payments",
-            value: "12,40,000",
+            value: "₹ 12,40,000",
             background: "#053742",
           },
         ]}

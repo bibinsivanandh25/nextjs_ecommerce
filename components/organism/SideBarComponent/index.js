@@ -4,7 +4,7 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -89,6 +89,27 @@ const SideBarComponent = ({ children }) => {
         return "customer";
     }
   };
+  const getInitialSelection = (list) => {
+    const paths = route.pathname.split("/");
+    paths.shift();
+    paths.shift();
+    const temp = JSON.parse(JSON.stringify(list));
+    const selectPath = (data, ind) => {
+      return JSON.parse(JSON.stringify(data)).map((ele) => {
+        if (ele.path_name.includes(paths[ind])) {
+          ele.selected = true;
+          if (ele?.child?.length && paths.length - 1 > ind) {
+            ele.child = [...selectPath(ele.child, ind + 1)];
+          }
+        } else {
+          ele.selected = false;
+        }
+        return ele;
+      });
+    };
+    const tempList = selectPath(temp, 0);
+    return JSON.parse(JSON.stringify(tempList));
+  };
   const mapList = (role) => {
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
@@ -115,15 +136,21 @@ const SideBarComponent = ({ children }) => {
     const list = [...tempList].map((item, index) => {
       return addId(index, item, `/${getBasePath(role)}`);
     });
-    return [...list];
+    getInitialSelection([...list]);
+    return JSON.parse(JSON.stringify(getInitialSelection([...list])));
   };
 
   const { data: session } = useSession();
   // const theme = useTheme();
   const [open, setOpen] = useState(false);
+  // const [path, setPath] = useState(route.pathname);
   const [menuList, setMenuList] = useState([
     ...mapList(session?.user?.role || "customer"),
   ]);
+
+  useEffect(() => {
+    setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
+  }, [route.pathname]);
 
   useMemo(() => {
     if (session && session.user) {

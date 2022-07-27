@@ -143,7 +143,10 @@ const MrMrsCartProducts = () => {
   }, [tableData]);
 
   return (
-    <Paper sx={{ height: "100%" }}>
+    <Paper
+      sx={{ height: "100%" }}
+      className="mnh-80vh overflow-auto hide-scrollbar mxh-80"
+    >
       <Typography
         variant="h6"
         fontWeight="bold"
