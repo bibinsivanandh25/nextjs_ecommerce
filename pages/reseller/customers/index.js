@@ -204,7 +204,7 @@ const Customer = () => {
   };
 
   return (
-    <Paper className="w-100 mnh-75vh d-flex flex-column overflow-auto hide-scrollbar">
+    <Paper className="w-100 mnh-80vh mxh-80vh d-flex flex-column overflow-auto hide-scrollbar">
       <Box className="border-bottom border-bottom-dark w-100 p-3 pb-0 mb-3">
         <Typography className="h-3">Customer</Typography>
       </Box>

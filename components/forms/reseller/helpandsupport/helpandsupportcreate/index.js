@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import FileUploadModal from "components/atoms/FileUpload";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -8,7 +8,7 @@ import validateMessage from "constants/validateMessages";
 import { useState } from "react";
 import toastify from "services/utils/toastUtils";
 
-const HelpandsupportCreate = () => {
+const HelpandsupportCreate = ({ setShowCreateComponent }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [type, setType] = useState("customer");
   const [formValue, setFormValue] = useState({
@@ -52,6 +52,14 @@ const HelpandsupportCreate = () => {
 
   return (
     <div className="w-100">
+      <Typography
+        onClick={() => {
+          setShowCreateComponent(false);
+        }}
+        className="fs-14 color-orange cursor-pointer fw-bold mb-2"
+      >
+        {"<"}Back
+      </Typography>
       <p className="fs-16 fw-bold pb-2 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">

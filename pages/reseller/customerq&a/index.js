@@ -417,8 +417,8 @@ const CustomerQnA = () => {
         </div>
       </div>
       <Paper
-        sx={{ height: "72vh" }}
-        className="py-2 overflow-auto hide-scrollbar"
+        sx={{ height: "75vh" }}
+        className="py-2 mxh-80vh mnh-80vh overflow-auto hide-scrollbar"
       >
         <TableComponent
           tableRows={
