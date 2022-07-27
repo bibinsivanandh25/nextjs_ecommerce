@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import axios from "axios";
 import CarouselComponent from "components/atoms/Carousel";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -120,44 +120,46 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <CarouselComponent />
-      <Box className="mt-2 d-flex justify-content-end align-items-center">
-        <Box className="w-25 ">
-          <SimpleDropdownComponent
-            value={dropDownValue}
-            size="small"
-            list={[
-              {
-                label: "Fixed Commission",
-                value: "Fixed Commission",
-              },
-              {
-                label: "Zero Commission",
-                value: "Zero Commission",
-              },
-            ]}
-            onDropdownSelect={(value) => {
-              setDropDownValue(value);
-            }}
-          />
-        </Box>
-        <Box className="d-flex m-3 align-items-center">
-          <InputBox size="small" />
-          <Box
-            className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
-            // onClick={handleSearch}
-          >
-            <SearchOutlinedIcon className="text-white p-1 fs-1" />
+    <Paper className="p-2">
+      <div>
+        <CarouselComponent />
+        <Box className="mt-2 d-flex justify-content-end align-items-center">
+          <Box className="w-25 ">
+            <SimpleDropdownComponent
+              value={dropDownValue}
+              size="small"
+              list={[
+                {
+                  label: "Fixed Commission",
+                  value: "Fixed Commission",
+                },
+                {
+                  label: "Zero Commission",
+                  value: "Zero Commission",
+                },
+              ]}
+              onDropdownSelect={(value) => {
+                setDropDownValue(value);
+              }}
+            />
+          </Box>
+          <Box className="d-flex m-3 align-items-center">
+            <InputBox size="small" />
+            <Box
+              className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
+              // onClick={handleSearch}
+            >
+              <SearchOutlinedIcon className="text-white p-1 fs-1" />
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <HomeComponent
-        categories={[...categories]}
-        products={[...products]}
-        productTitle="Top Products"
-      />
-    </div>
+        <HomeComponent
+          categories={[...categories]}
+          products={[...products]}
+          productTitle="Top Products"
+        />
+      </div>
+    </Paper>
   );
 };
 export default Home;
