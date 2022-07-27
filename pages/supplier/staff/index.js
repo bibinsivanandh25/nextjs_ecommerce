@@ -98,7 +98,7 @@ const Staff = () => {
   };
   return (
     <>
-      <Paper>
+      <Paper className="mnh-80vh overflow-auto hide-scrollbar mxh-80vh">
         <div className="border-bottom">
           <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
             <Box className="fs-16 fw-700 ps-4">Manage Staff</Box>

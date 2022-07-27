@@ -1,5 +1,5 @@
 // import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import CreateDiscount from "components/forms/reseller/marketingtools/creatediscount";
@@ -132,56 +132,58 @@ const CreateDiscountCoupons = () => {
   const [showCreateDiscount, setShowCreateDiscount] = useState(false);
 
   return (
-    <div>
-      {!showCreateDiscount ? (
-        <div>
-          <Grid className="d-flex justify-content-between align-items-center my-2">
-            <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription Start Date & time : {Date()}
-              </Typography>
+    <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+      <div>
+        {!showCreateDiscount ? (
+          <div>
+            <Grid className="d-flex justify-content-between align-items-center my-2">
+              <Grid>
+                <Typography className="fs-12 fw-bold">
+                  Subscription Start Date & time : {Date()}
+                </Typography>
+              </Grid>
+              <Grid>
+                <Typography className="fs-12 fw-bold">
+                  Subscription End Date & time : {Date()}
+                </Typography>
+              </Grid>
+              <Grid>
+                <ButtonComponent
+                  variant="outlined"
+                  label="Create Discounts"
+                  onBtnClick={() => {
+                    setShowCreateDiscount(true);
+                  }}
+                />
+                <Typography
+                  sx={{
+                    width: "fit-content",
+                    mx: "auto",
+                  }}
+                  className="h-5 text-primary cursor-pointer py-1"
+                >
+                  Guidelines to Create
+                </Typography>
+              </Grid>
             </Grid>
             <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription End Date & time : {Date()}
-              </Typography>
-            </Grid>
-            <Grid>
-              <ButtonComponent
-                variant="outlined"
-                label="Create Discounts"
-                onBtnClick={() => {
-                  setShowCreateDiscount(true);
-                }}
+              <TableComponent
+                tableRows={[...rows]}
+                columns={[...columns]}
+                showCheckbox
+                showSearchFilter={false}
+                showSearchbar={false}
               />
-              <Typography
-                sx={{
-                  width: "fit-content",
-                  mx: "auto",
-                }}
-                className="h-5 text-primary cursor-pointer py-1"
-              >
-                Guidelines to Create
-              </Typography>
             </Grid>
-          </Grid>
-          <Grid>
-            <TableComponent
-              tableRows={[...rows]}
-              columns={[...columns]}
-              showCheckbox
-              showSearchFilter={false}
-              showSearchbar={false}
-            />
-          </Grid>
-        </div>
-      ) : (
-        <CreateDiscount
-          setShowCreateDiscount={setShowCreateDiscount}
-          btnText="View Discount Product"
-        />
-      )}
-    </div>
+          </div>
+        ) : (
+          <CreateDiscount
+            setShowCreateDiscount={setShowCreateDiscount}
+            btnText="View Discount Product"
+          />
+        )}
+      </div>
+    </Paper>
   );
 };
 export default CreateDiscountCoupons;

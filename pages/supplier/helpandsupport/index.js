@@ -208,7 +208,7 @@ const HelpAndSupport = () => {
               <Grid item sx={{ p: 2 }}>
                 <Button
                   variant="contained"
-                  className="bg-orange"
+                  className="bg-orange text-capitalize"
                   size="small"
                   onClick={() => setShowCreateComponent(true)}
                 >
@@ -216,7 +216,7 @@ const HelpAndSupport = () => {
                 </Button>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{ my: 5, px: 2 }}>
+            <Grid item xs={12} className="px-2 pb-1 mt-3">
               <Paper className="pt-3">
                 <TableComponent
                   table_heading=""

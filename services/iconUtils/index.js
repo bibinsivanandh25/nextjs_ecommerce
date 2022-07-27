@@ -36,6 +36,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import TrendingDownOutlinedIcon from "@mui/icons-material/TrendingDownOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 
@@ -91,6 +92,7 @@ const CustomIcon = ({
     whatsAppIcon: WhatsAppIcon,
     trendingDownOutlinedIcon: TrendingDownOutlinedIcon,
     trendingUpOutlinedIcon: TrendingUpOutlinedIcon,
+    arrowBackIosNewIcon: ArrowBackIosNewIcon,
     notificationsIcon: NotificationsIcon,
     confirmationNumberOutlinedIcon: ConfirmationNumberOutlinedIcon,
   };
