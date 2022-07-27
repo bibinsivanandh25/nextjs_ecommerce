@@ -111,7 +111,7 @@ const BankDetails = () => {
   };
   return (
     // <Paper className="h-95p overflow-auto">
-    <div className="">
+    <div className="mnh-70vh mxh-70vh overflow-auto hide-scrollbar bg-white rounded">
       <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
       <Grid container>
         {getPickUpAdress()}

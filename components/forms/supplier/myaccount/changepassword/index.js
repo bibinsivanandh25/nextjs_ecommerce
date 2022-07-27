@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import validationRegex from "services/utils/regexUtils";
@@ -50,83 +50,85 @@ const ChangePassword = () => {
   };
 
   return (
-    <Grid container spacing={4} item xs={4} ml={30} mt={3}>
-      <Grid item xs={12}>
-        <InputBox
-          value={formValues.emailId}
-          label="E-mail ID"
-          className="w-100"
-          size="small"
-          onInputChange={(e) => {
-            setFormValues((prev) => ({
-              ...prev,
-              emailId: e.target.value,
-            }));
-          }}
-          error={Boolean(error?.emailId)}
-          helperText={error?.emailId}
-          type="email"
-          inputlabelshrink
-        />
+    <Box className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded">
+      <Grid container spacing={4} item xs={4} ml={30} mt={3}>
+        <Grid item xs={12}>
+          <InputBox
+            value={formValues.emailId}
+            label="E-mail ID"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                emailId: e.target.value,
+              }));
+            }}
+            error={Boolean(error?.emailId)}
+            helperText={error?.emailId}
+            type="email"
+            inputlabelshrink
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InputBox
+            value={formValues.oldPassword}
+            label="Old Password"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                oldPassword: e.target.value,
+              }));
+            }}
+            error={Boolean(error?.oldPassword)}
+            helperText={error?.oldPassword}
+            type="password"
+            inputlabelshrink
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InputBox
+            value={formValues.newPassword}
+            label="New Password"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                newPassword: e.target.value,
+              }));
+            }}
+            error={Boolean(error?.newPassword)}
+            helperText={error?.newPassword}
+            type="password"
+            inputlabelshrink
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InputBox
+            value={formValues.reEnterPassword}
+            label="Re-enter New Password"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                reEnterPassword: e.target.value,
+              }));
+            }}
+            error={Boolean(error?.reEnterPassword)}
+            helperText={error?.reEnterPassword}
+            type="password"
+            inputlabelshrink
+          />
+        </Grid>
+        <Grid xs={12} item>
+          <ButtonComponent label="Update Password" onBtnClick={handleSubmit} />
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <InputBox
-          value={formValues.oldPassword}
-          label="Old Password"
-          className="w-100"
-          size="small"
-          onInputChange={(e) => {
-            setFormValues((prev) => ({
-              ...prev,
-              oldPassword: e.target.value,
-            }));
-          }}
-          error={Boolean(error?.oldPassword)}
-          helperText={error?.oldPassword}
-          type="password"
-          inputlabelshrink
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <InputBox
-          value={formValues.newPassword}
-          label="New Password"
-          className="w-100"
-          size="small"
-          onInputChange={(e) => {
-            setFormValues((prev) => ({
-              ...prev,
-              newPassword: e.target.value,
-            }));
-          }}
-          error={Boolean(error?.newPassword)}
-          helperText={error?.newPassword}
-          type="password"
-          inputlabelshrink
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <InputBox
-          value={formValues.reEnterPassword}
-          label="Re-enter New Password"
-          className="w-100"
-          size="small"
-          onInputChange={(e) => {
-            setFormValues((prev) => ({
-              ...prev,
-              reEnterPassword: e.target.value,
-            }));
-          }}
-          error={Boolean(error?.reEnterPassword)}
-          helperText={error?.reEnterPassword}
-          type="password"
-          inputlabelshrink
-        />
-      </Grid>
-      <Grid xs={12} item>
-        <ButtonComponent label="Update Password" onBtnClick={handleSubmit} />
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

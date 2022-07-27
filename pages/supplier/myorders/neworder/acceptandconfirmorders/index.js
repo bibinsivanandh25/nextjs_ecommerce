@@ -142,7 +142,10 @@ const AcceptandConfirmOrder = () => {
   ];
 
   return (
-    <Paper sx={{ p: 2 }} className="position-relative">
+    <Paper
+      sx={{ p: 2 }}
+      className="position-relative mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       <ProgressBar showHeader />
       {!showConfirmAdress ? (
         <div>

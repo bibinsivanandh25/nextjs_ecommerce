@@ -237,7 +237,7 @@ function CustomerProductgModal({
           {data.shortDescription}
         </p>
         {data.offer ? (
-          <div className="h-30">
+          <div className="h-50">
             <div
               style={{
                 textOverflow: "ellipsis",
@@ -282,7 +282,7 @@ function CustomerProductgModal({
             </div>
           </div>
         ) : (
-          <p className="h-30 pt-3 fw-600 fs-16"> &#8377;{data.actualCost}</p>
+          <p className="h-50 pt-3 fw-600 fs-16"> &#8377;{data.actualCost}</p>
         )}
         <div
           className={

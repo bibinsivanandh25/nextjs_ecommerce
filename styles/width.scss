@@ -300,7 +300,7 @@
 min-height: 150px;
 }
 
-.h-30 {
+.h-50 {
   min-height: 50px;
 }
 
@@ -334,4 +334,12 @@ height: 19% !important;
 
 .mnh-20px {
   min-height: 20px !important;
+}
+
+.mnh-70vh {
+  min-height: 70vh;
+}
+
+.mxh-70vh {
+  max-height: 70vh;
 }

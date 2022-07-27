@@ -101,7 +101,7 @@ const MyProfile = () => {
     return flag;
   };
   return (
-    <div>
+    <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded ps-2">
       <div className="mt-4 d-flex align-items-center">
         <div>
           <Image src={avatar} height={100} to width={100} />

@@ -123,7 +123,10 @@ const Generateinvoiceandmanifest = () => {
     },
   ];
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper
+      sx={{ p: 2 }}
+      className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       {!showInvoices ? (
         <>
           <ProgressBar showHeader />
