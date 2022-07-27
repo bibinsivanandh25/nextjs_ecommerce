@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import { Share } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -152,27 +152,29 @@ const NewLeads = () => {
     },
   ];
   return (
-    <div>
-      <TableComponent
-        tableRows={[...rows]}
-        columns={[...columns]}
-        table_heading="New Leads"
-        showCheckbox={false}
-      />
-      <ModalComponent
-        open={showCampaignModal}
-        onCloseIconClick={() => {
-          setShowCampaignModal(false);
-        }}
-        ModalTitle="Current running campaigns"
-        headerClassName="fs-16"
-        footerClassName="justify-content-end"
-        showClearBtn={false}
-        saveBtnText="Proceed"
-      >
-        {getCampaigns()}
-      </ModalComponent>
-    </div>
+    <Paper className="p-2 mnh-75vh mxh-75vh overflow-auto hide-scrollbar">
+      <div>
+        <TableComponent
+          tableRows={[...rows]}
+          columns={[...columns]}
+          table_heading="New Leads"
+          showCheckbox={false}
+        />
+        <ModalComponent
+          open={showCampaignModal}
+          onCloseIconClick={() => {
+            setShowCampaignModal(false);
+          }}
+          ModalTitle="Current running campaigns"
+          headerClassName="fs-16"
+          footerClassName="justify-content-end"
+          showClearBtn={false}
+          saveBtnText="Proceed"
+        >
+          {getCampaigns()}
+        </ModalComponent>
+      </div>
+    </Paper>
   );
 };
 export default NewLeads;
