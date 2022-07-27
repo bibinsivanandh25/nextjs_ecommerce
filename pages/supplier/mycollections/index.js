@@ -91,7 +91,7 @@ const MyCollections = () => {
   }, [tableData]);
 
   return (
-    <Paper>
+    <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <Grid container>
         <Grid
           container

@@ -89,15 +89,15 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
   };
   return (
     <>
-      <Typography
-        onClick={() => {
-          setShowCreateComponent(false);
-        }}
-        className="fw-bold mb-2 fs-14 cursor-pointer color-orange"
-      >
-        {"<"}Back
-      </Typography>
-      <Paper className="w-100 mnh-80vh">
+      <Paper className="w-100 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+        <Typography
+          onClick={() => {
+            setShowCreateComponent(false);
+          }}
+          className="fw-bold mb-2 fs-14 ms-3 cursor-pointer color-orange"
+        >
+          {"<"}Back
+        </Typography>
         <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
           Help & support{" "}
           <span className="fs-12 fw-normal text-secondary">

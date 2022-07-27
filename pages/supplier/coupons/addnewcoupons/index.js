@@ -1,12 +1,17 @@
-import { Grid, Paper, Button } from "@mui/material";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Grid, Paper, Button, Box, Typography } from "@mui/material";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useRouter } from "next/router";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const AddNewCoupons = () => {
+  const router = useRouter();
   const tabList = [
     {
       title: "Restriction",
@@ -87,6 +92,17 @@ const AddNewCoupons = () => {
 
   return (
     <Paper sx={{ height: "100%", minHeight: "80vh" }}>
+      <Box className="fit-content">
+        <Typography
+          className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
+          onClick={() => {
+            router.push("/supplier/coupons");
+          }}
+        >
+          <ArrowBackIosIcon className="fs-16" />
+          Back
+        </Typography>
+      </Box>
       <Grid container sx={{ height: "100%", minHeight: "80vh" }}>
         <Grid
           item

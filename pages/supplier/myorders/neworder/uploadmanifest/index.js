@@ -94,7 +94,10 @@ const UploadManifest = () => {
     },
   ];
   return (
-    <Paper sx={{ p: 2, height: "100%" }}>
+    <Paper
+      sx={{ p: 2 }}
+      className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       <ProgressBar />
       <Paper className="py-3">
         <TableComponent columns={[...columns]} tableRows={[...rows]} />
