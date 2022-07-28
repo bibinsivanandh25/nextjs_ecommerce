@@ -18,16 +18,17 @@ const AddEditProductModal = ({
   rowsDataObjects = [],
 }) => {
   const onImgeChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        console.log("The result", e.target.result);
-        const theImagesArray = [...imageArray];
-        theImagesArray.push(e.target.result);
-        setImageArray([...theImagesArray]);
-        setProductDetails({ ...productDetails, images: theImagesArray });
-      };
-      reader.readAsDataURL(event.target.files[0]);
+    if (imageArray.length < 5) {
+      if (event.target.files && event.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const theImagesArray = [...imageArray];
+          theImagesArray.push(e.target.result);
+          setImageArray([...theImagesArray]);
+          setProductDetails({ ...productDetails, images: theImagesArray });
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }
     }
   };
 
