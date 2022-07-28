@@ -425,9 +425,14 @@ const Category = () => {
               </Box>
               <Box
                 sx={{ maxHeight: "45vh" }}
-                className="d-flex overflow-y-scroll hide-scrollbar"
+                className="d-flex overflow-scroll hide-scrollbar"
               >
-                <Grid container className="w-100 p-3" spacing={2}>
+                <Grid
+                  sx={{ height: "43vh" }}
+                  container
+                  className="w-100 p-3 overflow-y-scroll hide-scrollbar"
+                  spacing={2}
+                >
                   {!selectedSets.length
                     ? setItems.map((ele, index) => {
                         return (
@@ -487,9 +492,10 @@ const Category = () => {
             <Grid
               container
               spacing={2}
-              className=" mt-2 mx-auto ms-0"
+              className="mt-2 mx-auto ms-0"
               sx={{
                 width: `calc(100% - 10px)`,
+                height: "57vh",
               }}
             >
               {productList.map((item, index) => {
