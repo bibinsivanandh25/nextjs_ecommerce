@@ -22,18 +22,27 @@ const RaiseQueryModal = ({
         onCloseIconClick={() => {
           setOpenRaiseQueryModal(false);
         }}
+        footerClassName="d-flex justify-content-start flex-row-reverse border-top"
+        saveBtnText="Submit"
+        ClearBtnText="Cancel"
+        saveBtnClassName="ms-2"
+        ModalTitle="Raise Query"
+        titleClassName="fw-bold fs-14 color-orange"
+        onClearBtnClick={() => {
+          setOpenRaiseQueryModal(false);
+        }}
       >
-        <Box className="my-3 w-75 m-auto">
+        <Box className="my-5 w-75 m-auto">
           <InputBox
             value={textInput}
             placeholder="Type Your Query"
             variant="standard"
             onInputChange={(e) => {
-              if (textInput.length < 200) setTextInput(e.target.value);
+              if (textInput.length <= 199) setTextInput(e.target.value);
             }}
             onKeyDown={(e) => {
               setKeyCode(e.keyCode);
-              if (textInput.length >= 200 && e.keyCode === 8) {
+              if (textInput.length === 200 && e.keyCode === 8) {
                 const theText = textInput.slice(0, textInput.length - 1);
                 setTextInput(theText);
               }
