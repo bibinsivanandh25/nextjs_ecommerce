@@ -39,7 +39,7 @@ const CategoryProductCard = ({ data = [] }) => {
         >
           <Box className="d-flex flex-row-reverse h-75 p-2">
             <Box className="d-flex flex-column ">
-              <Box>
+              {/* <Box>
                 <Image
                   src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/watsapp-icon.png"
                   width={32}
@@ -47,9 +47,10 @@ const CategoryProductCard = ({ data = [] }) => {
                   alt=""
                   className="rounded-circle"
                 />
-              </Box>
+              </Box> */}
               <Box
-                className={`text-center d-flex justify-content-center align-items-center w-100 h-25 rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
+                sx={{ width: "30px", height: "30px" }}
+                className={`text-center d-flex justify-content-center align-items-center rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
               >
                 <CustomIcon
                   showColorOnHover={false}
@@ -59,7 +60,8 @@ const CategoryProductCard = ({ data = [] }) => {
                 />
               </Box>
               <Box
-                className={`text-center d-flex justify-content-center align-items-center w-100 h-25 rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
+                sx={{ width: "30px", height: "30px" }}
+                className={`text-center d-flex justify-content-center align-items-center rounded-circle bg-white mb-1 ${styles.hoverIcon}`}
               >
                 <CustomIcon
                   showColorOnHover={false}

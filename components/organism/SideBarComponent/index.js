@@ -96,7 +96,7 @@ const SideBarComponent = ({ children }) => {
     const temp = JSON.parse(JSON.stringify(list));
     const selectPath = (data, ind) => {
       return JSON.parse(JSON.stringify(data)).map((ele) => {
-        if (ele.path_name.includes(paths[ind])) {
+        if (ele.path_name.split("/").includes(paths[ind])) {
           ele.selected = true;
           if (ele?.child?.length && paths.length - 1 > ind) {
             ele.child = [...selectPath(ele.child, ind + 1)];
@@ -147,11 +147,17 @@ const SideBarComponent = ({ children }) => {
   const [menuList, setMenuList] = useState([
     ...mapList(session?.user?.role || "customer"),
   ]);
+  const itemRef = React.useRef(null);
 
   useEffect(() => {
     setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
   }, [route.pathname]);
 
+  useEffect(() => {
+    if (itemRef.current) {
+      itemRef.current.scrollIntoView();
+    }
+  }, [menuList]);
   useMemo(() => {
     if (session && session.user) {
       setMenuList([...mapList(session.user.role)]);
@@ -299,6 +305,7 @@ const SideBarComponent = ({ children }) => {
                     disablePadding
                     sx={{ display: "block" }}
                     className="cursor-pointer"
+                    ref={item.selected ? itemRef : null}
                   >
                     <ListItemButton
                       sx={{
@@ -360,9 +367,10 @@ const SideBarComponent = ({ children }) => {
                     </ListItemButton>
                     {item.selected && item?.child?.length ? (
                       <div
-                        style={{
-                          display: open ? "block" : "none",
-                        }}
+                        className={open ? "d-block" : "d-none"}
+                        // style={{
+                        //   display: open ? "block" : "none",
+                        // }}
                       >
                         <MenuList
                           key={index}
