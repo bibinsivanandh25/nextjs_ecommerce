@@ -365,7 +365,7 @@ const Category = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]);
   const [selectedSets, setSelectedSets] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [dropDownValue, setDropDownValue] = useState([]);
+  const [dropDownValue, setDropDownValue] = useState("");
   return (
     <Paper className="w-100 mnh-80vh mxh-80vh d-flex flex-column p-3 pb-0">
       {!selectedSubCategory.length ? (
