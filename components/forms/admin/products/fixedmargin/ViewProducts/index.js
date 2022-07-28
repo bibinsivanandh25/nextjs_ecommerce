@@ -197,22 +197,22 @@ const ViewProducts = ({ setShowViewProduct = () => {} }) => {
 
   return (
     <>
-      <Typography
-        onClick={() => {
-          setShowViewProduct(false);
-        }}
-        className="fs-14 cursor-pointer fw-bold ms-4"
-      >
-        {"<"}Back
-      </Typography>
       <Paper
-        className="d-flex"
+        // className="d-flex"
         style={{
           minHeight: "80vh",
           height: "100%",
           overflowY: "auto",
         }}
       >
+        <Typography
+          onClick={() => {
+            setShowViewProduct(false);
+          }}
+          className="fs-14 cursor-pointer color-orange mt-2 ms-4"
+        >
+          {"<"}Back
+        </Typography>
         <ProductsLayout
           type="simple"
           formData={formData}

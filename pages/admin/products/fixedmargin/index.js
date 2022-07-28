@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -12,13 +12,18 @@ import CheckImagesModal from "@/forms/admin/products/fixedmargin/CheckImagesModa
 import AcceptRejectModal from "@/forms/admin/products/fixedmargin/AcceptRejectModal";
 import ViewProducts from "@/forms/admin/products/fixedmargin/ViewProducts";
 import RaiseQueryModal from "@/forms/admin/products/fixedmargin/RaiseQueryModal";
+import MergeToModal from "@/forms/admin/products/fixedmargin/MergeToModal";
+import VisibilityRangeModal from "@/forms/admin/products/fixedmargin/VisibilityRangeModal";
+import FlagModal from "@/forms/admin/products/fixedmargin/FlagModal";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [openEditModal, setOpenEditModal] = useState(false);
   const [imageArray, setImageArray] = useState([]);
   const [modalId, setModalId] = useState(null);
   const [tableRows, setTableRows] = useState([]);
+  const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
+  const [showViewProducts, setShowViewProducts] = useState(false);
+
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
@@ -31,12 +36,15 @@ const FixedMargin = () => {
     discounts: "",
   });
 
+  // ALL the modal states are present here
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
-  const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
-
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
-  const [showViewProducts, setShowViewProducts] = useState(false);
   const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
+  const [openMergeToModal, setOpenMergeToModal] = useState(false);
+  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
+    useState(false);
+  const [showFlagModal, setShowFlagModal] = useState(false);
 
   const titles = [
     "Products to approve (48)",
@@ -50,11 +58,12 @@ const FixedMargin = () => {
   const options = [
     "Edit",
     "Delete",
+    "Visibility Range",
     "Accept/Reject",
     "Raise Query",
     "Draft",
     "Merge to",
-    "flags",
+    "Flags",
   ];
 
   const tableColumns = [
@@ -183,9 +192,24 @@ const FixedMargin = () => {
       setOpenAcceptRejectModal(true);
     }
 
+    if (ele === "Merge to") {
+      setModalId(index);
+      setOpenMergeToModal(true);
+    }
+
     if (ele === "Raise Query") {
       setModalId(index);
       setOpenRaiseQueryModal(true);
+    }
+
+    if (ele === "Visibility Range") {
+      setModalId(index);
+      setOpenVisibilityRangeModal(true);
+    }
+
+    if (ele === "Flags") {
+      setModalId(index);
+      setShowFlagModal(true);
     }
   };
 
@@ -281,34 +305,39 @@ const FixedMargin = () => {
       {!showViewProducts ? (
         <Box>
           <Box className="d-flex mt-3">{returnTabs()}</Box>
-          <Box className="mt-3">
-            <TableComponent
-              columns={tableColumns}
-              tHeadBgColor="bg-light-gray"
-              showPagination={false}
-              tableRows={tableRows}
-              // showSearchbar={false}
-              showDateFilterBtn
-              showDateFilter
-              dateFilterBtnName="+ New Product"
-              dateFilterBtnClick={() => {
-                setProductDetails({
-                  vendorIdOrName: "",
-                  images: "",
-                  productTitle: "",
-                  sku: "",
-                  categorySubcategory: "",
-                  weightOrVolume: "",
-                  totalStock: "",
-                  salePriceAndMrp: "",
-                  discounts: "",
-                });
-                setImageArray([]);
-                setOpenEditModal(true);
-                setModalId(null);
-              }}
-            />
-          </Box>
+          <Paper
+            sx={{ height: "78vh" }}
+            className="overflow-auto hide-scrollbar"
+          >
+            <Box className="px-1 pt-2">
+              <TableComponent
+                columns={tableColumns}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                tableRows={tableRows}
+                // showSearchbar={false}
+                showDateFilterBtn
+                showDateFilter
+                dateFilterBtnName="+ New Product"
+                dateFilterBtnClick={() => {
+                  setProductDetails({
+                    vendorIdOrName: "",
+                    images: "",
+                    productTitle: "",
+                    sku: "",
+                    categorySubcategory: "",
+                    weightOrVolume: "",
+                    totalStock: "",
+                    salePriceAndMrp: "",
+                    discounts: "",
+                  });
+                  setImageArray([]);
+                  setOpenEditModal(true);
+                  setModalId(null);
+                }}
+              />
+            </Box>
+          </Paper>
         </Box>
       ) : (
         <ViewProducts setShowViewProduct={setShowViewProducts} />
@@ -345,6 +374,20 @@ const FixedMargin = () => {
       <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
+      />
+      {/* Merge To Modal */}
+      <MergeToModal
+        openMergeToModal={openMergeToModal}
+        setOpenMergeToModal={setOpenMergeToModal}
+      />
+      <VisibilityRangeModal
+        openVisibilityRangeModal={openVisibilityRangeModal}
+        setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
+      />
+      {/* Flag Modal */}
+      <FlagModal
+        showFlagModal={showFlagModal}
+        setShowFlagModal={setShowFlagModal}
       />
     </>
   );
