@@ -25,6 +25,14 @@ import { Fade, Paper, Popper } from "@mui/material";
 // const drawerWidth = 245;
 
 const CustomerSideBarComponent = ({ children }) => {
+  const [showBreadCrumb, setShowBreadCrumb] = useState(true);
+  const updatedChildren = { ...children };
+  updatedChildren.props = {
+    ...children.props,
+    showBreadCrumb: (val = true) => {
+      setShowBreadCrumb(val);
+    },
+  };
   const mapList = () => {
     const addId = (id, item, path) => {
       return {
@@ -190,16 +198,18 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 205px)" : "calc(100vw - 50px)"}`,
-          marginLeft: ` ${open ? "210px" : "60px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 206px)" : "calc(100vw - 64px)"}`,
+          marginLeft: ` ${open ? "205px" : "64px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
         className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
       >
-        <Box className="mb-2">
-          <BreadCrumb />
-        </Box>
+        {showBreadCrumb && (
+          <Box className="mb-2">
+            <BreadCrumb />
+          </Box>
+        )}
         <Box
           sx={{
             maxHeight: "calc(100vh - 140px)",
@@ -207,7 +217,7 @@ const CustomerSideBarComponent = ({ children }) => {
           }}
           className="hide-scrollbar "
         >
-          {children}
+          {updatedChildren}
         </Box>
       </Box>
 
