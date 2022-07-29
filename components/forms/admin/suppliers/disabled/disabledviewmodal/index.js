@@ -1,10 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import React from "react";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import NavTabComponent from "components/molecule/NavTabComponent";
+import React from "react";
 import { LineChart } from "@/atoms/Linechart/Linechart";
-import { Doughnutchart } from "@/atoms/Doughnut/Doughnut";
-import TableComponent from "@/atoms/TableComponent";
 
 const activeSupplierdata = {
   supplierId: "--",
@@ -32,38 +29,22 @@ const activeSupplierdata = {
   paymentHistory: "",
   reactivateDate: "--",
 };
-const firstNavTab = [
+const navTabDatas = [
   {
     id: 1,
-    title: "Successfull",
+    title: "Year",
   },
   {
     id: 2,
-    title: "Un-Successfull",
+    title: "Last Month",
   },
   {
     id: 3,
-    title: "Returned",
-  },
-];
-const secondNavTab = [
-  {
-    id: 1,
-    title: "Total gross sales",
+    title: "This Month",
   },
   {
-    id: 2,
-    title: "Total net profit after deduction",
-  },
-];
-const thirdNavTab = [
-  {
-    id: 1,
-    title: "Total panalties paid",
-  },
-  {
-    id: 2,
-    title: "panalties Pending to paid",
+    id: 4,
+    title: "Last 7 Days",
   },
 ];
 const lineChartData = [20000, 3000, 1000, 40000, 10000, 400, 2000];
@@ -76,103 +57,25 @@ const LineChartLable = [
   "Saturday",
   "Sunday",
 ];
-const doughnutLables = ["Total panalties paid", "panalties Pending to paid"];
-const doughnutData = ["234", "356"];
-const paymentDatas = [
-  {
-    id: 1,
-    title: "Last Payment Paid",
-    ammount: "12,89,456",
-    date: "5 Jan 2022, 12:22",
-  },
-  {
-    id: 1,
-    title: "Pending Payment (Next Release)",
-    ammount: "12,89,456",
-    date: "5 Jan 2022, 12:22",
-  },
-];
-const categoryColumn = [
-  {
-    id: "col1",
-    label: "SI NO.",
-    minWidth: 30,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col2",
-    label: "Categories",
-    minWidth: 300,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-];
-const subCategoryColumn = [
-  {
-    id: "col1",
-    label: "SI NO.",
-    minWidth: 30,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col2",
-    label: "Sub-Categories",
-    minWidth: 300,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-];
-const categoryRows = [
-  {
-    id: "col1",
-    col1: 1,
-    col2: "Leather",
-  },
-  {
-    id: "col1",
-    col1: 2,
-    col2: "Leather",
-  },
-  {
-    id: "col1",
-    col1: 3,
-    col2: "Leather",
-  },
-  {
-    id: "col1",
-    col1: 4,
-    col2: "Leather",
-  },
-  {
-    id: "col1",
-    col1: 5,
-    col2: "Leather",
-  },
-  {
-    id: "col1",
-    col1: 6,
-    col2: "Leather",
-  },
-];
-const ViewModal = ({ setViewModaOpen = () => {} }) => {
+const DisabledViewModal = ({ setViewModalOpen = () => {} }) => {
   return (
-    <Box className="p-2">
-      <Box onClick={() => setViewModaOpen(false)} className="d-flex ">
-        <Typography className="h-5 d-flex align-items-center cursor-pointer me-3">
-          <ArrowBackIosIcon className="fs-14" />
-          Back
-        </Typography>
-        <Typography className="h-4 color-orange fw-bold">
-          View Active Suppliers
-        </Typography>
+    <Box>
+      <Box className="p-3 border-bottom">
+        <Box className="d-flex ">
+          <Typography
+            onClick={() => {
+              setViewModalOpen(false);
+            }}
+            className="cursor-pointer me-4 fs-14"
+          >
+            {"<"} Back
+          </Typography>
+          <Typography className="fw-bold h-4 color-orange">
+            View Disabled Suppliers
+          </Typography>
+        </Box>
       </Box>
-      <Box className="border-top mt-2 pt-2">
+      <Box className="my-2 pt-2">
         <Grid container spacing={3}>
           <Grid item lg={3} md={4} sm={12}>
             <Grid container>
@@ -597,23 +500,9 @@ const ViewModal = ({ setViewModaOpen = () => {} }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box className="mt-4">
-        <Box className="px-3">
-          <NavTabComponent listData={firstNavTab} />
-        </Box>
-        <Paper className="mt-3 p-3" elevation={3}>
-          <LineChart
-            labels={LineChartLable}
-            data={lineChartData}
-            showYAxis={false}
-            lineColor="#0782ff"
-            height="300px"
-          />
-        </Paper>
-      </Box>{" "}
-      <Box className="mt-4">
-        <Box className="px-3">
-          <NavTabComponent listData={secondNavTab} onTabCilck={() => {}} />
+      <Box className="p-3 border-top">
+        <Box className="w-100">
+          <NavTabComponent listData={navTabDatas} />
         </Box>
         <Paper className="mt-3 p-3" elevation={3}>
           <LineChart
@@ -625,86 +514,8 @@ const ViewModal = ({ setViewModaOpen = () => {} }) => {
           />
         </Paper>
       </Box>
-      <Box className="mt-4">
-        <Box className="px-3">
-          <NavTabComponent listData={thirdNavTab} />
-        </Box>
-        <Grid container xs={12} className="mt-3" spacing={3}>
-          <Grid item lg={7} md={6} sm={12}>
-            <Paper elevation={3} className="py-5 ps-2">
-              <Doughnutchart
-                className="mnh-200"
-                cutout="80"
-                labels={doughnutLables}
-                data={doughnutData}
-              />
-            </Paper>
-          </Grid>
-          <Grid item lg={5} md={6} sm={12}>
-            <Grid conatiner>
-              {paymentDatas.map((item) => (
-                <Grid item md={8} sm={12} key={item.id} className="mt-2">
-                  <Box
-                    className="rounded py-3"
-                    sx={{
-                      border: "1px solid #cee6fe !important",
-                      backgroundColor: "#fcfcfc",
-                    }}
-                  >
-                    <Typography className="ps-2 color-dark-gray h-5">
-                      {item.title}
-                    </Typography>
-                    <Typography className="h-1 fw-bold ps-4">
-                      &#8377; {item.ammount}
-                    </Typography>
-                    <Typography className="text-end pe-4 fw-500 h-5">
-                      {item.date}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-        </Grid>
-      </Box>
-      <Grid container xs={12} className="mt-2" spacing={3}>
-        <Grid item md={6} sm={12}>
-          <Paper className="p-2" elevation={3}>
-            <Box>
-              <Typography className="fw-bold">
-                Top 10 Product Categories
-              </Typography>
-            </Box>
-            <TableComponent
-              showSearchbar={false}
-              showCheckbox={false}
-              showPagination={false}
-              columns={[...categoryColumn]}
-              tableRows={[...categoryRows]}
-              // table_heading="Top 10 Product Categories"
-            />
-          </Paper>
-        </Grid>
-        <Grid item md={6} sm={12}>
-          <Paper className="p-2" elevation={3}>
-            <Box>
-              <Typography className="fw-bold">
-                Top 10 Product Sub-Categories
-              </Typography>
-            </Box>
-            <TableComponent
-              showSearchbar={false}
-              showCheckbox={false}
-              showPagination={false}
-              columns={[...subCategoryColumn]}
-              tableRows={[...categoryRows]}
-              // table_heading="Top 10 Product Categories"
-            />
-          </Paper>
-        </Grid>
-      </Grid>
     </Box>
   );
 };
 
-export default ViewModal;
+export default DisabledViewModal;
