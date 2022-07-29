@@ -365,12 +365,12 @@ const Category = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState([]);
   const [selectedSets, setSelectedSets] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [dropDownValue, setDropDownValue] = useState([]);
+  const [dropDownValue, setDropDownValue] = useState("");
   return (
-    <Paper className="w-100 d-flex flex-column p-3 pb-0">
+    <Paper className="w-100 mnh-80vh mxh-80vh d-flex flex-column p-3 pb-0">
       {!selectedSubCategory.length ? (
         <>
-          <Box className="d-flex justify-content-between align-items-center mb-2">
+          <Box className="d-flex  justify-content-between align-items-center mb-2">
             <Typography className="h-4 fw-bold">Top Categories</Typography>
             <Box className="d-flex w-50 d-flex justify-content-end align-items-center">
               <Box className="me-3 w-50">
@@ -425,9 +425,14 @@ const Category = () => {
               </Box>
               <Box
                 sx={{ maxHeight: "45vh" }}
-                className="d-flex overflow-y-scroll hide-scrollbar"
+                className="d-flex overflow-scroll hide-scrollbar"
               >
-                <Grid container className="w-100 p-3" spacing={2}>
+                <Grid
+                  sx={{ height: "43vh" }}
+                  container
+                  className="w-100 p-3 overflow-y-scroll hide-scrollbar"
+                  spacing={2}
+                >
                   {!selectedSets.length
                     ? setItems.map((ele, index) => {
                         return (
@@ -487,9 +492,10 @@ const Category = () => {
             <Grid
               container
               spacing={2}
-              className=" mt-2 mx-auto ms-0"
+              className="mt-2 mx-auto ms-0"
               sx={{
                 width: `calc(100% - 10px)`,
+                height: "57vh",
               }}
             >
               {productList.map((item, index) => {
