@@ -1,10 +1,23 @@
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
+import validateMessage from "constants/validateMessages";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
+
+let errObj = {
+  vendorIdOrName: false,
+  images: false,
+  productTitle: false,
+  sku: false,
+  categorySubcategory: false,
+  weightOrVolume: false,
+  totalStock: false,
+  salePriceAndMrp: false,
+  discounts: false,
+};
 
 const AddEditProductModal = ({
   openEditModal = false,
@@ -17,6 +30,61 @@ const AddEditProductModal = ({
   modalId = 0,
   rowsDataObjects = [],
 }) => {
+  const [error, setError] = useState(errObj);
+
+  const handleError = () => {
+    errObj = {
+      vendorIdOrName: false,
+      images: false,
+      productTitle: false,
+      sku: false,
+      categorySubcategory: false,
+      weightOrVolume: false,
+      totalStock: false,
+      salePriceAndMrp: false,
+      discounts: false,
+    };
+    const {
+      vendorIdOrName,
+      productTitle,
+      sku,
+      categorySubcategory,
+      weightOrVolume,
+      totalStock,
+      salePriceAndMrp,
+      discounts,
+    } = productDetails;
+    if (vendorIdOrName === "") {
+      errObj.vendorIdOrName = true;
+    }
+    if (imageArray.length === 0) {
+      errObj.images = true;
+    }
+    if (productTitle === "") {
+      errObj.productTitle = true;
+    }
+    if (sku === "") {
+      errObj.sku = true;
+    }
+    if (categorySubcategory === "") {
+      errObj.categorySubcategory = true;
+    }
+    if (weightOrVolume === "") {
+      errObj.weightOrVolume = true;
+    }
+    if (totalStock === "") {
+      errObj.totalStock = true;
+    }
+    if (salePriceAndMrp === "") {
+      errObj.salePriceAndMrp = true;
+    }
+    if (discounts === "") {
+      errObj.discounts = true;
+    }
+
+    return errObj;
+  };
+
   const onImgeChange = (event) => {
     if (imageArray.length < 5) {
       if (event.target.files && event.target.files[0]) {
@@ -43,56 +111,69 @@ const AddEditProductModal = ({
   };
 
   const handleSaveBtnClickOfEditModal = () => {
-    if (modalId === null) {
-      const tempObject = {
-        id: rowsDataObjects.length,
-        col1: productDetails.vendorIdOrName,
-        col2: {
-          imgSrc: imageArray,
-          imgCount: imageArray.length,
-        },
-        col3: productDetails.productTitle,
-        col4: productDetails.sku,
-        col5: productDetails.categorySubcategory,
-        col6: productDetails.weightOrVolume,
-        col7: productDetails.totalStock,
-        col8: {
-          salePrice: getSalePrice(),
-          mrpPrice: getMrpPrice(),
-        },
-        col9: "PUMA",
-        col10: "nothing",
-      };
+    const theErrObj = handleError();
+    console.log("Error Object ", theErrObj);
+    setError(theErrObj);
+    let isError = false;
 
-      const tempArray = [...rowsDataObjects];
-      tempArray.push(tempObject);
-      setRowDataObjects([...tempArray]);
-      setOpenEditModal(false);
-    } else if (modalId !== null) {
-      const tempObject = {
-        id: rowsDataObjects.length,
-        col1: productDetails.vendorIdOrName,
-        col2: {
-          imgSrc: imageArray,
-          imgCount: imageArray.length,
-        },
-        col3: productDetails.productTitle,
-        col4: productDetails.sku,
-        col5: productDetails.categorySubcategory,
-        col6: productDetails.weightOrVolume,
-        col7: productDetails.totalStock,
-        col8: {
-          salePrice: getSalePrice(),
-          mrpPrice: getMrpPrice(),
-        },
-        col9: "PUMA",
-        col10: "nothing",
-      };
+    Object.entries(theErrObj).forEach((val) => {
+      if (val[1]) {
+        isError = true;
+      }
+    });
 
-      const tempArray = [...rowsDataObjects];
-      tempArray.splice(modalId, 1, tempObject);
-      setRowDataObjects([...tempArray]);
-      setOpenEditModal(false);
+    if (!isError) {
+      if (modalId === null) {
+        const tempObject = {
+          id: rowsDataObjects.length,
+          col1: productDetails.vendorIdOrName,
+          col2: {
+            imgSrc: imageArray,
+            imgCount: imageArray.length,
+          },
+          col3: productDetails.productTitle,
+          col4: productDetails.sku,
+          col5: productDetails.categorySubcategory,
+          col6: productDetails.weightOrVolume,
+          col7: productDetails.totalStock,
+          col8: {
+            salePrice: getSalePrice(),
+            mrpPrice: getMrpPrice(),
+          },
+          col9: "PUMA",
+          col10: "nothing",
+        };
+
+        const tempArray = [...rowsDataObjects];
+        tempArray.push(tempObject);
+        setRowDataObjects([...tempArray]);
+        setOpenEditModal(false);
+      } else if (modalId !== null) {
+        const tempObject = {
+          id: rowsDataObjects.length,
+          col1: productDetails.vendorIdOrName,
+          col2: {
+            imgSrc: imageArray,
+            imgCount: imageArray.length,
+          },
+          col3: productDetails.productTitle,
+          col4: productDetails.sku,
+          col5: productDetails.categorySubcategory,
+          col6: productDetails.weightOrVolume,
+          col7: productDetails.totalStock,
+          col8: {
+            salePrice: getSalePrice(),
+            mrpPrice: getMrpPrice(),
+          },
+          col9: "PUMA",
+          col10: "nothing",
+        };
+
+        const tempArray = [...rowsDataObjects];
+        tempArray.splice(modalId, 1, tempObject);
+        setRowDataObjects([...tempArray]);
+        setOpenEditModal(false);
+      }
     }
   };
 
@@ -127,22 +208,67 @@ const AddEditProductModal = ({
     });
   };
 
+  const handleCloseIconClick = () => {
+    setError({
+      vendorIdOrName: false,
+      images: false,
+      productTitle: false,
+      sku: false,
+      categorySubcategory: false,
+      weightOrVolume: false,
+      totalStock: false,
+      salePriceAndMrp: false,
+      discounts: false,
+    });
+    setOpenEditModal(false);
+  };
+
+  const handleClearAll = () => {
+    setProductDetails({
+      vendorIdOrName: "",
+      images: "",
+      productTitle: "",
+      sku: "",
+      categorySubcategory: "",
+      weightOrVolume: "",
+      totalStock: "",
+      salePriceAndMrp: "",
+      discounts: "",
+    });
+    setImageArray([]);
+    setError({
+      vendorIdOrName: false,
+      images: false,
+      productTitle: false,
+      sku: false,
+      categorySubcategory: false,
+      weightOrVolume: false,
+      totalStock: false,
+      salePriceAndMrp: false,
+      discounts: false,
+    });
+  };
+
   return (
-    <div>
+    <Box className="">
       <ModalComponent
         open={openEditModal}
         ModalTitle="Edit Product"
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
-        saveBtnText="Update"
+        saveBtnText={modalId === null ? "Save" : "Update"}
         saveBtnClassName="ms-1"
         ModalWidth={650}
+        minHeightClassName="mnh-70vh mxh-70vh overflow-auto"
         onCloseIconClick={() => {
-          setOpenEditModal(false);
+          handleCloseIconClick();
         }}
         onSaveBtnClick={() => {
           handleSaveBtnClickOfEditModal();
+        }}
+        onClearBtnClick={() => {
+          handleClearAll();
         }}
       >
         <Grid container className="my-1" spacing={4}>
@@ -155,6 +281,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.vendorIdOrName}
+              helperText={
+                error.vendorIdOrName ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -166,6 +296,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.productTitle}
+              helperText={
+                error.productTitle ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -177,6 +311,8 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.sku}
+              helperText={error.sku ? validateMessage.field_required : ""}
             />
           </Grid>
           <Grid item xs={6}>
@@ -188,6 +324,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.categorySubcategory}
+              helperText={
+                error.categorySubcategory ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -199,6 +339,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.weightOrVolume}
+              helperText={
+                error.weightOrVolume ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -210,6 +354,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.totalStock}
+              helperText={
+                error.totalStock ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -221,6 +369,10 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.salePriceAndMrp}
+              helperText={
+                error.salePriceAndMrp ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -232,6 +384,8 @@ const AddEditProductModal = ({
               onInputChange={(e) => {
                 handleInputChanges(e);
               }}
+              error={error.discounts}
+              helperText={error.discounts ? validateMessage.field_required : ""}
             />
           </Grid>
         </Grid>
@@ -244,20 +398,29 @@ const AddEditProductModal = ({
               {returnImagesInArray()}
               <Grid item xs={3}>
                 <label htmlFor="image-upload" className="d-block">
-                  <Box
-                    width={100}
-                    height={100}
-                    className="rounded d-flex justify-content-center align-items-center border cursor-pointer"
-                  >
-                    <AddCircleOutlineOutlined className="color-gray" />
+                  <Box>
+                    <Box
+                      width={100}
+                      height={100}
+                      className="rounded d-flex justify-content-center align-items-center border cursor-pointer"
+                    >
+                      <AddCircleOutlineOutlined className="color-gray" />
 
-                    <input
-                      type="file"
-                      id="image-upload"
-                      accept="image/png, image/jpeg"
-                      className="d-none"
-                      onChange={onImgeChange}
-                    />
+                      <input
+                        type="file"
+                        id="image-upload"
+                        accept="image/png, image/jpeg"
+                        className="d-none"
+                        onChange={onImgeChange}
+                      />
+                    </Box>
+                    {error.images ? (
+                      <Typography className="fs-12 mt-1 text-danger">
+                        Image Required
+                      </Typography>
+                    ) : (
+                      ""
+                    )}
                   </Box>
                 </label>
               </Grid>
@@ -265,7 +428,7 @@ const AddEditProductModal = ({
           </Box>
         </Box>
       </ModalComponent>
-    </div>
+    </Box>
   );
 };
 

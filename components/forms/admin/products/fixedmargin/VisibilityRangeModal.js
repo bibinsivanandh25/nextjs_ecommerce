@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
+import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+
+let errObj = {
+  typeInput: false,
+};
 
 const VisibilityRangeModal = ({
   openVisibilityRangeModal = false,
@@ -11,15 +16,34 @@ const VisibilityRangeModal = ({
   const [productDiliverable, setProductDiliverable] = useState(true);
   const [productNotDiliverable, setProductNotDiliverable] = useState(false);
   const [typeInput, setTypeInput] = useState("");
+  const [error, setError] = useState(errObj);
 
   const changeStateOfRadioButtons = (deliverable) => {
     if (deliverable) {
+      errObj.typeInput = false;
+      setError(errObj);
+      setTypeInput("");
       setProductDiliverable(true);
       setProductNotDiliverable(false);
     } else {
       setProductDiliverable(false);
       setProductNotDiliverable(true);
     }
+  };
+
+  const handleError = () => {
+    errObj = {
+      typeInput: false,
+    };
+    if (typeInput === "") {
+      errObj.typeInput = true;
+    }
+    return errObj;
+  };
+
+  const handleSubmit = () => {
+    const theError = handleError();
+    setError(theError);
   };
 
   return (
@@ -38,6 +62,9 @@ const VisibilityRangeModal = ({
         ModalWidth={650}
         onClearBtnClick={() => {
           setOpenVisibilityRangeModal(false);
+        }}
+        onSaveBtnClick={() => {
+          handleSubmit();
         }}
       >
         <Box className="d-flex  flex-wrap  mt-2 pb-5 mb-3">
@@ -73,6 +100,10 @@ const VisibilityRangeModal = ({
                   setTypeInput(e.target.value);
                 }}
                 value={typeInput}
+                error={error.typeInput}
+                helperText={
+                  error.typeInput ? validateMessage.field_required : ""
+                }
               />
               <Typography className="fst-italic fs-14 mt-1">
                 Delivery range will be considered from supplier location.
