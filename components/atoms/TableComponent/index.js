@@ -122,11 +122,12 @@ const EnhancedTableHead = (props) => {
               align={column.align}
               style={{
                 minWidth: column.minWidth,
+                maxWidth: column.maxWidth,
                 cursor:
                   (column.position && column.position === "sticky") ||
                   column.pinned
-                    ? "default"
-                    : "move",
+                    ? "move"
+                    : "default",
               }}
               draggable={
                 draggableHeader &&
@@ -263,6 +264,8 @@ export default function TableComponent({
   dateFilterBtnName = "Add",
   dateFilterBtnClick = () => {},
   stickyHeader = true,
+  // eslint-disable-next-line no-unused-vars
+  dateFilterBtnIcon = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
