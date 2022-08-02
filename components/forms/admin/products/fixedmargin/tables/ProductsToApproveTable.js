@@ -43,6 +43,8 @@ const ProductsToApproveTable = ({
     discounts: "",
   });
 
+  const [images, setImages] = useState([]);
+
   const onClickOfMenuItem = (ele, index) => {
     if (ele === "Edit") {
       setProductDetails({
@@ -156,9 +158,10 @@ const ProductsToApproveTable = ({
           <Box className="d-flex align-items-end justify-content-center">
             <Box
               onClick={() => {
+                setImages([...val.col2.imgSrc]);
+                setImageIndexForImageModal(0);
                 setModalId(index);
                 setOpenImagesArrayModal(true);
-                setImageIndexForImageModal(0);
               }}
               className="h-30 border d-flex justify-content-center"
             >
@@ -278,6 +281,7 @@ const ProductsToApproveTable = ({
         rowsDataObjects={rowsDataObjectsForApproval}
         modalId={modalId}
         productDetails={productDetails}
+        images={images}
       />
       {/* Accept Reject Modal */}
       <AcceptRejectModal
