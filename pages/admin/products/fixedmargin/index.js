@@ -1,110 +1,26 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Box, Paper, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import CustomIcon from "services/iconUtils";
+import React, { useState } from "react";
 import styles from "./fixedmargin.module.css";
-import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
-import AddEditProductModal from "@/forms/admin/products/fixedmargin/AddEditProduct";
-import CheckImagesModal from "@/forms/admin/products/fixedmargin/CheckImagesModal";
-import AcceptRejectModal from "@/forms/admin/products/fixedmargin/AcceptRejectModal";
-import ViewProducts from "@/forms/admin/products/fixedmargin/ViewProducts";
-import RaiseQueryModal from "@/forms/admin/products/fixedmargin/RaiseQueryModal";
-import MergeToModal from "@/forms/admin/products/fixedmargin/MergeToModal";
-import VisibilityRangeModal from "@/forms/admin/products/fixedmargin/VisibilityRangeModal";
-import FlagModal from "@/forms/admin/products/fixedmargin/FlagModal";
+import ProductsToApproveTable from "@/forms/admin/products/fixedmargin/tables/ProductsToApproveTable";
+import ActiveProductsTable from "@/forms/admin/products/fixedmargin/tables/ActiveProductsTable";
+import UpdatedTable from "@/forms/admin/products/fixedmargin/tables/UpdatedTable";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [imageArray, setImageArray] = useState([]);
-  const [modalId, setModalId] = useState(null);
-  const [tableRows, setTableRows] = useState([]);
-  const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
-  const [showViewProducts, setShowViewProducts] = useState(false);
 
-  const [productDetails, setProductDetails] = useState({
-    vendorIdOrName: "",
-    images: "",
-    productTitle: "",
-    sku: "",
-    categorySubcategory: "",
-    weightOrVolume: "",
-    totalStock: "",
-    salePriceAndMrp: "",
-    discounts: "",
-  });
-
-  // ALL the modal states are present here
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
-  const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
+  const [tabSelected, setTabSelected] = useState("Products to approve");
 
   const titles = [
-    "Products to approve (48)",
-    "Drafts (23)",
-    "Queries (10)",
-    "Active (155)",
-    "Update(432)",
-    "Rejected(58)",
+    "Products to approve",
+    "Queries",
+    "Active",
+    "Update",
+    "Rejected",
   ];
 
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
-
-  const tableColumns = [
-    {
-      id: "col1",
-      align: "center",
-      label: "VendorID/Name",
-      data_align: "center",
-    },
-    { id: "col2", align: "center", label: "Images", data_align: "center" },
-    {
-      id: "col3",
-      align: "center",
-      label: "Product Title",
-      data_align: "center",
-    },
-    { id: "col4", align: "center", label: "SKU", data_align: "center" },
-    {
-      id: "col5",
-      align: "center",
-      label: "Category/Subcategory",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Weight/Volume",
-      data_align: "center",
-    },
-    { id: "col7", align: "center", label: "Total Stock", data_align: "center" },
-    {
-      id: "col8",
-      align: "center",
-      label: "Sale Price/MRP",
-      data_align: "center",
-    },
-    { id: "col9", align: "center", label: "Brand", data_align: "center" },
-    { id: "col10", align: "center", label: "Action", data_align: "center" },
-  ];
-
-  const [rowsDataObjects, setRowDataObjects] = useState([
+  const [rowsDataObjectsForApproval, setrowsDataObjectsForApproval] = useState([
     {
       id: 1,
       col1: "#345345 SKM Tex",
@@ -161,126 +77,49 @@ const FixedMargin = () => {
     // },
   ]);
 
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setProductDetails({
-        vendorIdOrName: rowsDataObjects[index].col1,
-        images: rowsDataObjects[index].col2.imgSrc,
-        productTitle: rowsDataObjects[index].col3,
-        sku: rowsDataObjects[index].col4,
-        categorySubcategory: rowsDataObjects[index].col5,
-        weightOrVolume: rowsDataObjects[index].col6,
-        totalStock: rowsDataObjects[index].col7,
-        salePriceAndMrp: `${rowsDataObjects[index].col8.salePrice}/${rowsDataObjects[index].col8.mrpPrice} `,
-        discounts:
-          rowsDataObjects[index].col8.mrpPrice -
-          rowsDataObjects[index].col8.salePrice,
-      });
-      setModalId(index);
-      setImageArray(rowsDataObjects[index].col2.imgSrc);
-      setOpenEditModal(true);
-    }
+  const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([
+    {
+      id: 1,
+      col1: "01",
+      col2: "#ADJHAF",
+      col3: {
+        imgSrc: [
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+        ],
+        imgCount: 10,
+      },
+      col4: "20 Words Max",
+      col5: "#7817823ajhsd/ Some Buisness Name",
+      col6: "#8749289",
+      col7: 150,
+      col8: "150gm",
+      col9: "Levis",
+      col10: { salePrice: 1200, mrpPrice: 1500 },
+      col11: "Gym Equipments",
+      col12: "Latest Product",
+      col13: "10/11/2021",
+      col14: "10/11/2021",
+      col15: "nothing",
+    },
+  ]);
 
-    if (ele === "Delete") {
-      const tempArray = [...rowsDataObjects];
-      tempArray.splice(index, 1);
-      setRowDataObjects([...tempArray]);
-    }
-
-    if (ele === "Accept/Reject") {
-      setModalId(index);
-      setOpenAcceptRejectModal(true);
-    }
-
-    if (ele === "Merge to") {
-      setModalId(index);
-      setOpenMergeToModal(true);
-    }
-
-    if (ele === "Raise Query") {
-      setModalId(index);
-      setOpenRaiseQueryModal(true);
-    }
-
-    if (ele === "Visibility Range") {
-      setModalId(index);
-      setOpenVisibilityRangeModal(true);
-    }
-
-    if (ele === "Flags") {
-      setModalId(index);
-      setShowFlagModal(true);
-    }
-  };
-
-  const theTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjects.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: (
-          <Typography className="fs-12 text-primary">{val.col1}</Typography>
-        ),
-        col2: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-                setImageIndexForImageModal(0);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.col2.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
-              />
-            </Box>
-            <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-          </Box>
-        ),
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: (
-          <Typography className="fs-12">
-            &#8377; {val.col8.salePrice}/ &#8377; {val.col8.mrpPrice}
-          </Typography>
-        ),
-        col9: "PUMA",
-        col10: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                console.log("Index", index);
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
-      });
-    });
-    setTableRows([...anArray]);
-  };
-
-  useEffect(() => {
-    theTableRowsData();
-  }, []);
-
-  useEffect(() => {
-    theTableRowsData();
-  }, [rowsDataObjects]);
+  const [rowsDataObjectsForUpdated, setRowsDataObjectsForUpdated] = useState([
+    {
+      id: 1,
+      col1: "#FGAUJH",
+      col2: {
+        imgSrc: [
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+        ],
+        imgCount: 10,
+      },
+      col3: "#FDHJHAB / Some Buisness Name",
+      col4: "Category/Subcategory",
+      col5: "Changed the Flag to Top Deal",
+      col6: "10/11/2021-23:42",
+      clo7: "Nothing",
+    },
+  ]);
 
   const returnTabs = () => {
     return titles.map((val, index) => {
@@ -288,6 +127,7 @@ const FixedMargin = () => {
         <Box
           onClick={() => {
             setActiveTab(index);
+            setTabSelected(val);
           }}
           className={`px-4 py-1 border fs-14 cursor-pointer 
           ${activeTab === index ? styles.activeTab : styles.inActivetab}
@@ -302,93 +142,83 @@ const FixedMargin = () => {
 
   return (
     <>
-      {!showViewProducts ? (
-        <Box>
-          <Box className="d-flex mt-3">{returnTabs()}</Box>
-          <Paper
-            sx={{ height: "78vh" }}
-            className="overflow-auto hide-scrollbar"
-          >
-            <Box className="px-1 pt-2">
-              <TableComponent
-                columns={tableColumns}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                tableRows={tableRows}
-                // showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="+ New Product"
-                dateFilterBtnClick={() => {
-                  setProductDetails({
-                    vendorIdOrName: "",
-                    images: "",
-                    productTitle: "",
-                    sku: "",
-                    categorySubcategory: "",
-                    weightOrVolume: "",
-                    totalStock: "",
-                    salePriceAndMrp: "",
-                    discounts: "",
-                  });
-                  setImageArray([]);
-                  setOpenEditModal(true);
-                  setModalId(null);
-                }}
+      {" "}
+      <Box>
+        <Box className="d-flex mt-3">{returnTabs()}</Box>
+        <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
+          <Box className="px-1 pt-2">
+            {(tabSelected === "Products to approve" ||
+              tabSelected === "Queries" ||
+              tabSelected === "Rejected") && (
+              <ProductsToApproveTable
+                rowsDataObjectsForApproval={rowsDataObjectsForApproval}
+                setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
               />
-            </Box>
-          </Paper>
-        </Box>
-      ) : (
-        <ViewProducts setShowViewProduct={setShowViewProducts} />
-      )}
+            )}
+
+            {tabSelected === "Active" && (
+              <ActiveProductsTable
+                rowsDataObjectsForActive={rowsDataObjectsForActive}
+                setRowsDataObjectsForActive={setRowsDataObjectsForActive}
+              />
+            )}
+
+            {tabSelected === "Update" && (
+              <UpdatedTable
+                rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
+                setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
+              />
+            )}
+          </Box>
+        </Paper>
+      </Box>
       {/* Edit Modal Component */}
-      <AddEditProductModal
+      {/* <AddEditProductModal
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
         productDetails={productDetails}
         setImageArray={setImageArray}
         setProductDetails={setProductDetails}
         imageArray={imageArray}
-        setRowDataObjects={setRowDataObjects}
+        setRowDataObjects={setrowsDataObjectsForApproval}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjects}
-      />
+        rowsDataObjects={rowsDataObjectsForApproval}
+      /> */}
       {/* Images Modal Component */}
-      <CheckImagesModal
+      {/* <CheckImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        rowsDataObjects={rowsDataObjects}
+        rowsDataObjects={rowsDataObjectsForApproval}
         modalId={modalId}
-      />
+      /> */}
       {/* Accept Reject Modal */}
-      <AcceptRejectModal
+      {/* <AcceptRejectModal
         openAcceptRejectModal={openAcceptRejectModal}
         setOpenAcceptRejectModal={setOpenAcceptRejectModal}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjects}
-      />
+        rowsDataObjects={rowsDataObjectsForApproval}
+      /> */}
       {/* Raise Query Modal */}
-      <RaiseQueryModal
+      {/* <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
-      />
+      /> */}
       {/* Merge To Modal */}
-      <MergeToModal
+      {/* <MergeToModal
         openMergeToModal={openMergeToModal}
         setOpenMergeToModal={setOpenMergeToModal}
-      />
-      <VisibilityRangeModal
+      /> */}
+      {/* <VisibilityRangeModal
         openVisibilityRangeModal={openVisibilityRangeModal}
         setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
+      /> */}
       {/* Flag Modal */}
-      <FlagModal
+      {/* <FlagModal
         showFlagModal={showFlagModal}
         setShowFlagModal={setShowFlagModal}
-      />
+      /> */}
     </>
   );
 };

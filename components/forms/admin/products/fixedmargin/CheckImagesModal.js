@@ -9,8 +9,7 @@ const CheckImagesModal = ({
   setOpenImagesArrayModal = () => {},
   imageIndexForImageModal = 0,
   setImageIndexForImageModal = () => {},
-  rowsDataObjects = [],
-  modalId = 0,
+  productDetails,
 }) => {
   return (
     <div>
@@ -49,9 +48,7 @@ const CheckImagesModal = ({
           </Box>
           {openImagesArrayModal && (
             <Image
-              src={
-                rowsDataObjects[modalId].col2.imgSrc[imageIndexForImageModal]
-              }
+              src={productDetails.images[imageIndexForImageModal]}
               width={400}
               height={400}
             />
@@ -62,16 +59,12 @@ const CheckImagesModal = ({
               right: "-50px",
             }}
             className={` rounded-circle p-2 ${
-              rowsDataObjects[modalId]?.col2.imgSrc.length - 1 ===
-              imageIndexForImageModal
+              productDetails.images.length - 1 === imageIndexForImageModal
                 ? "bg-gray"
                 : "bg-white"
             }`}
             onClick={() => {
-              if (
-                imageIndexForImageModal <
-                rowsDataObjects[modalId].col2.imgSrc.length - 1
-              ) {
+              if (imageIndexForImageModal < productDetails.images.length - 1) {
                 const nextIndex = imageIndexForImageModal + 1;
                 setImageIndexForImageModal(nextIndex);
               }
