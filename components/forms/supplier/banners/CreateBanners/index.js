@@ -14,6 +14,7 @@ const CreateBanner = ({ showModal = false, setShowModal = () => {} }) => {
         setShowModal(false);
       }}
       footerClassName="justify-content-end"
+      ModalTitle="Create Banner"
     >
       <Grid container spacing={2} className="my-2">
         <Grid
