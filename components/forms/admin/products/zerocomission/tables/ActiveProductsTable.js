@@ -6,7 +6,7 @@ import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import AddEditProductModal from "../modals/AddEditProduct";
 import CheckImagesModal from "../modals/CheckImagesModal";
-import ViewProducts from "../ViewProducts";
+import ViewProducts from "../ViewProducts/index";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import RaiseQueryModal from "../modals/RaiseQueryModal";
 import DiscountModal from "../modals/DiscountModal";
