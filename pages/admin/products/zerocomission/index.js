@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import styles from "./fixedmargin.module.css";
+import styles from "./zerocomission.module.css";
 import ProductsToApproveTable from "@/forms/admin/products/fixedmargin/tables/ProductsToApproveTable";
 import ActiveProductsTable from "@/forms/admin/products/fixedmargin/tables/ActiveProductsTable";
 import UpdatedTable from "@/forms/admin/products/fixedmargin/tables/UpdatedTable";
