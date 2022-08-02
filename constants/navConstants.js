@@ -126,6 +126,11 @@ const supplierMenu = [
         path_name: "mrmrscartproduct",
         navigate: true,
       },
+      {
+        title: "Invoice & Trademarks",
+        path_name: "invoiceandtrademarks",
+        navigate: true,
+      },
     ],
   },
   {

@@ -285,7 +285,12 @@
 .mxh-50vh {
   max-height: 50vh
 }
-
+.mxh-40vh {
+  max-height: 40vh !important;
+}
+.mnh-40vh{
+  min-height: 40vh;
+}
 .h-300px {
   height: 300px !important;
 }

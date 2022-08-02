@@ -6,6 +6,7 @@
 import { useState } from "react";
 import { Grid, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import ButtonComponent from "../../../../atoms/ButtonComponent";
@@ -13,10 +14,11 @@ import AddAddressModal from "../../myaccount/addaddressmodal";
 
 const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
   // const [radioChecked, setRadioChecked] = useState(false);
+
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [pickupDetails, setpickupDetails] = useState([
     {
-      name: "Madhusudhan Agrahar",
+      name: "Madhusudhan Agrahr",
       address:
         "Evoma Businness center , KR PURAM , old madras road , Bangalore Karnataka- 000001",
       isChecked: false,
@@ -52,7 +54,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
       isChecked: false,
     },
   ]);
-
+  const route = useRouter();
   const handleEditClick = (ind) => {
     console.log(pickupDetails[ind].name);
   };
@@ -86,7 +88,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
               }}
             />
           </Grid>
-          <Grid item xs={9} className="my-2">
+          <Grid item xs={9} className="my-2 ">
             <p className="font-weight-bold">{ele.name}</p>
             <p>{ele.address}</p>
           </Grid>
@@ -115,7 +117,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
     });
   };
   return (
-    <>
+    <div>
       <p
         className="color-orange cursor-pointer position-absolute top-0"
         onClick={() => {
@@ -125,11 +127,22 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
         {"< "}
         Back
       </p>
-      <div className="d-flex justify-content-between align-items-center ">
+      <div className="d-flex justify-content-between align-items-center">
         <p className="fw-600">Select Pickup Address (5 orders Selected)</p>
-        <ButtonComponent label="Ship with MrMrs Cart" />
+        <ButtonComponent
+          label="Ship with MrMrs Cart"
+          onBtnClick={() =>
+            route.push("/supplier/myorders/neworder/generateinvoiceandmanifest")
+          }
+        />
       </div>
-      <Paper elevation={6} className="px-3 mt-2">
+      <Paper
+        elevation={3}
+        className="px-3 mt-2 mnh-40vh hide-scrollbar overflow-auto"
+        sx={{
+          maxHeight: "53vh",
+        }}
+      >
         <div className="d-flex justify-content-between py-3">
           <p className="fw-bold">Pickup Details</p>
           <div
@@ -144,7 +157,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
             Add New Address
           </div>
         </div>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} justifyContent="center">
           {getPickUpAdress()}
           <Grid item xs={2} />
         </Grid>
@@ -152,7 +165,7 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
       {showAddAddress ? (
         <AddAddressModal setShowAddAddressModal={setShowAddAddress} />
       ) : null}
-    </>
+    </div>
   );
 };
 export default AcceptandConfirmAdress;

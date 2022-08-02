@@ -5,7 +5,7 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShowPreviousInvoices from "components/forms/supplier/myorder/showpreviousorder";
 import { useRouter } from "next/router";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
@@ -14,6 +14,20 @@ import styles from "./Generateinvoiceandmanifest.module.css";
 
 const Generateinvoiceandmanifest = () => {
   const [showInvoices, setShowInvoices] = useState(false);
+  const [progressBarSteps, setProgressBarSteps] = useState([
+    {
+      label: "Accept & confirm Orders",
+      path: "acceptandconfirmorders",
+    },
+    {
+      label: "Generate Invoice & Manifest ",
+      path: "generateinvoiceandmanifest",
+    },
+    {
+      label: "Upload Manifest",
+      path: "uploadmanifest",
+    },
+  ]);
   const route = useRouter();
   const columns = [
     {
@@ -122,6 +136,25 @@ const Generateinvoiceandmanifest = () => {
       col9: "500",
     },
   ];
+
+  useEffect(() => {
+    if (
+      route.query.type === "Delivery by store Owner" ||
+      route.query.type === "Hand picked"
+    ) {
+      setProgressBarSteps([
+        {
+          label: "Accept & confirm Orders",
+          path: "acceptandconfirmorders",
+        },
+        {
+          label: "Generate Invoice & Manifest ",
+          path: "generateinvoiceandmanifest",
+        },
+      ]);
+    }
+  }, [route.pathname, route.query]);
+
   return (
     <Paper
       sx={{ p: 2 }}
@@ -129,7 +162,7 @@ const Generateinvoiceandmanifest = () => {
     >
       {!showInvoices ? (
         <>
-          <ProgressBar showHeader />
+          <ProgressBar showHeader steps={[...progressBarSteps]} />
           <Grid container className="" spacing={1}>
             <Grid
               item
