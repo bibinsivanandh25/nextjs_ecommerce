@@ -35,7 +35,7 @@ const UpdatedTable = ({
 
   const [modalId, setModalId] = useState(null);
   const [tableRows, setTableRows] = useState([]);
-  //   const [first, setfirst] = useState(second);
+  const [images, setImages] = useState([]);
   const tableColumnsForProductsToUpdated = [
     {
       id: "col1",
@@ -103,6 +103,7 @@ const UpdatedTable = ({
           <Box className="d-flex align-items-end justify-content-center">
             <Box
               onClick={() => {
+                setImages([...val.col2.imgSrc]);
                 setModalId(index);
                 setOpenImagesArrayModal(true);
                 setImageIndexForImageModal(0);
@@ -198,8 +199,8 @@ const UpdatedTable = ({
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        productDetails={productDetails}
         modalId={modalId}
+        images={images}
       />
       <AddEditProductModal
         openEditModal={openEditModal}

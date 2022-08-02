@@ -39,6 +39,8 @@ const ActiveProductsTable = ({
   const [openRejectModal, setOpenRejectModal] = useState(false);
   const [openDiscountModal, setOpenDiscountModal] = useState(false);
 
+  const [images, setImages] = useState([]);
+
   const options = [
     "Edit",
     <Box className="d-flex align-items-cenetr">
@@ -192,6 +194,7 @@ const ActiveProductsTable = ({
           <Box className="d-flex align-items-end justify-content-center">
             <Box
               onClick={() => {
+                setImages([...val.col3.imgSrc]);
                 setModalId(index);
                 setOpenImagesArrayModal(true);
                 setImageIndexForImageModal(0);
@@ -308,8 +311,8 @@ const ActiveProductsTable = ({
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        productDetails={productDetails}
         modalId={modalId}
+        images={images}
       />
       {/* Reasons for remove modal */}
       <RaiseQueryModal
