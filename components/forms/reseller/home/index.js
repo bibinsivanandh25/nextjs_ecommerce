@@ -11,8 +11,8 @@ const HomeComponent = ({
   return (
     <div className="w-100">
       <Box className="d-flex justify-content-between mx-1 align-items-center">
-        <Typography className="fw-bold">Top categories</Typography>
-        <Typography className="fs-14 color-orange">See all</Typography>
+        <Typography className="fw-bold">Top Categories</Typography>
+        <Typography className="fs-14 color-orange">See All</Typography>
       </Box>
       <Box className=" w-100 overflow-x-scroll">
         <CategoryScrollComponent categories={[...categories]} />

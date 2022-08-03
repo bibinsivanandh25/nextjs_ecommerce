@@ -14,15 +14,17 @@ export default function MenuwithArrow({
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleClose = (e) => {
+    if (!(e.target.id === "store")) {
+      setAnchorEl(null);
+    }
   };
   return (
     <div className="cursor-pointer">
       <Box onClick={handleClick} className="cursor-pointer">
-        <Typography className="h-6 cursor-pointer">{subHeader}</Typography>
+        <Typography className="h-5 cursor-pointer">{subHeader}</Typography>
         <div className="d-flex cursor-pointer align-items-center">
-          <Typography className="fw-bold h-5 cursor-pointer">
+          <Typography className="fw-bold fs-14 cursor-pointer">
             {Header}
           </Typography>
           <ArrowDropDown className="fw-bold h-3 cursor-pointer" />

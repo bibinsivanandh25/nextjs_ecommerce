@@ -4,6 +4,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import NavTabComponent from "components/molecule/NavTabComponent";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import { Doughnutchart } from "@/atoms/Doughnut/Doughnut";
+import TableComponent from "@/atoms/TableComponent";
 
 const activeSupplierdata = {
   supplierId: "--",
@@ -77,7 +78,88 @@ const LineChartLable = [
 ];
 const doughnutLables = ["Total panalties paid", "panalties Pending to paid"];
 const doughnutData = ["234", "356"];
-
+const paymentDatas = [
+  {
+    id: 1,
+    title: "Last Payment Paid",
+    ammount: "12,89,456",
+    date: "5 Jan 2022, 12:22",
+  },
+  {
+    id: 1,
+    title: "Pending Payment (Next Release)",
+    ammount: "12,89,456",
+    date: "5 Jan 2022, 12:22",
+  },
+];
+const categoryColumn = [
+  {
+    id: "col1",
+    label: "SI NO.",
+    minWidth: 30,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col2",
+    label: "Categories",
+    minWidth: 300,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+];
+const subCategoryColumn = [
+  {
+    id: "col1",
+    label: "SI NO.",
+    minWidth: 30,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col2",
+    label: "Sub-Categories",
+    minWidth: 300,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+];
+const categoryRows = [
+  {
+    id: "col1",
+    col1: 1,
+    col2: "Leather",
+  },
+  {
+    id: "col1",
+    col1: 2,
+    col2: "Leather",
+  },
+  {
+    id: "col1",
+    col1: 3,
+    col2: "Leather",
+  },
+  {
+    id: "col1",
+    col1: 4,
+    col2: "Leather",
+  },
+  {
+    id: "col1",
+    col1: 5,
+    col2: "Leather",
+  },
+  {
+    id: "col1",
+    col1: 6,
+    col2: "Leather",
+  },
+];
 const ViewModal = ({ setViewModaOpen = () => {} }) => {
   return (
     <Box className="p-2">
@@ -524,7 +606,8 @@ const ViewModal = ({ setViewModaOpen = () => {} }) => {
             labels={LineChartLable}
             data={lineChartData}
             showYAxis={false}
-            lineColor="#007fff"
+            lineColor="#0782ff"
+            height="300px"
           />
         </Paper>
       </Box>{" "}
@@ -537,7 +620,8 @@ const ViewModal = ({ setViewModaOpen = () => {} }) => {
             labels={LineChartLable}
             data={lineChartData}
             showYAxis={false}
-            lineColor="#007fff"
+            lineColor="#0782ff"
+            height="300px"
           />
         </Paper>
       </Box>
@@ -545,19 +629,80 @@ const ViewModal = ({ setViewModaOpen = () => {} }) => {
         <Box className="px-3">
           <NavTabComponent listData={thirdNavTab} />
         </Box>
-        <Grid container xs={12} className="mt-3">
-          <Grid item lg={6} md={6} sm={12}>
-            <Paper elevation={3} className="p-3 ">
+        <Grid container xs={12} className="mt-3" spacing={3}>
+          <Grid item lg={7} md={6} sm={12}>
+            <Paper elevation={3} className="py-5 ps-2">
               <Doughnutchart
-                className="mnh-300"
-                cutout="110"
+                className="mnh-200"
+                cutout="80"
                 labels={doughnutLables}
                 data={doughnutData}
               />
             </Paper>
           </Grid>
+          <Grid item lg={5} md={6} sm={12}>
+            <Grid conatiner>
+              {paymentDatas.map((item) => (
+                <Grid item md={8} sm={12} key={item.id} className="mt-2">
+                  <Box
+                    className="rounded py-3"
+                    sx={{
+                      border: "1px solid #cee6fe !important",
+                      backgroundColor: "#fcfcfc",
+                    }}
+                  >
+                    <Typography className="ps-2 color-dark-gray h-5">
+                      {item.title}
+                    </Typography>
+                    <Typography className="h-1 fw-bold ps-4">
+                      &#8377; {item.ammount}
+                    </Typography>
+                    <Typography className="text-end pe-4 fw-500 h-5">
+                      {item.date}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
         </Grid>
       </Box>
+      <Grid container xs={12} className="mt-2" spacing={3}>
+        <Grid item md={6} sm={12}>
+          <Paper className="p-2" elevation={3}>
+            <Box>
+              <Typography className="fw-bold">
+                Top 10 Product Categories
+              </Typography>
+            </Box>
+            <TableComponent
+              showSearchbar={false}
+              showCheckbox={false}
+              showPagination={false}
+              columns={[...categoryColumn]}
+              tableRows={[...categoryRows]}
+              // table_heading="Top 10 Product Categories"
+            />
+          </Paper>
+        </Grid>
+        <Grid item md={6} sm={12}>
+          <Paper className="p-2" elevation={3}>
+            <Box>
+              <Typography className="fw-bold">
+                Top 10 Product Sub-Categories
+              </Typography>
+            </Box>
+            <TableComponent
+              showSearchbar={false}
+              showCheckbox={false}
+              showPagination={false}
+              columns={[...subCategoryColumn]}
+              tableRows={[...categoryRows]}
+              // table_heading="Top 10 Product Categories"
+            />
+          </Paper>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

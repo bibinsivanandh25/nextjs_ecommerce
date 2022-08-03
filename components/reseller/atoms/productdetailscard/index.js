@@ -77,37 +77,28 @@ const ProductDetailsCard = ({
     {
       return products.map((ele, index) => {
         return (
-          <Grid item lg={4} md={6} key={index}>
+          <Grid item lg={4} md={6} sm={12} key={index} spacing={1}>
             <Paper className="p-2" sx={{}}>
-              <Grid container columnSpacing={1}>
-                <Grid
-                  item
-                  xs={3}
-                  style={{
-                    height: "120px",
-                    position: "relative",
-                    width: "100px",
-                  }}
-                  // className="my-1"
-                >
+              <Grid container spacing={2}>
+                <Grid item xs={3} alignSelf="center">
                   <Image
                     src={ele.image}
                     // height={"100%"}
-                    // height={100}
-                    // width={100}
-                    layout="fill"
+                    height={200}
+                    width={200}
+                    layout="responsive"
                     // objectFit="contain"
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                      position: "relative",
-                    }}
+                    // style={{
+                    //   height: "100%",
+                    //   width: "100%",
+                    //   position: "relative",
+                    // }}
                     alt=""
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={7} spacing={2}>
                   <Tooltip title={ele.title} placement="top">
-                    <Typography className="fw-bold mt-2 fs-14 text-truncate cursor-pointer">
+                    <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
                       {ele.title}
                     </Typography>
                   </Tooltip>
@@ -125,28 +116,26 @@ const ProductDetailsCard = ({
                   >
                     Free shipping
                   </Typography>
-                  <Typography className="mt-3 fw-bold fs-4">
-                    ₹{ele.price}
-                  </Typography>
+                  <Typography className="fw-bold fs-5">₹{ele.price}</Typography>
                 </Grid>
                 <Grid
                   className="d-flex flex-column justify-content-between align-items-end my-1"
                   item
-                  xs={5}
+                  xs={2}
                 >
-                  <Grid className="border rounded-circle p-1 fs-14 cursor-pointer">
+                  <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
                     <Favorite
-                      className="text-secondary"
+                      className="text-secondary h-4"
                       onClick={() => setShowWishlistModal(true)}
                     />
                   </Grid>
-                  <Grid className="border rounded-circle cursor-pointer fs-14 p-1">
-                    <ShareIcon className="text-secondary" />
+                  <Grid className="border rounded-circle cursor-pointer h-5 p-1">
+                    <ShareIcon className="text-secondary h-4" />
                   </Grid>
                   <Grid className="d-flex">
-                    {showMarginButton ? (
+                    {!showMarginButton ? (
                       <ButtonComponent
-                        muiProps="fs-9 me-2 p-1"
+                        muiProps="h-6 me-2 p-0"
                         label="Set margin"
                         size="small"
                         variant="outlined"
@@ -159,7 +148,7 @@ const ProductDetailsCard = ({
                     ) : null}
                     <ButtonComponent
                       size="small"
-                      muiProps="fs-9 p-1"
+                      muiProps="h-6 "
                       label="view"
                       onBtnClick={() => getSelectedItem(ele)}
                     />

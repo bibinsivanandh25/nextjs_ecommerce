@@ -14,6 +14,26 @@ const RegistrationForm = ({
   return (
     <div className="w-70p  d-flex justify-content-center">
       <Grid container spacing={2}>
+        <Grid item md={12} container spacing={2}>
+          <Grid item md={6} sm={12}>
+            <InputBox
+              placeholder="Enter Your Referral Code"
+              value={formValues.referralCode}
+              label="Referral Code"
+              className="w-100"
+              size="small"
+              onInputChange={(e) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  referralCode: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              helperText="Register with referral code & get extra 50 orders free from commission"
+              // error={errorObj.firstName !== ""}
+            />
+          </Grid>
+        </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
             placeholder="Enter First Name"

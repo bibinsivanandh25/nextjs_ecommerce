@@ -80,7 +80,7 @@ function CustomerProductgModal({
       className={
         viewType === "row"
           ? "w-100 d-flex bg-white p-1 rounded border my-2 "
-          : "w-95p d-flex flex-column bg-white py-1 px-2 rounded  "
+          : "w-100 d-flex flex-column bg-white py-1 px-2 rounded  "
       }
     >
       <Paper
