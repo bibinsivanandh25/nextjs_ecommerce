@@ -3,20 +3,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
-import ViewProducts from "../ViewProducts";
+import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-import CheckImagesModal from "../modals/CheckImagesModal";
-import AcceptRejectModal from "../modals/AcceptRejectModal";
-import RaiseQueryModal from "../modals/RaiseQueryModal";
-import MergeToModal from "../modals/MergeToModal";
-import VisibilityRangeModal from "../modals/VisibilityRangeModal";
-import FlagModal from "../modals/FlagModal";
-import AddEditProductModal from "../modals/AddEditProduct";
+import CheckImagesModal from "../CheckImagesModal";
+import AcceptRejectModal from "./AcceptRejectModal";
+import RaiseQueryModal from "./RaiseQueryModal";
+import MergeToModal from "./MergeToModal";
+import VisibilityRangeModal from "./VisibilityRangeModal";
+import FlagModal from "./FlagModal";
+import AddEditProductModal from "./AddEditProductModal";
 
-const ProductsToApproveTable = ({
+const Rejected = ({
   rowsDataObjectsForApproval = [],
   setrowsDataObjectsForApproval = () => {},
 }) => {
+  console.log("Hi");
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -315,4 +316,4 @@ const ProductsToApproveTable = ({
   );
 };
 
-export default ProductsToApproveTable;
+export default Rejected;

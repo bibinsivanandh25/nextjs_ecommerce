@@ -7,11 +7,11 @@ import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
 import CheckImagesModal from "../CheckImagesModal";
 import AcceptRejectModal from "./AcceptRejectModal";
-import RaiseQueryModal from "../RaiseQueryModal";
+import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
-import AddEditProductModal from "../AddEditProductModal";
+import AddEditProductModal from "./AddEditProductModal";
 
 const Queries = ({
   rowsDataObjectsForApproval = [],

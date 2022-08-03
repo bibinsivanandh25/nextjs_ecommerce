@@ -4,17 +4,15 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import ViewProducts from "../ViewProducts";
 import EditProductModalForUpdated from "./EditProductModal";
-import RaiseQueryModal from "../RaiseQueryModal";
+import RaiseQueryModal from "./RaiseQueryModal";
 import CheckImagesModal from "../CheckImagesModal";
-import AddEditProductModal from "../AddEditProductModal";
+import AddEditProductModal from "./AddEditProductModal";
 
 const Updated = ({
   rowsDataObjectsForUpdated,
   setRowsDataObjectsForUpdated,
 }) => {
-  const [showViewProducts, setShowViewProducts] = useState(false);
   const [openEditModalForUpdated, setOpenEditModalForUpdated] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
@@ -126,11 +124,7 @@ const Updated = ({
         col6: val.col6,
         col7: (
           <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
-            />
+            <CustomIcon type="view" className="fs-18" />
             <MenuOption
               getSelectedItem={(ele) => {
                 console.log("Index", index);
@@ -154,44 +148,40 @@ const Updated = ({
   return (
     <>
       <Box>
-        {!showViewProducts ? (
-          <Box>
-            <Paper
-              sx={{ height: "78vh" }}
-              className="overflow-auto hide-scrollbar"
-            >
-              <Box className="px-1 pt-2">
-                <TableComponent
-                  columns={tableColumnsForProductsToUpdated}
-                  tHeadBgColor="bg-light-gray"
-                  showPagination={false}
-                  tableRows={tableRows}
-                  // showSearchbar={false}
-                  showDateFilterBtn
-                  showDateFilter
-                  dateFilterBtnName="+ New Product"
-                  dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
-                    setOpenEditModal(true);
-                    setModalId(null);
-                  }}
-                />
-              </Box>
-            </Paper>
-          </Box>
-        ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
-        )}
+        <Box>
+          <Paper
+            sx={{ height: "78vh" }}
+            className="overflow-auto hide-scrollbar"
+          >
+            <Box className="px-1 pt-2">
+              <TableComponent
+                columns={tableColumnsForProductsToUpdated}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                tableRows={tableRows}
+                // showSearchbar={false}
+                showDateFilterBtn
+                showDateFilter
+                dateFilterBtnName="+ New Product"
+                dateFilterBtnClick={() => {
+                  setProductDetails({
+                    vendorIdOrName: "",
+                    images: "",
+                    productTitle: "",
+                    sku: "",
+                    categorySubcategory: "",
+                    weightOrVolume: "",
+                    totalStock: "",
+                    salePriceAndMrp: "",
+                    discounts: "",
+                  });
+                  setOpenEditModal(true);
+                  setModalId(null);
+                }}
+              />
+            </Box>
+          </Paper>
+        </Box>
       </Box>
 
       <CheckImagesModal

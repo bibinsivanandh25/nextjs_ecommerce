@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
-import AddEditProductModal from "../AddEditProductModal";
-import CheckImagesModal from "../CheckImagesModal";
-import ViewProducts from "../ViewProducts";
+import AddEditProductModal from "./AddEditProductModal";
+import ViewProducts from "./ViewProducts";
 import SwitchComponent from "@/atoms/SwitchComponent";
-import RaiseQueryModal from "../RaiseQueryModal";
+import RaiseQueryModal from "./RaiseQueryModal";
 import DiscountModal from "./DiscountModal";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Active = ({ rowsDataObjectsForActive, setRowsDataObjectsForActive }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -303,7 +303,7 @@ const Active = ({ rowsDataObjectsForActive, setRowsDataObjectsForActive }) => {
       />
 
       {/* Images Modal Component */}
-      <CheckImagesModal
+      <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}

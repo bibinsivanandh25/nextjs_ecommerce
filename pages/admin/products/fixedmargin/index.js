@@ -7,6 +7,7 @@ import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToAppr
 import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
 import Updated from "@/forms/admin/products/fixedmargin/Updated";
 import Queries from "@/forms/admin/products/fixedmargin/Queries";
+import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -185,6 +186,66 @@ const FixedMargin = () => {
     // },
   ]);
 
+  const [rowsDataObjectsForRejected, setRowsDataObjectsForRejected] = useState([
+    {
+      id: 1,
+      col1: "#345345 SKM Tex",
+      col2: {
+        imgSrc: [
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+        ],
+        imgCount: 10,
+      },
+      col3: "Show 20 words max",
+      col4: "--",
+      col5: "Gym Eqipment (10%) - Rowing Belt",
+      col6: "0.500gms/0.720gms",
+      col7: 150,
+      col8: { salePrice: 1200, mrpPrice: 1500 },
+      col9: "PUMA",
+      col10: "nothing",
+    },
+    // {
+    //   id: 2,
+    //   col1: "#345345 SKM hi Tex",
+    //   col2: {
+    //     imgSrc: [
+    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    //     ],
+    //     imgCount: 10,
+    //   },
+    //   col3: "Show 20 words max",
+    //   col4: "--",
+    //   col5: "Gym Eqipment (10%) - Rowing Belt",
+    //   col6: "0.500gms/0.720gms",
+    //   col7: 150,
+    //   col8: { salePrice: 100, mrpPrice: 200 },
+    //   col9: "PUMA",
+    //   col10: "nothing",
+    // },
+    // {
+    //   id: 3,
+    //   col1: "#345345 SKM hello Tex",
+    //   col2: {
+    //     imgSrc: [
+    //       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    //     ],
+    //     imgCount: 10,
+    //   },
+    //   col3: "Show 20 words max",
+    //   col4: "--",
+    //   col5: "Gym Eqipment (10%) - Rowing Belt",
+    //   col6: "0.500gms/0.720gms",
+    //   col7: 150,
+    //   col8: { salePrice: 1300, mrpPrice: 2000 },
+    //   col9: "PUMA",
+    //   col10: "nothing",
+    // },
+  ]);
+
   const returnTabs = () => {
     return titles.map((val, index) => {
       return (
@@ -211,18 +272,24 @@ const FixedMargin = () => {
         <Box className="d-flex mt-3">{returnTabs()}</Box>
         <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
           <Box className="px-1 pt-2">
-            {(tabSelected === "Products to approve" ||
-              tabSelected === "Rejected") && (
+            {tabSelected === "Products to approve" && (
               <ProductsToApprove
                 rowsDataObjectsForApproval={rowsDataObjectsForApproval}
                 setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
               />
             )}
 
+            {tabSelected === "Rejected" && (
+              <Rejected
+                rowsDataObjectsForApproval={rowsDataObjectsForRejected}
+                setRowsDataObjectsForApproval={setRowsDataObjectsForRejected}
+              />
+            )}
+
             {tabSelected === "Queries" && (
               <Queries
-                rowsDataObjectsForApproval={rowsDataObjectsForApproval}
-                setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
+                rowsDataObjectsForApproval={rowsDataObjectsForQueries}
+                setrowsDataObjectsForApproval={setRowsDataObjectsForQueries}
               />
             )}
 
@@ -235,8 +302,8 @@ const FixedMargin = () => {
 
             {tabSelected === "Update" && (
               <Updated
-                rowsDataObjectsForUpdated={rowsDataObjectsForQueries}
-                setRowsDataObjectsForUpdated={setRowsDataObjectsForQueries}
+                rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
+                setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
               />
             )}
           </Box>
