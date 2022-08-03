@@ -3,10 +3,22 @@ import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import logo from "public/assets/logo.jpeg";
 import Image from "next/image";
+import CustomIcon from "services/iconUtils";
+import AddFlag from "@/forms/supplier/mycollections/addflag";
+import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [defaultFormData, setDefaultFormData] = useState({
+    todaysDeals: {},
+    saleprice: "",
+    discount: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const columns = [
     {
@@ -41,6 +53,10 @@ const MyCollections = () => {
       label: "Product Volume",
       id: "col8",
     },
+    {
+      id: "col9",
+      label: "Action",
+    },
   ];
 
   const mapRowsToTable = (data) => {
@@ -55,6 +71,24 @@ const MyCollections = () => {
         col6: `${row.mrp} Rs`,
         col7: `${row.productweight} gms`,
         col8: row.productvolume,
+        col9: (
+          <>
+            <CustomIcon
+              type="flagIcon"
+              className="me-2 fs-20"
+              onIconClick={() => {
+                setOpenModal(true);
+              }}
+            />
+            <CustomIcon
+              type="share"
+              className="fs-20"
+              onIconClick={() => {
+                setShowShareModal(true);
+              }}
+            />
+          </>
+        ),
       });
     });
     return result;
@@ -117,6 +151,20 @@ const MyCollections = () => {
           </Paper>
         </Grid>
       </Grid>
+      {openModal && (
+        <AddFlag
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          defaultFormData={defaultFormData}
+          setDefaultFormData={setDefaultFormData}
+        />
+      )}
+      {showShareModal && (
+        <ShareCollection
+          showShareModal={showShareModal}
+          setShowShareModal={setShowShareModal}
+        />
+      )}
     </Paper>
   );
 };

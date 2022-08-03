@@ -7,6 +7,7 @@ import PricingForm from "components/forms/supplier/products/newproductforms/Pric
 import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
 import VariationForm from "components/forms/supplier/products/newproductforms/VariationForm";
 import { useEffect, useRef, useState } from "react";
+import PricingForMrMRsCartForm from "@/forms/supplier/products/newproductforms/pricingformrmrscartForm";
 
 const NewProducts = () => {
   const formsRef = useRef(null);
@@ -59,6 +60,13 @@ const NewProducts = () => {
     grouped: {},
     variation: {},
     attribute: {},
+    mrMrsCartFormData: {
+      sellwithus: false,
+      free_delivery: "",
+      paid_delivery: "",
+      return: false,
+      cashondelivery: false,
+    },
   });
 
   const [tabsList, setTabsList] = useState([
@@ -117,6 +125,16 @@ const NewProducts = () => {
       title: "Variation",
       component: (
         <VariationForm
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+    {
+      title: "Pricing For MrMrsCart",
+      component: (
+        <PricingForMrMRsCartForm
           formData={formData}
           ref={formsRef}
           setFormData={setFormData}
@@ -182,6 +200,16 @@ const NewProducts = () => {
         title: "Variation",
         component: (
           <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Pricing For MrMrsCart",
+        component: (
+          <PricingForMrMRsCartForm
             formData={formData}
             ref={formsRef}
             setFormData={setFormData}
