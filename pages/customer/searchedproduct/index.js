@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Box, Button, Grid, Pagination } from "@mui/material";
+import { Box, Button, Grid, Pagination, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
@@ -352,10 +352,10 @@ function SearchedProduct() {
   return (
     <Box className="mnh-100vh">
       {!comparModalOpen ? (
-        <Box className="row">
+        <Box className="row w-100">
           <Box className="d-flex justify-content-end mt-1">
             <Box
-              className="d-flex px-1 rounded"
+              className="d-flex px-1 rounded me-2"
               style={{ border: "1px solid #707070" }}
             >
               <Box
@@ -405,7 +405,7 @@ function SearchedProduct() {
                 btnClassName="mx-2"
               />
             </Box>
-            <Box>
+            <Box className="me-2">
               <MenuWithCheckbox
                 btnText="Filters"
                 listData={searchedCheckValue}
@@ -417,27 +417,30 @@ function SearchedProduct() {
             </Box>
           </Box>
           <Box className="d-flex justify-content-end mt-3">
-            <p className="text-danger fs-14"> Offer ends in 09h 42min 2sec</p>
+            <p className="text-danger fs-14 me-4">
+              {" "}
+              Offer ends in 09h 42min 2sec
+            </p>
           </Box>
           <Box className="">
-            <Box className="d-flex ">
+            <Box className="d-flex">
               <Grid
                 container={!viewIconClick}
                 spacing={2}
-                className=" mx-auto ms-0 "
+                className="ms-0 "
                 sx={{
                   width: `calc(100% - 10px)`,
                 }}
               >
                 {productData.map((item, index) => (
                   <Grid item md={4} lg={3} sm={6} key={index}>
-                    <div>
+                    <Paper elevation={3}>
                       <CustomerProductgModal
                         data={item}
                         handleIconClick={(value) => onIconClick(value)}
                         viewType={viewIconClick ? "row" : "Grid"}
                       />
-                    </div>
+                    </Paper>
                   </Grid>
                 ))}
               </Grid>
