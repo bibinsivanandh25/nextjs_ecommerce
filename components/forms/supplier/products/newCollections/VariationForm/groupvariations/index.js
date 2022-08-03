@@ -425,6 +425,25 @@ const GroupVariationForm = forwardRef(
                                 }
                               />
                             </Grid>
+                            <Grid item md={12}>
+                              <InputBox
+                                id="stock_qty"
+                                label="Stock Qty"
+                                onInputChange={(e) => {
+                                  handleInputChange(e, item, "inventory");
+                                }}
+                                value={variationData[item].inventory.stock_qty}
+                                type="number"
+                                inputlabelshrink
+                                helperText={errorObj[item]?.inventory.stock_qty}
+                                error={
+                                  errorObj[item]?.inventory.stock_qty &&
+                                  errorObj[item]?.inventory.stock_qty !== ""
+                                }
+                                className="w-70p"
+                                placeholder="Stock Qty"
+                              />
+                            </Grid>
                             <Grid item md={12} className="pt-4">
                               <div className="d-flex align-items-center">
                                 <Typography className="h-4 fw-600 me-3">
@@ -511,7 +530,7 @@ const GroupVariationForm = forwardRef(
                                     }
                                   />
                                 </Grid>
-                                <Grid item md={12}>
+                                {/* <Grid item md={12}>
                                   <InputBox
                                     id="stock_qty"
                                     label="Stock Qty"
@@ -531,28 +550,32 @@ const GroupVariationForm = forwardRef(
                                       errorObj[item]?.inventory.stock_qty !== ""
                                     }
                                   />
-                                </Grid>
-                                {/* <Grid item md={6}>
-                                <SimpleDropdownComponent
-                                  inputlabelshrink
-                                  list={back_orders}
-                                  id="Backorders"
-                                  label="Back Orders"
-                                  size="small"
-                                  fullWidth={false}
-                                  value={
-                                    variationData[item].inventory.back_Orders
-                                  }
-                                  onDropdownSelect={(value) => {
-                                    handleDropDownChange(
-                                      item,
-                                      "inventory",
-                                      "back_Orders",
-                                      value
-                                    );
-                                  }}
-                                />
-                              </Grid> */}
+                                </Grid> */}
+                                {variationData[item].inventory?.allow_backorders
+                                  ?.value === "allow" ? (
+                                  <Grid item md={12}>
+                                    <SimpleDropdownComponent
+                                      inputlabelshrink
+                                      list={[]}
+                                      id="Backorders"
+                                      label="Back Orders"
+                                      size="small"
+                                      fullWidth={false}
+                                      value={
+                                        variationData[item].inventory
+                                          .back_Orders
+                                      }
+                                      onDropdownSelect={(value) => {
+                                        handleDropDownChange(
+                                          item,
+                                          "inventory",
+                                          "back_Orders",
+                                          value
+                                        );
+                                      }}
+                                    />
+                                  </Grid>
+                                ) : null}
                               </>
                             ) : null}
                             <Grid item md={12}>

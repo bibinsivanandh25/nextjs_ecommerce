@@ -28,10 +28,6 @@ const allowback_orders = [
     label: "Do not allow",
   },
   {
-    value: "allowButNotifyCustomer",
-    label: "Allow,but notify customer",
-  },
-  {
     value: "allow",
     label: "Allow",
   },

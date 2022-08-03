@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Paper, TextField, Typography } from "@mui/material";
 import React, { useRef, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
@@ -8,6 +8,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TextEditor from "@/atoms/TextEditor";
+import ActiveCustomerViewModal from "@/forms/admin/customers/activecustomersmodal";
 
 const activeCustomer = [
   {
@@ -131,7 +132,7 @@ const ActiveCustomer = () => {
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
   const [addNotesModalOpen, setAddNotesModalOpen] = useState(false);
   const inputRef = useRef(null);
-  // const [viewModalOpen,setViewModalOpen]=useState(false)
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const activeCustomerData = [
     {
       col1: "1",
@@ -174,7 +175,13 @@ const ActiveCustomer = () => {
       col11: "Recently viewed items",
       col12: (
         <Box>
-          <CustomIcon type="view" className="fs-18 me-2" />
+          <CustomIcon
+            type="view"
+            className="fs-18 me-2"
+            onIconClick={() => {
+              setViewModalOpen(false);
+            }}
+          />
           <MenuOption
             options={[
               "Delete",
@@ -205,23 +212,27 @@ const ActiveCustomer = () => {
   ];
   return (
     <Box>
-      <Box className="mt-1">
-        <TableComponent
-          showDateFilter
-          showDateFilterBtn
-          //   table_heading="Active Customers"
-          dateFilterBtnName="Create Customer"
-          stickyCheckBox
-          columns={activeCustomer}
-          tHeadBgColor="bg-white"
-          showCheckbox
-          tableRows={activeCustomerData}
-          draggableHeader={false}
-          dateFilterBtnClick={() => {
-            setCreateModalOpen(true);
-          }}
-        />
-      </Box>
+      <Paper className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar mt-1 p-2">
+        {!viewModalOpen ? (
+          <TableComponent
+            showDateFilter
+            showDateFilterBtn
+            //   table_heading="Active Customers"
+            dateFilterBtnName="Create Customer"
+            stickyCheckBox
+            columns={activeCustomer}
+            tHeadBgColor="bg-white"
+            showCheckbox
+            tableRows={activeCustomerData}
+            draggableHeader={false}
+            dateFilterBtnClick={() => {
+              setCreateModalOpen(true);
+            }}
+          />
+        ) : (
+          <ActiveCustomerViewModal />
+        )}
+      </Paper>
       {createModalOpen && (
         <ModalComponent
           open={createModalOpen}

@@ -1,4 +1,4 @@
-import { Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InvoiceCardComponent from "components/atoms/InvoiceCardComponent";
@@ -7,6 +7,8 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
 
 const PricingForm = forwardRef(({ formData = {} }, ref) => {
+  const [freeDeliveryCheckbox, setFreeDeliveryCheckbox] = useState(false);
+
   const [pricingFormData, setPricingFormData] = useState({
     sale_price: "",
     mrp: "",
@@ -17,6 +19,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     width: "",
     height: "",
     delivery_charge: "",
+    sale_price_logistics: "",
   });
   const [errorObj, setErrorObj] = useState({
     sale_price: "",
@@ -28,6 +31,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     width: "",
     height: "",
     delivery_charge: "",
+    sale_price_logistics: "",
   });
 
   const validate = () => {
@@ -42,6 +46,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       width: "",
       height: "",
       delivery_charge: "",
+      sale_price_logistics: "",
     };
     if (pricingFormData.sale_price === "") {
       flag = true;
@@ -84,6 +89,10 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     if (pricingFormData.height === "") {
       flag = true;
       errObj.height = validateMessage.field_required;
+    }
+    if (pricingFormData.sale_price_logistics === "") {
+      flag = true;
+      errObj.sale_price_logistics = validateMessage.field_required;
     }
     setErrorObj(errObj);
     return !flag;
@@ -135,6 +144,30 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             helperText={errorObj.mrp}
             error={errorObj.mrp !== ""}
             placeholder="eg.: 100"
+          />
+        </Grid>
+        <Grid item md={12}>
+          <Box className="d-center mb-1">
+            <CheckBoxComponent
+              label="Provide Free Delivery & Return To Your Customer"
+              checkBoxClick={() => {
+                setFreeDeliveryCheckbox(!freeDeliveryCheckbox);
+              }}
+              isChecked={freeDeliveryCheckbox}
+              size="small"
+              showIcon
+              varient="filled"
+            />
+          </Box>
+          <InputBox
+            id="sale_price_logistics"
+            label="Sale Price With Logistics"
+            onInputChange={handleInputChange}
+            value={pricingFormData.sale_price_logistics}
+            inputlabelshrink
+            helperText={errorObj.sale_price_logistics}
+            error={errorObj.sale_price_logistics !== ""}
+            disabled={!freeDeliveryCheckbox}
           />
         </Grid>
         <Grid item md={6}>
