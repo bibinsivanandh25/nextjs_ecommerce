@@ -5,19 +5,18 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-import CheckImagesModal from "../CheckImagesModal";
 import AcceptRejectModal from "./AcceptRejectModal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Rejected = ({
   rowsDataObjectsForApproval = [],
   setrowsDataObjectsForApproval = () => {},
 }) => {
-  console.log("Hi");
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -274,7 +273,7 @@ const Rejected = ({
         rowsDataObjects={rowsDataObjectsForApproval}
       />
       {/* Images Modal Component */}
-      <CheckImagesModal
+      <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}

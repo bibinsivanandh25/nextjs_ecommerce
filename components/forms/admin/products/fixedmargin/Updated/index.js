@@ -6,8 +6,8 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import EditProductModalForUpdated from "./EditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
-import CheckImagesModal from "../CheckImagesModal";
 import AddEditProductModal from "./AddEditProductModal";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Updated = ({
   rowsDataObjectsForUpdated,
@@ -184,7 +184,7 @@ const Updated = ({
         </Box>
       </Box>
 
-      <CheckImagesModal
+      <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
