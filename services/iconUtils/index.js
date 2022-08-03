@@ -39,6 +39,7 @@ import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
+import FlagIcon from "@mui/icons-material/Flag";
 
 const CustomIcon = ({
   title = "",
@@ -54,6 +55,7 @@ const CustomIcon = ({
   showColorOnHover = true,
 }) => {
   const Map = {
+    flag: FlagIcon,
     view: VisibilityIcon,
     arrowforward: ArrowForwardIosIcon,
     download: DownloadIcon,

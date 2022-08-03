@@ -7,12 +7,7 @@ import PickUpAddress from "components/forms/supplier/myaccount/pickupaddress";
 import React, { useState } from "react";
 
 const MyAccount = () => {
-  const tabList = [
-    "My profile",
-    "Bank Details",
-    "Change Password",
-    "Pickup Address",
-  ];
+  const tabList = ["My profile", "Bank Details", "Change Password", "Address"];
 
   const [selectedMenu, setSelectedMenu] = useState(0);
   // eslint-disable-next-line consistent-return

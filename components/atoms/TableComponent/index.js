@@ -264,6 +264,7 @@ export default function TableComponent({
   dateFilterBtnName = "Add",
   dateFilterBtnClick = () => {},
   stickyHeader = true,
+  // eslint-disable-next-line no-unused-vars
   dateFilterBtnIcon = "",
 }) {
   const [page, setPage] = useState(0);
@@ -408,7 +409,7 @@ export default function TableComponent({
   const getDateFilter = () => {
     return (
       <Grid container>
-        <Grid item container xs={3} justifyContent="start">
+        <Grid item container xs={2} justifyContent="start">
           {table_heading && (
             <Grid item sm={6} md={6} xs={12}>
               <Typography
@@ -423,59 +424,61 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid container justifyContent="end" alignItems="center" item xs={9}>
-          <span className="fs-12">From date:</span>
-          <input
-            type="date"
-            value={dateValue.from}
-            className={styles.dateinput}
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-            onChange={(e) => {
-              setDateValue((prev) => ({
-                ...prev,
-                from: e.target.value,
-              }));
-            }}
-            // max={dateValue.to}
-          />
-          <span className="fs-12">To date:</span>
-          <input
-            type="date"
-            value={dateValue.to}
-            className={styles.dateinput}
-            style={{
-              border: "none",
-              outline: "none",
-              display: "flex",
-              flexDirection: "row-reverse",
-            }}
-            onChange={(e) => {
-              setDateValue((prev) => ({
-                ...prev,
-                to: e.target.value,
-              }));
-            }}
-            // min={dateValue.from}
-          />
-          <input
-            type="text"
-            placeholder="Search"
-            className={`${styles.searchInput} w-300px`}
-            value={searchText}
-            label="Search"
-            size="small"
-            onChange={(e) => {
-              setsearchText(e.target.value);
-              handleSearch();
-            }}
-          />
+        <Grid container justifyContent="end" alignItems="center" item xs={10}>
+          <Grid item sm={10} container alignItems="center" justifyContent="end">
+            <span className="fs-12">From date:</span>
+            <input
+              type="date"
+              value={dateValue.from}
+              className={styles.dateinput}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+              onChange={(e) => {
+                setDateValue((prev) => ({
+                  ...prev,
+                  from: e.target.value,
+                }));
+              }}
+              // max={dateValue.to}
+            />
+            <span className="fs-12">To date:</span>
+            <input
+              type="date"
+              value={dateValue.to}
+              className={styles.dateinput}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+              onChange={(e) => {
+                setDateValue((prev) => ({
+                  ...prev,
+                  to: e.target.value,
+                }));
+              }}
+              // min={dateValue.from}
+            />
+            <input
+              type="text"
+              placeholder="Search"
+              className={`${styles.searchInput} w-300px`}
+              value={searchText}
+              label="Search"
+              size="small"
+              onChange={(e) => {
+                setsearchText(e.target.value);
+                handleSearch();
+              }}
+            />
+          </Grid>
           {showDateFilterBtn && (
-            <Grid item>
+            <Grid item sm={2}>
               <ButtonComponent
                 variant="contained"
                 label={dateFilterBtnName}

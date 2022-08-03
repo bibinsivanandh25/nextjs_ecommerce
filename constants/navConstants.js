@@ -126,6 +126,11 @@ const supplierMenu = [
         path_name: "mrmrscartproduct",
         navigate: true,
       },
+      {
+        title: "Invoice & Trademarks",
+        path_name: "invoiceandtrademarks",
+        navigate: true,
+      },
     ],
   },
   {
@@ -192,6 +197,85 @@ const supplierMenu = [
     path_name: "helpandsupport",
     navigate: true,
     child: [],
+  },
+  {
+    title: "Banners",
+    logo: "fas fa-shopping-cart",
+    path_name: "banners",
+    navigate: true,
+    child: [],
+  },
+  {
+    title: "Marketing Tools",
+    logo: "fas fa-shopping-cart",
+    path_name: "marketingtools",
+    navigate: false,
+    child: [
+      {
+        title: "Create Discount Coupons",
+        logo: "",
+        navigate: true,
+        path_name: "creatediscountcoupons",
+      },
+      {
+        title: "Create Today's Deal",
+        logo: "",
+        navigate: true,
+        path_name: "createtodaysdeals",
+      },
+      {
+        title: "Create Lucky Draw",
+        logo: "",
+        navigate: false,
+        path_name: "createluckydraw",
+        child: [
+          {
+            title: "Create Quiz",
+            logo: "",
+            navigate: true,
+            path_name: "createquiz",
+          },
+          {
+            title: "Spin Wheel",
+            logo: "",
+            navigate: true,
+            path_name: "spinwheel",
+          },
+          {
+            title: "Scratch Card",
+            logo: "",
+            navigate: true,
+            path_name: "scratchcard",
+          },
+        ],
+      },
+      {
+        title: "Unlock Tools",
+        logo: "",
+        navigate: false,
+        path_name: "unlocktools",
+        child: [
+          {
+            title: "Single",
+            logo: "",
+            navigate: true,
+            path_name: "single",
+          },
+          {
+            title: "Combo",
+            logo: "",
+            navigate: true,
+            path_name: "combo",
+          },
+        ],
+      },
+      {
+        title: "Share Product By Price",
+        logo: "",
+        navigate: true,
+        path_name: "shareproductbyprice",
+      },
+    ],
   },
   {
     title: "News & Notifications",

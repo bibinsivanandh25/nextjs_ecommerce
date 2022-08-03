@@ -17,7 +17,7 @@ const Customer = () => {
     {
       id: "col1",
       label: "SlNo.",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -25,7 +25,7 @@ const Customer = () => {
     {
       id: "col2",
       label: "Customer ID",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -33,7 +33,7 @@ const Customer = () => {
     {
       id: "col3",
       label: "Profile",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -41,7 +41,7 @@ const Customer = () => {
     {
       id: "col4",
       label: "Name",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -49,7 +49,7 @@ const Customer = () => {
     {
       id: "col5",
       label: "Mobile Number",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -57,7 +57,7 @@ const Customer = () => {
     {
       id: "col6",
       label: "Last month purchase",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -65,7 +65,7 @@ const Customer = () => {
     {
       id: "col7",
       label: "Current year purchase",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -73,7 +73,7 @@ const Customer = () => {
     {
       id: "col8",
       label: "Total purchase",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -81,7 +81,7 @@ const Customer = () => {
     {
       id: "col9",
       label: "Action",
-      minWidth: 170,
+      // minWidth: 170,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -111,13 +111,13 @@ const Customer = () => {
               setselectedRow({ id: 1, name: "ABC" });
             }}
           />
-          <Image
+          {/* <Image
             width={20}
             height={20}
             src={assetsJson["whatsapp-icon"]}
             alt="alt"
             className="cursor-pointer"
-          />
+          /> */}
         </div>
       ),
     },
@@ -144,13 +144,13 @@ const Customer = () => {
               setselectedRow({ id: 2, name: "suhil" });
             }}
           />
-          <Image
+          {/* <Image
             width={20}
             height={20}
             src={assetsJson["whatsapp-icon"]}
             alt="alt"
             className="cursor-pointer"
-          />
+          /> */}
         </div>
       ),
     },

@@ -101,7 +101,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
         <p className="fs-16 fw-bold pb-2 border-bottom py-3 px-4">
           Help & support{" "}
           <span className="fs-12 fw-normal text-secondary">
-            (Any issues Please raise to us here)
+            (Any Issues Please Raise To Us Here)
           </span>
         </p>
         <div className="my-3 px-5">

@@ -110,7 +110,7 @@ import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
   return (
-    <div className="w-100">
+    <div className="px-3">
       {!showCompareProducts ? (
         <Box>
           <CarousalComponent />

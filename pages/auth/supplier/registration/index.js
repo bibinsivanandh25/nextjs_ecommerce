@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 import RegistrationForm from "components/forms/supplier/registration";
 import validateMessage from "constants/validateMessages";
@@ -19,6 +19,7 @@ const Registration = () => {
     siteLink: "",
     firstName: "",
     lastName: "",
+    referralCode: "",
   };
   const [formValues, setFormValues] = useState(formObj);
   const [errorObj, setErrorObj] = useState({ ...formObj });
@@ -144,11 +145,20 @@ const Registration = () => {
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">
         <div
-          className={`${styles.imgContainer} mx-2 d-flex justify-content-center align-items-center`}
+          className={`${styles.imgContainer} mx-2 d-flex flex-column justify-content-center align-items-center`}
         >
-          <Typography variant="h3" className="color-orange">
+          <Typography variant="h3" className="color-orange text-center">
             Supplier Registration
           </Typography>
+          <Box className="w-50 mx-auto mt-2">
+            {" "}
+            <Typography className="text-white text-center h-5">
+              Change Your Ordinary Store To a Virtual Store. Let Customer Have a
+              Visibility of All Products You Have For Selling. Register With Us
+              And You Are Free From Commission For Your First 50 Orders. Happy
+              Selling Grow Your Income.
+            </Typography>
+          </Box>
         </div>
       </Grid>
       <Grid item sm={12} className="d-flex justify-content-center ">

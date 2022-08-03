@@ -113,7 +113,6 @@ const CreateQuiz = ({ pageName }) => {
               setshowViewModal(rows.filter((item) => item.id === "1")[0]);
             }}
           />
-          <CustomIcon type="whatsAppIcon" className="fs-16 mx-1" />
           <CustomIcon type="share" className="fs-16 mx-1" />
           <CustomIcon type="delete" className="fs-16" />
         </div>
@@ -140,7 +139,6 @@ const CreateQuiz = ({ pageName }) => {
               setshowViewModal(rows.filter((item) => item.id === "2")[0]);
             }}
           />
-          <CustomIcon type="whatsAppIcon" className="fs-16 mx-1" />
           <CustomIcon type="share" className="fs-16 mx-1" />
           <CustomIcon type="delete" className="fs-16" />
         </div>

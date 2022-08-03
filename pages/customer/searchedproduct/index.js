@@ -219,9 +219,9 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-function SearchedProduct() {
+function SearchedProduct({ showBreadCrumb = () => {} }) {
   const classes = useStyles();
-
+  showBreadCrumb(false);
   // checkbox data
   const [checkedValue, setCheckedValue] = useState([]);
   const [searchedCheckValue, setSearchedCheckValue] = useState([]);
