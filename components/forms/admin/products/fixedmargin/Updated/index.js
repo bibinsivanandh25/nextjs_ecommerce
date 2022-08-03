@@ -124,7 +124,13 @@ const Updated = ({
         col6: val.col6,
         col7: (
           <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon type="view" className="fs-18" />
+            <CustomIcon
+              onIconClick={() => {
+                setOpenEditModalForUpdated(true);
+              }}
+              type="view"
+              className="fs-18"
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 console.log("Index", index);

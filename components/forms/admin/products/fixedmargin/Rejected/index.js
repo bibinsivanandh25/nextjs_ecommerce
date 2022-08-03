@@ -14,8 +14,8 @@ import AddEditProductModal from "./AddEditProductModal";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Rejected = ({
-  rowsDataObjectsForApproval = [],
-  setrowsDataObjectsForApproval = () => {},
+  rowsDataObjectsForRejected = [],
+  setrowsDataObjectsForRejected = () => {},
 }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
@@ -48,27 +48,27 @@ const Rejected = ({
   const onClickOfMenuItem = (ele, index) => {
     if (ele === "Edit") {
       setProductDetails({
-        vendorIdOrName: rowsDataObjectsForApproval[index].col1,
-        images: rowsDataObjectsForApproval[index].col2.imgSrc,
-        productTitle: rowsDataObjectsForApproval[index].col3,
-        sku: rowsDataObjectsForApproval[index].col4,
-        categorySubcategory: rowsDataObjectsForApproval[index].col5,
-        weightOrVolume: rowsDataObjectsForApproval[index].col6,
-        totalStock: rowsDataObjectsForApproval[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForApproval[index].col8.salePrice}/${rowsDataObjectsForApproval[index].col8.mrpPrice} `,
+        vendorIdOrName: rowsDataObjectsForRejected[index].col1,
+        images: rowsDataObjectsForRejected[index].col2.imgSrc,
+        productTitle: rowsDataObjectsForRejected[index].col3,
+        sku: rowsDataObjectsForRejected[index].col4,
+        categorySubcategory: rowsDataObjectsForRejected[index].col5,
+        weightOrVolume: rowsDataObjectsForRejected[index].col6,
+        totalStock: rowsDataObjectsForRejected[index].col7,
+        salePriceAndMrp: `${rowsDataObjectsForRejected[index].col8.salePrice}/${rowsDataObjectsForRejected[index].col8.mrpPrice} `,
         discounts:
-          rowsDataObjectsForApproval[index].col8.mrpPrice -
-          rowsDataObjectsForApproval[index].col8.salePrice,
+          rowsDataObjectsForRejected[index].col8.mrpPrice -
+          rowsDataObjectsForRejected[index].col8.salePrice,
       });
       setModalId(index);
-      setImageArray(rowsDataObjectsForApproval[index].col2.imgSrc);
+      setImageArray(rowsDataObjectsForRejected[index].col2.imgSrc);
       setOpenEditModal(true);
     }
 
     if (ele === "Delete") {
-      const tempArray = [...rowsDataObjectsForApproval];
+      const tempArray = [...rowsDataObjectsForRejected];
       tempArray.splice(index, 1);
-      setrowsDataObjectsForApproval([...tempArray]);
+      setrowsDataObjectsForRejected([...tempArray]);
     }
 
     if (ele === "Accept/Reject") {
@@ -148,7 +148,7 @@ const Rejected = ({
 
   const theTaleRowsData = () => {
     const anArray = [];
-    rowsDataObjectsForApproval.forEach((val, index) => {
+    rowsDataObjectsForRejected.forEach((val, index) => {
       anArray.push({
         id: index + 1,
         col1: (
@@ -215,7 +215,7 @@ const Rejected = ({
 
   useEffect(() => {
     theTaleRowsData();
-  }, [rowsDataObjectsForApproval]);
+  }, [rowsDataObjectsForRejected]);
 
   return (
     <>
@@ -268,9 +268,9 @@ const Rejected = ({
         setImageArray={setImageArray}
         setProductDetails={setProductDetails}
         imageArray={imageArray}
-        setRowDataObjects={setrowsDataObjectsForApproval}
+        setRowDataObjects={setrowsDataObjectsForRejected}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForRejected}
       />
       {/* Images Modal Component */}
       <DisplayImagesModal
@@ -278,7 +278,7 @@ const Rejected = ({
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForRejected}
         modalId={modalId}
         productDetails={productDetails}
         images={images}
@@ -288,7 +288,7 @@ const Rejected = ({
         openAcceptRejectModal={openAcceptRejectModal}
         setOpenAcceptRejectModal={setOpenAcceptRejectModal}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForRejected}
       />
       {/* Raise Query Modal */}
       <RaiseQueryModal

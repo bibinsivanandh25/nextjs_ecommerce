@@ -14,8 +14,8 @@ import AddEditProductModal from "./AddEditProductModal";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Queries = ({
-  rowsDataObjectsForApproval = [],
-  setrowsDataObjectsForApproval = () => {},
+  rowsDataObjectsForQueries = [],
+  setrowsDataObjectsForQueries = () => {},
 }) => {
   console.log("Hi");
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -49,27 +49,27 @@ const Queries = ({
   const onClickOfMenuItem = (ele, index) => {
     if (ele === "Edit") {
       setProductDetails({
-        vendorIdOrName: rowsDataObjectsForApproval[index].col1,
-        images: rowsDataObjectsForApproval[index].col2.imgSrc,
-        productTitle: rowsDataObjectsForApproval[index].col3,
-        sku: rowsDataObjectsForApproval[index].col4,
-        categorySubcategory: rowsDataObjectsForApproval[index].col5,
-        weightOrVolume: rowsDataObjectsForApproval[index].col6,
-        totalStock: rowsDataObjectsForApproval[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForApproval[index].col8.salePrice}/${rowsDataObjectsForApproval[index].col8.mrpPrice} `,
+        vendorIdOrName: rowsDataObjectsForQueries[index].col1,
+        images: rowsDataObjectsForQueries[index].col2.imgSrc,
+        productTitle: rowsDataObjectsForQueries[index].col3,
+        sku: rowsDataObjectsForQueries[index].col4,
+        categorySubcategory: rowsDataObjectsForQueries[index].col5,
+        weightOrVolume: rowsDataObjectsForQueries[index].col6,
+        totalStock: rowsDataObjectsForQueries[index].col7,
+        salePriceAndMrp: `${rowsDataObjectsForQueries[index].col8.salePrice}/${rowsDataObjectsForQueries[index].col8.mrpPrice} `,
         discounts:
-          rowsDataObjectsForApproval[index].col8.mrpPrice -
-          rowsDataObjectsForApproval[index].col8.salePrice,
+          rowsDataObjectsForQueries[index].col8.mrpPrice -
+          rowsDataObjectsForQueries[index].col8.salePrice,
       });
       setModalId(index);
-      setImageArray(rowsDataObjectsForApproval[index].col2.imgSrc);
+      setImageArray(rowsDataObjectsForQueries[index].col2.imgSrc);
       setOpenEditModal(true);
     }
 
     if (ele === "Delete") {
-      const tempArray = [...rowsDataObjectsForApproval];
+      const tempArray = [...rowsDataObjectsForQueries];
       tempArray.splice(index, 1);
-      setrowsDataObjectsForApproval([...tempArray]);
+      setrowsDataObjectsForQueries([...tempArray]);
     }
 
     if (ele === "Accept/Reject") {
@@ -149,7 +149,7 @@ const Queries = ({
 
   const theTaleRowsData = () => {
     const anArray = [];
-    rowsDataObjectsForApproval.forEach((val, index) => {
+    rowsDataObjectsForQueries.forEach((val, index) => {
       anArray.push({
         id: index + 1,
         col1: (
@@ -216,7 +216,7 @@ const Queries = ({
 
   useEffect(() => {
     theTaleRowsData();
-  }, [rowsDataObjectsForApproval]);
+  }, [rowsDataObjectsForQueries]);
 
   return (
     <>
@@ -269,9 +269,9 @@ const Queries = ({
         setImageArray={setImageArray}
         setProductDetails={setProductDetails}
         imageArray={imageArray}
-        setRowDataObjects={setrowsDataObjectsForApproval}
+        setRowDataObjects={setrowsDataObjectsForQueries}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForQueries}
       />
       {/* Images Modal Component */}
       <DisplayImagesModal
@@ -279,7 +279,7 @@ const Queries = ({
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForQueries}
         modalId={modalId}
         productDetails={productDetails}
         images={images}
@@ -289,7 +289,7 @@ const Queries = ({
         openAcceptRejectModal={openAcceptRejectModal}
         setOpenAcceptRejectModal={setOpenAcceptRejectModal}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={rowsDataObjectsForQueries}
       />
       {/* Raise Query Modal */}
       <RaiseQueryModal

@@ -281,15 +281,15 @@ const FixedMargin = () => {
 
             {tabSelected === "Rejected" && (
               <Rejected
-                rowsDataObjectsForApproval={rowsDataObjectsForRejected}
-                setRowsDataObjectsForApproval={setRowsDataObjectsForRejected}
+                rowsDataObjectsForRejected={rowsDataObjectsForRejected}
+                setrowsDataObjectsForRejected={setRowsDataObjectsForRejected}
               />
             )}
 
             {tabSelected === "Queries" && (
               <Queries
-                rowsDataObjectsForApproval={rowsDataObjectsForQueries}
-                setrowsDataObjectsForApproval={setRowsDataObjectsForQueries}
+                rowsDataObjectsForQueries={rowsDataObjectsForQueries}
+                setrowsDataObjectsForQueries={setRowsDataObjectsForQueries}
               />
             )}
 
