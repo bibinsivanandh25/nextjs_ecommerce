@@ -3,7 +3,7 @@
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import styles from "./fixedmargin.module.css";
-import ProductsToApproveTable from "@/forms/admin/products/fixedmargin/tables/ProductsToApproveTable";
+import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
 import ActiveProductsTable from "@/forms/admin/products/fixedmargin/tables/ActiveProductsTable";
 import UpdatedTable from "@/forms/admin/products/fixedmargin/tables/UpdatedTable";
 
@@ -150,25 +150,25 @@ const FixedMargin = () => {
             {(tabSelected === "Products to approve" ||
               tabSelected === "Queries" ||
               tabSelected === "Rejected") && (
-              <ProductsToApproveTable
+              <ProductsToApprove
                 rowsDataObjectsForApproval={rowsDataObjectsForApproval}
                 setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
               />
             )}
 
-            {tabSelected === "Active" && (
+            {/* {tabSelected === "Active" && (
               <ActiveProductsTable
                 rowsDataObjectsForActive={rowsDataObjectsForActive}
                 setRowsDataObjectsForActive={setRowsDataObjectsForActive}
               />
-            )}
+            )} */}
 
-            {tabSelected === "Update" && (
+            {/* {tabSelected === "Update" && (
               <UpdatedTable
                 rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
                 setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
               />
-            )}
+            )} */}
           </Box>
         </Paper>
       </Box>
