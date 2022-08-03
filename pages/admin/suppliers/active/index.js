@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
@@ -183,19 +183,20 @@ const Active = () => {
     },
   ];
   return (
-    <Box>
+    <Paper
+      className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
+      elevation={3}
+    >
       {!viewModalOpen ? (
-        <Box>
-          <Typography className="h-4 color-orange fw-bold ps-4">
-            Active Suppliers (58)
-          </Typography>
+        <Box className="mt-2">
           <TableComponent
             columns={[...tableColumn]}
             showDateFilter
             tableRows={[...rows]}
-            tHeadBgColor="bg-gray"
+            tHeadBgColor="bg-tableGray"
             stickyCheckBox
             stickyHeader
+            table_heading=" Active Suppliers (58)"
           />
         </Box>
       ) : (
@@ -204,7 +205,7 @@ const Active = () => {
           setViewModaOpen={setViewModaOpen}
         />
       )}
-    </Box>
+    </Paper>
   );
 };
 

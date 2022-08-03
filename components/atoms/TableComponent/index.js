@@ -486,6 +486,9 @@ export default function TableComponent({
                 onBtnClick={() => {
                   dateFilterBtnClick();
                 }}
+                showIcon={dateFilterBtnIcon !== ""}
+                iconName={dateFilterBtnIcon}
+                iconColorClass="color-white"
               />
             </Grid>
           )}
