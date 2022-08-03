@@ -4,8 +4,8 @@ import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import styles from "./fixedmargin.module.css";
 import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
-import ActiveProductsTable from "@/forms/admin/products/fixedmargin/tables/ActiveProductsTable";
-import UpdatedTable from "@/forms/admin/products/fixedmargin/tables/UpdatedTable";
+import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
+import Updated from "@/forms/admin/products/fixedmargin/Updated";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -26,6 +26,9 @@ const FixedMargin = () => {
       col1: "#345345 SKM Tex",
       col2: {
         imgSrc: [
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
         ],
         imgCount: 10,
@@ -156,19 +159,19 @@ const FixedMargin = () => {
               />
             )}
 
-            {/* {tabSelected === "Active" && (
-              <ActiveProductsTable
+            {tabSelected === "Active" && (
+              <Active
                 rowsDataObjectsForActive={rowsDataObjectsForActive}
                 setRowsDataObjectsForActive={setRowsDataObjectsForActive}
               />
-            )} */}
+            )}
 
-            {/* {tabSelected === "Update" && (
-              <UpdatedTable
+            {tabSelected === "Update" && (
+              <Updated
                 rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
                 setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
               />
-            )} */}
+            )}
           </Box>
         </Paper>
       </Box>

@@ -5,13 +5,13 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-// import CheckImagesModal from "../modals/CheckImagesModal";
-import AcceptRejectModal from "./AcceptRejectModal/index";
-// import RaiseQueryModal from "../modals/RaiseQueryModal";
+import CheckImagesModal from "../CheckImagesModal";
+import AcceptRejectModal from "./AcceptRejectModal";
+import RaiseQueryModal from "../RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
-// import AddEditProductModal from "../modals/AddEditProduct";
+import AddEditProductModal from "../AddEditProductModal";
 
 const ProductsToApprove = ({
   rowsDataObjectsForApproval = [],
@@ -262,7 +262,7 @@ const ProductsToApprove = ({
         )}
       </Box>
       {/* Edit Modal Component */}
-      {/* <AddEditProductModal
+      <AddEditProductModal
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
         productDetails={productDetails}
@@ -272,9 +272,9 @@ const ProductsToApprove = ({
         setRowDataObjects={setrowsDataObjectsForApproval}
         modalId={modalId}
         rowsDataObjects={rowsDataObjectsForApproval}
-      /> */}
+      />
       {/* Images Modal Component */}
-      {/* <CheckImagesModal
+      <CheckImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
@@ -283,7 +283,7 @@ const ProductsToApprove = ({
         modalId={modalId}
         productDetails={productDetails}
         images={images}
-      /> */}
+      />
       {/* Accept Reject Modal */}
       <AcceptRejectModal
         openAcceptRejectModal={openAcceptRejectModal}
@@ -292,12 +292,12 @@ const ProductsToApprove = ({
         rowsDataObjects={rowsDataObjectsForApproval}
       />
       {/* Raise Query Modal */}
-      {/* <RaiseQueryModal
+      <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
         modalTitle="Raise Query"
         placeholder="Type your query"
-      /> */}
+      />
       {/* Merge To Modal */}
       <MergeToModal
         openMergeToModal={openMergeToModal}
