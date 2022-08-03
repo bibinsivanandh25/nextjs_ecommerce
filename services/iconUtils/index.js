@@ -97,6 +97,7 @@ const CustomIcon = ({
     arrowBackIosNewIcon: ArrowBackIosNewIcon,
     notificationsIcon: NotificationsIcon,
     confirmationNumberOutlinedIcon: ConfirmationNumberOutlinedIcon,
+    flagIcon: FlagIcon,
   };
 
   const [hover, setHover] = useState(false);

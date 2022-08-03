@@ -5,6 +5,7 @@ import ChangePassword from "components/forms/supplier/myaccount/changepassword";
 import MyProfile from "components/forms/supplier/myaccount/myprofile";
 import PickUpAddress from "components/forms/supplier/myaccount/pickupaddress";
 import React, { useState } from "react";
+import StoreSettings from "@/forms/supplier/myaccount/storesettings";
 
 const MyAccount = () => {
   const tabList = [
@@ -12,6 +13,7 @@ const MyAccount = () => {
     "Bank Details",
     "Change Password",
     "Pickup Address",
+    "Store Settings",
   ];
 
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -23,6 +25,7 @@ const MyAccount = () => {
     if (selectedMenu === 1) return <BankDetails />;
     if (selectedMenu === 2) return <ChangePassword />;
     if (selectedMenu === 3) return <PickUpAddress />;
+    if (selectedMenu === 4) return <StoreSettings />;
   };
   return (
     <div className="mxh-80vh mnh-80vh">

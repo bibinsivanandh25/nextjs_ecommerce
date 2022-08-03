@@ -5,6 +5,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import validateMessage from "constants/validateMessages";
 import FileUploadModal from "components/atoms/FileUpload";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
   const [productPolicyFormData, setProductPolicyFormData] = useState({
@@ -12,6 +13,7 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
     refundPolicy: "",
     cancellationPolicy: "",
     shippingPolicy: "",
+    warranty: false,
   });
   const [error, setError] = useState({});
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
@@ -159,6 +161,22 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           error={Boolean(error.cancellationPolicy)}
           helperText={error.cancellationPolicy}
         />
+        <Grid item md={6}>
+          <CheckBoxComponent
+            label="Warranty Available"
+            isChecked={productPolicyFormData.warranty}
+            checkBoxClick={() => {
+              setProductPolicyFormData((prev) => {
+                return {
+                  ...prev,
+                  warranty: !productPolicyFormData.warranty,
+                };
+              });
+            }}
+            showIcon
+            varient="filled"
+          />
+        </Grid>
       </Grid>
       {showFileUploadModal ? (
         <FileUploadModal

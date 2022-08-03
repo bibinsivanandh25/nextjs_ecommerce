@@ -17,6 +17,7 @@ import {
   product_type,
 } from "../../../../../constants/constants";
 import ModalComponent from "@/atoms/ModalComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const ProductsLayout = ({
   formData = {},
@@ -47,6 +48,8 @@ const ProductsLayout = ({
     sub_category_id: "",
     tags: {},
     limit_per_order: "",
+    selectb2binvoice: null,
+    tradeMarkCheck: false,
   });
   const [errorObj, setErrorObj] = useState({
     commision_mode: "",
@@ -63,6 +66,7 @@ const ProductsLayout = ({
     sub_category_id: "",
     tags: "",
     limit_per_order: "",
+    selectb2binvoice: "",
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -84,10 +88,15 @@ const ProductsLayout = ({
       sub_category_id: "",
       tags: "",
       limit_per_order: "",
+      selectb2binvoice: "",
     };
     let flag = false;
     if (mainFormData.commision_mode === null) {
       errObj.commision_mode = validateMessage.field_required;
+      flag = true;
+    }
+    if (mainFormData.selectb2binvoice === null) {
+      errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
     }
     if (mainFormData.brand === null || mainFormData.brand === "") {
@@ -158,7 +167,7 @@ const ProductsLayout = ({
     <>
       {!showGroupVariant ? (
         <Box className="d-flex flex-grow-1 flex-row mt-2">
-          <Box className="border-end p-2 py-2  fit-content pb-0 overflow-y-scroll mxh-75vh">
+          <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
             {imagedata.length > 0
               ? imagedata.map((item, index) => (
                   <ImageCard
@@ -194,7 +203,7 @@ const ProductsLayout = ({
               />
             ) : null}
           </Box>
-          <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll hide-scrollbar">
+          <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
                 <Grid item md={12}>
@@ -370,11 +379,43 @@ const ProductsLayout = ({
                     placeholder="Enter the order limit(eg.: 1)"
                   />
                 </Grid>
+                <Grid item md={12}>
+                  <SimpleDropdownComponent
+                    list={[]}
+                    id="selectb2binvoice"
+                    label="Select B2B Invoice"
+                    size="small"
+                    value={mainFormData.selectb2binvoice}
+                    onDropdownSelect={(value) => {
+                      handleDropdownChange(value, "selectb2binvoice");
+                    }}
+                    inputlabelshrink
+                    error={errorObj.selectb2binvoice !== ""}
+                    helperText={errorObj.selectb2binvoice}
+                  />
+                </Grid>
+                <Grid item md={12}>
+                  <CheckBoxComponent
+                    label="Does This Product Have Trademark Letter From Original Vendor"
+                    size="small"
+                    isChecked={mainFormData.tradeMarkCheck}
+                    checkBoxClick={() => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        tradeMarkCheck: !mainFormData.tradeMarkCheck,
+                      }));
+                    }}
+                    labelColor="#535353"
+                    lableFontSize="h-5"
+                    varient="filled"
+                    showIcon
+                  />
+                </Grid>
               </Grid>
             </div>
           </Box>
           <Box className=" d-flex flex-column w-60p">
-            <Box className="d-flex w-100 mb-2">
+            <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
                   {tabsList.map((item, index) => {
@@ -395,13 +436,13 @@ const ProductsLayout = ({
                   })}
                 </Grid>
               </Box>
-              <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll hide-scrollbar">
+              <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll">
                 {tabsList.map((item, ind) => {
                   return activeTab === ind ? item.component : null;
                 })}
               </Box>
             </Box>
-            <Box className="d-flex justify-content-end me-3 mb-2">
+            <Box className="d-flex justify-content-end me-3 mb-1">
               <ButtonComponent
                 label="Clear"
                 variant="outlined"
@@ -423,6 +464,7 @@ const ProductsLayout = ({
                       sub_category_id: "",
                       tags: "",
                       limit_per_order: "",
+                      selectb2binvoice: "",
                     },
                     inventory: {
                       sku: "",
@@ -488,10 +530,10 @@ const ProductsLayout = ({
                 />
               ) : null}
               <ButtonComponent
-                label={activeTab === 5 ? "Submit" : "Next"}
+                label={activeTab === 6 ? "Submit" : "Next"}
                 size="small"
                 onBtnClick={
-                  activeTab === 5
+                  activeTab === 6
                     ? () => {
                         const temp = formsRef?.current?.handleSendFormData();
                         setFormData((prev) => {

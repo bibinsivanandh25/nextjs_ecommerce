@@ -3,11 +3,12 @@
 import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import ModalComponent from "components/atoms/ModalComponent";
 import CouponLogo from "public/assets/images/Coupon.png";
 import Image from "next/image";
 import ButtonComponent from "components/atoms/ButtonComponent";
+import { Share } from "@mui/icons-material";
+import MrMrsAddNewCoupons from "@/forms/supplier/coupons/mrmrsaddnewcoupons";
 
 const Coupons = () => {
   const selectTypeList = [
@@ -24,11 +25,11 @@ const Coupons = () => {
       label: "Fixed Product Discount",
     },
   ];
-  const router = useRouter();
   const [tableRows, setTableRows] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [dropdownFilter, setDropdownFilter] = useState({});
+  const [openAddModal, setOpenAddModal] = useState(false);
   const columns = [
     {
       label: "Coupon Code",
@@ -63,6 +64,12 @@ const Coupons = () => {
     {
       label: "Status",
       id: "col6",
+      align: "center",
+      data_align: "center",
+    },
+    {
+      label: "Action",
+      id: "col7",
       align: "center",
       data_align: "center",
     },
@@ -103,6 +110,18 @@ const Coupons = () => {
           >
             {row.status}
           </div>
+        ),
+        col7: (
+          <Share
+            sx={{
+              bgcolor: "#e56700",
+              color: "#fff",
+              borderRadius: "5px",
+              fontSize: "20px",
+              padding: "2px",
+              cursor: "pointer",
+            }}
+          />
         ),
       });
     });
@@ -168,62 +187,66 @@ const Coupons = () => {
 
   return (
     <Paper className="mnh-80vh overflow-auto hide-scrollbar">
-      <Grid container>
-        <Grid
-          container
-          item
-          xs={12}
-          justifyContent="space-between"
-          className="border-bottom"
-        >
-          <Grid item sx={{ p: 2 }} className="fs-16 fw-bold px-3">
-            Coupon Listing
-          </Grid>
-          <Grid item sx={{ p: 2 }}>
-            <ButtonComponent
-              variant="contained"
-              className="bg-orange"
-              size="small"
-              label=" Add New Coupon"
-              onBtnClick={() => router.push("/supplier/coupons/addnewcoupons")}
-            />
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sx={{ my: 5, px: 2 }}>
-          <Paper>
-            <TableComponent
-              table_heading=""
-              columns={columns}
-              tableRows={tableRows}
-              showCheckbox={false}
-              showSearchFilter={false}
-              onCustomDropdownChange={(val) => setDropdownFilter(val)}
-              customDropdownValue={dropdownFilter}
-              customDropdownLabel="Select Type"
-              showSearchbar={false}
-              customDropdownList={selectTypeList}
-              showCustomDropdownWithSearch
-            />
-          </Paper>
-        </Grid>
-        {showPublishModal && (
-          <ModalComponent
-            showClearBtn={false}
-            open={showPublishModal}
-            ModalTitle=""
-            saveBtnText="Publish Coupon"
-            ModalWidth={600}
-            headerClassName="border-0"
-            onCloseIconClick={() => setShowPublishModal(false)}
-            onSaveBtnClick={() => setShowPublishModal(false)}
-            footerClassName="m-2 align-center"
+      {!openAddModal ? (
+        <Grid container>
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="space-between"
+            className="border-bottom"
           >
-            <div className="d-flex flex-column justify-content-center align-items-center my-2">
-              <Image src={CouponLogo} height={200} width={300} />
-            </div>
-          </ModalComponent>
-        )}
-      </Grid>
+            <Grid item sx={{ p: 2 }} className="fs-16 fw-bold px-3">
+              Coupon Listing
+            </Grid>
+            <Grid item sx={{ p: 2 }}>
+              <ButtonComponent
+                variant="contained"
+                className="bg-orange"
+                size="small"
+                label=" Add New Coupon"
+                onBtnClick={() => setOpenAddModal(true)}
+              />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} sx={{ my: 5, px: 2 }}>
+            <Paper>
+              <TableComponent
+                table_heading=""
+                columns={columns}
+                tableRows={tableRows}
+                showCheckbox={false}
+                showSearchFilter={false}
+                onCustomDropdownChange={(val) => setDropdownFilter(val)}
+                customDropdownValue={dropdownFilter}
+                customDropdownLabel="Select Type"
+                showSearchbar={false}
+                customDropdownList={selectTypeList}
+                showCustomDropdownWithSearch
+              />
+            </Paper>
+          </Grid>
+          {showPublishModal && (
+            <ModalComponent
+              showClearBtn={false}
+              open={showPublishModal}
+              ModalTitle=""
+              saveBtnText="Publish Coupon"
+              ModalWidth={600}
+              headerClassName="border-0"
+              onCloseIconClick={() => setShowPublishModal(false)}
+              onSaveBtnClick={() => setShowPublishModal(false)}
+              footerClassName="m-2 align-center"
+            >
+              <div className="d-flex flex-column justify-content-center align-items-center my-2">
+                <Image src={CouponLogo} height={200} width={300} />
+              </div>
+            </ModalComponent>
+          )}
+        </Grid>
+      ) : (
+        <MrMrsAddNewCoupons setOpenAddModal={setOpenAddModal} />
+      )}
     </Paper>
   );
 };

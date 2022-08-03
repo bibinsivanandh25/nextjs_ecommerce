@@ -18,6 +18,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
   const [manageStock, setManageStock] = useState(false);
   const [inventoryFormData, setInventoryFormData] = useState({
     sku: "",
+    stockqty: "",
     stock_status: null,
     allow_backorders: null,
     stock_qty: "",
@@ -28,9 +29,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     seo_title: "",
     meta_description: "",
     meta_keyword: [],
+    modalname: "",
   });
   const [errorObj, setErrorObj] = useState({
     sku: "",
+    stockqty: "",
     stock_status: "",
     allow_backorders: "",
     stock_qty: "",
@@ -41,6 +44,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     seo_title: "",
     meta_description: "",
     meta_keyword: "",
+    modalname: "",
   });
   const handleInputChange = (e) => {
     setInventoryFormData((prev) => {
@@ -57,6 +61,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     let flag = false;
     const errObj = {
       sku: "",
+      stockqty: "",
       stock_status: null,
       allow_backorders: null,
       stock_qty: "",
@@ -67,6 +72,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       seo_title: "",
       meta_description: "",
       meta_keyword: [],
+      modalname: "",
     };
     if (inventoryFormData.stock_status === null) {
       flag = true;
@@ -122,6 +128,13 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.product_title = validateMessage.alpha_numeric_max_100;
     }
+    if (inventoryFormData.modalname === "") {
+      flag = true;
+      errObj.modalname = validateMessage.field_required;
+    } else if (inventoryFormData.modalname?.length > 100) {
+      flag = true;
+      errObj.modalname = validateMessage.alpha_numeric_max_100;
+    }
     setErrorObj(errObj);
     return !flag;
   };
@@ -159,6 +172,23 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
           </div>
           <div className="mx-2">
             <InfoOutlinedIcon />
+          </div>
+        </Grid>
+        <Grid item md={12} className="d-flex align-items-center">
+          <div className="w-70p">
+            <InputBox
+              id="stockqty"
+              label="Stock Qty"
+              onInputChange={handleInputChange}
+              value={inventoryFormData.stockqty}
+              placeholder="Stock Qty"
+              inputlabelshrink
+              fullWidth
+              // className="w-90p"
+              disabled
+              helperText={errorObj.stockqty}
+              error={errorObj.stockqty && errorObj.stockqty !== ""}
+            />
           </div>
         </Grid>
         <Grid item md={12} className="pt-4">
@@ -222,7 +252,23 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                 <InfoOutlinedIcon />
               </div>
             </Grid>
-            <Grid item md={12}>
+            {inventoryFormData.allow_backorders?.value === "allow" ? (
+              <Grid item md={6}>
+                <SimpleDropdownComponent
+                  inputlabelshrink
+                  list={[]}
+                  id="Backorders"
+                  label="Back Orders"
+                  size="small"
+                  fullWidth={false}
+                  value={inventoryFormData.back_Orders}
+                  onDropdownSelect={(value) => {
+                    handleDropdownChange(value, "back_Orders");
+                  }}
+                />
+              </Grid>
+            ) : null}
+            <Grid item md={6}>
               <InputBox
                 id="stock_qty"
                 label="Stock Qty"
@@ -235,20 +281,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                 placeholder="Enter stock quantity"
               />
             </Grid>
-            {/* <Grid item md={6}>
-                <SimpleDropdownComponent
-                  inputlabelshrink
-                  list={back_orders}
-                  id="Backorders"
-                  label="Back Orders"
-                  size="small"
-                  fullWidth={false}
-                  value={inventoryFormData.back_Orders}
-                  onDropdownSelect={(value) => {
-                    handleDropdownChange(value, "back_Orders");
-                  }}
-                />
-              </Grid> */}
           </>
         ) : null}
         <Grid item md={12}>
@@ -344,6 +376,18 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             helperText={errorObj.meta_keyword}
             error={errorObj.meta_keyword !== ""}
             placeholder="Enter keywords"
+          />
+        </Grid>
+        <Grid item md={12}>
+          <InputBox
+            id="modalname"
+            label="Modal Name"
+            onInputChange={handleInputChange}
+            value={inventoryFormData.modalname}
+            inputlabelshrink
+            helperText={errorObj.modalname}
+            error={errorObj.modalname && errorObj.modalname !== ""}
+            placeholder="Enter Modal Name"
           />
         </Grid>
       </Grid>

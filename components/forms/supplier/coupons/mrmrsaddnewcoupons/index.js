@@ -7,11 +7,10 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { useRouter } from "next/router";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
-const AddNewCoupons = () => {
-  const router = useRouter();
+const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
   const tabList = [
     {
       title: "Restriction",
@@ -25,7 +24,7 @@ const AddNewCoupons = () => {
   const [selectedTab, setSelectedTab] = useState("restriction");
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState({});
-
+  const [purchaseCheckbox, setPurchaseCheckbox] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({
@@ -65,6 +64,8 @@ const AddNewCoupons = () => {
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimittoXTimes");
     validateFields("usageLimitPerUser");
+    validateFields("minpurchaseamount");
+    validateFields("subcategory");
 
     setError({ ...errObj });
     let valid = true;
@@ -96,7 +97,7 @@ const AddNewCoupons = () => {
         <Typography
           className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
-            router.push("/supplier/coupons");
+            setOpenAddModal(false);
           }}
         >
           <ArrowBackIosIcon className="fs-16" />
@@ -204,6 +205,35 @@ const AddNewCoupons = () => {
                 required
               />
             </Grid>
+            {selectedTab === "restriction" && (
+              <Grid item xs={12}>
+                <Box className="mb-1">
+                  <CheckBoxComponent
+                    label="Minimum purchase Amount"
+                    isChecked={purchaseCheckbox}
+                    checkBoxClick={() => {
+                      setPurchaseCheckbox(!purchaseCheckbox);
+                      setFormValues((prev) => ({
+                        ...prev,
+                        minpurchaseamount: "",
+                      }));
+                    }}
+                  />
+                </Box>
+                <InputBox
+                  label="Minimum purchase Amount"
+                  inputlabelshrink
+                  type="number"
+                  value={formValues.minpurchaseamount}
+                  id="minpurchaseamount"
+                  name="minpurchaseamount"
+                  onInputChange={handleInputChange}
+                  error={Boolean(error.minpurchaseamount)}
+                  helperText={error.minpurchaseamount}
+                  disabled={!purchaseCheckbox}
+                />
+              </Grid>
+            )}
           </Grid>
         </Grid>
         <Grid item xs={8} container>
@@ -253,6 +283,28 @@ const AddNewCoupons = () => {
                         }
                         error={Boolean(error.categoryInclude)}
                         helperText={error.categoryInclude}
+                      />
+                      <InfoOutlinedIcon className="ms-2 mt-2" />
+                    </div>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <div className="d-flex h-100">
+                      <SimpleDropdownComponent
+                        label="Sub-Category"
+                        size="small"
+                        inputlabelshrink
+                        value={formValues.subcategoryObj}
+                        id="subcategory"
+                        name="subcategory"
+                        onDropdownSelect={(val) =>
+                          setFormValues((prev) => ({
+                            ...prev,
+                            subcategory: val ? val.id : null,
+                            subcategoryObj: val,
+                          }))
+                        }
+                        error={Boolean(error.subcategory)}
+                        helperText={error.subcategory}
                       />
                       <InfoOutlinedIcon className="ms-2 mt-2" />
                     </div>
@@ -369,4 +421,4 @@ const AddNewCoupons = () => {
   );
 };
 
-export default AddNewCoupons;
+export default MrMrsAddNewCoupons;
