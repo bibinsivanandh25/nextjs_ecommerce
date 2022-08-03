@@ -55,6 +55,7 @@ const CustomIcon = ({
   showColorOnHover = true,
 }) => {
   const Map = {
+    flag: FlagIcon,
     view: VisibilityIcon,
     arrowforward: ArrowForwardIosIcon,
     download: DownloadIcon,

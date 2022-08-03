@@ -117,9 +117,9 @@ const Header = () => {
         zIndex: 1000,
       }}
     >
-      <div className="d-flex justify-content-between align-items-center bg-orange text-white px-4 ">
+      <div className="d-flex justify-content-between align-items-center bg-orange text-white px-3">
         <div className="d-flex align-items-center">
-          <p className="h-6">Hello Customer</p>
+          <p className="h-5">Hello Customer</p>
           <p
             className="ps-2 cursor-pointer d-flex align-items-center"
             onClick={() => setShowSelectAddress(true)}
@@ -134,21 +134,23 @@ const Header = () => {
             className="px-4"
             onClick={() => route.push("/customer/helpcenter")}
           >
-            <Typography className="h-6 ps-1">Help</Typography>
-            <Typography className="h-5 cursor-pointer">Center</Typography>
+            <Typography className="h-5 fw-bold ps-1">Help Center</Typography>
+            {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
           </div>
           <div>
-            <FaApple className="h-2" color="black" />
-            <FaGooglePlay className="h-3" />
+            <FaApple className="fs-4" color="black" />
+            <FaGooglePlay className="fs-5" />
           </div>
-          <div>
-            <Typography className="h-6">Download App</Typography>
-            <Typography className="h-6">Play & win Prices/Discounts</Typography>
+          <div className="ps-1">
+            <Typography className="h-5">Download App</Typography>
+            <Typography className="fs-12">
+              Play & win Prices/Discounts
+            </Typography>
           </div>
         </div>
       </div>
       <div
-        className="d-flex justify-content-between align-items-center px-2 py-1"
+        className="d-flex justify-content-between align-items-center px-3 py-1"
         style={{
           background: "#fae1cc",
         }}
@@ -163,11 +165,11 @@ const Header = () => {
             LOGO Store Name
           </Typography>
         </div>
-        <div className="d-flex align-items-center  rounded">
+        <div className="d-flex align-items-center rounded w-30p">
           <div
-            className=" rounded"
+            className="rounded"
             style={{
-              width: "8rem",
+              width: "14rem",
             }}
           >
             <SimpleDropdownComponent
@@ -178,14 +180,14 @@ const Header = () => {
             />
           </div>
           <div
-            className="d-flex bg-white rounded-end"
+            className="d-flex bg-white rounded-end w-100 justify-content-between "
             style={{
               border: "0.5px solid #c0ad9d",
               borderLeft: "none",
             }}
           >
             <input
-              className="py-2 bg-white px-3"
+              className="p-2 bg-white inputPlaceHolder"
               placeholder="Search"
               style={{
                 background: "#fae1cc",
@@ -200,7 +202,7 @@ const Header = () => {
               onClick={() => {
                 route.push("/customer/searchedproduct");
               }}
-              className="bg-orange d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
+              className="bg-orange d-flex  p-1 rounded align-items-center cursor-pointer"
             >
               <SearchOutlinedIcon className="text-white fs-4" />
             </Box>
@@ -213,7 +215,7 @@ const Header = () => {
           }}
         >
           <input
-            className="p-2 bg-white rounded"
+            className="p-2 bg-white rounded inputPlaceHolder"
             placeholder="Enter store code"
             style={{
               background: "#fae1cc",
@@ -234,14 +236,19 @@ const Header = () => {
         <div className="cursor-pointer">
           <MenuwithArrow subHeader="Store" Header="List">
             <MenuItem>
-              <input />
+              <input
+                id="store"
+                style={{
+                  outline: "none",
+                }}
+              />
             </MenuItem>
             {getStores()}
           </MenuwithArrow>
         </div>
         <div className="cursor-pointer">
-          <Typography className="h-6 cursor-pointer">Returns</Typography>
-          <Typography className="fw-bold h-5 cursor-pointer">
+          <Typography className="h-5 cursor-pointer">Returns</Typography>
+          <Typography className="fs-14 fw-bold cursor-pointer">
             & Orders
           </Typography>
         </div>

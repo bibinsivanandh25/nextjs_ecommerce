@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import axios from "axios";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
@@ -38,7 +38,7 @@ const WishList = () => {
     getProducts();
   }, [activeTab]);
   return (
-    <div>
+    <Paper className="p-2">
       <div>
         <Typography className="fs-6 fw-bold pb-2 border-bottom">
           My WishList
@@ -60,7 +60,7 @@ const WishList = () => {
           <ProductDetailsCard products={[...productDetails]} />
         </Grid>
       </Grid>
-    </div>
+    </Paper>
   );
 };
 export default WishList;

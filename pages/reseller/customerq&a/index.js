@@ -416,10 +416,7 @@ const CustomerQnA = () => {
           Answered
         </div>
       </div>
-      <Paper
-        sx={{ height: "75vh" }}
-        className="py-2 mxh-80vh mnh-80vh overflow-auto hide-scrollbar"
-      >
+      <Paper className="py-2 mxh-75vh mnh-75vh overflow-auto hide-scrollbar">
         <TableComponent
           tableRows={
             tabType === "tab1" ? [...UnansweredRows] : [...answeredRows]

@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import TableComponent from "components/atoms/TableComponent";
 import { assetsJson } from "public/assets";
 import Image from "next/image";
@@ -133,7 +132,7 @@ const ReferredReseller = () => {
                 profit on each sale
               </Typography>
               <ShareIcon className="cursor-pointer mx-2" />
-              <WhatsAppIcon className="cursor-pointer ms-1" />
+              {/* <WhatsAppIcon className="cursor-pointer ms-1" /> */}
             </Box>
             <Grid className="my-3" container>
               <Grid className="d-flex text-start" item xs={4}>
