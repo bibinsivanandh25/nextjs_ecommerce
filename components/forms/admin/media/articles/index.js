@@ -193,7 +193,7 @@ const Articles = ({ rowsDataObjectsForArticles }) => {
               tHeadBgColor="bg-light-gray"
               showPagination={false}
               tableRows={tableRows}
-              // showSearchbar={false}
+              showSearchbar={false}
               showDateFilterBtn
               showDateFilter
               //   dateFilterBtnName="+ New Product"
