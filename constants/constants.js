@@ -1,5 +1,9 @@
 const product_type = [
   {
+    value: "electronics",
+    label: "electronics",
+  },
+  {
     value: "Simple Product",
     label: "Simple Product",
   },

@@ -105,22 +105,27 @@ const RevenueSales = () => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper elevation={3}>
-            <Box className="d-flex justify-content-end">
-              <SimpleDropdownComponent />
-            </Box>
-            <Bargraph
-              data={customerGraphData}
-              labels={barGraphLabels}
-              backgroundColor="#425568"
-              hoverBackgroundColor="#ea7d30"
-              barDirection="y"
-              height="300px"
-              showXAxis={false}
-              showGridY={false}
-              showDiffColors
-              colorOfMax="#EB7C30"
-            />
+          <Paper elevation={3} className="p-2">
+            <Grid container>
+              <Grid item sm={9.5} />
+              <Grid item sm={2} className="mb-2">
+                <SimpleDropdownComponent size="small" />
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Bargraph
+                data={customerGraphData}
+                labels={barGraphLabels}
+                backgroundColor="#425568"
+                hoverBackgroundColor="#ea7d30"
+                barDirection="y"
+                height="300px"
+                showXAxis={false}
+                showGridY={false}
+                showDiffColors
+                colorOfMax="#EB7C30"
+              />
+            </Grid>
           </Paper>
         </Grid>
       </Grid>
