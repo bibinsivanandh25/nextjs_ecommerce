@@ -36,7 +36,7 @@ const MySharedCategory = () => {
         >
           <Grid item sx={{ p: 2 }} md={4}>
             <Typography variant="h6" fontWeight="bold" fontSize={16}>
-              My Shared Category
+              My Shared Product
             </Typography>
           </Grid>
           <Grid

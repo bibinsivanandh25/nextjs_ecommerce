@@ -27,6 +27,9 @@ const NewProducts = () => {
       sub_category_id: "",
       tags: "",
       limit_per_order: "",
+      selectb2binvoice: null,
+      tradeMarkCheck: false,
+      category: {},
     },
     inventory: {
       sku: "",

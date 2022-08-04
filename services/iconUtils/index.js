@@ -41,6 +41,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import FlagIcon from "@mui/icons-material/Flag";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import SendIcon from "@mui/icons-material/Send";
 
 const CustomIcon = ({
   title = "",
@@ -56,6 +57,7 @@ const CustomIcon = ({
   showColorOnHover = true,
 }) => {
   const Map = {
+    send: SendIcon,
     flag: FlagIcon,
     view: VisibilityIcon,
     arrowforward: ArrowForwardIosIcon,
