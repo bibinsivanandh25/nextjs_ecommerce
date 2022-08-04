@@ -5,11 +5,13 @@ import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import ImagesInfoTable from "./ImagesInfoTable";
 import EditModalForArticles from "./EditModalForArticles";
+import RaiseQueryModal from "./RaiseQueryModal";
 
 const Articles = ({ rowsDataObjectsForArticles }) => {
   const [tableRows, setTableRows] = useState([]);
   const [showImageInfoTable, setShowImageInfoTable] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
   const tableColumns = [
     {
       id: "col1",
@@ -61,6 +63,10 @@ const Articles = ({ rowsDataObjectsForArticles }) => {
   const onClickOfMenuItem = (ele) => {
     if (ele === "Edit") {
       setOpenEditModal(true);
+    }
+
+    if (ele === "Raise Query") {
+      setOpenRaiseQueryModal(true);
     }
   };
 
@@ -222,6 +228,12 @@ const Articles = ({ rowsDataObjectsForArticles }) => {
       <EditModalForArticles
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
+      />
+      <RaiseQueryModal
+        openRaiseQueryModal={openRaiseQueryModal}
+        setOpenRaiseQueryModal={setOpenRaiseQueryModal}
+        modalTitle="Type Your Query"
+        placeholder="Reasons for query"
       />
     </>
   );
