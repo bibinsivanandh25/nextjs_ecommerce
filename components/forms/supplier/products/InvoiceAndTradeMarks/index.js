@@ -25,18 +25,13 @@ const UploadDocumentModal = ({ showModal = true, setShowModal = () => {} }) => {
             list={[
               {
                 id: 1,
-                title: "B2B Invoice",
+                label: "B2B Invoice",
                 value: "B2B Invoice",
               },
               {
                 id: 2,
-                title: "Trademark Authentications",
-                value: "Trademark Authentications",
-              },
-              {
-                id: 3,
-                title: "Letters",
-                value: "Letters",
+                label: "Trademark Authentication Letter",
+                value: "Trademark Authentication Letter",
               },
             ]}
           />

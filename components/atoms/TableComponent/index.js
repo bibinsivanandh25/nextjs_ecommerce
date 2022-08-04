@@ -408,8 +408,8 @@ export default function TableComponent({
 
   const getDateFilter = () => {
     return (
-      <Grid container>
-        <Grid item container xs={2} justifyContent="start">
+      <Grid container alignItems="center">
+        <Grid item container md={2} sm={1} justifyContent="start">
           {table_heading && (
             <Grid item sm={6} md={6} xs={12}>
               <Typography
@@ -424,58 +424,94 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid container justifyContent="end" alignItems="center" item xs={10}>
-          <Grid item sm={10} container alignItems="center" justifyContent="end">
-            <span className="fs-12">From date:</span>
-            <input
-              type="date"
-              value={dateValue.from}
-              className={styles.dateinput}
-              style={{
-                border: "none",
-                outline: "none",
-                display: "flex",
-                flexDirection: "row-reverse",
-              }}
-              onChange={(e) => {
-                setDateValue((prev) => ({
-                  ...prev,
-                  from: e.target.value,
-                }));
-              }}
-              // max={dateValue.to}
-            />
-            <span className="fs-12">To date:</span>
-            <input
-              type="date"
-              value={dateValue.to}
-              className={styles.dateinput}
-              style={{
-                border: "none",
-                outline: "none",
-                display: "flex",
-                flexDirection: "row-reverse",
-              }}
-              onChange={(e) => {
-                setDateValue((prev) => ({
-                  ...prev,
-                  to: e.target.value,
-                }));
-              }}
-              // min={dateValue.from}
-            />
-            <input
-              type="text"
-              placeholder="Search"
-              className={`${styles.searchInput} w-300px`}
-              value={searchText}
-              label="Search"
-              size="small"
-              onChange={(e) => {
-                setsearchText(e.target.value);
-                handleSearch();
-              }}
-            />
+        <Grid
+          container
+          justifyContent="end"
+          alignItems="center"
+          item
+          md={10}
+          sm={11}
+        >
+          <Grid
+            item
+            md={10}
+            container
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
+          >
+            <Grid item xl={4} md={4} className="d-flex align-items-center">
+              <span className="fs-12">From date:</span>
+              <input
+                type="date"
+                value={dateValue.from}
+                className={styles.dateinput}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  display: "flex",
+                  flexDirection: "row-reverse",
+                }}
+                onChange={(e) => {
+                  setDateValue((prev) => ({
+                    ...prev,
+                    from: e.target.value,
+                  }));
+                }}
+                // max={dateValue.to}
+              />
+            </Grid>
+            <Grid item xl={3} md={4} className="d-flex align-items-center ">
+              <span className="fs-12">To date:</span>
+              <input
+                type="date"
+                value={dateValue.to}
+                className={styles.dateinput}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  display: "flex",
+                  flexDirection: "row-reverse",
+                }}
+                onChange={(e) => {
+                  setDateValue((prev) => ({
+                    ...prev,
+                    to: e.target.value,
+                  }));
+                }}
+                // min={dateValue.from}
+              />
+            </Grid>
+            <Grid
+              item
+              xl={5}
+              md={4}
+              container
+              alignItems="center"
+              justifyContent="space-around"
+            >
+              <Grid item sm={10}>
+                <InputBox
+                  value={searchText}
+                  label="Search"
+                  className="w-100"
+                  fullWidth
+                  size="small"
+                  onInputChange={(e) => {
+                    setsearchText(e.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item sm={2}>
+                <div
+                  style={{ width: "35px", height: "38px" }}
+                  className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
+                  onClick={handleSearch}
+                >
+                  <SearchOutlinedIcon style={{ color: "white" }} />
+                </div>
+              </Grid>
+            </Grid>
           </Grid>
           {showDateFilterBtn && (
             <Grid item sm={2}>
@@ -523,7 +559,7 @@ export default function TableComponent({
               }}
             />
           </Grid>
-          <Grid item>
+          <Grid item md={3}>
             <div
               style={{ width: "35px", height: "38px" }}
               className="bg-orange d-flex justify-content-center align-items-center rounded"
@@ -538,7 +574,7 @@ export default function TableComponent({
 
     return (
       <Grid container>
-        <Grid item container xs={3} justifyContent="start">
+        <Grid item container xs={2} justifyContent="start">
           {table_heading && (
             <Grid item xs={12}>
               <Typography
@@ -553,7 +589,7 @@ export default function TableComponent({
             </Grid>
           )}
         </Grid>
-        <Grid item container xs={9} justifyContent="end">
+        <Grid item container xs={10} justifyContent="end">
           {showSearchbar && (
             <Grid
               item
@@ -605,7 +641,7 @@ export default function TableComponent({
                 </div>
               </Grid>
               {showCustomSearchButton && (
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                   <Button
                     variant="contained"
                     className={`fs-12 ${
