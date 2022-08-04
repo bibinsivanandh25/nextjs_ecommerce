@@ -1,13 +1,50 @@
+/* eslint-disable no-unused-vars */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InvoiceCardComponent from "components/atoms/InvoiceCardComponent";
 import validateMessage from "constants/validateMessages";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import CustomIcon from "services/iconUtils";
 import validationRegex from "services/utils/regexUtils";
+import ButtonComponent from "@/atoms/ButtonComponent";
+import ModalComponent from "@/atoms/ModalComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
+const returnOrderData = [
+  {
+    id: 1,
+    value: "7 Days",
+    label: "7 Days",
+  },
+  {
+    id: 1,
+    value: "14 Days",
+    label: "14 Days",
+  },
+  {
+    id: 1,
+    value: "21 Days",
+    label: "21 Days",
+  },
+  {
+    id: 1,
+    value: "28 Days",
+    label: "28 Days",
+  },
+];
 const PricingForm = forwardRef(({ formData = {} }, ref) => {
   const [freeDeliveryCheckbox, setFreeDeliveryCheckbox] = useState(false);
+  const [showZoneModal, setShowZoneModal] = useState(false);
+  const [defaultZoneData, setDefaultZoneData] = useState({
+    zoneA: "",
+    zoneB: "",
+    zoneC: "",
+    zoneD: "",
+    zoneE: "",
+  });
+  const [openViewModal, setOPenViewModal] = useState(false);
+  const [viewModalData, setViewModalData] = useState([]);
 
   const [pricingFormData, setPricingFormData] = useState({
     sale_price: "",
@@ -20,6 +57,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     height: "",
     delivery_charge: "",
     sale_price_logistics: "",
+    returnorder: {},
   });
   const [errorObj, setErrorObj] = useState({
     sale_price: "",
@@ -45,7 +83,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       length: "",
       width: "",
       height: "",
-      delivery_charge: "",
+      // delivery_charge: "",
       sale_price_logistics: "",
     };
     if (pricingFormData.sale_price === "") {
@@ -116,7 +154,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       return { ...prev, [e.target.id]: e.target.value };
     });
   };
-
+  console.log(formData, "fom");
   return (
     <Paper className="w-100 p-3 ps-4 mxh-75vh overflow-y-scroll">
       <Grid container className="w-100" spacing={2}>
@@ -212,7 +250,79 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Typography className="fs-12 mt-1">Cash on Delivary</Typography>
           </div>
         </Grid>
-        <Grid item md={6}>
+        {pricingFormData.return_order_accepted && (
+          <Grid item xs={12}>
+            <SimpleDropdownComponent
+              list={returnOrderData}
+              id="returnorder"
+              label="Return Order"
+              size="small"
+              value={pricingFormData.returnorder}
+              onDropdownSelect={(value) => {
+                setPricingFormData((prev) => ({ ...prev, returnorder: value }));
+              }}
+              inputlabelshrink
+              placeholder="Return Order"
+            />
+          </Grid>
+        )}
+        {formData?.mainFormData?.category?.value === "electronics" && (
+          <Grid item md={12} className="my-1">
+            <ButtonComponent
+              label="Zone Charges"
+              showIcon
+              iconName="add"
+              iconColorClass="color-white"
+              iconOrintation="end"
+              onBtnClick={() => {
+                setShowZoneModal(true);
+              }}
+            />
+            <CustomIcon
+              type="view"
+              className="mx-3"
+              onIconClick={() => {
+                setOPenViewModal(true);
+                setViewModalData([
+                  {
+                    id: 1,
+                    title: "Zone A",
+                    value: "230",
+                  },
+                  {
+                    id: 1,
+                    title: "Zone B",
+                    value: "230",
+                  },
+                  {
+                    id: 1,
+                    title: "Zone C",
+                    value: "230",
+                  },
+                  {
+                    id: 1,
+                    title: "Zone D",
+                    value: "230",
+                  },
+                  {
+                    id: 1,
+                    title: "Zone E",
+                    value: "230",
+                  },
+                ]);
+              }}
+            />
+            <CustomIcon
+              type="edit"
+              className="me-3"
+              onIconClick={() => {
+                setShowZoneModal(true);
+              }}
+            />
+            <CustomIcon type="close" />
+          </Grid>
+        )}
+        {/* <Grid item md={6}>
           <InputBox
             id="delivery_charge"
             label="Delivery Charge"
@@ -224,7 +334,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             error={errorObj.delivery_charge !== ""}
             placeholder="eg.:100"
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={12}>
           <InputBox
             id="product_weight"
@@ -281,6 +391,121 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
           <InvoiceCardComponent />
         </Grid>
       </Grid>
+      {showZoneModal && (
+        <ModalComponent
+          open={showZoneModal}
+          onCloseIconClick={() => {
+            setShowZoneModal(false);
+          }}
+          saveBtnText="Submit"
+          ClearBtnText="Cancel"
+          onClearBtnClick={() => {
+            setShowZoneModal(false);
+          }}
+          footerClassName="justify-content-end"
+        >
+          <Grid container spacing={2} className="mt-2">
+            <Grid item xs={12}>
+              <InputBox
+                id="Zone_A"
+                label="Zone A"
+                onInputChange={(e) => {
+                  setDefaultZoneData((prev) => ({
+                    ...prev,
+                    zoneA: e.target.value,
+                  }));
+                }}
+                value={defaultZoneData.zoneA}
+                inputlabelshrink
+                placeholder="Enter Price"
+              />
+            </Grid>{" "}
+            <Grid item xs={12}>
+              <InputBox
+                id="Zone_B"
+                label="Zone B"
+                onInputChange={(e) => {
+                  setDefaultZoneData((prev) => ({
+                    ...prev,
+                    zoneB: e.target.value,
+                  }));
+                }}
+                value={defaultZoneData.zoneB}
+                inputlabelshrink
+                placeholder="Enter Price"
+              />
+            </Grid>{" "}
+            <Grid item xs={12}>
+              <InputBox
+                id="Zone_c"
+                label="Zone C"
+                onInputChange={(e) => {
+                  setDefaultZoneData((prev) => ({
+                    ...prev,
+                    zoneC: e.target.value,
+                  }));
+                }}
+                value={defaultZoneData.zoneC}
+                inputlabelshrink
+                placeholder="Enter Price"
+              />
+            </Grid>{" "}
+            <Grid item xs={12}>
+              <InputBox
+                id="Zone_D"
+                label="Zone D"
+                onInputChange={(e) => {
+                  setDefaultZoneData((prev) => ({
+                    ...prev,
+                    zoneD: e.target.value,
+                  }));
+                }}
+                value={defaultZoneData.zoneD}
+                inputlabelshrink
+                placeholder="Enter Price"
+              />
+            </Grid>{" "}
+            <Grid item xs={12}>
+              <InputBox
+                id="Zone_E"
+                label="Zone E"
+                onInputChange={(e) => {
+                  setDefaultZoneData((prev) => ({
+                    ...prev,
+                    zoneE: e.target.value,
+                  }));
+                }}
+                value={defaultZoneData.zoneE}
+                inputlabelshrink
+                placeholder="Enter Price"
+              />
+            </Grid>
+          </Grid>
+        </ModalComponent>
+      )}
+      {openViewModal && (
+        <ModalComponent
+          open={openViewModal}
+          onCloseIconClick={() => {
+            setOPenViewModal(false);
+          }}
+          showFooter={false}
+          ModalTitle="View Zone Charges"
+        >
+          <Grid container spacing={2} className="mt-1 mb-2">
+            {viewModalData.map((item) => (
+              <Grid item sm={6} display="flex" alignItems="center">
+                <Typography className="h-5 color-gary ">
+                  {item.title} :
+                </Typography>
+                <Typography className="h-4 fw-bold">
+                  &nbsp;{item.value}
+                </Typography>
+              </Grid>
+            ))}
+          </Grid>
+        </ModalComponent>
+      )}
     </Paper>
   );
 });

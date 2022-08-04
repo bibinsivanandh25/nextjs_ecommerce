@@ -1,14 +1,15 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import validateMessage from "constants/validateMessages";
+import { CloseOutlined } from "@mui/icons-material";
 import toastify from "services/utils/toastUtils";
 import FileUploadModal from "components/atoms/FileUpload";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
@@ -18,6 +19,7 @@ import {
 } from "../../../../../constants/constants";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 
 const ProductsLayout = ({
   formData = {},
@@ -29,6 +31,7 @@ const ProductsLayout = ({
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
+  const inputField = useRef();
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
@@ -50,6 +53,11 @@ const ProductsLayout = ({
     limit_per_order: "",
     selectb2binvoice: null,
     tradeMarkCheck: false,
+    category: {},
+    brandradio: true,
+    genericradio: false,
+    b2bdocument: {},
+    b2bdocumentfile: [],
   });
   const [errorObj, setErrorObj] = useState({
     commision_mode: "",
@@ -67,6 +75,7 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
     selectb2binvoice: "",
+    category: null,
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -89,6 +98,7 @@ const ProductsLayout = ({
       tags: "",
       limit_per_order: "",
       selectb2binvoice: "",
+      category: "",
     };
     let flag = false;
     if (mainFormData.commision_mode === null) {
@@ -97,6 +107,10 @@ const ProductsLayout = ({
     }
     if (mainFormData.selectb2binvoice === null) {
       errObj.selectb2binvoice = validateMessage.field_required;
+      flag = true;
+    }
+    if (mainFormData.category === null) {
+      errObj.category = validateMessage.field_required;
       flag = true;
     }
     if (mainFormData.brand === null || mainFormData.brand === "") {
@@ -132,9 +146,14 @@ const ProductsLayout = ({
       flag = true;
     }
     setErrorObj({ ...errObj });
+    if (!flag) {
+      setFormData((pre) => ({
+        ...pre,
+        mainFormData,
+      }));
+    }
     return !flag;
   };
-
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
     if (validateForm() && flag) {
@@ -162,7 +181,6 @@ const ProductsLayout = ({
       return { ...prev, [key]: value };
     });
   };
-
   return (
     <>
       {!showGroupVariant ? (
@@ -312,8 +330,11 @@ const ProductsLayout = ({
                     label="Select Category"
                     size="small"
                     inputlabelshrink
-                    // error={errorObj.commision_mode !== ""}
-                    // helperText={errorObj.commision_mode}
+                    error={errorObj.category !== ""}
+                    helperText={errorObj.category}
+                    onDropdownSelect={(value) => {
+                      handleDropdownChange(value, "category");
+                    }}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -381,7 +402,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={[]}
+                    list={product_type}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
                     size="small"
@@ -392,6 +413,35 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.selectb2binvoice !== ""}
                     helperText={errorObj.selectb2binvoice}
+                  />
+                </Grid>
+                <Grid item md={12}>
+                  <Typography className="h-5 color-gray">
+                    Is It a Brand or Generic Product
+                  </Typography>
+                  <RadiobuttonComponent
+                    label="Branded"
+                    isChecked={mainFormData.brandradio}
+                    onRadioChange={() => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        brandradio: true,
+                        genericradio: false,
+                      }));
+                    }}
+                    size="small"
+                  />
+                  <RadiobuttonComponent
+                    size="small"
+                    label="Generic"
+                    isChecked={mainFormData.genericradio}
+                    onRadioChange={() => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        brandradio: false,
+                        genericradio: true,
+                      }));
+                    }}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -411,6 +461,63 @@ const ProductsLayout = ({
                     showIcon
                   />
                 </Grid>
+                {mainFormData.tradeMarkCheck && (
+                  <Grid item md={12}>
+                    <SimpleDropdownComponent
+                      label="Choose Documents"
+                      list={product_type}
+                      id="b2bdocument"
+                      size="small"
+                      value={mainFormData.b2bdocument}
+                      onDropdownSelect={(value) => {
+                        handleDropdownChange(value, "b2bdocument");
+                        if (value) {
+                          inputField.current.click();
+                        }
+                      }}
+                      inputlabelshrink
+                      placeholder="Eg:B2B"
+                    />
+                    <Typography className="h-6 color-gray ms-1">
+                      Check The Brands That Need Trademarks Auth To Sell Across
+                      India <span className="color-red">*</span>
+                    </Typography>
+                    <input
+                      type="file"
+                      hidden
+                      ref={inputField}
+                      // multiple
+                      onChange={(e) =>
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          b2bdocumentfile: [
+                            ...mainFormData.b2bdocumentfile,
+                            ...e.target.files,
+                          ],
+                        }))
+                      }
+                    />
+                    {mainFormData?.b2bdocumentfile?.map((val, ind) => (
+                      <Typography
+                        className="color-blue h-5 pe-2"
+                        component="span"
+                      >
+                        {val.name}
+                        <CloseOutlined
+                          className="h-5 color-blue"
+                          onClick={() => {
+                            const temp = [...mainFormData.b2bdocumentfile];
+                            temp.splice(ind, 1);
+                            setMainFormData((prev) => ({
+                              ...prev,
+                              b2bdocumentfile: [...temp],
+                            }));
+                          }}
+                        />
+                      </Typography>
+                    ))}
+                  </Grid>
+                )}
               </Grid>
             </div>
           </Box>
