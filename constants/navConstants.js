@@ -36,6 +36,12 @@ const supplierMenu = [
             navigate: true,
             path_name: "uploadmanifest",
           },
+          {
+            title: "Upload Warranty Details",
+            logo: null,
+            navigate: true,
+            path_name: "uploadwarranty",
+          },
         ],
       },
       {
@@ -147,8 +153,14 @@ const supplierMenu = [
     navigate: true,
     child: [
       {
-        title: "Add New Coupons",
-        path_name: "addnewcoupons",
+        title: "MrMrs Cart Coupons",
+        path_name: "mrmrscartcoupons",
+        navigate: true,
+        showOption: false,
+      },
+      {
+        title: "Supplier Store Coupons",
+        path_name: "supplierstorecoupons",
         navigate: true,
         showOption: false,
       },
@@ -275,6 +287,24 @@ const supplierMenu = [
         navigate: true,
         path_name: "shareproductbyprice",
       },
+      {
+        title: "Notifications",
+        logo: "",
+        navigate: true,
+        path_name: "notification",
+      },
+      {
+        title: "Flags",
+        logo: "",
+        navigate: true,
+        path_name: "flags",
+      },
+      {
+        title: "Subscription History",
+        logo: "",
+        navigate: true,
+        path_name: "subscriptionhistory",
+      },
     ],
   },
   {
@@ -288,6 +318,27 @@ const supplierMenu = [
     title: "Customer Q&A",
     logo: "fas fa-shopping-cart",
     path_name: "customerq&a",
+    navigate: true,
+    child: [],
+  },
+  {
+    title: "Invite User",
+    logo: "fas fa-shopping-cart",
+    path_name: "inviteuser",
+    navigate: true,
+    child: [],
+  },
+  {
+    title: "My Shared Products",
+    logo: "fas fa-shopping-cart",
+    path_name: "mysharedproduct",
+    navigate: true,
+    child: [],
+  },
+  {
+    title: "Referred Supplier",
+    logo: "fas fa-shopping-cart",
+    path_name: "referredsupplier",
     navigate: true,
     child: [],
   },

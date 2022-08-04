@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+
 const toastify = (message = null, variant = "default") => {
   const options = {
     position: "bottom-center",
@@ -11,15 +12,7 @@ const toastify = (message = null, variant = "default") => {
   };
   switch (variant) {
     case "info":
-      toast.info(message, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-      });
+      toast.info(message, options);
       break;
     case "success":
       toast.success(message, options);

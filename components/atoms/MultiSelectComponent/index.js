@@ -15,10 +15,12 @@ const MultiSelectComponent = ({
   disabled = false,
   helperText = "",
   error = false,
+  freeSolo = false,
 }) => {
   return (
     <Autocomplete
       multiple
+      freeSolo={freeSolo}
       disabled={disabled}
       id={id}
       options={list}
@@ -35,6 +37,7 @@ const MultiSelectComponent = ({
       renderInput={(params) => (
         <TextField
           {...params}
+          // endAdornment={{ display: "none" }}
           label={label}
           size={size}
           helperText={helperText}
