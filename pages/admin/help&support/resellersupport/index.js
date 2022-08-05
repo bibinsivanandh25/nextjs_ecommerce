@@ -89,7 +89,7 @@ const ResellerSupport = () => {
 
   const onClickOfMenuItem = () => {};
 
-  const rowsDataObjectsForCustomers = [
+  const rowsDataObjectsForReseller = [
     {
       id: 1,
       col1: "01",
@@ -109,7 +109,7 @@ const ResellerSupport = () => {
 
   const theTaleRowsData = () => {
     const anArray = [];
-    rowsDataObjectsForCustomers.forEach((val, index) => {
+    rowsDataObjectsForReseller.forEach((val, index) => {
       anArray.push({
         id: index + 1,
         col1: val.col1,
@@ -162,7 +162,7 @@ const ResellerSupport = () => {
                 tHeadBgColor="bg-light-gray"
                 showPagination={false}
                 tableRows={tableRows}
-                table_heading="Customer Support"
+                table_heading="Reseller Support"
                 // showSearchbar={false}
                 showDateFilterBtn
                 showDateFilter
