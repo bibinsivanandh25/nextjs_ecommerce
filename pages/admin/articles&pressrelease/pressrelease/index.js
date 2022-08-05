@@ -5,14 +5,7 @@ import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
-import NewArticleModal from "@/forms/admin/articlepress&release/adminarticle/NewArticleModal";
-import CreateArticleExternalLinkModal from "@/forms/admin/articlepress&release/adminarticle/CreateArticleExternalLinkModal";
-import CreateArticleModal from "@/forms/admin/articlepress&release/adminarticle/CreateArticleModal";
 import ButtonComponent from "@/atoms/ButtonComponent";
-// import ViewProducts from "./ViewProducts";
-// import ImagesInfoTable from "./ImagesInfoTable";
-// import EditModalForArticles from "./EditModalForArticles";
-// import RaiseQueryModal from "./RaiseQueryModal";
 
 const PressRelease = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -170,20 +163,6 @@ const PressRelease = () => {
           </Paper>
         </Box>
       </Box>
-      {/* <NewArticleModal
-        openNewArticleModal={openNewArticleModal}
-        setOpenNewArticleModal={setOpenNewArticleModal}
-        setOpenCreateExternalLinkModal={setOpenCreateExternalLinkModal}
-        setOpenCreateArticleModal={setOpenCreateArticleModal}
-      /> */}
-      {/* <CreateArticleExternalLinkModal
-        openCreateExternalLinkModal={openCreateExternalLinkModal}
-        setOpenCreateExternalLinkModal={setOpenCreateExternalLinkModal}
-      /> */}
-      {/* <CreateArticleModal
-        openCreateArticleModal={openCreateArticleModal}
-        setOpenCreateArticleModal={setOpenCreateArticleModal}
-      /> */}
     </>
   );
 };
