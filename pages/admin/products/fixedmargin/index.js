@@ -12,8 +12,6 @@ import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const [tabSelected, setTabSelected] = useState("Products to approve");
-
   const titles = [
     "Products to approve",
     "Queries",
@@ -252,7 +250,6 @@ const FixedMargin = () => {
         <Box
           onClick={() => {
             setActiveTab(index);
-            setTabSelected(val);
           }}
           className={`px-4 py-1 border fs-14 cursor-pointer 
           ${activeTab === index ? styles.activeTab : styles.inActivetab}
@@ -272,35 +269,35 @@ const FixedMargin = () => {
         <Box className="d-flex mt-3">{returnTabs()}</Box>
         <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
           <Box className="px-1 pt-2">
-            {tabSelected === "Products to approve" && (
+            {activeTab === 0 && (
               <ProductsToApprove
                 rowsDataObjectsForApproval={rowsDataObjectsForApproval}
                 setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
               />
             )}
 
-            {tabSelected === "Rejected" && (
+            {activeTab === 4 && (
               <Rejected
                 rowsDataObjectsForRejected={rowsDataObjectsForRejected}
                 setrowsDataObjectsForRejected={setRowsDataObjectsForRejected}
               />
             )}
 
-            {tabSelected === "Queries" && (
+            {activeTab === 1 && (
               <Queries
                 rowsDataObjectsForQueries={rowsDataObjectsForQueries}
                 setrowsDataObjectsForQueries={setRowsDataObjectsForQueries}
               />
             )}
 
-            {tabSelected === "Active" && (
+            {activeTab === 2 && (
               <Active
                 rowsDataObjectsForActive={rowsDataObjectsForActive}
                 setRowsDataObjectsForActive={setRowsDataObjectsForActive}
               />
             )}
 
-            {tabSelected === "Update" && (
+            {activeTab === 3 && (
               <Updated
                 rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
                 setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
