@@ -42,6 +42,7 @@ import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumb
 import FlagIcon from "@mui/icons-material/Flag";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SendIcon from "@mui/icons-material/Send";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 const CustomIcon = ({
   title = "",
@@ -102,6 +103,7 @@ const CustomIcon = ({
     confirmationNumberOutlinedIcon: ConfirmationNumberOutlinedIcon,
     flagIcon: FlagIcon,
     addNote: NoteAddIcon,
+    arrowUpward: ArrowUpwardIcon,
   };
 
   const [hover, setHover] = useState(false);
