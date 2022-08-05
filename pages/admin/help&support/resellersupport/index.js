@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
+import CreateTicket from "@/forms/admin/help&support/resellersupport/CreateTicket";
 
-const CustomerSupport = () => {
+const ResellerSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateTicketComponent, setShowCreateTicketComponent] =
     useState(false);
 
-  const options = ["Reply", "Delete", "Close"];
+  const options = ["Reply", "Delete"];
 
   const tableColumns = [
     {
@@ -183,4 +183,4 @@ const CustomerSupport = () => {
   );
 };
 
-export default CustomerSupport;
+export default ResellerSupport;
