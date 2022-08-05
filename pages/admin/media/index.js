@@ -6,7 +6,7 @@ import Products from "@/forms/admin/media/products";
 import Logos from "@/forms/admin/media/logos";
 
 const Media = () => {
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
 
   const titles = ["Articles", "Products", "Logos"];
 
