@@ -83,10 +83,6 @@ const ProductsToApprove = ({
       setOpenRaiseQueryModal(true);
     }
 
-    if (ele === "Visibility Range") {
-      setModalId(index);
-    }
-
     if (ele === "Flags") {
       setModalId(index);
       setShowFlagModal(true);
@@ -96,7 +92,6 @@ const ProductsToApprove = ({
   const options = [
     "Edit",
     "Delete",
-    "Visibility Range",
     "Accept/Reject",
     "Raise Query",
     "Draft",
