@@ -156,7 +156,6 @@ const MrMrsCartTickets = () => {
               showPagination={false}
               tableRows={tableRows}
               table_heading="MrMrsCart Tickets"
-              // showSearchbar={false}
             />
           </Box>
         </Paper>
