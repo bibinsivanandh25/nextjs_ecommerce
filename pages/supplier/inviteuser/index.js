@@ -1,9 +1,10 @@
-import { Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import { useState } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import TextArea from "@/atoms/SimpleTextArea";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const InviteUser = () => {
   const [showInviteUser, setShowInviteUser] = useState(false);
@@ -72,17 +73,20 @@ const InviteUser = () => {
   ];
 
   return (
-    <Paper className="mxh-80vh mnh-80vh hide-scrollbar-overflow-auto p-3">
-      <Paper elevation={3} className="p-2">
-        <TableComponent
-          tableRows={[...rows]}
-          columns={[...columns]}
-          table_heading="Invite User"
-          showCustomSearchButton
-          customSearchButtonLabel="Invite User"
-          searchBarSizeMd={5}
-          onCustomSearchButtonClick={() => setShowInviteUser(true)}
-        />
+    <Paper className="mxh-80vh mnh-80vh hide-scrollbar-overflow-auto">
+      <div className="border-bottom">
+        <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
+          <Box className="fs-16 fw-700 ps-4">Invite User</Box>
+          <Box>
+            <ButtonComponent
+              label="Invite User"
+              onBtnClick={() => setShowInviteUser(true)}
+            />
+          </Box>
+        </Box>
+      </div>
+      <Paper className="mt-5 mx-3" elevation={3}>
+        <TableComponent tableRows={[...rows]} columns={[...columns]} />
       </Paper>
       <ModalComponent
         ModalTitle="Invite User"

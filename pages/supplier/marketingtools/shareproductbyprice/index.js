@@ -191,6 +191,7 @@ const ShareProductByPrice = () => {
             columns={columns}
             tableRows={tableRows}
             showSearchbar={false}
+            showSearchFilter={false}
           />
         </Grid>
       </Grid>
