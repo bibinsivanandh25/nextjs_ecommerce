@@ -4,11 +4,34 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
+const returnOrderData = [
+  {
+    id: 1,
+    value: "7 Days",
+    label: "7 Days",
+  },
+  {
+    id: 1,
+    value: "14 Days",
+    label: "14 Days",
+  },
+  {
+    id: 1,
+    value: "21 Days",
+    label: "21 Days",
+  },
+  {
+    id: 1,
+    value: "28 Days",
+    label: "28 Days",
+  },
+];
 const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
   const [mrMrsCartFormData, setMrMrsCartFormData] = useState({
     sellwithus: false,
@@ -16,6 +39,7 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
     paid_delivery: "",
     return: false,
     cashondelivery: false,
+    returnorder: {},
   });
   const [errorObj, setErrorObj] = useState({
     free_delivery: "",
@@ -60,9 +84,9 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
   };
   return (
     <Grid container spacing={2}>
-      <Grid item md={12}>
+      <Grid item md={12} display="flex" alignItems="center">
         <CheckBoxComponent
-          label="Do You Want To Sell With Us"
+          label=""
           isChecked={mrMrsCartFormData.sellwithus}
           checkBoxClick={() => {
             setMrMrsCartFormData((prev) => ({
@@ -73,6 +97,9 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
+        <Typography component="span" className="h-5">
+          Do You Want To Sell With Us
+        </Typography>
       </Grid>
       <Grid item md={12}>
         <InputBox
@@ -98,9 +125,9 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           error={errorObj.paid_delivery !== ""}
         />
       </Grid>
-      <Grid item md={6}>
+      <Grid item md={6} display="flex" alignItems="center">
         <CheckBoxComponent
-          label="Return Order Accepted"
+          label=""
           isChecked={mrMrsCartFormData.return}
           checkBoxClick={() => {
             setMrMrsCartFormData((prev) => ({
@@ -111,10 +138,14 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
+        <Typography component="span" className="h-5">
+          Return Order Accepted
+        </Typography>
       </Grid>
-      <Grid item md={6}>
+
+      <Grid item md={6} display="flex" alignItems="center">
         <CheckBoxComponent
-          label="Cash on Delivery Available"
+          label=""
           isChecked={mrMrsCartFormData.cashondelivery}
           checkBoxClick={() => {
             setMrMrsCartFormData((prev) => ({
@@ -125,7 +156,26 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
+        <Typography component="span" className="h-5">
+          Cash on Delivery Available
+        </Typography>
       </Grid>
+      {mrMrsCartFormData.return && (
+        <Grid item xs={12}>
+          <SimpleDropdownComponent
+            list={returnOrderData}
+            id="returnorder"
+            label="Return Period"
+            size="small"
+            value={mrMrsCartFormData.returnorder}
+            onDropdownSelect={(value) => {
+              setMrMrsCartFormData((prev) => ({ ...prev, returnorder: value }));
+            }}
+            inputlabelshrink
+            placeholder="Return Period"
+          />
+        </Grid>
+      )}
     </Grid>
   );
 });

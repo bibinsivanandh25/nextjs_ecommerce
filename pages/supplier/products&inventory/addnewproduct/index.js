@@ -71,7 +71,6 @@ const NewProducts = () => {
       cashondelivery: false,
     },
   });
-
   const [tabsList, setTabsList] = useState([
     {
       title: "Inventory",

@@ -154,7 +154,6 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       return { ...prev, [e.target.id]: e.target.value };
     });
   };
-  console.log(formData, "fom");
   return (
     <Paper className="w-100 p-3 ps-4 mxh-75vh overflow-y-scroll">
       <Grid container className="w-100" spacing={2}>
@@ -185,9 +184,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
           />
         </Grid>
         <Grid item md={12}>
-          <Box className="d-center mb-1">
+          <Box className=" d-flex align-items-center mb-2">
             <CheckBoxComponent
-              label="Provide Free Delivery & Return To Your Customer"
+              label=""
               checkBoxClick={() => {
                 setFreeDeliveryCheckbox(!freeDeliveryCheckbox);
               }}
@@ -196,6 +195,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
+            <Typography className="h-5">
+              Provide Free Delivery & Return To Your Customer
+            </Typography>
           </Box>
           <InputBox
             id="sale_price_logistics"
@@ -247,7 +249,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">Cash on Delivary</Typography>
+            <Typography className="fs-12 mt-1">Cash on Delivery</Typography>
           </div>
         </Grid>
         {pricingFormData.return_order_accepted && (
@@ -255,14 +257,14 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <SimpleDropdownComponent
               list={returnOrderData}
               id="returnorder"
-              label="Return Order"
+              label="Return Period"
               size="small"
               value={pricingFormData.returnorder}
               onDropdownSelect={(value) => {
                 setPricingFormData((prev) => ({ ...prev, returnorder: value }));
               }}
               inputlabelshrink
-              placeholder="Return Order"
+              placeholder="Return Period"
             />
           </Grid>
         )}

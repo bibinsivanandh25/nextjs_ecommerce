@@ -3,15 +3,26 @@ import { Box, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ImageCard from "components/atoms/ImageCard";
 import ModalComponent from "components/atoms/ModalComponent";
-import { forwardRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { getBase64 } from "services/utils/functionUtils";
 
 const VariationForm = forwardRef(
-  ({ setShowGroupVariant = () => {}, setFormData = () => {} }) => {
+  ({ setShowGroupVariant = () => {}, setFormData = () => {} }, ref) => {
     const [showModal, setShowModal] = useState(false);
     const [imagedata, setImageData] = useState([]);
     const [showImageModal, setShowImageModal] = useState(false);
-
+    useImperativeHandle(ref, () => {
+      return {
+        handleSendFormData: () => {
+          return ["variation", {}];
+        },
+        validate: () => {
+          // write validation logic here
+          // return true if validation is success else false
+          return true;
+        },
+      };
+    });
     const handleImageSubmit = () => {
       setFormData((pre) => ({
         ...pre,
