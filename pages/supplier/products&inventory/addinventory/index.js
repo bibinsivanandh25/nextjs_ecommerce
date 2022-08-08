@@ -126,7 +126,7 @@ const AddInventory = () => {
             />
           </Grid>
         </Grid>
-        <Paper className="mx-4 mb-3">
+        <Paper className="mx-4 m-3">
           <TableComponent
             showCheckbox={false}
             showSearchFilter={false}

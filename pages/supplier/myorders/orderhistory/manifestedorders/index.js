@@ -141,6 +141,8 @@ const ManifestedOrders = () => {
           showSearchbar={false}
           showCheckbox={false}
           showCustomButton
+          showSearchFilter={false}
+          showCustomDropdown={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             console.log("onCustomButtonClick");

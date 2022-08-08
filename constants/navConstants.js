@@ -150,7 +150,7 @@ const supplierMenu = [
     title: "Coupons",
     logo: "fas fa-shopping-cart",
     path_name: "coupons",
-    navigate: true,
+    navigate: false,
     child: [
       {
         title: "MrMrs Cart Coupons",

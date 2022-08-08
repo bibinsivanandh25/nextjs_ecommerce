@@ -390,6 +390,7 @@ const CustomerQnA = () => {
       </div>
       <Paper className="py-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
         <TableComponent
+          table_heading=""
           tableRows={
             tabType === "tab1" ? [...UnansweredRows] : [...answeredRows]
           }
@@ -397,7 +398,9 @@ const CustomerQnA = () => {
             tabType === "tab1" ? [...UnansweredColumns] : [...answeredColumns]
           }
           showDateFilter
+          showDateFilterBtn={false}
           dateFilterColName={["col5"]}
+          showda
         />
       </Paper>
       <ViewModal

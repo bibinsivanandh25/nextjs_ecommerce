@@ -118,6 +118,7 @@ const UploadWarranty = () => {
         columns={[...columns]}
         table_heading="Upload Warranty Details"
         showSearchbar={false}
+        showSearchFilter={false}
         showCheckbox={false}
       />
       <UploadWarrantyModal
