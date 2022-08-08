@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -6,7 +6,26 @@ import TextAreaComponent from "components/atoms/TextAreaComponent";
 import validateMessage from "constants/validateMessages";
 import FileUploadModal from "components/atoms/FileUpload";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
+const warrantyData = [
+  {
+    label: "3 Months",
+    value: "3 Months",
+  },
+  {
+    label: "6 Months",
+    value: "6 Months",
+  },
+  {
+    label: "9 Months",
+    value: "9 Months",
+  },
+  {
+    label: "12 Months",
+    value: "12 Months",
+  },
+];
 const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
   const [productPolicyFormData, setProductPolicyFormData] = useState({
     policyTabLabel: "",
@@ -14,6 +33,7 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
     cancellationPolicy: "",
     shippingPolicy: "",
     warranty: false,
+    warrantyperiod: {},
   });
   const [error, setError] = useState({});
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
@@ -161,9 +181,9 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
           error={Boolean(error.cancellationPolicy)}
           helperText={error.cancellationPolicy}
         />
-        <Grid item md={6}>
+        <Grid item md={6} display="flex" alignItems="center">
           <CheckBoxComponent
-            label="Warranty Available"
+            label=""
             isChecked={productPolicyFormData.warranty}
             checkBoxClick={() => {
               setProductPolicyFormData((prev) => {
@@ -176,7 +196,28 @@ const ProductPoliciesForm = forwardRef(({ formData = {} }, ref) => {
             showIcon
             varient="filled"
           />
+          <Typography component="span" className="h-5">
+            Warranty Available
+          </Typography>
         </Grid>
+        {productPolicyFormData.warranty && (
+          <Grid item md={12}>
+            <SimpleDropdownComponent
+              list={warrantyData}
+              label="Warranty Period"
+              placeholder="Warranty Period"
+              size="small"
+              onDropdownSelect={(value) => {
+                setProductPolicyFormData((prev) => ({
+                  ...prev,
+                  warrantyperiod: value,
+                }));
+              }}
+              inputlabelshrink
+              value={productPolicyFormData.warrantyperiod}
+            />
+          </Grid>
+        )}
       </Grid>
       {showFileUploadModal ? (
         <FileUploadModal

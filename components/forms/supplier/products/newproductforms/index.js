@@ -2,14 +2,13 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import validateMessage from "constants/validateMessages";
-import { CloseOutlined } from "@mui/icons-material";
 import toastify from "services/utils/toastUtils";
 import FileUploadModal from "components/atoms/FileUpload";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
@@ -22,6 +21,7 @@ import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 
 const ProductsLayout = ({
+  zonepagetabs = [], // Zone Charges page
   formData = {},
   setFormData = () => {},
   handleSubmitClick = () => {},
@@ -31,7 +31,7 @@ const ProductsLayout = ({
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
-  const inputField = useRef();
+  const [tabsLists, setTabsLists] = useState([...tabsList]);
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
@@ -80,6 +80,13 @@ const ProductsLayout = ({
 
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
+  useEffect(() => {
+    if (mainFormData.category?.value === "electronics") {
+      setTabsLists([...tabsList, ...zonepagetabs]);
+    } else {
+      setTabsLists([...tabsList]);
+    }
+  }, [mainFormData.category]);
 
   const validateForm = () => {
     const errObj = {
@@ -335,19 +342,11 @@ const ProductsLayout = ({
                     onDropdownSelect={(value) => {
                       handleDropdownChange(value, "category");
                     }}
+                    value={mainFormData.category}
+                    placeholder="Select Category"
                   />
                 </Grid>
                 <Grid item md={12}>
-                  {/* <InputBox
-                    id="tags"
-                    label="Tags"
-                    onInputChange={handleInputChange}
-                    value={mainFormData.tags}
-                    inputlabelshrink
-                    error={errorObj.tags !== ""}
-                    helperText={errorObj.tags}
-                    placeholder=""
-                  /> */}
                   <SimpleDropdownComponent
                     list={[
                       {
@@ -441,12 +440,16 @@ const ProductsLayout = ({
                         brandradio: false,
                         genericradio: true,
                       }));
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        tradeMarkCheck: false,
+                      }));
                     }}
                   />
                 </Grid>
-                <Grid item md={12}>
+                <Grid item md={12} display="flex" alignItems="center">
                   <CheckBoxComponent
-                    label="Does This Product Have Trademark Letter From Original Vendor"
+                    label=""
                     size="small"
                     isChecked={mainFormData.tradeMarkCheck}
                     checkBoxClick={() => {
@@ -459,7 +462,11 @@ const ProductsLayout = ({
                     lableFontSize="h-5"
                     varient="filled"
                     showIcon
+                    isDisabled={mainFormData?.genericradio}
                   />
+                  <Typography className="h-5">
+                    Does This Product Have Trademark Letter From Original Vendor
+                  </Typography>
                 </Grid>
                 {mainFormData.tradeMarkCheck && (
                   <Grid item md={12}>
@@ -471,9 +478,6 @@ const ProductsLayout = ({
                       value={mainFormData.b2bdocument}
                       onDropdownSelect={(value) => {
                         handleDropdownChange(value, "b2bdocument");
-                        if (value) {
-                          inputField.current.click();
-                        }
                       }}
                       inputlabelshrink
                       placeholder="Eg:B2B"
@@ -482,40 +486,6 @@ const ProductsLayout = ({
                       Check The Brands That Need Trademarks Auth To Sell Across
                       India <span className="color-red">*</span>
                     </Typography>
-                    <input
-                      type="file"
-                      hidden
-                      ref={inputField}
-                      // multiple
-                      onChange={(e) =>
-                        setMainFormData((prev) => ({
-                          ...prev,
-                          b2bdocumentfile: [
-                            ...mainFormData.b2bdocumentfile,
-                            ...e.target.files,
-                          ],
-                        }))
-                      }
-                    />
-                    {mainFormData?.b2bdocumentfile?.map((val, ind) => (
-                      <Typography
-                        className="color-blue h-5 pe-2"
-                        component="span"
-                      >
-                        {val.name}
-                        <CloseOutlined
-                          className="h-5 color-blue"
-                          onClick={() => {
-                            const temp = [...mainFormData.b2bdocumentfile];
-                            temp.splice(ind, 1);
-                            setMainFormData((prev) => ({
-                              ...prev,
-                              b2bdocumentfile: [...temp],
-                            }));
-                          }}
-                        />
-                      </Typography>
-                    ))}
                   </Grid>
                 )}
               </Grid>
@@ -525,7 +495,7 @@ const ProductsLayout = ({
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
-                  {tabsList.map((item, index) => {
+                  {tabsLists.map((item, index) => {
                     return (
                       <Grid
                         item
@@ -544,7 +514,7 @@ const ProductsLayout = ({
                 </Grid>
               </Box>
               <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll">
-                {tabsList.map((item, ind) => {
+                {tabsLists.map((item, ind) => {
                   return activeTab === ind ? item.component : null;
                 })}
               </Box>
@@ -637,10 +607,10 @@ const ProductsLayout = ({
                 />
               ) : null}
               <ButtonComponent
-                label={activeTab === 6 ? "Submit" : "Next"}
+                label={activeTab === tabsList.length ? "Submit" : "Next"}
                 size="small"
                 onBtnClick={
-                  activeTab === 6
+                  activeTab === tabsLists.length
                     ? () => {
                         const temp = formsRef?.current?.handleSendFormData();
                         setFormData((prev) => {
