@@ -250,7 +250,7 @@ export default function TableComponent({
   showCustomSearchButton = false,
   customSearchButtonLabel = "",
   onCustomSearchButtonClick = () => {},
-  disableCustomSearchButton = false,
+  disableCustomButton = false,
   showCellBorders = true,
   tHeadBgColor = "",
   showDateFilter = false,
@@ -409,9 +409,9 @@ export default function TableComponent({
   const getDateFilter = () => {
     return (
       <Grid container alignItems="center">
-        <Grid item container md={2} sm={1} justifyContent="start">
+        <Grid item container md={1} justifyContent="start">
           {table_heading && (
-            <Grid item sm={6} md={6} xs={12}>
+            <Grid item md={12}>
               <Typography
                 sx={{ flex: "1 1 100%", py: { sm: 1 } }}
                 // variant="h6"
@@ -429,8 +429,8 @@ export default function TableComponent({
           justifyContent="end"
           alignItems="center"
           item
-          md={10}
-          sm={11}
+          md={11}
+          spacing={2}
         >
           <Grid
             item
@@ -440,7 +440,11 @@ export default function TableComponent({
             alignItems="center"
             justifyContent="end"
           >
-            <Grid item xl={4} md={4} className="d-flex align-items-center">
+            <Grid
+              item
+              md={3.1}
+              className="d-flex align-items-center justify-content-end"
+            >
               <span className="fs-12">From date:</span>
               <input
                 type="date"
@@ -461,7 +465,11 @@ export default function TableComponent({
                 // max={dateValue.to}
               />
             </Grid>
-            <Grid item xl={3} md={4} className="d-flex align-items-center ">
+            <Grid
+              item
+              md={2.9}
+              className="d-flex align-items-center justify-content-end"
+            >
               <span className="fs-12">To date:</span>
               <input
                 type="date"
@@ -484,10 +492,11 @@ export default function TableComponent({
             </Grid>
             <Grid
               item
-              xl={5}
+              // xl={5}
               md={4}
               container
               alignItems="center"
+              spacing={1}
               justifyContent="space-around"
             >
               <Grid item sm={10}>
@@ -514,11 +523,11 @@ export default function TableComponent({
             </Grid>
           </Grid>
           {showDateFilterBtn && (
-            <Grid item sm={2}>
+            <Grid item sm={2} justifyContent="center" display="flex">
               <ButtonComponent
                 variant="contained"
                 label={dateFilterBtnName}
-                muiProps="fs-12 ms-1"
+                muiProps="fs-12 ms-1 p-2"
                 onBtnClick={() => {
                   dateFilterBtnClick();
                 }}
@@ -534,168 +543,129 @@ export default function TableComponent({
   };
 
   const getNormalFilter = () => {
-    if (showCustomDropdownWithSearch) {
-      return (
-        <Grid container justifyContent="end" spacing={2}>
-          <Grid item sm={6} md={2}>
-            <SimpleDropdownComponent
-              list={customDropdownList}
-              size="small"
-              label={customDropdownLabel}
-              value={customDropdownValue}
-              onDropdownSelect={(value) => {
-                onCustomDropdownChange(value);
-              }}
-            />
-          </Grid>
-          <Grid item md={3}>
-            <InputBox
-              value={searchText}
-              label="Search"
-              // className="w-100"
-              size="small"
-              onInputChange={(e) => {
-                setsearchText(e.target.value);
-              }}
-            />
-          </Grid>
-          <Grid item md={3}>
-            <div
-              style={{ width: "35px", height: "38px" }}
-              className="bg-orange d-flex justify-content-center align-items-center rounded"
-              onClick={handleSearch}
-            >
-              <SearchOutlinedIcon style={{ color: "white" }} />
-            </div>
-          </Grid>
-        </Grid>
-      );
-    }
-
     return (
-      <Grid container>
-        <Grid item container xs={2} justifyContent="start">
+      <Grid container spacing={3}>
+        <Grid item md={4} justifyContent="start">
           {table_heading && (
-            <Grid item xs={12}>
-              <Typography
-                sx={{ flex: "1 1 100%", py: { sm: 1 } }}
-                // variant="h6"
-                id="tableTitle"
-                component="div"
-                className="fw-bold"
-              >
-                {table_heading}
-              </Typography>
-            </Grid>
+            <Typography
+              sx={{ flex: "1 1 100%", py: { sm: 1 } }}
+              id="tableTitle"
+              component="div"
+              className="fw-bold"
+            >
+              {table_heading}
+            </Typography>
           )}
         </Grid>
-        <Grid item container xs={10} justifyContent="end">
-          {showSearchbar && (
-            <Grid
-              item
-              md={9}
-              xs={12}
-              container
-              spacing={1}
-              justifyContent="end"
-              alignItems="center"
-            >
-              <Grid item md={3}>
-                {showSearchFilter && (
-                  <SimpleDropdownComponent
-                    list={[...searchFilterList]}
-                    size="small"
-                    // label="Search Filter"
-                    value={searchFilter}
-                    onDropdownSelect={(value) => {
-                      setSearchFilter(value);
-                      // setSearchFilter(
-                      //   value === null
-                      //     ? { label: "All", id: 0, value: "All" }
-                      //     : { ...value }
-                      // );
-                    }}
-                    placeholder={customDropDownPlaceholder}
-                  />
-                )}
-              </Grid>
-              <Grid item md={searchBarSizeMd}>
-                <InputBox
-                  value={searchText}
-                  label={searchBarPlaceHolderText}
-                  className="w-100"
-                  size="small"
-                  onInputChange={(e) => {
-                    setsearchText(e.target.value);
-                  }}
-                  showAutoCompleteOff={false}
-                />
-              </Grid>
-              <Grid item xs={!showCustomSearchButton && 1}>
-                <div
-                  style={{ width: "40px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
-                  onClick={handleSearch}
-                >
-                  <SearchOutlinedIcon style={{ color: "white" }} />
-                </div>
-              </Grid>
-              {showCustomSearchButton && (
-                <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    className={`fs-12 ${
-                      disableCustomSearchButton ? "" : "bg-orange"
-                    }`}
-                    sx={{ textTransform: "none" }}
-                    fullWidth
-                    onClick={onCustomSearchButtonClick}
-                    disabled={disableCustomSearchButton}
-                  >
-                    {customSearchButtonLabel}
-                  </Button>
-                </Grid>
-              )}
+        <Grid
+          item
+          sm={8}
+          container
+          spacing={2}
+          justifyContent="end"
+          display="flex"
+          alignItems="center"
+          alignSelf="end"
+        >
+          {showCustomDropdown && (
+            <Grid item sm={4} container>
+              <SimpleDropdownComponent
+                list={customDropdownList}
+                size="small"
+                label={customDropdownLabel}
+                value={customDropdownValue}
+                onDropdownSelect={(value) => {
+                  onCustomDropdownChange(value);
+                }}
+              />
             </Grid>
           )}
-
-          {(showCustomDropdown || showCustomButton) && (
-            <Grid
-              item
-              container
-              xs={12}
-              spacing={2}
-              justifyContent="end"
-              alignItems="center"
-            >
-              {showCustomDropdown && (
-                <Grid item sm={4} container>
-                  <SimpleDropdownComponent
-                    list={customDropdownList}
+          {showSearchFilter && (
+            <Grid item md={4} justifyContent="end">
+              <SimpleDropdownComponent
+                list={[...searchFilterList]}
+                size="small"
+                // label="Search Filter"
+                value={searchFilter}
+                onDropdownSelect={(value) => {
+                  setSearchFilter(value);
+                  // setSearchFilter(
+                  //   value === null
+                  //     ? { label: "All", id: 0, value: "All" }
+                  //     : { ...value }
+                  // );
+                }}
+                placeholder={customDropDownPlaceholder}
+              />
+            </Grid>
+          )}
+          {showSearchbar && (
+            <Grid item md={5} justifyContent="end" container>
+              <Grid
+                item
+                sm={12}
+                container
+                // spacing={1}
+                display="flex"
+                justifyContent="end"
+                alignItems="center"
+              >
+                <Grid
+                  item
+                  md={10}
+                  display="flex"
+                  justifyContent="end"
+                  className="w-100 "
+                >
+                  <InputBox
+                    value={searchText}
+                    label={searchBarPlaceHolderText}
+                    className="w-100"
+                    fullWidth
                     size="small"
-                    label={customDropdownLabel}
-                    value={customDropdownValue}
-                    onDropdownSelect={(value) => {
-                      onCustomDropdownChange(value);
+                    onInputChange={(e) => {
+                      setsearchText(e.target.value);
                     }}
+                    showAutoCompleteOff={false}
                   />
                 </Grid>
-              )}
-              {showCustomButton && (
-                <Grid item sm={4} container>
-                  <div>
-                    <ButtonComponent
-                      // variant="contained"
-                      // size="small"
-                      // className="bg-orange"
-                      // sx={{ textTransform: "none" }}
-                      // fullWidth
-                      onBtnClick={onCustomButtonClick}
-                      label={customButtonLabel}
-                    />
+                <Grid item xs={2} display="flex" justifyContent="end">
+                  <div
+                    style={{ width: "40px", height: "38px" }}
+                    className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
+                    onClick={handleSearch}
+                  >
+                    <SearchOutlinedIcon style={{ color: "white" }} />
                   </div>
                 </Grid>
-              )}
+              </Grid>
+            </Grid>
+          )}
+          {showCustomButton && (
+            <Grid
+              item
+              container
+              md={3}
+              // spacing={2}
+              justifyContent="end"
+              alignItems="center"
+            >
+              <Grid item sm={12} display="flex" justifyContent="start">
+                <div>
+                  <ButtonComponent
+                    // variant="contained"
+                    // size="small"
+                    // className="bg-orange"
+                    // sx={{ textTransform: "none" }}
+                    // fullWidth
+                    muiProps="p-2"
+                    disabled={disableCustomButton}
+                    bgColor={disableCustomButton ? "bg-secondary" : "bg-orange"}
+                    onBtnClick={onCustomButtonClick}
+                    label={customButtonLabel}
+                  />
+                </div>
+              </Grid>
             </Grid>
           )}
         </Grid>

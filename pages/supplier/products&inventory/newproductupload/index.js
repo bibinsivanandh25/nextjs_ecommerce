@@ -134,7 +134,7 @@ const NewProductUpload = () => {
             />
           </Grid>
         </Grid>
-        <Paper className="mx-4 mb-3">
+        <Paper className="mx-4 mt-3">
           <TableComponent
             showCheckbox={false}
             showSearchFilter={false}

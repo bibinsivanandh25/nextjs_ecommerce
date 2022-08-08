@@ -233,10 +233,11 @@ const SupplierStoreCoupons = () => {
                 tableRows={tableRows}
                 showCheckbox={false}
                 showSearchFilter={false}
+                showCustomDropdown
                 onCustomDropdownChange={(val) => setDropdownFilter(val)}
                 customDropdownValue={dropdownFilter}
                 customDropdownLabel="Select Type"
-                showSearchbar={false}
+                showSearchbar
                 customDropdownList={selectTypeList}
                 showCustomDropdownWithSearch
               />

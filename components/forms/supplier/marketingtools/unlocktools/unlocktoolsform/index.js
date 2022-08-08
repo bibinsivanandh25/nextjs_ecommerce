@@ -130,6 +130,7 @@ const UnlockToolsForm = ({
         showSearchbar={false}
         showCellBorders={false}
         showPagination={false}
+        showSearchFilter={false}
         tHeadBgColor="bg-light-gray"
       />
     </>

@@ -26,7 +26,7 @@ const AddEditProductModal = ({
   setImageArray = () => {},
   setProductDetails = () => {},
   imageArray = [],
-  setRowDataObjects = () => {},
+  // setRowDataObjects = () => {},
   modalId = 0,
   rowsDataObjects = [],
 }) => {
@@ -146,7 +146,7 @@ const AddEditProductModal = ({
 
         const tempArray = [...rowsDataObjects];
         tempArray.push(tempObject);
-        setRowDataObjects([...tempArray]);
+        // setRowDataObjects([...tempArray]);
         setOpenEditModal(false);
       } else if (modalId !== null) {
         const tempObject = {
@@ -171,7 +171,7 @@ const AddEditProductModal = ({
 
         const tempArray = [...rowsDataObjects];
         tempArray.splice(modalId, 1, tempObject);
-        setRowDataObjects([...tempArray]);
+        // setRowDataObjects([...tempArray]);
         setOpenEditModal(false);
       }
     }

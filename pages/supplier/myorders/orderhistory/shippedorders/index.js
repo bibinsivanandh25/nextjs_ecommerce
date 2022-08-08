@@ -163,6 +163,7 @@ const ShippedOrders = () => {
           tableRows={tableRows}
           showSearchbar={false}
           showCheckbox={false}
+          showSearchFilter={false}
           showCustomDropdown
           customDropdownLabel="Order Type"
           customDropdownList={[

@@ -252,7 +252,7 @@ const Flags = () => {
     },
   ];
   return (
-    <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+    <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar p-3">
       <TableComponent
         table_heading="Flags"
         columns={tableColumn}

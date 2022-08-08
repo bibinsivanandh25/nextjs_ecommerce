@@ -216,13 +216,11 @@ const MyProducts = () => {
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"
-            customSearchButtonLabel="Mark Out Of Stock"
-            showCustomSearchButton
-            onCustomSearchButtonClick={() =>
-              console.log("custom search button")
-            }
-            searchBarSizeMd={4}
-            disableCustomSearchButton={!selected.length}
+            customButtonLabel="Mark Out Of Stock"
+            showCustomButton
+            onCustomButtonClick={() => console.log("custom search button")}
+            // searchBarSizeMd={4}
+            disableCustomButton={!selected.length}
             OnSelectionChange={(vals) => setSelected(vals)}
           />
           <Menu

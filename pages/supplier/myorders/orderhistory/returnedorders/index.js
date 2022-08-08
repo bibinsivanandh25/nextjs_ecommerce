@@ -244,6 +244,7 @@ const ReturnedOrders = () => {
             { id: "multiple", label: "Multiple" },
           ]}
           showCustomButton
+          showSearchFilter={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             console.log("onCustomButtonClick");
