@@ -11,6 +11,8 @@ let errObj = {
 const RaiseQueryModal = ({
   openRaiseQueryModal = false,
   setOpenRaiseQueryModal = () => {},
+  placeholder = "placeholder",
+  modalTitle = "Modal Title",
 }) => {
   const [textInput, setTextInput] = useState("");
   const [keyCode, setKeyCode] = useState(null);
@@ -48,7 +50,7 @@ const RaiseQueryModal = ({
         saveBtnText="Submit"
         ClearBtnText="Cancel"
         saveBtnClassName="ms-2"
-        ModalTitle="Raise Query"
+        ModalTitle={modalTitle}
         titleClassName="fw-bold fs-14 color-orange"
         onClearBtnClick={() => {
           setOpenRaiseQueryModal(false);
@@ -60,7 +62,7 @@ const RaiseQueryModal = ({
         <Box className="my-5 w-75 m-auto">
           <InputBox
             value={textInput}
-            placeholder="Type Your Query"
+            placeholder={placeholder}
             variant="standard"
             onInputChange={(e) => {
               if (textInput.length <= 199) setTextInput(e.target.value);

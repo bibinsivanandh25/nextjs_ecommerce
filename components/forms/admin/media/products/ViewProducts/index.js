@@ -167,6 +167,26 @@ const ViewProducts = ({ setShowViewProduct = () => {} }) => {
           />
         ),
       },
+      {
+        title: "Grouped Products",
+        component: (
+          <ProductPoliciesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Variations",
+        component: (
+          <ProductPoliciesForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
 
       {
         title: "Attributes",
@@ -179,7 +199,37 @@ const ViewProducts = ({ setShowViewProduct = () => {} }) => {
         ),
       },
       {
-        title: "Variation",
+        title: "Discounts",
+        component: (
+          <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Orders Summary",
+        component: (
+          <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Merged Product",
+        component: (
+          <VariationForm
+            formData={formData}
+            ref={formsRef}
+            setFormData={setFormData}
+          />
+        ),
+      },
+      {
+        title: "Logs",
         component: (
           <VariationForm
             formData={formData}

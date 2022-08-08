@@ -2,14 +2,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import styles from "./fixedmargin.module.css";
-import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
-import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
-import Updated from "@/forms/admin/products/fixedmargin/Updated";
-import Queries from "@/forms/admin/products/fixedmargin/Queries";
-import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
+import styles from "./zerocomission.module.css";
+import ProductsToApprove from "@/forms/admin/products/zerocomission/ProductsToApprove";
+import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
+import Updated from "@/forms/admin/products/zerocomission/Updated";
+import Queries from "@/forms/admin/products/zerocomission/Queries";
+import Rejected from "@/forms/admin/products/zerocomission/Rejected";
 
-const FixedMargin = () => {
+const ZeroComission = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const titles = [
@@ -310,4 +310,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default ZeroComission;
