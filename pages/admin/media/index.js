@@ -1,29 +1,19 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import styles from "./fixedmargin.module.css";
-import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
-import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
-import Updated from "@/forms/admin/products/fixedmargin/Updated";
-import Queries from "@/forms/admin/products/fixedmargin/Queries";
-import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
+import Articles from "@/forms/admin/media/articles";
+import styles from "./media.module.css";
+import Products from "@/forms/admin/media/products";
+import Logos from "@/forms/admin/media/logos";
 
-const FixedMargin = () => {
+const Media = () => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const titles = [
-    "Products to approve",
-    "Queries",
-    "Active",
-    "Update",
-    "Rejected",
-  ];
+  const titles = ["Articles", "Products", "Logos"];
 
-  const [rowsDataObjectsForApproval, setrowsDataObjectsForApproval] = useState([
+  const [rowsDataObjectsForArticles, setrowsDataObjectsForArticles] = useState([
     {
       id: 1,
-      col1: "#345345 SKM Tex",
+      col1: "1",
       col2: {
         imgSrc: [
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
@@ -33,14 +23,13 @@ const FixedMargin = () => {
         ],
         imgCount: 10,
       },
-      col3: "Show 20 words max",
+      col3: "Jpeg",
       col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 1200, mrpPrice: 1500 },
-      col9: "PUMA",
-      col10: "nothing",
+      col5: "--",
+      col6: "--",
+      col7: "--",
+      col8: "--",
+      col9: "nothing",
     },
     // {
     //   id: 2,
@@ -80,71 +69,29 @@ const FixedMargin = () => {
     // },
   ]);
 
-  const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([
+  const [rowsDataObjectsForProducts, setRowsDataObjectsForProducts] = useState([
     {
       id: 1,
-      col1: "01",
-      col2: "#ADJHAF",
+      col1: "1",
+      col2: "12123",
       col3: {
         imgSrc: [
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        ],
-        imgCount: 10,
-      },
-      col4: "20 Words Max",
-      col5: "#7817823ajhsd/ Some Buisness Name",
-      col6: "#8749289",
-      col7: 150,
-      col8: "150gm",
-      col9: "Levis",
-      col10: { salePrice: 1200, mrpPrice: 1500 },
-      col11: "Gym Equipments",
-      col12: "Latest Product",
-      col13: "10/11/2021",
-      col14: "10/11/2021",
-      col15: "nothing",
-    },
-  ]);
-
-  const [rowsDataObjectsForUpdated, setRowsDataObjectsForUpdated] = useState([
-    {
-      id: 1,
-      col1: "#FGAUJH",
-      col2: {
-        imgSrc: [
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        ],
-        imgCount: 10,
-      },
-      col3: "#FDHJHAB / Some Buisness Name",
-      col4: "Category/Subcategory",
-      col5: "Changed the Flag to Top Deal",
-      col6: "10/11/2021-23:42",
-      clo7: "Nothing",
-    },
-  ]);
-
-  const [rowsDataObjectsForQueries, setRowsDataObjectsForQueries] = useState([
-    {
-      id: 1,
-      col1: "#345345 SKM Tex",
-      col2: {
-        imgSrc: [
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
         ],
         imgCount: 10,
       },
-      col3: "Show 20 words max",
-      col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 1200, mrpPrice: 1500 },
-      col9: "PUMA",
-      col10: "nothing",
+      col4: "#213412323",
+      col5: "--",
+      col6: "--",
+      col7: "--",
+      col8: "--",
+      col9: "--",
+      col10: "--",
+      col11: "--",
+      col12: "nothing",
     },
     // {
     //   id: 2,
@@ -184,10 +131,10 @@ const FixedMargin = () => {
     // },
   ]);
 
-  const [rowsDataObjectsForRejected, setRowsDataObjectsForRejected] = useState([
+  const [rowsDataObjectsForLogos, setRowsDataObjectsForLogos] = useState([
     {
       id: 1,
-      col1: "#345345 SKM Tex",
+      col1: "1",
       col2: {
         imgSrc: [
           "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
@@ -197,14 +144,14 @@ const FixedMargin = () => {
         ],
         imgCount: 10,
       },
-      col3: "Show 20 words max",
-      col4: "--",
-      col5: "Gym Eqipment (10%) - Rowing Belt",
-      col6: "0.500gms/0.720gms",
-      col7: 150,
-      col8: { salePrice: 1200, mrpPrice: 1500 },
-      col9: "PUMA",
-      col10: "nothing",
+      col3: "Show 20 Words Max",
+      col4: "#--",
+      col5: "--",
+      col6: "--",
+      col7: "--",
+      col8: "--",
+      col9: "--",
+      col10: "--",
     },
     // {
     //   id: 2,
@@ -264,43 +211,27 @@ const FixedMargin = () => {
 
   return (
     <>
-      {" "}
       <Box>
         <Box className="d-flex mt-3">{returnTabs()}</Box>
         <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
           <Box className="px-1 pt-2">
             {activeTab === 0 && (
-              <ProductsToApprove
-                rowsDataObjectsForApproval={rowsDataObjectsForApproval}
-                setrowsDataObjectsForApproval={setrowsDataObjectsForApproval}
+              <Articles
+                rowsDataObjectsForArticles={rowsDataObjectsForArticles}
+                setrowsDataObjectsForArticles={setrowsDataObjectsForArticles}
               />
             )}
-
-            {activeTab === 4 && (
-              <Rejected
-                rowsDataObjectsForRejected={rowsDataObjectsForRejected}
-                setrowsDataObjectsForRejected={setRowsDataObjectsForRejected}
-              />
-            )}
-
             {activeTab === 1 && (
-              <Queries
-                rowsDataObjectsForQueries={rowsDataObjectsForQueries}
-                setrowsDataObjectsForQueries={setRowsDataObjectsForQueries}
+              <Products
+                rowsDataObjectsForProducts={rowsDataObjectsForProducts}
+                setrowsDataObjectsForProducts={setRowsDataObjectsForProducts}
               />
             )}
 
             {activeTab === 2 && (
-              <Active
-                rowsDataObjectsForActive={rowsDataObjectsForActive}
-                setRowsDataObjectsForActive={setRowsDataObjectsForActive}
-              />
-            )}
-
-            {activeTab === 3 && (
-              <Updated
-                rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
-                setRowsDataObjectsForUpdated={setRowsDataObjectsForUpdated}
+              <Logos
+                rowsDataObjectsForLogos={rowsDataObjectsForLogos}
+                setRowsDataObjectsForLogos={setRowsDataObjectsForLogos}
               />
             )}
           </Box>
@@ -310,4 +241,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default Media;
