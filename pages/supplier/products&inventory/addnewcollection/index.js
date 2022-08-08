@@ -5,6 +5,7 @@ import AttributesForm from "components/forms/supplier/products/newproductforms/A
 import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
 import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
 import { useEffect, useRef, useState } from "react";
+import ZoneCharges from "@/forms/supplier/products/newCollections/addzone";
 
 const NewProducts = () => {
   const formsRef = useRef(null);
@@ -58,7 +59,21 @@ const NewProducts = () => {
     grouped: {},
     variation: {},
     attribute: {},
+    zonecharge: {},
   });
+
+  const zonepagetabs = [
+    {
+      title: "Zone Charges",
+      component: (
+        <ZoneCharges
+          formData={formData}
+          ref={formsRef}
+          setFormData={setFormData}
+        />
+      ),
+    },
+  ];
   const [tabsList, setTabsList] = useState([
     {
       title: "Linked",
@@ -96,7 +111,8 @@ const NewProducts = () => {
         <VariationForm
           setShowGroupVariant={setShowGroupVariant}
           setFormData={setFormData}
-          formData={JSON.parse(JSON.stringify(formData))}
+          formData={formData}
+          ref={formsRef}
         />
       ),
     },
@@ -140,7 +156,8 @@ const NewProducts = () => {
           <VariationForm
             setShowGroupVariant={setShowGroupVariant}
             setFormData={setFormData}
-            formData={JSON.parse(JSON.stringify(formData))}
+            formData={formData}
+            ref={formsRef}
           />
         ),
       },
@@ -168,6 +185,7 @@ const NewProducts = () => {
         formsRef={formsRef}
         showGroupVariant={showGroupVariant}
         setShowGroupVariant={setShowGroupVariant}
+        zonepagetabs={zonepagetabs}
       />
     </Paper>
   );

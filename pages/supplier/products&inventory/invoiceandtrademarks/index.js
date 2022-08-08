@@ -129,10 +129,10 @@ const InvoiceAndTradeMarks = () => {
       <TableComponent
         tableRows={[...rows]}
         columns={[...columns]}
-        showCustomSearchButton
-        searchBarSizeMd={5}
-        customSearchButtonLabel="Upload Document"
-        onCustomSearchButtonClick={() => {
+        showCustomButton
+        showSearchFilter={false}
+        customButtonLabel="Upload Document"
+        onCustomButtonClick={() => {
           setShowUploadModal(true);
         }}
       />

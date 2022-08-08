@@ -139,6 +139,8 @@ const DeliveredOrders = () => {
           columns={columns}
           tableRows={tableRows}
           showCheckbox={false}
+          showCustomDropdown={false}
+          showSearchFilter={false}
           showSearchbar={false}
           showCustomButton
           customButtonLabel="Download All Orders"

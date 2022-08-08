@@ -162,6 +162,7 @@ const CancelledOrders = () => {
           columns={columns}
           tableRows={tableRows}
           showSearchbar={false}
+          showSearchFilter={false}
           showCheckbox={false}
           showCustomDropdown
           customDropdownLabel="Order Type"
