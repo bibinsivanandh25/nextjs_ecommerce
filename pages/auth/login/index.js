@@ -20,10 +20,12 @@ import {
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Link from "next/link";
+import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import logo from "../../../public/assets/favicon.png";
 import styles from "./Login.module.css";
+import { useRouter } from "next/router";
 
 const options = ["Supplier", "Reseller", "Customer"];
 
@@ -119,6 +121,7 @@ const Login = () => {
     password: "",
   });
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
+  const route = useRouter();
 
   const validateCredentials = () => {
     let flag = false;
@@ -182,6 +185,7 @@ const Login = () => {
     // loginCall({
     //   userName: formValues.user,
     //   password: formValues.password,
+    //   userType: options[selectedIndex],
     // });
     // if (data && !data?.data?.error) {
     //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
@@ -190,13 +194,19 @@ const Login = () => {
     // }
 
     if (!flag) {
-      signIn("credentials", {
+      const res = await signIn("credentials", {
         username: formValues.user,
         password: formValues.password,
-        role: options[selectedIndex],
+        userType: options[selectedIndex].toUpperCase(),
         roleId: selectedIndex,
         callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
+        redirect: false,
       });
+      if (res?.error) {
+        toastify("Invalid credentials", "error");
+        return null;
+      }
+      route.push(`/${getBasePath(options[selectedIndex])}/dashboard`);
     }
   };
 

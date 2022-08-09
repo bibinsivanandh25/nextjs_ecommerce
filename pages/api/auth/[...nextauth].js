@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import serviceUtil from "services/utils";
+import toastify from "services/utils/toastUtils";
 
 const options = {
   providers: [
@@ -33,6 +35,25 @@ const options = {
         //   return null;
         // }
         // }
+        // const payload = {
+        //   userName: credentials.username,
+        //   password: credentials.password,
+        //   userType: credentials.userType.toUpperCase(),
+        // };
+        // const { data } = await serviceUtil
+        //   .post(`auth/authenticate`, payload)
+        //   .then((res) => {
+        //     const datas = res && res.data;
+        //     return { datas };
+        //   })
+        //   .catch((err) => {
+        //     const errRes = err?.message;
+        //     toastify(errRes, "error");
+        //     throw Error(errRes);
+        //   });
+        // if (data) {
+        //   return data;
+        // }
         if (
           credentials.username === "admin@gmail.com" &&
           credentials.password === "Admin@123"
@@ -52,6 +73,7 @@ const options = {
 
   pages: {
     signIn: "/auth/login",
+    error: "/auth/login",
   },
   callbacks: {
     jwt: async ({ token, user }) => {
