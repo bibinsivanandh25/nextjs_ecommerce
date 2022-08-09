@@ -15,13 +15,20 @@ const DropDownWithAddNewOptions = ({
   margin = "",
   width = "",
   inputLabelShrink = false,
+  showOptions = false,
+  setshowOptions = () => {},
 }) => {
-  const [showOptions, setshowOptions] = useState(false);
-
+  const [selectedOption, setSelectedOption] = useState("");
   const returnOptions = () => {
     return options.map((val) => {
       return (
-        <Box className="ps-3 py-2 d-flex align-items-center  border-bottom border-1">
+        <Box
+          onClick={() => {
+            setSelectedOption(val);
+            if (inputLabelShrink) setshowOptions(false);
+          }}
+          className="ps-3 py-2 d-flex align-items-center cursor-pointer  border-bottom border-1"
+        >
           {showCheckBox && (
             <CheckBoxComponent
               checkBoxClick={onCheckBoxClick}
@@ -45,31 +52,41 @@ const DropDownWithAddNewOptions = ({
           }}
         >
           {inputLabelShrink && (
+            <Box>
+              <Typography
+                sx={{ bottom: 29, left: "1rem" }}
+                className="position-absolute bg-white h-5 color-gray border-gray"
+              >
+                {label}
+              </Typography>
+              <Typography
+                sx={{ top: 8, left: "50%", transform: "translateX(-50%)" }}
+                className="position-absolute bg-white color-gray border-gray"
+              >
+                {selectedOption}
+              </Typography>
+            </Box>
+          )}
+          {!inputLabelShrink && (
             <Typography
-              sx={{ bottom: 29, left: "1rem" }}
-              className="position-absolute bg-white h-5 color-gray border-gray"
+              sx={{ top: 8, left: "50%", transform: "translateX(-50%)" }}
+              className="position-absolute bg-white color-gray border-gray"
             >
               {label}
             </Typography>
           )}
-          <Typography
-            sx={{ top: 8, left: "50%", transform: "translateX(-50%)" }}
-            className="position-absolute bg-white color-gray border-gray"
-          >
-            {label}
-          </Typography>
           <Box className="d-flex w-100 h-100 justify-content-end align-items-cente cursor-pointer">
             <CustomIcon showColorOnHover={false} type="expandMore" />
           </Box>
         </Box>
         {showOptions && (
-          <Box className="position-absolute bg-white w-100 zIndex-1101">
+          <Box className="position-absolute mxh-150 overflow-auto bg-white w-100 zIndex-1101">
             <Box className="border rounded mt-1">
               <Typography
                 onClick={() => {
                   onAddClick();
                 }}
-                className="h-5 text-end color-orange border-bottom w-100 py-1 pe-1 cursor-pointer"
+                className="h-5 text-end position-sticky top-0 bg-white zIndex-1101 color-orange border-bottom w-100 py-1 pe-1 cursor-pointer"
               >
                 + {createAttribute}{" "}
               </Typography>

@@ -79,7 +79,7 @@ const Categories = () => {
 
   const onClickOfMenuItem = () => {};
 
-  const rowsDataObjectsForApproval = [
+  const rowsDataObjectsForCategoreis = [
     {
       id: 1,
       col1: "01",
@@ -96,7 +96,7 @@ const Categories = () => {
 
   const getTableRowsData = () => {
     const anArray = [];
-    rowsDataObjectsForApproval.forEach((val, index) => {
+    rowsDataObjectsForCategoreis.forEach((val, index) => {
       anArray.push({
         id: index + 1,
         col1: val.col1,

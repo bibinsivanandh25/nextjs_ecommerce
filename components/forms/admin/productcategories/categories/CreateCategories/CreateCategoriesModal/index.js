@@ -1,8 +1,19 @@
+/* eslint-disable no-shadow */
 import React, { useState } from "react";
 import { Box, Grid } from "@mui/material";
-import DropdownComponent from "@/atoms/DropdownComponent";
+import validateMessage from "constants/validateMessages";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+
+const errObj = {
+  priceRange: false,
+  comissionPercentage: false,
+  mmcProfitPercentage: false,
+  resellerProfitPercentage: false,
+  category: false,
+  comissionType: false,
+};
 
 const CreateCategoriesModal = ({
   openCreateNewCategories,
@@ -15,6 +26,8 @@ const CreateCategoriesModal = ({
     resellerProfitPercentage: "",
   });
 
+  const [error, setError] = useState(errObj);
+
   const onInputChange = (e) => {
     setCategoryDetails({
       ...categoryDetails,
@@ -23,6 +36,14 @@ const CreateCategoriesModal = ({
   };
 
   const handleCloseIconClick = () => {
+    setError({
+      priceRange: false,
+      comissionPercentage: false,
+      mmcProfitPercentage: false,
+      resellerProfitPercentage: false,
+      category: false,
+      comissionType: false,
+    });
     setCategoryDetails({
       priceRange: "",
       comissionPercentage: "",
@@ -30,6 +51,66 @@ const CreateCategoriesModal = ({
       resellerProfitPercentage: "",
     });
     setOpenCreateCategoriesModal(false);
+  };
+
+  const handleClearAll = () => {
+    setError({
+      priceRange: false,
+      comissionPercentage: false,
+      mmcProfitPercentage: false,
+      resellerProfitPercentage: false,
+      category: false,
+      comissionType: false,
+    });
+    setCategoryDetails({
+      priceRange: "",
+      comissionPercentage: "",
+      mmcProfitPercentage: "",
+      resellerProfitPercentage: "",
+    });
+  };
+
+  const handleError = () => {
+    let theError = false;
+    const errObj = {
+      priceRange: false,
+      comissionPercentage: false,
+      mmcProfitPercentage: false,
+      resellerProfitPercentage: false,
+      category: false,
+      comissionType: false,
+    };
+    const {
+      priceRange,
+      comissionPercentage,
+      mmcProfitPercentage,
+      resellerProfitPercentage,
+    } = categoryDetails;
+
+    if (priceRange === "") {
+      errObj.priceRange = true;
+      theError = true;
+    }
+    if (comissionPercentage === "") {
+      errObj.comissionPercentage = true;
+      theError = true;
+    }
+    if (mmcProfitPercentage === "") {
+      errObj.mmcProfitPercentage = true;
+      theError = true;
+    }
+    if (resellerProfitPercentage === "") {
+      errObj.resellerProfitPercentage = true;
+      theError = true;
+    }
+
+    return [theError, errObj];
+  };
+
+  const handleSaveBtnClick = () => {
+    const [theError, errObj] = handleError();
+    setError(errObj);
+    console.log(theError);
   };
 
   return (
@@ -47,15 +128,20 @@ const CreateCategoriesModal = ({
           handleCloseIconClick();
         }}
         onSaveBtnClick={() => {
-          //   handleSaveBtnClickOfEditModal();
+          handleSaveBtnClick();
         }}
         onClearBtnClick={() => {
-          //   handleClearAll();
+          handleClearAll();
         }}
       >
-        <Grid container columnSpacing={2} className="mt-4">
+        <Grid container columnSpacing={2} rowSpacing={2} className="mt-4">
           <Grid item xs={6}>
-            <DropdownComponent size="small" label="Category" />
+            <SimpleDropdownComponent
+              inputlabelshrink
+              list={[{ label: "1" }, { label: "2" }]}
+              size="small"
+              label="Category"
+            />
           </Grid>
           <Grid item xs={6}>
             <InputBox
@@ -64,10 +150,18 @@ const CreateCategoriesModal = ({
               inputlabelshrink
               label="Price Range"
               onInputChange={onInputChange}
+              error={error.priceRange}
+              helperText={
+                error.priceRange ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
-            <DropdownComponent size="small" label="Comission Type" />
+            <SimpleDropdownComponent
+              inputlabelshrink
+              size="small"
+              label="Comission Type"
+            />
           </Grid>
           <Grid item xs={6}>
             <InputBox
@@ -76,6 +170,10 @@ const CreateCategoriesModal = ({
               label="Comission Percentage"
               value={categoryDetails.comissionPercentage}
               onInputChange={onInputChange}
+              error={error.comissionPercentage}
+              helperText={
+                error.comissionPercentage ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -85,6 +183,10 @@ const CreateCategoriesModal = ({
               label="MMC Profit % Percentage"
               value={categoryDetails.mmcProfitPercentage}
               onInputChange={onInputChange}
+              error={error.mmcProfitPercentage}
+              helperText={
+                error.mmcProfitPercentage ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
@@ -94,6 +196,12 @@ const CreateCategoriesModal = ({
               label="Reseller Profit % Percentage"
               value={categoryDetails.resellerProfitPercentage}
               onInputChange={onInputChange}
+              error={error.resellerProfitPercentage}
+              helperText={
+                error.resellerProfitPercentage
+                  ? validateMessage.field_required
+                  : ""
+              }
             />
           </Grid>
         </Grid>
