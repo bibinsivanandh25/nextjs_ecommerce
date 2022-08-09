@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import { axiosInstance } from "../axiosConfig.js";
 
 const get = (url) => {
