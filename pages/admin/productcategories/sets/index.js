@@ -91,7 +91,7 @@ const Sets = () => {
         col4: val.col4,
         col5: (
           <Box className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" />
+            <CustomIcon type="view" className="fs-20" />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, index);

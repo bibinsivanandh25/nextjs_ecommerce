@@ -109,7 +109,7 @@ const Categories = () => {
         col8: val.col8,
         col9: (
           <Box className="d-flex justify-content-end align-items-center">
-            <CustomIcon type="view" />
+            <CustomIcon type="view" className="fs-20" />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, index);
