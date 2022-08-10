@@ -115,7 +115,10 @@ const Sets = () => {
     <>
       <Box>
         <Box className="px-1 pt-2">
-          <Paper className="overflow-auto hide-scrollbar pt-3 mnh-85vh mxh-85vh">
+          <Paper
+            sx={{ height: "84vh" }}
+            className="overflow-auto hide-scrollbar pt-3"
+          >
             <TableComponent
               table_heading="Sets"
               columns={tableColumns}
