@@ -27,7 +27,10 @@ const CreateVariationModal = ({
   const [error, setError] = useState(errObj);
 
   const handleCloseIconClick = () => {
-    setVariationName("");
+    if (variationId === null) {
+      setVariationName("");
+      setInputChips([]);
+    }
     setError({ variationName: false, variationAttributes: false });
     setOpenVariationModal(false);
   };

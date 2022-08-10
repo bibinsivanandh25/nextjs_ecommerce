@@ -86,11 +86,16 @@ const CreateCategories = ({ setShowCreateCategories }) => {
   }, [variations]);
 
   const ReturnAttribute = ({ attributeName }) => {
+    const [isChecked, setIsChecked] = useState(true);
     return (
       <CheckBoxComponent
         label={attributeName}
-        className="color-gray"
+        className="color-orange"
         lableFontSize="12px"
+        isChecked={isChecked}
+        checkBoxClick={() => {
+          setIsChecked(!isChecked);
+        }}
       />
     );
   };
