@@ -6,7 +6,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
-const errObj = {
+let errObj = {
   priceRange: false,
   comissionPercentage: false,
   mmcProfitPercentage: false,
@@ -20,6 +20,8 @@ const CreateCategoriesModal = ({
   setOpenCreateCategoriesModal,
 }) => {
   const [categoryDetails, setCategoryDetails] = useState({
+    category: {},
+    comissionType: {},
     priceRange: "",
     comissionPercentage: "",
     mmcProfitPercentage: "",
@@ -45,6 +47,8 @@ const CreateCategoriesModal = ({
       comissionType: false,
     });
     setCategoryDetails({
+      category: {},
+      comissionType: {},
       priceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
@@ -63,6 +67,8 @@ const CreateCategoriesModal = ({
       comissionType: false,
     });
     setCategoryDetails({
+      category: {},
+      comissionType: {},
       priceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
@@ -72,7 +78,7 @@ const CreateCategoriesModal = ({
 
   const handleError = () => {
     let theError = false;
-    const errObj = {
+    errObj = {
       priceRange: false,
       comissionPercentage: false,
       mmcProfitPercentage: false,
@@ -81,11 +87,16 @@ const CreateCategoriesModal = ({
       comissionType: false,
     };
     const {
+      category,
+      comissionType,
       priceRange,
       comissionPercentage,
       mmcProfitPercentage,
       resellerProfitPercentage,
     } = categoryDetails;
+
+    const categoryLength = Object.keys(category).length;
+    const comissionTypeLength = Object.keys(comissionType).length;
 
     if (priceRange === "") {
       errObj.priceRange = true;
@@ -101,6 +112,15 @@ const CreateCategoriesModal = ({
     }
     if (resellerProfitPercentage === "") {
       errObj.resellerProfitPercentage = true;
+      theError = true;
+    }
+
+    if (categoryLength === 0) {
+      errObj.category = true;
+      theError = true;
+    }
+    if (comissionTypeLength === 0) {
+      errObj.comissionType = true;
       theError = true;
     }
 
@@ -141,6 +161,13 @@ const CreateCategoriesModal = ({
               list={[{ label: "1" }, { label: "2" }]}
               size="small"
               label="Category"
+              onDropdownSelect={(val) => {
+                setCategoryDetails({
+                  ...categoryDetails,
+                  category: { label: val.label },
+                });
+              }}
+              helperText={error.category ? validateMessage.field_required : ""}
             />
           </Grid>
           <Grid item xs={6}>
@@ -158,9 +185,19 @@ const CreateCategoriesModal = ({
           </Grid>
           <Grid item xs={6}>
             <SimpleDropdownComponent
+              list={[{ label: "Type One" }, { label: "Type Two" }]}
               inputlabelshrink
               size="small"
               label="Comission Type"
+              onDropdownSelect={(val) => {
+                setCategoryDetails({
+                  ...categoryDetails,
+                  comissionType: { label: val.label },
+                });
+              }}
+              helperText={
+                error.comissionType ? validateMessage.field_required : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>
