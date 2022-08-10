@@ -12,6 +12,7 @@ import CustomIcon from "services/iconUtils";
 import { useState } from "react";
 import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -287,7 +288,7 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
-                      route.push("/auth/login");
+                      signOut({ callbackUrl: "/auth/login" });
                     }}
                   >
                     Sign Out
