@@ -99,7 +99,7 @@ const CreateSetModal = ({
           size="small"
           onDropdownSelect={(value) => {
             console.log(setDetails);
-            setSetDetails({ ...setDetails, category: { label: value.label } });
+            setSetDetails({ ...setDetails, category: { label: value?.label } });
           }}
           value={setDetails?.category}
           className="mt-3"
