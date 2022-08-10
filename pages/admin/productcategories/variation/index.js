@@ -10,6 +10,9 @@ const Variation = () => {
   const [subCategoryData, setSubCategoryData] = useState([]);
   const [variationTitleData, setVariationTitleData] = useState([]);
   const [optionsData, setOptionsData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const [parentCategory /* , setParentCategory */] = useState([
     { label: "Apparel - Sarees and Dress Materials", id: 1, isSelected: false },
     { label: "Kitchen Items", id: 2, isSelected: false },
@@ -223,6 +226,36 @@ const Variation = () => {
     }
   };
 
+  const handleStartDate = (val) => {
+    const theStartDateValue = new Date(val);
+    if (endDate) {
+      const startDateTime = theStartDateValue.getTime();
+      const endDateTime = new Date(endDate).getTime();
+      if (startDateTime > endDateTime) {
+        setStartDate("");
+      } else {
+        setStartDate(val);
+      }
+    } else {
+      setStartDate(val);
+    }
+  };
+
+  const handleEndDate = (val) => {
+    const theEndDateValue = new Date(val);
+    if (startDate) {
+      const endDateTime = theEndDateValue.getTime();
+      const startDateTime = new Date(startDate).getTime();
+      if (startDateTime > endDateTime) {
+        setEndDate("");
+      } else {
+        setEndDate(val);
+      }
+    } else {
+      setEndDate(val);
+    }
+  };
+
   return (
     <Box>
       <Paper className="overflow-auto hide-scrollbar p-3 mnh-85vh mxh-85vh">
@@ -233,11 +266,21 @@ const Variation = () => {
           <Box className="d-flex">
             <Box className="d-flex align-items-center">
               <Typography className="h-5 fw-bold">From Date: </Typography>
-              <CustomDatePickerComponent />
+              <CustomDatePickerComponent
+                onDateChange={(val) => {
+                  handleStartDate(val);
+                }}
+                value={startDate}
+              />
             </Box>
             <Box className="d-flex ms-4 align-items-center">
               <Typography className="h-5 fw-bold">To Date: </Typography>
-              <CustomDatePickerComponent />
+              <CustomDatePickerComponent
+                onDateChange={(val) => {
+                  handleEndDate(val);
+                }}
+                value={endDate}
+              />
             </Box>
           </Box>
         </Box>
