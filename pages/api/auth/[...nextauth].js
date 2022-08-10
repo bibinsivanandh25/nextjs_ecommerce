@@ -49,11 +49,10 @@ const options = {
           const decoded = jwt_decode(token);
           const userData = decoded.sub.split(",");
           return {
-            id: {
-              userId: userData[0],
-              email: userData[1],
-              role: decoded.roles[0],
-            },
+            id: userData[0],
+            email: userData[1],
+            role: decoded.roles[0],
+            token,
           };
         }
         return null;
@@ -82,16 +81,19 @@ const options = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id;
-        token.user = user;
+        token.user = {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        };
+        token.token = user.token;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token?.id) {
-        session.id = token.id;
         session.user = token.user;
       }
-      console.log(session, "session");
       return session;
     },
 
