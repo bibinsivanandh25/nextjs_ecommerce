@@ -49,8 +49,7 @@ const options = {
           const decoded = jwt_decode(token);
           const userData = decoded.sub.split(",");
           return {
-            id: userData[0],
-            user: {
+            id: {
               userId: userData[0],
               email: userData[1],
               role: decoded.roles[0],
@@ -80,23 +79,19 @@ const options = {
     error: "/auth/login",
   },
   callbacks: {
-    jwt: async ({ token }) => {
-      // console.log(user, "-=============");
-
-      if (token) {
-        return token;
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.user = user;
       }
-      return null;
+      return token;
     },
     session: ({ session, token }) => {
-      console.log(token, "------------");
-      console.log(session, "============");
-
       if (token?.id) {
-        // session.id = token.id;
+        session.id = token.id;
         session.user = token.user;
       }
-
+      console.log(session, "session");
       return session;
     },
 
