@@ -10,6 +10,7 @@ import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
+import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import {
@@ -19,6 +20,7 @@ import {
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import { FaLaptopHouse } from "react-icons/fa";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -31,6 +33,7 @@ const ProductsLayout = ({
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
@@ -58,6 +61,8 @@ const ProductsLayout = ({
     genericradio: false,
     b2bdocument: {},
     b2bdocumentfile: [],
+    setsValue: {},
+    subCategoryValue: {},
   });
   const [errorObj, setErrorObj] = useState({
     commision_mode: "",
@@ -77,9 +82,12 @@ const ProductsLayout = ({
     selectb2binvoice: "",
     category: null,
   });
-
+  const [errorCategoryObj, setErrorCategoryObj] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
+  const [categoryData, setCategoryData] = useState([]);
+  const [setsData, setSetsData] = useState([]);
+  const [subCategoryData, setSubCategoryData] = useState([]);
   useEffect(() => {
     if (mainFormData.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
@@ -91,6 +99,79 @@ const ProductsLayout = ({
     });
   }, [mainFormData.category]);
 
+  // Select Category Api
+  const getSelectCategoryData = () => {
+    axios
+      .get(
+        "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
+      )
+      .then((res) => {
+        const { data } = res.data;
+        const finaData = [];
+        data.forEach((item) => {
+          finaData.push({
+            id: item.mainCategoryId,
+            value: item.mainCategoryName,
+            label: item.mainCategoryName,
+          });
+        });
+        setCategoryData(finaData);
+      })
+      .catch((err) => {
+        toastify(err.response.data.message, "error");
+      });
+  };
+  useEffect(() => {
+    getSelectCategoryData();
+  }, []);
+  useEffect(() => {
+    if (mainFormData.category?.value) {
+      axios
+        .get(
+          `http://10.10.31.116:8100/api/v1/products/category-set-enabled/drop-down-list?mainCategoryId=${mainFormData.category.id}`
+        )
+        .then((res) => {
+          const { data } = res.data;
+          const finaData = [];
+          data.forEach((item) => {
+            finaData.push({
+              id: item.categorySetId,
+              value: item.setName,
+              label: item.setName,
+            });
+          });
+          setSetsData(finaData);
+        })
+        .catch((err) => {
+          toastify(err.response.data.message, "error");
+        });
+    }
+  }, [mainFormData.category]);
+  useEffect(() => {
+    if (mainFormData.setsValue?.value) {
+      axios
+        .get(
+          `http://10.10.31.116:8100/api/v1/products/sub-category/drop-down-list?setId=${mainFormData.setsValue.id}`
+        )
+        .then((res) => {
+          console.log(res);
+          const { data } = res.data;
+          const finaData = [];
+          data.forEach((item) => {
+            finaData.push({
+              id: item.subCategoryId,
+              value: item.subCategoryName,
+              label: item.subCategoryName,
+            });
+          });
+          setSubCategoryData(finaData);
+        })
+        .catch((err) => {
+          setSubCategoryData([]);
+          toastify(err.response.data.message, "error");
+        });
+    }
+  }, [mainFormData.setsValue]);
   const validateForm = () => {
     const errObj = {
       commision_mode: "",
@@ -193,6 +274,30 @@ const ProductsLayout = ({
     setMainFormData((prev) => {
       return { ...prev, [key]: value };
     });
+  };
+
+  const handleCategoryModalClose = () => {
+    setShowCategoryModal(false);
+    setSetsData([]);
+    setSubCategoryData([]);
+  };
+  const handleCategorySubmitClick = () => {
+    const errObj = {
+      setsValue: false,
+      subCategoryValue: false,
+    };
+    let flag = false;
+    if (mainFormData.setsValue === null) {
+      errObj.category = validateMessage.field_required;
+      flag = true;
+    }
+    if (mainFormData.subCategoryValue === null) {
+      errObj.subCategoryValue = validateMessage.field_required;
+      flag = true;
+    }
+    if (!flag) {
+      setShowCategoryModal(true);
+    }
   };
   return (
     <>
@@ -338,7 +443,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={product_type}
+                    list={categoryData}
                     id="category"
                     label="Select Category"
                     size="small"
@@ -347,6 +452,14 @@ const ProductsLayout = ({
                     helperText={errorObj.category}
                     onDropdownSelect={(value) => {
                       handleDropdownChange(value, "category");
+                      if (value) {
+                        setShowCategoryModal(true);
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          setsValue: {},
+                          subCategoryValue: {},
+                        }));
+                      }
                     }}
                     value={mainFormData.category}
                     placeholder="Select Category"
@@ -675,6 +788,65 @@ const ProductsLayout = ({
           />
         </Box>
       </ModalComponent>
+      {showCategoryModal && (
+        <ModalComponent
+          open={showCategoryModal}
+          onCloseIconClick={() => {
+            handleCategoryModalClose();
+          }}
+          ModalTitle=""
+          headerBorder=""
+          showPositionedClose
+          showCloseIcon={false}
+          footerClassName="justify-content-end"
+          saveBtnText="Submit"
+          ClearBtnText="Close"
+          ModalWidth={700}
+          onClearBtnClick={() => {
+            handleCategoryModalClose();
+          }}
+          onSaveBtnClick={() => {
+            handleCategorySubmitClick();
+          }}
+        >
+          <Box>
+            <Box className="d-flex align-items-center">
+              <Typography className="h-5">Category Name : &nbsp;</Typography>
+              <Typography className="h-5 fw-bold">
+                {mainFormData.category.value.toUpperCase()}
+              </Typography>
+            </Box>
+            <Grid container spacing={2} className="my-2">
+              <Grid item md={6}>
+                <SimpleDropdownComponent
+                  list={setsData}
+                  size="small"
+                  placeholder="Select Sets"
+                  label="Select Sets"
+                  inputlabelshrink
+                  value={mainFormData.setsValue}
+                  onDropdownSelect={(value) => {
+                    handleDropdownChange(value, "setsValue");
+                  }}
+                />
+              </Grid>
+              <Grid item md={6}>
+                <SimpleDropdownComponent
+                  list={subCategoryData}
+                  size="small"
+                  placeholder="Select Sub-Category"
+                  label="Select Sub-Category"
+                  inputlabelshrink
+                  value={mainFormData.subCategoryValue}
+                  onDropdownSelect={(value) => {
+                    handleDropdownChange(value, "subCategoryValue");
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </ModalComponent>
+      )}
     </>
   );
 };

@@ -81,7 +81,7 @@ const SideBarComponent = ({ children }) => {
   }));
   const getBasePath = (role) => {
     switch (role) {
-      case "Supplier":
+      case "SUPPLIER":
         return "supplier";
       case "Reseller":
         return "reseller";
@@ -132,7 +132,7 @@ const SideBarComponent = ({ children }) => {
         ],
       };
     };
-    const tempList = role === "Supplier" ? supplierMenu : resellerMenu;
+    const tempList = role === "SUPPLIER" ? supplierMenu : resellerMenu;
     const list = [...tempList].map((item, index) => {
       return addId(index, item, `/${getBasePath(role)}`);
     });
@@ -145,7 +145,7 @@ const SideBarComponent = ({ children }) => {
   const [open, setOpen] = useState(false);
   // const [path, setPath] = useState(route.pathname);
   const [menuList, setMenuList] = useState([
-    ...mapList(session?.user?.role || "customer"),
+    ...mapList(session?.user?.id?.role || "customer"),
   ]);
   const itemRef = React.useRef(null);
 
@@ -160,7 +160,7 @@ const SideBarComponent = ({ children }) => {
   }, [menuList]);
   useMemo(() => {
     if (session && session.user) {
-      setMenuList([...mapList(session.user.role)]);
+      setMenuList([...mapList(session.user?.id?.role)]);
     }
   }, [session]);
   const handleDrawerOpen = () => {

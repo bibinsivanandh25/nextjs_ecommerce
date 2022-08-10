@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 // import { providers, signIn, getSession, csrfToken } from "next-auth/client";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -22,10 +23,10 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Link from "next/link";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
+import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import logo from "../../../public/assets/favicon.png";
 import styles from "./Login.module.css";
-import { useRouter } from "next/router";
 
 const options = ["Supplier", "Reseller", "Customer"];
 
@@ -115,7 +116,7 @@ const SelectComponent = ({
 };
 
 const Login = () => {
-  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [formValues, setFormValues] = useState({
     user: "",
     password: "",
@@ -197,7 +198,7 @@ const Login = () => {
       const res = await signIn("credentials", {
         username: formValues.user,
         password: formValues.password,
-        userType: options[selectedIndex].toUpperCase(),
+        role: options[selectedIndex],
         roleId: selectedIndex,
         callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
         redirect: false,

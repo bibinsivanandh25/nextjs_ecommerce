@@ -9,10 +9,15 @@ import {
   TableContainer,
   TableBody,
 } from "@mui/material";
-import React from "react";
+// import { useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+// import { useUserInfo } from "services/hooks";
 import CustomIcon from "services/iconUtils";
+import serviceUtil from "services/utils";
+// import * as jwt_decode from "jwt-decode";
 
 const CustomTableComponent = ({ columns = [], rows = [] }) => {
+  // console.log(jwt_decode())
   return (
     <TableContainer>
       <Table>
@@ -59,6 +64,14 @@ const CustomTableComponent = ({ columns = [], rows = [] }) => {
 };
 
 const Dashboard = () => {
+  // useEffect(() => {
+  //   serviceUtil
+  //     .get("/home")
+  //     .then((data) => {})
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
   const performance = {
     columns: [
       {
