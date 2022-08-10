@@ -1,17 +1,13 @@
 /* eslint-disable no-param-reassign */
+import axios from "axios";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
+import * as jwt_decode from "jwt-decode";
 
 const options = {
   providers: [
     CredentialsProvider({
-      // name: "Credentials",
-      // credentials: {
-      //   username: { label: "UserName", type: "text" },
-      //   password: { label: "Password", type: "password" },
-      // },
       async authorize(credentials) {
         // if (credentials.username && credentials.password) {
         //   const { data, errRes } = await axios
@@ -35,38 +31,46 @@ const options = {
         //   return null;
         // }
         // }
-        // const payload = {
-        //   userName: credentials.username,
-        //   password: credentials.password,
-        //   userType: credentials.userType.toUpperCase(),
-        // };
-        // const { data } = await serviceUtil
-        //   .post(`auth/authenticate`, payload)
-        //   .then((res) => {
-        //     const datas = res && res.data;
-        //     return { datas };
-        //   })
-        //   .catch((err) => {
-        //     const errRes = err?.message;
-        //     toastify(errRes, "error");
-        //     throw Error(errRes);
-        //   });
-        // if (data) {
-        //   return data;
-        // }
-        if (
-          credentials.username === "admin@gmail.com" &&
-          credentials.password === "Admin@123"
-        ) {
+        const payload = {
+          userName: credentials.username,
+          password: credentials.password,
+          userType: credentials.role.toUpperCase(),
+        };
+
+        const { data } = await axios
+          .post(`http://10.10.31.116:8001/api/v1/auth/authenticate`, payload)
+          .catch((err) => {
+            const errRes = err.response.data?.message;
+            toastify(errRes, "error");
+            throw Error(errRes);
+          });
+        if (data) {
+          const { token } = data;
+          const decoded = jwt_decode(token);
+          const userData = decoded.sub.split(",");
           return {
-            id: 20,
-            name: "suhilkm",
-            email: "suhil@gmail.com",
-            role: credentials.role,
-            roleId: credentials.roleId,
+            id: userData[0],
+            user: {
+              userId: userData[0],
+              email: userData[1],
+              role: decoded.roles[0],
+            },
           };
         }
         return null;
+        // if (
+        //   credentials.username === "admin@gmail.com" &&
+        //   credentials.password === "Admin@123"
+        // ) {
+        //   return {
+        //     id: 20,
+        //     name: "suhilkm",
+        //     email: "suhil@gmail.com",
+        //     role: credentials.role,
+        //     roleId: credentials.roleId,
+        //   };
+        // }
+        // return null;
       },
     }),
   ],
@@ -76,26 +80,25 @@ const options = {
     error: "/auth/login",
   },
   callbacks: {
-    jwt: async ({ token, user }) => {
-      if (user) {
-        token.id = user.id;
-        token.user = user;
+    jwt: async ({ token }) => {
+      // console.log(user, "-=============");
+
+      if (token) {
+        return token;
       }
-      return token;
+      return null;
     },
     session: ({ session, token }) => {
+      console.log(token, "------------");
+      console.log(session, "============");
+
       if (token?.id) {
-        session.id = token.id;
+        // session.id = token.id;
         session.user = token.user;
       }
+
       return session;
     },
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   if (user.id) {
-    //     return "/";
-    //   }
-    //   return "/loginerror";
-    // },
 
     redirect: async ({ url, baseUrl }) => {
       // Allows relative callback URLs

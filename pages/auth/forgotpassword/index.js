@@ -5,7 +5,9 @@ import AuthLayout from "components/organism/Layout/AuthLayout";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { getOtp, verifyOtp } from "services";
 import validationRegex from "services/utils/regexUtils";
+import toastify from "services/utils/toastUtils";
 // import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
@@ -19,8 +21,19 @@ const OtpLogIn = () => {
       setotp("xxxx");
     };
   }, []);
-  const handleSubmit = () => {
-    router.push("/auth/supplier/newpassword");
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("userName", user);
+    formData.append("otp", otp);
+    const { data, errRes } = await verifyOtp(formData);
+    if (data) {
+      router.push({
+        pathname: "/auth/supplier/newpassword",
+        query: { user },
+      });
+    } else if (errRes) {
+      toastify(errRes?.message, "error");
+    }
   };
 
   const validateForm = () => {
@@ -43,9 +56,18 @@ const OtpLogIn = () => {
     setError(errObj);
     return Boolean(errObj);
   };
-
-  const sendOTPclick = () => {
-    if (!validateForm()) setSubmitted(true);
+  const sendOTPclick = async () => {
+    if (!validateForm()) {
+      const formData = new FormData();
+      formData.append("userName", user);
+      formData.append("userType", "SUPPLIER");
+      const { data, errRes } = await getOtp(formData);
+      if (data) {
+        setSubmitted(true);
+      } else if (errRes) {
+        toastify(errRes?.message, "error");
+      }
+    }
   };
 
   return (
