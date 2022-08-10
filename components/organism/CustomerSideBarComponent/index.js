@@ -21,6 +21,7 @@ import { customerMenu } from "constants/navConstants";
 // import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Paper, Popper } from "@mui/material";
+import Footer from "components/customer/Footer";
 
 // const drawerWidth = 245;
 
@@ -74,8 +75,9 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "80px",
+        top: "88px",
         display: "flex",
+        height: `calc(100vh - 80px)`,
       }}
     >
       <CssBaseline />
@@ -203,7 +205,7 @@ const CustomerSideBarComponent = ({ children }) => {
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
-        className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
+        className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
         {showBreadCrumb && (
           <Box className="mb-2">
@@ -212,12 +214,13 @@ const CustomerSideBarComponent = ({ children }) => {
         )}
         <Box
           sx={{
-            maxHeight: "calc(100vh - 140px)",
+            maxHeight: "calc(100vh - 136px)",
             overflowY: "scroll",
           }}
           className="hide-scrollbar "
         >
           {updatedChildren}
+          <Footer />
         </Box>
       </Box>
 

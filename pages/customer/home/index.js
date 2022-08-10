@@ -13,6 +13,7 @@ import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 import HomeComponent from "@/forms/reseller/home";
+import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
@@ -107,6 +108,48 @@ const categories = [
     name: "Casual Shirt",
     image:
       "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
+  },
+];
+const articleData = [
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
+  },
+  {
+    content:
+      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
+    image: "",
   },
 ];
 
@@ -204,6 +247,12 @@ const Home = () => {
                   setShowCompareProducts={setShowCompareProducts}
                 />
               </Box>
+              <Box className="my-3 d-flex justify-content-center">
+                <Typography className="h-4 fw-bold mx-auto">
+                  Articles
+                </Typography>
+              </Box>
+              <Articles articleData={articleData} />
             </Box>
           ) : (
             <ComapareProducts
