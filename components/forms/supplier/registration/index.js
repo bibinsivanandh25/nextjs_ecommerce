@@ -192,7 +192,7 @@ const RegistrationForm = ({
           />
         </Grid>
         <Grid container item md={12}>
-          <Grid container item md={4}>
+          <Grid container item md={4} alignItems="center">
             <Grid item md={12} className="fw-700">
               Average Stock Count :
             </Grid>
@@ -246,7 +246,7 @@ const RegistrationForm = ({
               </Grid>
             ) : null}
           </Grid>
-          <Grid container item md={4}>
+          <Grid container item md={4} alignItems="center">
             <Grid item md={12} className="fw-700">
               Which website do you sell on?
             </Grid>

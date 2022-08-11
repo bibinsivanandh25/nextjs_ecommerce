@@ -9,6 +9,9 @@ const nextConfig = {
   images: {
     domains: ["fakestoreapi.com", "mrmrscart.s3.ap-south-1.amazonaws.com"],
   },
+  env: {
+    DOMAIN: process.env.DOMAIN,
+  },
   async redirects() {
     return [
       {

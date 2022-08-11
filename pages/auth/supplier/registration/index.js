@@ -3,8 +3,12 @@ import ModalComponent from "components/atoms/ModalComponent";
 import RegistrationForm from "components/forms/supplier/registration";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
+import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
+import toastify from "services/utils/toastUtils";
 import styles from "./Registration.module.css";
+import VerifyOTP from "@/forms/auth/VerifyOTP";
 
 const Registration = () => {
   const formObj = {
@@ -23,8 +27,11 @@ const Registration = () => {
   };
   const [formValues, setFormValues] = useState(formObj);
   const [errorObj, setErrorObj] = useState({ ...formObj });
-  const [showModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showVerifyOTP, setShowVerifyOTP] = useState(false);
+  const [registrationPayLoad, setRegistrationPayLoad] = useState({});
 
+  const route = useRouter();
   const validateForm = () => {
     let flag = false;
     const errObj = { ...formObj };
@@ -93,46 +100,51 @@ const Registration = () => {
     setErrorObj({ ...errObj });
     return flag;
   };
-
   const handleSubmit = async () => {
     const flag = validateForm();
     if (!flag) {
-      // const payload = {
-      //   firstName: formValues.firstName,
-      //   lastName: formValues.lastName,
-      //   businessName: formValues.businessName,
-      //   email: formValues.mail,
-      //   mobileNumber: formValues.mobile,
-      //   city: formValues.city,
-      //   gstin: formValues.gstin,
-      //   role: "SUPPLIER",
-      //   averageStockCount: formValues.stockCount,
-      //   website: formValues.site,
-      //   websiteLink: formValues.siteLink,
-      //   categoryData: [
-      //     {
-      //       categoryId: formValues.mainCat.value,
-      //       categoryName: formValues.mainCat.id,
-      //     },
-      //   ],
-      // };
-      // const { data, errRes } = await axios
-      //   .post(`${process.env.baseUrl}user-management/supplier-register`, payload)
-      //   .then((res) => {
-      //     const data = res && res.data;
-      //     return { data };
-      //   })
-      //   .catch((err) => {
-      //     const errRes = err?.response?.data;
-      //     return { errRes };
-      //   });
-      // // const { data, errRes } = await supplierRegister(payload);
-      // if (data) {
-      //   setShowModal(true);
-      //   console.log(data);
-      // } else if (errRes) {
-      //   console.log(errRes);
-      // }
+      const payload = {
+        businessName: formValues.businessName,
+        emailId: formValues.mail,
+        mobileNumber: formValues.mobile,
+        gstin: formValues.gstin,
+        avgStockCount: formValues.stockCount,
+        mainCategories: "Footwear",
+        websiteName: formValues.site,
+        profileImageUrl: null,
+        websiteLink: formValues.siteLink,
+        city: formValues.city.value,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        supplierReferralCode: "",
+        wished: false,
+      };
+      await serviceUtil
+        .post(
+          `users/registration/send-otp/?mobileNumber=${
+            formValues.mobile
+          }&userType=${route.pathname.split("/")[2].toUpperCase()}`
+          // {
+          //   mobileNumber: ,
+          //   userType: route.pathname.split("/")[2].toUpperCase(),
+          // },
+          // {
+          //   "Content-Type": "multipart/form-data",
+          // }
+          // mobileNumber:formValues.
+        )
+        .then((data) => {
+          // if (data) {
+          toastify(data.message, "success");
+          setShowVerifyOTP(true);
+          setRegistrationPayLoad({ ...payload });
+          // setShowModal(true);
+          // }
+        })
+        .catch((err) => {
+          toastify(err.response.data.message, "error");
+          console.log(err.response.data.message);
+        });
     }
   };
 
@@ -141,53 +153,64 @@ const Registration = () => {
       setFormValues(formObj);
     };
   }, []);
+
   return (
-    <Grid container spacing={2} className="">
-      <Grid item sm={12} className="mt-2">
-        <div
-          className={`${styles.imgContainer} mx-2 d-flex flex-column justify-content-center align-items-center`}
-        >
-          <Typography variant="h3" className="color-orange text-center">
-            Supplier Registration
-          </Typography>
-          <Box className="w-50 mx-auto mt-2">
-            {" "}
-            <Typography className="text-white text-center h-5">
-              Change Your Ordinary Store To a Virtual Store. Let Customer Have a
-              Visibility of All Products You Have For Selling. Register With Us
-              And You Are Free From Commission For Your First 50 Orders. Happy
-              Selling Grow Your Income.
-            </Typography>
-          </Box>
-        </div>
-      </Grid>
-      <Grid item sm={12} className="d-flex justify-content-center ">
-        <RegistrationForm
-          formValues={formValues}
-          setFormValues={setFormValues}
-          handleSubmit={handleSubmit}
-          errorObj={errorObj}
+    <>
+      {!showVerifyOTP ? (
+        <Grid container spacing={2} className="">
+          <Grid item sm={12} className="mt-2">
+            <div
+              className={`${styles.imgContainer} mx-2 d-flex flex-column justify-content-center align-items-center`}
+            >
+              <Typography variant="h3" className="color-orange text-center">
+                Supplier Registration
+              </Typography>
+              <Box className="w-50 mx-auto mt-2">
+                {" "}
+                <Typography className="text-white text-center h-5">
+                  Change Your Ordinary Store To a Virtual Store. Let Customer
+                  Have a Visibility of All Products You Have For Selling.
+                  Register With Us And You Are Free From Commission For Your
+                  First 50 Orders. Happy Selling Grow Your Income.
+                </Typography>
+              </Box>
+            </div>
+          </Grid>
+          <Grid item sm={12} className="d-flex justify-content-center ">
+            <RegistrationForm
+              formValues={formValues}
+              setFormValues={setFormValues}
+              handleSubmit={handleSubmit}
+              errorObj={errorObj}
+            />
+          </Grid>
+          <ModalComponent
+            ModalTitle=""
+            showFooter={false}
+            showHeader={false}
+            showClearBtn={false}
+            showCloseIcon={false}
+            showSaveBtn={false}
+            open={showModal}
+            ModalWidth={350}
+          >
+            <div className="text-center">
+              <div className={styles.modalImgContainer} />
+              <Typography className="my-2 fw-600">
+                A mail has been delivered. A link to create a password will be
+                sent to you once the verification is finished.
+              </Typography>
+            </div>
+          </ModalComponent>
+        </Grid>
+      ) : (
+        <VerifyOTP
+          payLoad={registrationPayLoad}
+          setShowVerifyOTP={setShowVerifyOTP}
+          setShowModal={setShowModal}
         />
-      </Grid>
-      <ModalComponent
-        ModalTitle=""
-        showFooter={false}
-        showHeader={false}
-        showClearBtn={false}
-        showCloseIcon={false}
-        showSaveBtn={false}
-        open={showModal}
-        ModalWidth={350}
-      >
-        <div className="text-center">
-          <div className={styles.modalImgContainer} />
-          <Typography className="my-2 fw-600">
-            We have sent a mail. Once the varification is complete we will send
-            login credential
-          </Typography>
-        </div>
-      </ModalComponent>
-    </Grid>
+      )}
+    </>
   );
 };
 export default Registration;
