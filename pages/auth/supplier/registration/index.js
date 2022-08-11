@@ -119,29 +119,32 @@ const Registration = () => {
         supplierReferralCode: "",
         wished: false,
       };
-
-      const { data, err } = await serviceUtil.post(
-        `users/registration/send-otp/?mobileNumber=${
-          formValues.mobile
-        }&userType=${route.pathname.split("/")[2].toUpperCase()}`
-        // {
-        //   mobileNumber: ,
-        //   userType: route.pathname.split("/")[2].toUpperCase(),
-        // },
-        // {
-        //   "Content-Type": "multipart/form-data",
-        // }
-        // mobileNumber:formValues.
-      );
-      if (data) {
-        console.log(data, "data");
-        toastify(data.message, "success");
-        setShowVerifyOTP(true);
-        setRegistrationPayLoad({ ...payload });
-        // setShowModal(true);
-      } else if (err) {
-        console.log(err);
-      }
+      await serviceUtil
+        .post(
+          `users/registration/send-otp/?mobileNumber=${
+            formValues.mobile
+          }&userType=${route.pathname.split("/")[2].toUpperCase()}`
+          // {
+          //   mobileNumber: ,
+          //   userType: route.pathname.split("/")[2].toUpperCase(),
+          // },
+          // {
+          //   "Content-Type": "multipart/form-data",
+          // }
+          // mobileNumber:formValues.
+        )
+        .then((data) => {
+          // if (data) {
+          toastify(data.message, "success");
+          setShowVerifyOTP(true);
+          setRegistrationPayLoad({ ...payload });
+          // setShowModal(true);
+          // }
+        })
+        .catch((err) => {
+          toastify(err.response.data.message, "error");
+          console.log(err.response.data.message);
+        });
     }
   };
 
