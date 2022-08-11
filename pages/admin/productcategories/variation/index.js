@@ -282,7 +282,7 @@ const Variation = () => {
                   }}
                   showSwitchComponent
                   showDeleteButton
-                  showRadioBtn
+                  // showRadioBtn
                 />
               </Grid>
             )}
@@ -294,7 +294,7 @@ const Variation = () => {
                   data={optionsData}
                   showSwitchComponent
                   showDeleteButton
-                  showCheckBox
+                  // showCheckBox
                 />
               </Grid>
             )}
