@@ -70,12 +70,13 @@ const NewPasswordForm = ({
           label="E-Mail Id / Mobile No."
           className="w-100 my-2"
           size="small"
-          onInputChange={(e) => {
-            setFormValues((prev) => ({
-              ...prev,
-              userId: e.target.value,
-            }));
-          }}
+          disabled
+          // onInputChange={(e) => {
+          //   setFormValues((prev) => ({
+          //     ...prev,
+          //     userId: e.target.value,
+          //   }));
+          // }}
           error={Boolean(error.userId)}
           helperText={error.userId}
           inputlabelshrink

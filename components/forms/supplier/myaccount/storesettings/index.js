@@ -243,10 +243,10 @@ const StoreSettings = () => {
                 <Typography className="h-5">Download QR Code</Typography>
               </Box>
               <Typography className="h-6">
-                Download & take printout of QR Code of your store.Stick in your
+                Download & take printout of QR Code of your store. Stick in your
                 shop. Ask your customer to download MrMrsCart app and scan the
-                QR code to add your store as their favorite store list and start
-                receving orders
+                QR code using the scanner to add this store as their favorite
+                store list and start receving orders
               </Typography>
             </Box>
           </Grid>
