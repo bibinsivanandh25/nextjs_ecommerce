@@ -59,33 +59,33 @@ const shipping_class = [
 ];
 const stock_status = [
   {
-    value: "active",
-    label: "Active",
+    value: "IN STOCK",
+    label: "IN STOCK",
   },
   {
-    value: "reject",
-    label: "Rejected",
+    value: "NOT IN STOCK",
+    label: "NOT IN STOCK",
   },
 ];
 const business_processing_days = [
   {
-    value: "oneBusinessDay",
+    value: "1",
     label: "1 business day",
   },
   {
-    value: "oneToTwoBusinessDay",
+    value: "1-2 days",
     label: "1-2 business days",
   },
   {
-    value: "oneToThreeBusinessDay",
+    value: "1-3 days",
     label: "1-3 business days",
   },
   {
-    value: "threeToFiveBusinessDay",
+    value: "3-5 days",
     label: "3-5 business days",
   },
   {
-    value: "oneToTwoWeeks",
+    value: "1-2 weeks",
     label: "1-2 weeks",
   },
 ];

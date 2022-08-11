@@ -13,7 +13,7 @@ const NewProducts = () => {
   const formsRef = useRef(null);
   const [formData, setFormData] = useState({
     mainform: {
-      commision_mode: "",
+      commision_mode: null,
       product_type: "",
       brand: "",
       short_description: {
@@ -25,11 +25,17 @@ const NewProducts = () => {
         text: "",
       },
       sub_category_id: "",
-      tags: "",
+      tags: {},
       limit_per_order: "",
       selectb2binvoice: null,
       tradeMarkCheck: false,
       category: {},
+      brandradio: true,
+      genericradio: false,
+      b2bdocument: {},
+      b2bdocumentfile: [],
+      setsValue: null,
+      subCategoryValue: null,
     },
     inventory: {
       sku: "",
@@ -120,6 +126,7 @@ const NewProducts = () => {
           formData={formData}
           ref={formsRef}
           setFormData={setFormData}
+          getFormData={() => JSON.parse(JSON.stringify(formData))}
         />
       ),
     },

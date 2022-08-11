@@ -15,10 +15,6 @@ import FileUploadModal from "components/atoms/FileUpload";
 import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
-import {
-  commisiondata,
-  product_type,
-} from "../../../../../constants/constants";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
@@ -61,8 +57,8 @@ const ProductsLayout = ({
     genericradio: false,
     b2bdocument: {},
     b2bdocumentfile: [],
-    setsValue: {},
-    subCategoryValue: {},
+    setsValue: null,
+    subCategoryValue: null,
   });
   const [errorObj, setErrorObj] = useState({
     commision_mode: "",
@@ -92,6 +88,7 @@ const ProductsLayout = ({
   const [b2bList, setB2bList] = useState([]);
   const [trademarkList, setTradeMarkList] = useState([]);
   const userInfo = useUserInfo();
+  const [modalErrObj, setModalErrObj] = useState({});
 
   useEffect(() => {
     if (mainFormData.category?.value === "electronics") {
@@ -99,10 +96,12 @@ const ProductsLayout = ({
     } else {
       setTabsLists([...tabsList]);
     }
+  }, [mainFormData.category]);
+  useEffect(() => {
     setFormData((pre) => {
       return { ...pre, mainFormData };
     });
-  }, [mainFormData.category]);
+  }, [mainFormData]);
 
   const getTags = () => {
     serviceUtil
@@ -329,20 +328,21 @@ const ProductsLayout = ({
   };
   const handleCategorySubmitClick = () => {
     const errObj = {
-      setsValue: false,
-      subCategoryValue: false,
+      setsValue: "",
+      subCategoryValue: "",
     };
     let flag = false;
-    if (mainFormData.setsValue === null) {
-      errObj.category = validateMessage.field_required;
+    if (!Object.keys(mainFormData.setsValue).length) {
+      errObj.setsValue = validateMessage.field_required;
       flag = true;
     }
-    if (mainFormData.subCategoryValue === null) {
+    if (!Object.keys(mainFormData.subCategoryValue).length) {
       errObj.subCategoryValue = validateMessage.field_required;
       flag = true;
     }
+    setModalErrObj(errObj);
     if (!flag) {
-      setShowCategoryModal(true);
+      handleCategoryModalClose();
     }
   };
 
@@ -420,19 +420,6 @@ const ProductsLayout = ({
           <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
-                {/* <Grid item md={12}>
-              <SimpleDropdownComponent
-                list={product_type}
-                id="producttype"
-                label="Product Type"
-                size="small"
-                value={mainFormData.product_type}
-                onDropdownSelect={(value) => {
-                  handleDropdownChange(value, "product_type");
-                }}
-                inputlabelshrink
-              />
-            </Grid> */}
                 <Grid item md={12}>
                   <InputBox
                     id="brand"
@@ -800,7 +787,7 @@ const ProductsLayout = ({
                 />
               ) : null}
               <ButtonComponent
-                label={activeTab === tabsList.length ? "Submit" : "Next"}
+                label={activeTab === tabsList.length - 1 ? "Submit" : "Next"}
                 size="small"
                 onBtnClick={
                   activeTab === tabsLists.length
@@ -880,6 +867,9 @@ const ProductsLayout = ({
           ClearBtnText="Close"
           ModalWidth={700}
           onClearBtnClick={() => {
+            setMainFormData((pre) => {
+              return { ...pre, setsValue: {}, subCategoryValue: {} };
+            });
             handleCategoryModalClose();
           }}
           onSaveBtnClick={() => {
@@ -905,6 +895,8 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "setsValue");
                   }}
+                  error={modalErrObj.setsValue !== ""}
+                  helperText={modalErrObj.setsValue}
                 />
               </Grid>
               <Grid item md={6}>
@@ -918,6 +910,8 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "subCategoryValue");
                   }}
+                  error={modalErrObj.subCategoryValue !== ""}
+                  helperText={modalErrObj.subCategoryValue}
                 />
               </Grid>
             </Grid>

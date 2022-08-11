@@ -26,7 +26,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     shipping_class: "",
     product_title: "",
     business_processing_days: null,
-    seo_title: "",
+    seo_title: [],
     meta_description: "",
     meta_keyword: [],
     modalname: "",
@@ -96,12 +96,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       errObj.business_processing_days = validateMessage.field_required;
     }
 
-    if (inventoryFormData.seo_title === "") {
+    if (!inventoryFormData.seo_title.length) {
       flag = true;
       errObj.seo_title = validateMessage.field_required;
-    } else if (inventoryFormData.seo_title.length > 100) {
-      flag = true;
-      errObj.seo_title = validateMessage.alpha_numeric_max_100;
     }
     if (inventoryFormData.meta_description === "") {
       flag = true;
@@ -151,6 +148,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       validate,
     };
   });
+
   return (
     <div className="w-100">
       <Grid container className="w-100" spacing={2}>
@@ -269,19 +267,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                 />
               </Grid>
             ) : null}
-            {/* <Grid item md={6}>
-              <InputBox
-                id="stock_qty"
-                label="Stock Qty"
-                onInputChange={handleInputChange}
-                value={inventoryFormData.stock_qty}
-                inputlabelshrink
-                type="number"
-                helperText={errorObj.stock_qty}
-                error={errorObj.stock_qty && errorObj.stock_qty !== ""}
-                placeholder="Enter stock quantity"
-              />
-            </Grid> */}
           </>
         ) : null}
         <Grid item md={12}>
@@ -337,12 +322,17 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
           />
         </Grid>
         <Grid item md={12}>
-          <InputBox
+          <InputFieldWithChip
             id="seo_title"
             label="SEO Title"
-            onInputChange={handleInputChange}
             value={inventoryFormData.seo_title}
             inputlabelshrink
+            handleChange={(_, val) => {
+              setInventoryFormData((pre) => ({
+                ...pre,
+                seo_title: [...val],
+              }));
+            }}
             helperText={errorObj.seo_title}
             error={errorObj.seo_title && errorObj.seo_title !== ""}
             placeholder="Enter SEO title"
