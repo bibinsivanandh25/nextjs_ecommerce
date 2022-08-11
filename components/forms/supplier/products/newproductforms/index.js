@@ -13,6 +13,7 @@ import toastify from "services/utils/toastUtils";
 import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
 import { useUserInfo } from "services/hooks";
+import serviceUtil from "services/utils";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import {
   commisiondata,
@@ -38,7 +39,6 @@ const ProductsLayout = ({
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
-  const [commisionData] = useState([...commisiondata]);
   const [mainFormData, setMainFormData] = useState({
     commision_mode: null,
     product_type: "",
@@ -103,8 +103,8 @@ const ProductsLayout = ({
   }, [mainFormData.category]);
 
   const getTags = () => {
-    axios
-      .get("http://10.10.31.116:8100/api/v1/products/product-tag")
+    serviceUtil
+      .get("products/product-tag")
       .then((res) => {
         const { data } = res.data;
         const temp = [];
@@ -117,16 +117,12 @@ const ProductsLayout = ({
         });
         setTagValues(temp);
       })
-      .catch((err) => {
-        toastify(err.response.data.message, "error");
-      });
+      .catch(() => {});
   };
   // Select Category Api
   const getSelectCategoryData = () => {
-    axios
-      .get(
-        "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
-      )
+    serviceUtil
+      .get("products/main-category/drop-down-list")
       .then((res) => {
         const { data } = res.data;
         const finaData = [];
@@ -135,13 +131,12 @@ const ProductsLayout = ({
             id: item.mainCategoryId,
             value: item.mainCategoryName,
             label: item.mainCategoryName,
+            commission_mode: item.commissionType,
           });
         });
         setCategoryData(finaData);
       })
-      .catch((err) => {
-        toastify(err.response.data.message, "error");
-      });
+      .catch(() => {});
   };
   useEffect(() => {
     getTags();
@@ -179,7 +174,6 @@ const ProductsLayout = ({
           `http://10.10.31.116:8100/api/v1/products/sub-category/drop-down-list?setId=${mainFormData.setsValue.id}`
         )
         .then((res) => {
-          console.log(res);
           const { data } = res.data;
           const finaData = [];
           data.forEach((item) => {
@@ -218,10 +212,10 @@ const ProductsLayout = ({
       category: "",
     };
     let flag = false;
-    if (mainFormData.commision_mode === null) {
-      errObj.commision_mode = validateMessage.field_required;
-      flag = true;
-    }
+    // if (mainFormData.commision_mode === null) {
+    //   errObj.commision_mode = validateMessage.field_required;
+    //   flag = true;
+    // }
     if (mainFormData.selectb2binvoice === null) {
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
@@ -328,12 +322,11 @@ const ProductsLayout = ({
   };
 
   const saveTag = async (payload) => {
-    await axios
-      .post("http://10.10.31.116:8100/api/v1/products/product-tag", payload, {
-        headers: { userId: userInfo.id },
-      })
+    await serviceUtil
+      .post("/products/product-tag", payload)
       .then((res) => {
         toastify(res.data.message, "success");
+        setTagInputValue("");
         setOpenModal(false);
       })
       .catch((err) => {
@@ -402,22 +395,6 @@ const ProductsLayout = ({
           <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
-                <Grid item md={12}>
-                  <SimpleDropdownComponent
-                    list={commisionData}
-                    id="commisionmode"
-                    label="Commision Mode"
-                    size="small"
-                    value={mainFormData.commision_mode}
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "commision_mode");
-                    }}
-                    inputlabelshrink
-                    error={errorObj.commision_mode !== ""}
-                    helperText={errorObj.commision_mode}
-                    placeholder="Select commission mode"
-                  />
-                </Grid>
                 {/* <Grid item md={12}>
               <SimpleDropdownComponent
                 list={product_type}
@@ -520,9 +497,27 @@ const ProductsLayout = ({
                           subCategoryValue: {},
                         }));
                       }
+                      setMainFormData((pre) => {
+                        return {
+                          ...pre,
+                          commision_mode: value?.commission_mode
+                            ? value.commission_mode
+                            : "",
+                        };
+                      });
                     }}
                     value={mainFormData.category}
                     placeholder="Select Category"
+                  />
+                </Grid>
+                <Grid item md={12}>
+                  <InputBox
+                    id="commisionmode"
+                    label="Commision Mode"
+                    value={mainFormData.commision_mode}
+                    placeholder="Commission Mode"
+                    inputlabelshrink
+                    disabled
                   />
                 </Grid>
                 <Grid item md={12}>
