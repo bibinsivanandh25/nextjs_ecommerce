@@ -56,19 +56,6 @@ const options = {
           };
         }
         return null;
-        // if (
-        //   credentials.username === "admin@gmail.com" &&
-        //   credentials.password === "Admin@123"
-        // ) {
-        //   return {
-        //     id: 20,
-        //     name: "suhilkm",
-        //     email: "suhil@gmail.com",
-        //     role: credentials.role,
-        //     roleId: credentials.roleId,
-        //   };
-        // }
-        // return null;
       },
     }),
   ],

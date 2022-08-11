@@ -12,6 +12,7 @@ import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
+import { useUserInfo } from "services/hooks";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import {
   commisiondata,
@@ -20,7 +21,6 @@ import {
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import { FaLaptopHouse } from "react-icons/fa";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -82,12 +82,15 @@ const ProductsLayout = ({
     selectb2binvoice: "",
     category: null,
   });
-  const [errorCategoryObj, setErrorCategoryObj] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
+  const [tagInputError, setTagInputError] = useState("");
+  const [tagValues, setTagValues] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [setsData, setSetsData] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState([]);
+  const userInfo = useUserInfo();
+
   useEffect(() => {
     if (mainFormData.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
@@ -99,6 +102,25 @@ const ProductsLayout = ({
     });
   }, [mainFormData.category]);
 
+  const getTags = () => {
+    axios
+      .get("http://10.10.31.116:8100/api/v1/products/product-tag")
+      .then((res) => {
+        const { data } = res.data;
+        const temp = [];
+        data.forEach((item) => {
+          temp.push({
+            id: item.tagId,
+            label: item.tagName,
+            value: item.tagName,
+          });
+        });
+        setTagValues(temp);
+      })
+      .catch((err) => {
+        toastify(err.response.data.message, "error");
+      });
+  };
   // Select Category Api
   const getSelectCategoryData = () => {
     axios
@@ -122,8 +144,10 @@ const ProductsLayout = ({
       });
   };
   useEffect(() => {
+    getTags();
     getSelectCategoryData();
   }, []);
+
   useEffect(() => {
     if (mainFormData.category?.value) {
       axios
@@ -147,6 +171,7 @@ const ProductsLayout = ({
         });
     }
   }, [mainFormData.category]);
+
   useEffect(() => {
     if (mainFormData.setsValue?.value) {
       axios
@@ -172,6 +197,7 @@ const ProductsLayout = ({
         });
     }
   }, [mainFormData.setsValue]);
+
   const validateForm = () => {
     const errObj = {
       commision_mode: "",
@@ -245,6 +271,7 @@ const ProductsLayout = ({
     }
     return !flag;
   };
+
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
     if (validateForm() && flag) {
@@ -297,6 +324,39 @@ const ProductsLayout = ({
     }
     if (!flag) {
       setShowCategoryModal(true);
+    }
+  };
+
+  const saveTag = async (payload) => {
+    await axios
+      .post("http://10.10.31.116:8100/api/v1/products/product-tag", payload, {
+        headers: { userId: userInfo.id },
+      })
+      .then((res) => {
+        toastify(res.data.message, "success");
+        setOpenModal(false);
+      })
+      .catch((err) => {
+        toastify(err.response.data.message, "error");
+      });
+  };
+
+  const handleTagSubmit = () => {
+    if (tagInputValue === "") {
+      setTagInputError(validateMessage.field_required);
+    } else if (tagInputValue.length < 3) {
+      setTagInputError(validateMessage.alpha_numeric_min_3);
+    } else if (tagInputValue.length > 15) {
+      setTagInputError(validateMessage.alpha_numeric_15);
+    } else if (!/^[a-zA-Z0-9#@$]+$/.test(tagInputValue)) {
+      setTagInputError("Only alpha numeric with '#, $, @' are allowed ");
+    } else {
+      setTagInputError("");
+      saveTag({
+        tagName: tagInputValue,
+        createdBy: userInfo.id,
+        createdByType: userInfo.role,
+      });
     }
   };
   return (
@@ -467,16 +527,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={[
-                      {
-                        value: "Simple Product",
-                        label: "Simple Product",
-                      },
-                      {
-                        value: "variable Product",
-                        label: "Variable Product",
-                      },
-                    ]}
+                    list={tagValues}
                     id="tags"
                     label="Tags"
                     size="small"
@@ -776,6 +827,7 @@ const ProductsLayout = ({
         onClearBtnClick={() => {
           setOpenModal(false);
         }}
+        onSaveBtnClick={handleTagSubmit}
       >
         <Box className="mt-4 w-75 mx-auto">
           <InputBox
@@ -785,6 +837,8 @@ const ProductsLayout = ({
             }}
             placeholder="Tag Name"
             value={tagInputValue}
+            error={tagInputError !== ""}
+            helperText={tagInputError}
           />
         </Box>
       </ModalComponent>
