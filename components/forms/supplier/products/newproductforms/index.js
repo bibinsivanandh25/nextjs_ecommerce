@@ -89,6 +89,8 @@ const ProductsLayout = ({
   const [categoryData, setCategoryData] = useState([]);
   const [setsData, setSetsData] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState([]);
+  const [b2bList, setB2bList] = useState([]);
+  const [trademarkList, setTradeMarkList] = useState([]);
   const userInfo = useUserInfo();
 
   useEffect(() => {
@@ -138,9 +140,32 @@ const ProductsLayout = ({
       })
       .catch(() => {});
   };
+  const getB2BTradmarkValues = (type) => {
+    serviceUtil
+      .get(
+        `products/supplier/product/trademark-invoice-dropdown?documentType=${type}&supplierId=${userInfo.id}`
+      )
+      .then((res) => {
+        if (type === "B2B_Invoice") {
+          setB2bList(() => {
+            return res.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                label: item.documentName,
+              };
+            });
+          });
+        } else {
+          setTradeMarkList();
+        }
+      })
+      .catch(() => {});
+  };
   useEffect(() => {
     getTags();
     getSelectCategoryData();
+    getB2BTradmarkValues("B2B_INVOICE");
   }, []);
 
   useEffect(() => {
@@ -566,7 +591,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={product_type}
+                    list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
                     size="small"
@@ -618,6 +643,9 @@ const ProductsLayout = ({
                     size="small"
                     isChecked={mainFormData.tradeMarkCheck}
                     checkBoxClick={() => {
+                      if (!mainFormData.tradeMarkCheck) {
+                        getB2BTradmarkValues("TRADEMARK_LETTER");
+                      }
                       setMainFormData((prev) => ({
                         ...prev,
                         tradeMarkCheck: !mainFormData.tradeMarkCheck,
@@ -637,7 +665,7 @@ const ProductsLayout = ({
                   <Grid item md={12}>
                     <SimpleDropdownComponent
                       label="Choose Documents"
-                      list={product_type}
+                      list={trademarkList}
                       id="b2bdocument"
                       size="small"
                       value={mainFormData.b2bdocument}
