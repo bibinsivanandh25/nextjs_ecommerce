@@ -41,6 +41,8 @@ const Newpassword = () => {
       });
     // setShowModal(true);
   };
+
+  console.log(router.query);
   return (
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">

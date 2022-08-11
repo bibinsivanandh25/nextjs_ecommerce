@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 import axios from "axios";
 import { config } from "dotenv";
-import { getSession, signIn } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
+// import { useUserInfo } from "./hooks";
 
 const baseURL = `${process.env.DOMAIN}/api/v1`;
 
@@ -14,11 +15,14 @@ const axiosInstance = axios.create({
 const setHeaders = (commmonHeaders) => {
   axiosInstance.defaults.headers.common = commmonHeaders;
 };
+// const user = useSession();
+// console.log(user, "askjhgasg");
 
 axiosInstance.interceptors.request.use((config) => {
   config.headers = {
     "Access-Control-Allow-Origin": "*",
     ...config.headers,
+    // userId,
   };
   return config;
 });
