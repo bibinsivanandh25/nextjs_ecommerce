@@ -1,9 +1,8 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
-import CustomIcon from "services/iconUtils";
+import ListGroupComponentCopy from "components/molecule/ListGroupComponentCopy";
 import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
-import SwitchComponent from "@/atoms/SwitchComponent";
 
 const Variation = () => {
   const [setData, setSetData] = useState([]);
@@ -37,41 +36,17 @@ const Variation = () => {
 
   const variationTitle = [
     {
-      label: (
-        <Box className="d-flex justify-content-between w-100 align-items-center">
-          <Typography className="h-5 me-5">Material 1</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
+      label: "Material 1",
       id: 1,
       isSelected: false,
     },
     {
-      label: (
-        <Box className="d-flex align-items-center">
-          <Typography className="h-5 me-5">Material 2</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
+      label: "Material 2",
       id: 2,
       isSelected: false,
     },
     {
-      label: (
-        <Box className="d-flex justify-content-between align-items-center">
-          <Typography className="h-5 me-5">Material 2.4</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
+      label: "Material 3",
       id: 2.4,
       isSelected: false,
     },
@@ -79,42 +54,18 @@ const Variation = () => {
 
   const options = [
     {
-      label: (
-        <Box className="d-flex justify-content-between w-100 align-items-center">
-          <Typography className="h-5 me-5">Material 1</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
+      label: "Material 1",
       id: 1,
       isSelected: false,
     },
     {
-      label: (
-        <Box className="d-flex align-items-center">
-          <Typography className="h-5 me-5">Material 2</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
+      label: "Material 2",
       id: 2,
       isSelected: false,
     },
     {
-      label: (
-        <Box className="d-flex justify-content-between align-items-center">
-          <Typography className="h-5 me-5">Material 2.4</Typography>
-          <Box className="d-flex align-items-center ms-5">
-            <SwitchComponent label="" />
-            <CustomIcon type="delete" />
-          </Box>
-        </Box>
-      ),
-      id: 2.4,
+      label: "Material 3",
+      id: 3,
       isSelected: false,
     },
   ];
@@ -322,25 +273,28 @@ const Variation = () => {
             )}
             {variationTitleData.length !== 0 && (
               <Grid item xs={2.4}>
-                <ListGroupComponent
+                <ListGroupComponentCopy
                   title="Variation Title"
                   titleClassName="fw-bold"
                   data={variationTitleData}
                   onSelectionChange={(selectedItem) => {
                     handleVariationTitleDataChange(selectedItem);
                   }}
+                  showSwitchComponent
+                  showDeleteButton
+                  showRadioBtn
                 />
               </Grid>
             )}
             {optionsData.length !== 0 && (
               <Grid item xs={2.4}>
-                <ListGroupComponent
+                <ListGroupComponentCopy
                   title="Options"
                   titleClassName="fw-bold"
                   data={optionsData}
-                  //   onSelectionChange={(selectedItem) => {
-                  //     handleSetChange(selectedItem);
-                  //   }}
+                  showSwitchComponent
+                  showDeleteButton
+                  showCheckBox
                 />
               </Grid>
             )}
