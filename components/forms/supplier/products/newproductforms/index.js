@@ -94,6 +94,9 @@ const ProductsLayout = ({
     } else {
       setTabsLists([...tabsList]);
     }
+    setFormData((pre) => {
+      return { ...pre, mainFormData };
+    });
   }, [mainFormData.category]);
 
   // Select Category Api
@@ -247,7 +250,10 @@ const ProductsLayout = ({
     if (validateForm() && flag) {
       const temp = formsRef.current.handleSendFormData();
       setFormData((prev) => {
-        return { ...prev, [temp[0]]: temp[1] };
+        return {
+          ...prev,
+          [temp[0]]: temp[1],
+        };
       });
       setactiveTab((prev) => prev + 1);
     }
