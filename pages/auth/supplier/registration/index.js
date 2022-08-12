@@ -16,7 +16,7 @@ const Registration = () => {
     mail: "",
     mobile: "",
     city: null,
-    mainCat: null,
+    mainCat: [],
     gstin: "",
     stockCount: "",
     site: "",

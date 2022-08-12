@@ -11,7 +11,7 @@ import NotificationModal from "@/forms/admin/suppliers/supplierapprovalmodals/no
 const tableColumn = [
   {
     id: "col1",
-    label: "SI NO.",
+    label: "Sl NO.",
     minWidth: 30,
     align: "center",
     data_align: "center",

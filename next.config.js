@@ -12,14 +12,5 @@ const nextConfig = {
   env: {
     DOMAIN: process.env.DOMAIN,
   },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/customer/home",
-        permanent: true,
-      },
-    ];
-  },
 };
 module.exports = nextConfig;
