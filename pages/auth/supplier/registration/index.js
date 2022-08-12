@@ -109,7 +109,7 @@ const Registration = () => {
         mobileNumber: formValues.mobile,
         gstin: formValues.gstin,
         avgStockCount: formValues.stockCount,
-        mainCategories: "Footwear",
+        mainCategories: formValues.mainCat,
         websiteName: formValues.site,
         profileImageUrl: null,
         websiteLink: formValues.siteLink,

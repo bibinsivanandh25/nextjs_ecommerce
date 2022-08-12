@@ -1,9 +1,12 @@
 import { Grid, Typography } from "@mui/material";
+import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
+import { useEffect, useState } from "react";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const RegistrationForm = ({
   formValues = {},
@@ -11,6 +14,30 @@ const RegistrationForm = ({
   handleSubmit = () => {},
   setFormValues = () => {},
 }) => {
+  const [mainCategories, setMainCategories] = useState([]);
+  const getMainCategories = async () => {
+    const { data, err } = await axios.get(
+      "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
+    );
+    if (data) {
+      const result = [];
+      data.data.forEach((category) => {
+        result.push({
+          title: category.mainCategoryName,
+          value: category.mainCategoryName,
+          id: category.mainCategoryId,
+        });
+      });
+      setMainCategories([...result]);
+    } else if (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getMainCategories();
+  }, []);
+  console.log(formValues);
+
   return (
     <div className="w-70p  d-flex justify-content-center">
       <Grid container spacing={2}>
@@ -156,16 +183,13 @@ const RegistrationForm = ({
               }));
             }}
           /> */}
-          <SimpleDropdownComponent
-            list={[
-              { label: "Women", value: "women", id: 1 },
-              { label: "Watch", value: "watch", id: 3 },
-            ]}
+          <MultiSelectComponent
+            list={[...mainCategories]}
             label="Select Main Category"
-            onDropdownSelect={(value) => {
+            onSelectionChange={(e, val) => {
               setFormValues((prev) => ({
                 ...prev,
-                mainCat: value,
+                mainCat: [...val],
               }));
             }}
             value={formValues.mainCat}

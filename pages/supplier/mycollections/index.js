@@ -1,15 +1,15 @@
 import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import logo from "public/assets/logo.jpeg";
-import Image from "next/image";
+import { getCollections } from "services/supplier/mycollections";
+
 import CustomIcon from "services/iconUtils";
+import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
 import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [defaultFormData, setDefaultFormData] = useState({
     todaysDeals: {},
@@ -20,58 +20,26 @@ const MyCollections = () => {
   });
   const [showShareModal, setShowShareModal] = useState(false);
 
-  const columns = [
-    {
-      label: "Image",
-      id: "col1",
-    },
-    {
-      label: "Commission Mode",
-      id: "col2",
-    },
-    {
-      label: "Product Type",
-      id: "col3",
-    },
-    {
-      label: "Category",
-      id: "col4",
-    },
-    {
-      label: "Transfer Price",
-      id: "col5",
-    },
-    {
-      label: "MRP",
-      id: "col6",
-    },
-    {
-      label: "Product Weight",
-      id: "col7",
-    },
-    {
-      label: "Product Volume",
-      id: "col8",
-    },
-    {
-      id: "col9",
-      label: "Action",
-    },
-  ];
+  const { userId } = useUserInfo();
 
-  const mapRowsToTable = (data) => {
+  const mapTableData = (data) => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: <Image src={logo} height={50} width={50} />,
-        col2: row.commissionmode,
-        col3: row.producttype,
-        col4: row.category,
-        col5: `${row.transferprice} Rs`,
-        col6: `${row.mrp} Rs`,
-        col7: `${row.productweight} gms`,
-        col8: row.productvolume,
-        col9: (
+        // col1: (
+        //   <Image
+        //     src={row.productVariations[0].variationMedia[0]}
+        //     height={50}
+        //     width={50}
+        //   />
+        // ),
+        col2: row.commissionMode,
+        col3: row.productType,
+        col4: row.subCategoryName,
+        col5: row.masterProductId,
+        col6: row.brand,
+        col7: row.createdAt,
+        col8: (
           <>
             <CustomIcon
               type="flagIcon"
@@ -94,35 +62,69 @@ const MyCollections = () => {
     return result;
   };
 
+  const getMycollectionData = async () => {
+    const result = await getCollections(userId);
+    setTableRows(mapTableData(result));
+  };
   useEffect(() => {
-    const rows = [
-      {
-        productId: "#123456",
-        commissionmode: "No commission",
-        category: "Accessories",
-        producttype: "Headphones",
-        transferprice: "200",
-        mrp: "250",
-        productweight: "40",
-        productvolume: "12cm, 15cm, 10cm",
-      },
-      {
-        productId: "#123456",
-        commissionmode: "No commission",
-        category: "Accessories",
-        producttype: "Headphones",
-        transferprice: "200",
-        mrp: "250",
-        productweight: "40",
-        productvolume: "12cm, 15cm, 10cm",
-      },
-    ];
-    setTableData(rows);
+    getMycollectionData();
   }, []);
 
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
+  const columns = [
+    {
+      label: "Image",
+      id: "col1",
+      align: "center",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Commission Mode",
+      id: "col2",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Product Type",
+      id: "col3",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Category",
+      id: "col4",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Product Id",
+      id: "col5",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Brand",
+      id: "col6",
+    },
+
+    {
+      align: "center",
+      data_align: "center",
+      label: "Created Date & Time",
+      id: "col7",
+    },
+    {
+      align: "center",
+      data_align: "center",
+      label: "Action",
+      id: "col8",
+    },
+  ];
 
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">

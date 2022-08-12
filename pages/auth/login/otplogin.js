@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
 import validateMessage from "constants/validateMessages";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
 // import styles from "./Login.module.css";
@@ -14,7 +14,7 @@ const OtpLogIn = () => {
   const [otp, setotp] = useState("xxxx");
   const [user, setUser] = useState("");
   const [submited, setSubmitted] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
   const [error, setError] = useState();
 
   useEffect(() => {
@@ -23,10 +23,21 @@ const OtpLogIn = () => {
     };
   }, []);
 
-  const handleSubmit = () => {
-    router.push("/");
+  const handleSubmit = async () => {
+    const formdata = new FormData();
+    formdata.append("userName", user);
+    formdata.append("userType", "SUPPLIER");
+    formdata.append("otp", otp);
+    const { data } = await axios.post(
+      "http://10.10.31.116:8500/api/v1/users/registration/verify-login-otp",
+      formdata,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    if (data) {
+      // setSubmitted(true);
+      console.log(data);
+    }
   };
-
   const validateForm = () => {
     let errObj = error;
     const validate = (errMsg, valid1, valid2) => {
@@ -48,8 +59,20 @@ const OtpLogIn = () => {
     return Boolean(errObj);
   };
 
-  const sendOTPclick = () => {
-    if (!validateForm()) setSubmitted(true);
+  const sendOTPclick = async () => {
+    if (!validateForm()) {
+      const formdata = new FormData();
+      formdata.append("userName", user);
+      formdata.append("userType", "SUPPLIER");
+      const { data } = await axios.post(
+        "http://10.10.31.116:8500/api/v1/users/registration/forgot-password/send-otp",
+        formdata,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      if (data) {
+        setSubmitted(true);
+      }
+    }
   };
 
   return (
