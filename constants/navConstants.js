@@ -583,4 +583,231 @@ const customerMenu = [
     path_name: "PersonalcareAppliances",
   },
 ];
+
+const adminMenu = [
+  {
+    title: "Dashboard",
+    logo: "fas fa-shopping-cart",
+    path_name: "dashboard",
+    navigate: true,
+  },
+  {
+    title: "Products",
+    logo: "fas fa-shopping-cart",
+    path_name: "dashboard",
+    navigate: false,
+    child: [
+      {
+        title: "Customer Q & A",
+        logo: "",
+        path_name: "customerqanda",
+        navigate: true,
+      },
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Fixed Margin",
+        logo: "",
+        path_name: "fixedmargin",
+        navigate: true,
+      },
+      {
+        title: "Zero Comission",
+        logo: "",
+        path_name: "zerocommission",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Orders",
+    logo: "fas fa-shopping-cart",
+    path_name: "orders",
+    navigate: false,
+    child: [
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Order Summary",
+        logo: "",
+        path_name: "ordersummary",
+        navigate: true,
+      },
+      {
+        title: "Fixed Comission Products",
+        logo: "",
+        path_name: "fixedcommissionproducts",
+        navigate: true,
+      },
+      {
+        title: "Zero Comission Products",
+        logo: "",
+        path_name: "zerocommissionproducts",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Delivery Management",
+    logo: "fas fa-shopping-cart",
+    path_name: "deliverymanagement",
+    navigate: false,
+    child: [
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Delivery Status",
+        logo: "",
+        path_name: "deliverystatus",
+        navigate: true,
+      },
+      {
+        title: "Serviceable Pincodes",
+        logo: "",
+        path_name: "serviceablepincode",
+        navigate: true,
+      },
+      {
+        title: "Delivery Charge",
+        logo: "",
+        path_name: "deliverycharge",
+        navigate: true,
+      },
+      {
+        title: "Delivery Partner",
+        logo: "",
+        path_name: "deliverypartners",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Suppliers",
+    logo: "fas fa-shopping-cart",
+    path_name: "suppliers",
+    navigate: false,
+    child: [
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Supplier Approval",
+        logo: "",
+        path_name: "supplierapproval",
+        navigate: true,
+      },
+      {
+        title: "Active",
+        logo: "",
+        path_name: "active",
+        navigate: true,
+      },
+      {
+        title: "Rejected",
+        logo: "",
+        path_name: "rejected",
+        navigate: true,
+      },
+      {
+        title: "Updated",
+        logo: "",
+        path_name: "updated",
+        navigate: true,
+      },
+      {
+        title: "Disabled",
+        logo: "",
+        path_name: "disabled",
+        navigate: true,
+      },
+      {
+        title: "Queries",
+        logo: "",
+        path_name: "queries",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Resellers",
+    logo: "fas fa-shopping-cart",
+    path_name: "resellers",
+    navigate: false,
+    child: [
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Active",
+        logo: "",
+        path_name: "active",
+        navigate: true,
+      },
+      {
+        title: "Draft & Queries",
+        logo: "",
+        path_name: "draftsandqueries",
+        navigate: true,
+      },
+      {
+        title: "Deactivated",
+        logo: "",
+        path_name: "deactivated",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Customers",
+    logo: "fas fa-shopping-cart",
+    path_name: "customers",
+    navigate: false,
+    child: [
+      {
+        title: "Dashboard",
+        logo: "",
+        path_name: "dashboard",
+        navigate: true,
+      },
+      {
+        title: "Active Customer",
+        logo: "",
+        path_name: "activecustomer",
+        navigate: true,
+      },
+      {
+        title: "Disabled Customer",
+        logo: "",
+        path_name: "disabledcustomer",
+        navigate: true,
+      },
+    ],
+  },
+  {
+    title: "Payments & Subscriptions",
+    logo: "fas fa-shopping-cart",
+    path_name: "payment&subscriptions",
+    navigate: false,
+    child: [{}],
+  },
+];
+
 export { supplierMenu, resellerMenu, customerMenu };

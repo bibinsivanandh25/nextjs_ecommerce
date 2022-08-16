@@ -4,7 +4,7 @@ import CustomIcon from "services/iconUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import TransactionFailedReseller from "@/forms/admin/payments&subscriptions/TransactionFailedResellers";
+import TransactionFailedReseller from "@/forms/admin/payments&subscriptions/paymenthistoryresellers/TransactionFailedResellers";
 
 const PaymentHistoryResellers = () => {
   const [tableRows, setTableRows] = useState([]);
