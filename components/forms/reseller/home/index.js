@@ -25,7 +25,6 @@ const HomeComponent = ({
             console.log(item);
           }}
           showMarginButton={showMarginButton}
-          get
         />
       </Box>
     </div>

@@ -15,11 +15,18 @@ const FileUploadModal = ({
   getUploadedFiles = () => {},
   maxFileSize = 2e6,
   maxNoofFiles = 5,
+  type = "base64",
 }) => {
   const fileUploadRef = useRef(null);
   const [binaryStr, setbinaryStr] = useState([]);
+  const [multiPart, setMultiPart] = useState([]);
 
   const handlefileDrop = async (acceptedFiles) => {
+    if (type !== "base64") {
+      setMultiPart((pre) => {
+        return [...pre, ...acceptedFiles];
+      });
+    }
     const arr = [...binaryStr];
     const reader = new FileReader();
 
@@ -58,8 +65,8 @@ const FileUploadModal = ({
     }
   };
   const onSubmitClick = () => {
-    getUploadedFiles(binaryStr);
-    setShowModal(false);
+    getUploadedFiles({ binaryStr, multiPart });
+    setShowModal("");
   };
 
   return (
@@ -70,7 +77,7 @@ const FileUploadModal = ({
       open={showModal}
       headerClassName="border-bottom-0"
       showCloseIcon
-      onCloseIconClick={() => setShowModal(false)}
+      onCloseIconClick={() => setShowModal("")}
       onSaveBtnClick={onSubmitClick}
     >
       <>
