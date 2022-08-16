@@ -1,3 +1,5 @@
+/* eslint-disable no-new */
+/* eslint-disable no-undef */
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
@@ -12,15 +14,14 @@ import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
+import { useUserInfo } from "services/hooks";
+import serviceUtil from "services/utils";
+import { saveMedia, saveProduct } from "services/supplier/AddProducts";
+import { useRouter } from "next/router";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
-import {
-  commisiondata,
-  product_type,
-} from "../../../../../constants/constants";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import { FaLaptopHouse } from "react-icons/fa";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -37,18 +38,17 @@ const ProductsLayout = ({
   const [tabsLists, setTabsLists] = useState([...tabsList]);
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
-  const [showFileUploadModal, setShowFileUploadModal] = useState(false);
-  const [commisionData] = useState([...commisiondata]);
+  const [showFileUploadModal, setShowFileUploadModal] = useState("");
   const [mainFormData, setMainFormData] = useState({
     commision_mode: null,
     product_type: "",
     brand: "",
     short_description: {
-      media: [],
+      media: {},
       text: "",
     },
     long_description: {
-      media: [],
+      media: {},
       text: "",
     },
     sub_category_id: "",
@@ -61,8 +61,8 @@ const ProductsLayout = ({
     genericradio: false,
     b2bdocument: {},
     b2bdocumentfile: [],
-    setsValue: {},
-    subCategoryValue: {},
+    setsValue: null,
+    subCategoryValue: null,
   });
   const [errorObj, setErrorObj] = useState({
     commision_mode: "",
@@ -82,29 +82,61 @@ const ProductsLayout = ({
     selectb2binvoice: "",
     category: null,
   });
-  const [errorCategoryObj, setErrorCategoryObj] = useState({});
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
+  const [tagInputError, setTagInputError] = useState("");
+  const [tagValues, setTagValues] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [setsData, setSetsData] = useState([]);
   const [subCategoryData, setSubCategoryData] = useState([]);
+  const [b2bList, setB2bList] = useState([]);
+  const [trademarkList, setTradeMarkList] = useState([]);
+  const userInfo = useUserInfo();
+  const [modalErrObj, setModalErrObj] = useState({});
+  const [imgUrls, setImgUrls] = useState({});
+  const [short_descriptionImg, setshort_descriptionImg] = useState({});
+  const [long_descriptionImg, setlong_descriptionImg] = useState({});
+  const router = useRouter();
+
   useEffect(() => {
     if (mainFormData.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
     } else {
       setTabsLists([...tabsList]);
     }
-    setFormData((pre) => {
-      return { ...pre, mainFormData };
-    });
   }, [mainFormData.category]);
+  useEffect(() => {
+    setFormData((pre) => {
+      return {
+        ...pre,
+        mainFormData,
+        short_descriptionImg,
+        long_descriptionImg,
+      };
+    });
+  }, [mainFormData, short_descriptionImg, long_descriptionImg]);
 
+  const getTags = () => {
+    serviceUtil
+      .get("products/product-tag")
+      .then((res) => {
+        const { data } = res.data;
+        const temp = [];
+        data.forEach((item) => {
+          temp.push({
+            id: item.tagId,
+            label: item.tagName,
+            value: item.tagName,
+          });
+        });
+        setTagValues(temp);
+      })
+      .catch(() => {});
+  };
   // Select Category Api
   const getSelectCategoryData = () => {
-    axios
-      .get(
-        "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
-      )
+    serviceUtil
+      .get("products/main-category/drop-down-list")
       .then((res) => {
         const { data } = res.data;
         const finaData = [];
@@ -113,17 +145,49 @@ const ProductsLayout = ({
             id: item.mainCategoryId,
             value: item.mainCategoryName,
             label: item.mainCategoryName,
+            commission_mode: item.commissionType,
           });
         });
         setCategoryData(finaData);
       })
-      .catch((err) => {
-        toastify(err.response.data.message, "error");
-      });
+      .catch(() => {});
+  };
+  const getB2BTradmarkValues = (type) => {
+    serviceUtil
+      .get(
+        `products/supplier/product/trademark-invoice-dropdown?documentType=${type}&supplierId=${userInfo.id}`
+      )
+      .then((res) => {
+        if (type === "B2B_INVOICE") {
+          setB2bList(() => {
+            return res.data.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                label: item.documentName,
+              };
+            });
+          });
+        } else {
+          setTradeMarkList(() => {
+            return res.data.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                label: item.documentName,
+              };
+            });
+          });
+        }
+      })
+      .catch(() => {});
   };
   useEffect(() => {
+    getTags();
     getSelectCategoryData();
+    getB2BTradmarkValues("B2B_INVOICE");
   }, []);
+
   useEffect(() => {
     if (mainFormData.category?.value) {
       axios
@@ -142,11 +206,10 @@ const ProductsLayout = ({
           });
           setSetsData(finaData);
         })
-        .catch((err) => {
-          toastify(err.response.data.message, "error");
-        });
+        .catch(() => {});
     }
   }, [mainFormData.category]);
+
   useEffect(() => {
     if (mainFormData.setsValue?.value) {
       axios
@@ -154,7 +217,6 @@ const ProductsLayout = ({
           `http://10.10.31.116:8100/api/v1/products/sub-category/drop-down-list?setId=${mainFormData.setsValue.id}`
         )
         .then((res) => {
-          console.log(res);
           const { data } = res.data;
           const finaData = [];
           data.forEach((item) => {
@@ -172,6 +234,7 @@ const ProductsLayout = ({
         });
     }
   }, [mainFormData.setsValue]);
+
   const validateForm = () => {
     const errObj = {
       commision_mode: "",
@@ -192,10 +255,10 @@ const ProductsLayout = ({
       category: "",
     };
     let flag = false;
-    if (mainFormData.commision_mode === null) {
-      errObj.commision_mode = validateMessage.field_required;
-      flag = true;
-    }
+    // if (mainFormData.commision_mode === null) {
+    //   errObj.commision_mode = validateMessage.field_required;
+    //   flag = true;
+    // }
     if (mainFormData.selectb2binvoice === null) {
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
@@ -245,6 +308,7 @@ const ProductsLayout = ({
     }
     return !flag;
   };
+
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
     if (validateForm() && flag) {
@@ -258,7 +322,6 @@ const ProductsLayout = ({
       setactiveTab((prev) => prev + 1);
     }
   };
-
   useEffect(() => {
     if (formData?.mainForm && Object.keys(formData.mainForm).length) {
       setMainFormData({ ...formData.mainForm });
@@ -283,22 +346,224 @@ const ProductsLayout = ({
   };
   const handleCategorySubmitClick = () => {
     const errObj = {
-      setsValue: false,
-      subCategoryValue: false,
+      setsValue: "",
+      subCategoryValue: "",
     };
     let flag = false;
-    if (mainFormData.setsValue === null) {
-      errObj.category = validateMessage.field_required;
+    if (!Object.keys(mainFormData.setsValue).length) {
+      errObj.setsValue = validateMessage.field_required;
       flag = true;
     }
-    if (mainFormData.subCategoryValue === null) {
+    if (!Object.keys(mainFormData.subCategoryValue).length) {
       errObj.subCategoryValue = validateMessage.field_required;
       flag = true;
     }
+    setModalErrObj(errObj);
     if (!flag) {
-      setShowCategoryModal(true);
+      handleCategoryModalClose();
     }
   };
+
+  const saveTag = async (payload) => {
+    await serviceUtil
+      .post("/products/product-tag", payload)
+      .then((res) => {
+        toastify(res.data.message, "success");
+        setTagInputValue("");
+        setOpenModal(false);
+      })
+      .catch((err) => {
+        toastify(err.response.data.message, "error");
+      });
+  };
+
+  const handleTagSubmit = () => {
+    if (tagInputValue === "") {
+      setTagInputError(validateMessage.field_required);
+    } else if (tagInputValue.length < 3) {
+      setTagInputError(validateMessage.alpha_numeric_min_3);
+    } else if (tagInputValue.length > 15) {
+      setTagInputError(validateMessage.alpha_numeric_15);
+    } else if (!/^[a-zA-Z0-9#@$]+$/.test(tagInputValue)) {
+      setTagInputError("Only alpha numeric with '#, $, @' are allowed ");
+    } else {
+      setTagInputError("");
+      saveTag({
+        tagName: tagInputValue,
+        createdBy: userInfo.id,
+        createdByType: userInfo.role,
+      });
+    }
+  };
+
+  const saveimg = (type, imgList) => {
+    return saveMedia(imgList).then((res) => {
+      if (!res.error) {
+        return { [`${type}`]: res.data };
+      }
+    });
+  };
+
+  const createPayload = async () => {
+    const multipart = [...imagedata.map((item) => item.multipart)];
+    const imgFormData = new FormData();
+    const short_description = new FormData();
+    const long_description = new FormData();
+    const refundPolicy = new FormData();
+    const cancellationPolicy = new FormData();
+    const shippingPolicy = new FormData();
+    const promiseAll = [];
+    imgFormData.set("data", {});
+    short_description.set("data", {});
+    long_description.set("data", {});
+    refundPolicy.set("data", {});
+    cancellationPolicy.set("data", {});
+    shippingPolicy.set("data", {});
+    multipart.forEach((item) => {
+      imgFormData.append("medias", item);
+    });
+    promiseAll.push(saveimg("productImage", imgFormData));
+    if (short_descriptionImg?.multiPart?.length) {
+      short_descriptionImg.multiPart.forEach((item) => {
+        short_description.append("medias", item);
+      });
+      promiseAll.push(saveimg("short_description", short_description));
+    }
+    if (long_descriptionImg?.multiPart?.length) {
+      long_descriptionImg.multiPart.forEach((item) => {
+        long_description.append("medias", item);
+      });
+      promiseAll.push(saveimg("long_description", long_description));
+    }
+    if (formData?.policy?.returnablemedia?.multiPart?.length) {
+      formData?.policy.returnablemedia.multiPart.forEach((item) => {
+        refundPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("refundPolicy", refundPolicy));
+    }
+    if (formData?.policy?.canclemedia?.multiPart?.length) {
+      formData?.policy.canclemedia.multiPart.forEach((item) => {
+        cancellationPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("cancellationPolicy", cancellationPolicy));
+    }
+    if (formData?.policy?.shippingmedia?.multiPart?.length) {
+      formData?.policy.shippingmedia.multiPart.forEach((item) => {
+        shippingPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("shippingPolicy", shippingPolicy));
+    }
+    const imgdata = await Promise.all(promiseAll);
+    const imgData = {};
+    imgdata.forEach((ele) => {
+      imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
+    });
+    setImgUrls(imgData);
+    const getvariationProperty = () => {
+      const temp = ["countryOfOrigin", "others", "expiryDate"];
+      const variationProperty = [];
+      Object.keys(formData.variation).forEach((item) => {
+        if (!temp.includes(item)) {
+          variationProperty.push({
+            variationId: item,
+            optionId: formData.variation[item],
+            variationType: formData.attribute[item][0]?.variationType,
+          });
+        }
+      });
+      return variationProperty;
+    };
+    const payload = {
+      brand: mainFormData.brand,
+      longDescription: mainFormData.long_description.text,
+      longDescriptionFileUrls: imgData.long_description,
+      shortDescription: mainFormData.short_description.text,
+      shortDescriptionFileUrls: imgData.short_description,
+      subCategoryId: mainFormData.subCategoryValue.id,
+      subCategoryName: mainFormData.subCategoryValue.label,
+      commissionMode: mainFormData.commision_mode,
+      tags: [mainFormData.tags.id],
+      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
+      trademarkLetterIdList: mainFormData.b2bdocument.id
+        ? [mainFormData.b2bdocument.id]
+        : [],
+      bTobInvoiceIdList: [mainFormData.selectb2binvoice.id],
+      isGenericProduct: mainFormData.genericradio,
+
+      linkedProducts: {
+        upSells: formData.linked.upSells.value,
+        crossSells: formData.linked.crossSells.value,
+      },
+
+      productPolicies: {
+        policyTabLabel: formData.policy.policyTabLabel,
+        shippingPolicy: formData.policy.shippingPolicy.text,
+        shippingPolicyMediaUrls: imgData?.shippingPolicy ?? [],
+        refundPolicy: formData.policy.refundPolicy.text,
+        refundPolicyMediaUrls: imgData?.refundPolicy ?? [],
+        cancellationPolicy: formData.policy.cancellationPolicy.text,
+        cancellationPolicyMediaUrls: imgData?.cancellationPolicy ?? [],
+        warrantyAvailable: formData.policy.warranty,
+        warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
+          ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
+          : null,
+      },
+
+      productVariations: [
+        {
+          productTitle: formData.inventory.product_title,
+          shippingClass: formData.inventory.shipping_class.value,
+          businessProcessingDays:
+            formData.inventory.business_processing_days.value,
+          seoTitle: formData.inventory.seo_title,
+          metaDescription: formData.inventory.meta_description,
+          metaKeywords: formData.inventory.meta_keyword.join(),
+          isStoreFDR: formData.pricing.freeDeliveryCheckbox,
+          salePriceWithLogistics: parseInt(
+            formData.pricing.sale_price_logistics,
+            10
+          ),
+          rtoAccepted: formData.pricing.return_order_accepted,
+          rtoDays: formData.pricing.returnorder.value,
+          codAvailable: formData.pricing.cash_on_accepted,
+          deliveryCharge: formData.pricing.delivery_charge,
+          packageLength: parseFloat(formData.pricing.length),
+          packageWidth: parseFloat(formData.pricing.width),
+          packageHeight: parseFloat(formData.pricing.height),
+          weightInclusivePackage: parseFloat(formData.pricing.product_weight),
+          salePrice: parseInt(formData.pricing.sale_price, 10),
+          mrp: parseInt(formData.pricing.mrp, 10),
+          stockQty: parseInt(formData.inventory.stockqty, 10),
+          modelName: formData.inventory.modelname,
+          sellWithMrMrsCart: formData.mrMrsCartFormData.sellwithus,
+          mrmrscartSalePriceWithFDR: formData.mrMrsCartFormData.free_delivery,
+          mrmrscartSalePriceWithOutFDR:
+            formData.mrMrsCartFormData.paid_delivery,
+          mrmrscartRtoAccepted: formData.mrMrsCartFormData.return,
+          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.id,
+          mrmrscartCodAvailable: formData.mrMrsCartFormData.cashondelivery,
+          stockStatus: formData.inventory.stock_status.label,
+          allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
+          backOrders: parseInt(formData.inventory.back_Orders, 10) || 0,
+          variationMedia: imgData.productImage,
+          variationProperty: getvariationProperty(),
+        },
+      ],
+
+      otherInformationObject: {},
+      zoneChargeInfo: {},
+      productType: "SIMPLE_PRODUCT",
+      supplierId: userInfo.id,
+    };
+    const { data, err } = await saveProduct(payload);
+    if (err) {
+      toastify(err.response.data.message, "error");
+    } else if (data) {
+      toastify(data.message, "success");
+      router.replace("/supplier/products&inventory/myproducts");
+    }
+  };
+
   return (
     <>
       {!showGroupVariant ? (
@@ -308,7 +573,7 @@ const ProductsLayout = ({
               ? imagedata.map((item, index) => (
                   <ImageCard
                     key={index}
-                    imgSrc={item}
+                    imgSrc={item.binary}
                     handleCloseClick={() => {
                       setImageData((prev) => {
                         const temp = [...prev];
@@ -328,7 +593,10 @@ const ProductsLayout = ({
                     if (e.target.files[0].size <= 1000000) {
                       const file = await getBase64(e.target.files[0]);
                       setImageData((prev) => {
-                        return [...prev, file];
+                        return [
+                          ...prev,
+                          { binary: file, multipart: e.target.files[0] },
+                        ];
                       });
                     } else {
                       toastify("Image size should be less than 1MB", "error");
@@ -342,35 +610,6 @@ const ProductsLayout = ({
           <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
-                <Grid item md={12}>
-                  <SimpleDropdownComponent
-                    list={commisionData}
-                    id="commisionmode"
-                    label="Commision Mode"
-                    size="small"
-                    value={mainFormData.commision_mode}
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "commision_mode");
-                    }}
-                    inputlabelshrink
-                    error={errorObj.commision_mode !== ""}
-                    helperText={errorObj.commision_mode}
-                    placeholder="Select commission mode"
-                  />
-                </Grid>
-                {/* <Grid item md={12}>
-              <SimpleDropdownComponent
-                list={product_type}
-                id="producttype"
-                label="Product Type"
-                size="small"
-                value={mainFormData.product_type}
-                onDropdownSelect={(value) => {
-                  handleDropdownChange(value, "product_type");
-                }}
-                inputlabelshrink
-              />
-            </Grid> */}
                 <Grid item md={12}>
                   <InputBox
                     id="brand"
@@ -400,7 +639,7 @@ const ProductsLayout = ({
                     }}
                     value={mainFormData.short_description.text}
                     onBtnClick={() => {
-                      setShowFileUploadModal(true);
+                      setShowFileUploadModal("short_description");
                     }}
                     btnLabel="Add Media"
                     btnSize="small"
@@ -429,7 +668,7 @@ const ProductsLayout = ({
                       });
                     }}
                     onBtnClick={() => {
-                      setShowFileUploadModal(true);
+                      setShowFileUploadModal("long_description");
                     }}
                     btnLabel="Add Media"
                     btnSize="small"
@@ -460,23 +699,32 @@ const ProductsLayout = ({
                           subCategoryValue: {},
                         }));
                       }
+                      setMainFormData((pre) => {
+                        return {
+                          ...pre,
+                          commision_mode: value?.commission_mode
+                            ? value.commission_mode
+                            : "",
+                        };
+                      });
                     }}
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
                 </Grid>
                 <Grid item md={12}>
+                  <InputBox
+                    id="commisionmode"
+                    label="Commision Mode"
+                    value={mainFormData.commision_mode}
+                    placeholder="Commission Mode"
+                    inputlabelshrink
+                    disabled
+                  />
+                </Grid>
+                <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={[
-                      {
-                        value: "Simple Product",
-                        label: "Simple Product",
-                      },
-                      {
-                        value: "variable Product",
-                        label: "Variable Product",
-                      },
-                    ]}
+                    list={tagValues}
                     id="tags"
                     label="Tags"
                     size="small"
@@ -520,7 +768,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <SimpleDropdownComponent
-                    list={product_type}
+                    list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
                     size="small"
@@ -572,6 +820,9 @@ const ProductsLayout = ({
                     size="small"
                     isChecked={mainFormData.tradeMarkCheck}
                     checkBoxClick={() => {
+                      if (!mainFormData.tradeMarkCheck) {
+                        getB2BTradmarkValues("TRADEMARK_LETTER");
+                      }
                       setMainFormData((prev) => ({
                         ...prev,
                         tradeMarkCheck: !mainFormData.tradeMarkCheck,
@@ -591,9 +842,10 @@ const ProductsLayout = ({
                   <Grid item md={12}>
                     <SimpleDropdownComponent
                       label="Choose Documents"
-                      list={product_type}
+                      list={trademarkList}
                       id="b2bdocument"
                       size="small"
+                      m
                       value={mainFormData.b2bdocument}
                       onDropdownSelect={(value) => {
                         handleDropdownChange(value, "b2bdocument");
@@ -726,30 +978,49 @@ const ProductsLayout = ({
                 />
               ) : null}
               <ButtonComponent
-                label={activeTab === tabsList.length ? "Submit" : "Next"}
+                label={activeTab === tabsList.length - 1 ? "Submit" : "Next"}
                 size="small"
                 onBtnClick={
-                  activeTab === tabsLists.length
+                  activeTab === tabsLists.length - 1
                     ? () => {
-                        const temp = formsRef?.current?.handleSendFormData();
-                        setFormData((prev) => {
-                          const flag = formsRef.current.validate();
-                          if (flag) {
-                            const data = { ...prev, [temp[0]]: temp[1] };
-                            handleSubmitClick(data);
-                            return data;
-                          }
-                        });
+                        if (imagedata.length) {
+                          const temp = formsRef?.current?.handleSendFormData();
+                          setFormData((prev) => {
+                            const flag = formsRef.current.validate();
+                            if (flag) {
+                              const data = { ...prev, [temp[0]]: temp[1] };
+                              createPayload();
+                              return data;
+                            }
+                          });
+                        } else {
+                          toastify("Add atleast one product image", "error");
+                        }
                       }
                     : handleNextClick
                 }
               />
             </Box>
           </Box>
-          {showFileUploadModal ? (
+          {showFileUploadModal !== "" ? (
             <FileUploadModal
-              showModal={showFileUploadModal}
+              showModal={showFileUploadModal !== ""}
               setShowModal={setShowFileUploadModal}
+              getUploadedFiles={(val) => {
+                setMainFormData((pre) => {
+                  const temp = JSON.parse(JSON.stringify(pre));
+                  temp[`${showFileUploadModal}`].media = JSON.parse(
+                    JSON.stringify(val)
+                  );
+                  return temp;
+                });
+                if (showFileUploadModal === "short_description") {
+                  setshort_descriptionImg(val);
+                } else {
+                  setlong_descriptionImg(val);
+                }
+              }}
+              type="multipart"
             />
           ) : null}
         </Box>
@@ -776,6 +1047,7 @@ const ProductsLayout = ({
         onClearBtnClick={() => {
           setOpenModal(false);
         }}
+        onSaveBtnClick={handleTagSubmit}
       >
         <Box className="mt-4 w-75 mx-auto">
           <InputBox
@@ -785,6 +1057,8 @@ const ProductsLayout = ({
             }}
             placeholder="Tag Name"
             value={tagInputValue}
+            error={tagInputError !== ""}
+            helperText={tagInputError}
           />
         </Box>
       </ModalComponent>
@@ -803,6 +1077,9 @@ const ProductsLayout = ({
           ClearBtnText="Close"
           ModalWidth={700}
           onClearBtnClick={() => {
+            setMainFormData((pre) => {
+              return { ...pre, setsValue: {}, subCategoryValue: {} };
+            });
             handleCategoryModalClose();
           }}
           onSaveBtnClick={() => {
@@ -828,6 +1105,8 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "setsValue");
                   }}
+                  error={modalErrObj.setsValue !== ""}
+                  helperText={modalErrObj.setsValue}
                 />
               </Grid>
               <Grid item md={6}>
@@ -841,6 +1120,8 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "subCategoryValue");
                   }}
+                  error={modalErrObj.subCategoryValue !== ""}
+                  helperText={modalErrObj.subCategoryValue}
                 />
               </Grid>
             </Grid>
