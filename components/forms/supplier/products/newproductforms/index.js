@@ -22,6 +22,7 @@ import GroupVariationForm from "../newCollections/VariationForm/groupvariations"
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -52,14 +53,14 @@ const ProductsLayout = ({
       text: "",
     },
     sub_category_id: "",
-    tags: {},
+    tags: [],
     limit_per_order: "",
-    selectb2binvoice: null,
+    selectb2binvoice: [],
     tradeMarkCheck: false,
     category: {},
     brandradio: true,
     genericradio: false,
-    b2bdocument: {},
+    b2bdocument: [],
     b2bdocumentfile: [],
     setsValue: null,
     subCategoryValue: null,
@@ -125,7 +126,7 @@ const ProductsLayout = ({
         data.forEach((item) => {
           temp.push({
             id: item.tagId,
-            label: item.tagName,
+            title: item.tagName,
             value: item.tagName,
           });
         });
@@ -164,7 +165,7 @@ const ProductsLayout = ({
               return {
                 id: item.trademarkInvoiceId,
                 value: item.trademarkInvoiceId,
-                label: item.documentName,
+                title: item.documentName,
               };
             });
           });
@@ -174,7 +175,7 @@ const ProductsLayout = ({
               return {
                 id: item.trademarkInvoiceId,
                 value: item.trademarkInvoiceId,
-                label: item.documentName,
+                title: item.documentName,
               };
             });
           });
@@ -285,11 +286,8 @@ const ProductsLayout = ({
       errObj.long_description.text = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
-    if (mainFormData.tags === "") {
+    if (!mainFormData.tags.length) {
       errObj.tags = validateMessage.field_required;
-      flag = true;
-    } else if (mainFormData.tags.length > 15) {
-      errObj.tags = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
     if (mainFormData.limit_per_order === "") {
@@ -482,12 +480,22 @@ const ProductsLayout = ({
       subCategoryId: mainFormData.subCategoryValue.id,
       subCategoryName: mainFormData.subCategoryValue.label,
       commissionMode: mainFormData.commision_mode,
-      tags: [mainFormData.tags.id],
-      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
-      trademarkLetterIdList: mainFormData.b2bdocument.id
-        ? [mainFormData.b2bdocument.id]
+      tags: mainFormData.tags.length
+        ? mainFormData.tags.map((item) => {
+            return item.id;
+          })
         : [],
-      bTobInvoiceIdList: [mainFormData.selectb2binvoice.id],
+      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
+      trademarkLetterIdList: mainFormData.b2bdocument.length
+        ? mainFormData.b2bdocument.map((item) => {
+            return item.id;
+          })
+        : [],
+      bTobInvoiceIdList: mainFormData.selectb2binvoice.length
+        ? mainFormData.selectb2binvoice.map((item) => {
+            return item.id;
+          })
+        : [],
       isGenericProduct: mainFormData.genericradio,
 
       linkedProducts: {
@@ -723,21 +731,21 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <SimpleDropdownComponent
+                  <MultiSelectComponent
                     list={tagValues}
                     id="tags"
                     label="Tags"
                     size="small"
-                    inputlabelshrink
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
                     helperText={errorObj.tags}
                     placeholder="Select tags"
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "tags");
+                    onSelectionChange={(a, val) => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        tags: [...val],
+                      }));
                     }}
-                    // error={errorObj.commision_mode !== ""}
-                    // helperText={errorObj.commision_mode}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -767,18 +775,18 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <SimpleDropdownComponent
+                  <MultiSelectComponent
                     list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
                     size="small"
                     value={mainFormData.selectb2binvoice}
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "selectb2binvoice");
+                    onSelectionChange={(a, val) => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        selectb2binvoice: [...val],
+                      }));
                     }}
-                    inputlabelshrink
-                    error={errorObj.selectb2binvoice !== ""}
-                    helperText={errorObj.selectb2binvoice}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -840,18 +848,18 @@ const ProductsLayout = ({
                 </Grid>
                 {mainFormData.tradeMarkCheck && (
                   <Grid item md={12}>
-                    <SimpleDropdownComponent
+                    <MultiSelectComponent
                       label="Choose Documents"
                       list={trademarkList}
                       id="b2bdocument"
                       size="small"
-                      m
                       value={mainFormData.b2bdocument}
-                      onDropdownSelect={(value) => {
-                        handleDropdownChange(value, "b2bdocument");
+                      onSelectionChange={(a, val) => {
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          b2bdocument: [...val],
+                        }));
                       }}
-                      inputlabelshrink
-                      placeholder="Eg:B2B"
                     />
                     <Typography className="h-6 color-gray ms-1">
                       Check The Brands That Need Trademarks Auth To Sell Across
