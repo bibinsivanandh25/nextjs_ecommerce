@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const options = {
   providers: [
     CredentialsProvider({
-      async authorize(credentials) {
+      authorize(credentials) {
         // if (credentials.username && credentials.password) {
         //   const { data, errRes } = await axios
         //     .post("http://10.10.20.18:8082/api/v1/authenticate", {
@@ -83,6 +83,7 @@ const options = {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
+      console.log(url, "================");
       if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },

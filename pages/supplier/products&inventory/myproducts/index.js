@@ -8,6 +8,7 @@ import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import axios from "axios";
 import { useUserInfo } from "services/hooks";
+import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -103,7 +104,7 @@ const MyProducts = () => {
     },
   ];
 
-  const { userId } = useUserInfo();
+  const { id } = useUserInfo();
 
   const handleClose = () => {
     setShowMenu(null);
@@ -114,7 +115,9 @@ const MyProducts = () => {
     data.forEach((masterProduct) => {
       masterProduct.productVariations.forEach((variation) => {
         result.push({
-          // col1: row.purchaseid,
+          col1: (
+            <Image src={variation.variationMedia[0]} height={50} width={50} />
+          ),
           col2: masterProduct.productType,
           col3: variation.productVariationId,
           col4: variation.productTitle,
@@ -181,7 +184,7 @@ const MyProducts = () => {
   useEffect(() => {
     axios
       .get(
-        `http://10.10.31.116:8100/api/v1/products/master-product-filter?status=${getStatus()}&pageNumber=0&pageSize=5&keyword=&supplierId=${userId}&filterStatus=ALL`
+        `http://10.10.31.116:8100/api/v1/products/master-product-filter?status=${getStatus()}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
       )
       .then((data) => {
         setTableRows(mapRowsToTable(data.data.data));

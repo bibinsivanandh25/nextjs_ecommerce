@@ -2,7 +2,7 @@ import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import { getCollections } from "services/supplier/mycollections";
-
+import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
@@ -20,19 +20,19 @@ const MyCollections = () => {
   });
   const [showShareModal, setShowShareModal] = useState(false);
 
-  const { userId } = useUserInfo();
+  const { id } = useUserInfo();
 
   const mapTableData = (data) => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        // col1: (
-        //   <Image
-        //     src={row.productVariations[0].variationMedia[0]}
-        //     height={50}
-        //     width={50}
-        //   />
-        // ),
+        col1: (
+          <Image
+            src={row.productVariations[0].variationMedia[0]}
+            height={50}
+            width={50}
+          />
+        ),
         col2: row.commissionMode,
         col3: row.productType,
         col4: row.subCategoryName,
@@ -63,7 +63,7 @@ const MyCollections = () => {
   };
 
   const getMycollectionData = async () => {
-    const result = await getCollections(userId);
+    const result = await getCollections(id);
     setTableRows(mapTableData(result));
   };
   useEffect(() => {

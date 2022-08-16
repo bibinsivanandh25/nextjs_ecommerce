@@ -2,8 +2,13 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 // import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { useEffect, useState } from "react";
 import { FaTicketAlt } from "react-icons/fa";
-import { useUserInfo } from "services/hooks";
-import axios from "axios";
+
+import {
+  getBannersBySupplierId,
+  getMainCategories,
+  getTopProducts,
+} from "services/customer/Home";
+import { useRouter } from "next/router";
 import HotDealsOfTheDay from "@/forms/customer/Home/HotDealsOfTheDay";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
@@ -12,104 +17,12 @@ import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
-import HomeComponent from "@/forms/reseller/home";
 import Articles from "./Articles";
+import HomeComponent from "@/forms/customer/homecomponent";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 
-const categories = [
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-  {
-    name: "Casual Shirt",
-    image:
-      "https://image.shutterstock.com/image-photo/closeup-young-mans-body-empty-600w-490041943.jpg",
-  },
-];
 const articleData = [
   {
     content:
@@ -155,26 +68,86 @@ const articleData = [
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [bannerImages, setBannerImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const user = useUserInfo();
 
-  const getproducts = async () => {
-    await axios
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setProducts([...data.data]);
-      })
-      .catch(() => {});
-  };
+  const route = useRouter();
 
   useEffect(() => {
-    if (!user) {
-      getproducts();
+    if (!Object.keys(route.query).length) {
+      route.push("/auth/customer");
     }
-  }, [user]);
+  }, [route]);
+
+  const getCategories = async () => {
+    const { data, err } = await getMainCategories();
+    if (data) {
+      const results = [];
+      data.forEach((ele) => {
+        results.push({
+          id: ele.mainCategoryId,
+          name: ele.mainCategoryName,
+          image: ele.categoryImageUrl,
+        });
+        setCategories([...results]);
+      });
+    } else if (err) {
+      console.log(err);
+    }
+  };
+
+  const getBanners = async () => {
+    const { data, err } = await getBannersBySupplierId(
+      route?.query?.supplierId
+    );
+    if (data) {
+      const temp = [];
+      data?.forEach((ele) => {
+        temp.push({
+          src: ele.bannerImageUrl,
+          navigateUrl: ele.navigationUrl,
+        });
+      });
+      setBannerImages([...temp]);
+    }
+    if (err) {
+      console.log(err);
+    }
+  };
+
+  const getProducts = async () => {
+    const { data, err } = await getTopProducts(route?.query?.supplierId);
+    if (data) {
+      const result = [];
+      data.forEach((variations) => {
+        variations.productVariations.forEach((product) => {
+          result.push({
+            image: product.variationMedia[0],
+            title: product.productTitle,
+            price: product.salePrice,
+            rating: 4,
+            ratingCount: 89,
+          });
+        });
+      });
+      setProducts([...result]);
+    }
+    if (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getCategories();
+    getBanners();
+    getProducts();
+  }, []);
+
   return (
     <>
-      {user ? (
+      {isLoggedIn ? (
         <div className="px-3">
           {!showCompareProducts ? (
             <Box>
@@ -262,13 +235,18 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CarousalComponent />
-
-          <HomeComponent
-            categories={[...categories]}
-            products={[...products]}
-            productTitle="Top Products"
-          />
+          <CarousalComponent list={[...bannerImages]} interval={4000} />
+          <Box className="py-2">
+            <HomeComponent
+              onCategoryClick={(ele) => {
+                console.log(ele, "AS");
+              }}
+              categories={[...categories]}
+              products={[...products]}
+              productTitle="Top Products"
+              showMarginButton={false}
+            />
+          </Box>
         </>
       )}
     </>

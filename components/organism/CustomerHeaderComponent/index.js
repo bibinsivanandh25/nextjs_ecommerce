@@ -288,7 +288,7 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
-                      signOut({ callbackUrl: "/auth/login" });
+                      signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >
                     Sign Out

@@ -208,12 +208,12 @@ const Login = () => {
           const errRes = err.response.data?.message;
           toastify(errRes, "error");
         })
-        .then((data) => {
+        .then(async (data) => {
           if (data) {
             const { token } = data.data;
             const decoded = JSON.parse(atob(token.split(".")[1].toString()));
             const userData = decoded.sub.split(",");
-            const res = signIn("credentials", {
+            const res = await signIn("credentials", {
               id: userData[0],
               email: userData[1],
               role: decoded.roles[0],

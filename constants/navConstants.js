@@ -542,45 +542,45 @@ const customerMenu = [
     logo: "fas fa-shopping-cart",
     path_name: "Home",
   },
-  {
-    title: "Apparel & Clothing",
-    logo: "fas fa-shopping-cart",
-    path_name: "ApparelandClothing",
-  },
-  {
-    title: "Sarees & Dress Materials",
-    logo: "fas fa-shopping-cart",
-    path_name: "SareesandDressMaterials",
-  },
-  {
-    title: "Fashion Jewellery",
-    logo: "fas fa-shopping-cart",
-    path_name: "FashionJewellery",
-  },
-  {
-    title: "Footwear",
-    logo: "fas fa-shopping-cart",
-    path_name: "Footwear",
-  },
-  {
-    title: "Linen",
-    logo: "fas fa-shopping-cart",
-    path_name: "Linen",
-  },
-  {
-    title: "Baby & Kids Essentials",
-    logo: "fas fa-shopping-cart",
-    path_name: "BabyandKidsEssentials",
-  },
-  {
-    title: "Beauty Products",
-    logo: "fas fa-shopping-cart",
-    path_name: "BeautyProducts",
-  },
-  {
-    title: "Personal care Appliances",
-    logo: "fas fa-shopping-cart",
-    path_name: "PersonalcareAppliances",
-  },
+  // {
+  //   title: "Apparel & Clothing",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "ApparelandClothing",
+  // },
+  // {
+  //   title: "Sarees & Dress Materials",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "SareesandDressMaterials",
+  // },
+  // {
+  //   title: "Fashion Jewellery",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "FashionJewellery",
+  // },
+  // {
+  //   title: "Footwear",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "Footwear",
+  // },
+  // {
+  //   title: "Linen",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "Linen",
+  // },
+  // {
+  //   title: "Baby & Kids Essentials",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "BabyandKidsEssentials",
+  // },
+  // {
+  //   title: "Beauty Products",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "BeautyProducts",
+  // },
+  // {
+  //   title: "Personal care Appliances",
+  //   logo: "fas fa-shopping-cart",
+  //   path_name: "PersonalcareAppliances",
+  // },
 ];
 export { supplierMenu, resellerMenu, customerMenu };
