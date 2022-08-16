@@ -62,16 +62,16 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     const errObj = {
       sku: "",
       stockqty: "",
-      stock_status: null,
-      allow_backorders: null,
+      stock_status: "",
+      allow_backorders: "",
       stock_qty: "",
       back_Orders: "",
       shipping_class: "",
       product_title: "",
-      business_processing_days: null,
+      business_processing_days: "",
       seo_title: "",
       meta_description: "",
-      meta_keyword: [],
+      meta_keyword: "",
       modalname: "",
     };
     if (inventoryFormData.stock_status === null) {
@@ -79,12 +79,12 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       errObj.stock_status = validateMessage.field_required;
     }
     if (manageStock) {
-      if (inventoryFormData.stock_qty === "") {
+      if (inventoryFormData.stockqty === "") {
         flag = true;
-        errObj.stock_qty = validateMessage.field_required;
+        errObj.stockqty = validateMessage.field_required;
       } else if (parseInt(inventoryFormData.stock_qty, 10) < 1) {
         flag = true;
-        errObj.stock_qty = "Stock Qty must be greater then or equal to 1";
+        errObj.stockqty = "Stock Qty must be greater then or equal to 1";
       }
       if (inventoryFormData.allow_backorders === null) {
         flag = true;
@@ -132,6 +132,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.modalname = validateMessage.alpha_numeric_max_100;
     }
+    console.log("err", errObj);
     setErrorObj(errObj);
     return !flag;
   };
@@ -182,10 +183,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               placeholder="Stock Qty"
               inputlabelshrink
               fullWidth
-              // className="w-90p"
-              disabled
+              // disabled
               helperText={errorObj.stockqty}
-              error={errorObj.stockqty && errorObj.stockqty !== ""}
+              error={errorObj.stockqty !== ""}
             />
           </div>
         </Grid>

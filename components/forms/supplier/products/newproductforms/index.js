@@ -1,3 +1,5 @@
+/* eslint-disable no-new */
+/* eslint-disable no-undef */
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
@@ -14,6 +16,8 @@ import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
 import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
+import { saveMedia, saveProduct } from "services/supplier/AddProducts";
+import { useRouter } from "next/router";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -34,17 +38,17 @@ const ProductsLayout = ({
   const [tabsLists, setTabsLists] = useState([...tabsList]);
   const [imagedata, setImageData] = useState([]);
   const [activeTab, setactiveTab] = useState(0);
-  const [showFileUploadModal, setShowFileUploadModal] = useState(false);
+  const [showFileUploadModal, setShowFileUploadModal] = useState("");
   const [mainFormData, setMainFormData] = useState({
     commision_mode: null,
     product_type: "",
     brand: "",
     short_description: {
-      media: [],
+      media: {},
       text: "",
     },
     long_description: {
-      media: [],
+      media: {},
       text: "",
     },
     sub_category_id: "",
@@ -89,6 +93,10 @@ const ProductsLayout = ({
   const [trademarkList, setTradeMarkList] = useState([]);
   const userInfo = useUserInfo();
   const [modalErrObj, setModalErrObj] = useState({});
+  const [imgUrls, setImgUrls] = useState({});
+  const [short_descriptionImg, setshort_descriptionImg] = useState({});
+  const [long_descriptionImg, setlong_descriptionImg] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     if (mainFormData.category?.value === "electronics") {
@@ -99,9 +107,14 @@ const ProductsLayout = ({
   }, [mainFormData.category]);
   useEffect(() => {
     setFormData((pre) => {
-      return { ...pre, mainFormData };
+      return {
+        ...pre,
+        mainFormData,
+        short_descriptionImg,
+        long_descriptionImg,
+      };
     });
-  }, [mainFormData]);
+  }, [mainFormData, short_descriptionImg, long_descriptionImg]);
 
   const getTags = () => {
     serviceUtil
@@ -145,9 +158,9 @@ const ProductsLayout = ({
         `products/supplier/product/trademark-invoice-dropdown?documentType=${type}&supplierId=${userInfo.id}`
       )
       .then((res) => {
-        if (type === "B2B_Invoice") {
+        if (type === "B2B_INVOICE") {
           setB2bList(() => {
-            return res.data.map((item) => {
+            return res.data.data.map((item) => {
               return {
                 id: item.trademarkInvoiceId,
                 value: item.trademarkInvoiceId,
@@ -156,7 +169,15 @@ const ProductsLayout = ({
             });
           });
         } else {
-          setTradeMarkList();
+          setTradeMarkList(() => {
+            return res.data.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                label: item.documentName,
+              };
+            });
+          });
         }
       })
       .catch(() => {});
@@ -185,9 +206,7 @@ const ProductsLayout = ({
           });
           setSetsData(finaData);
         })
-        .catch((err) => {
-          toastify(err.response.data.message, "error");
-        });
+        .catch(() => {});
     }
   }, [mainFormData.category]);
 
@@ -303,7 +322,6 @@ const ProductsLayout = ({
       setactiveTab((prev) => prev + 1);
     }
   };
-
   useEffect(() => {
     if (formData?.mainForm && Object.keys(formData.mainForm).length) {
       setMainFormData({ ...formData.mainForm });
@@ -377,6 +395,175 @@ const ProductsLayout = ({
       });
     }
   };
+
+  const saveimg = (type, imgList) => {
+    return saveMedia(imgList).then((res) => {
+      if (!res.error) {
+        return { [`${type}`]: res.data };
+      }
+    });
+  };
+
+  const createPayload = async () => {
+    const multipart = [...imagedata.map((item) => item.multipart)];
+    const imgFormData = new FormData();
+    const short_description = new FormData();
+    const long_description = new FormData();
+    const refundPolicy = new FormData();
+    const cancellationPolicy = new FormData();
+    const shippingPolicy = new FormData();
+    const promiseAll = [];
+    imgFormData.set("data", {});
+    short_description.set("data", {});
+    long_description.set("data", {});
+    refundPolicy.set("data", {});
+    cancellationPolicy.set("data", {});
+    shippingPolicy.set("data", {});
+    multipart.forEach((item) => {
+      imgFormData.append("medias", item);
+    });
+    promiseAll.push(saveimg("productImage", imgFormData));
+    if (short_descriptionImg?.multiPart?.length) {
+      short_descriptionImg.multiPart.forEach((item) => {
+        short_description.append("medias", item);
+      });
+      promiseAll.push(saveimg("short_description", short_description));
+    }
+    if (long_descriptionImg?.multiPart?.length) {
+      long_descriptionImg.multiPart.forEach((item) => {
+        long_description.append("medias", item);
+      });
+      promiseAll.push(saveimg("long_description", long_description));
+    }
+    if (formData?.policy?.returnablemedia?.multiPart?.length) {
+      formData?.policy.returnablemedia.multiPart.forEach((item) => {
+        refundPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("refundPolicy", refundPolicy));
+    }
+    if (formData?.policy?.canclemedia?.multiPart?.length) {
+      formData?.policy.canclemedia.multiPart.forEach((item) => {
+        cancellationPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("cancellationPolicy", cancellationPolicy));
+    }
+    if (formData?.policy?.shippingmedia?.multiPart?.lenghth) {
+      formData?.policy.shippingmedia.multiPart.forEach((item) => {
+        shippingPolicy.append("medias", item);
+      });
+      promiseAll.push(saveimg("shippingPolicy", shippingPolicy));
+    }
+    const imgdata = await Promise.all(promiseAll);
+    const imgData = {};
+    imgdata.forEach((ele) => {
+      imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
+    });
+    setImgUrls(imgData);
+    const getvariationProperty = () => {
+      const temp = ["countryOfOrigin", "others", "expiryDate"];
+      const variationProperty = [];
+      Object.keys(formData.variation).forEach((item) => {
+        if (!temp.includes(item)) {
+          variationProperty.push({
+            variationId: item,
+            optionId: formData.variation[item],
+            variationType: formData.attribute[item][0]?.variationType,
+          });
+        }
+      });
+      return variationProperty;
+    };
+    const payload = {
+      brand: mainFormData.brand,
+      longDescription: mainFormData.long_description.text,
+      longDescriptionFileUrls: imgData.long_description,
+      shortDescription: mainFormData.short_description.text,
+      shortDescriptionFileUrls: imgData.short_description,
+      subCategoryId: mainFormData.subCategoryValue.id,
+      subCategoryName: mainFormData.subCategoryValue.label,
+      commissionMode: mainFormData.commision_mode,
+      tags: [mainFormData.tags.id],
+      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
+      trademarkLetterIdList: mainFormData.b2bdocument.id
+        ? [mainFormData.b2bdocument.id]
+        : [],
+      bTobInvoiceIdList: [mainFormData.selectb2binvoice.id],
+      isGenericProduct: mainFormData.genericradio,
+
+      linkedProducts: {
+        upSells: formData.linked.upSells.value,
+        crossSells: formData.linked.crossSells.value,
+      },
+
+      productPolicies: {
+        policyTabLabel: formData.policy.policyTabLabel,
+        shippingPolicy: formData.policy.shippingPolicy.text,
+        shippingPolicyMediaUrls: imgData?.shippingPolicy ?? [],
+        refundPolicy: formData.policy.refundPolicy.text,
+        refundPolicyMediaUrls: imgData?.refundPolicy ?? [],
+        cancellationPolicy: formData.policy.cancellationPolicy.text,
+        cancellationPolicyMediaUrls: imgData?.cancellationPolicy ?? [],
+        warrantyAvailable: formData.policy.warranty,
+        warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
+          ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
+          : null,
+      },
+
+      productVariations: [
+        {
+          productTitle: formData.inventory.product_title,
+          shippingClass: formData.inventory.shipping_class.value,
+          businessProcessingDays:
+            formData.inventory.business_processing_days.value,
+          seoTitle: formData.inventory.seo_title,
+          metaDescription: formData.inventory.meta_description,
+          metaKeywords: formData.inventory.meta_keyword.join(),
+          isStoreFDR: formData.pricing.freeDeliveryCheckbox,
+          salePriceWithLogistics: parseInt(
+            formData.pricing.sale_price_logistics,
+            10
+          ),
+          rtoAccepted: formData.pricing.return_order_accepted,
+          rtoDays: formData.pricing.returnorder.value,
+          codAvailable: formData.pricing.cash_on_accepted,
+          deliveryCharge: formData.pricing.delivery_charge,
+          packageLength: parseFloat(formData.pricing.length),
+          packageWidth: parseFloat(formData.pricing.width),
+          packageHeight: parseFloat(formData.pricing.height),
+          weightInclusivePackage: parseFloat(formData.pricing.product_weight),
+          salePrice: parseInt(formData.pricing.sale_price, 10),
+          mrp: parseInt(formData.pricing.mrp, 10),
+          stockQty: parseInt(formData.inventory.stockqty, 10),
+          modelName: formData.inventory.modelname,
+          sellWithMrMrsCart: formData.mrMrsCartFormData.sellwithus,
+          mrmrscartSalePriceWithFDR: formData.mrMrsCartFormData.free_delivery,
+          mrmrscartSalePriceWithOutFDR:
+            formData.mrMrsCartFormData.paid_delivery,
+          mrmrscartRtoAccepted: formData.mrMrsCartFormData.return,
+          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.id,
+          mrmrscartCodAvailable: formData.mrMrsCartFormData.cashondelivery,
+          stockStatus: formData.inventory.stock_status.label,
+          allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
+          backOrders: parseInt(formData.inventory.back_Orders, 10) || 0,
+          variationMedia: imgData.productImage,
+          variationProperty: getvariationProperty(),
+        },
+      ],
+
+      otherInformationObject: {},
+      zoneChargeInfo: {},
+      productType: "SIMPLE_PRODUCT",
+      supplierId: userInfo.id,
+    };
+    const { data, err } = await saveProduct(payload);
+    if (err) {
+      toastify(err.response.data.message, "error");
+    } else if (data) {
+      toastify(data.message, "success");
+      router.replace("/supplier/products&inventory/myproducts");
+    }
+  };
+
   return (
     <>
       {!showGroupVariant ? (
@@ -386,7 +573,7 @@ const ProductsLayout = ({
               ? imagedata.map((item, index) => (
                   <ImageCard
                     key={index}
-                    imgSrc={item}
+                    imgSrc={item.binary}
                     handleCloseClick={() => {
                       setImageData((prev) => {
                         const temp = [...prev];
@@ -406,7 +593,10 @@ const ProductsLayout = ({
                     if (e.target.files[0].size <= 1000000) {
                       const file = await getBase64(e.target.files[0]);
                       setImageData((prev) => {
-                        return [...prev, file];
+                        return [
+                          ...prev,
+                          { binary: file, multipart: e.target.files[0] },
+                        ];
                       });
                     } else {
                       toastify("Image size should be less than 1MB", "error");
@@ -449,7 +639,7 @@ const ProductsLayout = ({
                     }}
                     value={mainFormData.short_description.text}
                     onBtnClick={() => {
-                      setShowFileUploadModal(true);
+                      setShowFileUploadModal("short_description");
                     }}
                     btnLabel="Add Media"
                     btnSize="small"
@@ -478,7 +668,7 @@ const ProductsLayout = ({
                       });
                     }}
                     onBtnClick={() => {
-                      setShowFileUploadModal(true);
+                      setShowFileUploadModal("long_description");
                     }}
                     btnLabel="Add Media"
                     btnSize="small"
@@ -655,6 +845,7 @@ const ProductsLayout = ({
                       list={trademarkList}
                       id="b2bdocument"
                       size="small"
+                      m
                       value={mainFormData.b2bdocument}
                       onDropdownSelect={(value) => {
                         handleDropdownChange(value, "b2bdocument");
@@ -790,27 +981,46 @@ const ProductsLayout = ({
                 label={activeTab === tabsList.length - 1 ? "Submit" : "Next"}
                 size="small"
                 onBtnClick={
-                  activeTab === tabsLists.length
+                  activeTab === tabsLists.length - 1
                     ? () => {
-                        const temp = formsRef?.current?.handleSendFormData();
-                        setFormData((prev) => {
-                          const flag = formsRef.current.validate();
-                          if (flag) {
-                            const data = { ...prev, [temp[0]]: temp[1] };
-                            handleSubmitClick(data);
-                            return data;
-                          }
-                        });
+                        if (imagedata.length) {
+                          const temp = formsRef?.current?.handleSendFormData();
+                          setFormData((prev) => {
+                            const flag = formsRef.current.validate();
+                            if (flag) {
+                              const data = { ...prev, [temp[0]]: temp[1] };
+                              createPayload();
+                              return data;
+                            }
+                          });
+                        } else {
+                          toastify("Add atleast one product image", "error");
+                        }
                       }
                     : handleNextClick
                 }
               />
             </Box>
           </Box>
-          {showFileUploadModal ? (
+          {showFileUploadModal !== "" ? (
             <FileUploadModal
-              showModal={showFileUploadModal}
+              showModal={showFileUploadModal !== ""}
               setShowModal={setShowFileUploadModal}
+              getUploadedFiles={(val) => {
+                setMainFormData((pre) => {
+                  const temp = JSON.parse(JSON.stringify(pre));
+                  temp[`${showFileUploadModal}`].media = JSON.parse(
+                    JSON.stringify(val)
+                  );
+                  return temp;
+                });
+                if (showFileUploadModal === "short_description") {
+                  setshort_descriptionImg(val);
+                } else {
+                  setlong_descriptionImg(val);
+                }
+              }}
+              type="multipart"
             />
           ) : null}
         </Box>

@@ -12,22 +12,22 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const returnOrderData = [
   {
-    id: 1,
+    id: 7,
     value: "7 Days",
     label: "7 Days",
   },
   {
-    id: 1,
+    id: 14,
     value: "14 Days",
     label: "14 Days",
   },
   {
-    id: 1,
+    id: 21,
     value: "21 Days",
     label: "21 Days",
   },
   {
-    id: 1,
+    id: 28,
     value: "28 Days",
     label: "28 Days",
   },

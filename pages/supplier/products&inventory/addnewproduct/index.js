@@ -65,7 +65,14 @@ const NewProducts = () => {
       height: "",
       delivery_charge: "",
     },
-    policy: {},
+    policy: {
+      policyTabLabel: "",
+      refundPolicy: { media: {}, text: "" },
+      cancellationPolicy: { media: {}, text: "" },
+      shippingPolicy: { media: {}, text: "" },
+      warranty: false,
+      warrantyperiod: {},
+    },
     grouped: {},
     variation: {},
     attribute: {},
@@ -75,6 +82,7 @@ const NewProducts = () => {
       paid_delivery: "",
       return: false,
       cashondelivery: false,
+      returnorder: {},
     },
   });
   const [tabsList, setTabsList] = useState([
@@ -229,7 +237,7 @@ const NewProducts = () => {
   }, [formData]);
 
   const handleSubmitClick = (data) => {
-    console.log(data);
+    console.log(data, "submit");
   };
 
   return (

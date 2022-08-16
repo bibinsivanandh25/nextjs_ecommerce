@@ -35,12 +35,12 @@ const AttributesForm = forwardRef(
       let flag = true;
       let errObj = {};
       const temp = [];
-      Attributes.forEach((ele) => {
+      attributeList.forEach((ele) => {
         temp.push(ele.selected);
         if (ele.selected) {
           errObj = {
             ...errObj,
-            [ele.attribute]: "",
+            [ele.id]: "",
           };
         }
       });
@@ -60,19 +60,27 @@ const AttributesForm = forwardRef(
       return flag;
     };
 
-    const getAttributesList = async (subCatId) => {
+    const getAttributesList = async (subCatId, pre) => {
       const { data } = await getAttributes(subCatId);
+      if (pre?.attribute && Object.keys(pre?.attribute).length) {
+        setSelectedAttribute(JSON.parse(JSON.stringify(pre.attribute)));
+      }
       const temp = [
         ...data.othersVariationList.map((item) => {
           return {
             id: item.otherVariationId,
             attribute: item.variationName,
-            selected: false,
+            selected: Object.keys(pre?.attribute).length
+              ? pre?.attribute[`${item.otherVariationId}`].length
+              : false,
             visibleOnProduct: false,
+            variationType: "OTHER_VARIATION",
             options: item.optionList.map((ele) => {
               return {
                 id: ele.otherVariationOptionId,
                 label: ele.optionName,
+                variationName: item.variationName,
+                variationId: item.otherVariationId,
               };
             }),
           };
@@ -81,12 +89,17 @@ const AttributesForm = forwardRef(
           return {
             id: item.standardVariationId,
             attribute: item.variationName,
-            selected: false,
+            selected: Object.keys(pre?.attribute).length
+              ? pre?.attribute[`${item.standardVariationId}`].length
+              : false,
             visibleOnProduct: false,
+            variationType: "STANDARD_VARIATION",
             options: item.optionList.map((ele) => {
               return {
                 id: ele.standardOptionId,
                 label: ele.optionName,
+                variationName: item.variationName,
+                variationId: item.standardVariationId,
               };
             }),
           };
@@ -103,7 +116,7 @@ const AttributesForm = forwardRef(
           tempForm?.mainFormData?.subCategoryValue &&
           Object.keys(tempForm.mainFormData.subCategoryValue).length
         ) {
-          getAttributesList(tempForm.mainFormData.subCategoryValue.id);
+          getAttributesList(tempForm.mainFormData.subCategoryValue.id, pre);
         }
         return pre;
       });
@@ -124,6 +137,9 @@ const AttributesForm = forwardRef(
             id: item.id,
             title: item.label,
             value: item.label,
+            variationName: item.variationName,
+            variationId: item.variationId,
+            variationType: ele.variationType,
           });
         });
 
@@ -161,12 +177,13 @@ const AttributesForm = forwardRef(
               <Grid item lg={9} sm={12} container rowGap={1}>
                 <Grid item sm={12}>
                   <MultiSelectComponent
-                    helperText={formErrorObj[ele.attribute]}
-                    error={formErrorObj[ele.attribute]?.length}
+                    helperText={formErrorObj[ele.id]}
+                    error={formErrorObj[ele.id]?.length}
                     label={ele.attribute}
                     list={[...options]}
                     id={ele.id}
                     onSelectionChange={(e, val, id) => {
+                      debugger;
                       setSelectedAttribute((pre) => ({
                         ...pre,
                         [id]: [...val],
