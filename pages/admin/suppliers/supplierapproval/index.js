@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
@@ -7,6 +7,7 @@ import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import NotificationModal from "@/forms/admin/suppliers/supplierapprovalmodals/notify";
+import InviteSupplierModal from "@/forms/admin/suppliers/supplierapprovalmodals/InviteSupplierModal";
 
 const tableColumn = [
   {
@@ -130,6 +131,7 @@ const SupplierApproval = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState([]);
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
+  const [openInviteSupplierModal, setOpenInviteSupplierModal] = useState(false);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -186,20 +188,32 @@ const SupplierApproval = () => {
 
   return (
     <Box className="mt-2">
-      <Box className="d-flex justify-content-between px-3">
-        <Typography>Supplier approval (48)</Typography>
-        <ButtonComponent label="Invite supplier" />
-      </Box>
-      <TableComponent
-        // table_heading="Supplier approval (48)"
-        showSearchFilter={false}
-        showSearchbar={false}
-        stickyHeader={false}
-        // showCustomButton
-        // customButtonLabel="Invite supplier"
-        columns={[...tableColumn]}
-        tableRows={[...rows]}
-      />
+      <Paper
+        sx={{ height: "84vh" }}
+        className="p-3 overflow-auto hide-scrollbar"
+      >
+        <Box className="d-flex justify-content-between px-3">
+          <Typography className="color-orange fw-bold">
+            Supplier approval (48)
+          </Typography>
+          <ButtonComponent
+            onBtnClick={() => {
+              setOpenInviteSupplierModal(true);
+            }}
+            label="Invite supplier"
+          />
+        </Box>
+        <TableComponent
+          // table_heading="Supplier approval (48)"
+          showSearchFilter={false}
+          showSearchbar={false}
+          stickyHeader={false}
+          // showCustomButton
+          // customButtonLabel="Invite supplier"
+          columns={[...tableColumn]}
+          tableRows={[...rows]}
+        />
+      </Paper>
       {viewModalOpen && (
         <ModalComponent
           open={viewModalOpen}
@@ -249,6 +263,10 @@ const SupplierApproval = () => {
           setNotifyModalOpen={setNotifyModalOpen}
         />
       )}
+      <InviteSupplierModal
+        setOpenInviteSupplierModal={setOpenInviteSupplierModal}
+        openInviteSupplierModal={openInviteSupplierModal}
+      />
     </Box>
   );
 };

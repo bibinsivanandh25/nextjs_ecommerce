@@ -1,8 +1,8 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useState } from "react";
-import styles from "./fixedmargin.module.css";
+import TabsCard from "components/molecule/TabsCard";
 import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
 import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
 import Updated from "@/forms/admin/products/fixedmargin/Updated";
@@ -11,14 +11,13 @@ import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
 
 const FixedMargin = () => {
   const [activeTab, setActiveTab] = useState(0);
-
-  const titles = [
-    "Products to approve",
-    "Queries",
-    "Active",
-    "Update",
-    "Rejected",
-  ];
+  const [tabList, setTabList] = useState([
+    { label: "Products to approve", isSelected: true },
+    { label: "Queries", isSelected: false },
+    { label: "Active", isSelected: false },
+    { label: "Update", isSelected: false },
+    { label: "Rejected", isSelected: false },
+  ]);
 
   const [rowsDataObjectsForApproval, setrowsDataObjectsForApproval] = useState([
     {
@@ -244,30 +243,51 @@ const FixedMargin = () => {
     // },
   ]);
 
-  const returnTabs = () => {
-    return titles.map((val, index) => {
-      return (
-        <Box
-          onClick={() => {
-            setActiveTab(index);
-          }}
-          className={`px-4 py-1 border fs-14 cursor-pointer 
-          ${activeTab === index ? styles.activeTab : styles.inActivetab}
-          `}
-          key={val}
-        >
-          <Typography className="cursor-pointer fs-14">{val}</Typography>
-        </Box>
-      );
+  // const returnTabs = () => {
+  //   return titles.map((val, index) => {
+  //     return (
+  //       <Box
+  //         onClick={() => {
+  //           setActiveTab(index);
+  //         }}
+  //         className={`px-4 py-1 border fs-14 cursor-pointer
+  //         ${activeTab === index ? styles.activeTab : styles.inActivetab}
+  //         `}
+  //         key={val}
+  //       >
+  //         <Typography className="cursor-pointer fs-14">{val}</Typography>
+  //       </Box>
+  //     );
+  //   });
+  // };
+
+  const handleSelect = (index) => {
+    setTabList((list) => {
+      const theList = list;
+      theList.forEach((val, forEachIndex) => {
+        if (forEachIndex === index) {
+          const theVal = val;
+          theVal.isSelected = true;
+        } else {
+          const theVal = val;
+          theVal.isSelected = false;
+        }
+      });
+      return theList;
     });
+    setActiveTab(index);
   };
 
   return (
     <>
       {" "}
       <Box>
-        <Box className="d-flex mt-3">{returnTabs()}</Box>
-        <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
+        <TabsCard
+          tabList={tabList}
+          onSelect={(index) => {
+            handleSelect(index);
+          }}
+        >
           <Box className="px-1 pt-2">
             {activeTab === 0 && (
               <ProductsToApprove
@@ -304,7 +324,7 @@ const FixedMargin = () => {
               />
             )}
           </Box>
-        </Paper>
+        </TabsCard>
       </Box>
     </>
   );

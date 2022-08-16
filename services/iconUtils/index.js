@@ -43,6 +43,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const CustomIcon = ({
   title = "",
@@ -104,6 +105,7 @@ const CustomIcon = ({
     flagIcon: FlagIcon,
     addNote: NoteAddIcon,
     arrowUpward: ArrowUpwardIcon,
+    expandMore: ExpandMoreIcon,
   };
 
   const [hover, setHover] = useState(false);
