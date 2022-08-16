@@ -1,8 +1,7 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 import axios from "axios";
-import { config } from "dotenv";
-import { getSession, signIn, useSession } from "next-auth/react";
-// import { useUserInfo } from "./hooks";
+import { getSession } from "next-auth/react";
 
 const baseURL = `${process.env.DOMAIN}/api/v1`;
 
@@ -15,14 +14,18 @@ const axiosInstance = axios.create({
 const setHeaders = (commmonHeaders) => {
   axiosInstance.defaults.headers.common = commmonHeaders;
 };
-// const user = useSession();
-// console.log(user, "askjhgasg");
+// const user = useUserInfo();
+let user;
 
-axiosInstance.interceptors.request.use((config) => {
+console.log(user, "user");
+
+axiosInstance.interceptors.request.use(async (config) => {
   config.headers = {
     "Access-Control-Allow-Origin": "*",
     ...config.headers,
-    // userId,
+    userId: await getSession().then((res) => {
+      return res.user.id;
+    }),
   };
   return config;
 });
