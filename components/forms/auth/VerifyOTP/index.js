@@ -30,10 +30,14 @@ const VerifyOTP = ({
   }, []);
 
   const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("userName", payLoad.mobileNumber);
+    formData.append("otp", otp);
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
     await serviceUtil
-      .post(
-        `users/registration/verify-otp?userName=${payLoad.mobileNumber}&otp=${otp}`
-      )
+      .post(`users/registration/verify-otp`, formData, config)
       .then(async (data) => {
         if (data) {
           toastify(data.data.message, "success");
@@ -56,12 +60,12 @@ const VerifyOTP = ({
         return null;
       })
       .catch((err) => {
-        console.log(err);
+        toastify(err.response.data.message, "error");
       });
   };
 
   const resendOTP = async () => {
-    setotp(null);
+    setotp("xxxx");
     await serviceUtil.post(
       `users/registration/send-otp/?mobileNumber=${
         payLoad.mobileNumber

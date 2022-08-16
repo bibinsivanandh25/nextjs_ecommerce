@@ -9,8 +9,8 @@ const getWithResp = (url, reqObj) => {
   return axiosInstance.get(url, reqObj);
 };
 
-const post = (url, reqObj) => {
-  return axiosInstance.post(url, reqObj);
+const post = (url, reqObj, args) => {
+  return axiosInstance.post(url, reqObj, args);
 };
 
 const put = (url, reqObj) => {
