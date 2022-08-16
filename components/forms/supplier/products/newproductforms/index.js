@@ -447,7 +447,7 @@ const ProductsLayout = ({
       });
       promiseAll.push(saveimg("cancellationPolicy", cancellationPolicy));
     }
-    if (formData?.policy?.shippingmedia?.multiPart?.lenghth) {
+    if (formData?.policy?.shippingmedia?.multiPart?.length) {
       formData?.policy.shippingmedia.multiPart.forEach((item) => {
         shippingPolicy.append("medias", item);
       });
