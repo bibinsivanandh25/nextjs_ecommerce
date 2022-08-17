@@ -42,11 +42,11 @@ const ShopCode = () => {
     if (!flag) {
       const { data, err } = await getStoreByStoreCode(formValues.shopCode);
       if (data) {
-        console.log(data.supplierId, "sdasdsad");
         route.push({
           pathname: `/customer/home`,
           query: {
             supplierId: data.supplierId,
+            storeCode: formValues.shopCode,
           },
         });
       }
