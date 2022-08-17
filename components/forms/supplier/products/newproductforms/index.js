@@ -31,7 +31,6 @@ const ProductsLayout = ({
   handleSubmitClick = () => {},
   tabsList = [],
   formsRef = null,
-  // type = "",
   showGroupVariant = false,
   setShowGroupVariant = () => {},
 }) => {
@@ -94,7 +93,7 @@ const ProductsLayout = ({
   const [trademarkList, setTradeMarkList] = useState([]);
   const userInfo = useUserInfo();
   const [modalErrObj, setModalErrObj] = useState({});
-  const [imgUrls, setImgUrls] = useState({});
+  // const [imgUrls, setImgUrls] = useState({});
   const [short_descriptionImg, setshort_descriptionImg] = useState({});
   const [long_descriptionImg, setlong_descriptionImg] = useState({});
   const router = useRouter();
@@ -256,10 +255,7 @@ const ProductsLayout = ({
       category: "",
     };
     let flag = false;
-    // if (mainFormData.commision_mode === null) {
-    //   errObj.commision_mode = validateMessage.field_required;
-    //   flag = true;
-    // }
+
     if (mainFormData.selectb2binvoice === null) {
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
@@ -456,7 +452,7 @@ const ProductsLayout = ({
     imgdata.forEach((ele) => {
       imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
     });
-    setImgUrls(imgData);
+    // setImgUrls(imgData);
     const getvariationProperty = () => {
       const temp = ["countryOfOrigin", "others", "expiryDate"];
       const variationProperty = [];
@@ -558,7 +554,7 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformationObject: {},
+      otherInformation: {},
       zoneChargeInfo: {},
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
@@ -575,46 +571,48 @@ const ProductsLayout = ({
   return (
     <>
       {!showGroupVariant ? (
-        <Box className="d-flex flex-grow-1 flex-row mt-2">
-          <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
-            {imagedata.length > 0
-              ? imagedata.map((item, index) => (
-                  <ImageCard
-                    key={index}
-                    imgSrc={item.binary}
-                    handleCloseClick={() => {
-                      setImageData((prev) => {
-                        const temp = [...prev];
-                        temp.splice(index);
-                        return [...temp];
-                      });
-                    }}
-                    className="mx-3"
-                  />
-                ))
-              : null}
-            {imagedata.length < 5 ? (
-              <ImageCard
-                showClose={false}
-                handleImageUpload={async (e) => {
-                  if (e.target.files.length) {
-                    if (e.target.files[0].size <= 1000000) {
-                      const file = await getBase64(e.target.files[0]);
-                      setImageData((prev) => {
-                        return [
-                          ...prev,
-                          { binary: file, multipart: e.target.files[0] },
-                        ];
-                      });
-                    } else {
-                      toastify("Image size should be less than 1MB", "error");
+        <Box className="d-flex flex-grow-1 flex-row">
+          {!router.pathname.includes("addnewcollection") && (
+            <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
+              {imagedata.length > 0
+                ? imagedata.map((item, index) => (
+                    <ImageCard
+                      key={index}
+                      imgSrc={item.binary}
+                      handleCloseClick={() => {
+                        setImageData((prev) => {
+                          const temp = [...prev];
+                          temp.splice(index);
+                          return [...temp];
+                        });
+                      }}
+                      className="mx-3"
+                    />
+                  ))
+                : null}
+              {imagedata.length < 5 ? (
+                <ImageCard
+                  showClose={false}
+                  handleImageUpload={async (e) => {
+                    if (e.target.files.length) {
+                      if (e.target.files[0].size <= 1000000) {
+                        const file = await getBase64(e.target.files[0]);
+                        setImageData((prev) => {
+                          return [
+                            ...prev,
+                            { binary: file, multipart: e.target.files[0] },
+                          ];
+                        });
+                      } else {
+                        toastify("Image size should be less than 1MB", "error");
+                      }
                     }
-                  }
-                }}
-                className="mx-3"
-              />
-            ) : null}
-          </Box>
+                  }}
+                  className="mx-3"
+                />
+              ) : null}
+            </Box>
+          )}
           <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
@@ -1037,6 +1035,9 @@ const ProductsLayout = ({
           formData={formData}
           ref={formsRef}
           setShowGroupVariant={setShowGroupVariant}
+          imagedata={imagedata}
+          short_descriptionImg={short_descriptionImg}
+          long_descriptionImg={long_descriptionImg}
         />
       )}
       <ModalComponent

@@ -132,7 +132,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.modalname = validateMessage.alpha_numeric_max_100;
     }
-    console.log("err", errObj);
     setErrorObj(errObj);
     return !flag;
   };
@@ -221,6 +220,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               helperText={errorObj.stock_status}
               error={errorObj.stock_status !== ""}
               placeholder="Select stock status"
+              type="number"
             />
           </div>
           <div className="mx-2">
@@ -262,6 +262,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                   fullWidth
                   // className="w-90p"
                   // disabled
+                  type="number"
                   helperText={errorObj.back_Orders}
                   error={errorObj.back_Orders && errorObj.back_Orders !== ""}
                 />
