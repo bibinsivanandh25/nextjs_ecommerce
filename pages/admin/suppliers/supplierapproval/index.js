@@ -1,13 +1,15 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
+import toastify from "services/utils/toastUtils";
+import axios from "axios";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import NotificationModal from "@/forms/admin/suppliers/supplierapprovalmodals/notify";
-import InviteSupplierModal from "@/forms/admin/suppliers/supplierapprovalmodals/InviteSupplierModal";
+import InputBox from "@/atoms/InputBoxComponent";
 
 const tableColumn = [
   {
@@ -84,136 +86,145 @@ const tableColumn = [
   },
 ];
 
-const viewModalDatas = [
-  {
-    id: 1,
-    title: "Business Name",
-    value: "#354543673",
-  },
-  {
-    id: 2,
-    title: "Email ID",
-    value: "balu123@gmail.com",
-  },
-  {
-    id: 3,
-    title: "Mobile no",
-    value: "8765433680",
-  },
-  {
-    id: 4,
-    title: "GSTIN No",
-    value: "--",
-  },
-  {
-    id: 5,
-    title: "Categories",
-    value: "--",
-  },
-  {
-    id: 6,
-    title: "Stock Count",
-    value: "--",
-  },
-  {
-    id: 7,
-    title: "Website link",
-    value: "--",
-  },
-  {
-    id: 8,
-    title: "Other market place",
-    value: "--  ",
-  },
-];
-
 const SupplierApproval = () => {
+  const [masterData, setMasterData] = useState([]);
+  const [tableRows, setTableRows] = useState([]);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState([]);
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
-  const [openInviteSupplierModal, setOpenInviteSupplierModal] = useState(false);
+  const [openInviteModal, setOpenInviteModal] = useState(false);
+  const [modalUserData, setModalUserData] = useState("");
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
+    // toastify(`Copied GSTIN Number ${copyTexts}`, "success");
   };
-  const rows = [
-    {
-      id: "col1",
-      col1: "01",
-      col2: "VRL Transport",
-      col3: "+91 787654544",
-      col4: (
-        <Box className="d-flex justify-content-around ">
-          <span className="h-5" id="gstinnumber">
-            MRK3556235F3
-          </span>
-          <CustomIcon
-            type="filecopy"
-            size="small"
-            className="fs-18"
-            onIconClick={() => {
-              copyText();
-            }}
-          />
-        </Box>
-      ),
-      col5: "--",
-      col6: "--",
-      col7: "http://",
-      col8: "http://",
-      col9: (
-        <Box>
-          <DoneIcon className="border rounded bg-green color-white fs-18 me-1" />
-          <ClearIcon className="border rounded bg-red color-white fs-18 me-1" />
-          <CustomIcon
-            type="view"
-            className="fs-18 me-1"
-            title="View"
-            onIconClick={() => {
-              setViewModalOpen(true);
-              setViewModalData(viewModalDatas);
-            }}
-          />
-          <CustomIcon
-            type="notificationsIcon"
-            className="fs-18"
-            onIconClick={() => {
-              setNotifyModalOpen(true);
-            }}
-          />
-        </Box>
-      ),
-    },
-  ];
+  const handleViewClick = (item) => {
+    setViewModalData(item);
+    setViewModalOpen(true);
+  };
+  const handleAcceptClick = async (id, value) => {
+    const payload = {
+      supplierId: id,
+      status: value,
+    };
+    await axios
+      .post(
+        "http://10.10.31.116:8500/api/v1/users/admin/supplier-approval",
+        payload,
+        { headers: { userId: "ADM01234" } }
+      )
+      .then((res) => {
+        console.log(res.data);
+        toastify(`${res.data.data.message}`, "success");
+      })
+      .catch((err) => {
+        console.log(err?.response);
+        toastify(`${err?.response?.data?.message}`, "error");
+      });
+  };
+  const getTableRows = (data) => {
+    const rowDatas = [];
+    data?.forEach((item, index) => {
+      rowDatas.push({
+        id: "col1",
+        col1: index + 1,
+        col2: item.businessName,
+        col3: item.emailId ? item.emailId : item.mobileNumber,
+        col4: (
+          <Box className="d-flex justify-content-around ">
+            <span className="h-5" id="gstinnumber">
+              {item.gstin}
+            </span>
+            <CustomIcon
+              type="filecopy"
+              size="small"
+              className="fs-18"
+              onIconClick={() => {
+                copyText();
+              }}
+            />
+          </Box>
+        ),
+        col5: item.mainCategories.join(", "),
+        col6: item.avgStockCount,
+        col7: item.websiteLink,
+        col8: item.websiteName,
+        col9: (
+          <Box>
+            <DoneIcon
+              className="border rounded bg-green color-white fs-18 me-1 cursor-pointer"
+              onClick={() => {
+                handleAcceptClick(item.supplierId, "APPROVED");
+              }}
+            />
+            <ClearIcon
+              className="border rounded bg-red color-white fs-18 me-1 cursor-pointer"
+              onClick={() => {
+                handleAcceptClick(item.supplierId, "REJECTED");
+              }}
+            />
+            <CustomIcon
+              type="view"
+              className="fs-18 me-1 cursor-pointer"
+              title="View"
+              onIconClick={() => {
+                handleViewClick(item);
+              }}
+            />
+            <CustomIcon
+              type="notificationsIcon"
+              className="fs-18 cursor-pointer"
+              onIconClick={() => {
+                setNotifyModalOpen(true);
+              }}
+            />
+          </Box>
+        ),
+      });
+    });
+    setTableRows(rowDatas);
+  };
+  const getAllTableData = async () => {
+    await axios
+      .get(
+        `http://10.10.31.116:8500/api/v1/users/admin/supplier/supplier-status/0/5?status=INITIATED`
+      )
+      .then((res) => {
+        setMasterData(res.data.data);
+        getTableRows(res.data.data.supplierRegistrations);
+      })
+      .catch((err) => {
+        toastify(err.response.data.message, "error");
+        setTableRows([]);
+      });
+  };
+  useEffect(() => {
+    getAllTableData();
+  }, []);
 
   return (
-    <Box className="mt-2">
-      <Paper
-        sx={{ height: "84vh" }}
-        className="p-3 overflow-auto hide-scrollbar"
-      >
-        <Box className="d-flex justify-content-between px-3">
-          <Typography className="color-orange fw-bold">
-            Supplier approval (48)
-          </Typography>
-          <ButtonComponent
-            onBtnClick={() => {
-              setOpenInviteSupplierModal(true);
-            }}
-            label="Invite supplier"
-          />
-        </Box>
-        <TableComponent
-          // table_heading="Supplier approval (48)"
-          showSearchFilter={false}
-          showSearchbar={false}
-          stickyHeader={false}
-          // showCustomButton
-          // customButtonLabel="Invite supplier"
-          columns={[...tableColumn]}
-          tableRows={[...rows]}
+    <Paper
+      className="pt-2 mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
+      elevation={3}
+    >
+      <Box className="d-flex justify-content-between px-3">
+        <Typography>Supplier approval ({masterData.count})</Typography>
+        <ButtonComponent
+          label="Invite supplier"
+          onBtnClick={() => {
+            setOpenInviteModal(true);
+          }}
         />
-      </Paper>
+      </Box>
+      <TableComponent
+        showSearchFilter={false}
+        showSearchbar={false}
+        stickyHeader={false}
+        columns={[...tableColumn]}
+        tableRows={[...tableRows]}
+        showCheckbox={false}
+      />
       {viewModalOpen && (
         <ModalComponent
           open={viewModalOpen}
@@ -226,19 +237,94 @@ const SupplierApproval = () => {
         >
           <Box className="mt-2">
             <Box className="border-bottom">
-              {viewModalData.map((item) => (
-                <Grid container key={item.id} className="py-2" xs={12}>
-                  <Grid item sm={5} display="flex" justifyContent="end">
-                    <Typography className="h-5"> {item.title}</Typography>
-                  </Grid>
-                  <Grid>&nbsp;:&nbsp;</Grid>
-                  <Grid item sm={6} display="flex" justifyContent="start">
-                    <Typography className="fw-bold h-5">
-                      {item.value}
-                    </Typography>
-                  </Grid>
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Business Name</Typography>
                 </Grid>
-              ))}
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.businessName}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Email ID</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.emailId}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Mobile no</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.mobileNumber}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">GSTIN No</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.gstin}
+                  </Typography>
+                </Grid>
+              </Grid>{" "}
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Categories</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.mainCategories.join(", ")}
+                  </Typography>
+                </Grid>
+              </Grid>{" "}
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Stock Count</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.avgStockCount}
+                  </Typography>
+                </Grid>
+              </Grid>{" "}
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Website link</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.websiteLink}
+                  </Typography>
+                </Grid>
+              </Grid>{" "}
+              <Grid container className="py-2" xs={12}>
+                <Grid item sm={5} display="flex" justifyContent="end">
+                  <Typography className="h-5">Website Name</Typography>
+                </Grid>
+                <Grid>&nbsp;:&nbsp;</Grid>
+                <Grid item sm={6} display="flex" justifyContent="start">
+                  <Typography className="fw-bold h-5">
+                    {viewModalData.websiteName}
+                  </Typography>
+                </Grid>
+              </Grid>
             </Box>
             <Box className="d-flex justify-content-end my-2">
               <ButtonComponent
@@ -263,11 +349,28 @@ const SupplierApproval = () => {
           setNotifyModalOpen={setNotifyModalOpen}
         />
       )}
-      <InviteSupplierModal
-        setOpenInviteSupplierModal={setOpenInviteSupplierModal}
-        openInviteSupplierModal={openInviteSupplierModal}
-      />
-    </Box>
+      {openInviteModal && (
+        <ModalComponent
+          open={openInviteModal}
+          onCloseIconClick={() => {
+            setOpenInviteModal(false);
+          }}
+          ModalTitle="Invite Supplier"
+        >
+          <Box className="p-3">
+            <InputBox
+              placeholder="Enter Mail Id / Phone Number"
+              inputlabelshrink
+              variant="standard"
+              // onInputChange={(e) => {
+              //   setModalUserData(e.traget.value);
+              // }}
+              value={modalUserData}
+            />
+          </Box>
+        </ModalComponent>
+      )}
+    </Paper>
   );
 };
 
