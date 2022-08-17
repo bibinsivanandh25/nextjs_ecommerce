@@ -73,15 +73,23 @@ const ProductDetailsCard = ({
       transformOrigin: "bottom left",
     },
   });
+  console.log(showIcon);
 
   const getProductsCard = () => {
     {
       return products.map((ele, index) => {
         return (
-          <Grid item lg={4} md={6} sm={12} key={index} spacing={1}>
+          <Grid
+            item
+            lg={showIcon ? 4 : 3}
+            md={showIcon ? 6 : 4}
+            sm={showIcon ? 12 : 6}
+            key={index}
+            spacing={1}
+          >
             <Paper className="p-2" sx={{}}>
               <Grid container spacing={2}>
-                <Grid item xs={3} alignSelf="center">
+                <Grid item xs={showIcon ? 3 : 4} alignSelf="center">
                   <Image
                     src={ele.image}
                     // height={"100%"}
@@ -97,7 +105,7 @@ const ProductDetailsCard = ({
                     alt=""
                   />
                 </Grid>
-                <Grid item xs={showIcon ? 7 : 9} spacing={2}>
+                <Grid item xs={showIcon ? 7 : 8} spacing={2}>
                   <Tooltip title={ele.title} placement="top">
                     <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
                       {ele.title}

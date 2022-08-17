@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -89,67 +90,67 @@ const Updated = ({
 
   const options = ["Edit", "Delete", "Raise Query", "Approve", "Reject"];
 
-  const theTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForUpdated.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: (
-          <Typography className="fs-12 text-primary">{val.col1}</Typography>
-        ),
-        col2: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setImages([...val.col2.imgSrc]);
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-                setImageIndexForImageModal(0);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.col2.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
-              />
-            </Box>
-            <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-          </Box>
-        ),
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              onIconClick={() => {
-                setOpenEditModalForUpdated(true);
-              }}
-              type="view"
-              className="fs-18"
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                console.log("Index", index);
-                console.log("ele ", typeof ele);
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
-      });
-    });
-    setTableRows(anArray);
-  };
+  // const theTableRowsData = () => {
+  //   const anArray = [];
+  //   rowsDataObjectsForUpdated.forEach((val, index) => {
+  //     anArray.push({
+  //       id: index + 1,
+  //       col1: (
+  //         <Typography className="fs-12 text-primary">{val.col1}</Typography>
+  //       ),
+  //       col2: (
+  //         <Box className="d-flex align-items-end justify-content-center">
+  //           <Box
+  //             onClick={() => {
+  //               setImages([...val.col2.imgSrc]);
+  //               setModalId(index);
+  //               setOpenImagesArrayModal(true);
+  //               setImageIndexForImageModal(0);
+  //             }}
+  //             className="h-30 border d-flex justify-content-center"
+  //           >
+  //             <Image
+  //               src={val.col2.imgSrc[0]}
+  //               width="50"
+  //               height="50"
+  //               className="cursor-pointer"
+  //             />
+  //           </Box>
+  //           <Typography className="fs-10">/{val.col2.imgCount}</Typography>
+  //         </Box>
+  //       ),
+  //       col3: val.col3,
+  //       col4: val.col4,
+  //       col5: val.col5,
+  //       col6: val.col6,
+  //       col7: (
+  //         <Box className="d-flex justify-content-evenly align-items-center">
+  //           <CustomIcon
+  //             onIconClick={() => {
+  //               setOpenEditModalForUpdated(true);
+  //             }}
+  //             type="view"
+  //             className="fs-18"
+  //           />
+  //           <MenuOption
+  //             getSelectedItem={(ele) => {
+  //               console.log("Index", index);
+  //               console.log("ele ", typeof ele);
+  //               onClickOfMenuItem(ele, index);
+  //             }}
+  //             options={options}
+  //             IconclassName="fs-18 color-gray"
+  //           />
+  //         </Box>
+  //       ),
+  //     });
+  //   });
+  //   setTableRows(anArray);
+  // };
 
-  useEffect(() => {
-    theTableRowsData();
-  }, []);
+  // useEffect(() => {
+  //   theTableRowsData();
+  // }, []);
 
   return (
     <>
@@ -189,8 +190,7 @@ const Updated = ({
           </Paper>
         </Box>
       </Box>
-
-      <DisplayImagesModal
+      {/* <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
@@ -210,19 +210,20 @@ const Updated = ({
         rowsDataObjects={rowsDataObjectsForUpdated}
       />
       {/* Edit  */}
-      <EditProductModalForUpdated
+      {/* <EditProductModalForUpdated
         openEditModalForUpdated={openEditModalForUpdated}
         setOpenEditModalForUpdated={setOpenEditModalForUpdated}
         rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
         modalId={modalId}
-      />
+      /> */}
       {/* Reasons for remove modal */}
-      <RaiseQueryModal
+      {/* <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
         modalTitle="Raise Query"
         placeholder="Type your Query"
-      />
+      />{" "}
+    */}
     </>
   );
 };

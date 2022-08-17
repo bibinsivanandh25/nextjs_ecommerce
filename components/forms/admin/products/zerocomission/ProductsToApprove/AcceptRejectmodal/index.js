@@ -1,17 +1,18 @@
 import React from "react";
 import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import { acceptOrRejectProduct } from "services/admin/products/fixedMargin";
+import toastify from "services/utils/toastUtils";
 import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const AcceptRejectModal = ({
   rowsDataObjects = [],
-  modalId = 0,
   openAcceptRejectModal,
   setOpenAcceptRejectModal = () => {},
 }) => {
   const returnImages = () => {
-    return rowsDataObjects[modalId]?.col2.imgSrc.map((val) => {
+    return rowsDataObjects.variationMedia.map((val) => {
       return (
         <Grid item xs={2} className="ms-2 text-center">
           {" "}
@@ -21,14 +22,19 @@ const AcceptRejectModal = ({
     });
   };
 
-  const returnDiscount = (salePrice, mrpPrice) => {
-    console.log("Sale Price ", salePrice);
-    console.log("Mrp price ", mrpPrice);
-    const diff = mrpPrice - salePrice;
-    const fraction = diff / mrpPrice;
-    return Math.round(fraction * 100);
+  const approveOrRejectProduct = async (status) => {
+    const payload = {
+      productVariationId: rowsDataObjects.productVariationId,
+      status,
+    };
+    const { data, err } = await acceptOrRejectProduct(payload);
+    if (data) {
+      setOpenAcceptRejectModal(false);
+    }
+    if (err) {
+      toastify(err.response.data.message);
+    }
   };
-
   return (
     <>
       <ModalComponent
@@ -48,7 +54,9 @@ const AcceptRejectModal = ({
           <Box>
             <Typography className="fs-14">
               Vendor ID/ Name:{" "}
-              <span className="fw-bold">{rowsDataObjects[modalId]?.col1}</span>
+              <span className="fw-bold">
+                {rowsDataObjects.supplierId} / {rowsDataObjects.supplierName}
+              </span>
             </Typography>
           </Box>
           <Box className="d-flex mt-2">
@@ -61,23 +69,22 @@ const AcceptRejectModal = ({
             <Typography className="fs-14 mt-2">
               Product Title:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjects[modalId]?.col3}
+                {rowsDataObjects.productTitle}
               </span>
             </Typography>
           </Box>
           <Box>
             <Typography className="fs-14 mt-2">
               SKU:{" "}
-              <span className="fs-14 fw-bold">
-                {rowsDataObjects[modalId]?.col4}
-              </span>
+              <span className="fs-14 fw-bold">{rowsDataObjects.skuId}</span>
             </Typography>
           </Box>
           <Box>
             <Typography className="fs-14 mt-2">
               Category/Subcategory:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjects[modalId]?.col5}
+                {rowsDataObjects.categoryName} /{" "}
+                {rowsDataObjects.subCategoryName}
               </span>
             </Typography>
           </Box>
@@ -85,40 +92,23 @@ const AcceptRejectModal = ({
             <Typography className="fs-14 mt-2">
               Weight/Volume:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjects[modalId]?.col6}
+                {rowsDataObjects.weightInclusivePackage} /{" "}
+                {rowsDataObjects.volume}
               </span>
             </Typography>
           </Box>
           <Box>
             <Typography className="fs-14 mt-2">
               Total Stock:{" "}
-              <span className="fs-14 fw-bold">
-                {rowsDataObjects[modalId]?.col7}
-              </span>
+              <span className="fs-14 fw-bold">{rowsDataObjects.stockQty}</span>
             </Typography>
           </Box>
           <Box>
             <Typography className="fs-14 mt-2">
               Sale Price/MRP:{" "}
               <span className="fs-14 fw-bold">
-                {`${rowsDataObjects[modalId]?.col8.salePrice}/${rowsDataObjects[modalId]?.col8.mrpPrice}`}
+                {`${rowsDataObjects.salePrice}/${rowsDataObjects.mrp}`}
               </span>
-            </Typography>
-          </Box>
-          <Box>
-            <Typography className="fs-14 mt-2">
-              Discounts:{" "}
-              <span className="fs-14 fw-bold">
-                Supplier-
-                {returnDiscount(
-                  rowsDataObjects[modalId]?.col8.salePrice,
-                  rowsDataObjects[modalId]?.col8.mrpPrice
-                )}
-                % discount
-              </span>
-            </Typography>
-            <Typography className="fs-14 fw-bold ms-5 ps-4">
-              Star Date - End Date
             </Typography>
           </Box>
         </Box>
@@ -151,8 +141,17 @@ const AcceptRejectModal = ({
             textColor="text-danger"
             variant="outlined"
             label="Reject"
+            onBtnClick={() => {
+              approveOrRejectProduct("REJECTED");
+            }}
           />
-          <ButtonComponent muiProps="fs-12 ms-2" label="Approve" />
+          <ButtonComponent
+            muiProps="fs-12 ms-2"
+            label="Approve"
+            onBtnClick={() => {
+              approveOrRejectProduct("APPROVED");
+            }}
+          />
         </Box>
       </ModalComponent>
     </>

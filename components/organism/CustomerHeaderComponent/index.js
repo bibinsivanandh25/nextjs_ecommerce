@@ -24,7 +24,7 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
-  const [isSignedIn] = useState(true);
+  const [isSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([

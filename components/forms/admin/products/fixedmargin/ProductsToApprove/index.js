@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
+import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
 import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
@@ -13,10 +14,7 @@ import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
-const ProductsToApprove = ({
-  rowsDataObjectsForApproval = [],
-  setrowsDataObjectsForApproval = () => {},
-}) => {
+const ProductsToApprove = () => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -30,7 +28,7 @@ const ProductsToApprove = ({
   const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
     useState(false);
   const [showFlagModal, setShowFlagModal] = useState(false);
-
+  const [selectedRow, setSelectedRow] = useState([]);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
@@ -45,55 +43,11 @@ const ProductsToApprove = ({
 
   const [images, setImages] = useState([]);
 
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setProductDetails({
-        vendorIdOrName: rowsDataObjectsForApproval[index].col1,
-        images: rowsDataObjectsForApproval[index].col2.imgSrc,
-        productTitle: rowsDataObjectsForApproval[index].col3,
-        sku: rowsDataObjectsForApproval[index].col4,
-        categorySubcategory: rowsDataObjectsForApproval[index].col5,
-        weightOrVolume: rowsDataObjectsForApproval[index].col6,
-        totalStock: rowsDataObjectsForApproval[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForApproval[index].col8.salePrice}/${rowsDataObjectsForApproval[index].col8.mrpPrice} `,
-        discounts:
-          rowsDataObjectsForApproval[index].col8.mrpPrice -
-          rowsDataObjectsForApproval[index].col8.salePrice,
-      });
-      setModalId(index);
-      setImageArray(rowsDataObjectsForApproval[index].col2.imgSrc);
-      setOpenEditModal(true);
-    }
-
-    if (ele === "Delete") {
-      const tempArray = [...rowsDataObjectsForApproval];
-      tempArray.splice(index, 1);
-      setrowsDataObjectsForApproval([...tempArray]);
-    }
-
+  const onClickOfMenuItem = (ele, val) => {
+    setSelectedRow(val);
+    console.log(val, "asds");
     if (ele === "Accept/Reject") {
-      setModalId(index);
       setOpenAcceptRejectModal(true);
-    }
-
-    if (ele === "Merge to") {
-      setModalId(index);
-      setOpenMergeToModal(true);
-    }
-
-    if (ele === "Raise Query") {
-      setModalId(index);
-      setOpenRaiseQueryModal(true);
-    }
-
-    if (ele === "Visibility Range") {
-      setModalId(index);
-      setOpenVisibilityRangeModal(true);
-    }
-
-    if (ele === "Flags") {
-      setModalId(index);
-      setShowFlagModal(true);
     }
   };
 
@@ -108,7 +62,7 @@ const ProductsToApprove = ({
     "Flags",
   ];
 
-  const tableColumnsForProductsToApprove = [
+  const columns = [
     {
       id: "col1",
       align: "center",
@@ -146,76 +100,106 @@ const ProductsToApprove = ({
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
 
-  const theTaleRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForApproval.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: (
-          <Typography className="fs-12 text-primary">{val.col1}</Typography>
-        ),
-        col2: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setImages([...val.col2.imgSrc]);
-                setImageIndexForImageModal(0);
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.col2.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
+  const getTableData = async () => {
+    const payLoad = {
+      categoryIds: [],
+      subCategoryIds: [],
+      brandNames: [],
+      productVariationIds: [],
+      dateFrom: "",
+      dateTo: "",
+      commissionType: "ZERO_COMMISSION",
+      status: "INITIATED",
+    };
+    const { data, err } = await getAdminProductsByFilter(payLoad);
+    if (data) {
+      const result = [];
+      data.products.forEach((val, index) => {
+        result.push({
+          id: index + 1,
+          col1: (
+            <>
+              <Typography className="fs-12 text-primary">
+                {val.supplierId}
+              </Typography>
+              <Typography className="fs-12 text-primary">
+                {val.supplierName}
+              </Typography>
+            </>
+          ),
+          col2: (
+            <Box className="d-flex align-items-end justify-content-center">
+              <Box
+                onClick={() => {
+                  setImages([...val.variationMedia]);
+                  setImageIndexForImageModal(0);
+                  setModalId(index);
+                  setOpenImagesArrayModal(true);
+                }}
+                className="h-30 border d-flex justify-content-center"
+              >
+                <Image
+                  src={val.variationMedia[0]}
+                  width="50"
+                  height="50"
+                  className="cursor-pointer"
+                />
+              </Box>
+              <Typography className="fs-10">
+                /{val.variationMedia.length}
+              </Typography>
+            </Box>
+          ),
+          col3: val.productTitle,
+          col4: val.skuId,
+          col5: (
+            <>
+              <Typography>{val.categoryName}</Typography>
+              <Typography>{val.subCategoryName}</Typography>
+            </>
+          ),
+          col6: (
+            <>
+              <Typography>{val.weightInclusivePackage}</Typography>
+              <Typography>{val.volume}</Typography>
+            </>
+          ),
+          col7: val.stockQty,
+          col8: (
+            <Typography className="fs-12">
+              &#8377; {val.salePrice}/ &#8377; {val.mrp}
+            </Typography>
+          ),
+          col9: val.brand,
+          col10: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                onIconClick={() => setShowViewProducts(true)}
+              />
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  onClickOfMenuItem(ele, val);
+                }}
+                options={options}
+                IconclassName="fs-18 color-gray"
               />
             </Box>
-            <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-          </Box>
-        ),
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: (
-          <Typography className="fs-12">
-            &#8377; {val.col8.salePrice}/ &#8377; {val.col8.mrpPrice}
-          </Typography>
-        ),
-        col9: "PUMA",
-        col10: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                console.log("Index", index);
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
+          ),
+        });
       });
-    });
 
-    setTableRows(anArray);
+      setTableRows([...result]);
+    }
+    if (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    theTaleRowsData();
+    getTableData();
   }, []);
-
-  useEffect(() => {
-    theTaleRowsData();
-  }, [rowsDataObjectsForApproval]);
 
   return (
     <>
@@ -228,7 +212,7 @@ const ProductsToApprove = ({
             >
               <Box className="px-1 pt-2">
                 <TableComponent
-                  columns={tableColumnsForProductsToApprove}
+                  columns={columns}
                   tHeadBgColor="bg-light-gray"
                   showPagination={false}
                   tableRows={tableRows}
@@ -268,9 +252,9 @@ const ProductsToApprove = ({
         setImageArray={setImageArray}
         setProductDetails={setProductDetails}
         imageArray={imageArray}
-        setRowDataObjects={setrowsDataObjectsForApproval}
+        setRowDataObjects={setTableRows}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={tableRows}
       />
       {/* Images Modal Component */}
       <DisplayImagesModal
@@ -278,18 +262,20 @@ const ProductsToApprove = ({
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        rowsDataObjects={rowsDataObjectsForApproval}
+        rowsDataObjects={tableRows}
         modalId={modalId}
         productDetails={productDetails}
         images={images}
       />
       {/* Accept Reject Modal */}
-      <AcceptRejectModal
-        openAcceptRejectModal={openAcceptRejectModal}
-        setOpenAcceptRejectModal={setOpenAcceptRejectModal}
-        modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForApproval}
-      />
+      {openAcceptRejectModal ? (
+        <AcceptRejectModal
+          openAcceptRejectModal={openAcceptRejectModal}
+          setOpenAcceptRejectModal={setOpenAcceptRejectModal}
+          modalId={modalId}
+          rowsDataObjects={selectedRow}
+        />
+      ) : null}
       {/* Raise Query Modal */}
       <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
