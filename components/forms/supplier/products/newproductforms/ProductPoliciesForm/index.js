@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Grid, Typography } from "@mui/material";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import InputBoxComponent from "components/atoms/InputBoxComponent";

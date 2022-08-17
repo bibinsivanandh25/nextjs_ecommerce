@@ -18,6 +18,7 @@ import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
 import { saveMedia, saveProduct } from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
+import EditIcon from "@mui/icons-material/Edit";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -32,6 +33,7 @@ const ProductsLayout = ({
   formsRef = null,
   showGroupVariant = false,
   setShowGroupVariant = () => {},
+  setClearForm = () => {},
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -716,6 +718,14 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
+                  <Typography
+                    className="h-6 mt-1 cursor-pointer color-blue"
+                    onClick={() => {
+                      setShowCategoryModal(true);
+                    }}
+                  >
+                    Edit sub-category <EditIcon className="ms-1 h-5" />
+                  </Typography>
                 </Grid>
                 <Grid item md={12}>
                   <InputBox
@@ -903,57 +913,106 @@ const ProductsLayout = ({
                 onBtnClick={() => {
                   setFormData({
                     mainform: {
-                      commision_mode: "",
+                      commision_mode: null,
                       product_type: "",
                       brand: "",
                       short_description: {
-                        media: [],
+                        media: {},
                         text: "",
                       },
                       long_description: {
-                        media: [],
+                        media: {},
                         text: "",
                       },
                       sub_category_id: "",
-                      tags: "",
+                      tags: [],
                       limit_per_order: "",
-                      selectb2binvoice: "",
+                      selectb2binvoice: [],
+                      tradeMarkCheck: false,
+                      category: {},
+                      brandradio: true,
+                      genericradio: false,
+                      b2bdocument: [],
+                      b2bdocumentfile: [],
+                      setsValue: null,
+                      subCategoryValue: null,
                     },
                     inventory: {
                       sku: "",
-                      stock_status: {},
-                      allow_backorders: {},
+                      stockqty: "",
+                      stock_status: null,
+                      allow_backorders: null,
                       stock_qty: "",
                       back_Orders: "",
                       shipping_class: "",
                       product_title: "",
-                      business_processing_days: {},
-                      seo_title: "",
+                      business_processing_days: null,
+                      seo_title: [],
                       meta_description: "",
                       meta_keyword: [],
+                      modalname: "",
                     },
                     linked: {
-                      upSells: "",
-                      crossSells: "",
+                      upSells: {},
+                      crossSells: {},
                     },
                     pricing: {
                       sale_price: "",
                       mrp: "",
                       return_order_accepted: false,
-                      cash_on_accepted: "",
+                      cash_on_accepted: false,
                       product_weight: "",
                       length: "",
                       width: "",
                       height: "",
                       delivery_charge: "",
+                      sale_price_logistics: "",
+                      returnorder: {},
                     },
-                    policy: {},
+                    policy: {
+                      policyTabLabel: "",
+                      refundPolicy: { media: {}, text: "" },
+                      cancellationPolicy: { media: {}, text: "" },
+                      shippingPolicy: { media: {}, text: "" },
+                      warranty: false,
+                      warrantyperiod: {},
+                    },
                     grouped: {},
                     variation: {},
                     attribute: {},
                   });
+                  setshort_descriptionImg({});
+                  setlong_descriptionImg({});
+                  setModalErrObj({});
+                  setImageData([]);
+                  setactiveTab(0);
                   setMainFormData({
-                    commision_mode: {},
+                    commision_mode: null,
+                    product_type: "",
+                    brand: "",
+                    short_description: {
+                      media: {},
+                      text: "",
+                    },
+                    long_description: {
+                      media: {},
+                      text: "",
+                    },
+                    sub_category_id: "",
+                    tags: [],
+                    limit_per_order: "",
+                    selectb2binvoice: [],
+                    tradeMarkCheck: false,
+                    category: {},
+                    brandradio: true,
+                    genericradio: false,
+                    b2bdocument: [],
+                    b2bdocumentfile: [],
+                    setsValue: null,
+                    subCategoryValue: null,
+                  });
+                  setErrorObj({
+                    commision_mode: "",
                     product_type: "",
                     brand: "",
                     short_description: {
@@ -964,9 +1023,11 @@ const ProductsLayout = ({
                       media: [],
                       text: "",
                     },
-                    sub_category_id: {},
-                    tags: {},
+                    sub_category_id: "",
+                    tags: "",
                     limit_per_order: "",
+                    selectb2binvoice: "",
+                    category: null,
                   });
                 }}
                 muiProps="me-2"
@@ -1087,14 +1148,8 @@ const ProductsLayout = ({
           showCloseIcon={false}
           footerClassName="justify-content-end"
           saveBtnText="Submit"
-          ClearBtnText="Close"
           ModalWidth={700}
-          onClearBtnClick={() => {
-            setMainFormData((pre) => {
-              return { ...pre, setsValue: {}, subCategoryValue: {} };
-            });
-            handleCategoryModalClose();
-          }}
+          showClearBtn={false}
           onSaveBtnClick={() => {
             handleCategorySubmitClick();
           }}
