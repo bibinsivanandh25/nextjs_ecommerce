@@ -1,5 +1,5 @@
 import UploadIcon from "@mui/icons-material/Upload";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Dropzone from "react-dropzone";
 import toastify from "services/utils/toastUtils";
 import Image from "next/image";
@@ -16,10 +16,20 @@ const FileUploadModal = ({
   maxFileSize = 2e6,
   maxNoofFiles = 5,
   type = "base64",
+  value = {},
 }) => {
   const fileUploadRef = useRef(null);
   const [binaryStr, setbinaryStr] = useState([]);
   const [multiPart, setMultiPart] = useState([]);
+
+  useEffect(() => {
+    if (Object.keys(value).length) {
+      setbinaryStr(value.binaryStr);
+      if (type !== "base64") {
+        setMultiPart(value.multiPart);
+      }
+    }
+  }, []);
 
   const handlefileDrop = async (acceptedFiles) => {
     if (type !== "base64") {

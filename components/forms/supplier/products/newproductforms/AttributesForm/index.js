@@ -183,7 +183,6 @@ const AttributesForm = forwardRef(
                     list={[...options]}
                     id={ele.id}
                     onSelectionChange={(e, val, id) => {
-                      debugger;
                       setSelectedAttribute((pre) => ({
                         ...pre,
                         [id]: [...val],

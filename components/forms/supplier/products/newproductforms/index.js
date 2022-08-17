@@ -18,21 +18,22 @@ import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
 import { saveMedia, saveProduct } from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
+import EditIcon from "@mui/icons-material/Edit";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
   formData = {},
   setFormData = () => {},
-  handleSubmitClick = () => {},
   tabsList = [],
   formsRef = null,
-  // type = "",
   showGroupVariant = false,
   setShowGroupVariant = () => {},
+  setClearForm = () => {},
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -52,14 +53,14 @@ const ProductsLayout = ({
       text: "",
     },
     sub_category_id: "",
-    tags: {},
+    tags: [],
     limit_per_order: "",
-    selectb2binvoice: null,
+    selectb2binvoice: [],
     tradeMarkCheck: false,
     category: {},
     brandradio: true,
     genericradio: false,
-    b2bdocument: {},
+    b2bdocument: [],
     b2bdocumentfile: [],
     setsValue: null,
     subCategoryValue: null,
@@ -93,7 +94,7 @@ const ProductsLayout = ({
   const [trademarkList, setTradeMarkList] = useState([]);
   const userInfo = useUserInfo();
   const [modalErrObj, setModalErrObj] = useState({});
-  const [imgUrls, setImgUrls] = useState({});
+  // const [imgUrls, setImgUrls] = useState({});
   const [short_descriptionImg, setshort_descriptionImg] = useState({});
   const [long_descriptionImg, setlong_descriptionImg] = useState({});
   const router = useRouter();
@@ -125,7 +126,7 @@ const ProductsLayout = ({
         data.forEach((item) => {
           temp.push({
             id: item.tagId,
-            label: item.tagName,
+            title: item.tagName,
             value: item.tagName,
           });
         });
@@ -164,7 +165,7 @@ const ProductsLayout = ({
               return {
                 id: item.trademarkInvoiceId,
                 value: item.trademarkInvoiceId,
-                label: item.documentName,
+                title: item.documentName,
               };
             });
           });
@@ -174,7 +175,7 @@ const ProductsLayout = ({
               return {
                 id: item.trademarkInvoiceId,
                 value: item.trademarkInvoiceId,
-                label: item.documentName,
+                title: item.documentName,
               };
             });
           });
@@ -255,10 +256,7 @@ const ProductsLayout = ({
       category: "",
     };
     let flag = false;
-    // if (mainFormData.commision_mode === null) {
-    //   errObj.commision_mode = validateMessage.field_required;
-    //   flag = true;
-    // }
+
     if (mainFormData.selectb2binvoice === null) {
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
@@ -285,11 +283,8 @@ const ProductsLayout = ({
       errObj.long_description.text = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
-    if (mainFormData.tags === "") {
+    if (!mainFormData.tags.length) {
       errObj.tags = validateMessage.field_required;
-      flag = true;
-    } else if (mainFormData.tags.length > 15) {
-      errObj.tags = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
     if (mainFormData.limit_per_order === "") {
@@ -458,7 +453,7 @@ const ProductsLayout = ({
     imgdata.forEach((ele) => {
       imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
     });
-    setImgUrls(imgData);
+    // setImgUrls(imgData);
     const getvariationProperty = () => {
       const temp = ["countryOfOrigin", "others", "expiryDate"];
       const variationProperty = [];
@@ -482,12 +477,22 @@ const ProductsLayout = ({
       subCategoryId: mainFormData.subCategoryValue.id,
       subCategoryName: mainFormData.subCategoryValue.label,
       commissionMode: mainFormData.commision_mode,
-      tags: [mainFormData.tags.id],
-      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
-      trademarkLetterIdList: mainFormData.b2bdocument.id
-        ? [mainFormData.b2bdocument.id]
+      tags: mainFormData.tags.length
+        ? mainFormData.tags.map((item) => {
+            return item.id;
+          })
         : [],
-      bTobInvoiceIdList: [mainFormData.selectb2binvoice.id],
+      limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
+      trademarkLetterIdList: mainFormData.b2bdocument.length
+        ? mainFormData.b2bdocument.map((item) => {
+            return item.id;
+          })
+        : [],
+      bTobInvoiceIdList: mainFormData.selectb2binvoice.length
+        ? mainFormData.selectb2binvoice.map((item) => {
+            return item.id;
+          })
+        : [],
       isGenericProduct: mainFormData.genericradio,
 
       linkedProducts: {
@@ -550,7 +555,7 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformationObject: {},
+      otherInformation: {},
       zoneChargeInfo: {},
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
@@ -567,46 +572,48 @@ const ProductsLayout = ({
   return (
     <>
       {!showGroupVariant ? (
-        <Box className="d-flex flex-grow-1 flex-row mt-2">
-          <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
-            {imagedata.length > 0
-              ? imagedata.map((item, index) => (
-                  <ImageCard
-                    key={index}
-                    imgSrc={item.binary}
-                    handleCloseClick={() => {
-                      setImageData((prev) => {
-                        const temp = [...prev];
-                        temp.splice(index);
-                        return [...temp];
-                      });
-                    }}
-                    className="mx-3"
-                  />
-                ))
-              : null}
-            {imagedata.length < 5 ? (
-              <ImageCard
-                showClose={false}
-                handleImageUpload={async (e) => {
-                  if (e.target.files.length) {
-                    if (e.target.files[0].size <= 1000000) {
-                      const file = await getBase64(e.target.files[0]);
-                      setImageData((prev) => {
-                        return [
-                          ...prev,
-                          { binary: file, multipart: e.target.files[0] },
-                        ];
-                      });
-                    } else {
-                      toastify("Image size should be less than 1MB", "error");
+        <Box className="d-flex flex-grow-1 flex-row">
+          {!router.pathname.includes("addnewcollection") && (
+            <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
+              {imagedata.length > 0
+                ? imagedata.map((item, index) => (
+                    <ImageCard
+                      key={index}
+                      imgSrc={item.binary}
+                      handleCloseClick={() => {
+                        setImageData((prev) => {
+                          const temp = [...prev];
+                          temp.splice(index);
+                          return [...temp];
+                        });
+                      }}
+                      className="mx-3"
+                    />
+                  ))
+                : null}
+              {imagedata.length < 5 ? (
+                <ImageCard
+                  showClose={false}
+                  handleImageUpload={async (e) => {
+                    if (e.target.files.length) {
+                      if (e.target.files[0].size <= 1000000) {
+                        const file = await getBase64(e.target.files[0]);
+                        setImageData((prev) => {
+                          return [
+                            ...prev,
+                            { binary: file, multipart: e.target.files[0] },
+                          ];
+                        });
+                      } else {
+                        toastify("Image size should be less than 1MB", "error");
+                      }
                     }
-                  }
-                }}
-                className="mx-3"
-              />
-            ) : null}
-          </Box>
+                  }}
+                  className="mx-3"
+                />
+              ) : null}
+            </Box>
+          )}
           <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
             <div className="px-2">
               <Grid container spacing={2}>
@@ -711,6 +718,14 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
+                  <Typography
+                    className="h-6 mt-1 cursor-pointer color-blue"
+                    onClick={() => {
+                      setShowCategoryModal(true);
+                    }}
+                  >
+                    Edit sub-category <EditIcon className="ms-1 h-5" />
+                  </Typography>
                 </Grid>
                 <Grid item md={12}>
                   <InputBox
@@ -723,21 +738,21 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <SimpleDropdownComponent
+                  <MultiSelectComponent
                     list={tagValues}
                     id="tags"
                     label="Tags"
                     size="small"
-                    inputlabelshrink
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
                     helperText={errorObj.tags}
                     placeholder="Select tags"
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "tags");
+                    onSelectionChange={(a, val) => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        tags: [...val],
+                      }));
                     }}
-                    // error={errorObj.commision_mode !== ""}
-                    // helperText={errorObj.commision_mode}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -767,18 +782,18 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <SimpleDropdownComponent
+                  <MultiSelectComponent
                     list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
                     size="small"
                     value={mainFormData.selectb2binvoice}
-                    onDropdownSelect={(value) => {
-                      handleDropdownChange(value, "selectb2binvoice");
+                    onSelectionChange={(a, val) => {
+                      setMainFormData((prev) => ({
+                        ...prev,
+                        selectb2binvoice: [...val],
+                      }));
                     }}
-                    inputlabelshrink
-                    error={errorObj.selectb2binvoice !== ""}
-                    helperText={errorObj.selectb2binvoice}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -840,18 +855,18 @@ const ProductsLayout = ({
                 </Grid>
                 {mainFormData.tradeMarkCheck && (
                   <Grid item md={12}>
-                    <SimpleDropdownComponent
+                    <MultiSelectComponent
                       label="Choose Documents"
                       list={trademarkList}
                       id="b2bdocument"
                       size="small"
-                      m
                       value={mainFormData.b2bdocument}
-                      onDropdownSelect={(value) => {
-                        handleDropdownChange(value, "b2bdocument");
+                      onSelectionChange={(a, val) => {
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          b2bdocument: [...val],
+                        }));
                       }}
-                      inputlabelshrink
-                      placeholder="Eg:B2B"
                     />
                     <Typography className="h-6 color-gray ms-1">
                       Check The Brands That Need Trademarks Auth To Sell Across
@@ -898,57 +913,106 @@ const ProductsLayout = ({
                 onBtnClick={() => {
                   setFormData({
                     mainform: {
-                      commision_mode: "",
+                      commision_mode: null,
                       product_type: "",
                       brand: "",
                       short_description: {
-                        media: [],
+                        media: {},
                         text: "",
                       },
                       long_description: {
-                        media: [],
+                        media: {},
                         text: "",
                       },
                       sub_category_id: "",
-                      tags: "",
+                      tags: [],
                       limit_per_order: "",
-                      selectb2binvoice: "",
+                      selectb2binvoice: [],
+                      tradeMarkCheck: false,
+                      category: {},
+                      brandradio: true,
+                      genericradio: false,
+                      b2bdocument: [],
+                      b2bdocumentfile: [],
+                      setsValue: null,
+                      subCategoryValue: null,
                     },
                     inventory: {
                       sku: "",
-                      stock_status: {},
-                      allow_backorders: {},
+                      stockqty: "",
+                      stock_status: null,
+                      allow_backorders: null,
                       stock_qty: "",
                       back_Orders: "",
                       shipping_class: "",
                       product_title: "",
-                      business_processing_days: {},
-                      seo_title: "",
+                      business_processing_days: null,
+                      seo_title: [],
                       meta_description: "",
                       meta_keyword: [],
+                      modalname: "",
                     },
                     linked: {
-                      upSells: "",
-                      crossSells: "",
+                      upSells: {},
+                      crossSells: {},
                     },
                     pricing: {
                       sale_price: "",
                       mrp: "",
                       return_order_accepted: false,
-                      cash_on_accepted: "",
+                      cash_on_accepted: false,
                       product_weight: "",
                       length: "",
                       width: "",
                       height: "",
                       delivery_charge: "",
+                      sale_price_logistics: "",
+                      returnorder: {},
                     },
-                    policy: {},
+                    policy: {
+                      policyTabLabel: "",
+                      refundPolicy: { media: {}, text: "" },
+                      cancellationPolicy: { media: {}, text: "" },
+                      shippingPolicy: { media: {}, text: "" },
+                      warranty: false,
+                      warrantyperiod: {},
+                    },
                     grouped: {},
                     variation: {},
                     attribute: {},
                   });
+                  setshort_descriptionImg({});
+                  setlong_descriptionImg({});
+                  setModalErrObj({});
+                  setImageData([]);
+                  setactiveTab(0);
                   setMainFormData({
-                    commision_mode: {},
+                    commision_mode: null,
+                    product_type: "",
+                    brand: "",
+                    short_description: {
+                      media: {},
+                      text: "",
+                    },
+                    long_description: {
+                      media: {},
+                      text: "",
+                    },
+                    sub_category_id: "",
+                    tags: [],
+                    limit_per_order: "",
+                    selectb2binvoice: [],
+                    tradeMarkCheck: false,
+                    category: {},
+                    brandradio: true,
+                    genericradio: false,
+                    b2bdocument: [],
+                    b2bdocumentfile: [],
+                    setsValue: null,
+                    subCategoryValue: null,
+                  });
+                  setErrorObj({
+                    commision_mode: "",
                     product_type: "",
                     brand: "",
                     short_description: {
@@ -959,9 +1023,11 @@ const ProductsLayout = ({
                       media: [],
                       text: "",
                     },
-                    sub_category_id: {},
-                    tags: {},
+                    sub_category_id: "",
+                    tags: "",
                     limit_per_order: "",
+                    selectb2binvoice: "",
+                    category: null,
                   });
                 }}
                 muiProps="me-2"
@@ -1021,6 +1087,11 @@ const ProductsLayout = ({
                 }
               }}
               type="multipart"
+              value={
+                showFileUploadModal === "short_description"
+                  ? short_descriptionImg
+                  : long_descriptionImg
+              }
             />
           ) : null}
         </Box>
@@ -1029,6 +1100,9 @@ const ProductsLayout = ({
           formData={formData}
           ref={formsRef}
           setShowGroupVariant={setShowGroupVariant}
+          imagedata={imagedata}
+          short_descriptionImg={short_descriptionImg}
+          long_descriptionImg={long_descriptionImg}
         />
       )}
       <ModalComponent
@@ -1074,14 +1148,8 @@ const ProductsLayout = ({
           showCloseIcon={false}
           footerClassName="justify-content-end"
           saveBtnText="Submit"
-          ClearBtnText="Close"
           ModalWidth={700}
-          onClearBtnClick={() => {
-            setMainFormData((pre) => {
-              return { ...pre, setsValue: {}, subCategoryValue: {} };
-            });
-            handleCategoryModalClose();
-          }}
+          showClearBtn={false}
           onSaveBtnClick={() => {
             handleCategorySubmitClick();
           }}
