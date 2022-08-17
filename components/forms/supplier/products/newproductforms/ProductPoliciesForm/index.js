@@ -281,6 +281,13 @@ const ProductPoliciesForm = forwardRef(
               }
             }}
             type="multipart"
+            value={
+              showFileUploadModal === "refundPolicy"
+                ? returnablemedia
+                : showFileUploadModal === "shippingPolicy"
+                ? shippingmedia
+                : canclemedia
+            }
           />
         ) : null}
       </Grid>

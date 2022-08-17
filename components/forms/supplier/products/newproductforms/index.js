@@ -28,7 +28,6 @@ const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
   formData = {},
   setFormData = () => {},
-  handleSubmitClick = () => {},
   tabsList = [],
   formsRef = null,
   showGroupVariant = false,
@@ -1027,6 +1026,11 @@ const ProductsLayout = ({
                 }
               }}
               type="multipart"
+              value={
+                showFileUploadModal === "short_description"
+                  ? short_descriptionImg
+                  : long_descriptionImg
+              }
             />
           ) : null}
         </Box>
