@@ -1,14 +1,11 @@
 /* eslint-disable no-param-reassign */
-import axios from "axios";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import toastify from "services/utils/toastUtils";
-import * as jwt_decode from "jwt-decode";
 
 const options = {
   providers: [
     CredentialsProvider({
-      async authorize(credentials) {
+      authorize(credentials) {
         // if (credentials.username && credentials.password) {
         //   const { data, errRes } = await axios
         //     .post("http://10.10.20.18:8082/api/v1/authenticate", {
@@ -31,45 +28,16 @@ const options = {
         //   return null;
         // }
         // }
-        const payload = {
-          userName: credentials.username,
-          password: credentials.password,
-          userType: credentials.role.toUpperCase(),
-        };
 
-        const { data } = await axios
-          .post(`http://10.10.31.116:8001/api/v1/auth/authenticate`, payload)
-          .catch((err) => {
-            const errRes = err.response.data?.message;
-            toastify(errRes, "error");
-            throw Error(errRes);
-          });
-        if (data) {
-          const { token } = data;
-          const decoded = jwt_decode(token);
-          const userData = decoded.sub.split(",");
+        if (credentials) {
           return {
-            id: {
-              userId: userData[0],
-              email: userData[1],
-              role: decoded.roles[0],
-            },
+            id: credentials.id,
+            email: credentials.email,
+            role: credentials.role,
+            token: credentials.token,
           };
         }
         return null;
-        // if (
-        //   credentials.username === "admin@gmail.com" &&
-        //   credentials.password === "Admin@123"
-        // ) {
-        //   return {
-        //     id: 20,
-        //     name: "suhilkm",
-        //     email: "suhil@gmail.com",
-        //     role: credentials.role,
-        //     roleId: credentials.roleId,
-        //   };
-        // }
-        // return null;
       },
     }),
   ],
@@ -82,16 +50,19 @@ const options = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id;
-        token.user = user;
+        token.user = {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        };
+        token.token = user.token;
       }
       return token;
     },
     session: ({ session, token }) => {
       if (token?.id) {
-        session.id = token.id;
         session.user = token.user;
       }
-      console.log(session, "session");
       return session;
     },
 
@@ -99,6 +70,7 @@ const options = {
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
+      console.log(url, "================");
       if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },

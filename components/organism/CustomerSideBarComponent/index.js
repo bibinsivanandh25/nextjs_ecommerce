@@ -21,6 +21,7 @@ import { customerMenu } from "constants/navConstants";
 // import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Paper, Popper } from "@mui/material";
+import Footer from "components/customer/Footer";
 
 // const drawerWidth = 245;
 
@@ -54,7 +55,6 @@ const CustomerSideBarComponent = ({ children }) => {
   const [hover, setHover] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   //   const [selectedItem, setSelectedItem] = useState();
-
   const handleClick = (event) => {
     setHover(true);
     setAnchorEl(event.target);
@@ -74,8 +74,9 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "80px",
+        top: "88px",
         display: "flex",
+        height: `calc(100vh - 80px)`,
       }}
     >
       <CssBaseline />
@@ -87,6 +88,7 @@ const CustomerSideBarComponent = ({ children }) => {
             maxHeight: `calc(100vh - 60px)`,
             minHeight: `calc(100vh - 60px)`,
             maxWidth: open ? "225px" : "65px",
+            minWidth: open ? "195px" : "65px",
             overflow: "hidden",
           }}
         >
@@ -198,12 +200,12 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 206px)" : "calc(100vw - 64px)"}`,
-          marginLeft: ` ${open ? "205px" : "64px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 206px)" : "calc(100vw - 65px)"}`,
+          marginLeft: ` ${open ? "205px" : "70px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
-        className=" overflow-auto p-4 py-3 hide-scrollbar w-100"
+        className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
         {showBreadCrumb && (
           <Box className="mb-2">
@@ -212,74 +214,78 @@ const CustomerSideBarComponent = ({ children }) => {
         )}
         <Box
           sx={{
-            maxHeight: "calc(100vh - 140px)",
+            maxHeight: "calc(100vh - 136px)",
             overflowY: "scroll",
           }}
           className="hide-scrollbar "
         >
           {updatedChildren}
+          <Footer />
         </Box>
       </Box>
 
-      <Popper
-        open={hover}
-        anchorEl={anchorEl}
-        placement="right-start"
-        transition
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        sx={{
-          zIndex: 1000,
-        }}
-      >
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
-            <Paper className="overflow-auto">
-              <Typography
-                sx={{ p: 2, maxWidth: 800, overFlow: "auto", maxHeight: 300 }}
-              >
-                The content of the Popper.The content of the Popper.The content
-                of the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content o,f the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-                the Popper.The content of the Popper.The content of the
-                Popper.The content of the Popper.The content of the Popper.The
-                content of the Popper.The content of the Popper.The content of
-              </Typography>
-            </Paper>
-          </Fade>
-        )}
-      </Popper>
+      {menuList.length > 1 ? (
+        <Popper
+          open={hover}
+          anchorEl={anchorEl}
+          placement="right-start"
+          transition
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          sx={{
+            zIndex: 1000,
+          }}
+        >
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={350}>
+              <Paper className="overflow-auto">
+                <Typography
+                  sx={{ p: 2, maxWidth: 800, overFlow: "auto", maxHeight: 300 }}
+                >
+                  The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content o,f the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of the Popper.The content of the Popper.The content of
+                  the Popper.The content of the Popper.The content of the
+                  Popper.The content of the Popper.The content of the Popper.The
+                  content of
+                </Typography>
+              </Paper>
+            </Fade>
+          )}
+        </Popper>
+      ) : null}
     </Box>
   );
 };

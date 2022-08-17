@@ -14,22 +14,22 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 const returnOrderData = [
   {
     id: 1,
-    value: "7 Days",
+    value: 7,
     label: "7 Days",
   },
   {
     id: 1,
-    value: "14 Days",
+    value: 14,
     label: "14 Days",
   },
   {
     id: 1,
-    value: "21 Days",
+    value: 21,
     label: "21 Days",
   },
   {
     id: 1,
-    value: "28 Days",
+    value: 28,
     label: "28 Days",
   },
 ];
@@ -139,7 +139,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
-        return ["pricing", { ...pricingFormData }];
+        return ["pricing", { ...pricingFormData, freeDeliveryCheckbox }];
       },
       validate,
     };

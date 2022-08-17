@@ -12,6 +12,7 @@ import CustomIcon from "services/iconUtils";
 import { useState } from "react";
 import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -23,7 +24,7 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
   const route = useRouter();
-  const [isSignedIn] = useState(true);
+  const [isSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([
@@ -287,7 +288,7 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
-                      route.push("/auth/login");
+                      signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >
                     Sign Out
