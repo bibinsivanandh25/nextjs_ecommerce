@@ -10,8 +10,9 @@ import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import toastify from "services/utils/toastUtils";
+// import toastify from "services/utils/toastUtils";
 // import ReactImageMagnify from "react-image-magnify";
+import { useRouter } from "next/router";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -78,6 +79,7 @@ const handPick = true;
 
 // const sizeData = ["S", "M", "L", "XL", "XXL"];
 const ProductDetails = () => {
+  const router = useRouter();
   const [selectedImage, setSelectedImage] = useState("");
   // Product Details
   const [masterData, setMasterData] = useState([]);
@@ -99,14 +101,10 @@ const ProductDetails = () => {
     fastreturn: false,
   });
   const getProductDetails = async () => {
-    const productid = "62fbecdd112d4b7b99958305";
     const status = "APPROVED";
-    const formData = new FormData();
-    formData.append("id", productid);
-    formData.append("status", status);
     await axios
       .get(
-        `http://10.10.31.116:8100/api/v1/products/master-product/product-variations?id=${productid}&status=${status}`
+        `http://10.10.31.116:8100/api/v1/products/master-product/product-variations?id=${router.query.id}&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -117,14 +115,7 @@ const ProductDetails = () => {
         console.log(err.response);
       });
   };
-  const handleVariationClick = (id) => {
-    masterData.productVariations.forEach((item) => {
-      if (item.productVariationId === id) {
-        setSelectedMasterData(item);
-        setSelectedImage(item.variationMedia[0]);
-      }
-    });
-  };
+
   // frequentproduct
   const [frequentProduct, setfrequentProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
@@ -133,11 +124,10 @@ const ProductDetails = () => {
     handpick: "",
     storeowner: "",
   });
-  const getfrequentProduct = async () => {
+  const getfrequentProduct = async (id) => {
+    const ids = router.query.id ? router.query.id : id;
     await axios
-      .get(
-        "http://10.10.31.116:8100/api/v1/products/grouped-product/62fa8605e5d1f7265bb58cf0"
-      )
+      .get(`http://10.10.31.116:8100/api/v1/products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -162,17 +152,25 @@ const ProductDetails = () => {
         setfrequentProduct(res.data.data);
       })
       .catch((err) => {
-        toastify(err?.response?.data?.message, "error");
+        console.log(err);
         setfrequentProduct([]);
       });
   };
-
+  const handleVariationClick = (id) => {
+    masterData.productVariations.forEach((item) => {
+      if (item.productVariationId === id) {
+        setSelectedMasterData(item);
+        setSelectedImage(item.variationMedia[0]);
+        getfrequentProduct(item.productVariationId);
+      }
+    });
+  };
   // coupons api
   const [couponMasterData, setCouponsMasterData] = useState([]);
   const getCouponsData = async () => {
     await axios
       .get(
-        "http://10.10.31.116:8500/api/v1/users/customer/store-coupon?supplierId=SP0822000040"
+        `http://10.10.31.116:8500/api/v1/users/customer/store-coupon?supplierId=${router.query.supplierId}`
       )
       .then((res) => {
         setCouponsMasterData(res.data.data);
@@ -188,7 +186,7 @@ const ProductDetails = () => {
   const getMinimumCart = async () => {
     await axios
       .get(
-        "http://10.10.31.116:8500/api/v1/users/supplier/supplier-store-configuration?storeCode=SUPS10STRE5DA"
+        `http://10.10.31.116:8500/api/v1/users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
@@ -202,13 +200,18 @@ const ProductDetails = () => {
     getCouponsData();
     getfrequentProduct();
     getMinimumCart();
+
+    // Scroll the Screen to top....
+
+    // const element = document.getElementById("MainBox");
+    // element.scrollIntoView();
   }, []);
   const handleImageClick = (value) => {
     setSelectedImage(value);
   };
 
   return (
-    <Paper>
+    <Paper id="MainBox">
       <Box className="d-flex justify-content-end">
         <Box className="d-flex me-3">
           <RemoveRedEye className="fs-18 color-gray" />
@@ -1018,8 +1021,7 @@ const ProductDetails = () => {
                             <Image
                               height={150}
                               width={150}
-                              // src={item.variationMedia[0]}
-                              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assetse/img/img_snap.PNG"
+                              src={item.variationMedia[0]}
                               layout="intrinsic"
                               alt="alt"
                               className="border rounded"
@@ -1152,7 +1154,7 @@ const ProductDetails = () => {
           </Grid>
         )}
       </Grid>
-      <Grid container className="mt-3">
+      <Grid container className="mt-3 mb-2">
         <Grid item sm={12}>
           <Typography className="h-4 fw-bold my-2">
             Product Information
