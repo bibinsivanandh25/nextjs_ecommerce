@@ -108,8 +108,12 @@ const ProductDetails = () => {
       )
       .then((res) => {
         setMasterData(res.data.data);
-        setSelectedMasterData(res.data.data.productVariations[0]);
-        setSelectedImage(res.data.data.productVariations[0].variationMedia[0]);
+        res.data?.data?.productVariations.forEach((item) => {
+          if (item.productVariationId === router.query.id) {
+            setSelectedMasterData(item);
+            setSelectedImage(item.variationMedia[0]);
+          }
+        });
       })
       .catch((err) => {
         console.log(err.response);
@@ -323,7 +327,7 @@ const ProductDetails = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container>
+          {/* <Grid container>
             <Grid item md={2} />
             <Grid item md={10}>
               <Typography className="h-4 fw-bold">
@@ -367,8 +371,8 @@ const ProductDetails = () => {
                 </Box>
               ))}
             </Grid>
-          </Grid>
-          <Grid container>
+          </Grid> */}
+          {/* <Grid container>
             <Grid item md={2} />
             <Grid item md={10}>
               <Typography className="h-4 fw-bold">
@@ -414,7 +418,7 @@ const ProductDetails = () => {
                 </Typography>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid item md={8.5}>
           <Box>
