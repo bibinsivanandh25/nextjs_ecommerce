@@ -30,7 +30,7 @@ const DisplayImagesModal = ({
       >
         <Box sx={style}>
           <Box
-            sx={{ bottom: "380px", left: "98%" }}
+            sx={{ top: -12, right: -10, zIndex: 1000 }}
             className="position-absolute"
           >
             <CustomIcon

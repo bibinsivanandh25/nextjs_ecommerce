@@ -10,6 +10,7 @@ const ImageCard = ({
   imgSrc = "",
   showClose = true,
   handleImageUpload = () => {},
+  showCursorPointer = false,
   className = "",
 }) => {
   const inputRef = useRef(null);
@@ -38,6 +39,7 @@ const ImageCard = ({
             width={`${width}px`}
             image={imgSrc}
             alt=""
+            className={showCursorPointer ? "cursor-pointer" : ""}
           />
         ) : (
           <Box className="rounded-circle p-1 bg-gray ">

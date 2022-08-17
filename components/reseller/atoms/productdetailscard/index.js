@@ -17,6 +17,7 @@ const ProductDetailsCard = ({
   products = [],
   showMarginButton = false,
   getSelectedItem = () => {},
+  showIcon = true,
 }) => {
   const [showMarginModal, setShowMarginModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState({});
@@ -72,15 +73,23 @@ const ProductDetailsCard = ({
       transformOrigin: "bottom left",
     },
   });
+  console.log(showIcon);
 
   const getProductsCard = () => {
     {
       return products.map((ele, index) => {
         return (
-          <Grid item lg={4} md={6} sm={12} key={index} spacing={1}>
+          <Grid
+            item
+            lg={showIcon ? 4 : 3}
+            md={showIcon ? 6 : 4}
+            sm={showIcon ? 12 : 6}
+            key={index}
+            spacing={1}
+          >
             <Paper className="p-2" sx={{}}>
               <Grid container spacing={2}>
-                <Grid item xs={3} alignSelf="center">
+                <Grid item xs={showIcon ? 3 : 4} alignSelf="center">
                   <Image
                     src={ele.image}
                     // height={"100%"}
@@ -96,7 +105,7 @@ const ProductDetailsCard = ({
                     alt=""
                   />
                 </Grid>
-                <Grid item xs={7} spacing={2}>
+                <Grid item xs={showIcon ? 7 : 8} spacing={2}>
                   <Tooltip title={ele.title} placement="top">
                     <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
                       {ele.title}
@@ -104,10 +113,10 @@ const ProductDetailsCard = ({
                   </Tooltip>
                   <Typography>
                     <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
-                      {ele.rating.rate} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
+                      {ele.rating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
                     </span>
                     <span className="text-secondary fs-12 mx-2">
-                      {`(${ele.rating.count} Ratings)`}
+                      {`(${ele.ratingCount} Ratings)`}
                     </span>
                   </Typography>
                   <Typography
@@ -118,42 +127,44 @@ const ProductDetailsCard = ({
                   </Typography>
                   <Typography className="fw-bold fs-5">₹{ele.price}</Typography>
                 </Grid>
-                <Grid
-                  className="d-flex flex-column justify-content-between align-items-end my-1"
-                  item
-                  xs={2}
-                >
-                  <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
-                    <Favorite
-                      className="text-secondary h-4"
-                      onClick={() => setShowWishlistModal(true)}
-                    />
-                  </Grid>
-                  <Grid className="border rounded-circle cursor-pointer h-5 p-1">
-                    <ShareIcon className="text-secondary h-4" />
-                  </Grid>
-                  <Grid className="d-flex">
-                    {!showMarginButton ? (
-                      <ButtonComponent
-                        muiProps="h-6 me-2 p-0"
-                        label="Set margin"
-                        size="small"
-                        variant="outlined"
-                        onBtnClick={() => {
-                          getSelectedItem(ele);
-                          setSelectedProduct(ele);
-                          setShowMarginModal(true);
-                        }}
+                {showIcon ? (
+                  <Grid
+                    className="d-flex flex-column justify-content-between align-items-end my-1"
+                    item
+                    xs={2}
+                  >
+                    <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
+                      <Favorite
+                        className="text-secondary h-4"
+                        onClick={() => setShowWishlistModal(true)}
                       />
-                    ) : null}
-                    <ButtonComponent
-                      size="small"
-                      muiProps="h-6 "
-                      label="view"
-                      onBtnClick={() => getSelectedItem(ele)}
-                    />
+                    </Grid>
+                    <Grid className="border rounded-circle cursor-pointer h-5 p-1">
+                      <ShareIcon className="text-secondary h-4" />
+                    </Grid>
+                    <Grid className="d-flex">
+                      {showMarginButton ? (
+                        <ButtonComponent
+                          muiProps="h-6 me-2 p-0"
+                          label="Set margin"
+                          size="small"
+                          variant="outlined"
+                          onBtnClick={() => {
+                            getSelectedItem(ele);
+                            setSelectedProduct(ele);
+                            setShowMarginModal(true);
+                          }}
+                        />
+                      ) : null}
+                      <ButtonComponent
+                        size="small"
+                        muiProps="h-6 "
+                        label="view"
+                        onBtnClick={() => getSelectedItem(ele)}
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
+                ) : null}
               </Grid>
             </Paper>
           </Grid>

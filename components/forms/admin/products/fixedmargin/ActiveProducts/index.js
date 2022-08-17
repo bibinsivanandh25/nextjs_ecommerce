@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
+import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import AddEditProductModal from "./AddEditProductModal";
@@ -11,7 +12,8 @@ import RaiseQueryModal from "./RaiseQueryModal";
 import DiscountModal from "./DiscountModal";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
-const Active = ({ rowsDataObjectsForActive, setRowsDataObjectsForActive }) => {
+const Active = () => {
+  const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
@@ -180,72 +182,111 @@ const Active = ({ rowsDataObjectsForActive, setRowsDataObjectsForActive }) => {
     }
   };
 
-  const theTaleRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForActive.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: <Typography className="fs-12">{val.col1}</Typography>,
-        col2: <Typography className="fs-12">{val.col2}</Typography>,
-        col3: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setImages([...val.col3.imgSrc]);
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-                setImageIndexForImageModal(0);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.col3.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
+  const getTableData = async () => {
+    const payLoad = {
+      categoryIds: [],
+      subCategoryIds: [],
+      brandNames: [],
+      productVariationIds: [],
+      dateFrom: "",
+      dateTo: "",
+      commissionType: "FIXED_COMMISSION",
+      status: "APPROVED",
+    };
+    const { data, err } = await getAdminProductsByFilter(payLoad);
+    if (data) {
+      const result = [];
+      data.products.forEach((val, index) => {
+        result.push({
+          id: index + 1,
+          col1: (
+            <>
+              <Typography className="fs-12">{index + 1}</Typography>
+            </>
+          ),
+          col2: val.productVariationId,
+          col3: (
+            <Box className="d-flex align-items-end justify-content-center">
+              <Box
+                onClick={() => {
+                  setImages([...val.variationMedia]);
+                  setImageIndexForImageModal(0);
+                  setModalId(index);
+                  setOpenImagesArrayModal(true);
+                }}
+                className="h-30 border d-flex justify-content-center"
+              >
+                <Image
+                  src={val.variationMedia[0]}
+                  width="50"
+                  height="50"
+                  className="cursor-pointer"
+                />
+              </Box>
+              <Typography className="fs-10">
+                /{val.variationMedia.length}
+              </Typography>
+            </Box>
+          ),
+          col4: val.productTitle,
+          col5: (
+            <>
+              <Typography>{val.supplierId}</Typography>
+              <Typography>{val.supplierName}</Typography>
+            </>
+          ),
+          col6: val.skuId,
+          col7: val.stockQty,
+          col8: (
+            <>
+              <Typography>{val.weightInclusivePackage}</Typography>
+              <Typography>{val.volume}</Typography>
+            </>
+          ),
+          col9: val.brand,
+          col10: (
+            <Typography className="fs-12">
+              &#8377; {val.salePrice}/ &#8377; {val.mrp}
+            </Typography>
+          ),
+          col11: (
+            <>
+              <Typography>{val.categoryName}</Typography>
+              <Typography>{val.subCategoryName}</Typography>
+            </>
+          ),
+          col12: val.activeFlag,
+          col13: val.createdAt,
+          col14: val.approvedAt,
+          col15: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                onIconClick={() => setShowViewProducts(true)}
+              />
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  console.log("Index", index);
+                  onClickOfMenuItem(ele, index);
+                }}
+                options={options}
+                IconclassName="fs-18 color-gray"
               />
             </Box>
-            <Typography className="fs-10">/{val.col3.imgCount}</Typography>
-          </Box>
-        ),
-        col4: <Typography className="fs-12">{val.col4}</Typography>,
-        col5: <Typography className="fs-12">{val.col5}</Typography>,
-        col6: <Typography className="fs-12">{val.col6}</Typography>,
-        col7: <Typography className="fs-12">{val.col7}</Typography>,
-        col8: <Typography className="fs-12">{val.col8}</Typography>,
-        col9: <Typography className="fs-12">{val.col9}</Typography>,
-        col10: (
-          <Typography className="fs-12">{`${val.col10.salePrice}/${val.col10.mrpPrice}`}</Typography>
-        ),
-        col11: <Typography className="fs-12">{val.col11}</Typography>,
-        col12: <Typography className="fs-12">{val.col12}</Typography>,
-        col13: <Typography className="fs-12">{val.col13}</Typography>,
-        col14: <Typography className="fs-12">{val.col14}</Typography>,
-        col15: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                console.log("Index", index);
-                console.log("ele ", typeof ele);
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
+          ),
+        });
       });
-    });
-    setTableRows(anArray);
+
+      setTableRows([...result]);
+    }
+    if (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    theTaleRowsData();
+    getTableData();
   }, []);
 
   return (
