@@ -55,7 +55,14 @@ const NewProducts = () => {
       height: "",
       delivery_charge: "",
     },
-    policy: {},
+    policy: {
+      policyTabLabel: "",
+      refundPolicy: { media: {}, text: "" },
+      cancellationPolicy: { media: {}, text: "" },
+      shippingPolicy: { media: {}, text: "" },
+      warranty: false,
+      warrantyperiod: {},
+    },
     grouped: {},
     variation: {},
     attribute: {},
@@ -164,9 +171,7 @@ const NewProducts = () => {
     ]);
   }, [formData]);
 
-  const handleSubmitClick = (data) => {
-    console.log(data);
-  };
+  const handleSubmitClick = () => {};
   return (
     <Paper
       className="d-flex"
