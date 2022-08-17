@@ -2,7 +2,10 @@ import axios from "axios";
 
 const getAdminProductsByFilter = (payLoad) => {
   return axios
-    .post("http://10.10.31.116:8100/api/v1/products/0/20", payLoad)
+    .post(
+      "http://10.10.31.116:8100/api/v1/products/admin/products/0/20",
+      payLoad
+    )
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -12,9 +15,15 @@ const getAdminProductsByFilter = (payLoad) => {
 
 const acceptOrRejectProduct = (payLoad) => {
   return axios
-    .post(
+    .put(
       "http://10.10.31.116:8100/api/v1/products/master-product-approval",
-      payLoad
+      payLoad,
+      {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          userId: "ADM001",
+        },
+      }
     )
     .then((res) => {
       const { data } = res && res.data;
