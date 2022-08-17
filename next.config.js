@@ -7,19 +7,14 @@ const nextConfig = {
     return configCopy;
   },
   images: {
-    domains: ["fakestoreapi.com", "mrmrscart.s3.ap-south-1.amazonaws.com"],
+    domains: [
+      "fakestoreapi.com",
+      "mrmrscart.s3.ap-south-1.amazonaws.com",
+      "dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com",
+    ],
   },
   env: {
     DOMAIN: process.env.DOMAIN,
-  },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/customer/home",
-        permanent: true,
-      },
-    ];
   },
 };
 module.exports = nextConfig;

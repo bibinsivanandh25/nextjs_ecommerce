@@ -83,7 +83,7 @@ const SideBarComponent = ({ children }) => {
     switch (role) {
       case "SUPPLIER":
         return "supplier";
-      case "Reseller":
+      case "RESELLER":
         return "reseller";
       default:
         return "customer";
@@ -145,7 +145,7 @@ const SideBarComponent = ({ children }) => {
   const [open, setOpen] = useState(false);
   // const [path, setPath] = useState(route.pathname);
   const [menuList, setMenuList] = useState([
-    ...mapList(session?.user?.id?.role || "customer"),
+    ...mapList(session?.user?.role || "customer"),
   ]);
   const itemRef = React.useRef(null);
 
@@ -160,7 +160,7 @@ const SideBarComponent = ({ children }) => {
   }, [menuList]);
   useMemo(() => {
     if (session && session.user) {
-      setMenuList([...mapList(session.user?.id?.role)]);
+      setMenuList([...mapList(session.user?.role)]);
     }
   }, [session]);
   const handleDrawerOpen = () => {

@@ -92,7 +92,7 @@ const SignIn = () => {
             />
           </Box>
           <Typography variant="h6" className="color-white text-center fs-16">
-            A Multi Ecommerece Store
+            A Multi Ecommrece Store
           </Typography>
           <InputBoxComponent
             label="Mobile No./E-mail"
