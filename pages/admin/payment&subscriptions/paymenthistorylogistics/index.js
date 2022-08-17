@@ -5,11 +5,13 @@ import TableComponent from "@/atoms/TableWithSpan";
 import MenuOption from "@/atoms/MenuOptions";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TransactionFailed from "@/forms/admin/payments&subscriptions/paymenthistorylogistics/TransactionFailed";
+import AddNoteModal from "@/forms/admin/payments&subscriptions/paymenthistorylogistics/AddNoteModal";
 
 const PaymentHistoryLogistics = () => {
   const options = ["Add Note"];
   const [tableRows, setTableRows] = useState([]);
   const [showTransactionFailed, setShowTransactionFailed] = useState(false);
+  const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
 
   const column1 = [
     {
@@ -231,7 +233,11 @@ const PaymentHistoryLogistics = () => {
     },
   ];
 
-  const onClickOfMenuItem = () => {};
+  const onClickOfMenuItem = (ele) => {
+    if (ele === "Add Note") {
+      setOpenAddNoteModal(true);
+    }
+  };
 
   useEffect(() => {
     const anArray = [];
@@ -338,32 +344,41 @@ const PaymentHistoryLogistics = () => {
   }, []);
 
   return (
-    <Box>
-      {!showTransactionFailed ? (
-        <Paper className="mnh-85vh mxh-85vh p-3 overflow-auto hide-scrollbar">
-          <Paper className="p-3 w-100 m-auto d-flex justify-content-between align-items-center">
-            <Typography className="color-orange fw-bold">
-              Transaction Failed - 5
-            </Typography>
-            <ButtonComponent
-              onBtnClick={() => {
-                setShowTransactionFailed(true);
-              }}
-              label="View"
+    <>
+      <Box>
+        {!showTransactionFailed ? (
+          <Paper className="mnh-85vh mxh-85vh p-3 overflow-auto hide-scrollbar">
+            <Paper className="p-3 w-100 m-auto d-flex justify-content-between align-items-center">
+              <Typography className="color-orange fw-bold">
+                Transaction Failed - 5
+              </Typography>
+              <ButtonComponent
+                onBtnClick={() => {
+                  setShowTransactionFailed(true);
+                }}
+                label="View"
+              />
+            </Paper>
+            <TableComponent
+              showCheckbox={false}
+              tHeadBgColor="bg-gray-1"
+              tableRows={tableRows}
+              columns={[...column2]}
+              column2={[...column1]}
+              stickyHeader
             />
           </Paper>
-          <TableComponent
-            showCheckbox={false}
-            tHeadBgColor="bg-gray-1"
-            tableRows={tableRows}
-            columns={[...column2]}
-            column2={[...column1]}
+        ) : (
+          <TransactionFailed
+            setShowTransactionFailed={setShowTransactionFailed}
           />
-        </Paper>
-      ) : (
-        <TransactionFailed />
-      )}
-    </Box>
+        )}
+      </Box>
+      <AddNoteModal
+        openAddNoteModal={openAddNoteModal}
+        setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+    </>
   );
 };
 
