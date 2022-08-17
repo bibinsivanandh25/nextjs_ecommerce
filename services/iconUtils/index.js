@@ -44,6 +44,7 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const CustomIcon = ({
   title = "",
@@ -106,6 +107,7 @@ const CustomIcon = ({
     addNote: NoteAddIcon,
     arrowUpward: ArrowUpwardIcon,
     expandMore: ExpandMoreIcon,
+    arrowDropIcon: ArrowDropDownIcon,
   };
 
   const [hover, setHover] = useState(false);
