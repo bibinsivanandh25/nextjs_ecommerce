@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
@@ -109,17 +110,17 @@ const SupplierApproval = () => {
       status: value,
     };
     await axios
-      .post(
+      .put(
         "http://10.10.31.116:8500/api/v1/users/admin/supplier-approval",
         payload,
         { headers: { userId: "ADM01234" } }
       )
       .then((res) => {
-        console.log(res.data);
-        toastify(`${res.data.data.message}`, "success");
+        setViewModalOpen(false);
+        toastify(`${res?.data?.message}`, "success");
+        getAllTableData();
       })
       .catch((err) => {
-        console.log(err?.response);
         toastify(`${err?.response?.data?.message}`, "error");
       });
   };
@@ -195,14 +196,15 @@ const SupplierApproval = () => {
         getTableRows(res.data.data.supplierRegistrations);
       })
       .catch((err) => {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
         setTableRows([]);
       });
   };
+
   useEffect(() => {
     getAllTableData();
   }, []);
-
+  const handleInviteSupplierClick = () => {};
   return (
     <Paper
       className="pt-2 mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -237,7 +239,7 @@ const SupplierApproval = () => {
         >
           <Box className="mt-2">
             <Box className="border-bottom">
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Business Name</Typography>
                 </Grid>
@@ -248,7 +250,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Email ID</Typography>
                 </Grid>
@@ -259,7 +261,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Mobile no</Typography>
                 </Grid>
@@ -270,7 +272,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">GSTIN No</Typography>
                 </Grid>
@@ -281,7 +283,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>{" "}
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Categories</Typography>
                 </Grid>
@@ -292,7 +294,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>{" "}
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Stock Count</Typography>
                 </Grid>
@@ -303,7 +305,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>{" "}
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Website link</Typography>
                 </Grid>
@@ -314,7 +316,7 @@ const SupplierApproval = () => {
                   </Typography>
                 </Grid>
               </Grid>{" "}
-              <Grid container className="py-2" xs={12}>
+              <Grid container className="py-2" xs={12} alignItems="center">
                 <Grid item sm={5} display="flex" justifyContent="end">
                   <Typography className="h-5">Website Name</Typography>
                 </Grid>
@@ -332,12 +334,18 @@ const SupplierApproval = () => {
                 bgColor="bg-dark-red"
                 label="Reject"
                 muiProps="me-2 px-3"
+                onBtnClick={() => {
+                  handleAcceptClick(viewModalData.supplierId, "REJECTED");
+                }}
               />
               <ButtonComponent
                 variant="contained"
                 bgColor="bg-green"
                 label="Accept"
                 muiProps="px-3"
+                onBtnClick={() => {
+                  handleAcceptClick(viewModalData.supplierId, "APPROVED");
+                }}
               />
             </Box>
           </Box>
@@ -353,19 +361,25 @@ const SupplierApproval = () => {
         <ModalComponent
           open={openInviteModal}
           onCloseIconClick={() => {
+            setModalUserData("");
             setOpenInviteModal(false);
           }}
           ModalTitle="Invite Supplier"
+          ClearBtnText="Close"
+          saveBtnText="Submit"
+          onSaveBtnClick={() => {
+            handleInviteSupplierClick();
+          }}
         >
           <Box className="p-3">
             <InputBox
+              value={modalUserData}
               placeholder="Enter Mail Id / Phone Number"
               inputlabelshrink
               variant="standard"
-              // onInputChange={(e) => {
-              //   setModalUserData(e.traget.value);
-              // }}
-              value={modalUserData}
+              onInputChange={(e) => {
+                setModalUserData(e.target.value);
+              }}
             />
           </Box>
         </ModalComponent>
