@@ -8,7 +8,7 @@ const DeliveryChargesModal = ({
   const column1 = [
     {
       id: "col1", //  id value in column should be presented in row as key
-      label: "Supplie ID/Name",
+      label: "Supplier ID/Name",
       minWidth: 100,
       align: "center",
       data_align: "center",

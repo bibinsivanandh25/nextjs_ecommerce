@@ -3,24 +3,6 @@ import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-const items = [
-  {
-    src: assetsJson.ecommerceBanner,
-    altText: "Slide 1",
-    // caption: "Slide 1",
-  },
-  {
-    src: assetsJson.mrmrscartlogo,
-    // altText: "Slide 2",
-    // caption: "Slide 2",
-  },
-  {
-    src: assetsJson["Printed Dress"],
-    // altText: "Slide 3",
-    // caption: "Slide 3",
-  },
-];
-
 function CarousalComponent({
   onChange = () => {},
   onClickItem = () => {},
@@ -28,11 +10,27 @@ function CarousalComponent({
   interval = 2000,
   stopOnHover = true,
   dynamicHeight = true,
-  images = items,
-  carouselImageMaxHeight = "50vh",
-  carouselImageMinHeight = "0",
+  carouselImageMaxHeight = "55vh",
+  carouselImageMinHeight = "55vh",
   carouselImageMinWidth = "100%",
   showIndicators = true,
+  list = [
+    {
+      src: assetsJson.ecommerceBanner,
+      altText: "Slide 1",
+      // caption: "Slide 1",
+    },
+    {
+      src: assetsJson.mrmrscartlogo,
+      // altText: "Slide 2",
+      // caption: "Slide 2",
+    },
+    {
+      src: assetsJson["Printed Dress"],
+      // altText: "Slide 3",
+      // caption: "Slide 3",
+    },
+  ],
 }) {
   return (
     <Carousel
@@ -48,8 +46,8 @@ function CarousalComponent({
       stopOnHover={stopOnHover}
       showIndicators={showIndicators}
     >
-      {images &&
-        images.map((value) => {
+      {list &&
+        list.map((value) => {
           return (
             <div>
               <img

@@ -2,6 +2,7 @@
 // import { providers, signIn, getSession, csrfToken } from "next-auth/client";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
+import atob from "atob";
 import {
   getCsrfToken,
   getProviders,
@@ -10,6 +11,7 @@ import {
 } from "next-auth/react";
 import { useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 import {
   Box,
   Grid,
@@ -135,11 +137,11 @@ const Login = () => {
         errObj.user = "Email Id should not be greater than 255 characters";
         flag = true;
       }
-    } else if (!validationRegex.mobile.test(formValues.user)) {
-      errObj.user = validateMessage.mobile;
-      flag = true;
-    } else if (!validationRegex.email.test(formValues.user)) {
-      errObj.user = validateMessage.email;
+    } else if (
+      !validationRegex.mobile.test(formValues.user) &&
+      !validationRegex.email.test(formValues.user)
+    ) {
+      errObj.user = "Invalid Mobile No/Email";
       flag = true;
     }
     if (formValues.password === "") {
@@ -195,19 +197,41 @@ const Login = () => {
     // }
 
     if (!flag) {
-      const res = await signIn("credentials", {
-        username: formValues.user,
+      const payload = {
+        userName: formValues.user,
         password: formValues.password,
-        role: options[selectedIndex],
-        roleId: selectedIndex,
-        callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
-        redirect: false,
-      });
-      if (res?.error) {
-        toastify("Invalid credentials", "error");
-        return null;
-      }
-      route.push(`/${getBasePath(options[selectedIndex])}/dashboard`);
+        userType: options[selectedIndex].toUpperCase(),
+      };
+      await axios
+        .post(`http://10.10.31.116:8001/api/v1/auth/authenticate`, payload)
+        .catch((err) => {
+          const errRes = err.response.data?.message;
+          toastify(errRes, "error");
+        })
+        .then(async (data) => {
+          if (data) {
+            const { token } = data.data;
+            const decoded = JSON.parse(atob(token.split(".")[1].toString()));
+            const userData = decoded.sub.split(",");
+            const res = await signIn("credentials", {
+              id: userData[0],
+              email: userData[1],
+              role: decoded.roles[0],
+              token,
+              callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
+              redirect: false,
+            });
+            if (res?.error) {
+              toastify("Invalid credentials", "error");
+              return null;
+            }
+            route.push(`/${getBasePath(options[selectedIndex])}/dashboard`);
+          }
+        })
+        .catch((err) => {
+          console.log(err, "err");
+          throw err;
+        });
     }
   };
 
@@ -307,7 +331,7 @@ const Login = () => {
                   labelColorWhite={{ color: "#fff" }}
                 />
               </Grid>
-              <Grid item md={12}>
+              <Grid item md={12} className="w-100">
                 <div className="d-flex justify-content-between">
                   <Link href="/auth/login/otplogin" passHref>
                     <span className="color-orange fs-12 cursor-pointer">

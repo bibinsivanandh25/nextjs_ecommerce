@@ -6,6 +6,9 @@ import CustomIcon from "services/iconUtils";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
+import axios from "axios";
+import { useUserInfo } from "services/hooks";
+import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -14,7 +17,6 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
   const [value, setValue] = React.useState(0);
-  const [tableData, setTableData] = useState([]);
   const [showMenu, setShowMenu] = useState(null);
   const [selected, setSelected] = useState([]);
   const [showAddFlagModal, setShowAddFlagModal] = useState(false);
@@ -24,60 +26,85 @@ const MyProducts = () => {
       label: "Image",
       id: "col1",
       isFilter: false,
+      minWidth: 100,
+      align: "center",
     },
     {
+      align: "center",
+      data_align: "center",
       label: "Product Type",
       id: "col2",
+      minWidth: 150,
     },
     {
+      align: "center",
+      data_align: "center",
       label: "Product ID",
       id: "col3",
+      minWidth: 150,
     },
     {
+      align: "center",
+      data_align: "center",
       label: "Name",
       isFilter: false,
       id: "col4",
+      minWidth: 100,
     },
     {
+      align: "center",
+      data_align: "center",
       label: "SKU",
       id: "col5",
+      minWidth: 150,
     },
     {
-      label: "Size",
+      align: "center",
+      data_align: "center",
+      label: "Quantity",
       id: "col6",
       isFilter: false,
     },
     {
+      align: "center",
+      data_align: "center",
       label: "Listing Price",
       isFilter: false,
       id: "col7",
     },
     {
+      align: "center",
+      data_align: "center",
       label: "MRP Price",
       id: "col8",
       isFilter: false,
     },
     {
-      label: "Stock",
+      align: "center",
+      data_align: "center",
+      label: "Stock Status",
       isFilter: false,
       id: "col9",
     },
+
     {
-      label: "Status",
+      align: "center",
+      data_align: "center",
+      label: "Updated Date & Time",
       id: "col10",
       isFilter: false,
     },
     {
-      label: "Update & Date",
+      align: "center",
+      data_align: "center",
+      label: "Action",
       id: "col11",
       isFilter: false,
-    },
-    {
-      label: "Action",
-      id: "col12",
-      isFilter: false,
+      minWidth: 100,
     },
   ];
+
+  const { id } = useUserInfo();
 
   const handleClose = () => {
     setShowMenu(null);
@@ -85,101 +112,87 @@ const MyProducts = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
-      result.push({
-        col1: row.purchaseid,
-        col2: row.productType,
-        col3: row.productId,
-        col4: row.name,
-        col5: row.sku,
-        col6: row.size,
-        col7: row.listingPrice,
-        col8: row.mrpPrice,
-        col9: row.stock,
-        col10: row.status,
-        col11: row.updateAndDate,
-        col12: (
-          <Grid container className="h-6">
-            <Grid item xs={3}>
-              <CustomIcon className="fs-6" title="View" type="view" />
+    data.forEach((masterProduct) => {
+      masterProduct.productVariations.forEach((variation) => {
+        result.push({
+          col1: (
+            <Image src={variation.variationMedia[0]} height={50} width={50} />
+          ),
+          col2: masterProduct.productType,
+          col3: variation.productVariationId,
+          col4: variation.productTitle,
+          col5: variation.skuId,
+          col6: variation.stockQty,
+          col7: variation.salePrice,
+          col8: variation.mrp,
+          col9: variation.stockStatus,
+          col10: variation.lastUpdatedAt,
+          col11: (
+            <Grid container className="h-6">
+              <Grid item xs={3}>
+                <CustomIcon className="fs-6" title="View" type="view" />
+              </Grid>
+              <Grid item xs={3}>
+                <CustomIcon
+                  className="fs-6"
+                  title="share"
+                  type="share"
+                  onIconClick={() => {
+                    setShowShareModal(true);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <CustomIcon className="fs-6" title="Delete" type="delete" />
+              </Grid>
+              <Grid item xs={3}>
+                <CustomIcon
+                  className="fs-6"
+                  title="More"
+                  type="more"
+                  onIconClick={(event) => setShowMenu(event.currentTarget)}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={3}>
-              <CustomIcon
-                className="fs-6"
-                title="share"
-                type="share"
-                onIconClick={() => {
-                  setShowShareModal(true);
-                }}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <CustomIcon className="fs-6" title="Delete" type="delete" />
-            </Grid>
-            <Grid item xs={3}>
-              <CustomIcon
-                className="fs-6"
-                title="More"
-                type="more"
-                onIconClick={(event) => setShowMenu(event.currentTarget)}
-              />
-            </Grid>
-          </Grid>
-        ),
-        id: row.id,
+          ),
+          id: variation.productVariationId,
+        });
       });
     });
     return result;
   };
 
-  useEffect(() => {
-    const rows = [
-      {
-        id: 1,
-        productType: "Simple Product",
-        productId: "#45523232",
-        name: "Bag",
-        sku: "SL 9083",
-        size: "UK24",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-      {
-        id: 2,
-        productType: "Simple Product",
-        productId: "#45523232",
-        name: "Mouse",
-        sku: "SL 9083",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        size: "UK24",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-      {
-        id: 3,
-        productType: "Simple Product",
-        size: "UK24",
-        productId: "#45523232",
-        name: "Bagd",
-        sku: "SL 9083",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-    ];
-    setTableData(rows);
-  }, []);
+  const getStatus = () => {
+    if (value === 0) {
+      return "APPROVED";
+    }
+    if (value === 1) {
+      return "OUTOFSTOCK";
+    }
+    if (value === 2) {
+      return "INITIATED";
+    }
+    if (value === 3) {
+      return "REJECTED";
+    }
+    if (value === 4) {
+      return "DISABLED";
+    }
+    return null;
+  };
 
   useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
+    axios
+      .get(
+        `http://10.10.31.116:8100/api/v1/products/master-product-filter?status=${getStatus()}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
+      )
+      .then((data) => {
+        setTableRows(mapRowsToTable(data.data.data));
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  }, [value]);
 
   const tabList = [
     {

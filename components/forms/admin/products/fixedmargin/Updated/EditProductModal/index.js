@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 import CustomIcon from "services/iconUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -8,18 +8,18 @@ import ModalComponent from "@/atoms/ModalComponent";
 const EditProductModal = ({
   openEditModalForUpdated,
   setOpenEditModalForUpdated,
-  rowsDataObjectsForUpdated,
-  modalId,
+  // rowsDataObjectsForUpdated,
+  // modalId,
 }) => {
   const returnImages = () => {
-    return rowsDataObjectsForUpdated[modalId]?.col2.imgSrc.map((val) => {
-      return (
-        <Grid item xs={2} className="ms-2 text-center">
-          {" "}
-          <Image src={val} width={50} height={50} />{" "}
-        </Grid>
-      );
-    });
+    // return rowsDataObjectsForUpdated[modalId]?.col2.imgSrc.map((val) => {
+    //   return (
+    //     <Grid item xs={2} className="ms-2 text-center">
+    //       {" "}
+    //       <Image src={val} width={50} height={50} />{" "}
+    //     </Grid>
+    //   );
+    // });
   };
 
   return (
@@ -42,7 +42,7 @@ const EditProductModal = ({
             <Typography className="fs-14">
               Product Id:{" "}
               <span className="fw-bold">
-                {rowsDataObjectsForUpdated[modalId]?.col1}
+                {/* {rowsDataObjectsForUpdated[modalId]?.col1} */}
               </span>
             </Typography>
             <CustomIcon type="edit" />
@@ -57,7 +57,7 @@ const EditProductModal = ({
             <Typography className="fs-14 mt-3">
               Vendor Id/Business Name:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjectsForUpdated[modalId]?.col3}
+                {/* {rowsDataObjectsForUpdated[modalId]?.col3} */}
               </span>
             </Typography>
           </Box>
@@ -65,7 +65,7 @@ const EditProductModal = ({
             <Typography className="fs-14 mt-3">
               Category Subcategory:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjectsForUpdated[modalId]?.col4}
+                {/* {rowsDataObjectsForUpdated[modalId]?.col4} */}
               </span>
             </Typography>
           </Box>
@@ -73,7 +73,7 @@ const EditProductModal = ({
             <Typography className="fs-14 mt-3">
               Change:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjectsForUpdated[modalId]?.col5}
+                {/* {rowsDataObjectsForUpdated[modalId]?.col5} */}
               </span>
             </Typography>
           </Box>
@@ -81,7 +81,7 @@ const EditProductModal = ({
             <Typography className="fs-14 mt-3">
               Updated date & time:{" "}
               <span className="fs-14 fw-bold">
-                {rowsDataObjectsForUpdated[modalId]?.col6}
+                {/* {rowsDataObjectsForUpdated[modalId]?.col6} */}
               </span>
             </Typography>
           </Box>
