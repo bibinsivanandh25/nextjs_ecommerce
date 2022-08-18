@@ -5,6 +5,8 @@ import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import toastify from "services/utils/toastUtils";
+import validateMessage from "constants/validateMessages";
+import { inviteSupplier } from "services/admin/supplier/supplierapproval";
 import axios from "axios";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -95,6 +97,7 @@ const SupplierApproval = () => {
   const [notifyModalOpen, setNotifyModalOpen] = useState(false);
   const [openInviteModal, setOpenInviteModal] = useState(false);
   const [modalUserData, setModalUserData] = useState("");
+  const [modalInputError, setModalInputError] = useState(false);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -111,7 +114,7 @@ const SupplierApproval = () => {
     };
     await axios
       .put(
-        "http://10.10.31.116:8500/api/v1/users/admin/supplier-approval",
+        "http://10.10.31.116:8765/api/v1/users/admin/supplier-approval",
         payload,
         { headers: { userId: "ADM01234" } }
       )
@@ -189,7 +192,7 @@ const SupplierApproval = () => {
   const getAllTableData = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8500/api/v1/users/admin/supplier/supplier-status/0/5?status=INITIATED`
+        `http://10.10.31.116:8765/api/v1/users/admin/supplier/supplier-status/0/5?status=INITIATED`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -204,7 +207,21 @@ const SupplierApproval = () => {
   useEffect(() => {
     getAllTableData();
   }, []);
-  const handleInviteSupplierClick = () => {};
+  const handleInviteSupplierClick = async () => {
+    if (modalUserData !== "") {
+      const { data, err } = await inviteSupplier(modalUserData);
+      if (data) {
+        setOpenInviteModal(false);
+        getAllTableData();
+      }
+      if (err) {
+        toastify(err.response?.data?.message, "error");
+      }
+      setModalInputError(false);
+    } else {
+      setModalInputError(true);
+    }
+  };
   return (
     <Paper
       className="pt-2 mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -370,6 +387,10 @@ const SupplierApproval = () => {
           onSaveBtnClick={() => {
             handleInviteSupplierClick();
           }}
+          onClearBtnClick={() => {
+            setOpenInviteModal(false);
+          }}
+          footerClassName="justify-content-end"
         >
           <Box className="p-3">
             <InputBox
@@ -380,6 +401,8 @@ const SupplierApproval = () => {
               onInputChange={(e) => {
                 setModalUserData(e.target.value);
               }}
+              helperText={modalInputError && validateMessage.field_required}
+              error={modalInputError}
             />
           </Box>
         </ModalComponent>
