@@ -7,9 +7,11 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { useUserInfo } from "services/hooks";
-import { getSupplierProductCountByStatus } from "services/supplier/myproducts";
 import Image from "next/image";
-import { getTabledata } from "services/supplier/myProducts";
+import {
+  getTabledata,
+  getSupplierProductCountByStatus,
+} from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
