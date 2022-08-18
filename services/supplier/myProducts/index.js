@@ -14,4 +14,16 @@ const getTabledata = (status, id) => {
     });
 };
 
-export { getTabledata };
+const getSupplierProductCountByStatus = (userId) => {
+  return serviceUtil
+    .get(
+      `/products/master-product/product-variations-count?supplierId=${userId}`
+    )
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export { getSupplierProductCountByStatus, getTabledata };
