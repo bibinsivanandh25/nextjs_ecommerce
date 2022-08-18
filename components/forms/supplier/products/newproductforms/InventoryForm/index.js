@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
@@ -169,7 +169,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             />
           </div>
           <div className="mx-2">
-            <InfoOutlinedIcon />
+            <Tooltip title="SKU Will Be Generated Once The Product Is Approved">
+              <IconButton>
+                <InfoOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </Grid>
         <Grid item md={12} className="d-flex align-items-center">
@@ -222,9 +226,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               placeholder="Select stock status"
               type="number"
             />
-          </div>
-          <div className="mx-2">
-            <InfoOutlinedIcon />
           </div>
         </Grid>
         {manageStock ? (

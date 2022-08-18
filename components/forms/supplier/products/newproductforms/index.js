@@ -304,16 +304,16 @@ const ProductsLayout = ({
 
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
-    // if (validateForm() && flag) {
-    const temp = formsRef.current.handleSendFormData();
-    setFormData((prev) => {
-      return {
-        ...prev,
-        [temp[0]]: temp[1],
-      };
-    });
-    setactiveTab((prev) => prev + 1);
-    // }
+    if (validateForm() && flag) {
+      const temp = formsRef.current.handleSendFormData();
+      setFormData((prev) => {
+        return {
+          ...prev,
+          [temp[0]]: temp[1],
+        };
+      });
+      setactiveTab((prev) => prev + 1);
+    }
   };
   useEffect(() => {
     if (formData?.mainForm && Object.keys(formData.mainForm).length) {
@@ -619,7 +619,14 @@ const ProductsLayout = ({
                   <InputBox
                     id="brand"
                     label="Brand"
-                    onInputChange={handleInputChange}
+                    onInputChange={(e) => {
+                      setMainFormData((prev) => {
+                        return {
+                          ...prev,
+                          [e.target.id]: e.target.value.toUpperCase(),
+                        };
+                      });
+                    }}
                     value={mainFormData.brand}
                     placeholder="Enter Brand"
                     inputlabelshrink

@@ -10,6 +10,7 @@ const AcceptRejectModal = ({
   rowsDataObjects = [],
   openAcceptRejectModal,
   setOpenAcceptRejectModal = () => {},
+  getTableData = () => {},
 }) => {
   const returnImages = () => {
     return rowsDataObjects.variationMedia.map((val) => {
@@ -143,6 +144,7 @@ const AcceptRejectModal = ({
             label="Reject"
             onBtnClick={() => {
               approveOrRejectProduct("REJECTED");
+              getTableData();
             }}
           />
           <ButtonComponent
@@ -150,6 +152,7 @@ const AcceptRejectModal = ({
             label="Approve"
             onBtnClick={() => {
               approveOrRejectProduct("APPROVED");
+              getTableData();
             }}
           />
         </Box>

@@ -274,6 +274,7 @@ const ProductsToApprove = () => {
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
           rowsDataObjects={selectedRow}
+          getTableData={getTableData}
         />
       ) : null}
       {/* Raise Query Modal */}

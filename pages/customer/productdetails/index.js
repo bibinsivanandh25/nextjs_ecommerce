@@ -211,7 +211,7 @@ const ProductDetails = () => {
 
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
-    element.scrollIntoView({ behavior: "smooth" });
+    element.scrollIntoView();
   }, []);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);

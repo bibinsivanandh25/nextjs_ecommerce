@@ -17,7 +17,7 @@ const getBannersBySupplierId = (supplierId) => {
 const getTopProducts = (userId) => {
   return axios
     .get(
-      `http://10.10.31.116:8765/api/v1/products/master-product-filter?status=APPROVED&pageNumber=0&pageSize=10&keyword=&supplierId=${userId}&filterStatus=ALL`
+      `http://10.10.31.116:8765/api/v1/products/master-product-filter?status=APPROVED&pageNumber=0&pageSize=100&keyword=&supplierId=${userId}&filterStatus=ALL`
     )
     .then((res) => {
       const { data } = res && res.data;
