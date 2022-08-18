@@ -7,6 +7,7 @@ import serviceUtil from "services/utils";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
+import axios from "axios";
 import styles from "./Registration.module.css";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
 
@@ -109,7 +110,9 @@ const Registration = () => {
         mobileNumber: formValues.mobile,
         gstin: formValues.gstin,
         avgStockCount: formValues.stockCount,
-        mainCategories: formValues.mainCat,
+        mainCategories: formValues.mainCat.map((ele) => {
+          return ele.title;
+        }),
         websiteName: formValues.site,
         profileImageUrl: null,
         websiteLink: formValues.siteLink,
@@ -119,19 +122,11 @@ const Registration = () => {
         supplierReferralCode: "",
         wished: false,
       };
-      await serviceUtil
+      await axios
         .post(
-          `users/registration/send-otp/?mobileNumber=${
+          `http://10.10.31.116:8765/api/v1/users/registration/send-otp?mobileNumber=${
             formValues.mobile
           }&userType=${route.pathname.split("/")[2].toUpperCase()}`
-          // {
-          //   mobileNumber: ,
-          //   userType: route.pathname.split("/")[2].toUpperCase(),
-          // },
-          // {
-          //   "Content-Type": "multipart/form-data",
-          // }
-          // mobileNumber:formValues.
         )
         .then((data) => {
           // if (data) {
@@ -143,7 +138,6 @@ const Registration = () => {
         })
         .catch((err) => {
           toastify(err.response.data.message, "error");
-          console.log(err.response.data.message);
         });
     }
   };

@@ -85,6 +85,7 @@ const NewPasswordForm = ({
 
       <div style={{ width: "400px" }}>
         <InputBox
+          type="password"
           placeholder="Enter New Password"
           value={formValues.password}
           label="Enter New Password"
@@ -104,6 +105,7 @@ const NewPasswordForm = ({
 
       <div style={{ width: "400px" }}>
         <InputBox
+          type="password"
           placeholder="Re-enter New Password"
           value={formValues.rePassword}
           label="Re-enter New Password"
