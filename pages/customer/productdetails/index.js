@@ -18,6 +18,7 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
+// eslint-disable-next-line no-unused-vars
 const ownersCoupons = [
   {
     id: 1,

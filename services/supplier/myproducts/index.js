@@ -1,14 +1,17 @@
-import axios from "axios";
+import serviceUtil from "services/utils";
 
-const getSupplierProductCountByStatus = (userId) => {
-  return axios
+const getTabledata = (status, id) => {
+  return serviceUtil
     .get(
-      `http://10.10.31.116:8100/api/v1/products/master-product/product-variations-count?supplierId=${userId}`
+      `products/master-product-filter?status=${status}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
     )
     .then((res) => {
-      const { data } = res && res.data;
+      const { data } = res.data;
       return { data };
     })
-    .catch((err) => ({ err }));
+    .catch((err) => {
+      return err;
+    });
 };
-export { getSupplierProductCountByStatus };
+
+export { getTabledata };
