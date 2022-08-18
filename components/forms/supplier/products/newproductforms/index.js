@@ -12,11 +12,15 @@ import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
-import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
 import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
-import { saveMedia, saveProduct } from "services/supplier/AddProducts";
+import {
+  getSet,
+  getSubCategory,
+  saveMedia,
+  saveProduct,
+} from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
@@ -189,50 +193,44 @@ const ProductsLayout = ({
     getB2BTradmarkValues("B2B_INVOICE");
   }, []);
 
+  const getSets = async () => {
+    const { data } = await getSet(mainFormData.category.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.categorySetId,
+          value: item.setName,
+          label: item.setName,
+        });
+      });
+      setSetsData(finaData);
+    }
+  };
+  const getSubCategoryList = async () => {
+    const { data } = await getSubCategory(mainFormData.setsValue.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.subCategoryId,
+          value: item.subCategoryName,
+          label: item.subCategoryName,
+        });
+      });
+      setSubCategoryData(finaData);
+    }
+  };
+
   useEffect(() => {
     if (mainFormData.category?.value) {
-      axios
-        .get(
-          `http://10.10.31.116:8100/api/v1/products/category-set-enabled/drop-down-list?mainCategoryId=${mainFormData.category.id}`
-        )
-        .then((res) => {
-          const { data } = res.data;
-          const finaData = [];
-          data.forEach((item) => {
-            finaData.push({
-              id: item.categorySetId,
-              value: item.setName,
-              label: item.setName,
-            });
-          });
-          setSetsData(finaData);
-        })
-        .catch(() => {});
+      getSets();
     }
   }, [mainFormData.category]);
 
   useEffect(() => {
     if (mainFormData.setsValue?.value) {
-      axios
-        .get(
-          `http://10.10.31.116:8100/api/v1/products/sub-category/drop-down-list?setId=${mainFormData.setsValue.id}`
-        )
-        .then((res) => {
-          const { data } = res.data;
-          const finaData = [];
-          data.forEach((item) => {
-            finaData.push({
-              id: item.subCategoryId,
-              value: item.subCategoryName,
-              label: item.subCategoryName,
-            });
-          });
-          setSubCategoryData(finaData);
-        })
-        .catch((err) => {
-          setSubCategoryData([]);
-          toastify(err.response.data.message, "error");
-        });
+      getSubCategoryList();
     }
   }, [mainFormData.setsValue]);
 

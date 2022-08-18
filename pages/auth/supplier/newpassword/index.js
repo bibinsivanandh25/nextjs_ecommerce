@@ -4,6 +4,7 @@ import NewPasswordForm from "components/forms/supplier/newpassword";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toastify from "services/utils/toastUtils";
+import atob from "atob";
 import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
@@ -15,14 +16,16 @@ const Newpassword = () => {
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const temp = atob(router.query.user).split(",")[1];
-      setFormValues((pre) => ({
-        ...pre,
-        userId: temp,
-      }));
-    } catch (e) {
-      toastify("Invalid URL", "error");
+    if (router.query.user) {
+      try {
+        const temp = atob(router.query.user).split(",")[1];
+        setFormValues((pre) => ({
+          ...pre,
+          userId: temp,
+        }));
+      } catch (e) {
+        toastify("Invalid URL", "error");
+      }
     }
   }, [router.query.user]);
 
