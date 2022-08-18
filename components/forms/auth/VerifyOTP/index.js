@@ -1,16 +1,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
-// import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
-// import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
-// import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
-// import styles from "./Login.module.css";
 
 const VerifyOTP = ({
   payLoad = {},
@@ -18,10 +14,7 @@ const VerifyOTP = ({
   setShowModal = () => {},
 }) => {
   const [otp, setotp] = useState("xxxx");
-  // const [user, setUser] = useState("");
-  // const [submited, setSubmitted] = useState(false);
   const router = useRouter();
-  // const [error, setError] = useState();
 
   useEffect(() => {
     return () => {
@@ -36,16 +29,21 @@ const VerifyOTP = ({
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
-    await serviceUtil
-      .post(`users/registration/verify-otp`, formData, config)
+    await axios
+      .post(
+        `http://10.10.31.116:8765/api/v1/users/registration/verify-otp`,
+        formData,
+        config
+      )
       .then(async (data) => {
         if (data) {
-          toastify(data.data.message, "success");
-
-          await serviceUtil
-            .post("users/supplier/register-supplier", {
-              ...payLoad,
-            })
+          await axios
+            .post(
+              "http://10.10.31.116:8765/api/v1/users/supplier/register-supplier",
+              {
+                ...payLoad,
+              }
+            )
             .then((res) => {
               if (res) {
                 setShowVerifyOTP(false);
@@ -56,6 +54,7 @@ const VerifyOTP = ({
               toastify(errRes.response.data.message, "error");
               setShowVerifyOTP(false);
             });
+          toastify(data.data.message, "success");
         }
         return null;
       })
@@ -66,37 +65,12 @@ const VerifyOTP = ({
 
   const resendOTP = async () => {
     setotp("xxxx");
-    await serviceUtil.post(
-      `users/registration/send-otp/?mobileNumber=${
+    await axios.post(
+      `http://10.10.31.116:8765/api/v1/users/registration/send-otp/?mobileNumber=${
         payLoad.mobileNumber
       }&userType=${router.pathname.split("/")[2].toUpperCase()}`
     );
   };
-
-  // const validateForm = () => {
-  //   let errObj = error;
-  //   const validate = (errMsg, valid1, valid2) => {
-  //     if (!user) {
-  //       errObj = validateMessage.field_required;
-  //     } else if (!valid1.test(user) && !valid2.test(user)) {
-  //       errObj = errMsg;
-  //     } else {
-  //       errObj = null;
-  //     }
-  //   };
-  //   validate(
-  //     validateMessage.userId,
-  //     validationRegex.mobile,
-  //     validationRegex.email
-  //   );
-
-  //   setError(errObj);
-  //   return Boolean(errObj);
-  // };
-
-  // const sendOTPclick = () => {
-  //   // if (!validateForm()) setSubmitted(true);
-  // };
 
   return (
     <AuthLayout title="Enter OTP">
