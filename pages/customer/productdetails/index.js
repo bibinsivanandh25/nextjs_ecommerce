@@ -18,33 +18,33 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
-const ownersCoupons = [
-  {
-    id: 1,
-    toolName: "Spin Wheel",
-    campaign: "",
-    validity: "",
-  },
-  {
-    id: 1,
-    toolName: "Scratch Card",
-    campaign: "",
-    validity: "",
-  },
-];
-const otherSellers = [
-  {
-    title: "New (4) From",
-    ActualPrice: {
-      start: "675",
-      end: "766",
-    },
-    delivery: {
-      start: "675",
-      end: "766",
-    },
-  },
-];
+// const ownersCoupons = [
+//   {
+//     id: 1,
+//     toolName: "Spin Wheel",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 1,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+// ];
+// const otherSellers = [
+//   {
+//     title: "New (4) From",
+//     ActualPrice: {
+//       start: "675",
+//       end: "766",
+//     },
+//     delivery: {
+//       start: "675",
+//       end: "766",
+//     },
+//   },
+// ];
 const handPick = true;
 // const sameProduct = [
 //   {
@@ -104,7 +104,7 @@ const ProductDetails = () => {
     const status = "APPROVED";
     await axios
       .get(
-        `http://10.10.31.116:8100/api/v1/products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `http://10.10.31.116:8765/api/v1/products/master-product/product-variations?id=${router.query.id}&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -119,7 +119,7 @@ const ProductDetails = () => {
         console.log(err.response);
       });
   };
-
+  const [selectedImageId, setSelectedImageId] = useState("1");
   // frequentproduct
   const [frequentProduct, setfrequentProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
@@ -131,7 +131,7 @@ const ProductDetails = () => {
   const getfrequentProduct = async (id) => {
     const ids = router.query.id ? router.query.id : id;
     await axios
-      .get(`http://10.10.31.116:8100/api/v1/products/grouped-product/${ids}`)
+      .get(`http://10.10.31.116:8765/api/v1/products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -166,6 +166,9 @@ const ProductDetails = () => {
         setSelectedMasterData(item);
         setSelectedImage(item.variationMedia[0]);
         getfrequentProduct(item.productVariationId);
+        const element = document.getElementById("MainBox");
+        element.scrollIntoView({ behavior: "smooth" });
+        setSelectedImageId("1");
       }
     });
   };
@@ -174,7 +177,7 @@ const ProductDetails = () => {
   const getCouponsData = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8500/api/v1/users/customer/store-coupon?supplierId=${router.query.supplierId}`
+        `http://10.10.31.116:8765/api/v1/users/customer/store-coupon?supplierId=${router.query.supplierId}`
       )
       .then((res) => {
         setCouponsMasterData(res.data.data);
@@ -190,7 +193,7 @@ const ProductDetails = () => {
   const getMinimumCart = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8500/api/v1/users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `http://10.10.31.116:8765/api/v1/users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
@@ -206,15 +209,15 @@ const ProductDetails = () => {
     getMinimumCart();
 
     // Scroll the Screen to top....
-
-    // const element = document.getElementById("MainBox");
-    // element.scrollIntoView();
+    const element = document.getElementById("MainBox");
+    element.scrollIntoView({ behavior: "smooth" });
   }, []);
-  const handleImageClick = (value) => {
+  const handleImageClick = (value, ind) => {
     setSelectedImage(value);
+    setSelectedImageId(ind);
   };
 
-  return (
+  return masterData ? (
     <Paper id="MainBox">
       <Box className="d-flex justify-content-end">
         <Box className="d-flex me-3">
@@ -235,23 +238,28 @@ const ProductDetails = () => {
               sm={4}
               display="flex"
               direction="column"
-              //   alignItems="center"
               mt={0.5}
-              justifyContent="space-between"
+              justifyContent={
+                selectedMasterData?.variationMedia?.length > 4 ||
+                selectedMasterData?.variationMedia?.length < 2
+                  ? "space-between"
+                  : "space-evenly"
+              }
               pb={1}
             >
               {selectedMasterData.variationMedia &&
-                selectedMasterData?.variationMedia?.map((item) => (
+                selectedMasterData?.variationMedia?.map((item, index) => (
                   <Image
                     height={50}
                     width={50}
                     src={item}
                     layout="intrinsic"
-                    //   objectFit="contain"
                     onClick={() => {
-                      handleImageClick(item);
+                      handleImageClick(item, index + 1);
                     }}
-                    className="border rounded cursor-pointer"
+                    className={`border rounded cursor-pointer ${
+                      selectedImageId == index + 1 && `border-orange `
+                    }`}
                   />
                 ))}
             </Grid>
@@ -280,7 +288,7 @@ const ProductDetails = () => {
                 //     },
                 //     enlargedImageContainerDimensions: {
                 //       width: "250%",
-                //       height: "200%",
+                //       height: "180%",
                 //     },
                 //   }}
                 //   className="bg-white"
@@ -1198,7 +1206,7 @@ const ProductDetails = () => {
           )}
       </Grid>
     </Paper>
-  );
+  ) : null;
 };
 
 export default ProductDetails;
