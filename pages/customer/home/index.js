@@ -130,6 +130,7 @@ const Home = () => {
             price: product.salePrice,
             rating: 4,
             ratingCount: 89,
+            id: product.productVariationId,
           });
         });
       });
@@ -245,6 +246,18 @@ const Home = () => {
               products={[...products]}
               productTitle="Top Products"
               showMarginButton={false}
+              getProductDetails={(data) => {
+                if (data) {
+                  route.push({
+                    pathname: `/customer/productdetails`,
+                    query: {
+                      supplierId: route.query.supplierId,
+                      storeCode: route.query.storeCode,
+                      id: data.id,
+                    },
+                  });
+                }
+              }}
             />
           </Box>
         </>

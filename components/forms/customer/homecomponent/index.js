@@ -8,6 +8,7 @@ const HomeComponent = ({
   products = [],
   productTitle = "",
   onCategoryClick = () => {},
+  getProductDetails = () => {},
 }) => {
   return (
     <div className="w-100">
@@ -26,6 +27,7 @@ const HomeComponent = ({
             <ProductDetailsCard
               products={[...products]}
               getSelectedItem={(item) => {
+                getProductDetails(item);
                 console.log(item);
               }}
               showMarginButton={showMarginButton}

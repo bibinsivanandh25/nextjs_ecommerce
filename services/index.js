@@ -1,8 +1,8 @@
-import serviceUtil from "./utils";
+import axios from "axios";
 
 const loginCall = (payload) => {
-  return serviceUtil
-    .post("/authenticate", payload)
+  return axios
+    .post("http://10.10.31.116:8765/api/v1/authenticate", payload)
     .then((res) => {
       const data = res && res.data;
       return { data };
@@ -14,10 +14,14 @@ const loginCall = (payload) => {
 };
 
 const getOtp = (payload) => {
-  return serviceUtil
-    .post("/users/registration/forgot-password/send-otp", payload, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+  return axios
+    .post(
+      "http://10.10.31.116:8765/api/v1/users/registration/forgot-password/send-otp",
+      payload,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    )
     .then((res) => {
       const data = res && res.data;
       return { data };
@@ -29,10 +33,14 @@ const getOtp = (payload) => {
 };
 
 const verifyOtp = (payload) => {
-  return serviceUtil
-    .post("/users/registration/verify-otp", payload, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+  return axios
+    .post(
+      "http://10.10.31.116:8765/api/v1/users/registration/verify-otp",
+      payload,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    )
     .then((res) => {
       const data = res && res.data;
       return { data };

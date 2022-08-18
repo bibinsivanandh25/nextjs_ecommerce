@@ -3,7 +3,6 @@ import ModalComponent from "components/atoms/ModalComponent";
 import RegistrationForm from "components/forms/supplier/registration";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";

@@ -1,8 +1,11 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TabsCard from "components/molecule/TabsCard";
+import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
 import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
 import Updated from "@/forms/admin/products/fixedmargin/Updated";
@@ -15,11 +18,112 @@ const FixedMargin = () => {
     { label: "Products to approve", isSelected: true },
     { label: "Queries", isSelected: false },
     { label: "Active", isSelected: false },
-    { label: "Update", isSelected: false },
+    { label: "Updated", isSelected: false },
     { label: "Rejected", isSelected: false },
   ]);
 
-  useEffect(() => {}, [activeTab]);
+  const callApi = (type, payload) => {
+    // eslint-disable-next-line consistent-return
+    return getAdminProductsByFilter(payload).then((res) => {
+      if (!res.error) {
+        return { [`${type}`]: res.data };
+      }
+    });
+  };
+
+  const getTableData = async () => {
+    const status = ["INITIATED", "APPROVED", "REJECTED"];
+    const promiseArr = [];
+    status.forEach((ele) => {
+      if (ele === "INITIATED") {
+        promiseArr.push(
+          callApi("INITIATED", {
+            categoryIds: [],
+            subCategoryIds: [],
+            brandNames: [],
+            productVariationIds: [],
+            dateFrom: "",
+            dateTo: "",
+            commissionType: "FIXED_COMMISSION",
+            status: ele,
+          })
+        );
+      }
+      if (ele === "APPROVED") {
+        promiseArr.push(
+          callApi("APPROVED", {
+            categoryIds: [],
+            subCategoryIds: [],
+            brandNames: [],
+            productVariationIds: [],
+            dateFrom: "",
+            dateTo: "",
+            commissionType: "FIXED_COMMISSION",
+            status: ele,
+          })
+        );
+      }
+      if (ele === "REJECTED") {
+        promiseArr.push(
+          callApi("REJECTED", {
+            categoryIds: [],
+            subCategoryIds: [],
+            brandNames: [],
+            productVariationIds: [],
+            dateFrom: "",
+            dateTo: "",
+            commissionType: "FIXED_COMMISSION",
+            status: ele,
+          })
+        );
+      }
+    });
+
+    const temp = await Promise.all(promiseArr);
+    const tabs = JSON.parse(JSON.stringify(tabList));
+    temp.forEach((item) => {
+      if (Object.keys(item)[0] === "INITIATED") {
+        tabs.map((element) => {
+          if (element.label === "Products to approve")
+            return (element.label += `( ${
+              item[Object.keys(item)[0]]?.count
+                ? item[Object.keys(item)[0]]?.count
+                : 0
+            } )`);
+          return element;
+        });
+      }
+      if (Object.keys(item)[0] === "REJECTED") {
+        tabs.map((element) => {
+          if (element.label === "Rejected")
+            return (element.label += `( ${
+              item[Object.keys(item)[0]]?.count
+                ? item[Object.keys(item)[0]]?.count
+                : 0
+            } )`);
+          return element;
+        });
+      }
+      if (Object.keys(item)[0] === "APPROVED") {
+        tabs.map((element) => {
+          if (element.label === "Active")
+            return (element.label += `( ${
+              item[Object.keys(item)[0]]?.count
+                ? item[Object.keys(item)[0]]?.count
+                : 0
+            } )`);
+          return element;
+        });
+      }
+    });
+    console.log(tabs, "tabs");
+    setTabList([...tabs]);
+  };
+
+  useEffect(() => {
+    getTableData();
+    // setTabList([...temp]);
+  }, []);
 
   const handleSelect = (index) => {
     setTabList((list) => {

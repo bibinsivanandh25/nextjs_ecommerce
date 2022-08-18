@@ -23,44 +23,48 @@ const VerifyOTP = ({
   }, []);
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("userName", payLoad.mobileNumber);
-    formData.append("otp", otp);
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
-    await axios
-      .post(
-        `http://10.10.31.116:8765/api/v1/users/registration/verify-otp`,
-        formData,
-        config
-      )
-      .then(async (data) => {
-        if (data) {
-          await axios
-            .post(
-              "http://10.10.31.116:8765/api/v1/users/supplier/register-supplier",
-              {
-                ...payLoad,
-              }
-            )
-            .then((res) => {
-              if (res) {
+    if (otp.includes("x")) {
+      toastify("Invalid OTP", "error");
+    } else {
+      const formData = new FormData();
+      formData.append("userName", payLoad.mobileNumber);
+      formData.append("otp", otp);
+      const config = {
+        headers: { "content-type": "multipart/form-data" },
+      };
+      await axios
+        .post(
+          `http://10.10.31.116:8765/api/v1/users/registration/verify-otp`,
+          formData,
+          config
+        )
+        .then(async (data) => {
+          if (data) {
+            await axios
+              .post(
+                "http://10.10.31.116:8765/api/v1/users/supplier/register-supplier",
+                {
+                  ...payLoad,
+                }
+              )
+              .then((res) => {
+                if (res) {
+                  setShowVerifyOTP(false);
+                  setShowModal(true);
+                }
+              })
+              .catch((errRes) => {
+                toastify(errRes.response.data.message, "error");
                 setShowVerifyOTP(false);
-                setShowModal(true);
-              }
-            })
-            .catch((errRes) => {
-              toastify(errRes.response.data.message, "error");
-              setShowVerifyOTP(false);
-            });
-          toastify(data.data.message, "success");
-        }
-        return null;
-      })
-      .catch((err) => {
-        toastify(err.response.data.message, "error");
-      });
+              });
+            toastify(data.data.message, "success");
+          }
+          return null;
+        })
+        .catch((err) => {
+          toastify(err.response.data.message, "error");
+        });
+    }
   };
 
   const resendOTP = async () => {
