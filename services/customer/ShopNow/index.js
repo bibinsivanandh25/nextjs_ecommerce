@@ -1,8 +1,10 @@
-import serviceUtil from "services/utils";
+import axios from "axios";
 
 const getStoreByStoreCode = (storeCode) => {
-  return serviceUtil
-    .get(`/users/customers/validate-store?storeCode=${storeCode}`)
+  return axios
+    .get(
+      `http://10.10.31.116:8765/api/v1/users/customers/validate-store?storeCode=${storeCode}`
+    )
     .then((res) => {
       const { data } = res && res.data;
       return { data };
