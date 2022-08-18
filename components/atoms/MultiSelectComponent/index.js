@@ -16,6 +16,7 @@ const MultiSelectComponent = ({
   helperText = "",
   error = false,
   freeSolo = false,
+  placeholder = "",
 }) => {
   return (
     <Autocomplete
@@ -46,6 +47,7 @@ const MultiSelectComponent = ({
             shrink: inputlabelshrink || value,
           }}
           fullWidth={fullWidth}
+          placeholder={placeholder}
         />
       )}
       onChange={(e, val) => {

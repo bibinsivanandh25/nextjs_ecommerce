@@ -304,16 +304,16 @@ const ProductsLayout = ({
 
   const handleNextClick = () => {
     const flag = formsRef.current.validate();
-    if (validateForm() && flag) {
-      const temp = formsRef.current.handleSendFormData();
-      setFormData((prev) => {
-        return {
-          ...prev,
-          [temp[0]]: temp[1],
-        };
-      });
-      setactiveTab((prev) => prev + 1);
-    }
+    // if (validateForm() && flag) {
+    const temp = formsRef.current.handleSendFormData();
+    setFormData((prev) => {
+      return {
+        ...prev,
+        [temp[0]]: temp[1],
+      };
+    });
+    setactiveTab((prev) => prev + 1);
+    // }
   };
   useEffect(() => {
     if (formData?.mainForm && Object.keys(formData.mainForm).length) {
@@ -784,6 +784,7 @@ const ProductsLayout = ({
                     list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
+                    placeholder="Select B2B Invoice"
                     size="small"
                     value={mainFormData.selectb2binvoice}
                     onSelectionChange={(a, val) => {
@@ -855,6 +856,7 @@ const ProductsLayout = ({
                   <Grid item md={12}>
                     <MultiSelectComponent
                       label="Choose Documents"
+                      placeholder="Choose Documents"
                       list={trademarkList}
                       id="b2bdocument"
                       size="small"
@@ -875,7 +877,7 @@ const ProductsLayout = ({
               </Grid>
             </div>
           </Box>
-          <Box className=" d-flex flex-column w-60p">
+          <Box className=" d-flex flex-column flex-grow-1 w-60p">
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
