@@ -6,10 +6,11 @@ import CustomIcon from "services/iconUtils";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import axios from "axios";
 import { useUserInfo } from "services/hooks";
 import { getSupplierProductCountByStatus } from "services/supplier/myproducts";
 import Image from "next/image";
+import { getTabledata } from "services/supplier/myProducts";
+import toastify from "services/utils/toastUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -183,17 +184,18 @@ const MyProducts = () => {
     return null;
   };
 
+  const getTableData = async () => {
+    const status = getStatus();
+    const { data, err } = await getTabledata(status, id);
+    if (data) {
+      setTableRows(mapRowsToTable(data));
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(
-        `http://10.10.31.116:8100/api/v1/products/master-product-filter?status=${getStatus()}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
-      )
-      .then((data) => {
-        setTableRows(mapRowsToTable(data.data.data));
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
+    getTableData();
   }, [value]);
 
   const getTabList = async () => {
