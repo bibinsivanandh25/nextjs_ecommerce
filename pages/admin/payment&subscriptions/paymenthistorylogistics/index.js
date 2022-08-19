@@ -6,12 +6,14 @@ import MenuOption from "@/atoms/MenuOptions";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TransactionFailed from "@/forms/admin/payments&subscriptions/paymenthistorylogistics/TransactionFailed";
 import AddNoteModal from "@/forms/admin/payments&subscriptions/paymenthistorylogistics/AddNoteModal";
+import ViewModal from "@/forms/admin/payments&subscriptions/paymenthistorylogistics/ViewModal";
 
 const PaymentHistoryLogistics = () => {
   const options = ["Add Note"];
   const [tableRows, setTableRows] = useState([]);
   const [showTransactionFailed, setShowTransactionFailed] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
+  const [openViewModal, setOpenViewModal] = useState(false);
 
   const column1 = [
     {
@@ -325,7 +327,7 @@ const PaymentHistoryLogistics = () => {
             <CustomIcon
               type="view"
               className="h-4"
-              //   onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => setOpenViewModal(true)}
             />
             <MenuOption
               getSelectedItem={(ele) => {
@@ -377,6 +379,10 @@ const PaymentHistoryLogistics = () => {
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <ViewModal
+        openViewModal={openViewModal}
+        setOpenViewModal={setOpenViewModal}
       />
     </>
   );
