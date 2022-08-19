@@ -45,6 +45,7 @@ const Newpassword = () => {
       })
       .catch((err) => {
         console.log(err);
+        toastify(err.response.data.message, "error");
       });
     // setShowModal(true);
   };

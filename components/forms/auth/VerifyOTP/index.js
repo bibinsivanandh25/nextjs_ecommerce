@@ -41,12 +41,9 @@ const VerifyOTP = ({
         .then(async (data) => {
           if (data) {
             await axios
-              .post(
-                `${process.env.DOMAIN}v1/users/supplier/register-supplier`,
-                {
-                  ...payLoad,
-                }
-              )
+              .post(`${process.env.DOMAIN}users/supplier/register-supplier`, {
+                ...payLoad,
+              })
               .then((res) => {
                 if (res) {
                   setShowVerifyOTP(false);
@@ -70,7 +67,7 @@ const VerifyOTP = ({
   const resendOTP = async () => {
     setotp("xxxx");
     await axios.post(
-      `${process.env.DOMAIN}v1/users/registration/send-otp/?mobileNumber=${
+      `${process.env.DOMAIN}users/registration/send-otp/?mobileNumber=${
         payLoad.mobileNumber
       }&userType=${router.pathname.split("/")[2].toUpperCase()}`
     );
