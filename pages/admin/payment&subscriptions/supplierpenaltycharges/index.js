@@ -132,9 +132,9 @@ const ResellerSubscriptions = () => {
   };
 
   const getTableRows = () => {
-    const anArray = [];
+    const result = [];
     rowsForTable.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: val.col1,
         col2: (
@@ -183,7 +183,7 @@ const ResellerSubscriptions = () => {
       });
     });
 
-    setTableRows(anArray);
+    setTableRows(result);
   };
 
   useEffect(() => {

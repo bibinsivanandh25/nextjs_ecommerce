@@ -96,9 +96,9 @@ const PaymentHistoryResellers = () => {
   const options = ["Notify", "Add Note"];
 
   const getTableRows = () => {
-    const anArray = [];
+    const result = [];
     rowsForTable.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: val.col1,
         col2: val.col2,
@@ -154,7 +154,7 @@ const PaymentHistoryResellers = () => {
       });
     });
 
-    setTableRows(anArray);
+    setTableRows(result);
   };
 
   useEffect(() => {
