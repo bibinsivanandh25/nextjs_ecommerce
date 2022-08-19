@@ -18,7 +18,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import { resellerMenu, supplierMenu } from "constants/navConstants";
 import { useSession } from "next-auth/react";
-import { MenuItem, MenuList } from "@mui/material";
+import { MenuItem, MenuList, Tooltip } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 
@@ -347,7 +347,12 @@ const SideBarComponent = ({ children }) => {
                         }}
                         className="cursor-pointer"
                       >
-                        <InboxIcon />
+                        <Tooltip
+                          title={!open ? item.title : ""}
+                          placement="right"
+                        >
+                          <InboxIcon />
+                        </Tooltip>
                       </ListItemIcon>
                       <ListItemText
                         className="cursor-pointer"
