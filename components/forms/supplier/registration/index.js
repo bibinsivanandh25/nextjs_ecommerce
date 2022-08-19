@@ -67,6 +67,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter First Name"
             value={formValues.firstName}
             label="First Name"
@@ -85,6 +86,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter Last Name"
             value={formValues.lastName}
             label="Last Name"
@@ -103,6 +105,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Business Name"
             value={formValues.businessName}
             label="Business Name"
@@ -121,6 +124,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your E-mail ID"
             value={formValues.mail}
             label="E-mail ID"
@@ -139,6 +143,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Mobile Number"
             value={formValues.mobile}
             label="Mobile Number"
@@ -162,6 +167,7 @@ const RegistrationForm = ({
               { label: "Mysore", value: "Mysore", id: 3 },
             ]}
             label="Choose City"
+            required
             placeholder="Choose City"
             onDropdownSelect={(value) => {
               setFormValues((prev) => ({
@@ -190,6 +196,7 @@ const RegistrationForm = ({
             }}
           /> */}
           <MultiSelectComponent
+            required
             list={[...mainCategories]}
             label="Select Main Category"
             onSelectionChange={(e, val) => {
@@ -202,10 +209,12 @@ const RegistrationForm = ({
             size="small"
             helperText={errorObj.mainCat}
             error={errorObj.mainCat.length}
+            placeholder="Select Main Category"
           />
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your GSTIN"
             value={formValues.gstin}
             label="GSTIN"
@@ -343,9 +352,9 @@ const RegistrationForm = ({
                   }));
                 }}
                 variant="standard"
-                InputProps={{
-                  style: { fontSize: "12px" },
-                }}
+                // InputProps={{
+                //   style: { fontSize: "14px" },
+                // }}
                 inputlabelshrink
                 helperText={errorObj.siteLink}
                 error={errorObj.siteLink !== ""}
