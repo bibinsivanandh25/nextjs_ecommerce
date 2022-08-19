@@ -122,6 +122,20 @@ const ProductPoliciesForm = forwardRef(
           // return true if validation is success else false
           return validateForm();
         },
+        clearPage: () => {
+          setProductPolicyFormData({
+            policyTabLabel: "",
+            refundPolicy: { media: {}, text: "" },
+            cancellationPolicy: { media: {}, text: "" },
+            shippingPolicy: { media: {}, text: "" },
+            warranty: false,
+            warrantyperiod: {},
+          });
+          setError({});
+          setreturnableMedia({});
+          setshippingMedia({});
+          setcancleMedia({});
+        },
       };
     });
 

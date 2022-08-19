@@ -142,6 +142,41 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         return ["pricing", { ...pricingFormData, freeDeliveryCheckbox }];
       },
       validate,
+      clearPage: () => {
+        setPricingFormData({
+          sale_price: "",
+          mrp: "",
+          return_order_accepted: false,
+          cash_on_accepted: false,
+          product_weight: "",
+          length: "",
+          width: "",
+          height: "",
+          delivery_charge: "",
+          sale_price_logistics: "",
+          returnorder: {},
+        });
+        setErrorObj({
+          sale_price: "",
+          mrp: "",
+          return_order_accepted: false,
+          cash_on_accepted: false,
+          product_weight: "",
+          length: "",
+          width: "",
+          height: "",
+          delivery_charge: "",
+          sale_price_logistics: "",
+        });
+        setDefaultZoneData({
+          zoneA: "",
+          zoneB: "",
+          zoneC: "",
+          zoneD: "",
+          zoneE: "",
+        });
+        setFreeDeliveryCheckbox(false);
+      },
     };
   });
 
