@@ -136,6 +136,10 @@ const AttributesForm = forwardRef(
             attributeName: "",
             values: "",
           });
+          const temp = attributeList.map((item) => {
+            return { ...item, selected: false };
+          });
+          setAttributeList(temp);
         },
       };
     });

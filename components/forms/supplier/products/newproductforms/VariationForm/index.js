@@ -146,6 +146,7 @@ const VariationForm = forwardRef(
     //     return dropdownCopy;
     //   });
     // }, [variationFormData]);
+    console.log(variationFormData, "suhil");
     const handleInputChange = (val, ele) => {
       const getData = () => {
         if (ele.type === "dropdown") {
@@ -184,9 +185,11 @@ const VariationForm = forwardRef(
                     id={ele.id}
                     size="small"
                     list={ele.options}
-                    value={ele.options.find(
-                      (op) => op.id === variationFormData[ele.id]
-                    )}
+                    value={
+                      ele.options.find(
+                        (op) => op.id === variationFormData[ele.id]
+                      ) ?? {}
+                    }
                     onDropdownSelect={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
                   />
