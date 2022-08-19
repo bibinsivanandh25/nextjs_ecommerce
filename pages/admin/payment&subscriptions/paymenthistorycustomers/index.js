@@ -27,7 +27,7 @@ const PaymentHistorySuppliers = () => {
       data_align: "center",
       position: "sticky",
       minWidth: 200,
-      data_classname: "",
+      data_classname: "border-end",
     },
     {
       id: "col3",
@@ -92,11 +92,24 @@ const PaymentHistorySuppliers = () => {
       data_align: "center",
       minWidth: 200,
       position: "sticky",
-      data_classname: "",
+      data_classname: "border-start",
     },
   ];
 
   const rowsForTable = [
+    {
+      id: 1,
+      col1: 1,
+      col2: "#827342 Karan Ram",
+      col3: 3,
+      col4: 2,
+      col5: 2,
+      col6: 2500,
+      col7: -200,
+      col8: 2200,
+      col9: 590,
+      col10: "Action",
+    },
     {
       id: 1,
       col1: 1,
