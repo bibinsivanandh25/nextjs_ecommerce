@@ -85,9 +85,13 @@ const ProductDetailsCard = ({
             md={showIcon ? 6 : 4}
             sm={showIcon ? 12 : 6}
             key={index}
+            className="cursor-pointer"
             spacing={1}
+            onClick={() => {
+              getSelectedItem(ele);
+            }}
           >
-            <Paper className="p-2" sx={{}}>
+            <Paper className="p-2 cursor-pointer" sx={{}}>
               <Grid container spacing={2}>
                 <Grid item xs={showIcon ? 3 : 4} alignSelf="center">
                   <Image
@@ -115,7 +119,7 @@ const ProductDetailsCard = ({
                       {ele.title}
                     </Typography>
                   </Tooltip>
-                  <Typography>
+                  <Typography className="cursor-pointer">
                     <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
                       {ele.rating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
                     </span>
@@ -124,12 +128,14 @@ const ProductDetailsCard = ({
                     </span>
                   </Typography>
                   <Typography
-                    className="color-orange py-1 bg-light-orange1 rounded d-inline px-2"
+                    className="color-orange py-1 bg-light-orange1 rounded d-inline px-2 cursor-pointer"
                     fontSize={12}
                   >
                     Free shipping
                   </Typography>
-                  <Typography className="fw-bold fs-5">₹{ele.price}</Typography>
+                  <Typography className="fw-bold fs-5 cursor-pointer">
+                    ₹{ele.price}
+                  </Typography>
                 </Grid>
                 {showIcon ? (
                   <Grid

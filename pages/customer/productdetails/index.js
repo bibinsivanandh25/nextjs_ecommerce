@@ -212,7 +212,7 @@ const ProductDetails = () => {
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
-  }, []);
+  }, [router.query]);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
     setSelectedImageId(ind);
