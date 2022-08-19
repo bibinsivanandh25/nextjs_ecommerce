@@ -146,6 +146,39 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         return ["inventory", { ...inventoryFormData }];
       },
       validate,
+      clearPage: () => {
+        setInventoryFormData({
+          sku: "",
+          stockqty: "",
+          stock_status: {},
+          allow_backorders: {},
+          stock_qty: "",
+          back_Orders: "",
+          shipping_class: {},
+          product_title: "",
+          business_processing_days: {},
+          seo_title: [],
+          meta_description: "",
+          meta_keyword: [],
+          modalname: "",
+        });
+        setErrorObj({
+          sku: "",
+          stockqty: "",
+          stock_status: "",
+          allow_backorders: "",
+          stock_qty: "",
+          back_Orders: "",
+          shipping_class: "",
+          product_title: "",
+          business_processing_days: "",
+          seo_title: "",
+          meta_description: "",
+          meta_keyword: "",
+          modalname: "",
+        });
+        setManageStock(false);
+      },
     };
   });
 

@@ -74,6 +74,20 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
         // return true if validation is success else false
         return validateForm();
       },
+      clearPage: () => {
+        setMrMrsCartFormData({
+          sellwithus: false,
+          free_delivery: "",
+          paid_delivery: "",
+          return: false,
+          cashondelivery: false,
+          returnorder: {},
+        });
+        setErrorObj({
+          free_delivery: "",
+          paid_delivery: "",
+        });
+      },
     };
   });
   useEffect(() => {

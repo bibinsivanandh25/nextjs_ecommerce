@@ -917,6 +917,16 @@ const ProductsLayout = ({
                 variant="outlined"
                 size="small"
                 onBtnClick={() => {
+                  formsRef.current.clearPage();
+                }}
+                muiProps="me-2"
+              />
+              <ButtonComponent
+                label="Clear All"
+                variant="outlined"
+                size="small"
+                onBtnClick={() => {
+                  formsRef.current.clearPage();
                   setFormData({
                     mainform: {
                       commision_mode: null,

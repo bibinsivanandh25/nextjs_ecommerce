@@ -61,9 +61,7 @@ const saveMedia = async (payload) => {
 };
 const getSet = (payload) => {
   return serviceUtil
-    .get(
-      `products/category-set-enabled/drop-down-list?mainCategoryId=${payload}`
-    )
+    .get(`products/category-set/drop-down-list?mainCategoryId=${payload}`)
     .then((res) => {
       const { data } = res;
       return { data };

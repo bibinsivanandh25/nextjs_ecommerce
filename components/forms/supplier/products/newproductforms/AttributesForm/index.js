@@ -127,6 +127,16 @@ const AttributesForm = forwardRef(
           return ["attribute", { ...selectedAttribute }];
         },
         validate: validateAttributeForms,
+        clearPage: () => {
+          setSelectedAttribute({});
+          setModalType(null);
+          setFormErrorObj({});
+          setFormValues({});
+          setErrorObj({
+            attributeName: "",
+            values: "",
+          });
+        },
       };
     });
     const getAttributeValues = () => {

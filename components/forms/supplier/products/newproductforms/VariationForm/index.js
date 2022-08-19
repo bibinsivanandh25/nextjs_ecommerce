@@ -74,13 +74,16 @@ const VariationForm = forwardRef(
     useImperativeHandle(ref, () => {
       return {
         handleSendFormData: () => {
-          console.log("variation", variationFormData);
           return ["variation", { ...variationFormData }];
         },
         validate: () => {
           // write validation logic here
           // return true if validation is success else false
           return validateForm();
+        },
+        clearPage: () => {
+          setError({});
+          setVariationFormData({ ...formData.variation });
         },
       };
     });
@@ -143,7 +146,6 @@ const VariationForm = forwardRef(
     //     return dropdownCopy;
     //   });
     // }, [variationFormData]);
-    console.log("variationFormData", variationFormData);
     const handleInputChange = (val, ele) => {
       const getData = () => {
         if (ele.type === "dropdown") {
