@@ -56,9 +56,13 @@ const RegistrationForm = ({
                 }));
               }}
               inputlabelshrink
-              helperText="Register with referral code & get extra 50 orders free from commission"
+
               // error={errorObj.firstName !== ""}
             />
+            <Typography className="h-5 text-primary ps-2">
+              Register with referral code & get extra 50 orders free from
+              commission
+            </Typography>
           </Grid>
         </Grid>
         <Grid item md={6} sm={12}>
@@ -158,12 +162,14 @@ const RegistrationForm = ({
               { label: "Mysore", value: "Mysore", id: 3 },
             ]}
             label="Choose City"
+            placeholder="Choose City"
             onDropdownSelect={(value) => {
               setFormValues((prev) => ({
                 ...prev,
                 city: value,
               }));
             }}
+            inputlabelshrink
             value={formValues.city}
             size="small"
             helperText={errorObj.city}
@@ -195,6 +201,7 @@ const RegistrationForm = ({
             value={formValues.mainCat}
             size="small"
             helperText={errorObj.mainCat}
+            error={errorObj.mainCat.length}
           />
         </Grid>
         <Grid item md={6} sm={12}>

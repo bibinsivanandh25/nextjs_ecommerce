@@ -93,7 +93,7 @@ const Registration = () => {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
-    if (formValues.mainCat === null) {
+    if (formValues.mainCat.length === 0) {
       flag = true;
       errObj.mainCat = validateMessage.field_required;
     }
