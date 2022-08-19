@@ -1,6 +1,6 @@
 const validationRegex = {
   mobile: /^([+]d{2})?\d{10}$/,
-  email: /^[a-z0-9]+@[a-z]+.[a-z]{2,3}$/,
+  email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
   password:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
   upperCase: /^.*[A-Z].*$/,
@@ -9,6 +9,7 @@ const validationRegex = {
   decimal_2digit: /^(\d+\.?(\d{1,2}))$/,
   name: /^[A-Za-z]+$/,
   integers: /^(\d+)$/,
+  gstin: /\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/,
 };
 
 export default validationRegex;

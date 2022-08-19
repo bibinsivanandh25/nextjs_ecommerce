@@ -73,17 +73,17 @@ const Registration = () => {
     if (formValues.gstin === "") {
       flag = true;
       errObj.gstin = validateMessage.field_required;
-    } else if (formValues.gstin.length !== 15) {
+    } else if (!validationRegex.gstin.test(formValues.gstin.length)) {
       flag = true;
-      errObj.gstin = "Gstin number should be of length 15";
+      errObj.gstin = "Invalid Gstin Number";
     }
     if (formValues.stockCount === "") {
       flag = true;
-      errObj.stockCount = "Please select one option";
+      errObj.stockCount = "Please Select One Option";
     }
     if (formValues.site === "") {
       flag = true;
-      errObj.site = "Please select atleact one option";
+      errObj.site = "Please Select Atleast One Option";
     }
     if (formValues.siteLink.length > 255) {
       flag = true;
