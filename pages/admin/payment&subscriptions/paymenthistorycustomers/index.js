@@ -4,10 +4,12 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import AddNoteModal from "@/forms/admin/payments&subscriptions/paymenthistorycustomers/AddNoteModal";
+import ViewDetailsModal from "@/forms/admin/payments&subscriptions/paymenthistorycustomers/ViewDetailsModal";
 
 const PaymentHistorySuppliers = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
+  const [openViewDetailsModalsult, setOpenViewDetailsModal] = useState(false);
   const tableColums = [
     {
       id: "col1",
@@ -160,7 +162,7 @@ const PaymentHistorySuppliers = () => {
             <CustomIcon
               type="view"
               className="h-4"
-              //   onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => setOpenViewDetailsModal(true)}
             />
             <MenuOption
               getSelectedItem={(ele) => {
@@ -204,6 +206,10 @@ const PaymentHistorySuppliers = () => {
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <ViewDetailsModal
+        openViewDetailsModal={openViewDetailsModalsult}
+        setOpenViewDetailsModal={setOpenViewDetailsModal}
       />
     </>
   );
