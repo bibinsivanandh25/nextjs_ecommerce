@@ -17,7 +17,7 @@ const PaymentHistorySuppliers = () => {
       label: "01",
       data_align: "center",
       position: "sticky",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -26,7 +26,7 @@ const PaymentHistorySuppliers = () => {
       label: "Cusromer ID/Reseller ID with Name",
       data_align: "center",
       position: "sticky",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -34,7 +34,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Prepaid Order",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -42,7 +42,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "COD Order",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -50,7 +50,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Total Order",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -58,7 +58,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Item Sub Total",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -66,7 +66,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Total Discount Applied",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -74,7 +74,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Grand Total",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -82,7 +82,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Total Shipping Charges",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       data_classname: "",
     },
     {
@@ -90,7 +90,7 @@ const PaymentHistorySuppliers = () => {
       align: "center",
       label: "Actions",
       data_align: "center",
-      minWidth: 150,
+      minWidth: 200,
       position: "sticky",
       data_classname: "",
     },
@@ -105,8 +105,8 @@ const PaymentHistorySuppliers = () => {
       col4: 2,
       col5: 2,
       col6: 2500,
-      col7: -150,
-      col8: 2300,
+      col7: -200,
+      col8: 2200,
       col9: 590,
       col10: "Action",
     },
