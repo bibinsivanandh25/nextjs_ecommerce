@@ -9,7 +9,7 @@ import {
   getSession,
   signIn,
 } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import {
@@ -126,6 +126,13 @@ const Login = () => {
   });
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
   const route = useRouter();
+
+  useEffect(() => {
+    setFormValues({
+      user: "",
+      password: "",
+    });
+  }, [selectedIndex]);
 
   const validateCredentials = () => {
     let flag = false;
@@ -308,6 +315,7 @@ const Login = () => {
                   helperText={errorObj.user}
                   error={errorObj.user !== ""}
                   labelColorWhite={{ color: "#fff" }}
+                  textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -334,6 +342,7 @@ const Login = () => {
                   onIconClick={() => {
                     setShowPassword(!showPassword);
                   }}
+                  textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
               <Grid item md={12} className="w-100">
