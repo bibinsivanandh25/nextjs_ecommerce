@@ -93,7 +93,7 @@ const ViewDetailsModal = ({
         </Grid>
         <Grid container alignItems="end" className="mt-1">
           <Grid item xs={4}>
-            <Typography className="fs-14 mt-2">
+            <Typography className="fs-14 mt-2 text-end">
               Total Shipping Charges:{" "}
             </Typography>
           </Grid>
@@ -103,7 +103,7 @@ const ViewDetailsModal = ({
         </Grid>
         <Grid container alignItems="start" className="mt-1">
           <Grid item xs={4}>
-            <Typography className="fs-14 mt-2">
+            <Typography className="fs-14 mt-2 text-end">
               Ordered Date & Time :{" "}
             </Typography>
           </Grid>
@@ -115,7 +115,9 @@ const ViewDetailsModal = ({
         </Grid>
         <Grid container alignItems="end" className="mt-1">
           <Grid item xs={4}>
-            <Typography className="fs-14 mt-2">Payment ID : </Typography>
+            <Typography className="fs-14 mt-2 text-end">
+              Payment ID :{" "}
+            </Typography>
           </Grid>
           <Grid item xs={8}>
             <Typography className="fs-14 fw-bold">#162531</Typography>
@@ -123,7 +125,9 @@ const ViewDetailsModal = ({
         </Grid>
         <Grid container alignItems="end" className="mt-1">
           <Grid item xs={4}>
-            <Typography className="fs-14 mt-2">Transaction ID :</Typography>
+            <Typography className="fs-14 mt-2 text-end">
+              Transaction ID :
+            </Typography>
           </Grid>
           <Grid item xs={8}>
             <Typography className="fs-14 fw-bold">Successfull</Typography>
