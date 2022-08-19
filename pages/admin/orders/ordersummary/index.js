@@ -114,10 +114,7 @@ const OrderSummary = () => {
       col11: (
         <div className="d-flex justify-content-around align-items-center text-secondary">
           {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
+          <RemoveRedEye onClick={() => {}} className="fs-5 cursor-pointer" />
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"

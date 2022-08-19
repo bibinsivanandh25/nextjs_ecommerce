@@ -33,19 +33,19 @@ const ownersCoupons = [
     validity: "",
   },
 ];
-const otherSellers = [
-  {
-    title: "New (4) From",
-    ActualPrice: {
-      start: "675",
-      end: "766",
-    },
-    delivery: {
-      start: "675",
-      end: "766",
-    },
-  },
-];
+// const otherSellers = [
+//   {
+//     title: "New (4) From",
+//     ActualPrice: {
+//       start: "675",
+//       end: "766",
+//     },
+//     delivery: {
+//       start: "675",
+//       end: "766",
+//     },
+//   },
+// ];
 const handPick = true;
 // const sameProduct = [
 //   {

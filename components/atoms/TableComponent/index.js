@@ -13,7 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { Button, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
@@ -244,12 +244,12 @@ export default function TableComponent({
   onCustomButtonClick = () => {},
   onCustomDropdownChange = () => {},
   showSearchFilter = true,
-  showCustomDropdownWithSearch = false,
-  searchBarSizeMd = 7,
+  // showCustomDropdownWithSearch = false,
+  // searchBarSizeMd = 7,
   tableMaxHeight = 450,
-  showCustomSearchButton = false,
-  customSearchButtonLabel = "",
-  onCustomSearchButtonClick = () => {},
+  // showCustomSearchButton = false,
+  // customSearchButtonLabel = "",
+  // onCustomSearchButtonClick = () => {},
   disableCustomButton = false,
   showCellBorders = true,
   tHeadBgColor = "",

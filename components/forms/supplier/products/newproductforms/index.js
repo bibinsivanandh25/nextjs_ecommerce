@@ -37,7 +37,6 @@ const ProductsLayout = ({
   formsRef = null,
   showGroupVariant = false,
   setShowGroupVariant = () => {},
-  setClearForm = () => {},
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);

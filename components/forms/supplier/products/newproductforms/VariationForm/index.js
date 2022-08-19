@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-prototype-builtins */

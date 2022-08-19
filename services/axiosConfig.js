@@ -4,7 +4,8 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 
 const baseURL = `${process.env.DOMAIN}/api/v1`;
-
+console.log("domain", process.env.DOMAIN);
+console.log("NEXTAUTH_URL", process.env.NEXTAUTH_URL);
 // axios.defaults.baseURL = baseURL;
 
 const axiosInstance = axios.create({

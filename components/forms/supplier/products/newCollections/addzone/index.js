@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Grid, Typography } from "@mui/material";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import CustomIcon from "services/iconUtils";
