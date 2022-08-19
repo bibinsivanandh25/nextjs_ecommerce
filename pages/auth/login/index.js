@@ -119,6 +119,7 @@ const SelectComponent = ({
 
 const Login = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
     user: "",
     password: "",
@@ -325,10 +326,14 @@ const Login = () => {
                     style: { fontSize: "14px", color: "#fff" },
                   }}
                   inputlabelshrink
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
                   labelColorWhite={{ color: "#fff" }}
+                  iconName={showPassword ? "visibleOff" : "visible"}
+                  onIconClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
                 />
               </Grid>
               <Grid item md={12} className="w-100">
@@ -387,10 +392,15 @@ export default Login;
 export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
-
   if (session) {
+    const { role } = session.user;
+    if (role === "SUPPLIER") {
+      return {
+        redirect: { destination: "/supplier/dashboard" },
+      };
+    }
     return {
-      redirect: { destination: "/" },
+      redirect: { destination: "/reseller/dashboard" },
     };
   }
 
