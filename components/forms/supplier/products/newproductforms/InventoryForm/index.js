@@ -374,13 +374,13 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="modalname"
-            label="Modal Name"
+            label="Model Name"
             onInputChange={handleInputChange}
             value={inventoryFormData.modalname}
             inputlabelshrink
             helperText={errorObj.modalname}
             error={errorObj.modalname && errorObj.modalname !== ""}
-            placeholder="Enter Modal Name"
+            placeholder="Enter Model Name"
           />
         </Grid>
       </Grid>

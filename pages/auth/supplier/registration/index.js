@@ -123,7 +123,7 @@ const Registration = () => {
       };
       await axios
         .post(
-          `http://10.10.31.116:8765/api/v1/users/registration/send-otp?mobileNumber=${
+          `${process.env.DOMAIN}users/registration/send-otp?mobileNumber=${
             formValues.mobile
           }&userType=${route.pathname.split("/")[2].toUpperCase()}`
         )

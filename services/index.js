@@ -2,7 +2,7 @@ import axios from "axios";
 
 const loginCall = (payload) => {
   return axios
-    .post("http://10.10.31.116:8765/api/v1/authenticate", payload)
+    .post(`${process.env.DOMAIN}authenticate`, payload)
     .then((res) => {
       const data = res && res.data;
       return { data };
@@ -16,7 +16,7 @@ const loginCall = (payload) => {
 const getOtp = (payload) => {
   return axios
     .post(
-      "http://10.10.31.116:8765/api/v1/users/registration/forgot-password/send-otp",
+      `${process.env.DOMAIN}users/registration/forgot-password/send-otp`,
       payload,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -34,13 +34,9 @@ const getOtp = (payload) => {
 
 const verifyOtp = (payload) => {
   return axios
-    .post(
-      "http://10.10.31.116:8765/api/v1/users/registration/verify-otp",
-      payload,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    )
+    .post(`${process.env.DOMAIN}users/registration/verify-otp`, payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
     .then((res) => {
       const data = res && res.data;
       return { data };
