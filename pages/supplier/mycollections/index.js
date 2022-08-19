@@ -25,39 +25,41 @@ const MyCollections = () => {
   const mapTableData = (data) => {
     const result = [];
     data.forEach((row) => {
-      result.push({
-        col1: (
-          <Image
-            src={row.productVariations[0].variationMedia[0]}
-            height={50}
-            width={50}
-          />
-        ),
-        col2: row.commissionMode,
-        col3: row.productType,
-        col4: row.subCategoryName,
-        col5: row.masterProductId,
-        col6: row.brand,
-        col7: row.createdAt,
-        col8: (
-          <>
-            <CustomIcon
-              type="flagIcon"
-              className="me-2 fs-20"
-              onIconClick={() => {
-                setOpenModal(true);
-              }}
+      if (row.productType === "VARIABLE_PRODUCT") {
+        result.push({
+          col1: (
+            <Image
+              src={row.productVariations[0].variationMedia[0]}
+              height={50}
+              width={50}
             />
-            <CustomIcon
-              type="share"
-              className="fs-20"
-              onIconClick={() => {
-                setShowShareModal(true);
-              }}
-            />
-          </>
-        ),
-      });
+          ),
+          col2: row.commissionMode,
+          col3: row.productType,
+          col4: row.subCategoryName,
+          col5: row.masterProductId,
+          col6: row.brand,
+          col7: row.createdAt,
+          col8: (
+            <>
+              <CustomIcon
+                type="flagIcon"
+                className="me-2 fs-20"
+                onIconClick={() => {
+                  setOpenModal(true);
+                }}
+              />
+              <CustomIcon
+                type="share"
+                className="fs-20"
+                onIconClick={() => {
+                  setShowShareModal(true);
+                }}
+              />
+            </>
+          ),
+        });
+      }
     });
     return result;
   };

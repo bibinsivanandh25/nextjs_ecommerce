@@ -459,7 +459,7 @@ const GroupVariationForm = forwardRef(
 
         otherInformationObject: {},
         zoneChargeInfo: {},
-        productType: "SIMPLE_PRODUCT",
+        productType: "VARIABLE_PRODUCT",
         supplierId: userInfo.id,
       };
       const { data, err } = await saveProduct(payload);
@@ -467,7 +467,7 @@ const GroupVariationForm = forwardRef(
         toastify(err.response.data.message, "error");
       } else if (data) {
         toastify(data.message, "success");
-        router.replace("/supplier/products&inventory/myproducts");
+        router.replace("/supplier/mycollections");
       }
     };
 
@@ -707,6 +707,7 @@ const GroupVariationForm = forwardRef(
                               <InputBox
                                 id="stock_qty"
                                 label="Stock Qty"
+                                placeholder="Enter Stock Qty"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "inventory");
                                 }}
@@ -719,7 +720,6 @@ const GroupVariationForm = forwardRef(
                                   errorObj[item]?.inventory.stock_qty !== ""
                                 }
                                 className="w-70p"
-                                placeholder="Stock Qty"
                               />
                             </Grid>
                             <Grid item md={12} className="pt-4">
@@ -757,6 +757,7 @@ const GroupVariationForm = forwardRef(
                                 value={
                                   variationData[item].inventory.stock_status
                                 }
+                                placeholder="Select Stock Status"
                                 onDropdownSelect={(value) => {
                                   handleDropDownChange(
                                     item,
@@ -789,6 +790,7 @@ const GroupVariationForm = forwardRef(
                                       variationData[item].inventory
                                         .allow_backorders
                                     }
+                                    placeholder="All Backorders"
                                     onDropdownSelect={(value) => {
                                       handleDropDownChange(
                                         item,
@@ -815,6 +817,7 @@ const GroupVariationForm = forwardRef(
                                       id="back_Orders"
                                       label="Back Orders"
                                       size="small"
+                                      placeholder="Enter Back Orders Quantities"
                                       value={
                                         variationData[item].inventory
                                           .back_Orders
@@ -839,6 +842,7 @@ const GroupVariationForm = forwardRef(
                                 value={
                                   variationData[item].inventory.shipping_class
                                 }
+                                placeholder="Select Shipping Class"
                                 onDropdownSelect={(value) => {
                                   handleDropDownChange(
                                     item,
@@ -864,6 +868,7 @@ const GroupVariationForm = forwardRef(
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "inventory");
                                 }}
+                                placeholder="Enter Product Title"
                                 value={
                                   variationData[item].inventory.product_title
                                 }
@@ -880,6 +885,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <SimpleDropdownComponent
                                 inputlabelshrink
+                                placeholder="Select Business Processing Days"
                                 list={[...business_processing_days]}
                                 id="business_processing_days"
                                 label="Business Processing Days"
@@ -913,6 +919,7 @@ const GroupVariationForm = forwardRef(
                               <InputFieldWithChip
                                 id="seo_title"
                                 label="SEO Title"
+                                placeholder="Enter SEO Title"
                                 value={variationData[item].inventory.seo_title}
                                 inputlabelshrink
                                 handleChange={(_, val) => {
@@ -927,7 +934,6 @@ const GroupVariationForm = forwardRef(
                                   errorObj[item]?.inventory.seo_title &&
                                   errorObj[item]?.inventory.seo_title !== ""
                                 }
-                                placeholder="Enter SEO title"
                               />
                             </Grid>
                             <Grid item md={12}>
@@ -949,6 +955,7 @@ const GroupVariationForm = forwardRef(
                                   errorObj[item]?.inventory.meta_description !==
                                     ""
                                 }
+                                placeholder="Enter Meta Description"
                               />
                             </Grid>
                             <Grid item md={12}>
@@ -967,6 +974,7 @@ const GroupVariationForm = forwardRef(
                                     return temp;
                                   });
                                 }}
+                                placeholder="Enter Meta Keywords"
                                 value={
                                   variationData[item].inventory.meta_keyword
                                 }
@@ -1008,6 +1016,7 @@ const GroupVariationForm = forwardRef(
                                       value={
                                         variationData[item].variation?.[ele]
                                       }
+                                      placeholder={`Select ${optionsValue[ele][0].variationName}`}
                                       onDropdownSelect={(value) => {
                                         handleDropDownChange(
                                           item,
@@ -1119,6 +1128,7 @@ const GroupVariationForm = forwardRef(
                               </Grid>
                               <Grid item md={8}>
                                 <SimpleDropdownComponent
+                                  placeholder="Select Country of Origin"
                                   inputlabelshrink
                                   list={[
                                     { id: 1, label: "India", value: "India" },
@@ -1159,6 +1169,7 @@ const GroupVariationForm = forwardRef(
                               </Grid>
                               <Grid item md={8}>
                                 <InputBox
+                                  placeholder="Enter Other Info"
                                   id="others"
                                   label=""
                                   onInputChange={(e) => {
@@ -1182,6 +1193,7 @@ const GroupVariationForm = forwardRef(
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
+                                placeholder="Enter Sale Price"
                                 value={variationData[item].pricing.sale_price}
                                 inputlabelshrink
                                 type="number"
@@ -1196,6 +1208,7 @@ const GroupVariationForm = forwardRef(
                               <InputBox
                                 id="mrp"
                                 label="MRP"
+                                placeholder="Enter MRP"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1234,6 +1247,7 @@ const GroupVariationForm = forwardRef(
                               <InputBox
                                 id="sale_price_logistics"
                                 label="Sale Price With Logistics"
+                                placeholder="Enter Sale Price With Logistics"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1342,6 +1356,7 @@ const GroupVariationForm = forwardRef(
                                   value={
                                     variationData[item].pricing.returnorder
                                   }
+                                  placeholder="Select Return Period"
                                   onDropdownSelect={(value) => {
                                     handleDropDownChange(
                                       item,
@@ -1351,7 +1366,6 @@ const GroupVariationForm = forwardRef(
                                     );
                                   }}
                                   inputlabelshrink
-                                  placeholder="Return Period"
                                 />
                               </Grid>
                             )}
@@ -1397,6 +1411,7 @@ const GroupVariationForm = forwardRef(
                                   variationData[item].mmcartPricing
                                     .free_delivery
                                 }
+                                placeholder="Enter Sale Price With Free Delivery Returns"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "mmcartPricing");
                                 }}
@@ -1408,6 +1423,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="paid_delivery"
+                                placeholder="Enter Sale Price With Out Free Delivery Returns"
                                 label="Sale Price With Out Free Delivery Returns"
                                 inputlabelshrink
                                 type="number"

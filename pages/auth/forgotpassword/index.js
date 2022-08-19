@@ -29,7 +29,7 @@ const OtpLogIn = () => {
     if (data) {
       router.push({
         pathname: "/auth/supplier/newpassword",
-        query: { user },
+        query: { user: btoa(`,${user}`) },
       });
     } else if (errRes) {
       toastify(errRes?.message, "error");

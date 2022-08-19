@@ -45,7 +45,6 @@ const ProductsToApprove = () => {
 
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
-    console.log(val, "asds");
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
     }
@@ -108,7 +107,7 @@ const ProductsToApprove = () => {
       productVariationIds: [],
       dateFrom: "",
       dateTo: "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType: "FIXED_COMMISSION",
       status: "INITIATED",
     };
     const { data, err } = await getAdminProductsByFilter(payLoad);
@@ -274,6 +273,7 @@ const ProductsToApprove = () => {
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
           rowsDataObjects={selectedRow}
+          getTableData={getTableData}
         />
       ) : null}
       {/* Raise Query Modal */}

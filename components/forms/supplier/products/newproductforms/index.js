@@ -12,11 +12,15 @@ import TextAreaComponent from "components/atoms/TextAreaComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
-import axios from "axios";
 import FileUploadModal from "components/atoms/FileUpload";
 import { useUserInfo } from "services/hooks";
 import serviceUtil from "services/utils";
-import { saveMedia, saveProduct } from "services/supplier/AddProducts";
+import {
+  getSet,
+  getSubCategory,
+  saveMedia,
+  saveProduct,
+} from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
@@ -33,7 +37,6 @@ const ProductsLayout = ({
   formsRef = null,
   showGroupVariant = false,
   setShowGroupVariant = () => {},
-  setClearForm = () => {},
 }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -189,50 +192,44 @@ const ProductsLayout = ({
     getB2BTradmarkValues("B2B_INVOICE");
   }, []);
 
+  const getSets = async () => {
+    const { data } = await getSet(mainFormData.category.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.categorySetId,
+          value: item.setName,
+          label: item.setName,
+        });
+      });
+      setSetsData(finaData);
+    }
+  };
+  const getSubCategoryList = async () => {
+    const { data } = await getSubCategory(mainFormData.setsValue.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.subCategoryId,
+          value: item.subCategoryName,
+          label: item.subCategoryName,
+        });
+      });
+      setSubCategoryData(finaData);
+    }
+  };
+
   useEffect(() => {
     if (mainFormData.category?.value) {
-      axios
-        .get(
-          `http://10.10.31.116:8100/api/v1/products/category-set-enabled/drop-down-list?mainCategoryId=${mainFormData.category.id}`
-        )
-        .then((res) => {
-          const { data } = res.data;
-          const finaData = [];
-          data.forEach((item) => {
-            finaData.push({
-              id: item.categorySetId,
-              value: item.setName,
-              label: item.setName,
-            });
-          });
-          setSetsData(finaData);
-        })
-        .catch(() => {});
+      getSets();
     }
   }, [mainFormData.category]);
 
   useEffect(() => {
     if (mainFormData.setsValue?.value) {
-      axios
-        .get(
-          `http://10.10.31.116:8100/api/v1/products/sub-category/drop-down-list?setId=${mainFormData.setsValue.id}`
-        )
-        .then((res) => {
-          const { data } = res.data;
-          const finaData = [];
-          data.forEach((item) => {
-            finaData.push({
-              id: item.subCategoryId,
-              value: item.subCategoryName,
-              label: item.subCategoryName,
-            });
-          });
-          setSubCategoryData(finaData);
-        })
-        .catch((err) => {
-          setSubCategoryData([]);
-          toastify(err.response.data.message, "error");
-        });
+      getSubCategoryList();
     }
   }, [mainFormData.setsValue]);
 
@@ -621,7 +618,14 @@ const ProductsLayout = ({
                   <InputBox
                     id="brand"
                     label="Brand"
-                    onInputChange={handleInputChange}
+                    onInputChange={(e) => {
+                      setMainFormData((prev) => {
+                        return {
+                          ...prev,
+                          [e.target.id]: e.target.value.toUpperCase(),
+                        };
+                      });
+                    }}
                     value={mainFormData.brand}
                     placeholder="Enter Brand"
                     inputlabelshrink
@@ -786,6 +790,7 @@ const ProductsLayout = ({
                     list={b2bList}
                     id="selectb2binvoice"
                     label="Select B2B Invoice"
+                    placeholder="Select B2B Invoice"
                     size="small"
                     value={mainFormData.selectb2binvoice}
                     onSelectionChange={(a, val) => {
@@ -857,6 +862,7 @@ const ProductsLayout = ({
                   <Grid item md={12}>
                     <MultiSelectComponent
                       label="Choose Documents"
+                      placeholder="Choose Documents"
                       list={trademarkList}
                       id="b2bdocument"
                       size="small"
@@ -877,7 +883,7 @@ const ProductsLayout = ({
               </Grid>
             </div>
           </Box>
-          <Box className=" d-flex flex-column w-60p">
+          <Box className=" d-flex flex-column flex-grow-1 w-60p">
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">

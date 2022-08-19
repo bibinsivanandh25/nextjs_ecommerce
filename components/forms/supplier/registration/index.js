@@ -17,7 +17,7 @@ const RegistrationForm = ({
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
     const { data, err } = await axios.get(
-      "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
+      `${process.env.DOMAIN}products/main-category/drop-down-list`
     );
     if (data) {
       const result = [];

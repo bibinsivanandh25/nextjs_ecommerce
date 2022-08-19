@@ -201,7 +201,8 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
           </Box>
           <InputBox
             id="sale_price_logistics"
-            label="Sale Price With Logistics"
+            label="Sale Price With Logistics Charges"
+            placeholder="Sale Price With Logistics Charges"
             onInputChange={handleInputChange}
             value={pricingFormData.sale_price_logistics}
             inputlabelshrink

@@ -6,13 +6,17 @@ import CustomIcon from "services/iconUtils";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import axios from "axios";
 import { useUserInfo } from "services/hooks";
 import Image from "next/image";
+import {
+  getTabledata,
+  getSupplierProductCountByStatus,
+} from "services/supplier/myProducts";
+import toastify from "services/utils/toastUtils";
 import ModalComponent from "@/atoms/ModalComponent";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -21,6 +25,7 @@ const MyProducts = () => {
   const [selected, setSelected] = useState([]);
   const [showAddFlagModal, setShowAddFlagModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [tabList, setTabList] = useState([]);
   const columns = [
     {
       label: "Image",
@@ -181,41 +186,46 @@ const MyProducts = () => {
     return null;
   };
 
+  const getTableData = async () => {
+    const status = getStatus();
+    const { data, err } = await getTabledata(status, id);
+    if (data) {
+      setTableRows(mapRowsToTable(data));
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(
-        `http://10.10.31.116:8100/api/v1/products/master-product-filter?status=${getStatus()}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
-      )
-      .then((data) => {
-        setTableRows(mapRowsToTable(data.data.data));
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
+    getTableData();
   }, [value]);
 
-  const tabList = [
-    {
-      label: "Active",
-      count: 2,
-    },
-    {
-      label: "Out of Stock",
-      count: 2,
-    },
-    {
-      label: "QC Pending",
-      count: 2,
-    },
-    {
-      label: "QC Rejected",
-      count: 2,
-    },
-    {
-      label: "Blacklisted",
-      count: 2,
-    },
-  ];
+  const getTabList = async () => {
+    const { data } = await getSupplierProductCountByStatus(id);
+
+    const getLabel = (key) => {
+      if (key === "activeCount") return "Active";
+      if (key === "disabledCount") return "Blacklisted";
+      if (key === "initiatedCount") return "QC Pending";
+      if (key === "outOfStockCount") return "Out of Stock";
+      if (key === "rejectedCount") return "QC Rejected";
+      return null;
+    };
+    const result = [];
+    if (data) {
+      Object.entries(data).forEach(([key, val]) => {
+        result.push({
+          label: getLabel(key),
+          count: val.toString(),
+        });
+      });
+    }
+    setTabList([...result]);
+  };
+
+  useEffect(() => {
+    getTabList();
+  }, [value]);
 
   return (
     <Paper

@@ -25,7 +25,10 @@ const TextAreaComponent = ({
         } ${error && "error-border"}`}
       >
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label className={`${styles.legend} fs-14 ${error && "error-text"}`}>
+        <label
+          className={`${styles.legend} fs-14 ${error && "error-text"}`}
+          style={{ color: "#6E6E6E", fontFamily: "inherit" }}
+        >
           {legend}
         </label>
         <ButtonComponent
@@ -43,6 +46,9 @@ const TextAreaComponent = ({
         name={name}
         value={value}
         placeholder={placeholder}
+        style={{
+          padding: "5px 10px",
+        }}
       />
       {error && (
         <p className="error" id="textbox-helper-text">

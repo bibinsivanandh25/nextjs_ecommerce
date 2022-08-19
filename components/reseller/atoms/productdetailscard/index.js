@@ -96,6 +96,10 @@ const ProductDetailsCard = ({
                     height={200}
                     width={200}
                     layout="responsive"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      getSelectedItem(ele);
+                    }}
                     // objectFit="contain"
                     // style={{
                     //   height: "100%",

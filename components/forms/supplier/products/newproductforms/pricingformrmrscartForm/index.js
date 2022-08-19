@@ -51,13 +51,15 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       free_delivery: "",
       paid_delivery: "",
     };
-    if (mrMrsCartFormData.free_delivery == "") {
-      flag = true;
-      errObj.free_delivery = validateMessage.field_required;
-    }
-    if (mrMrsCartFormData.paid_delivery == "") {
-      flag = true;
-      errObj.paid_delivery = validateMessage.field_required;
+    if (mrMrsCartFormData.sellwithus) {
+      if (mrMrsCartFormData.free_delivery == "") {
+        flag = true;
+        errObj.free_delivery = validateMessage.field_required;
+      }
+      if (mrMrsCartFormData.paid_delivery == "") {
+        flag = true;
+        errObj.paid_delivery = validateMessage.field_required;
+      }
     }
     setErrorObj(errObj);
     return !flag;

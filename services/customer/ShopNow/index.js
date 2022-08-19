@@ -1,8 +1,10 @@
-import serviceUtil from "services/utils";
+import axios from "axios";
 
 const getStoreByStoreCode = (storeCode) => {
-  return serviceUtil
-    .get(`/users/customers/validate-store?storeCode=${storeCode}`)
+  return axios
+    .get(
+      `${process.env.DOMAIN}users/customers/validate-store?storeCode=${storeCode}`
+    )
     .then((res) => {
       const { data } = res && res.data;
       return { data };
