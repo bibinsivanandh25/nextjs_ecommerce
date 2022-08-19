@@ -14,11 +14,9 @@ const getAllTableDatas = () => {
 
 const supplierApprovedOrRejected = (payload) => {
   return axios
-    .post(
-      "http://10.10.31.116:8765/api/v1/users/admin/supplier-approval",
-      payload,
-      { headers: { userId: "ADM01234" } }
-    )
+    .post(`${process.env.DOMAIN}users/admin/supplier-approval`, payload, {
+      headers: { userId: "ADM01234" },
+    })
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -28,7 +26,7 @@ const supplierApprovedOrRejected = (payload) => {
 const inviteSupplier = (username) => {
   return axios
     .post(
-      `http://10.10.31.116:8765/api/v1/users/admin/invite-supplier?userName=${username}`
+      `${process.env.DOMAIN}users/admin/invite-supplier?userName=${username}`
     )
     .then((res) => {
       const { data } = res && res.data;

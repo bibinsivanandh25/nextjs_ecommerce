@@ -91,7 +91,7 @@ const OtpLogIn = () => {
       formdata.append("userType", "SUPPLIER");
       await axios
         .post(
-          "http://10.10.31.116:8765/api/v1/users/registration/forgot-password/send-otp",
+          `${process.env.DOMAIN}users/registration/forgot-password/send-otp`,
           formdata,
           { headers: { "Content-Type": "multipart/form-data" } }
         )

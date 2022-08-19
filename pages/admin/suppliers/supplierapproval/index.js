@@ -113,11 +113,9 @@ const SupplierApproval = () => {
       status: value,
     };
     await axios
-      .put(
-        "http://10.10.31.116:8765/api/v1/users/admin/supplier-approval",
-        payload,
-        { headers: { userId: "ADM01234" } }
-      )
+      .put(`${process.env.DOMAIN}users/admin/supplier-approval`, payload, {
+        headers: { userId: "ADM01234" },
+      })
       .then((res) => {
         setViewModalOpen(false);
         toastify(`${res?.data?.message}`, "success");
@@ -192,7 +190,7 @@ const SupplierApproval = () => {
   const getAllTableData = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8765/api/v1/users/admin/supplier/supplier-status/0/5?status=INITIATED`
+        `${process.env.DOMAIN}users/admin/supplier/supplier-status/0/5?status=INITIATED`
       )
       .then((res) => {
         setMasterData(res.data.data);

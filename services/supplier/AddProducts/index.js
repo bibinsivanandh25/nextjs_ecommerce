@@ -40,11 +40,11 @@ const saveProduct = (payload) => {
 const saveMedia = async (payload) => {
   return axios
     .put(
-      `http://10.10.31.116:8100/api/v1/products/product-media?supplierId=${await getSession().then(
-        (res) => {
-          return res.user.id;
-        }
-      )}`,
+      `h${
+        process.env.DOMAIN
+      }products/product-media?supplierId=${await getSession().then((res) => {
+        return res.user.id;
+      })}`,
       payload,
       {
         header: {
