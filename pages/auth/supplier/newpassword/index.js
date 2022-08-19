@@ -31,15 +31,12 @@ const Newpassword = () => {
 
   const handleSubmit = () => {
     axios
-      .post(
-        "http://10.10.31.116:8765/api/v1/users/registration/reset-password",
-        {
-          userName: formValues.userId,
-          newPassword: formValues.password,
-          reEnterPassword: formValues.rePassword,
-          userType: "SUPPLIER",
-        }
-      )
+      .post(`${process.env.DOMAIN}users/registration/reset-password`, {
+        userName: formValues.userId,
+        newPassword: formValues.password,
+        reEnterPassword: formValues.rePassword,
+        userType: "SUPPLIER",
+      })
       .then((data) => {
         toastify(data.data.message, "success");
         if (data) {
@@ -48,6 +45,7 @@ const Newpassword = () => {
       })
       .catch((err) => {
         console.log(err);
+        toastify(err.response.data.message, "error");
       });
     // setShowModal(true);
   };

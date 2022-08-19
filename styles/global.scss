@@ -307,4 +307,10 @@ opacity: 0.8;
 .textArea::placeholder{
   color: rgba(0, 0, 0, 0.4);
 }
+textarea::placeholder {
+  color: #A2A2A2;
+  font-size: 18px;
+  font-family: inherit;  
+}
+
 

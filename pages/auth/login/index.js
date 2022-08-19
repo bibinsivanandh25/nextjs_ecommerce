@@ -211,7 +211,7 @@ const Login = () => {
         userType: options[selectedIndex].toUpperCase(),
       };
       await axios
-        .post(`http://10.10.31.116:8001/api/v1/auth/authenticate`, payload)
+        .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
           const errRes = err.response.data?.message;
           toastify(errRes, "error");

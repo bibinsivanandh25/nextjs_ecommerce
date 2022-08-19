@@ -17,10 +17,10 @@ import { format } from "date-fns";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
-import CreateQuiz from "./CreateQuiz";
 import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
 import ProductModal from "./ProductModal";
+import CreateQuiz from "./createquiz";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();

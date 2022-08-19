@@ -5,7 +5,7 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-import AcceptRejectModal from "./AcceptRejectModal";
+import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";

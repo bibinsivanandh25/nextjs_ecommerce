@@ -1,9 +1,12 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-nested-ternary */
 import styles from "./TabModalComponent.module.css";
 
 const TabModalComponent = ({
   children,
   tabList = [],
-  minWidth,
+  // minWidth,
   ModalWidth = 500,
   onSelect = () => {},
 }) => {

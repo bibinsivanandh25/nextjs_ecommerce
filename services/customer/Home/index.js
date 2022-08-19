@@ -2,9 +2,7 @@ import axios from "axios";
 
 const getBannersBySupplierId = (supplierId) => {
   return axios
-    .get(
-      `http://10.10.31.116:8765/api/v1/users/supplier/banners?supplierId=${supplierId}`
-    )
+    .get(`${process.env.DOMAIN}users/supplier/banners?supplierId=${supplierId}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -17,7 +15,7 @@ const getBannersBySupplierId = (supplierId) => {
 const getTopProducts = (userId) => {
   return axios
     .get(
-      `http://10.10.31.116:8765/api/v1/products/master-product-filter?status=APPROVED&pageNumber=0&pageSize=10&keyword=&supplierId=${userId}&filterStatus=ALL`
+      `${process.env.DOMAIN}products/master-product-filter?status=APPROVED&pageNumber=0&pageSize=100&keyword=&supplierId=${userId}&filterStatus=ALL`
     )
     .then((res) => {
       const { data } = res && res.data;
@@ -28,7 +26,7 @@ const getTopProducts = (userId) => {
 
 const getMainCategories = () => {
   return axios
-    .get("http://10.10.31.116:8765/api/v1/products/main-category-enabled/0/5")
+    .get(`${process.env.DOMAIN}products/main-category-enabled/0/5`)
     .then((res) => {
       const data = res && res.data?.data;
       return { data };

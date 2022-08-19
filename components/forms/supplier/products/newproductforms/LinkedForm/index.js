@@ -52,6 +52,16 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
         return ["linked", { ...linkedFormData }];
       },
       validate: validateFormvalues,
+      clearPage: () => {
+        setLinkedFormData({
+          upSells: {},
+          crossSells: {},
+        });
+        setErrorObj({
+          upSells: "",
+          crossSells: "",
+        });
+      },
     };
   });
   const upSellsArray = [

@@ -459,7 +459,7 @@ const GroupVariationForm = forwardRef(
 
         otherInformationObject: {},
         zoneChargeInfo: {},
-        productType: "SIMPLE_PRODUCT",
+        productType: "VARIABLE_PRODUCT",
         supplierId: userInfo.id,
       };
       const { data, err } = await saveProduct(payload);
@@ -467,7 +467,7 @@ const GroupVariationForm = forwardRef(
         toastify(err.response.data.message, "error");
       } else if (data) {
         toastify(data.message, "success");
-        router.replace("/supplier/products&inventory/myproducts");
+        router.replace("/supplier/mycollections");
       }
     };
 
