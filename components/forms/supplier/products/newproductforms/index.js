@@ -883,7 +883,7 @@ const ProductsLayout = ({
                         }));
                       }}
                     />
-                    <Typography className="h-6 color-gray ms-1">
+                    <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
                       India <span className="color-red">*</span>
                     </Typography>
