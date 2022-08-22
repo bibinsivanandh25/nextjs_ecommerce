@@ -36,7 +36,6 @@ const RegistrationForm = ({
   useEffect(() => {
     getMainCategories();
   }, []);
-  console.log(formValues);
 
   return (
     <div className="w-70p  d-flex justify-content-center">
