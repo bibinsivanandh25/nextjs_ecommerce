@@ -236,7 +236,9 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CarousalComponent list={[...bannerImages]} interval={4000} />
+          {bannerImages.length ? (
+            <CarousalComponent list={[...bannerImages]} interval={4000} />
+          ) : null}
           <Box className="py-2">
             <HomeComponent
               onCategoryClick={(ele) => {

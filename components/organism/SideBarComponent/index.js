@@ -409,7 +409,7 @@ const SideBarComponent = ({ children }) => {
           WebkitTransition: "margin 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
         }}
-        className=" p-4 py-3 w-100 body-bg"
+        className=" p-3 py-3 w-100 body-bg"
       >
         <Box
           className={`mb-2 ${
