@@ -269,7 +269,7 @@ const ProductsLayout = ({
     if (mainFormData.short_description.text === "") {
       errObj.short_description.text = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.short_description.text.length > 255) {
+    } else if (mainFormData.short_description.text.length > 90) {
       errObj.short_description.text = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
@@ -802,8 +802,8 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <Typography className="h-5 color-gray">
-                    Is It a Brand or Generic Product
+                  <Typography className="h-5 fw-bold">
+                    Is It a Brand or Generic Product?
                   </Typography>
                   <RadiobuttonComponent
                     label="Branded"
@@ -950,19 +950,19 @@ const ProductsLayout = ({
                       genericradio: false,
                       b2bdocument: [],
                       b2bdocumentfile: [],
-                      setsValue: {},
-                      subCategoryValue: {},
+                      setsValue: null,
+                      subCategoryValue: null,
                     },
                     inventory: {
                       sku: "",
                       stockqty: "",
-                      stock_status: {},
-                      allow_backorders: {},
+                      stock_status: null,
+                      allow_backorders: null,
                       stock_qty: "",
                       back_Orders: "",
                       shipping_class: "",
                       product_title: "",
-                      business_processing_days: {},
+                      business_processing_days: null,
                       seo_title: [],
                       meta_description: "",
                       meta_keyword: [],
