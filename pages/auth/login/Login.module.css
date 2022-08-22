@@ -11,3 +11,11 @@
   color: #1eaab3;
   text-decoration: underline;
 }
+
+.inputAutoFillColor:-webkit-autofill,
+.inputAutoFillColor:-webkit-autofill:hover, 
+.inputAutoFillColor:-webkit-autofill:focus, 
+.inputAutoFillColor:-webkit-autofill:active{
+    transition: background-color 5000s ease-in-out 0s !important;
+     -webkit-text-fill-color: #fff !important;
+}

@@ -225,4 +225,9 @@ export const paths = [
   { title: "Customer Q&A", id: "customerq&a", navigate: true },
 
   { title: "Rate MrMrsCart", id: "ratemrmrscart", navigate: true },
+  {
+    title: "Help Center",
+    id: "helpcenter",
+    navigate: true,
+  },
 ];
