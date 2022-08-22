@@ -83,7 +83,7 @@ const Registration = () => {
     }
     if (formValues.site === "") {
       flag = true;
-      errObj.site = "Please select atleact one option";
+      errObj.site = "Please select atleast one option";
     }
     if (formValues.siteLink.length > 255) {
       flag = true;
