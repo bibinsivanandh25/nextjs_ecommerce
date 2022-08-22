@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
@@ -146,6 +146,39 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         return ["inventory", { ...inventoryFormData }];
       },
       validate,
+      clearPage: () => {
+        setInventoryFormData({
+          sku: "",
+          stockqty: "",
+          stock_status: {},
+          allow_backorders: {},
+          stock_qty: "",
+          back_Orders: "",
+          shipping_class: {},
+          product_title: "",
+          business_processing_days: {},
+          seo_title: [],
+          meta_description: "",
+          meta_keyword: [],
+          modalname: "",
+        });
+        setErrorObj({
+          sku: "",
+          stockqty: "",
+          stock_status: "",
+          allow_backorders: "",
+          stock_qty: "",
+          back_Orders: "",
+          shipping_class: "",
+          product_title: "",
+          business_processing_days: "",
+          seo_title: "",
+          meta_description: "",
+          meta_keyword: "",
+          modalname: "",
+        });
+        setManageStock(false);
+      },
     };
   });
 
@@ -169,7 +202,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             />
           </div>
           <div className="mx-2">
-            <InfoOutlinedIcon />
+            <Tooltip title="SKU Will Be Generated Once The Product Is Approved">
+              <IconButton>
+                <InfoOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </Grid>
         <Grid item md={12} className="d-flex align-items-center">
@@ -222,9 +259,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               placeholder="Select stock status"
               type="number"
             />
-          </div>
-          <div className="mx-2">
-            <InfoOutlinedIcon />
           </div>
         </Grid>
         {manageStock ? (
@@ -373,13 +407,13 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="modalname"
-            label="Modal Name"
+            label="Model Name"
             onInputChange={handleInputChange}
             value={inventoryFormData.modalname}
             inputlabelshrink
             helperText={errorObj.modalname}
             error={errorObj.modalname && errorObj.modalname !== ""}
-            placeholder="Enter Modal Name"
+            placeholder="Enter Model Name"
           />
         </Grid>
       </Grid>

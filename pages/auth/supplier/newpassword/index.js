@@ -1,9 +1,10 @@
 import { Grid, Typography } from "@mui/material";
+import axios from "axios";
 import NewPasswordForm from "components/forms/supplier/newpassword";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
+import atob from "atob";
 import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
@@ -15,16 +16,22 @@ const Newpassword = () => {
   const router = useRouter();
 
   useEffect(() => {
-    setFormValues((pre) => ({
-      ...pre,
-      userId: router.query.user,
-    }));
+    if (router.query.user) {
+      try {
+        const temp = atob(router.query.user).split(",")[1];
+        setFormValues((pre) => ({
+          ...pre,
+          userId: temp,
+        }));
+      } catch (e) {
+        toastify("Invalid URL", "error");
+      }
+    }
   }, [router.query.user]);
 
-  // const [showModal, setShowModal] = useState(false);
   const handleSubmit = () => {
-    serviceUtil
-      .post("users/registration/reset-password", {
+    axios
+      .post(`${process.env.DOMAIN}users/registration/reset-password`, {
         userName: formValues.userId,
         newPassword: formValues.password,
         reEnterPassword: formValues.rePassword,
@@ -38,6 +45,7 @@ const Newpassword = () => {
       })
       .catch((err) => {
         console.log(err);
+        toastify(err.response.data.message, "error");
       });
     // setShowModal(true);
   };

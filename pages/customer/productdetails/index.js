@@ -156,7 +156,7 @@ const ProductDetails = () => {
     const status = "APPROVED";
     await axios
       .get(
-        `http://10.10.31.116:8765/api/v1/products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `${process.env.DOMAIN}products/master-product/product-variations?id=${router.query.id}&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -183,7 +183,7 @@ const ProductDetails = () => {
   const getfrequentProduct = async (id) => {
     const ids = router.query.id ? router.query.id : id;
     await axios
-      .get(`http://10.10.31.116:8765/api/v1/products/grouped-product/${ids}`)
+      .get(`${process.env.DOMAIN}products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -229,7 +229,7 @@ const ProductDetails = () => {
   const getCouponsData = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8765/api/v1/users/customer/store-coupon?supplierId=${router.query.supplierId}`
+        `${process.env.DOMAIN}users/customer/store-coupon?supplierId=${router.query.supplierId}`
       )
       .then((res) => {
         setCouponsMasterData(res.data.data);
@@ -245,7 +245,7 @@ const ProductDetails = () => {
   const getMinimumCart = async () => {
     await axios
       .get(
-        `http://10.10.31.116:8765/api/v1/users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `${process.env.DOMAIN}users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
@@ -262,7 +262,7 @@ const ProductDetails = () => {
 
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
-    element.scrollIntoView({ behavior: "smooth" });
+    element.scrollIntoView();
   }, [router.query]);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);

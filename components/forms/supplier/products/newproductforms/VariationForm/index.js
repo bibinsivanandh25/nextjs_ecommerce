@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-prototype-builtins */
@@ -73,13 +74,16 @@ const VariationForm = forwardRef(
     useImperativeHandle(ref, () => {
       return {
         handleSendFormData: () => {
-          console.log("variation", variationFormData);
           return ["variation", { ...variationFormData }];
         },
         validate: () => {
           // write validation logic here
           // return true if validation is success else false
           return validateForm();
+        },
+        clearPage: () => {
+          setError({});
+          setVariationFormData({ ...formData.variation });
         },
       };
     });
@@ -142,7 +146,7 @@ const VariationForm = forwardRef(
     //     return dropdownCopy;
     //   });
     // }, [variationFormData]);
-    console.log("variationFormData", variationFormData);
+    console.log(variationFormData, "suhil");
     const handleInputChange = (val, ele) => {
       const getData = () => {
         if (ele.type === "dropdown") {
@@ -181,9 +185,11 @@ const VariationForm = forwardRef(
                     id={ele.id}
                     size="small"
                     list={ele.options}
-                    value={ele.options.find(
-                      (op) => op.id === variationFormData[ele.id]
-                    )}
+                    value={
+                      ele.options.find(
+                        (op) => op.id === variationFormData[ele.id]
+                      ) ?? {}
+                    }
                     onDropdownSelect={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
                   />

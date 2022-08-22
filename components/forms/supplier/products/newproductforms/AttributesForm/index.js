@@ -127,6 +127,20 @@ const AttributesForm = forwardRef(
           return ["attribute", { ...selectedAttribute }];
         },
         validate: validateAttributeForms,
+        clearPage: () => {
+          setSelectedAttribute({});
+          setModalType(null);
+          setFormErrorObj({});
+          setFormValues({});
+          setErrorObj({
+            attributeName: "",
+            values: "",
+          });
+          const temp = attributeList.map((item) => {
+            return { ...item, selected: false };
+          });
+          setAttributeList(temp);
+        },
       };
     });
     const getAttributeValues = () => {
@@ -177,6 +191,7 @@ const AttributesForm = forwardRef(
               <Grid item lg={9} sm={12} container rowGap={1}>
                 <Grid item sm={12}>
                   <MultiSelectComponent
+                    placeholder={`Select ${ele.attribute}`}
                     helperText={formErrorObj[ele.id]}
                     error={formErrorObj[ele.id]?.length}
                     label={ele.attribute}

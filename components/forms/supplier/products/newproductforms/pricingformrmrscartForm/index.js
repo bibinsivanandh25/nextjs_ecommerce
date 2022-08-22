@@ -51,13 +51,15 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       free_delivery: "",
       paid_delivery: "",
     };
-    if (mrMrsCartFormData.free_delivery == "") {
-      flag = true;
-      errObj.free_delivery = validateMessage.field_required;
-    }
-    if (mrMrsCartFormData.paid_delivery == "") {
-      flag = true;
-      errObj.paid_delivery = validateMessage.field_required;
+    if (mrMrsCartFormData.sellwithus) {
+      if (mrMrsCartFormData.free_delivery == "") {
+        flag = true;
+        errObj.free_delivery = validateMessage.field_required;
+      }
+      if (mrMrsCartFormData.paid_delivery == "") {
+        flag = true;
+        errObj.paid_delivery = validateMessage.field_required;
+      }
     }
     setErrorObj(errObj);
     return !flag;
@@ -71,6 +73,20 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
         // write validation logic here
         // return true if validation is success else false
         return validateForm();
+      },
+      clearPage: () => {
+        setMrMrsCartFormData({
+          sellwithus: false,
+          free_delivery: "",
+          paid_delivery: "",
+          return: false,
+          cashondelivery: false,
+          returnorder: {},
+        });
+        setErrorObj({
+          free_delivery: "",
+          paid_delivery: "",
+        });
       },
     };
   });

@@ -3,8 +3,7 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
 
-const baseURL = `${process.env.DOMAIN}/api/v1`;
-
+const baseURL = `${process.env.DOMAIN}`;
 // axios.defaults.baseURL = baseURL;
 
 const axiosInstance = axios.create({
@@ -16,8 +15,6 @@ const setHeaders = (commmonHeaders) => {
 };
 // const user = useUserInfo();
 let user;
-
-console.log(user, "user");
 
 axiosInstance.interceptors.request.use(async (config) => {
   config.headers = {

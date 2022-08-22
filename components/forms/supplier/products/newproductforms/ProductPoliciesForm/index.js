@@ -122,6 +122,20 @@ const ProductPoliciesForm = forwardRef(
           // return true if validation is success else false
           return validateForm();
         },
+        clearPage: () => {
+          setProductPolicyFormData({
+            policyTabLabel: "",
+            refundPolicy: { media: {}, text: "" },
+            cancellationPolicy: { media: {}, text: "" },
+            shippingPolicy: { media: {}, text: "" },
+            warranty: false,
+            warrantyperiod: {},
+          });
+          setError({});
+          setreturnableMedia({});
+          setshippingMedia({});
+          setcancleMedia({});
+        },
       };
     });
 
@@ -155,6 +169,7 @@ const ProductPoliciesForm = forwardRef(
         <Grid item xs={11}>
           <TextAreaComponent
             legend="Shipping Policy"
+            placeholder="Enter Shipping Policy"
             onChange={(e) => {
               const { value } = e.target;
               const temp = JSON.parse(JSON.stringify(productPolicyFormData));
@@ -179,6 +194,7 @@ const ProductPoliciesForm = forwardRef(
         <Grid item xs={11}>
           <TextAreaComponent
             legend="Refund Policy"
+            placeholder="Enter Refund Policy"
             name="refundPolicy"
             onChange={(e) => {
               const { value } = e.target;
@@ -203,6 +219,7 @@ const ProductPoliciesForm = forwardRef(
         <Grid item xs={11}>
           <TextAreaComponent
             legend="Cancellation/Return/Exchange Policy"
+            placeholder="Enter Cancellation/Return/Exchange Policy"
             onChange={(e) => {
               const { value } = e.target;
               const temp = JSON.parse(JSON.stringify(productPolicyFormData));
@@ -243,7 +260,7 @@ const ProductPoliciesForm = forwardRef(
             </Typography>
           </Grid>
           {productPolicyFormData.warranty && (
-            <Grid item md={12}>
+            <Grid item md={12} className="mt-2">
               <SimpleDropdownComponent
                 list={warrantyData}
                 label="Warranty Period"

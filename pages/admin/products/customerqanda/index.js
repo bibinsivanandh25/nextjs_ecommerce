@@ -6,7 +6,7 @@ const CustomerQAndA = () => {
   const [activeTab, setActiveTab] = useState(0);
   const titles = ["Unanswered", "Answered"];
 
-  const [tabSelected, setTabSelected] = useState("Products to approve");
+  // const [tabSelected, setTabSelected] = useState("Products to approve");
 
   const returnTabs = () => {
     return titles.map((val, index) => {
@@ -14,7 +14,7 @@ const CustomerQAndA = () => {
         <Box
           onClick={() => {
             setActiveTab(index);
-            setTabSelected(val);
+            // setTabSelected(val);
           }}
           className={`px-4 py-1 border fs-14 cursor-pointer 
           ${activeTab === index ? styles.activeTab : styles.inActivetab}

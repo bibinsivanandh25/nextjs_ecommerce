@@ -17,7 +17,7 @@ const RegistrationForm = ({
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
     const { data, err } = await axios.get(
-      "http://10.10.31.116:8100/api/v1/products/main-category/drop-down-list"
+      `${process.env.DOMAIN}products/main-category/drop-down-list`
     );
     if (data) {
       const result = [];
@@ -56,13 +56,18 @@ const RegistrationForm = ({
                 }));
               }}
               inputlabelshrink
-              helperText="Register with referral code & get extra 50 orders free from commission"
+
               // error={errorObj.firstName !== ""}
             />
+            <Typography className="h-5 text-primary ps-2">
+              Register with referral code & get extra 50 orders free from
+              commission
+            </Typography>
           </Grid>
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter First Name"
             value={formValues.firstName}
             label="First Name"
@@ -81,6 +86,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter Last Name"
             value={formValues.lastName}
             label="Last Name"
@@ -99,6 +105,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Business Name"
             value={formValues.businessName}
             label="Business Name"
@@ -117,6 +124,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your E-mail ID"
             value={formValues.mail}
             label="E-mail ID"
@@ -135,6 +143,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Mobile Number"
             value={formValues.mobile}
             label="Mobile Number"
@@ -158,12 +167,15 @@ const RegistrationForm = ({
               { label: "Mysore", value: "Mysore", id: 3 },
             ]}
             label="Choose City"
+            required
+            placeholder="Choose City"
             onDropdownSelect={(value) => {
               setFormValues((prev) => ({
                 ...prev,
                 city: value,
               }));
             }}
+            inputlabelshrink
             value={formValues.city}
             size="small"
             helperText={errorObj.city}
@@ -184,6 +196,7 @@ const RegistrationForm = ({
             }}
           /> */}
           <MultiSelectComponent
+            required
             list={[...mainCategories]}
             label="Select Main Category"
             onSelectionChange={(e, val) => {
@@ -195,10 +208,13 @@ const RegistrationForm = ({
             value={formValues.mainCat}
             size="small"
             helperText={errorObj.mainCat}
+            error={errorObj.mainCat.length}
+            placeholder="Select Main Category"
           />
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your GSTIN"
             value={formValues.gstin}
             label="GSTIN"
@@ -336,9 +352,9 @@ const RegistrationForm = ({
                   }));
                 }}
                 variant="standard"
-                InputProps={{
-                  style: { fontSize: "12px" },
-                }}
+                // InputProps={{
+                //   style: { fontSize: "14px" },
+                // }}
                 inputlabelshrink
                 helperText={errorObj.siteLink}
                 error={errorObj.siteLink !== ""}

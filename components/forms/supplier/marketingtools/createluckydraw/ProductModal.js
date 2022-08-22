@@ -1,9 +1,9 @@
 import ModalComponent from "components/atoms/ModalComponent";
 import ImageCard from "components/atoms/ImageCard";
-import CheckBoxComponent from "components/atoms/CheckBoxComponent";
 import { assetsJson } from "public/assets";
 import { Typography, Box, Grid } from "@mui/material";
 import { useState } from "react";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const ProductModal = ({
   open = false,

@@ -40,11 +40,11 @@ const saveProduct = (payload) => {
 const saveMedia = async (payload) => {
   return axios
     .put(
-      `http://10.10.31.116:8100/api/v1/products/product-media?supplierId=${await getSession().then(
-        (res) => {
-          return res.user.id;
-        }
-      )}`,
+      `h${
+        process.env.DOMAIN
+      }products/product-media?supplierId=${await getSession().then((res) => {
+        return res.user.id;
+      })}`,
       payload,
       {
         header: {
@@ -59,5 +59,34 @@ const saveMedia = async (payload) => {
       return err;
     });
 };
+const getSet = (payload) => {
+  return serviceUtil
+    .get(`products/category-set/drop-down-list?mainCategoryId=${payload}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const getSubCategory = (payload) => {
+  return serviceUtil
+    .get(`products/sub-category/drop-down-list?setId=${payload}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
-export { getAttributes, createAttributes, saveProduct, saveMedia };
+export {
+  getSet,
+  getSubCategory,
+  getAttributes,
+  createAttributes,
+  saveProduct,
+  saveMedia,
+};

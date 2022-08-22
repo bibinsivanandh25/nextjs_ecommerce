@@ -10,7 +10,7 @@ import ShowPreviousInvoices from "components/forms/supplier/myorder/showprevious
 import { useRouter } from "next/router";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
 import logo from "../../../../../public/assets/logo.jpeg";
-import styles from "./Generateinvoiceandmanifest.module.css";
+import styles from "./GenerateInvoiceandmanifest.module.css";
 
 const Generateinvoiceandmanifest = () => {
   const [showInvoices, setShowInvoices] = useState(false);

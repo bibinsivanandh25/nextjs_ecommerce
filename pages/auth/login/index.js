@@ -9,7 +9,7 @@ import {
   getSession,
   signIn,
 } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import {
@@ -119,12 +119,20 @@ const SelectComponent = ({
 
 const Login = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
     user: "",
     password: "",
   });
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
   const route = useRouter();
+
+  useEffect(() => {
+    setFormValues({
+      user: "",
+      password: "",
+    });
+  }, [selectedIndex]);
 
   const validateCredentials = () => {
     let flag = false;
@@ -203,7 +211,7 @@ const Login = () => {
         userType: options[selectedIndex].toUpperCase(),
       };
       await axios
-        .post(`http://10.10.31.116:8001/api/v1/auth/authenticate`, payload)
+        .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
           const errRes = err.response.data?.message;
           toastify(errRes, "error");
@@ -307,6 +315,7 @@ const Login = () => {
                   helperText={errorObj.user}
                   error={errorObj.user !== ""}
                   labelColorWhite={{ color: "#fff" }}
+                  textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -325,10 +334,15 @@ const Login = () => {
                     style: { fontSize: "14px", color: "#fff" },
                   }}
                   inputlabelshrink
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
                   labelColorWhite={{ color: "#fff" }}
+                  iconName={showPassword ? "visibleOff" : "visible"}
+                  onIconClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                  textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
               <Grid item md={12} className="w-100">
@@ -387,10 +401,15 @@ export default Login;
 export async function getServerSideProps(context) {
   const { req } = context;
   const session = await getSession({ req });
-
   if (session) {
+    const { role } = session.user;
+    if (role === "SUPPLIER") {
+      return {
+        redirect: { destination: "/supplier/dashboard" },
+      };
+    }
     return {
-      redirect: { destination: "/" },
+      redirect: { destination: "/reseller/dashboard" },
     };
   }
 

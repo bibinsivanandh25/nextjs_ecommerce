@@ -50,14 +50,14 @@ const InputFieldWithChip = ({
         fullWidth={fullWidth}
         renderInput={(params) => (
           <TextField
+            {...params}
             InputLabelProps={{
               shrink: inputlabelshrink,
             }}
-            {...params}
             id={id}
             name={name}
             helperText={helperText}
-            error={error}
+            error={Boolean(error)}
             variant={variant}
             label={label}
             placeholder={placeholder}
