@@ -269,7 +269,7 @@ const ProductsLayout = ({
     if (mainFormData.short_description.text === "") {
       errObj.short_description.text = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.short_description.text.length > 255) {
+    } else if (mainFormData.short_description.text.length > 90) {
       errObj.short_description.text = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
