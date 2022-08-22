@@ -100,15 +100,15 @@ const InputBox = ({
         helperText={helperText}
         error={error}
         autoComplete={showAutoCompleteOff}
+        // inputProps={textInputProps}
         // eslint-disable-next-line react/jsx-no-duplicate-props
-        inputProps={textInputProps}
-        // inputProps={{
-        //   ...textInputProps,
-        //   autocomplete: "new-password",
-        //   form: {
-        //     autocomplete: "off",
-        //   },
-        // }}
+        inputProps={{
+          ...textInputProps,
+          autocomplete: "off",
+          form: {
+            autocomplete: "off",
+          },
+        }}
         required={required}
       />
     </ThemeProvider>
