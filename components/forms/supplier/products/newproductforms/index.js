@@ -863,7 +863,7 @@ const ProductsLayout = ({
                     showIcon
                     isDisabled={mainFormData?.genericradio}
                   />
-                  <Typography className="h-5">
+                  <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
                   </Typography>
                 </Grid>
