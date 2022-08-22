@@ -46,9 +46,7 @@ const Layout = ({ Component, pageProps }) => {
           route.pathname.startsWith("/admin") ||
           route.pathname[route.pathname.length - 1] === "/" ? (
             <SideBarComponent>
-              {/* <Box className="w-100 h-100 p-2 pb-1"> */}
               <Component {...pageProps} />
-              {/* </Box> */}
             </SideBarComponent>
           ) : (
             <CustomerSideBarComponent>

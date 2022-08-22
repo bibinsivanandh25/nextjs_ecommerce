@@ -73,17 +73,17 @@ const Registration = () => {
     if (formValues.gstin === "") {
       flag = true;
       errObj.gstin = validateMessage.field_required;
-    } else if (!validationRegex.gstin.test(formValues.gstin.length)) {
+    } else if (formValues.gstin.length !== 15) {
       flag = true;
-      errObj.gstin = "Invalid Gstin Number";
+      errObj.gstin = "Gstin number should be of length 15";
     }
     if (formValues.stockCount === "") {
       flag = true;
-      errObj.stockCount = "Please Select One Option";
+      errObj.stockCount = "Please select one option";
     }
     if (formValues.site === "") {
       flag = true;
-      errObj.site = "Please Select Atleast One Option";
+      errObj.site = "Please select atleact one option";
     }
     if (formValues.siteLink.length > 255) {
       flag = true;
@@ -93,7 +93,7 @@ const Registration = () => {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
-    if (formValues.mainCat === null) {
+    if (formValues.mainCat.length === 0) {
       flag = true;
       errObj.mainCat = validateMessage.field_required;
     }

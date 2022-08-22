@@ -1,4 +1,3 @@
-import { assetsJson } from "public/assets";
 import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -14,23 +13,7 @@ function CarousalComponent({
   carouselImageMinHeight = "55vh",
   carouselImageMinWidth = "100%",
   showIndicators = true,
-  list = [
-    {
-      src: assetsJson.ecommerceBanner,
-      altText: "Slide 1",
-      // caption: "Slide 1",
-    },
-    {
-      src: assetsJson.mrmrscartlogo,
-      // altText: "Slide 2",
-      // caption: "Slide 2",
-    },
-    {
-      src: assetsJson["Printed Dress"],
-      // altText: "Slide 3",
-      // caption: "Slide 3",
-    },
-  ],
+  list = [],
 }) {
   return (
     <Carousel

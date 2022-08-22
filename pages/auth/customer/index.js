@@ -100,7 +100,7 @@ const ShopCode = () => {
             />
           </Box>
           <Typography variant="h6" className="color-white text-center fs-16">
-            A Multi Ecommrece Store
+            A Multi Ecommerce Store
           </Typography>
           <Box className="mt-4 mb-2">
             <InputBox

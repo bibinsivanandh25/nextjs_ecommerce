@@ -305,7 +305,7 @@ export default function TableComponent({
 
   useEffect(() => {
     const temp = columns.filter((item) => {
-      if (!item.hasOwnProperty("isFilter"))
+      if (item.hasOwnProperty("isFilter"))
         return { label: item.label, id: item.id, value: item.label };
     });
     setSearchFilterList(() => {

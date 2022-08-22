@@ -722,14 +722,16 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
-                  <Typography
-                    className="h-6 mt-1 cursor-pointer color-blue"
-                    onClick={() => {
-                      setShowCategoryModal(true);
-                    }}
-                  >
-                    Edit sub-category <EditIcon className="ms-1 h-5" />
-                  </Typography>
+                  {Object.keys(mainFormData?.category).length ? (
+                    <Typography
+                      className="h-6 mt-1 cursor-pointer color-blue"
+                      onClick={() => {
+                        setShowCategoryModal(true);
+                      }}
+                    >
+                      Edit sub-category <EditIcon className="ms-1 h-5" />
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item md={12}>
                   <InputBox
