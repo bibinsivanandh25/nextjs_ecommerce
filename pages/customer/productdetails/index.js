@@ -219,7 +219,7 @@ const ProductDetails = () => {
         setSelectedImage(item.variationMedia[0]);
         getfrequentProduct(item.productVariationId);
         const element = document.getElementById("MainBox");
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView();
         setSelectedImageId("1");
       }
     });
