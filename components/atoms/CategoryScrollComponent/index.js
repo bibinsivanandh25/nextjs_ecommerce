@@ -1,4 +1,5 @@
 import { Box, Tooltip, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 import ImageCard from "../ImageCard";
 
 const CategoryScrollComponent = ({
@@ -29,13 +30,21 @@ const CategoryScrollComponent = ({
               }}
               key={ele.id}
             >
-              <ImageCard
-                showCursorPointer
-                height={125}
-                width={125}
-                imgSrc={ele.image}
-                showClose={false}
-              />
+              <motion.div
+                whileHover={{
+                  scale: 1.1,
+                  transition: { duration: 0.5 },
+                }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ImageCard
+                  showCursorPointer
+                  height={125}
+                  width={125}
+                  imgSrc={ele.image}
+                  showClose={false}
+                />
+              </motion.div>
               <Tooltip title={ele.name} placement="top">
                 <Typography className="text-truncate text-center h-5 fw-bold">
                   {ele.name}
