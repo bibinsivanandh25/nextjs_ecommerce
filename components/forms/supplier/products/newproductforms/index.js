@@ -333,8 +333,6 @@ const ProductsLayout = ({
 
   const handleCategoryModalClose = () => {
     setShowCategoryModal(false);
-    setSetsData([]);
-    setSubCategoryData([]);
   };
   const handleCategorySubmitClick = () => {
     const errObj = {
@@ -709,6 +707,14 @@ const ProductsLayout = ({
                           setsValue: {},
                           subCategoryValue: {},
                         }));
+                      } else {
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          setsValue: {},
+                          subCategoryValue: {},
+                        }));
+                        setSubCategoryData([]);
+                        setSetsData([]);
                       }
                       setMainFormData((pre) => {
                         return {
@@ -722,7 +728,8 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
-                  {Object.keys(mainFormData?.category).length ? (
+                  {mainFormData?.category &&
+                  Object.keys(mainFormData?.category).length ? (
                     <Typography
                       className="h-6 mt-1 cursor-pointer color-blue"
                       onClick={() => {
@@ -1190,6 +1197,10 @@ const ProductsLayout = ({
                   value={mainFormData.setsValue}
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "setsValue");
+                    if (!value) {
+                      handleDropdownChange({}, "subCategoryValue");
+                      setSubCategoryData([]);
+                    }
                   }}
                   error={modalErrObj.setsValue !== ""}
                   helperText={modalErrObj.setsValue}
