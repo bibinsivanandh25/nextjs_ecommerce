@@ -342,6 +342,13 @@ const supplierMenu = [
     navigate: true,
     child: [],
   },
+  {
+    title: "Help Center",
+    logo: "fas fa-shopping-cart",
+    path_name: "helpcenter",
+    navigate: true,
+    child: [],
+  },
 ];
 
 const resellerMenu = [
