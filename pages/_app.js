@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import { SessionProvider } from "next-auth/react";
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -6,6 +7,8 @@ import "../styles/global.scss";
 import "../styles/colors.scss";
 import "../styles/font.scss";
 import { motion } from "framer-motion";
+import Head from "next/head";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Auth from "components/auth";
 import ToastComponent from "components/molecule/toastcomponent";
 import Layout from "../components/organism/Layout";
@@ -43,17 +46,30 @@ function MyApp({ Component, pageProps, router }) {
       </SessionProvider>
     );
   };
+  const theme = createTheme({
+    typography: {
+      fontFamily: ["Open Sans"].join(","),
+    },
+  });
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      initial={{ opacity: 0 }}
-      transition={{
-        damping: 20,
-      }}
-      exit={{ opacity: 0 }}
-    >
-      {renderPages()}
-    </motion.div>
+    <>
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <motion.div
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        transition={{
+          damping: 20,
+        }}
+        exit={{ opacity: 0 }}
+      >
+        <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
+      </motion.div>
+    </>
   );
 }
 
