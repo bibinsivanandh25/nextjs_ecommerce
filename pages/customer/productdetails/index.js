@@ -262,7 +262,7 @@ const ProductDetails = () => {
 
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
-    element.scrollIntoView({ behavior: "smooth" });
+    element.scrollIntoView();
   }, [router.query]);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
@@ -372,14 +372,14 @@ const ProductDetails = () => {
                       height: "130%",
                     },
                   }}
-                  className="bg-white zIndex-1000000"
+                  className="bg-white zIndex-100"
                   shouldUsePositiveSpaceLens
-                  imageClassName="border rounded p-1 zIndex-1000000"
+                  imageClassName="border rounded p-1 zIndex-100"
                   // lensStyle={{
                   //   background: "hsla(0, 0%, 100%, .3)",
                   //   border: "1px solid #fff",
                   // }}
-                  enlargedImageClassName="zIndex-1000000"
+                  enlargedImageClassName="zIndex-100"
                 />
               )}
             </Grid>
