@@ -97,6 +97,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.sale_price = validateMessage.decimal_2digits;
     } else if (pricingFormData.sale_price > pricingFormData.mrp) {
+      flag = true;
       errObj.sale_price = "Sale price should not be greater than MRP";
     }
     if (pricingFormData.mrp === "") {
