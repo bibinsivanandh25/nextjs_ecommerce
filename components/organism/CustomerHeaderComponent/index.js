@@ -7,12 +7,14 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Box, MenuItem, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
+import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
 import { useState } from "react";
 import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+import { assetsJson } from "public/assets";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -129,7 +131,7 @@ const Header = () => {
             Select Your Address
           </p>
         </div>
-        <div>MrMrsCart Logo</div>
+        <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -151,19 +153,27 @@ const Header = () => {
         </div>
       </div>
       <div
-        className="d-flex justify-content-between align-items-center px-3 py-1"
+        className="d-flex justify-content-between align-items-center px-2 py-1"
         style={{
           background: "#fae1cc",
         }}
       >
         <div
-          className="cursor-pointer"
+          className="cursor-pointer d-flex justify-content-between align-items-center "
           onClick={() => {
             route.push("/customer/home");
           }}
         >
-          <Typography className="fs-5 cursor-pointer">
-            LOGO Store Name
+          <Box className="pe-2">
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile%20image/1661152145394-balu.png"
+              layout="fixed"
+              height={30}
+              width={80}
+            />
+          </Box>
+          <Typography className="h-5 fw-bold cursor-pointer">
+            Balu Enterprises pvt ltd
           </Typography>
         </div>
         <div className="d-flex align-items-center rounded w-30p">

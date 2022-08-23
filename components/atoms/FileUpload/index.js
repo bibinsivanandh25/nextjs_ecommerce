@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import UploadIcon from "@mui/icons-material/Upload";
 import { useRef, useState, useEffect } from "react";
 import Dropzone from "react-dropzone";
@@ -6,6 +7,7 @@ import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getBase64 } from "services/utils/functionUtils";
+import { FcDocument, FcVideoFile } from "react-icons/fc";
 import ButtonComponent from "../ButtonComponent";
 import ModalComponent from "../ModalComponent";
 
@@ -131,8 +133,22 @@ const FileUploadModal = ({
             return (
               // eslint-disable-next-line react/no-array-index-key
               <div className="position-relative" key={ind}>
-                <div className="mx-2">
-                  <Image src={ele} width={60} height={60} alt="" />
+                <div className="me-2">
+                  {ele.includes("image") ? (
+                    <Image src={ele} width={60} height={60} alt="" />
+                  ) : ele.includes("video") ? (
+                    <FcVideoFile
+                      style={{
+                        fontSize: "65px",
+                      }}
+                    />
+                  ) : (
+                    <FcDocument
+                      style={{
+                        fontSize: "65px",
+                      }}
+                    />
+                  )}
                 </div>
                 <CloseIcon
                   onClick={() => {

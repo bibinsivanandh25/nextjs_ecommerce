@@ -83,7 +83,7 @@ const Registration = () => {
     }
     if (formValues.site === "") {
       flag = true;
-      errObj.site = "Please select atleact one option";
+      errObj.site = "Please select one option";
     }
     if (formValues.siteLink.length > 255) {
       flag = true;
@@ -93,7 +93,7 @@ const Registration = () => {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
-    if (formValues.mainCat === null) {
+    if (formValues.mainCat.length === 0) {
       flag = true;
       errObj.mainCat = validateMessage.field_required;
     }

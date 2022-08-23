@@ -266,21 +266,26 @@ export default function TableComponent({
   stickyHeader = true,
   // eslint-disable-next-line no-unused-vars
   dateFilterBtnIcon = "",
+  handlePageEnd = () => {},
+  filterList = [],
+  handleRowsPerPageChange = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
-  const [searchFilterList, setSearchFilterList] = useState([
-    { label: "All", id: "0", value: "All" },
-  ]);
+  const [searchFilterList, setSearchFilterList] = useState([]);
   const [searchFilter, setSearchFilter] = useState({
     label: "All",
     id: "0",
     value: "All",
   });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
+
+  useEffect(() => {
+    setSearchFilterList(filterList);
+  }, [filterList]);
 
   useEffect(() => {
     if (draggableHeader) {
@@ -299,59 +304,19 @@ export default function TableComponent({
     setRows(tableRows);
   }, [tableRows]);
 
-  useEffect(() => {
-    if (searchText === "") setRows(tableRows);
-  }, [searchText, tableRows]);
-
-  useEffect(() => {
-    const temp = columns.filter((item) => {
-      if (!item.hasOwnProperty("isFilter"))
-        return { label: item.label, id: item.id, value: item.label };
-    });
-    setSearchFilterList(() => {
-      return [{ label: "All", id: "0", value: "All" }, ...temp];
-    });
-  }, [columns]);
-
-  const requestSearch = (searchval) => {
-    const filteredData =
-      searchFilter.label === "All" || searchFilter.label === ""
-        ? rows.filter((value) => {
-            let flag = false;
-            const dataarray = Object.values(value);
-            dataarray.splice(0, 1);
-            let index;
-            dataarray.forEach((ele) => {
-              index =
-                typeof ele === "string" &&
-                ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
-              if (index) {
-                flag = true;
-              }
-            });
-            return flag;
-          })
-        : rows.filter((value) => {
-            if (
-              typeof value[`${searchFilter.id}`] === "string" &&
-              value[`${searchFilter.id}`]
-                .toLowerCase()
-                .indexOf(searchval.toLowerCase()) > -1
-            )
-              return true;
-            return false;
-          });
-
-    setRows(filteredData);
-  };
-
   const handleChangePage = (event, newPage) => {
+    const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
+    if (newPage === numberOfPage - 1) {
+      handlePageEnd(searchText, searchFilter?.value);
+    }
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    handleRowsPerPageChange(searchText, searchFilter?.value, 0);
+    handlePageEnd(searchText, searchFilter?.value, 0);
   };
 
   const handleSelectAllClick = (event, checked) => {
@@ -385,10 +350,6 @@ export default function TableComponent({
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
-
-  const handleSearch = () => {
-    if (searchText !== "") requestSearch(searchText);
-  };
 
   useEffect(() => {
     if (dateValue.from && dateValue.to) {
@@ -515,7 +476,11 @@ export default function TableComponent({
                 <div
                   style={{ width: "35px", height: "38px" }}
                   className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
-                  onClick={handleSearch}
+                  onClick={() => {
+                    if (searchText !== "") {
+                      handlePageEnd(searchText, searchFilter?.value);
+                    }
+                  }}
                 >
                   <SearchOutlinedIcon style={{ color: "white" }} />
                 </div>
@@ -633,7 +598,11 @@ export default function TableComponent({
                   <div
                     style={{ width: "40px", height: "38px" }}
                     className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
-                    onClick={handleSearch}
+                    onClick={() => {
+                      if (searchText !== "") {
+                        handlePageEnd(searchText, searchFilter?.value);
+                      }
+                    }}
                   >
                     <SearchOutlinedIcon style={{ color: "white" }} />
                   </div>
@@ -658,9 +627,9 @@ export default function TableComponent({
                     // className="bg-orange"
                     // sx={{ textTransform: "none" }}
                     // fullWidth
-                    muiProps="p-2"
+                    muiProps="p-2 color-white"
                     disabled={disableCustomButton}
-                    bgColor={disableCustomButton ? "bg-secondary" : "bg-orange"}
+                    bgColor={disableCustomButton ? "bg-gray" : "bg-orange"}
                     onBtnClick={onCustomButtonClick}
                     label={customButtonLabel}
                   />
@@ -795,7 +764,7 @@ export default function TableComponent({
             <Grid>
               <TablePagination
                 className="justify-content-start d-flex"
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 20]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}

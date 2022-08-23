@@ -33,27 +33,29 @@ async function getLatestToken() {
   return { accessTokem, error };
 }
 
-// axiosInstance.interceptors.request.use(
-//   function (config) {
-//     document.getElementById("loader").classList.add("loadContainer");
-//     return config;
-//   },
-//   function (error) {
-//     return Promise.reject(error);
-//   }
-// );
+axiosInstance.interceptors.request.use(
+  function (config) {
+    document.getElementById("loader").classList.add("loadContainer");
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
-// axiosInstance.interceptors.response.use(
-//   function (response) {
-//     // document.body.classList.remove("spinner");
-//     document.getElementById("loader").classList.remove("loadContainer");
-//     return response;
-//   },
-//   function (error) {
-//     // document.body.classList.remove("spinner");
-//     document.getElementById("loader").classList.remove("loadContainer");
-//     return Promise.reject(error);
-//   }
-// );
+axiosInstance.interceptors.response.use(
+  function (response) {
+    // document.body.classList.remove("spinner");
+    setTimeout(() => {
+      document.getElementById("loader").classList.remove("loadContainer");
+    }, 1000);
+    return response;
+  },
+  function (error) {
+    // document.body.classList.remove("spinner");
+    document.getElementById("loader").classList.remove("loadContainer");
+    return Promise.reject(error);
+  }
+);
 
 export { axiosInstance, setHeaders };

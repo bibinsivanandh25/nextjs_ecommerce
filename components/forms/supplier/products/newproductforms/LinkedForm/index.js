@@ -86,7 +86,7 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
             error={errorObj.upSells?.length}
             helperText={errorObj.upSells}
             size="small"
-            label="Up-Sells"
+            label="Up-Sells*"
             placeholder="Filter By Product..."
             inputlabelshrink
             list={[...upSellsArray]}
@@ -106,7 +106,7 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
             error={errorObj.crossSells?.length}
             helperText={errorObj.crossSells}
             size="small"
-            label="Cross-Sells"
+            label="Cross-Sells*"
             placeholder="Filter By Product..."
             inputlabelshrink
             list={[...crossSellsArray]}

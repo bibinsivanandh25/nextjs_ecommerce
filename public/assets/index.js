@@ -1,4 +1,7 @@
 const assetsJson = {
+  login_background:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/newyearwhitecircle.svg",
+  logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Logo+1.svg",
   add: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/add.png",
   ecommerceBanner:
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg",
@@ -55,7 +58,6 @@ const assetsJson = {
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/facebook-messenger.png",
   "instagram-logo":
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/instagram-logo.png",
-  logo: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/logo.png",
   mrmrscartlogo:
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/icon/mrmrscartlogo.png",
   "telegram-app":

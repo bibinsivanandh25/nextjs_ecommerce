@@ -1,9 +1,16 @@
 import serviceUtil from "services/utils";
 
-const getTabledata = (status, id) => {
+const getTabledata = (
+  status,
+  id,
+  pageNumber = 0,
+  keyword = "",
+  filterText = "ALL"
+) => {
+  const pageSize = 50;
   return serviceUtil
     .get(
-      `products/master-product-filter?status=${status}&pageNumber=0&pageSize=5&keyword=&supplierId=${id}&filterStatus=ALL`
+      `products/master-product-filter?status=${status}&pageNumber=${pageNumber}&pageSize=${pageSize}&keyword=${keyword}&supplierId=${id}&filterStatus=${filterText}`
     )
     .then((res) => {
       const { data } = res.data;

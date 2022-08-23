@@ -197,7 +197,10 @@ const Dashboard = () => {
     ],
   };
   return (
-    <Paper elevation={3} className="w-100 mnh-80vh mxh-80vh p-3">
+    <Paper
+      elevation={3}
+      className="w-100 mnh-80vh mxh-80vh p-3 overflow-y-scroll hide-scrollbar"
+    >
       <Box className="border-bottom border border-1 border-secondary rounded mb-3">
         <Box className="p-2 border-bottom border-secondary">
           <Typography className="h-4 fw-600 color-orange">

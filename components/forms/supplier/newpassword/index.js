@@ -3,6 +3,7 @@ import validateMessage from "constants/validateMessages";
 import InputBox from "components/atoms/InputBoxComponent";
 import validationRegex from "services/utils/regexUtils";
 import { useState } from "react";
+import styles from "./newpassword.module.css";
 
 const NewPasswordForm = ({
   formValues = {},
@@ -10,6 +11,8 @@ const NewPasswordForm = ({
   setFormValues = () => {},
 }) => {
   const [error, setError] = useState({});
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmNewPassword] = useState(false);
 
   const validateForm = () => {
     const errObj = { ...error };
@@ -85,7 +88,7 @@ const NewPasswordForm = ({
 
       <div style={{ width: "400px" }}>
         <InputBox
-          type="password"
+          type={showNewPassword ? "text" : "password"}
           placeholder="Enter New Password"
           value={formValues.password}
           label="Enter New Password"
@@ -100,16 +103,20 @@ const NewPasswordForm = ({
           error={Boolean(error.password)}
           helperText={error.password}
           inputlabelshrink
+          iconName={showNewPassword ? "visible" : "visibleOff"}
+          onIconClick={() => setShowNewPassword(!showNewPassword)}
+          textInputProps={{ className: styles.inputAutoFillColor }}
         />
       </div>
 
       <div style={{ width: "400px" }}>
         <InputBox
-          type="password"
+          type={showConfirmPassword ? "text" : "password"}
           placeholder="Re-enter New Password"
           value={formValues.rePassword}
           label="Re-enter New Password"
           className="w-100 my-2"
+          textInputProps={{ className: styles.inputAutoFillColor }}
           size="small"
           onInputChange={(e) => {
             setFormValues((prev) => ({
@@ -120,6 +127,8 @@ const NewPasswordForm = ({
           error={Boolean(error.rePassword)}
           helperText={error.rePassword}
           inputlabelshrink
+          iconName={showConfirmPassword ? "visible" : "visibleOff"}
+          onIconClick={() => setShowConfirmNewPassword(!showConfirmPassword)}
         />
       </div>
       <ButtonComponent

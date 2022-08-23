@@ -28,6 +28,7 @@ const tableHeaders = [
     align: "center",
     data_align: "center",
     data_classname: "",
+    isFilter: true,
   },
   {
     id: "col4", // id value in column should be presented in row as key
@@ -36,6 +37,7 @@ const tableHeaders = [
     align: "center",
     data_align: "center",
     data_classname: "",
+    isFilter: true,
   },
   {
     id: "col5", // id value in column should be presented in row as key
@@ -91,9 +93,7 @@ const tempRows = [
 
 const Staff = () => {
   const router = useRouter();
-  // const [addStaff, setAddStaff] = useState(false);
   const handleBtnClick = () => {
-    // setAddStaff((pre) => !pre);
     router.push("/supplier/staff/addstaff");
   };
   return (

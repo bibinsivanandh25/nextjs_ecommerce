@@ -80,7 +80,7 @@ const Home = () => {
     if (!Object.keys(route.query).length) {
       route.push("/auth/customer");
     }
-  }, [route]);
+  }, [route.query]);
 
   const getCategories = async () => {
     const { data, err } = await getMainCategories();
@@ -236,7 +236,9 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CarousalComponent list={[...bannerImages]} interval={4000} />
+          {bannerImages.length ? (
+            <CarousalComponent list={[...bannerImages]} interval={4000} />
+          ) : null}
           <Box className="py-2">
             <HomeComponent
               onCategoryClick={(ele) => {

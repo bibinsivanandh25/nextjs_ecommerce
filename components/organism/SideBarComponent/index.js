@@ -14,11 +14,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { motion, AnimatePresence } from "framer-motion";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import { resellerMenu, supplierMenu } from "constants/navConstants";
 import { useSession } from "next-auth/react";
-import { MenuItem, MenuList } from "@mui/material";
+import { MenuItem, MenuList, Tooltip } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 
@@ -139,7 +140,7 @@ const SideBarComponent = ({ children }) => {
     getInitialSelection([...list]);
     return JSON.parse(JSON.stringify(getInitialSelection([...list])));
   };
-
+  const router = useRouter();
   const { data: session } = useSession();
   // const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -347,7 +348,12 @@ const SideBarComponent = ({ children }) => {
                         }}
                         className="cursor-pointer"
                       >
-                        <InboxIcon />
+                        <Tooltip
+                          title={!open ? item.title : ""}
+                          placement="right"
+                        >
+                          <InboxIcon />
+                        </Tooltip>
                       </ListItemIcon>
                       <ListItemText
                         className="cursor-pointer"
@@ -403,7 +409,7 @@ const SideBarComponent = ({ children }) => {
           WebkitTransition: "margin 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
         }}
-        className=" p-4 py-3 w-100 body-bg"
+        className=" p-3 pt-2 w-100 body-bg"
       >
         <Box
           className={`mb-2 ${
@@ -412,17 +418,25 @@ const SideBarComponent = ({ children }) => {
         >
           <BreadCrumb />
         </Box>
-        <Box
-          sx={{
-            maxHeight: route.pathname.startsWith("/admin")
-              ? "calc(100vh - 95px)"
-              : "calc(100vh - 130px)",
-            overflowY: "scroll",
-          }}
-          className="hide-scrollbar "
-        >
-          {children}
-        </Box>
+        <AnimatePresence initial={false} exitBeforeEnter>
+          <motion.div
+            sx={{
+              maxHeight: route.pathname.startsWith("/admin")
+                ? "calc(100vh - 95px)"
+                : "calc(100vh - 130px)",
+              overflowY: "scroll",
+            }}
+            className="hide-scrollbar "
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            transition={{
+              damping: 30,
+            }}
+            key={router.route}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </Box>
     </Box>
   );
