@@ -287,8 +287,8 @@ const ProductsLayout = ({
     if (mainFormData.limit_per_order === "") {
       errObj.limit_per_order = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.limit_per_order.length < 1) {
-      errObj.limit_per_order = "Limit per order should atleast be 1";
+    } else if (parseInt(mainFormData.limit_per_order, 10) < 1) {
+      errObj.limit_per_order = "Limit per order should be greater then 0";
       flag = true;
     }
     setErrorObj({ ...errObj });
