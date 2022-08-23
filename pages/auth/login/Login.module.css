@@ -1,7 +1,7 @@
 .container {
   width: 100vw;
   height: 100vh;
-  background-image: url("../../../public/assets/background.jpg");
+  background: white;
   background-position: center;
   background-size: cover;
 }
@@ -13,9 +13,9 @@
 }
 
 .inputAutoFillColor:-webkit-autofill,
-.inputAutoFillColor:-webkit-autofill:hover, 
-.inputAutoFillColor:-webkit-autofill:focus, 
-.inputAutoFillColor:-webkit-autofill:active{
-    transition: background-color 5000s ease-in-out 0s !important;
-     -webkit-text-fill-color: #fff !important;
+.inputAutoFillColor:-webkit-autofill:hover,
+.inputAutoFillColor:-webkit-autofill:focus,
+.inputAutoFillColor:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: #000 !important;
 }

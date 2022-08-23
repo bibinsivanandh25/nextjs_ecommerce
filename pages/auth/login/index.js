@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { assetsJson } from "public/assets";
 import {
   Box,
   Grid,
@@ -30,92 +31,92 @@ import validationRegex from "services/utils/regexUtils";
 import logo from "../../../public/assets/favicon.png";
 import styles from "./Login.module.css";
 
-const options = ["Supplier", "Reseller", "Customer"];
+// const options = ["Supplier", "Reseller", "Customer"];
 
-const SelectComponent = ({
-  selectedIndex = 1,
-  setSelectedIndex = () => {},
-}) => {
-  const [anchorEl, setAnchorEl] = useState(false);
-  const open = anchorEl;
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(false);
-  };
-  const handleMenuItemClick = (index) => {
-    setSelectedIndex(index);
-    setAnchorEl(false);
-  };
-  return (
-    <div style={{ position: "fixed", top: "0", left: "0" }}>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <IconButton
-          onClick={handleClick}
-          size="small"
-          aria-controls={open ? "user-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          sx={{ pl: 0, pt: 0 }}
-        >
-          <div style={{ background: "white" }}>
-            <ArrowDropDownIcon />
-          </div>
-          <span className="color-white mx-2 fs-16">Choose your profile</span>
-        </IconButton>
-      </Box>
-      <Menu
-        anchorEl={anchorEl}
-        id="user-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              left: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "left", vertical: "top" }}
-        anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-      >
-        {options.map((item, index) => {
-          return (
-            <MenuItem
-              key={item}
-              // disabled={index === 0}
-              selected={index === selectedIndex}
-              onClick={() => handleMenuItemClick(index)}
-            >
-              {item}
-            </MenuItem>
-          );
-        })}
-      </Menu>
-    </div>
-  );
-};
+// const SelectComponent = ({
+//   selectedIndex = 1,
+//   setSelectedIndex = () => {},
+// }) => {
+//   const [anchorEl, setAnchorEl] = useState(false);
+//   const open = anchorEl;
+//   const handleClick = (event) => {
+//     setAnchorEl(event.currentTarget);
+//   };
+//   const handleClose = () => {
+//     setAnchorEl(false);
+//   };
+//   const handleMenuItemClick = (index) => {
+//     setSelectedIndex(index);
+//     setAnchorEl(false);
+//   };
+//   return (
+//     <div style={{ position: "fixed", top: "0", left: "0" }}>
+//       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+//         <IconButton
+//           onClick={handleClick}
+//           size="small"
+//           aria-controls={open ? "user-menu" : undefined}
+//           aria-haspopup="true"
+//           aria-expanded={open ? "true" : undefined}
+//           sx={{ pl: 0, pt: 0 }}
+//         >
+//           <div style={{ background: "white" }}>
+//             <ArrowDropDownIcon />
+//           </div>
+//           <span className="color-white mx-2 fs-16">Choose your profile</span>
+//         </IconButton>
+//       </Box>
+//       <Menu
+//         anchorEl={anchorEl}
+//         id="user-menu"
+//         open={open}
+//         onClose={handleClose}
+//         onClick={handleClose}
+//         PaperProps={{
+//           elevation: 0,
+//           sx: {
+//             overflow: "visible",
+//             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+//             mt: 1.5,
+//             "& .MuiAvatar-root": {
+//               width: 32,
+//               height: 32,
+//               ml: -0.5,
+//               mr: 1,
+//             },
+//             "&:before": {
+//               content: '""',
+//               display: "block",
+//               position: "absolute",
+//               top: 0,
+//               left: 14,
+//               width: 10,
+//               height: 10,
+//               bgcolor: "background.paper",
+//               transform: "translateY(-50%) rotate(45deg)",
+//               zIndex: 0,
+//             },
+//           },
+//         }}
+//         transformOrigin={{ horizontal: "left", vertical: "top" }}
+//         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+//       >
+//         {options.map((item, index) => {
+//           return (
+//             <MenuItem
+//               key={item}
+//               // disabled={index === 0}
+//               selected={index === selectedIndex}
+//               onClick={() => handleMenuItemClick(index)}
+//             >
+//               {item}
+//             </MenuItem>
+//           );
+//         })}
+//       </Menu>
+//     </div>
+//   );
+// };
 
 const Login = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -208,7 +209,7 @@ const Login = () => {
       const payload = {
         userName: formValues.user,
         password: formValues.password,
-        userType: options[selectedIndex].toUpperCase(),
+        userType: "SUPPLIER",
       };
       await axios
         .post(`${process.env.DOMAIN}auth/authenticate`, payload)
@@ -226,14 +227,14 @@ const Login = () => {
               email: userData[1],
               role: decoded.roles[0],
               token,
-              callbackUrl: `/${getBasePath(options[selectedIndex])}/dashboard`,
+              callbackUrl: `/supplier/dashboard`,
               redirect: false,
             });
             if (res?.error) {
               toastify("Invalid credentials", "error");
               return null;
             }
-            route.push(`/${getBasePath(options[selectedIndex])}/dashboard`);
+            route.push(`/supplier/dashboard`);
           }
         })
         .catch((err) => {
@@ -242,26 +243,22 @@ const Login = () => {
         });
     }
   };
-
   return (
     <div
       className={`d-flex justify-content-center align-items-center ${styles.container}`}
+      style={{
+        backgroundImage: `url(${assetsJson.login_background})`,
+      }}
     >
-      <SelectComponent
+      {/* <SelectComponent
         selectedIndex={selectedIndex}
         setSelectedIndex={setSelectedIndex}
-      />
-      <Paper elevation={6} sx={{ background: "rgba(1,1,1,0.4)" }}>
-        <div className="w-400px p-5 ">
+      /> */}
+      <Paper elevation={24}>
+        <div className="p-5 " style={{ width: "450px", height: "450px" }}>
           <Image src={logo} style={{ width: "100%", height: "50px" }} alt="" />
-          <Typography varient="h1" className="text-center color-white">
+          <Typography className="text-center fw-bold">
             A Multi Ecommerce Store
-          </Typography>
-          <Typography
-            varient="h4"
-            className="text-center mt-3 color-white fs-14"
-          >
-            Choose your profile
           </Typography>
           {/* <div className="d-flex flex-column justify-content-center">
             <InputBox
@@ -307,14 +304,12 @@ const Login = () => {
                   InputProps={{
                     style: {
                       fontSize: "14px",
-                      color: "#fff",
                       borderColor: "#fff",
                     },
                   }}
                   inputlabelshrink
                   helperText={errorObj.user}
                   error={errorObj.user !== ""}
-                  labelColorWhite={{ color: "#fff" }}
                   textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
@@ -331,13 +326,12 @@ const Login = () => {
                   className="w-100"
                   placeholder="Enter password"
                   InputProps={{
-                    style: { fontSize: "14px", color: "#fff" },
+                    style: { fontSize: "14px" },
                   }}
                   inputlabelshrink
                   type={showPassword ? "text" : "password"}
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
-                  labelColorWhite={{ color: "#fff" }}
                   iconName={showPassword ? "visibleOff" : "visible"}
                   onIconClick={() => {
                     setShowPassword(!showPassword);
@@ -348,12 +342,12 @@ const Login = () => {
               <Grid item md={12} className="w-100">
                 <div className="d-flex justify-content-between">
                   <Link href="/auth/login/otplogin" passHref>
-                    <span className="color-orange fs-12 cursor-pointer">
+                    <span className="color-orange fs-12 cursor-pointer fw-bold">
                       Login with OTP
                     </span>
                   </Link>
                   <Link href="/auth/forgotpassword" passHref>
-                    <span className="color-orange fs-12 cursor-pointer">
+                    <span className="color-orange fs-12 cursor-pointer fw-bold">
                       Forgot password?
                     </span>
                   </Link>
@@ -367,29 +361,27 @@ const Login = () => {
                     muiProps="w-100px"
                   />
                   <div>
-                    <span className="fs-11 color-white mx-2">
+                    <span className="fs-11 fw-bold mx-2">
                       Don&apos;t have an account ?
                     </span>
-                    <Link
-                      href={`/auth/${options[
-                        selectedIndex
-                      ].toLocaleLowerCase()}/registration`}
-                      passHref
-                    >
-                      <span className="color-orange fs-11 cursor-pointer">
+                    <Link href="/auth/SUPPLIER/registration" passHref>
+                      <span className="color-orange fw-bold fs-11 cursor-pointer">
                         Register
                       </span>
                     </Link>
                   </div>
                 </div>
               </Grid>
-              <Grid item sm={12} container justifyContent="center">
+              <div
+                className="d-flex justify-content-center w-100"
+                style={{ marginLeft: "20px" }}
+              >
                 <ButtonComponent
                   label="Know your Profit here"
                   muiProps={styles.profitLink}
                   variant="undefined"
                 />
-              </Grid>
+              </div>
             </Grid>
           </div>
         </div>

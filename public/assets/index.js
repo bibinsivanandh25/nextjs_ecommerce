@@ -1,4 +1,6 @@
 const assetsJson = {
+  login_background:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/newyearwhitecircle.jpg",
   add: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/add.png",
   ecommerceBanner:
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg",
