@@ -826,10 +826,8 @@ const ProductsLayout = ({
                         ...prev,
                         brandradio: false,
                         genericradio: true,
-                      }));
-                      setMainFormData((prev) => ({
-                        ...prev,
                         tradeMarkCheck: false,
+                        b2bdocument: [],
                       }));
                     }}
                   />
@@ -846,6 +844,7 @@ const ProductsLayout = ({
                       setMainFormData((prev) => ({
                         ...prev,
                         tradeMarkCheck: !mainFormData.tradeMarkCheck,
+                        b2bdocument: [],
                       }));
                     }}
                     labelColor="#535353"
@@ -893,7 +892,7 @@ const ProductsLayout = ({
                         item
                         key={index}
                         md={12}
-                        className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
+                        className={`text-center py-1 rounded my-1 fs-14 ${
                           activeTab === index
                             ? "bg-orange color-white"
                             : "bg-light-gray"

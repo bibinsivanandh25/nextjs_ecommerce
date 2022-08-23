@@ -12,7 +12,8 @@ const TabsCard = ({
   return (
     <div>
       <div
-        className={`w-100 overflow-y-scroll hide-scrollbar pt-2 ${styles.tabContainer}`}
+        className={`w-100  hide-scrollbar pt-2 ${styles.tabContainer}`}
+        style={{ overflowY: "hidden" }}
       >
         {tabList.map((item, index) => {
           return (
@@ -25,7 +26,7 @@ const TabsCard = ({
                     ? styles.lastActiveTab
                     : styles.activeTab
                   : styles.tabStyle
-              } shadow`}
+              }`}
               onClick={() => {
                 onSelect(index);
               }}

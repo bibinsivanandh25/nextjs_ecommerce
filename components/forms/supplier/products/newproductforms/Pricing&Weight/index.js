@@ -221,7 +221,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <Box className=" d-flex align-items-center mb-2">
             <CheckBoxComponent
-              label=""
+              label="Provide Free Delivery & Return To Your Customer"
               checkBoxClick={() => {
                 setFreeDeliveryCheckbox(!freeDeliveryCheckbox);
               }}
@@ -230,9 +230,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="h-5">
+            {/* <Typography className="h-5">
               Provide Free Delivery & Return To Your Customer
-            </Typography>
+            </Typography> */}
           </Box>
           <InputBox
             id="sale_price_logistics"
@@ -249,7 +249,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={6}>
           <div className="d-flex align-items-center justify-content-center">
             <CheckBoxComponent
-              label=""
+              label="Return Order Accepted"
               isChecked={pricingFormData.return_order_accepted}
               checkBoxClick={() => {
                 setPricingFormData((prev) => {
@@ -263,15 +263,15 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">
+            {/* <Typography className="fs-12 mt-1">
               Return Order Accepted
-            </Typography>
+            </Typography> */}
           </div>
         </Grid>
         <Grid item md={6}>
           <div className="d-flex align-items-center justify-content-center">
             <CheckBoxComponent
-              label=""
+              label="Cash on Delivery"
               isChecked={pricingFormData.cash_on_accepted}
               checkBoxClick={() => {
                 setPricingFormData((prev) => {
@@ -285,7 +285,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">Cash on Delivery</Typography>
+            {/* <Typography className="fs-12 mt-1">Cash on Delivery</Typography> */}
           </div>
         </Grid>
         {pricingFormData.return_order_accepted && (

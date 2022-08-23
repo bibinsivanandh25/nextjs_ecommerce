@@ -374,6 +374,8 @@ const AttributesForm = forwardRef(
                   }));
                 }}
                 disabled={modalType}
+                inputlabelshrink
+                placeholder="Enter The New Attribute"
               />
             </Grid>
             <Grid item sm={12} className="mx-5">
