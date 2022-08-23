@@ -706,7 +706,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="stock_qty"
-                                label="Stock Qty"
+                                label="Stock Qty*"
                                 placeholder="Enter Stock Qty"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "inventory");
@@ -750,7 +750,7 @@ const GroupVariationForm = forwardRef(
                                 inputlabelshrink
                                 list={stock_status}
                                 id="stockstatus"
-                                label="Stock Status"
+                                label="Stock Status*"
                                 size="small"
                                 fullWidth={false}
                                 className="w-70p"
@@ -783,7 +783,7 @@ const GroupVariationForm = forwardRef(
                                     inputlabelshrink
                                     list={allowback_orders}
                                     id="Allow Backorders ?"
-                                    label="Allow Backorders ?"
+                                    label="Allow Backorders ?*"
                                     size="small"
                                     fullWidth={false}
                                     value={
@@ -815,7 +815,7 @@ const GroupVariationForm = forwardRef(
                                   <Grid item md={12}>
                                     <InputBox
                                       id="back_Orders"
-                                      label="Back Orders"
+                                      label="Back Orders*"
                                       size="small"
                                       placeholder="Enter Back Orders Quantities"
                                       value={
@@ -836,7 +836,7 @@ const GroupVariationForm = forwardRef(
                                 inputlabelshrink
                                 list={[...shipping_class]}
                                 id="ShippingClass"
-                                label="Shipping Class"
+                                label="Shipping Class*"
                                 size="small"
                                 fullWidth={false}
                                 value={
@@ -864,7 +864,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="product_title"
-                                label="Product Title"
+                                label="Product Title*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "inventory");
                                 }}
@@ -888,7 +888,7 @@ const GroupVariationForm = forwardRef(
                                 placeholder="Select Business Processing Days"
                                 list={[...business_processing_days]}
                                 id="business_processing_days"
-                                label="Business Processing Days"
+                                label="Business Processing Days*"
                                 size="small"
                                 fullWidth={false}
                                 value={
@@ -918,7 +918,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputFieldWithChip
                                 id="seo_title"
-                                label="SEO Title"
+                                label="SEO Title*"
                                 placeholder="Enter SEO Title"
                                 value={variationData[item].inventory.seo_title}
                                 inputlabelshrink
@@ -939,7 +939,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="meta_description"
-                                label="Meta Description"
+                                label="Meta Description*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "inventory");
                                 }}
@@ -961,7 +961,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputFieldWithChip
                                 id="meta_keyword"
-                                label="Meta Keywords"
+                                label="Meta Keywords*"
                                 onInputChange={(e) => {}}
                                 handleChange={(_, val) => {
                                   setVariationData((pre) => {
@@ -1094,7 +1094,7 @@ const GroupVariationForm = forwardRef(
                                 className="d-flex align-items-center"
                               >
                                 <Typography className="h-5">
-                                  Expire Date
+                                  Expire Date*
                                 </Typography>
                               </Grid>
                               <Grid item md={8}>
@@ -1123,7 +1123,7 @@ const GroupVariationForm = forwardRef(
                                 className="d-flex align-items-center"
                               >
                                 <Typography className="h-5">
-                                  Country of Origin
+                                  Country of Origin*
                                 </Typography>
                               </Grid>
                               <Grid item md={8}>
@@ -1165,7 +1165,7 @@ const GroupVariationForm = forwardRef(
                                 md={4}
                                 className="d-flex align-items-center"
                               >
-                                <Typography className="h-5">Others</Typography>
+                                <Typography className="h-5">Others*</Typography>
                               </Grid>
                               <Grid item md={8}>
                                 <InputBox
@@ -1189,7 +1189,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={6}>
                               <InputBox
                                 id="sale_price"
-                                label="Sale Price"
+                                label="Sale Price*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1207,7 +1207,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={6}>
                               <InputBox
                                 id="mrp"
-                                label="MRP"
+                                label="MRP*"
                                 placeholder="Enter MRP"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
@@ -1246,7 +1246,7 @@ const GroupVariationForm = forwardRef(
                               </Box>
                               <InputBox
                                 id="sale_price_logistics"
-                                label="Sale Price With Logistics"
+                                label="Sale Price With Logistics*"
                                 placeholder="Enter Sale Price With Logistics"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
@@ -1351,7 +1351,7 @@ const GroupVariationForm = forwardRef(
                                 <SimpleDropdownComponent
                                   list={returnOrderData}
                                   id="returnorder"
-                                  label="Return Period"
+                                  label="Return Period*"
                                   size="small"
                                   value={
                                     variationData[item].pricing.returnorder
@@ -1404,7 +1404,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="free_delivery"
-                                label="Sale Price With Free Delivery Returns"
+                                label="Sale Price With Free Delivery Returns*"
                                 inputlabelshrink
                                 type="number"
                                 value={
@@ -1424,7 +1424,7 @@ const GroupVariationForm = forwardRef(
                               <InputBox
                                 id="paid_delivery"
                                 placeholder="Enter Sale Price With Out Free Delivery Returns"
-                                label="Sale Price With Out Free Delivery Returns"
+                                label="Sale Price With Out Free Delivery Returns*"
                                 inputlabelshrink
                                 type="number"
                                 value={
@@ -1499,7 +1499,7 @@ const GroupVariationForm = forwardRef(
                                 <SimpleDropdownComponent
                                   list={returnOrderData}
                                   id="returnorder"
-                                  label="Return Period"
+                                  label="Return Period*"
                                   size="small"
                                   value={
                                     variationData[item].mmcartPricing
@@ -1521,7 +1521,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="product_weight"
-                                label="Product Weight(inclusive of package)"
+                                label="Product Weight(inclusive of package)*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1543,7 +1543,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="length"
-                                label="Length(inclusive of package)"
+                                label="Length(inclusive of package)*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1561,7 +1561,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="height"
-                                label="Height(inclusive of package)"
+                                label="Height(inclusive of package)*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1579,7 +1579,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="width"
-                                label="Width(inclusive of package)"
+                                label="Width(inclusive of package)*"
                                 onInputChange={(e) => {
                                   handleInputChange(e, item, "pricing");
                                 }}
@@ -1597,7 +1597,7 @@ const GroupVariationForm = forwardRef(
                             <Grid item md={12}>
                               <InputBox
                                 id="modalname"
-                                label="Modal Name"
+                                label="Modal Name*"
                                 onInputChange={(e) =>
                                   handleInputChange(e, item, "inventory")
                                 }

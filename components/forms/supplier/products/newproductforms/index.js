@@ -269,7 +269,7 @@ const ProductsLayout = ({
     if (mainFormData.short_description.text === "") {
       errObj.short_description.text = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.short_description.text.length > 255) {
+    } else if (mainFormData.short_description.text.length > 90) {
       errObj.short_description.text = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
@@ -333,8 +333,6 @@ const ProductsLayout = ({
 
   const handleCategoryModalClose = () => {
     setShowCategoryModal(false);
-    setSetsData([]);
-    setSubCategoryData([]);
   };
   const handleCategorySubmitClick = () => {
     const errObj = {
@@ -617,7 +615,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="brand"
-                    label="Brand"
+                    label="Brand*"
                     onInputChange={(e) => {
                       setMainFormData((prev) => {
                         return {
@@ -635,7 +633,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Short Description"
+                    legend="Short Description*"
                     placeholder="Enter short description"
                     onChange={(e) => {
                       setMainFormData((prev) => {
@@ -664,7 +662,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Long Description"
+                    legend="Long Description*"
                     value={mainFormData.long_description.text}
                     placeholder="Enter long description"
                     onChange={(e) => {
@@ -695,7 +693,7 @@ const ProductsLayout = ({
                   <SimpleDropdownComponent
                     list={categoryData}
                     id="category"
-                    label="Select Category"
+                    label="Select Category*"
                     size="small"
                     inputlabelshrink
                     error={errorObj.category !== ""}
@@ -709,6 +707,14 @@ const ProductsLayout = ({
                           setsValue: {},
                           subCategoryValue: {},
                         }));
+                      } else {
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          setsValue: {},
+                          subCategoryValue: {},
+                        }));
+                        setSubCategoryData([]);
+                        setSetsData([]);
                       }
                       setMainFormData((pre) => {
                         return {
@@ -722,19 +728,22 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
-                  <Typography
-                    className="h-6 mt-1 cursor-pointer color-blue"
-                    onClick={() => {
-                      setShowCategoryModal(true);
-                    }}
-                  >
-                    Edit sub-category <EditIcon className="ms-1 h-5" />
-                  </Typography>
+                  {mainFormData?.category &&
+                  Object.keys(mainFormData?.category).length ? (
+                    <Typography
+                      className="h-6 mt-1 cursor-pointer color-blue"
+                      onClick={() => {
+                        setShowCategoryModal(true);
+                      }}
+                    >
+                      Edit sub-category <EditIcon className="ms-1 h-5" />
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item md={12}>
                   <InputBox
                     id="commisionmode"
-                    label="Commision Mode"
+                    label="Commision Mode*"
                     value={mainFormData.commision_mode}
                     placeholder="Commission Mode"
                     inputlabelshrink
@@ -745,7 +754,7 @@ const ProductsLayout = ({
                   <MultiSelectComponent
                     list={tagValues}
                     id="tags"
-                    label="Tags"
+                    label="Tags*"
                     size="small"
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
@@ -775,7 +784,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="limit_per_order"
-                    label="Limits Per Order"
+                    label="Limits Per Order*"
                     onInputChange={handleInputChange}
                     value={mainFormData.limit_per_order}
                     inputlabelshrink
@@ -802,8 +811,8 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <Typography className="h-5 color-gray">
-                    Is It a Brand or Generic Product
+                  <Typography className="h-5 fw-bold">
+                    Is It a Brand or Generic Product?
                   </Typography>
                   <RadiobuttonComponent
                     label="Branded"
@@ -853,7 +862,7 @@ const ProductsLayout = ({
                     showIcon
                     isDisabled={mainFormData?.genericradio}
                   />
-                  <Typography className="h-5">
+                  <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
                   </Typography>
                 </Grid>
@@ -873,7 +882,7 @@ const ProductsLayout = ({
                         }));
                       }}
                     />
-                    <Typography className="h-6 color-gray ms-1">
+                    <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
                       India <span className="color-red">*</span>
                     </Typography>
@@ -949,19 +958,19 @@ const ProductsLayout = ({
                       genericradio: false,
                       b2bdocument: [],
                       b2bdocumentfile: [],
-                      setsValue: {},
-                      subCategoryValue: {},
+                      setsValue: null,
+                      subCategoryValue: null,
                     },
                     inventory: {
                       sku: "",
                       stockqty: "",
-                      stock_status: {},
-                      allow_backorders: {},
+                      stock_status: null,
+                      allow_backorders: null,
                       stock_qty: "",
                       back_Orders: "",
                       shipping_class: "",
                       product_title: "",
-                      business_processing_days: {},
+                      business_processing_days: null,
                       seo_title: [],
                       meta_description: "",
                       meta_keyword: [],
@@ -1183,11 +1192,15 @@ const ProductsLayout = ({
                   list={setsData}
                   size="small"
                   placeholder="Select Sets"
-                  label="Select Sets"
+                  label="Select Sets*"
                   inputlabelshrink
                   value={mainFormData.setsValue}
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "setsValue");
+                    if (!value) {
+                      handleDropdownChange({}, "subCategoryValue");
+                      setSubCategoryData([]);
+                    }
                   }}
                   error={modalErrObj.setsValue !== ""}
                   helperText={modalErrObj.setsValue}
@@ -1198,7 +1211,7 @@ const ProductsLayout = ({
                   list={subCategoryData}
                   size="small"
                   placeholder="Select Sub-Category"
-                  label="Select Sub-Category"
+                  label="Select Sub-Category*"
                   inputlabelshrink
                   value={mainFormData.subCategoryValue}
                   onDropdownSelect={(value) => {

@@ -40,7 +40,7 @@ const saveProduct = (payload) => {
 const saveMedia = async (payload) => {
   return axios
     .put(
-      `h${
+      `${
         process.env.DOMAIN
       }products/product-media?supplierId=${await getSession().then((res) => {
         return res.user.id;

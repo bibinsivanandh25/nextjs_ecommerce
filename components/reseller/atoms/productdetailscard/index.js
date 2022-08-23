@@ -12,6 +12,7 @@ import styled from "@emotion/styled";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import StarIcon from "@mui/icons-material/Star";
+import { motion } from "framer-motion";
 
 const ProductDetailsCard = ({
   products = [],
@@ -91,92 +92,100 @@ const ProductDetailsCard = ({
               getSelectedItem(ele);
             }}
           >
-            <Paper className="p-2 cursor-pointer" sx={{}}>
-              <Grid container spacing={2}>
-                <Grid item xs={showIcon ? 3 : 4} alignSelf="center">
-                  <Image
-                    src={ele.image}
-                    // height={"100%"}
-                    height={200}
-                    width={200}
-                    layout="responsive"
-                    className="cursor-pointer"
-                    onClick={() => {
-                      getSelectedItem(ele);
-                    }}
-                    // objectFit="contain"
-                    // style={{
-                    //   height: "100%",
-                    //   width: "100%",
-                    //   position: "relative",
-                    // }}
-                    alt=""
-                  />
-                </Grid>
-                <Grid item xs={showIcon ? 7 : 8} spacing={2}>
-                  <Tooltip title={ele.title} placement="top">
-                    <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
-                      {ele.title}
-                    </Typography>
-                  </Tooltip>
-                  <Typography className="cursor-pointer">
-                    <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
-                      {ele.rating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
-                    </span>
-                    <span className="text-secondary fs-12 mx-2">
-                      {`(${ele.ratingCount} Ratings)`}
-                    </span>
-                  </Typography>
-                  <Typography
-                    className="color-orange py-1 bg-light-orange1 rounded d-inline px-2 cursor-pointer"
-                    fontSize={12}
-                  >
-                    Free shipping
-                  </Typography>
-                  <Typography className="fw-bold fs-5 cursor-pointer">
-                    ₹{ele.price}
-                  </Typography>
-                </Grid>
-                {showIcon ? (
-                  <Grid
-                    className="d-flex flex-column justify-content-between align-items-end my-1"
-                    item
-                    xs={2}
-                  >
-                    <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
-                      <Favorite
-                        className="text-secondary h-4"
-                        onClick={() => setShowWishlistModal(true)}
-                      />
-                    </Grid>
-                    <Grid className="border rounded-circle cursor-pointer h-5 p-1">
-                      <ShareIcon className="text-secondary h-4" />
-                    </Grid>
-                    <Grid className="d-flex">
-                      {showMarginButton ? (
-                        <ButtonComponent
-                          muiProps="h-6 me-2 p-0"
-                          label="Set margin"
-                          size="small"
-                          variant="outlined"
-                          onBtnClick={() => {
-                            getSelectedItem(ele);
-                            setSelectedProduct(ele);
-                            setShowMarginModal(true);
-                          }}
-                        />
-                      ) : null}
-                      <ButtonComponent
-                        size="small"
-                        muiProps="h-6 "
-                        label="view"
-                        onBtnClick={() => getSelectedItem(ele)}
-                      />
-                    </Grid>
+            <motion.div
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.3 },
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Paper className="p-2 cursor-pointer" sx={{}}>
+                <Grid container spacing={2}>
+                  <Grid item xs={showIcon ? 3 : 4} alignSelf="center">
+                    <Image
+                      src={ele.image}
+                      // height={"100%"}
+                      height={200}
+                      width={200}
+                      layout="responsive"
+                      className="cursor-pointer"
+                      onClick={() => {
+                        getSelectedItem(ele);
+                      }}
+                      // objectFit="contain"
+                      // style={{
+                      //   height: "100%",
+                      //   width: "100%",
+                      //   position: "relative",
+                      // }}
+                      alt=""
+                    />
                   </Grid>
-                ) : null}
-              </Grid>
-            </Paper>
+                  <Grid item xs={showIcon ? 7 : 8} spacing={2}>
+                    <Tooltip title={ele.title} placement="top">
+                      <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
+                        {ele.title}
+                      </Typography>
+                    </Tooltip>
+                    <Typography className="cursor-pointer">
+                      <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
+                        {ele.rating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
+                      </span>
+                      <span className="text-secondary fs-12 mx-2">
+                        {`(${ele.ratingCount} Ratings)`}
+                      </span>
+                    </Typography>
+                    <Typography
+                      className="color-orange py-1 bg-light-orange1 rounded d-inline px-2 cursor-pointer"
+                      fontSize={12}
+                    >
+                      Free shipping
+                    </Typography>
+                    <Typography className="fw-bold fs-5 cursor-pointer">
+                      ₹{ele.price}
+                    </Typography>
+                  </Grid>
+                  {showIcon ? (
+                    <Grid
+                      className="d-flex flex-column justify-content-between align-items-end my-1"
+                      item
+                      xs={2}
+                    >
+                      <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
+                        <Favorite
+                          className="text-secondary h-4"
+                          onClick={() => setShowWishlistModal(true)}
+                        />
+                      </Grid>
+                      <Grid className="border rounded-circle cursor-pointer h-5 p-1">
+                        <ShareIcon className="text-secondary h-4" />
+                      </Grid>
+                      <Grid className="d-flex">
+                        {showMarginButton ? (
+                          <ButtonComponent
+                            muiProps="h-6 me-2 p-0"
+                            label="Set margin"
+                            size="small"
+                            variant="outlined"
+                            onBtnClick={() => {
+                              getSelectedItem(ele);
+                              setSelectedProduct(ele);
+                              setShowMarginModal(true);
+                            }}
+                          />
+                        ) : null}
+                        <ButtonComponent
+                          size="small"
+                          muiProps="h-6 "
+                          label="view"
+                          onBtnClick={() => getSelectedItem(ele)}
+                        />
+                      </Grid>
+                    </Grid>
+                  ) : null}
+                </Grid>
+              </Paper>
+            </motion.div>
           </Grid>
         );
       });

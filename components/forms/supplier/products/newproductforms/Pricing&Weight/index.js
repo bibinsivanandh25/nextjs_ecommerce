@@ -188,16 +188,23 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
 
   const handleInputChange = (e) => {
     setPricingFormData((prev) => {
-      return { ...prev, [e.target.id]: e.target.value };
+      return {
+        ...prev,
+        [e.target.id]:
+          e.target.value === "" ? e.target.value : Math.abs(e.target.value),
+      };
     });
   };
   return (
-    <Paper className="w-100 p-3 ps-4 mxh-75vh overflow-y-scroll">
+    <Paper
+      className="w-100 p-3 ps-4  overflow-y-scroll"
+      sx={{ maxHeight: "68vh !important" }}
+    >
       <Grid container className="w-100" spacing={2}>
         <Grid item md={6}>
           <InputBox
             id="sale_price"
-            label="Sale Price"
+            label="Sale Price*"
             onInputChange={handleInputChange}
             value={pricingFormData.sale_price}
             inputlabelshrink
@@ -210,7 +217,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={6}>
           <InputBox
             id="mrp"
-            label="MRP"
+            label="MRP*"
             onInputChange={handleInputChange}
             value={pricingFormData.mrp}
             inputlabelshrink
@@ -223,7 +230,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <Box className=" d-flex align-items-center mb-2">
             <CheckBoxComponent
-              label="Provide Free Delivery & Return To Your Customer"
+              label=""
               checkBoxClick={() => {
                 setFreeDeliveryCheckbox(!freeDeliveryCheckbox);
               }}
@@ -232,13 +239,13 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            {/* <Typography className="h-5">
+            <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
               Provide Free Delivery & Return To Your Customer
-            </Typography> */}
+            </Typography>
           </Box>
           <InputBox
             id="sale_price_logistics"
-            label="Sale Price With Logistics Charges"
+            label="Sale Price With Logistics Charges*"
             placeholder="Sale Price With Logistics Charges"
             onInputChange={handleInputChange}
             value={pricingFormData.sale_price_logistics}
@@ -251,7 +258,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={6}>
           <div className="d-flex align-items-center justify-content-center">
             <CheckBoxComponent
-              label="Return Order Accepted"
+              label=""
               isChecked={pricingFormData.return_order_accepted}
               checkBoxClick={() => {
                 setPricingFormData((prev) => {
@@ -265,15 +272,15 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            {/* <Typography className="fs-12 mt-1">
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
               Return Order Accepted
-            </Typography> */}
+            </Typography>
           </div>
         </Grid>
         <Grid item md={6}>
           <div className="d-flex align-items-center justify-content-center">
             <CheckBoxComponent
-              label="Cash on Delivery"
+              label=""
               isChecked={pricingFormData.cash_on_accepted}
               checkBoxClick={() => {
                 setPricingFormData((prev) => {
@@ -287,7 +294,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            {/* <Typography className="fs-12 mt-1">Cash on Delivery</Typography> */}
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
+              Cash on Delivery
+            </Typography>
           </div>
         </Grid>
         {pricingFormData.return_order_accepted && (
@@ -295,7 +304,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <SimpleDropdownComponent
               list={returnOrderData}
               id="returnorder"
-              label="Return Period"
+              label="Return Period*"
               size="small"
               value={pricingFormData.returnorder}
               onDropdownSelect={(value) => {
@@ -378,7 +387,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="product_weight"
-            label="Product Weight(inclusive of package)"
+            label="Product Weight(inclusive of package)*"
             onInputChange={handleInputChange}
             value={pricingFormData.product_weight}
             inputlabelshrink
@@ -391,7 +400,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="length"
-            label="Length(inclusive of package)"
+            label="Length(inclusive of packages)*"
             onInputChange={handleInputChange}
             value={pricingFormData.length}
             inputlabelshrink
@@ -404,7 +413,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="height"
-            label="Height(inclusive of package)"
+            label="Height(inclusive of package)*"
             onInputChange={handleInputChange}
             value={pricingFormData.height}
             inputlabelshrink
@@ -417,7 +426,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="width"
-            label="Width(inclusive of package)"
+            label="Width(inclusive of package)*"
             onInputChange={handleInputChange}
             value={pricingFormData.width}
             inputlabelshrink
@@ -448,7 +457,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item xs={12}>
               <InputBox
                 id="Zone_A"
-                label="Zone A"
+                label="Zone A*"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -463,7 +472,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item xs={12}>
               <InputBox
                 id="Zone_B"
-                label="Zone B"
+                label="Zone B*"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -478,7 +487,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item xs={12}>
               <InputBox
                 id="Zone_c"
-                label="Zone C"
+                label="Zone C*"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -493,7 +502,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item xs={12}>
               <InputBox
                 id="Zone_D"
-                label="Zone D"
+                label="Zone D*"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -508,7 +517,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item xs={12}>
               <InputBox
                 id="Zone_E"
-                label="Zone E"
+                label="Zone E*"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
