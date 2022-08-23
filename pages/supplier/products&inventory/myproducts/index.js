@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
@@ -20,12 +21,14 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(null);
   const [showMenu, setShowMenu] = useState(null);
   const [selected, setSelected] = useState([]);
   const [showAddFlagModal, setShowAddFlagModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [tabList, setTabList] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [search, setsearch] = useState("");
   const columns = [
     {
       label: "Image",
@@ -45,6 +48,7 @@ const MyProducts = () => {
       align: "center",
       data_align: "center",
       label: "Product ID",
+      isFilter: true,
       id: "col3",
       minWidth: 150,
     },
@@ -59,6 +63,7 @@ const MyProducts = () => {
     {
       align: "center",
       data_align: "center",
+      isFilter: true,
       label: "SKU",
       id: "col5",
       minWidth: 150,
@@ -74,15 +79,15 @@ const MyProducts = () => {
       align: "center",
       data_align: "center",
       label: "Listing Price",
-      isFilter: false,
+      isFilter: true,
       id: "col7",
     },
     {
       align: "center",
       data_align: "center",
       label: "MRP Price",
+      isFilter: true,
       id: "col8",
-      isFilter: false,
     },
     {
       align: "center",
@@ -185,20 +190,50 @@ const MyProducts = () => {
     }
     return null;
   };
+  const filterList = [
+    { label: "All", id: "0", value: "ALL" },
+    { label: "Product Type", id: "0", value: "PRODUCT_TYPE" },
+    { label: "Product Name", id: "0", value: "PRODUCT_NAME" },
+    { label: "SKU", id: "0", value: "SKUID" },
+    { label: "MRP", id: "0", value: "MRP" },
+    { label: "Sale Price", id: "0", value: "SALE_PRICE" },
+    { label: "Sub Category Name", id: "0", value: "SUB_CATEGORY_NAME" },
+    { label: "Brand", id: "0", value: "BRAND" },
+    { label: "Commission Mode", id: "0", value: "COMMISSION_MODE" },
+  ];
 
-  const getTableData = async () => {
+  const getTableData = async (
+    searchText = "",
+    filterText = "ALL",
+    page = pageNumber
+  ) => {
     const status = getStatus();
-    const { data, err } = await getTabledata(status, id);
+    if (search !== searchText.toUpperCase()) {
+      setsearch(searchText.toUpperCase());
+      page = 0;
+    }
+    const { data, err } = await getTabledata(
+      status,
+      id,
+      page,
+      searchText,
+      filterText.toUpperCase() || "ALL"
+    );
     if (data) {
-      setTableRows(mapRowsToTable(data));
+      if (page === 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        setpageNumber((pre) => pre + 1);
+      }
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
   };
-
   useEffect(() => {
-    getTableData();
-  }, [value]);
+    setValue(0);
+  }, []);
 
   const getTabList = async () => {
     const { data } = await getSupplierProductCountByStatus(id);
@@ -224,7 +259,12 @@ const MyProducts = () => {
   };
 
   useEffect(() => {
-    getTabList();
+    if (value !== null && !Number.isNaN(value)) {
+      getTableData("", "", 0);
+      getTabList();
+      setpageNumber(0);
+      setsearch("");
+    }
   }, [value]);
 
   return (
@@ -236,6 +276,7 @@ const MyProducts = () => {
       <Box p={2}>
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
+            filterList={filterList}
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"
@@ -245,6 +286,13 @@ const MyProducts = () => {
             // searchBarSizeMd={4}
             disableCustomButton={!selected.length}
             OnSelectionChange={(vals) => setSelected(vals)}
+            handlePageEnd={(searchText, filterText, page = pageNumber) => {
+              console.log("pageEnd", searchText);
+              getTableData(searchText, filterText, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
           <Menu
             id="basic-menu"
