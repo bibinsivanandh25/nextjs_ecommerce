@@ -339,7 +339,7 @@ const Login = () => {
                     <span className="fs-11 fw-bold mx-2">
                       Don&apos;t have an account ?
                     </span>
-                    <Link href="/auth/SUPPLIER/registration" passHref>
+                    <Link href="/auth/supplier/registration" passHref>
                       <span className="color-orange fw-bold fs-11 cursor-pointer">
                         Register
                       </span>

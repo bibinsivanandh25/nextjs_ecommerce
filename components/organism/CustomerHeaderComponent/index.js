@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+import { assetsJson } from "public/assets";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -130,7 +131,7 @@ const Header = () => {
             Select Your Address
           </p>
         </div>
-        <div>MrMrsCart Logo</div>
+        <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
         <div className="d-flex align-items-center">
           <div
             className="px-4"
