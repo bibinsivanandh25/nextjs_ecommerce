@@ -627,9 +627,9 @@ export default function TableComponent({
                     // className="bg-orange"
                     // sx={{ textTransform: "none" }}
                     // fullWidth
-                    muiProps="p-2"
+                    muiProps="p-2 color-white"
                     disabled={disableCustomButton}
-                    bgColor={disableCustomButton ? "bg-secondary" : "bg-orange"}
+                    bgColor={disableCustomButton ? "bg-gray" : "bg-orange"}
                     onBtnClick={onCustomButtonClick}
                     label={customButtonLabel}
                   />
