@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps, router }) {
     <>
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap"
+          href="http://fonts.cdnfonts.com/css/segoe-ui-4"
           rel="stylesheet"
         />
       </Head>
