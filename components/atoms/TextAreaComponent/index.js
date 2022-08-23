@@ -20,7 +20,7 @@ const TextAreaComponent = ({
   return (
     <div className={`${widthClassName}`}>
       <div
-        className={`d-flex flex-row-reverse py-2 px-1 rounded-top ${
+        className={`d-flex flex-row-reverse p-1 rounded-top ${
           styles.fieldset
         } ${error && "error-border"}`}
       >
