@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import UploadIcon from "@mui/icons-material/Upload";
 import { useRef, useState, useEffect } from "react";
 import Dropzone from "react-dropzone";
