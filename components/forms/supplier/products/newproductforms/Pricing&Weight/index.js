@@ -186,11 +186,18 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
 
   const handleInputChange = (e) => {
     setPricingFormData((prev) => {
-      return { ...prev, [e.target.id]: e.target.value };
+      return {
+        ...prev,
+        [e.target.id]:
+          e.target.value === "" ? e.target.value : Math.abs(e.target.value),
+      };
     });
   };
   return (
-    <Paper className="w-100 p-3 ps-4 mxh-75vh overflow-y-scroll">
+    <Paper
+      className="w-100 p-3 ps-4  overflow-y-scroll"
+      sx={{ maxHeight: "68vh !important" }}
+    >
       <Grid container className="w-100" spacing={2}>
         <Grid item md={6}>
           <InputBox
@@ -230,7 +237,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="h-5">
+            <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
               Provide Free Delivery & Return To Your Customer
             </Typography>
           </Box>
@@ -263,7 +270,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
               Return Order Accepted
             </Typography>
           </div>
@@ -285,7 +292,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">Cash on Delivery</Typography>
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
+              Cash on Delivery
+            </Typography>
           </div>
         </Grid>
         {pricingFormData.return_order_accepted && (
@@ -389,7 +398,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="length"
-            label="Length(inclusive of package)"
+            label="Length(inclusive of packages)"
             onInputChange={handleInputChange}
             value={pricingFormData.length}
             inputlabelshrink
