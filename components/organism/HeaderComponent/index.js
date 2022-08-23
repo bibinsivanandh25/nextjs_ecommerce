@@ -1,13 +1,13 @@
 import { Box, Grid } from "@mui/material";
 // import { Box } from "@mui/system";
 import Image from "next/image";
+import { assetsJson } from "public/assets";
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 // import { useEffect, useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useRouter } from "next/router";
 import ProfileComponent from "../../atoms/ProfileComponent";
-import logo from "../../../public/assets/favicon.png";
 import styles from "./HeaderComponent.module.css";
 
 const HeaderComponent = () => {
@@ -19,7 +19,7 @@ const HeaderComponent = () => {
     >
       <Grid container spacing={2}>
         <Grid item xs={9}>
-          <Image src={logo} alt="" width="100px" height="40px" />
+          <Image src={assetsJson.logo} alt="" width="120px" height="40px" />
         </Grid>
         <Grid item xs={3} className={styles.subcontainer}>
           {router.pathname.startsWith("/supplier") && (

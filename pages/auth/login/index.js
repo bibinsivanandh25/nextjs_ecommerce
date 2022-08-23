@@ -9,26 +9,25 @@ import {
   getSession,
   signIn,
 } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { assetsJson } from "public/assets";
 import {
-  Box,
+  // Box,
   Grid,
-  IconButton,
-  Menu,
-  MenuItem,
+  // IconButton,
+  // Menu,
+  // MenuItem,
   Paper,
   Typography,
 } from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+// import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Link from "next/link";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
-import logo from "../../../public/assets/favicon.png";
 import styles from "./Login.module.css";
 
 // const options = ["Supplier", "Reseller", "Customer"];
@@ -119,7 +118,7 @@ import styles from "./Login.module.css";
 // };
 
 const Login = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  // const [selectedIndex, setSelectedIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
     user: "",
@@ -128,12 +127,12 @@ const Login = () => {
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
   const route = useRouter();
 
-  useEffect(() => {
-    setFormValues({
-      user: "",
-      password: "",
-    });
-  }, [selectedIndex]);
+  // useEffect(() => {
+  //   setFormValues({
+  //     user: "",
+  //     password: "",
+  //   });
+  // }, [selectedIndex]);
 
   const validateCredentials = () => {
     let flag = false;
@@ -176,16 +175,16 @@ const Login = () => {
     return flag;
   };
 
-  const getBasePath = (role) => {
-    switch (role) {
-      case "Supplier":
-        return "supplier";
-      case "Reseller":
-        return "reseller";
-      default:
-        return "customer";
-    }
-  };
+  // const getBasePath = (role) => {
+  //   switch (role) {
+  //     case "Supplier":
+  //       return "supplier";
+  //     case "Reseller":
+  //       return "reseller";
+  //     default:
+  //       return "customer";
+  //   }
+  // };
 
   const handleSubmit = async () => {
     const flag = validateCredentials();
@@ -243,6 +242,7 @@ const Login = () => {
         });
     }
   };
+
   return (
     <div
       className={`d-flex justify-content-center align-items-center ${styles.container}`}
@@ -256,37 +256,12 @@ const Login = () => {
       /> */}
       <Paper elevation={24}>
         <div className="p-5 " style={{ width: "450px", height: "450px" }}>
-          <Image src={logo} style={{ width: "100%", height: "50px" }} alt="" />
+          <div className="d-flex justify-content-center">
+            <Image src={assetsJson.logo} alt="" width={300} height={120} />
+          </div>
           <Typography className="text-center fw-bold">
             A Multi Ecommerce Store
           </Typography>
-          {/* <div className="d-flex flex-column justify-content-center">
-            <InputBox
-              value={formValues.username}
-              label="user name"
-              onInputChange={(e) => {
-                setFormValues((prev) => ({
-                  ...prev,
-                  username: e.target.value,
-                }));
-              }}
-            />
-            <InputBox
-              value={formValues.password}
-              label="password"
-              onInputChange={(e) => {
-                setFormValues((prev) => ({
-                  ...prev,
-                  password: e.target.value,
-                }));
-              }}
-            />
-            <ButtonComponent
-              label="Submit"
-              onBtnClick={handleSubmit}
-              muiProps="w-30"
-            />
-          </div> */}
           <div className="mt-3">
             <Grid container spacing={2}>
               <Grid item sm={12}>
