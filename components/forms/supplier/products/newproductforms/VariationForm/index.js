@@ -146,7 +146,6 @@ const VariationForm = forwardRef(
     //     return dropdownCopy;
     //   });
     // }, [variationFormData]);
-    console.log(variationFormData, "suhil");
     const handleInputChange = (val, ele) => {
       const getData = () => {
         if (ele.type === "dropdown") {
@@ -177,7 +176,7 @@ const VariationForm = forwardRef(
           return (
             <Grid item md={12} container key={ele.id} alignItems="center">
               <Grid item lg={3} md={12} xs={12}>
-                <Typography fontSize={14}>{ele.label}</Typography>
+                <Typography fontSize={14}>{ele.label}*</Typography>
               </Grid>
               <Grid item lg={9} md={12} xs={12}>
                 {ele.type === "dropdown" && (

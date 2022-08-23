@@ -158,7 +158,7 @@ const ProductPoliciesForm = forwardRef(
               inputlabelshrink
               name="policyTabLabel"
               onInputChange={handleChange}
-              label="Policy Tab Label"
+              label="Policy Tab Label*"
               value={productPolicyFormData.policyTabLabel}
               error={Boolean(error.policyTabLabel)}
               helperText={error.policyTabLabel}
@@ -168,7 +168,7 @@ const ProductPoliciesForm = forwardRef(
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Shipping Policy"
+            legend="Shipping Policy*"
             placeholder="Enter Shipping Policy"
             onChange={(e) => {
               const { value } = e.target;
@@ -193,7 +193,7 @@ const ProductPoliciesForm = forwardRef(
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Refund Policy"
+            legend="Refund Policy*"
             placeholder="Enter Refund Policy"
             name="refundPolicy"
             onChange={(e) => {
@@ -218,7 +218,7 @@ const ProductPoliciesForm = forwardRef(
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Cancellation/Return/Exchange Policy"
+            legend="Cancellation/Return/Exchange Policy*"
             placeholder="Enter Cancellation/Return/Exchange Policy"
             onChange={(e) => {
               const { value } = e.target;
@@ -263,7 +263,7 @@ const ProductPoliciesForm = forwardRef(
             <Grid item md={12} className="mt-2">
               <SimpleDropdownComponent
                 list={warrantyData}
-                label="Warranty Period"
+                label="Warranty Period*"
                 placeholder="Warranty Period"
                 size="small"
                 onDropdownSelect={(value) => {

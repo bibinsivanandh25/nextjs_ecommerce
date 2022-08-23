@@ -213,7 +213,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
           <div className="w-70p">
             <InputBox
               id="stockqty"
-              label="Stock Qty"
+              label="Stock Qty*"
               onInputChange={handleInputChange}
               value={inventoryFormData.stockqty}
               placeholder="Stock Qty"
@@ -246,7 +246,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               inputlabelshrink
               list={stock_status}
               id="stockstatus"
-              label="Stock Status"
+              label="Stock Status*"
               size="small"
               // fullWidth={false}
               // className="w-70p"
@@ -269,7 +269,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
                   inputlabelshrink
                   list={allowback_orders}
                   id="Allow Backorders ?"
-                  label="Allow Backorders ?"
+                  label="Allow Backorders ?*"
                   size="small"
                   fullWidth={false}
                   value={inventoryFormData.allow_backorders}
@@ -288,7 +288,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
               <Grid item md={12}>
                 <InputBox
                   id="back_Orders"
-                  label="Back Orders"
+                  label="Back Orders*"
                   onInputChange={handleInputChange}
                   value={inventoryFormData.back_Orders}
                   placeholder="Back Orders"
@@ -309,7 +309,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             inputlabelshrink
             list={shipping_class}
             id="ShippingClass"
-            label="Shipping Class"
+            label="Shipping Class*"
             size="small"
             fullWidth={false}
             value={inventoryFormData.shipping_class}
@@ -324,7 +324,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="product_title"
-            label="Product Title"
+            label="Product Title*"
             onInputChange={handleInputChange}
             value={inventoryFormData.product_title}
             inputlabelshrink
@@ -338,7 +338,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             inputlabelshrink
             list={[...business_processing_days]}
             id="business_processing_days"
-            label="Business Processing Days"
+            label="Business Processing Days*"
             size="small"
             fullWidth={false}
             value={inventoryFormData.business_processing_days}
@@ -359,7 +359,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputFieldWithChip
             id="seo_title"
-            label="SEO Title"
+            label="SEO Title*"
             value={inventoryFormData.seo_title}
             inputlabelshrink
             handleChange={(_, val) => {
@@ -376,7 +376,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="meta_description"
-            label="Meta Description"
+            label="Meta Description*"
             onInputChange={handleInputChange}
             value={inventoryFormData.meta_description}
             inputlabelshrink
@@ -390,7 +390,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputFieldWithChip
             id="meta_keyword"
-            label="Meta Keywords"
+            label="Meta Keywords*"
             value={inventoryFormData.meta_keyword}
             inputlabelshrink
             handleChange={(_, val) => {
@@ -407,7 +407,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         <Grid item md={12}>
           <InputBox
             id="modalname"
-            label="Model Name"
+            label="Model Name*"
             onInputChange={handleInputChange}
             value={inventoryFormData.modalname}
             inputlabelshrink

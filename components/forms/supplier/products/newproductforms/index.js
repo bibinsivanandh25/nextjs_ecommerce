@@ -615,7 +615,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="brand"
-                    label="Brand"
+                    label="Brand*"
                     onInputChange={(e) => {
                       setMainFormData((prev) => {
                         return {
@@ -633,7 +633,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Short Description"
+                    legend="Short Description*"
                     placeholder="Enter short description"
                     onChange={(e) => {
                       setMainFormData((prev) => {
@@ -662,7 +662,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Long Description"
+                    legend="Long Description*"
                     value={mainFormData.long_description.text}
                     placeholder="Enter long description"
                     onChange={(e) => {
@@ -693,7 +693,7 @@ const ProductsLayout = ({
                   <SimpleDropdownComponent
                     list={categoryData}
                     id="category"
-                    label="Select Category"
+                    label="Select Category*"
                     size="small"
                     inputlabelshrink
                     error={errorObj.category !== ""}
@@ -743,7 +743,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="commisionmode"
-                    label="Commision Mode"
+                    label="Commision Mode*"
                     value={mainFormData.commision_mode}
                     placeholder="Commission Mode"
                     inputlabelshrink
@@ -754,7 +754,7 @@ const ProductsLayout = ({
                   <MultiSelectComponent
                     list={tagValues}
                     id="tags"
-                    label="Tags"
+                    label="Tags*"
                     size="small"
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
@@ -784,7 +784,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="limit_per_order"
-                    label="Limits Per Order"
+                    label="Limits Per Order*"
                     onInputChange={handleInputChange}
                     value={mainFormData.limit_per_order}
                     inputlabelshrink
@@ -1192,7 +1192,7 @@ const ProductsLayout = ({
                   list={setsData}
                   size="small"
                   placeholder="Select Sets"
-                  label="Select Sets"
+                  label="Select Sets*"
                   inputlabelshrink
                   value={mainFormData.setsValue}
                   onDropdownSelect={(value) => {
@@ -1211,7 +1211,7 @@ const ProductsLayout = ({
                   list={subCategoryData}
                   size="small"
                   placeholder="Select Sub-Category"
-                  label="Select Sub-Category"
+                  label="Select Sub-Category*"
                   inputlabelshrink
                   value={mainFormData.subCategoryValue}
                   onDropdownSelect={(value) => {
