@@ -338,7 +338,7 @@ const Login = () => {
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
                   labelColorWhite={{ color: "#fff" }}
-                  iconName={showPassword ? "visibleOff" : "visible"}
+                  iconName={showPassword ? "visible" : "visibleOff"}
                   onIconClick={() => {
                     setShowPassword(!showPassword);
                   }}
@@ -386,6 +386,7 @@ const Login = () => {
               <Grid item sm={12} container justifyContent="center">
                 <ButtonComponent
                   label="Know your Profit here"
+                  textColor="primary"
                   muiProps={styles.profitLink}
                   variant="undefined"
                 />

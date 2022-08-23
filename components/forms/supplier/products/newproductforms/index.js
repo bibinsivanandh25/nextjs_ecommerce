@@ -1132,6 +1132,7 @@ const ProductsLayout = ({
         ClearBtnText="Cancel"
         onCloseIconClick={() => {
           setOpenModal(false);
+          setTagInputError("");
         }}
         onClearBtnClick={() => {
           setOpenModal(false);
