@@ -86,7 +86,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
     }
   };
   return (
-    <Box className="p-2">
+    <Box className="p-2" sx={{ maxHeight: "80vh" }}>
       <Box className="fit-contant">
         <Typography
           className="h-5 color-orange cursor-pointer d-flex align-items-center"
@@ -98,13 +98,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
           Back
         </Typography>
       </Box>
-      <Grid
-        container
-        sx={{ height: "100%", minHeight: "80vh" }}
-        onClick={() => {
-          console.log("hellooo");
-        }}
-      >
+      <Grid container onClick={() => {}}>
         <Grid
           item
           sm={4}
@@ -114,7 +108,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
           sx={{
             borderRight: "1px solid lightgray",
             height: "100%",
-            minHeight: "80vh",
+            // minHeight: "80vh",
           }}
         >
           <Grid container item xs={10} spacing={2} pt={4}>
