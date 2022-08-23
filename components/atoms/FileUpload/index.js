@@ -6,7 +6,7 @@ import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getBase64 } from "services/utils/functionUtils";
-import { FcDocument } from "react-icons/fc";
+import { FcDocument, FcVideoFile } from "react-icons/fc";
 import ButtonComponent from "../ButtonComponent";
 import ModalComponent from "../ModalComponent";
 
@@ -135,6 +135,12 @@ const FileUploadModal = ({
                 <div className="me-2">
                   {ele.includes("image") ? (
                     <Image src={ele} width={60} height={60} alt="" />
+                  ) : ele.includes("video") ? (
+                    <FcVideoFile
+                      style={{
+                        fontSize: "65px",
+                      }}
+                    />
                   ) : (
                     <FcDocument
                       style={{
