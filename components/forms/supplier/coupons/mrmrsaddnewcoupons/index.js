@@ -92,7 +92,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
   };
 
   return (
-    <Paper sx={{ height: "100%", minHeight: "80vh" }}>
+    <Paper sx={{ minHeight: "80vh", py: 1 }}>
       <Box className="fit-content">
         <Typography
           className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
@@ -104,7 +104,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
           Back
         </Typography>
       </Box>
-      <Grid container sx={{ height: "100%", minHeight: "80vh" }}>
+      <Grid container sx={{ height: "100%" }}>
         <Grid
           item
           xs={4}
@@ -114,7 +114,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
           sx={{
             borderRight: "1px solid lightgray",
             height: "100%",
-            minHeight: "80vh",
+            minHeight: "73vh",
           }}
         >
           <Grid container item xs={10} spacing={2} pt={4}>

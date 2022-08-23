@@ -80,7 +80,7 @@ const Home = () => {
     if (!Object.keys(route.query).length) {
       route.push("/auth/customer");
     }
-  }, [route]);
+  }, [route.query]);
 
   const getCategories = async () => {
     const { data, err } = await getMainCategories();

@@ -40,6 +40,7 @@ const VerifyOTP = ({
         )
         .then(async (data) => {
           if (data) {
+            toastify(data.data.message, "success");
             await axios
               .post(`${process.env.DOMAIN}users/supplier/register-supplier`, {
                 ...payLoad,
@@ -54,7 +55,6 @@ const VerifyOTP = ({
                 toastify(errRes.response.data.message, "error");
                 setShowVerifyOTP(false);
               });
-            toastify(data.data.message, "success");
           }
           return null;
         })

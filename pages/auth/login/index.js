@@ -307,7 +307,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   helperText={errorObj.password}
                   error={errorObj.password !== ""}
-                  iconName={showPassword ? "visibleOff" : "visible"}
+                  iconName={showPassword ? "visible" : "visibleOff"}
                   onIconClick={() => {
                     setShowPassword(!showPassword);
                   }}
@@ -353,6 +353,7 @@ const Login = () => {
               >
                 <ButtonComponent
                   label="Know your Profit here"
+                  textColor="primary"
                   muiProps={styles.profitLink}
                   variant="undefined"
                 />
