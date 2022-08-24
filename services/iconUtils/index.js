@@ -45,6 +45,8 @@ import SendIcon from "@mui/icons-material/Send";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MessageIcon from "@mui/icons-material/Message";
 
 const CustomIcon = ({
   title = "",
@@ -108,6 +110,8 @@ const CustomIcon = ({
     arrowUpward: ArrowUpwardIcon,
     expandMore: ExpandMoreIcon,
     arrowDropIcon: ArrowDropDownIcon,
+    calendar: CalendarMonthIcon,
+    message: MessageIcon,
   };
 
   const [hover, setHover] = useState(false);
