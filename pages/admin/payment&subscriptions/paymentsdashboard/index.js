@@ -981,7 +981,7 @@ const PaymentDashboard = () => {
             columns={codOrderPaymentsPendingOrderColumns}
             tableRows={tableRowsForCodOrderPaymentsPendingOrder}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            // showPagination={false}
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
@@ -998,7 +998,7 @@ const PaymentDashboard = () => {
             columns={resellerSubscriptionsColumns}
             tableRows={tableRowsForResellerSubscriptions}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            // showPagination={false}
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}

@@ -164,7 +164,7 @@ const Updated = ({
               <TableComponent
                 columns={tableColumnsForProductsToUpdated}
                 tHeadBgColor="bg-light-gray"
-                showPagination={false}
+                // showPagination={false}
                 tableRows={tableRows}
                 // showSearchbar={false}
                 showDateFilterBtn

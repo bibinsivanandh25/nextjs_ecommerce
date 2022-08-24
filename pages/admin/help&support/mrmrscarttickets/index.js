@@ -153,7 +153,7 @@ const MrMrsCartTickets = () => {
             <TableComponent
               columns={tableColumns}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               tableRows={tableRows}
               table_heading="MrMrsCart Tickets"
             />

@@ -150,7 +150,7 @@ const PressRelease = () => {
               table_heading="Press Release"
               columns={tableColumns}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               tableRows={tableRows}
               showSearchbar={false}
               showDateFilterBtn

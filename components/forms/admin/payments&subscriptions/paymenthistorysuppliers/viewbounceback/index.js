@@ -163,7 +163,7 @@ const ViewBounceBack = ({ setshowViewBounceBack }) => {
               columns={tableColums}
               tableRows={tableRows}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               showSearchFilter={false}
               showSearchbar={false}
               showCheckbox={false}

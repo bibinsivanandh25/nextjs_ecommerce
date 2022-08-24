@@ -659,7 +659,7 @@ const DashBoard = () => {
               tableRows={[...categoryRows]}
               columns={[...categoryColumns]}
               showSearchbar={false}
-              showPagination={false}
+              // showPagination={false}
               showCheckbox={false}
             />
           </Paper>
@@ -674,7 +674,7 @@ const DashBoard = () => {
               tableRows={[...supplierRows]}
               columns={[...supplierColumns]}
               showSearchbar={false}
-              showPagination={false}
+              // showPagination={false}
               showCheckbox={false}
             />
           </Paper>
@@ -706,7 +706,7 @@ const DashBoard = () => {
               tableRows={[...ResellerRows]}
               columns={[...ResellerColumns]}
               showSearchbar={false}
-              showPagination={false}
+              // showPagination={false}
               showCheckbox={false}
             />
           </Paper>
