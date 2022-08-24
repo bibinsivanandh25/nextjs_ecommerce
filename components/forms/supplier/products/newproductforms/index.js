@@ -60,7 +60,7 @@ const ProductsLayout = ({
     limit_per_order: "",
     selectb2binvoice: [],
     tradeMarkCheck: false,
-    category: {},
+    category: null,
     brandradio: true,
     genericradio: false,
     b2bdocument: [],
@@ -84,7 +84,7 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
     selectb2binvoice: "",
-    category: null,
+    category: "",
   });
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
@@ -258,7 +258,10 @@ const ProductsLayout = ({
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
     }
-    if (mainFormData.category === null) {
+    if (
+      mainFormData.category === null ||
+      Object.keys(mainFormData.category)?.length === 0
+    ) {
       errObj.category = validateMessage.field_required;
       flag = true;
     }
@@ -578,7 +581,7 @@ const ProductsLayout = ({
                       handleCloseClick={() => {
                         setImageData((prev) => {
                           const temp = [...prev];
-                          temp.splice(index);
+                          temp.splice(index, 1);
                           return [...temp];
                         });
                       }}
@@ -614,8 +617,9 @@ const ProductsLayout = ({
               <Grid container spacing={2}>
                 <Grid item md={12}>
                   <InputBox
+                    required
                     id="brand"
-                    label="Brand*"
+                    label="Brand"
                     onInputChange={(e) => {
                       setMainFormData((prev) => {
                         return {
@@ -633,7 +637,8 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Short Description*"
+                    required
+                    legend="Short Description"
                     placeholder="Enter short description"
                     onChange={(e) => {
                       setMainFormData((prev) => {
@@ -662,7 +667,8 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
-                    legend="Long Description*"
+                    required
+                    legend="Long Description"
                     value={mainFormData.long_description.text}
                     placeholder="Enter long description"
                     onChange={(e) => {
@@ -693,7 +699,8 @@ const ProductsLayout = ({
                   <SimpleDropdownComponent
                     list={categoryData}
                     id="category"
-                    label="Select Category*"
+                    label="Select Category"
+                    required
                     size="small"
                     inputlabelshrink
                     error={errorObj.category !== ""}
@@ -743,7 +750,7 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="commisionmode"
-                    label="Commision Mode*"
+                    label="Commision Mode"
                     value={mainFormData.commision_mode}
                     placeholder="Commission Mode"
                     inputlabelshrink
@@ -754,7 +761,8 @@ const ProductsLayout = ({
                   <MultiSelectComponent
                     list={tagValues}
                     id="tags"
-                    label="Tags*"
+                    label="Tags"
+                    required
                     size="small"
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
@@ -784,7 +792,8 @@ const ProductsLayout = ({
                 <Grid item md={12}>
                   <InputBox
                     id="limit_per_order"
-                    label="Limits Per Order*"
+                    label="Limits Per Order"
+                    required
                     onInputChange={handleInputChange}
                     value={mainFormData.limit_per_order}
                     inputlabelshrink
@@ -901,7 +910,7 @@ const ProductsLayout = ({
                         item
                         key={index}
                         md={12}
-                        className={`text-center py-1 rounded my-1 fs-14 ${
+                        className={`text-center fw-bold py-1 rounded my-1 fs-14 ${
                           activeTab === index
                             ? "bg-orange color-white"
                             : "bg-light-gray"
@@ -953,7 +962,7 @@ const ProductsLayout = ({
                       limit_per_order: "",
                       selectb2binvoice: [],
                       tradeMarkCheck: false,
-                      category: {},
+                      category: null,
                       brandradio: true,
                       genericradio: false,
                       b2bdocument: [],
@@ -1051,7 +1060,7 @@ const ProductsLayout = ({
                     tags: "",
                     limit_per_order: "",
                     selectb2binvoice: "",
-                    category: null,
+                    category: "",
                   });
                 }}
                 muiProps="me-2"
@@ -1192,7 +1201,8 @@ const ProductsLayout = ({
                   list={setsData}
                   size="small"
                   placeholder="Select Sets"
-                  label="Select Sets*"
+                  label="Select Sets"
+                  required
                   inputlabelshrink
                   value={mainFormData.setsValue}
                   onDropdownSelect={(value) => {
@@ -1211,7 +1221,8 @@ const ProductsLayout = ({
                   list={subCategoryData}
                   size="small"
                   placeholder="Select Sub-Category"
-                  label="Select Sub-Category*"
+                  label="Select Sub-Category"
+                  required
                   inputlabelshrink
                   value={mainFormData.subCategoryValue}
                   onDropdownSelect={(value) => {

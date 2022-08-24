@@ -16,6 +16,7 @@ const TextAreaComponent = ({
   error = false,
   helperText = null,
   placeholder = "",
+  required = false,
 }) => {
   return (
     <div className={`${widthClassName}`}>
@@ -26,10 +27,16 @@ const TextAreaComponent = ({
       >
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label
-          className={`${styles.legend} fs-14 ${error && "error-text"}`}
-          style={{ color: "#6E6E6E", fontFamily: "inherit" }}
+          className={`${styles.legend} fs-12 ${error && "error-text"}`}
+          style={{
+            color: error ? "#dd5e5e" : "#444545",
+            fontFamily: "inherit",
+          }}
         >
-          {legend}
+          {legend}{" "}
+          {required && (
+            <span className="color-red fs-16 fw-bolder">* &nbsp;</span>
+          )}
         </label>
         <ButtonComponent
           label={btnLabel}

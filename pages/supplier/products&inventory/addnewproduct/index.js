@@ -29,7 +29,7 @@ const NewProducts = () => {
       limit_per_order: "",
       selectb2binvoice: null,
       tradeMarkCheck: false,
-      category: {},
+      category: null,
       brandradio: true,
       genericradio: false,
       b2bdocument: {},
@@ -49,6 +49,8 @@ const NewProducts = () => {
       seo_title: "",
       meta_description: "",
       meta_keyword: [],
+      modalname: "",
+      stockqty: "",
     },
     linked: {
       upSells: "",

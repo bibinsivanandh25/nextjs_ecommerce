@@ -176,7 +176,10 @@ const VariationForm = forwardRef(
           return (
             <Grid item md={12} container key={ele.id} alignItems="center">
               <Grid item lg={3} md={12} xs={12}>
-                <Typography fontSize={14}>{ele.label}*</Typography>
+                <Typography fontSize={14}>
+                  {ele.label}
+                  <span style={{ color: "red" }}>*</span>
+                </Typography>
               </Grid>
               <Grid item lg={9} md={12} xs={12}>
                 {ele.type === "dropdown" && (

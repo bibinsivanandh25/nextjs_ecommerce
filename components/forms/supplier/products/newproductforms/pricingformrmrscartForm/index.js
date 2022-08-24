@@ -119,6 +119,7 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       </Grid>
       <Grid item md={12}>
         <InputBox
+          required
           id="free_delivery"
           label="Sale Price With Free Delivery Returns"
           onInputChange={handleInputChange}
@@ -131,6 +132,7 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       </Grid>
       <Grid item md={12}>
         <InputBox
+          required
           id="paid_delivery"
           label="Sale Price With Out Free Delivery Returns"
           onInputChange={handleInputChange}
@@ -179,6 +181,7 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       {mrMrsCartFormData.return && (
         <Grid item xs={12}>
           <SimpleDropdownComponent
+            required
             list={returnOrderData}
             id="returnorder"
             label="Return Period"
