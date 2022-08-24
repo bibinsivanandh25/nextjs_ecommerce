@@ -35,17 +35,17 @@ const OtpLogIn = () => {
     formdata.append("userName", user);
     formdata.append("userType", "SUPPLIER");
     formdata.append("otp", otp);
-    const { data } = await axios
+    const data = await axios
       .post(
         `${process.env.DOMAIN}users/registration/verify-login-otp`,
         formdata,
         { headers: { "Content-Type": "multipart/form-data" } }
       )
       .catch((err) => {
-        console.log(err.response);
+        toastify(err?.response?.data?.message, "error");
       });
-    if (data) {
-      const { token } = data;
+    if (data?.data) {
+      const { token } = data.data;
       const decoded = JSON.parse(atob(token.split(".")[1].toString()));
       const userData = decoded.sub.split(",");
       const res = await signIn("credentials", {
@@ -119,7 +119,10 @@ const OtpLogIn = () => {
                   onBtnClick={handleSubmit}
                   muiProps="w-30p "
                 />
-                <span className="color-orange fs-12 mt-2 cursor-pointer">
+                <span
+                  className="color-orange fs-12 mt-2 cursor-pointer"
+                  onClick={sendOTPclick}
+                >
                   Resend OTP
                 </span>
                 <span

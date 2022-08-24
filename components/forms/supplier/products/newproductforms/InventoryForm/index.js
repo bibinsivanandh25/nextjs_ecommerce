@@ -79,12 +79,12 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       errObj.stock_status = validateMessage.field_required;
     }
     if (manageStock) {
-      if (inventoryFormData.stockqty === "") {
+      if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
         flag = true;
         errObj.stockqty = validateMessage.field_required;
       } else if (parseInt(inventoryFormData.stockqty, 10) < 1) {
         flag = true;
-        errObj.stockqty = "Stock Quantity must be greater then or equal to 1";
+        errObj.stockqty = "Stock Qty must be greater then or equal to 1";
       }
       if (inventoryFormData.allow_backorders === null) {
         flag = true;
@@ -239,17 +239,25 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
           <Grid item md={12} className="d-flex align-items-center">
             <div className="w-70p">
               <InputBox
-                required
                 id="stockqty"
-                label="Stock Qty"
-                onInputChange={handleInputChange}
+                label="Stock Qty *"
+                onInputChange={(e) => {
+                  setInventoryFormData((prev) => {
+                    return {
+                      ...prev,
+                      stockqty: e.target.value
+                        .replaceAll("-", "")
+                        .replaceAll("e", ""),
+                    };
+                  });
+                }}
                 value={inventoryFormData.stockqty}
                 placeholder="Stock Qty"
                 inputlabelshrink
                 fullWidth
-                // disabled
                 helperText={errorObj.stockqty}
                 error={errorObj.stockqty !== ""}
+                type="number"
               />
             </div>
           </Grid>

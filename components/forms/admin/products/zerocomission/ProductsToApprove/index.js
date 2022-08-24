@@ -214,7 +214,7 @@ const ProductsToApprove = () => {
                 <TableComponent
                   columns={columns}
                   tHeadBgColor="bg-light-gray"
-                  showPagination={false}
+                  showPagination
                   tableRows={tableRows}
                   // showSearchbar={false}
                   showDateFilterBtn
