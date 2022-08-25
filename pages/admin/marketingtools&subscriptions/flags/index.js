@@ -4,10 +4,10 @@ import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableWithSpan";
-import ViewModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/ViewModal";
-import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/AddNoteModal";
+import ViewModal from "@/forms/admin/marketingtools&subscriptions/flags/ViewModal";
+import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/flags/AddNoteModal";
 
-const DiscountSubscriptions = () => {
+const PriceTargetedSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
 
@@ -66,7 +66,6 @@ const DiscountSubscriptions = () => {
       data_align: "center",
       data_classname: "",
       rowSpan: 2,
-      position: "sticky",
     },
     {
       id: "col12",
@@ -189,9 +188,7 @@ const DiscountSubscriptions = () => {
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Discount Subscriptions
-          </Typography>
+          <Typography className="fw-bold color-orange">Flags</Typography>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
@@ -219,4 +216,4 @@ const DiscountSubscriptions = () => {
   );
 };
 
-export default DiscountSubscriptions;
+export default PriceTargetedSubscription;
