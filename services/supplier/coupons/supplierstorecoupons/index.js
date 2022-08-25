@@ -28,4 +28,17 @@ const CreateSupplierStoreCoupons = (payload) => {
     .catch((err) => ({ err }));
 };
 
-export { getAllStoreCouponsWithFilter, CreateSupplierStoreCoupons };
+const publishCoupons = (storeCouponId) => {
+  return serviceUtil
+    .put(`/users/supplier/store-coupon?storeCouponId=${storeCouponId}`)
+    .then((res) => {
+      const data = res && res;
+      return data;
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getAllStoreCouponsWithFilter,
+  CreateSupplierStoreCoupons,
+  publishCoupons,
+};

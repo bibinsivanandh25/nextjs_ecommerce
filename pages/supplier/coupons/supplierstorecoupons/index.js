@@ -7,7 +7,10 @@ import Image from "next/image";
 import toastify from "services/utils/toastUtils";
 import { useUserInfo } from "services/hooks";
 import CouponLogo from "public/assets/images/Coupon.png";
-import { getAllStoreCouponsWithFilter } from "services/supplier/coupons/supplierstorecoupons";
+import {
+  getAllStoreCouponsWithFilter,
+  publishCoupons,
+} from "services/supplier/coupons/supplierstorecoupons";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TableComponent from "@/atoms/TableComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -16,7 +19,7 @@ import SupplierAddCoupons from "@/forms/supplier/coupons/supplieraddcoupons";
 const SupplierStoreCoupons = () => {
   const selectTypeList = [
     {
-      id: "All",
+      id: "ALL",
       label: "ALL",
       value: "ALL",
     },
@@ -40,6 +43,7 @@ const SupplierStoreCoupons = () => {
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
+  const [storeCouponId, setStoreCouponId] = useState();
   const columns = [
     {
       label: "Coupon Code",
@@ -101,10 +105,10 @@ const SupplierStoreCoupons = () => {
     if (status?.toLowerCase() === "published") {
       return "text-success";
     }
-    if (status?.toLowerCase().includes("expire")) {
+    if (status?.toLowerCase().includes("expired")) {
       return "text-danger";
     }
-    if (status?.toLowerCase().includes("not")) {
+    if (status?.toLowerCase().includes("draft")) {
       return "text-primary";
     }
     return "";
@@ -123,16 +127,17 @@ const SupplierStoreCoupons = () => {
         col8: (
           <div
             className={`${getClassnames(row.couponStatus)} ${
-              row.couponStatus?.toLowerCase().includes("not") &&
+              row.couponStatus?.toLowerCase().includes("draft") &&
               "cursor-pointer"
             }`}
             onClick={() => {
-              if (row.couponStatus?.toLowerCase().includes("not")) {
+              if (row.couponStatus?.toLowerCase().includes("draft")) {
+                setStoreCouponId(row.storeCouponId);
                 setShowPublishModal(true);
               }
             }}
           >
-            {row.couponStatus}
+            {row.couponStatus ? row.couponStatus : "DRAFT"}
           </div>
         ),
         col9: (
@@ -155,8 +160,9 @@ const SupplierStoreCoupons = () => {
   const { id } = useUserInfo();
 
   const getTabledata = async (searchText, filterText) => {
-    const search = searchText || "";
-    const filter = filterText || "ALL";
+    const search = searchText || null;
+    const filter =
+      filterText === "All" ? filterText.toUpperCase() : filterText || "ALL";
     const { data, err } = await getAllStoreCouponsWithFilter(
       pageNumber,
       50,
@@ -174,28 +180,16 @@ const SupplierStoreCoupons = () => {
     getTabledata();
   }, []);
 
-  // const filterByType = React.useCallback(() => {
-  //   if (dropdownFilter && dropdownFilter.id) {
-  //     switch (dropdownFilter?.id) {
-  //       case "Fixed Product Discount":
-  //         setTableRows(
-  //           tableRows?.filter((row) => row.col2 === "Fixed Product Discount")
-  //         );
-  //         break;
-  //       case "Scratch Card":
-  //         setTableRows(tableRows?.filter((row) => row.col2 === "Scratch Card"));
-  //         break;
-  //       default:
-  //         setTableRows(mapRowsToTable(tableData));
-  //     }
-  //   } else {
-  //     setTableRows(mapRowsToTable(tableData));
-  //   }
-  // }, [dropdownFilter]);
-
-  // useEffect(() => {
-  //   filterByType();
-  // }, [dropdownFilter]);
+  const handlePublish = async () => {
+    const { data, err } = await publishCoupons(storeCouponId);
+    if (data) {
+      toastify(data.message, "success");
+      setShowPublishModal(false);
+      getTabledata();
+    } else if (err) {
+      toastify(err.response.data.message, "err");
+    }
+  };
 
   return (
     <Paper className="mnh-80vh overflow-auto hide-scrollbar">
@@ -260,7 +254,7 @@ const SupplierStoreCoupons = () => {
           ModalWidth={600}
           headerClassName="border-0"
           onCloseIconClick={() => setShowPublishModal(false)}
-          onSaveBtnClick={() => setShowPublishModal(false)}
+          onSaveBtnClick={() => handlePublish()}
           footerClassName="m-2 align-center"
         >
           <div className="d-flex flex-column justify-content-center align-items-center my-2">
