@@ -113,7 +113,11 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Do You Want To Sell With Us
         </Typography>
       </Grid>
@@ -156,7 +160,11 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Return Order Accepted
         </Typography>
       </Grid>
@@ -174,7 +182,11 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Cash on Delivery Available
         </Typography>
       </Grid>

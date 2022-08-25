@@ -259,7 +259,11 @@ const ProductPoliciesForm = forwardRef(
               showIcon
               varient="filled"
             />
-            <Typography component="span" className="h-5">
+            <Typography
+              component="span"
+              className="h-5"
+              sx={{ marginLeft: "-20px" }}
+            >
               Warranty Available
             </Typography>
           </Grid>

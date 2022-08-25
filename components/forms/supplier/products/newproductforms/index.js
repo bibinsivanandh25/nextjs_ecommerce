@@ -527,7 +527,7 @@ const ProductsLayout = ({
             10
           ),
           rtoAccepted: formData.pricing.return_order_accepted,
-          rtoDays: formData.pricing.returnorder.value,
+          rtoDays: formData.pricing.returnorder?.value,
           codAvailable: formData.pricing.cash_on_accepted,
           deliveryCharge: formData.pricing.delivery_charge,
           packageLength: parseFloat(formData.pricing.length),

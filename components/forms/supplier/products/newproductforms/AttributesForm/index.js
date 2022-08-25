@@ -16,7 +16,7 @@ import { useUserInfo } from "services/hooks";
 const AttributesForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     // const [attributesFormData, setAttributesFormData] = useState({});
-    const [Attributes, setAttributes] = useState([]);
+    // const [Attributes, setAttributes] = useState([]);
     const [selectedAttribute, setSelectedAttribute] = useState({});
     const [showAddAttributeModal, setShowAttributeModal] = useState(false);
     const [modalType, setModalType] = useState(null);
@@ -245,7 +245,7 @@ const AttributesForm = forwardRef(
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12} container>
+                {/* <Grid item xs={12} container>
                   <CheckBoxComponent
                     id={ele.attribute}
                     label="Visible on the product page"
@@ -259,8 +259,7 @@ const AttributesForm = forwardRef(
                       });
                       setAttributes([...arr]);
                     }}
-                  />
-                </Grid>
+                  /> */}
               </Grid>
             ) : null}
           </Grid>
