@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import ResellerSubscriptions from "@/forms/admin/marketingtools&subscriptions/ResellerSubscriptions";
-import SupplierSubscriptions from "@/forms/admin/marketingtools&subscriptions/SupplierSubscriptions";
+import ResellerSubscriptions from "@/forms/admin/marketingtools&subscriptions/settoolspricing/ResellerSubscriptions";
+import SupplierSubscriptions from "@/forms/admin/marketingtools&subscriptions/settoolspricing/SupplierSubscriptions";
 
 const SetToolsPricing = () => {
   const [form, setForm] = useState("ResellerSubscriptions");
