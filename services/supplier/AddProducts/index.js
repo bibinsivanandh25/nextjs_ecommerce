@@ -82,6 +82,18 @@ const getSubCategory = (payload) => {
     });
 };
 
+const saveMediaFile = async (id, payload) => {
+  return serviceUtil
+    .put(`products/supplier/product-media/${id}`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data: data.data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -89,4 +101,5 @@ export {
   createAttributes,
   saveProduct,
   saveMedia,
+  saveMediaFile,
 };
