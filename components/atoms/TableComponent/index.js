@@ -477,9 +477,7 @@ export default function TableComponent({
                   style={{ width: "35px", height: "38px" }}
                   className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
                   onClick={() => {
-                    if (searchText !== "") {
-                      handlePageEnd(searchText, searchFilter?.value);
-                    }
+                    handlePageEnd(searchText, searchFilter?.value);
                   }}
                 >
                   <SearchOutlinedIcon style={{ color: "white" }} />
@@ -553,12 +551,12 @@ export default function TableComponent({
                 // label="Search Filter"
                 value={searchFilter}
                 onDropdownSelect={(value) => {
-                  setSearchFilter(value);
-                  // setSearchFilter(
-                  //   value === null
-                  //     ? { label: "All", id: 0, value: "All" }
-                  //     : { ...value }
-                  // );
+                  // setSearchFilter(value);
+                  setSearchFilter(
+                    value === null
+                      ? { label: "ALL", id: 0, value: "ALL" }
+                      : { ...value }
+                  );
                 }}
                 placeholder={customDropDownPlaceholder}
               />
@@ -599,9 +597,9 @@ export default function TableComponent({
                     style={{ width: "40px", height: "38px" }}
                     className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
                     onClick={() => {
-                      if (searchText !== "") {
-                        handlePageEnd(searchText, searchFilter?.value);
-                      }
+                      // if (searchText !== "") {
+                      handlePageEnd(searchText, searchFilter?.value);
+                      // }
                     }}
                   >
                     <SearchOutlinedIcon style={{ color: "white" }} />

@@ -4,7 +4,10 @@ import { Grid, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Share } from "@mui/icons-material";
 import Image from "next/image";
+import toastify from "services/utils/toastUtils";
+import { useUserInfo } from "services/hooks";
 import CouponLogo from "public/assets/images/Coupon.png";
+import { getAllStoreCouponsWithFilter } from "services/supplier/coupons/supplierstorecoupons";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TableComponent from "@/atoms/TableComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -14,22 +17,29 @@ const SupplierStoreCoupons = () => {
   const selectTypeList = [
     {
       id: "All",
-      label: "All",
+      label: "ALL",
+      value: "ALL",
     },
     {
-      id: "Scratch Card",
-      label: "Scratch Card",
+      id: "discountType",
+      label: "Discount Type",
+      value: "DISCOUNT_TYPE",
     },
     {
-      id: "Fixed Product Discount",
-      label: "Fixed Product Discount",
+      id: "status",
+      label: "Status",
+      value: "STATUS",
+    },
+    {
+      id: "couponCode",
+      label: "Coupon Code",
+      value: "STORE_COUPON_CODE",
     },
   ];
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [showPublishModal, setShowPublishModal] = useState(false);
-  const [dropdownFilter, setDropdownFilter] = useState({});
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Coupon Code",
@@ -50,7 +60,7 @@ const SupplierStoreCoupons = () => {
       data_align: "center",
     },
     {
-      label: "Usage Limit",
+      label: "Coupon Usage Limit",
       id: "col4",
       align: "center",
       data_align: "center",
@@ -86,49 +96,15 @@ const SupplierStoreCoupons = () => {
       data_align: "center",
     },
   ];
-  useEffect(() => {
-    const rows = [
-      {
-        couponcode: "#123458",
-        discounttype: "Scratch Card",
-        expiredate: "12-01-2022, 04:45 AM",
-        amount: "4",
-        minimumpurchaseamount: "--",
-        maxdiscount: "--",
-        status: "Expired",
-        usagelimit: null,
-      },
-      {
-        couponcode: "#123456",
-        discounttype: "Scratch Card",
-        expiredate: "12-01-2022, 07:09 AM",
-        amount: "4",
-        minimumpurchaseamount: "--",
-        maxdiscount: "--",
-        status: "Published",
-        usagelimit: null,
-      },
-      {
-        couponcode: "#123459",
-        discounttype: "Fixed Product Discount",
-        expiredate: "12-01-2023, 08:43 PM",
-        amount: "1",
-        minimumpurchaseamount: "--",
-        maxdiscount: "--",
-        status: "Not Published",
-        usagelimit: null,
-      },
-    ];
-    setTableData(rows);
-  }, []);
+
   const getClassnames = (status) => {
     if (status?.toLowerCase() === "published") {
       return "text-success";
     }
-    if (status.toLowerCase().includes("expire")) {
+    if (status?.toLowerCase().includes("expire")) {
       return "text-danger";
     }
-    if (status.toLowerCase().includes("not")) {
+    if (status?.toLowerCase().includes("not")) {
       return "text-primary";
     }
     return "";
@@ -137,25 +113,26 @@ const SupplierStoreCoupons = () => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row.couponcode,
-        col2: row.discounttype,
-        col3: `${row.amount}%`,
-        col4: row.usagelimit || "-",
-        col5: row.minimumpurchaseamount,
-        col6: row.maxdiscount,
-        col7: row.expiredate,
+        col1: row.storeCouponCode,
+        col2: row.discountType,
+        col3: `${row.couponAmount}%`,
+        col4: row.couponUsageLimit,
+        col5: row.minimumOrderValue,
+        col6: row.maximumDiscountValue,
+        col7: row.expirationDate,
         col8: (
           <div
-            className={`${getClassnames(row.status)} ${
-              row.status.toLowerCase().includes("not") && "cursor-pointer"
+            className={`${getClassnames(row.couponStatus)} ${
+              row.couponStatus?.toLowerCase().includes("not") &&
+              "cursor-pointer"
             }`}
             onClick={() => {
-              if (row.status.toLowerCase().includes("not")) {
+              if (row.couponStatus?.toLowerCase().includes("not")) {
                 setShowPublishModal(true);
               }
             }}
           >
-            {row.status}
+            {row.couponStatus}
           </div>
         ),
         col9: (
@@ -174,31 +151,52 @@ const SupplierStoreCoupons = () => {
     });
     return result;
   };
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
-  const filterByType = React.useCallback(() => {
-    if (dropdownFilter && dropdownFilter.id) {
-      switch (dropdownFilter?.id) {
-        case "Fixed Product Discount":
-          setTableRows(
-            tableRows?.filter((row) => row.col2 === "Fixed Product Discount")
-          );
-          break;
-        case "Scratch Card":
-          setTableRows(tableRows?.filter((row) => row.col2 === "Scratch Card"));
-          break;
-        default:
-          setTableRows(mapRowsToTable(tableData));
-      }
-    } else {
-      setTableRows(mapRowsToTable(tableData));
-    }
-  }, [dropdownFilter]);
 
+  const { id } = useUserInfo();
+
+  const getTabledata = async (searchText, filterText) => {
+    const search = searchText || "";
+    const filter = filterText || "ALL";
+    const { data, err } = await getAllStoreCouponsWithFilter(
+      pageNumber,
+      50,
+      id,
+      search,
+      filter
+    );
+    if (data) {
+      setTableRows(mapRowsToTable(data));
+    } else if (err) {
+      toastify(err.response.data.message);
+    }
+  };
   useEffect(() => {
-    filterByType();
-  }, [dropdownFilter]);
+    getTabledata();
+  }, []);
+
+  // const filterByType = React.useCallback(() => {
+  //   if (dropdownFilter && dropdownFilter.id) {
+  //     switch (dropdownFilter?.id) {
+  //       case "Fixed Product Discount":
+  //         setTableRows(
+  //           tableRows?.filter((row) => row.col2 === "Fixed Product Discount")
+  //         );
+  //         break;
+  //       case "Scratch Card":
+  //         setTableRows(tableRows?.filter((row) => row.col2 === "Scratch Card"));
+  //         break;
+  //       default:
+  //         setTableRows(mapRowsToTable(tableData));
+  //     }
+  //   } else {
+  //     setTableRows(mapRowsToTable(tableData));
+  //   }
+  // }, [dropdownFilter]);
+
+  // useEffect(() => {
+  //   filterByType();
+  // }, [dropdownFilter]);
+
   return (
     <Paper className="mnh-80vh overflow-auto hide-scrollbar">
       {!openAddModal ? (
@@ -232,20 +230,26 @@ const SupplierStoreCoupons = () => {
                 columns={columns}
                 tableRows={tableRows}
                 showCheckbox={false}
-                showSearchFilter={false}
-                showCustomDropdown
-                onCustomDropdownChange={(val) => setDropdownFilter(val)}
-                customDropdownValue={dropdownFilter}
-                customDropdownLabel="Select Type"
+                showSearchFilter
+                showCustomDropdown={false}
                 showSearchbar
-                customDropdownList={selectTypeList}
-                showCustomDropdownWithSearch
+                showCustomDropdownWithSearch={false}
+                filterList={[...selectTypeList]}
+                handlePageEnd={(searchText, filterText) => {
+                  getTabledata(searchText, filterText);
+                }}
+                handleRowsPerPageChange={() => {
+                  setpageNumber(0);
+                }}
               />
             </Paper>
           </Grid>
         </Grid>
       ) : (
-        <SupplierAddCoupons setOpenAddModal={setOpenAddModal} />
+        <SupplierAddCoupons
+          setOpenAddModal={setOpenAddModal}
+          getTabledata={getTabledata}
+        />
       )}
       {showPublishModal && (
         <ModalComponent
