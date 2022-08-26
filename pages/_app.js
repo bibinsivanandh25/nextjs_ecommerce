@@ -65,6 +65,9 @@ function MyApp({ Component, pageProps, router }) {
         <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
       <Provider store={store}>
+        <div id="loader" style={{ display: "none" }}>
+          <div className="spinner" />
+        </div>
         <motion.div
           animate={{ opacity: 1 }}
           initial={{ opacity: 0 }}

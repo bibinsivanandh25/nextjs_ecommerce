@@ -2,8 +2,8 @@
 /* eslint-disable react/self-closing-comp */
 import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
@@ -277,7 +277,7 @@ const MyOrders = ({
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [modalType, setModalType] = useState("");
   const getProducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         // console.log(data.data);

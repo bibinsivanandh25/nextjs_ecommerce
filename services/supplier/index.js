@@ -1,10 +1,8 @@
-import axios from "axios";
+import serviceUtil from "services/utils";
 
 const getSupplierDetailsById = (id) => {
-  return axios
-    .get(
-      `${process.env.DOMAIN}users/supplier-registration?id=${id}&status=APPROVED`
-    )
+  return serviceUtil
+    .get(`users/supplier-registration?id=${id}&status=APPROVED`)
     .then((res) => {
       const { data } = res.data;
       return { data };

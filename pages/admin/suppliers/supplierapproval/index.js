@@ -8,6 +8,7 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { inviteSupplier } from "services/admin/supplier/supplierapproval";
 import axios from "axios";
+import serviceUtil from "services/utils";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -112,8 +113,8 @@ const SupplierApproval = () => {
       supplierId: id,
       status: value,
     };
-    await axios
-      .put(`${process.env.DOMAIN}users/admin/supplier-approval`, payload, {
+    await serviceUtil
+      .put(`users/admin/supplier-approval`, payload, {
         headers: { userId: "ADM01234" },
       })
       .then((res) => {
@@ -188,10 +189,8 @@ const SupplierApproval = () => {
     setTableRows(rowDatas);
   };
   const getAllTableData = async () => {
-    await axios
-      .get(
-        `${process.env.DOMAIN}users/admin/supplier/supplier-status/0/5?status=INITIATED`
-      )
+    await serviceUtil
+      .get(`users/admin/supplier/supplier-status/0/5?status=INITIATED`)
       .then((res) => {
         setMasterData(res.data.data);
         getTableRows(res.data.data.supplierRegistrations);

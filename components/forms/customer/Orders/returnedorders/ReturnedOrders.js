@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 
@@ -8,7 +9,7 @@ const ReturnedOrders = () => {
   const [products, setProducts] = useState([]);
 
   const getProducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         // console.log(data.data);

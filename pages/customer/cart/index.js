@@ -3,6 +3,7 @@ import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
@@ -12,7 +13,7 @@ const Cart = () => {
   const [showChooseAddress, setShowChooseAddress] = useState(false);
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);

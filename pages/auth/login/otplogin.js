@@ -13,6 +13,7 @@ import validationRegex from "services/utils/regexUtils";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import serviceUtil from "services/utils";
 // import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
@@ -35,12 +36,10 @@ const OtpLogIn = () => {
     formdata.append("userName", user);
     formdata.append("userType", "SUPPLIER");
     formdata.append("otp", otp);
-    const data = await axios
-      .post(
-        `${process.env.DOMAIN}users/registration/verify-login-otp`,
-        formdata,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      )
+    const data = await serviceUtil
+      .post(`users/registration/verify-login-otp`, formdata, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .catch((err) => {
         toastify(err?.response?.data?.message, "error");
       });
@@ -89,12 +88,10 @@ const OtpLogIn = () => {
       const formdata = new FormData();
       formdata.append("userName", user);
       formdata.append("userType", "SUPPLIER");
-      await axios
-        .post(
-          `${process.env.DOMAIN}users/registration/forgot-password/send-otp`,
-          formdata,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        )
+      await serviceUtil
+        .post(`users/registration/forgot-password/send-otp`, formdata, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((data) => {
           if (data) {
             setSubmitted(true);

@@ -121,9 +121,9 @@ const Registration = () => {
         supplierReferralCode: "",
         wished: false,
       };
-      await axios
+      await serviceUtil
         .post(
-          `${process.env.DOMAIN}users/registration/send-otp?mobileNumber=${
+          `users/registration/send-otp?mobileNumber=${
             formValues.mobile
           }&userType=${route.pathname.split("/")[2].toUpperCase()}`
         )

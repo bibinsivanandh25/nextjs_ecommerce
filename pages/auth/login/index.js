@@ -28,6 +28,7 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
+import serviceUtil from "services/utils";
 import styles from "./Login.module.css";
 import { storeSupplierInfo } from "./utils";
 
@@ -211,11 +212,12 @@ const Login = () => {
         password: formValues.password,
         userType: "SUPPLIER",
       };
-      await axios
-        .post(`${process.env.DOMAIN}auth/authenticate`, payload)
+      await serviceUtil
+        .post(`auth/authenticate`, payload)
         .catch((err) => {
-          const errRes = err.response.data?.message;
-          toastify(errRes, "error");
+          // const errRes = err.response.data?.message;
+          // toastify(errRes, "error");
+          console.log(err);
         })
         .then(async (data) => {
           if (data) {

@@ -21,9 +21,6 @@ const Layout = ({ Component, pageProps }) => {
   return (
     <>
       <div className="mnh-100vh">
-        <div id="loader" style={{ display: "none" }}>
-          <div className="spinner" />
-        </div>
         <div className="h-100">
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||

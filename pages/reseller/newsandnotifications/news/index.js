@@ -4,6 +4,7 @@ import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 
 const ResellerNews = () => {
   const [newsData, setNewsData] = useState([]);
@@ -16,7 +17,7 @@ const ResellerNews = () => {
   const indexOfFirstRowData = indexOfLastRowData - 10;
 
   const getData = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setNewsData([...data.data]);

@@ -104,9 +104,9 @@ const InputBox = ({
         // eslint-disable-next-line react/jsx-no-duplicate-props
         inputProps={{
           ...textInputProps,
-          autocomplete: "off",
+          autoComplete: "off",
           form: {
-            autocomplete: "off",
+            autoComplete: "off",
           },
         }}
         required={required}

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getSession } from "next-auth/react";
 import serviceUtil from "services/utils";
 
@@ -38,7 +37,7 @@ const saveProduct = (payload) => {
 };
 
 const saveMedia = async (payload) => {
-  return axios
+  return serviceUtil
     .put(
       `${
         process.env.DOMAIN

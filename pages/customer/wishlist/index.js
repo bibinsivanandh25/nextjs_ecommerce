@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import serviceUtil from "services/utils";
 import ButtonTabsList from "@/atoms/ButtonTabsList";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
@@ -18,7 +19,7 @@ const WishList = () => {
   const [products, setProducts] = useState([]);
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);
