@@ -294,17 +294,17 @@ const ProductsLayout = ({
   const createPayload = async () => {
     const promiseAll = [];
     promiseAll.push(saveimg("productImage", formData.productImage));
-    if (formData.mainForm.short_description.media.length) {
+    if (formData.mainForm.short_description?.media?.length) {
       promiseAll.push(
         saveimg("short_description", formData.mainForm.short_description.media)
       );
     }
-    if (formData.mainForm.long_description.media.length) {
+    if (formData.mainForm.long_description?.media?.length) {
       promiseAll.push(
         saveimg("long_description", formData.mainForm.long_description.media)
       );
     }
-    if (formData.policy.cancellationPolicy.media.binaryStr.length) {
+    if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
       promiseAll.push(
         saveimg(
           "cancellationPolicy",
@@ -312,12 +312,12 @@ const ProductsLayout = ({
         )
       );
     }
-    if (formData.policy.refundPolicy.media.binaryStr.length) {
+    if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
       promiseAll.push(
         saveimg("refundPolicy", formData.policy.refundPolicy.media.binaryStr)
       );
     }
-    if (formData.policy.shippingPolicy.media.binaryStr.length) {
+    if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
       promiseAll.push(
         saveimg(
           "shippingPolicy",

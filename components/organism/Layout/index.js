@@ -1,5 +1,4 @@
 import React from "react";
-import Head from "next/head";
 // import { useSession } from "next-auth/react";
 // import { useUserInfo } from "services/hooks";
 import { Box } from "@mui/material";
@@ -21,11 +20,6 @@ const Layout = ({ Component, pageProps }) => {
   // }, [userInfo]);
   return (
     <>
-      <Head>
-        <title> MrMrsCart </title>
-        <meta name="description" content="MrMrsCart project" />
-        <link rel="icon" href="/assets/logo.jpeg" />
-      </Head>
       <div className="mnh-100vh">
         <div id="loader" style={{ display: "none" }}>
           <div className="spinner" />

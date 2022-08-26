@@ -60,6 +60,9 @@ function MyApp({ Component, pageProps, router }) {
           href="http://fonts.cdnfonts.com/css/segoe-ui-4"
           rel="stylesheet"
         />
+        <title> MrMrsCart </title>
+        <meta name="description" content="MrMrsCart project" />
+        <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
       <Provider store={store}>
         <motion.div
