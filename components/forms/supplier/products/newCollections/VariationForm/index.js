@@ -5,32 +5,23 @@ import ImageCard from "components/atoms/ImageCard";
 import ModalComponent from "components/atoms/ModalComponent";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { getBase64 } from "services/utils/functionUtils";
+import toastify from "services/utils/toastUtils";
 
 const VariationForm = forwardRef(
   ({ setShowGroupVariant = () => {}, setFormData = () => {} }, ref) => {
     const [showModal, setShowModal] = useState(false);
     const [imagedata, setImageData] = useState([]);
     const [showImageModal, setShowImageModal] = useState(false);
-    useImperativeHandle(ref, () => {
-      return {
-        handleSendFormData: () => {
-          return ["variation", {}];
-        },
-        validate: () => {
-          // write validation logic here
-          // return true if validation is success else false
-          return true;
-        },
-      };
-    });
-    const [multiPart, setMultiPart] = useState([]);
     const handleImageSubmit = () => {
-      setFormData((pre) => ({
-        ...pre,
-        variationImages: [...imagedata],
-        multiPartImage: multiPart,
-      }));
-      setShowGroupVariant(true);
+      if (imagedata.length) {
+        setFormData((pre) => ({
+          ...pre,
+          productImage: [...imagedata],
+        }));
+        setShowGroupVariant(true);
+      } else {
+        toastify("Please upload variation image", "error");
+      }
     };
     return (
       <Box className=" mxh-75vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
@@ -115,12 +106,7 @@ const VariationForm = forwardRef(
                   handleImageUpload={async (e) => {
                     if (e.target.files.length) {
                       const file = await getBase64(e.target.files[0]);
-                      setImageData((prev) => {
-                        return [...prev, file];
-                      });
-                      setMultiPart((prev) => {
-                        return [...prev, e.target.files[0]];
-                      });
+                      setImageData((pre) => [...pre, file]);
                     }
                   }}
                 />

@@ -40,6 +40,7 @@ const ProductsLayout = ({
   formsRef = null,
   showGroupVariant = false,
   schema = {},
+  type = "simple",
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
@@ -204,7 +205,8 @@ const ProductsLayout = ({
 
   const handleNextClick = () => {
     const { errObj, flag } = validateMainForm(formData.mainForm);
-    const productImgFlag = validateProductImg(formData.productImage);
+    const productImgFlag =
+      type === "simple" ? validateProductImg(formData.productImage) : false;
     const formFlag = formsRef.current.validate();
     if (flag || formFlag || productImgFlag) {
       setErrObj(errObj);
@@ -459,7 +461,7 @@ const ProductsLayout = ({
     <>
       {!showGroupVariant ? (
         <Box className="d-flex flex-grow-1 flex-row">
-          {!router.pathname.includes("addnewcollection") && (
+          {type === "simple" && (
             <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
               {formData.productImage.length > 0
                 ? formData.productImage.map((item, index) => (
