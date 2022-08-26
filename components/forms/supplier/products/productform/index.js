@@ -645,7 +645,7 @@ const ProductsLayout = ({
                   {formData?.mainForm?.category &&
                   Object.keys(formData?.mainForm?.category).length ? (
                     <Typography
-                      className="h-6 mt-1 cursor-pointer color-blue"
+                      className="h-6 mt-1 cursor-pointer color-blue d-inline"
                       onClick={() => {
                         setShowCategoryModal(true);
                       }}
