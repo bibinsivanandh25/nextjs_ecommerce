@@ -29,6 +29,7 @@ import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import styles from "./Login.module.css";
+import { storeSupplierInfo } from "./utils";
 
 // const options = ["Supplier", "Reseller", "Customer"];
 
@@ -233,6 +234,7 @@ const Login = () => {
               toastify("Invalid credentials", "error");
               return null;
             }
+            storeSupplierInfo(userData[0]);
             route.push(`/supplier/dashboard`);
           }
         })

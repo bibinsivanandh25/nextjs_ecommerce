@@ -13,7 +13,6 @@ import React from "react";
 import CustomIcon from "services/iconUtils";
 
 const CustomTableComponent = ({ columns = [], rows = [] }) => {
-  // console.log(jwt_decode())
   return (
     <TableContainer>
       <Table>
@@ -196,6 +195,7 @@ const Dashboard = () => {
       },
     ],
   };
+
   return (
     <Paper
       elevation={3}
