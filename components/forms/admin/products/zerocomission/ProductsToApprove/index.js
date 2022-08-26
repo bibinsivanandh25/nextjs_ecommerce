@@ -14,7 +14,7 @@ import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
-const ProductsToApprove = () => {
+const ProductsToApprove = ({ getCount = () => {} }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -270,6 +270,7 @@ const ProductsToApprove = () => {
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}

@@ -123,7 +123,7 @@ const ImagesInfoTable = ({
         <TableComponent
           columns={tableColumns}
           tHeadBgColor="bg-light-gray"
-          showPagination={false}
+          // showPagination={false}
           tableRows={tableRows}
           showSearchbar={false}
           // showSearchbar={false}

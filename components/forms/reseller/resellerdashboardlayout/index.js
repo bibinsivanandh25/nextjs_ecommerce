@@ -127,7 +127,7 @@ const ResellerDashboardLayout = ({
               columns={[...Detailcolumns]}
               tableRows={[...tableRows]}
               showCheckbox={false}
-              showPagination={false}
+              // showPagination={false}
             />
             <div className="mt-3 d-flex justify-content-center">
               <Button

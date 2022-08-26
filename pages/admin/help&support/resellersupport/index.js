@@ -160,7 +160,7 @@ const ResellerSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                showPagination={false}
+                // showPagination={false}
                 tableRows={tableRows}
                 table_heading="Reseller Support"
                 // showSearchbar={false}

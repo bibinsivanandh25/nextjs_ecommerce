@@ -31,7 +31,7 @@ const FixedMargin = () => {
     });
   };
 
-  const getTableData = async () => {
+  const getCount = async () => {
     const status = ["INITIATED", "APPROVED", "REJECTED"];
     const promiseArr = [];
     status.forEach((ele) => {
@@ -80,7 +80,6 @@ const FixedMargin = () => {
     });
 
     const temp = await Promise.all(promiseArr);
-    console.log(temp, "asd");
     const tabs = JSON.parse(JSON.stringify(tabList));
     temp.forEach((item) => {
       if (Object.keys(item)[0] === "INITIATED") {
@@ -117,12 +116,11 @@ const FixedMargin = () => {
         });
       }
     });
-    console.log(tabs, "tabs");
     setTabList([...tabs]);
   };
 
   useEffect(() => {
-    getTableData();
+    getCount();
     // setTabList([...temp]);
   }, []);
 
@@ -154,15 +152,15 @@ const FixedMargin = () => {
           }}
         >
           <Box className="px-1 pt-2">
-            {activeTab === 0 && <ProductsToApprove />}
+            {activeTab === 0 && <ProductsToApprove getCount={getCount} />}
 
-            {activeTab === 4 && <Rejected />}
+            {activeTab === 4 && <Rejected getCount={getCount} />}
 
-            {activeTab === 1 && <Queries />}
+            {activeTab === 1 && <Queries getCount={getCount} />}
 
-            {activeTab === 2 && <Active />}
+            {activeTab === 2 && <Active getCount={getCount} />}
 
-            {activeTab === 3 && <Updated />}
+            {activeTab === 3 && <Updated getCount={getCount} />}
           </Box>
         </TabsCard>
       </Box>
