@@ -173,7 +173,7 @@ const GroupVariationForm = forwardRef(
           if (ele !== "images") {
             if (ele === "inventory") {
               const tempInventory = { ...variationData[item].inventory };
-              if (!Object.keys(tempInventory.stock_status)).length {
+              if (!Object.keys(tempInventory.stock_status).length) {
                 flag = true;
                 errObj[item].inventory.stock_status =
                   validateMessage.field_required;
@@ -194,7 +194,7 @@ const GroupVariationForm = forwardRef(
                     validateMessage.field_required;
                 }
               }
-              if ( !Object.keys(tempInventory.business_processing_days).length) {
+              if (!Object.keys(tempInventory.business_processing_days).length) {
                 flag = true;
                 errObj[item].inventory.business_processing_days =
                   validateMessage.field_required;
