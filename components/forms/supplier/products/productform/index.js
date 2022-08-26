@@ -210,6 +210,10 @@ const ProductsLayout = ({
     const formFlag = formsRef.current.validate();
     if (flag || formFlag || productImgFlag) {
       setErrObj(errObj);
+      const element = document.getElementById(Object.keys(errObj)[0]);
+      if (element) {
+        element.scrollIntoView();
+      }
     } else {
       setErrObj({});
       setactiveTab((prev) => prev + 1);
@@ -534,6 +538,7 @@ const ProductsLayout = ({
                   <TextAreaComponent
                     legend="Short Description*"
                     placeholder="Enter short description"
+                    id="short_description"
                     onChange={(e) => {
                       setFormData((prev) => {
                         return {
@@ -567,6 +572,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
+                    id="long_description"
                     legend="Long Description*"
                     value={formData?.mainForm?.long_description.text}
                     placeholder="Enter long description"

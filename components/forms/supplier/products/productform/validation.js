@@ -6,11 +6,6 @@ import toastify from "services/utils/toastUtils";
 const validateMainForm = (mainFormData) => {
   const errObj = {};
   let flag = false;
-
-  if (!Object.keys(mainFormData.category).length) {
-    errObj.category = validateMessage.field_required;
-    flag = true;
-  }
   if (mainFormData.brand === null || mainFormData.brand === "") {
     errObj.brand = validateMessage.field_required;
     flag = true;
@@ -29,8 +24,21 @@ const validateMainForm = (mainFormData) => {
     errObj.long_description = { text: validateMessage.alpha_numeric_max_255 };
     flag = true;
   }
+  if (!Object.keys(mainFormData.category).length) {
+    errObj.category = validateMessage.field_required;
+    flag = true;
+  }
+
   if (!mainFormData.tags.length) {
     errObj.tags = validateMessage.field_required;
+    flag = true;
+  }
+
+  if (mainFormData.limit_per_order === "") {
+    errObj.limit_per_order = validateMessage.field_required;
+    flag = true;
+  } else if (parseInt(mainFormData.limit_per_order, 10) < 1) {
+    errObj.limit_per_order = "Limit per order should be greater then 0";
     flag = true;
   }
   if (!Object.keys(mainFormData.subCategoryValue).length) {
@@ -40,13 +48,6 @@ const validateMainForm = (mainFormData) => {
   if (!Object.keys(mainFormData.setsValue).length) {
     flag = true;
     toastify("Please Select Set", "error");
-  }
-  if (mainFormData.limit_per_order === "") {
-    errObj.limit_per_order = validateMessage.field_required;
-    flag = true;
-  } else if (parseInt(mainFormData.limit_per_order, 10) < 1) {
-    errObj.limit_per_order = "Limit per order should be greater then 0";
-    flag = true;
   }
 
   return { errObj, flag };
@@ -61,16 +62,16 @@ const validateProductImg = (productImage) => {
 const validateInventory = (inventoryFormData) => {
   const errObj = {};
   let flag = false;
-  if (!Object.keys(inventoryFormData.stock_status).length) {
-    flag = true;
-    errObj.stock_status = validateMessage.field_required;
-  }
   if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
     flag = true;
     errObj.stockqty = validateMessage.field_required;
   } else if (parseInt(inventoryFormData.stockqty, 10) < 1) {
     flag = true;
     errObj.stockqty = "Stock Qty must be greater then or equal to 1";
+  }
+  if (!Object.keys(inventoryFormData.stock_status).length) {
+    flag = true;
+    errObj.stock_status = validateMessage.field_required;
   }
   if (inventoryFormData.manageStock) {
     if (!Object.keys(inventoryFormData.allow_backorders).length) {
@@ -84,13 +85,22 @@ const validateInventory = (inventoryFormData) => {
       errObj.back_Orders = validateMessage.field_required;
     }
   }
-  if (!Object.keys(inventoryFormData.business_processing_days).length) {
-    flag = true;
-    errObj.business_processing_days = validateMessage.field_required;
-  }
+
   if (!Object.keys(inventoryFormData.shipping_class).length) {
     flag = true;
     errObj.shipping_class = validateMessage.field_required;
+  }
+  if (inventoryFormData.product_title === "") {
+    flag = true;
+    errObj.product_title = validateMessage.field_required;
+  } else if (inventoryFormData.product_title.length > 100) {
+    flag = true;
+    errObj.product_title = validateMessage.alpha_numeric_max_100;
+  }
+
+  if (!Object.keys(inventoryFormData.business_processing_days).length) {
+    flag = true;
+    errObj.business_processing_days = validateMessage.field_required;
   }
 
   if (!inventoryFormData.seo_title.length) {
@@ -115,13 +125,7 @@ const validateInventory = (inventoryFormData) => {
         errObj.meta_keyword = validateMessage.field_required;
       }
     });
-  if (inventoryFormData.product_title === "") {
-    flag = true;
-    errObj.product_title = validateMessage.field_required;
-  } else if (inventoryFormData.product_title.length > 100) {
-    flag = true;
-    errObj.product_title = validateMessage.alpha_numeric_max_100;
-  }
+
   if (inventoryFormData.modalname === "") {
     flag = true;
     errObj.modalname = validateMessage.field_required;

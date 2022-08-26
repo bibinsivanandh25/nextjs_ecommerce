@@ -188,6 +188,12 @@ const AttributesForm = forwardRef(
             attributeList
           );
           setFormErrorObj(errObj);
+          if (Object.keys(errObj).length) {
+            const element = document.getElementById(Object.keys(errObj)[0]);
+            if (element) {
+              element.scrollIntoView();
+            }
+          }
           return flag;
         },
         clearPage: () => {

@@ -110,6 +110,12 @@ const VariationForm = forwardRef(
         },
         validate: () => {
           const { errObj, flag } = validateVariation(dropdowns);
+          if (Object.keys(errObj).length) {
+            const element = document.getElementById(Object.keys(errObj)[0]);
+            if (element) {
+              element.scrollIntoView();
+            }
+          }
           setError(errObj);
           return flag;
         },

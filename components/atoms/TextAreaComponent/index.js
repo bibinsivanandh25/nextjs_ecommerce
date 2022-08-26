@@ -16,9 +16,10 @@ const TextAreaComponent = ({
   error = false,
   helperText = null,
   placeholder = "",
+  id = "",
 }) => {
   return (
-    <div className={`${widthClassName}`}>
+    <div className={`${widthClassName}`} id={id}>
       <div
         className={`d-flex flex-row-reverse p-1 rounded-top ${
           styles.fieldset

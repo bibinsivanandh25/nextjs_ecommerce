@@ -47,6 +47,12 @@ const ProductPoliciesForm = forwardRef(
       return {
         validate: () => {
           const { errObj, flag } = validatePolicy(formData.policy);
+          if (Object.keys(errObj).length) {
+            const element = document.getElementById(Object.keys(errObj)[0]);
+            if (element) {
+              element.scrollIntoView();
+            }
+          }
           setError(errObj);
           return flag;
         },

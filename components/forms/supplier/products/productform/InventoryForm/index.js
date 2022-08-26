@@ -21,6 +21,12 @@ const InventoryForm = forwardRef(
       return {
         validate: () => {
           const { errObj, flag } = validateInventory(formData.inventory);
+          if (Object.keys(errObj).length) {
+            const element = document.getElementById(Object.keys(errObj)[0]);
+            if (element) {
+              element.scrollIntoView();
+            }
+          }
           setErrorObj(errObj);
           return flag;
         },
