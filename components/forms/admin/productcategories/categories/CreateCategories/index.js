@@ -211,6 +211,7 @@ const CreateCategories = ({ setShowCreateCategories }) => {
                       setOpenSetDropDown(false);
                       setOpenSubCategoryDropDown(false);
                     }}
+                    inputLabelShrink={false}
                   />
                 </Box>
               )}
