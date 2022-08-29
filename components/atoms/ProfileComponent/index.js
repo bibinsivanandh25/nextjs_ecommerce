@@ -10,7 +10,7 @@ import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "store/userSlice";
+import { clearUser } from "features/userSlice";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
