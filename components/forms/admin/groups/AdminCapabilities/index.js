@@ -10,14 +10,14 @@ import InputFieldWithChip from "@/atoms/InputWithChip";
 
 let errObj = {
   groupName: false,
-  adminMangers: false,
+  adminManagers: false,
   description: false,
   users: false,
 };
 
 const AdminCapabilities = ({ setShowAdminCapabilities }) => {
   const [groupName, setGroupName] = useState("");
-  const [adminMangers, setAdminMangers] = useState({ label: "" });
+  const [adminManagers, setadminManagers] = useState(null);
   const [description, setDescription] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -95,15 +95,16 @@ const AdminCapabilities = ({ setShowAdminCapabilities }) => {
   const handleError = () => {
     errObj = {
       groupName: false,
-      adminMangers: false,
+      adminManagers: false,
       description: false,
       users: false,
     };
+    console.log(adminManagers);
     if (groupName === "") {
       errObj.groupName = true;
     }
-    if (adminMangers.label === "") {
-      errObj.adminMangers = true;
+    if (adminManagers === null) {
+      errObj.adminManagers = true;
     }
 
     if (description === "") {
@@ -146,7 +147,7 @@ const AdminCapabilities = ({ setShowAdminCapabilities }) => {
   const handleCancle = () => {
     errObj = {
       groupName: false,
-      adminMangers: false,
+      adminManagers: false,
       description: false,
       users: false,
     };
@@ -184,11 +185,11 @@ const AdminCapabilities = ({ setShowAdminCapabilities }) => {
             inputlabelshrink
             className="mt-4"
             onDropdownSelect={(val) => {
-              setAdminMangers(val);
+              setadminManagers(val);
             }}
-            value={adminMangers}
+            value={adminManagers}
             helperText={
-              error.adminMangers ? validateMessage.field_required : ""
+              error.adminManagers ? validateMessage.field_required : ""
             }
           />
           <Box className="position-relative mt-4">
