@@ -217,8 +217,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
+      setactiveTab((prev) => prev + 1);
     }
-    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
