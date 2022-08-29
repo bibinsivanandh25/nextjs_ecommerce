@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-use-before-define */
 /* eslint-disable consistent-return */
 // import { providers, signIn, getSession, csrfToken } from "next-auth/client";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -28,8 +30,10 @@ import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import serviceUtil from "services/utils";
+import { getSupplierDetailsById } from "services/supplier";
+import { store } from "store";
+import { storeUserInfo } from "store/userSlice";
 import styles from "./Login.module.css";
-import { storeSupplierInfo } from "./utils";
 
 // const options = ["Supplier", "Reseller", "Customer"];
 
@@ -187,6 +191,20 @@ const Login = () => {
   //   }
   // };
 
+  const storedatatoRedux = async (id) => {
+    const { data, err } = await getSupplierDetailsById(id);
+    if (!err) {
+      const supplierDetails = {
+        emailId: data.emailId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImageUrl: data.profileImageUrl,
+        supplierId: data.supplierId,
+      };
+      store.dispatch(storeUserInfo(supplierDetails));
+    }
+  };
+
   const handleSubmit = async () => {
     const flag = validateCredentials();
     // await axios.post("authenticate", {
@@ -220,7 +238,7 @@ const Login = () => {
         })
         .then(async (data) => {
           if (data) {
-            const { token } = data.data;
+            const { token } = data?.data;
             const decoded = JSON.parse(atob(token.split(".")[1].toString()));
             const userData = decoded.sub.split(",");
             const res = await signIn("credentials", {
@@ -235,7 +253,7 @@ const Login = () => {
               toastify("Invalid credentials", "error");
               return null;
             }
-            storeSupplierInfo(userData[0]);
+            await storedatatoRedux(userData[0]);
             route.push(`/supplier/dashboard`);
           }
         })
