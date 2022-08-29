@@ -32,7 +32,7 @@ import validationRegex from "services/utils/regexUtils";
 import serviceUtil from "services/utils";
 import { getSupplierDetailsById } from "services/supplier";
 import { store } from "store";
-import { storeUserInfo } from "store/userSlice";
+import { storeUserInfo } from "features/userSlice";
 import styles from "./Login.module.css";
 
 // const options = ["Supplier", "Reseller", "Customer"];

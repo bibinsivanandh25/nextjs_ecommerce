@@ -7,6 +7,8 @@ import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useRouter } from "next/router";
 import toastify from "services/utils/toastUtils";
 import { assetsJson } from "public/assets";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import styles from "./shopcode.module.css";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -37,11 +39,24 @@ const ShopCode = () => {
     return flag;
   };
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async () => {
     const flag = validateForm();
     if (!flag) {
       const { data, err } = await getStoreByStoreCode(formValues.shopCode);
       if (data) {
+        const userInfo = {
+          customerId: "",
+          firstName: "",
+          lastName: "",
+          supplierId: data?.supplierId,
+          supplierStoreLogo: data?.supplierStoreLogo,
+          supplierStoreName: data?.supplierStoreName,
+          storeCode: data?.supplierStoreCode,
+          storeThemes: data?.storeThemes,
+        };
+        dispatch(storeUserInfo(userInfo));
         route.push({
           pathname: `/customer/home`,
           query: {

@@ -120,7 +120,7 @@ const VariationForm = forwardRef(
           return flag;
         },
         clearPage: () => {
-          setDropdowns([]);
+          // setDropdowns([]);
           setError({});
         },
       };
@@ -152,7 +152,7 @@ const VariationForm = forwardRef(
                 {ele.type === "textarea" && (
                   <InputBox
                     id={ele.id}
-                    value={formData?.variation?.others}
+                    value={formData?.variation?.others ?? ""}
                     isMultiline
                     onInputChange={(e) =>
                       handleInputChange(e.target.value, ele)
