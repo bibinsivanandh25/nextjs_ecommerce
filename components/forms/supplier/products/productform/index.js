@@ -887,7 +887,7 @@ const ProductsLayout = ({
                     }
                   };
                   formsRef.current.clearPage();
-                  const key = getKey();
+                  const key = getKey(activeTab);
                   setFormData((pre) => ({
                     ...pre,
                     [key]: schema[key],
