@@ -6,7 +6,6 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TabsCard from "components/molecule/TabsCard";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
-import toastify from "services/utils/toastUtils";
 import ProductsToApprove from "@/forms/admin/products/zerocomission/ProductsToApprove";
 import Rejected from "@/forms/admin/products/zerocomission/Rejected";
 import Queries from "@/forms/admin/products/zerocomission/Queries";
@@ -25,11 +24,13 @@ const ZeroCommission = () => {
 
   const callApi = (type, payload) => {
     // eslint-disable-next-line consistent-return
-    const { data } = getAdminProductsByFilter(payload);
-    if (data) {
-      return { [`${type}`]: data };
-    }
-    return null;
+    return getAdminProductsByFilter(payload)
+      .then((res) => {
+        return { [`${type}`]: res.data };
+      })
+      .catch(() => {
+        return null;
+      });
   };
 
   const getCount = async () => {
@@ -145,7 +146,6 @@ const ZeroCommission = () => {
 
   return (
     <>
-      {" "}
       <Box>
         <TabsCard
           tabList={tabList}
