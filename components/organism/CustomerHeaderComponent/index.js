@@ -166,7 +166,7 @@ const Header = () => {
         >
           <Box className="pe-2">
             <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile/1661752626458-1_JMP_MEN_130522BMSTORE_08JPG.jpg"
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile/1661760335745-Balu_Logo.png "
               layout="fixed"
               height={30}
               width={80}

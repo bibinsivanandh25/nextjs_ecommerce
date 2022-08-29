@@ -16,7 +16,7 @@ const RegistrationForm = ({
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
-    const { data, err } = await serviceUtil.get(
+    const { data } = await serviceUtil.get(
       `products/main-category/drop-down-list`
     );
     if (data) {
@@ -29,8 +29,6 @@ const RegistrationForm = ({
         });
       });
       setMainCategories([...result]);
-    } else if (err) {
-      console.log(err);
     }
   };
   useEffect(() => {

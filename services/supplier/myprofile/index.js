@@ -10,6 +10,16 @@ const getSupplierDetailsBySupplierId = (supplierId) => {
     .catch((err) => ({ err }));
 };
 
+const getMainCategories = () => {
+  return serviceUtil
+    .get(`products/main-category/drop-down-list`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 // {
 //   "supplierId": "string",
 //   "businessName": "string",
@@ -37,4 +47,8 @@ const updateSupplierProfile = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-export { getSupplierDetailsBySupplierId, updateSupplierProfile };
+export {
+  getSupplierDetailsBySupplierId,
+  updateSupplierProfile,
+  getMainCategories,
+};
