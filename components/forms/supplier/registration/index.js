@@ -290,11 +290,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Amazon"
-                isChecked={formValues.site === "Amazon"}
+                isChecked={formValues.site.includes("Amazon")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Amazon",
+                    site: prev.site.includes("Amazon")
+                      ? prev.site.filter((item) => item !== "Amazon")
+                      : [...prev.site, "Amazon"],
                   }));
                 }}
                 size="medium"
@@ -303,11 +305,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Flipkart"
-                isChecked={formValues.site === "Flipkart"}
+                isChecked={formValues.site.includes("Flipkart")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Flipkart",
+                    site: prev.site.includes("Flipkart")
+                      ? prev.site.filter((item) => item !== "Flipkart")
+                      : [...prev.site, "Flipkart"],
                   }));
                 }}
                 size="medium"
@@ -316,11 +320,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Others"
-                isChecked={formValues.site === "Others"}
+                isChecked={formValues.site.includes("Others")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Others",
+                    site: prev.site.includes("Others")
+                      ? prev.site.filter((item) => item !== "Others")
+                      : [...prev.site, "Others"],
                   }));
                 }}
                 size="medium"

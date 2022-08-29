@@ -9,7 +9,8 @@ import {
 import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "store/userSlice";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
@@ -22,6 +23,7 @@ const ProfileComponent = () => {
     setAnchorEl(null);
   };
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   return (
     <div>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -85,6 +87,7 @@ const ProfileComponent = () => {
           onClick={() => {
             window.localStorage.setItem("moduleType", null);
             signOut({ callbackUrl: "/auth/login" });
+            dispatch(clearUser());
           }}
         >
           Logout

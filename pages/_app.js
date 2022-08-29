@@ -8,8 +8,9 @@ import "../styles/colors.scss";
 import "../styles/font.scss";
 import { motion } from "framer-motion";
 import Head from "next/head";
-import { store } from "store";
+import { store, persistor } from "store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/lib/integration/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Auth from "components/auth";
 import ToastComponent from "components/molecule/toastcomponent";
@@ -68,16 +69,18 @@ function MyApp({ Component, pageProps, router }) {
         <div id="loader" style={{ display: "none" }}>
           <div className="spinner" />
         </div>
-        <motion.div
-          animate={{ opacity: 1 }}
-          initial={{ opacity: 0 }}
-          transition={{
-            damping: 20,
-          }}
-          exit={{ opacity: 0 }}
-        >
-          <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
-        </motion.div>
+        <PersistGate loading={null} persistor={persistor}>
+          <motion.div
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            transition={{
+              damping: 20,
+            }}
+            exit={{ opacity: 0 }}
+          >
+            <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
+          </motion.div>
+        </PersistGate>
       </Provider>
     </>
   );
