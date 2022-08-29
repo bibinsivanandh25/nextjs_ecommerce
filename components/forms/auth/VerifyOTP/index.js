@@ -40,14 +40,14 @@ const VerifyOTP = ({
         )
         .then(async (data) => {
           if (data) {
-            toastify(data.data.message, "success");
+            // toastify(data.data.message, "success");
             await axios
               .post(`${process.env.DOMAIN}users/supplier/register-supplier`, {
                 ...payLoad,
               })
               .then((res) => {
                 if (res) {
-                  setShowVerifyOTP(false);
+                  // setShowVerifyOTP(false);
                   setShowModal(true);
                 }
               })

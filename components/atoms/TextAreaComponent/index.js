@@ -27,7 +27,7 @@ const TextAreaComponent = ({
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label
           className={`${styles.legend} fs-14 ${error && "error-text"}`}
-          style={{ color: "#6E6E6E", fontFamily: "inherit" }}
+          style={{ color: "#6E6E6E" }}
         >
           {legend}
         </label>

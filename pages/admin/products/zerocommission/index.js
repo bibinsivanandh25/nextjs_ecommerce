@@ -12,7 +12,7 @@ import Queries from "@/forms/admin/products/zerocomission/Queries";
 import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
 import Updated from "@/forms/admin/products/zerocomission/Updated";
 
-const FixedMargin = () => {
+const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Products to approve", isSelected: true },
@@ -168,4 +168,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default ZeroCommission;

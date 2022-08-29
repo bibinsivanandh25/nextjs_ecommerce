@@ -107,7 +107,7 @@ const Home = () => {
       const temp = [];
       data?.forEach((ele) => {
         temp.push({
-          src: ele.bannerImageUrl,
+          src: ele.bannerImageUrlForWeb,
           navigateUrl: ele.navigationUrl,
         });
       });
@@ -236,7 +236,7 @@ const Home = () => {
         </div>
       ) : (
         <>
-          {bannerImages.length ? (
+          {bannerImages.length > 0 ? (
             <CarousalComponent list={[...bannerImages]} interval={4000} />
           ) : null}
           <Box className="py-2">
