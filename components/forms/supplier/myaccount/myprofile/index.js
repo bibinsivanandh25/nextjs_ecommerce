@@ -1,10 +1,12 @@
 import { Grid } from "@mui/material";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CustomIcon from "services/iconUtils";
 import validateMessage from "constants/validateMessages";
+import { getSupplierDetailsBySupplierId } from "services/supplier/myprofile";
+import { useUserInfo } from "services/hooks";
 import avatar from "../../../../../public/assets/images/man.png";
 import InputBox from "@/atoms/InputBoxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -100,6 +102,30 @@ const MyProfile = () => {
     }
     return flag;
   };
+  const { id } = useUserInfo();
+  const getSupplierDetails = async () => {
+    const { data } = await getSupplierDetailsBySupplierId(id);
+    if (data) {
+      setFormValues((pre) => ({
+        ...pre,
+        businessName: data.businessName,
+        mail: data.emailId,
+        mobile: data.mobileNumber,
+        city: data.city,
+        mainCat: data.mainCategories,
+        gstin: data.gstin,
+        stockCount: data.avgStockCount,
+        site: data.websiteName,
+        siteLink: data.websiteLink,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      }));
+    }
+  };
+  useEffect(() => {
+    getSupplierDetails();
+  }, []);
+
   return (
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded ps-2">
       <div className="mt-4 d-flex align-items-center">
