@@ -113,7 +113,7 @@ const Registration = () => {
         mainCategories: formValues.mainCat.map((ele) => {
           return ele.title;
         }),
-        websiteName: formValues.site,
+        websiteName: formValues.site?.join("") ?? "",
         profileImageUrl: null,
         websiteLink: formValues.siteLink,
         city: formValues.city.value,
