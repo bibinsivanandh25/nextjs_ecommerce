@@ -204,8 +204,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       <Grid container className="w-100" spacing={2}>
         <Grid item md={6}>
           <InputBox
+            required
             id="sale_price"
-            label="Sale Price*"
+            label="Sale Price"
             onInputChange={handleInputChange}
             value={pricingFormData.sale_price}
             inputlabelshrink
@@ -217,8 +218,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={6}>
           <InputBox
+            required
             id="mrp"
-            label="MRP*"
+            label="MRP"
             onInputChange={handleInputChange}
             value={pricingFormData.mrp}
             inputlabelshrink
@@ -245,8 +247,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Typography>
           </Box>
           <InputBox
+            required
             id="sale_price_logistics"
-            label="Sale Price With Logistics Charges*"
+            label="Sale Price With Logistics Charges"
             placeholder="Sale Price With Logistics Charges"
             onInputChange={handleInputChange}
             value={pricingFormData.sale_price_logistics}
@@ -303,9 +306,10 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         {pricingFormData.return_order_accepted && (
           <Grid item xs={12}>
             <SimpleDropdownComponent
+              required
               list={returnOrderData}
               id="returnorder"
-              label="Return Period*"
+              label="Return Period"
               size="small"
               value={pricingFormData.returnorder}
               onDropdownSelect={(value) => {
@@ -387,8 +391,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid> */}
         <Grid item md={12}>
           <InputBox
+            required
             id="product_weight"
-            label="Product Weight(inclusive of package)*"
+            label="Product Weight(inclusive of package)"
             onInputChange={handleInputChange}
             value={pricingFormData.product_weight}
             inputlabelshrink
@@ -400,8 +405,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="length"
-            label="Length(inclusive of packages)*"
+            label="Length(inclusive of packages)"
             onInputChange={handleInputChange}
             value={pricingFormData.length}
             inputlabelshrink
@@ -413,8 +419,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="height"
-            label="Height(inclusive of package)*"
+            label="Height(inclusive of package)"
             onInputChange={handleInputChange}
             value={pricingFormData.height}
             inputlabelshrink
@@ -426,8 +433,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="width"
-            label="Width(inclusive of package)*"
+            label="Width(inclusive of package)"
             onInputChange={handleInputChange}
             value={pricingFormData.width}
             inputlabelshrink
@@ -457,8 +465,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
           <Grid container spacing={2} className="mt-2">
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_A"
-                label="Zone A*"
+                label="Zone A"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -472,8 +481,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_B"
-                label="Zone B*"
+                label="Zone B"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -487,8 +497,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_c"
-                label="Zone C*"
+                label="Zone C"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -502,8 +513,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_D"
-                label="Zone D*"
+                label="Zone D"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,
@@ -517,8 +529,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_E"
-                label="Zone E*"
+                label="Zone E"
                 onInputChange={(e) => {
                   setDefaultZoneData((prev) => ({
                     ...prev,

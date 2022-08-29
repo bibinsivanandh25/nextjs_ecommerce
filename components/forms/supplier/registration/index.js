@@ -1,11 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const RegistrationForm = ({
@@ -16,8 +16,8 @@ const RegistrationForm = ({
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
-    const { data, err } = await axios.get(
-      `${process.env.DOMAIN}products/main-category/drop-down-list`
+    const { data, err } = await serviceUtil.get(
+      `products/main-category/drop-down-list`
     );
     if (data) {
       const result = [];

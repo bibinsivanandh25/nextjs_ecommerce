@@ -19,7 +19,7 @@ import InputFieldWithChip from "components/atoms/InputWithChip";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
-import { saveMedia, saveProduct } from "services/supplier/AddProducts";
+import { saveProduct, saveMediaFile } from "services/supplier/AddProducts";
 import { useUserInfo } from "services/hooks";
 import { useRouter } from "next/router";
 import {
@@ -64,18 +64,18 @@ const GroupVariationForm = forwardRef(
     },
     ref
   ) => {
+    console.log({ formData });
     const tempObj = {
       images: [],
-      multiPart: [],
       inventory: {
         sku: "",
-        stock_status: null,
-        allow_backorders: null,
+        stock_status: {},
+        allow_backorders: {},
         stock_qty: "",
         back_Orders: "",
         shipping_class: "",
         product_title: "",
-        business_processing_days: null,
+        business_processing_days: {},
         seo_title: "",
         meta_description: "",
         meta_keyword: "",
@@ -91,7 +91,7 @@ const GroupVariationForm = forwardRef(
         width: "",
         height: "",
         delivery_charge: "",
-        returnorder: null,
+        returnorder: {},
         fd_rot: false,
         sale_price_logistics: "",
       },
@@ -116,25 +116,21 @@ const GroupVariationForm = forwardRef(
     const [optionsValue, setoptionsValue] = useState({});
     const [emptyObj, setEmptyObj] = useState({});
     const [errorObj, setErrorObj] = useState({});
-    const [multiPart, setmultiPart] = useState({});
     const userInfo = useUserInfo();
     const router = useRouter();
 
     useEffect(() => {
-      if (formData?.variationImages.length) {
+      if (formData?.productImage.length) {
         const temp = {};
         const dropDownVal = {};
         const tempImg = {};
-        formData?.variationImages.forEach((item, ind) => {
+        formData?.productImage.forEach((item, ind) => {
           temp[`variation${ind + 1}`] = {
             ...JSON.parse(JSON.stringify(tempObj)),
           };
           temp[`variation${ind + 1}`].images = Array(5);
           temp[`variation${ind + 1}`].images.fill("");
-          tempImg[`variation${ind + 1}`] = Array(5);
-          tempImg[`variation${ind + 1}`].fill("");
           temp[`variation${ind + 1}`].images[0] = item;
-          tempImg[`variation${ind + 1}`][0] = formData.multiPartImage[ind];
           Object.entries(formData.attribute).forEach(([key, val]) => {
             if (val.length) {
               temp[`variation${ind + 1}`].variation[key] = null;
@@ -152,7 +148,6 @@ const GroupVariationForm = forwardRef(
             }
           });
         });
-        setmultiPart(tempImg);
         setEmptyObj({ ...JSON.parse(JSON.stringify({ ...temp })) });
         setVariationData({ ...temp });
         setoptionsValue({ ...dropDownVal });
@@ -178,7 +173,7 @@ const GroupVariationForm = forwardRef(
           if (ele !== "images") {
             if (ele === "inventory") {
               const tempInventory = { ...variationData[item].inventory };
-              if (tempInventory.stock_status === null) {
+              if (!Object.keys(tempInventory.stock_status).length) {
                 flag = true;
                 errObj[item].inventory.stock_status =
                   validateMessage.field_required;
@@ -193,13 +188,13 @@ const GroupVariationForm = forwardRef(
                   errObj[item].inventory.stock_qty =
                     "Stock Qty must be greater then or equal to 1";
                 }
-                if (tempInventory.allow_backorders === null) {
+                if (!Object.keys(tempInventory.allow_backorders).length) {
                   flag = true;
                   errObj[item].inventory.allow_backorders =
                     validateMessage.field_required;
                 }
               }
-              if (tempInventory.business_processing_days === null) {
+              if (!Object.keys(tempInventory.business_processing_days).length) {
                 flag = true;
                 errObj[item].inventory.business_processing_days =
                   validateMessage.field_required;
@@ -349,7 +344,7 @@ const GroupVariationForm = forwardRef(
       return flag;
     };
 
-    const createPayload = async (imgData) => {
+    const createPayload = async (imgdata) => {
       const { mainFormData, attribute, policy, linked } = JSON.parse(
         JSON.stringify(formData)
       );
@@ -383,7 +378,7 @@ const GroupVariationForm = forwardRef(
             isStoreFDR: pricing.fd_rot,
             salePriceWithLogistics: parseInt(pricing.sale_price_logistics, 10),
             rtoAccepted: pricing.return_order_accepted,
-            rtoDays: pricing.returnorder.value,
+            rtoDays: pricing?.returnorder?.value ?? null,
             codAvailable: pricing.cash_on_delivary,
             deliveryCharge: pricing.delivery_charge,
             packageLength: parseFloat(pricing.length),
@@ -403,55 +398,55 @@ const GroupVariationForm = forwardRef(
             stockStatus: inventory.stock_status.label,
             allowBackOrders: inventory?.allow_backorders?.label ?? "",
             backOrders: parseInt(inventory.back_Orders, 10) || 0,
-            variationMedia: imgData[ele],
+            variationMedia: imgdata[ele],
             variationProperty: getvariationProperty(ele),
           });
         });
         return temp;
       };
       const payload = {
-        brand: mainFormData.brand,
-        longDescription: mainFormData.long_description.text,
-        longDescriptionFileUrls: imgData.long_description,
-        shortDescription: mainFormData.short_description.text,
-        shortDescriptionFileUrls: imgData.short_description,
-        subCategoryId: mainFormData.subCategoryValue.id,
-        subCategoryName: mainFormData.subCategoryValue.label,
-        commissionMode: mainFormData.commision_mode,
-        tags: mainFormData.tags.length
-          ? mainFormData.tags.map((item) => {
+        brand: formData.mainForm.brand,
+        longDescription: formData.mainForm.long_description.text,
+        longDescriptionFileUrls: imgdata.long_description,
+        shortDescription: formData.mainForm.short_description.text,
+        shortDescriptionFileUrls: imgdata.short_description,
+        subCategoryId: formData.mainForm.subCategoryValue.id,
+        subCategoryName: formData.mainForm.subCategoryValue.label,
+        commissionMode: formData.mainForm.commision_mode,
+        tags: formData.mainForm.tags.length
+          ? formData.mainForm.tags.map((item) => {
               return item.id;
             })
           : [],
-        limitsPerOrder: parseInt(mainFormData.limit_per_order, 10),
-        trademarkLetterIdList: mainFormData.b2bdocument.length
-          ? mainFormData.b2bdocument.map((item) => {
+        limitsPerOrder: parseInt(formData.mainForm.limit_per_order, 10),
+        trademarkLetterIdList: formData.mainForm.b2bdocument.length
+          ? formData.mainForm.b2bdocument.map((item) => {
               return item.id;
             })
           : [],
-        bTobInvoiceIdList: mainFormData.selectb2binvoice.length
-          ? mainFormData.selectb2binvoice.map((item) => {
+        bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+          ? formData.mainForm.selectb2binvoice.map((item) => {
               return item.id;
             })
           : [],
-        isGenericProduct: mainFormData.genericradio,
+        isGenericProduct: formData.mainForm.genericradio,
 
         linkedProducts: {
-          upSells: linked.upSells.value,
-          crossSells: linked.crossSells.value,
+          upSells: formData.linked.upSells.value,
+          crossSells: formData.linked.crossSells.value,
         },
 
         productPolicies: {
-          policyTabLabel: policy.policyTabLabel,
-          shippingPolicy: policy.shippingPolicy.text,
-          shippingPolicyMediaUrls: imgData?.shippingPolicy ?? [],
-          refundPolicy: policy.refundPolicy.text,
-          refundPolicyMediaUrls: imgData?.refundPolicy ?? [],
-          cancellationPolicy: policy.cancellationPolicy.text,
-          cancellationPolicyMediaUrls: imgData?.cancellationPolicy ?? [],
-          warrantyAvailable: policy.warranty,
-          warrantyPeriod: Object.keys(policy.warrantyperiod).length
-            ? parseInt(policy.warrantyperiod.value, 10) * 30
+          policyTabLabel: formData.policy.policyTabLabel,
+          shippingPolicy: formData.policy.shippingPolicy.text,
+          shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
+          refundPolicy: formData.policy.refundPolicy.text,
+          refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
+          cancellationPolicy: formData.policy.cancellationPolicy.text,
+          cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
+          warrantyAvailable: formData.policy.warranty,
+          warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
+            ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
             : null,
         },
 
@@ -472,68 +467,60 @@ const GroupVariationForm = forwardRef(
     };
 
     const saveimg = (type, imgList) => {
-      return saveMedia(imgList).then((res) => {
+      return saveMediaFile(userInfo.id, imgList).then((res) => {
         if (!res.error) {
           return { [`${type}`]: res.data };
         }
-        return res;
+        return null;
       });
     };
 
     const uploadImages = async () => {
-      const short_description = new FormData();
-      const long_description = new FormData();
-      const refundPolicy = new FormData();
-      const cancellationPolicy = new FormData();
-      const shippingPolicy = new FormData();
       const promiseAll = [];
-      short_description.set("data", {});
-      long_description.set("data", {});
-      refundPolicy.set("data", {});
-      cancellationPolicy.set("data", {});
-      shippingPolicy.set("data", {});
-
-      if (short_descriptionImg?.multiPart?.length) {
-        short_descriptionImg.multiPart.forEach((item) => {
-          short_description.append("medias", item);
-        });
-        promiseAll.push(saveimg("short_description", short_description));
+      if (formData.mainForm.short_description?.media?.length) {
+        promiseAll.push(
+          saveimg(
+            "short_description",
+            formData.mainForm.short_description.media
+          )
+        );
       }
-      if (long_descriptionImg?.multiPart?.length) {
-        long_descriptionImg.multiPart.forEach((item) => {
-          long_description.append("medias", item);
-        });
-        promiseAll.push(saveimg("long_description", long_description));
+      if (formData.mainForm.long_description?.media?.length) {
+        promiseAll.push(
+          saveimg("long_description", formData.mainForm.long_description.media)
+        );
       }
-      if (formData?.policy?.returnablemedia?.multiPart?.length) {
-        formData?.policy.returnablemedia.multiPart.forEach((item) => {
-          refundPolicy.append("medias", item);
-        });
-        promiseAll.push(saveimg("refundPolicy", refundPolicy));
+      if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          saveimg(
+            "cancellationPolicy",
+            formData.policy.cancellationPolicy.media.binaryStr
+          )
+        );
       }
-      if (formData?.policy?.canclemedia?.multiPart?.length) {
-        formData?.policy.canclemedia.multiPart.forEach((item) => {
-          cancellationPolicy.append("medias", item);
-        });
-        promiseAll.push(saveimg("cancellationPolicy", cancellationPolicy));
+      if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          saveimg("refundPolicy", formData.policy.refundPolicy.media.binaryStr)
+        );
       }
-      if (formData?.policy?.shippingmedia?.multiPart?.length) {
-        formData?.policy.shippingmedia.multiPart.forEach((item) => {
-          shippingPolicy.append("medias", item);
-        });
-        promiseAll.push(saveimg("shippingPolicy", shippingPolicy));
+      if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          saveimg(
+            "shippingPolicy",
+            formData.policy.shippingPolicy.media.binaryStr
+          )
+        );
       }
-
-      Object.keys(multiPart).forEach((ele) => {
-        const variationCopy = new FormData();
-        variationCopy.set("data", {});
-        multiPart[ele].forEach((item) => {
-          if (item !== "") {
-            variationCopy.append("medias", item);
+      const prodImages = {};
+      Object.keys(variationData).forEach((item) => {
+        prodImages[item] = [];
+        variationData[item].images.forEach((ele) => {
+          if (ele) {
+            prodImages[item].push(ele);
           }
         });
-        promiseAll.push(saveimg(ele.toString(), variationCopy));
       });
+      console.log({ prodImages });
       const imgdata = await Promise.all(promiseAll);
       const imgData = {};
       imgdata.forEach((ele) => {
@@ -545,6 +532,7 @@ const GroupVariationForm = forwardRef(
     const handleSubmit = async () => {
       const flag = validate();
       if (!flag) {
+        console.log({ variationData });
         createPayload(await uploadImages());
       }
     };
@@ -658,12 +646,6 @@ const GroupVariationForm = forwardRef(
                                                 copy[item].images.indexOf("")
                                               ] = temp;
 
-                                              return copy;
-                                            });
-                                            setmultiPart((pre) => {
-                                              const copy = pre;
-                                              copy[item][ind] =
-                                                e.target.files[0];
                                               return copy;
                                             });
                                           } else {

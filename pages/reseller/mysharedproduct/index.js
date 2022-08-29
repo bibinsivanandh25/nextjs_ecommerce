@@ -1,17 +1,17 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
-import axios from "axios";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputBox from "components/atoms/InputBoxComponent";
+import serviceUtil from "services/utils";
 
 const MySharedCategory = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [dropDownValue, setDropDownValue] = useState({});
 
   const getData = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setCategoryData([...data.data]);

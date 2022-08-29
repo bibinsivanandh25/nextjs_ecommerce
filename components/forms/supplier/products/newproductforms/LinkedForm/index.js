@@ -83,10 +83,11 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       <Grid item xs={12} container spacing={2}>
         <Grid item xs={9}>
           <SimpleDropdownComponent
+            required
             error={errorObj.upSells?.length}
             helperText={errorObj.upSells}
             size="small"
-            label="Up-Sells*"
+            label="Up-Sells"
             placeholder="Filter By Product..."
             inputlabelshrink
             list={[...upSellsArray]}
@@ -105,8 +106,9 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
           <SimpleDropdownComponent
             error={errorObj.crossSells?.length}
             helperText={errorObj.crossSells}
+            required
             size="small"
-            label="Cross-Sells*"
+            label="Cross-Sells"
             placeholder="Filter By Product..."
             inputlabelshrink
             list={[...crossSellsArray]}

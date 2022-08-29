@@ -158,17 +158,19 @@ const ProductPoliciesForm = forwardRef(
               inputlabelshrink
               name="policyTabLabel"
               onInputChange={handleChange}
-              label="Policy Tab Label*"
+              label="Policy Tab Label"
               value={productPolicyFormData.policyTabLabel}
               error={Boolean(error.policyTabLabel)}
               helperText={error.policyTabLabel}
+              required
             />
             <InfoOutlinedIcon className="ms-1" />
           </div>
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Shipping Policy*"
+            required
+            legend="Shipping Policy"
             placeholder="Enter Shipping Policy"
             onChange={(e) => {
               const { value } = e.target;
@@ -193,7 +195,8 @@ const ProductPoliciesForm = forwardRef(
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Refund Policy*"
+            required
+            legend="Refund Policy"
             placeholder="Enter Refund Policy"
             name="refundPolicy"
             onChange={(e) => {
@@ -218,7 +221,8 @@ const ProductPoliciesForm = forwardRef(
         </Grid>
         <Grid item xs={11}>
           <TextAreaComponent
-            legend="Cancellation/Return/Exchange Policy*"
+            required
+            legend="Cancellation/Return/Exchange Policy"
             placeholder="Enter Cancellation/Return/Exchange Policy"
             onChange={(e) => {
               const { value } = e.target;
@@ -255,15 +259,20 @@ const ProductPoliciesForm = forwardRef(
               showIcon
               varient="filled"
             />
-            <Typography component="span" className="h-5">
+            <Typography
+              component="span"
+              className="h-5"
+              sx={{ marginLeft: "-20px" }}
+            >
               Warranty Available
             </Typography>
           </Grid>
           {productPolicyFormData.warranty && (
             <Grid item md={12} className="mt-2">
               <SimpleDropdownComponent
+                required
                 list={warrantyData}
-                label="Warranty Period*"
+                label="Warranty Period"
                 placeholder="Warranty Period"
                 size="small"
                 onDropdownSelect={(value) => {

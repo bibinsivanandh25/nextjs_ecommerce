@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getSession } from "next-auth/react";
 import serviceUtil from "services/utils";
 
@@ -38,7 +37,7 @@ const saveProduct = (payload) => {
 };
 
 const saveMedia = async (payload) => {
-  return axios
+  return serviceUtil
     .put(
       `${
         process.env.DOMAIN
@@ -82,6 +81,18 @@ const getSubCategory = (payload) => {
     });
 };
 
+const saveMediaFile = async (id, payload) => {
+  return serviceUtil
+    .put(`products/supplier/product-media/${id}`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data: data.data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -89,4 +100,5 @@ export {
   createAttributes,
   saveProduct,
   saveMedia,
+  saveMediaFile,
 };

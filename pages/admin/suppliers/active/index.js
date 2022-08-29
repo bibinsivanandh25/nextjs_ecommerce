@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
@@ -136,14 +136,16 @@ const Active = () => {
           <span className="h-5" id="gstinnumber">
             MRK3556235F3
           </span>
-          <CustomIcon
-            type="filecopy"
-            size="small"
-            className="fs-18"
-            onIconClick={() => {
-              copyText();
-            }}
-          />
+          <Tooltip title="copy">
+            <CustomIcon
+              type="filecopy"
+              size="small"
+              className="fs-18"
+              onIconClick={() => {
+                copyText();
+              }}
+            />
+          </Tooltip>
         </Box>
       ),
       col5: "--",

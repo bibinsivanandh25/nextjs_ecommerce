@@ -8,6 +8,8 @@ import "../styles/colors.scss";
 import "../styles/font.scss";
 import { motion } from "framer-motion";
 import Head from "next/head";
+import { store } from "store";
+import { Provider } from "react-redux";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Auth from "components/auth";
 import ToastComponent from "components/molecule/toastcomponent";
@@ -58,17 +60,25 @@ function MyApp({ Component, pageProps, router }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         />
+        <title> MrMrsCart </title>
+        <meta name="description" content="MrMrsCart project" />
+        <link rel="icon" href="/assets/logo.jpeg" />
       </Head>
-      <motion.div
-        animate={{ opacity: 1 }}
-        initial={{ opacity: 0 }}
-        transition={{
-          damping: 20,
-        }}
-        exit={{ opacity: 0 }}
-      >
-        <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
-      </motion.div>
+      <Provider store={store}>
+        <div id="loader" style={{ display: "none" }}>
+          <div className="spinner" />
+        </div>
+        <motion.div
+          animate={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
+          transition={{
+            damping: 20,
+          }}
+          exit={{ opacity: 0 }}
+        >
+          <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
+        </motion.div>
+      </Provider>
     </>
   );
 }

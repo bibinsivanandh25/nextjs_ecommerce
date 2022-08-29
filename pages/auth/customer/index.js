@@ -6,7 +6,7 @@ import validateMessage from "constants/validateMessages";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useRouter } from "next/router";
 import toastify from "services/utils/toastUtils";
-import favicon from "public/assets/favicon.png";
+import { assetsJson } from "public/assets";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import styles from "./shopcode.module.css";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -67,23 +67,21 @@ const ShopCode = () => {
   return (
     <Box
       className={`w-100 mnh-100vh d-flex justify-content-center align-items-center ${styles.container}`}
+      style={{
+        backgroundImage: `url(${assetsJson.login_background})`,
+      }}
     >
-      <Paper
-        className="w-400px rounded-1 pb-5"
-        sx={{ background: "rgba(1,1,1,0.4)" }}
-        elevation={6}
-      >
+      <Paper className="w-400px rounded-1 pb-5" elevation={24}>
         <Box className="w-100 p-4 rounded-1 py-3">
           <Box className="d-flex justify-content-end align-items-center">
-            <Typography className="color-white fs-14 cursor-pointer">
+            <Typography className=" fs-14 cursor-pointer">
               Existing Customer
             </Typography>
             <Box className="ps-2">
               <ButtonComponent
                 label="Sign In"
                 variant="outlined"
-                muiProps="bg-transparent color-white fs-12"
-                borderColor="border-white"
+                muiProps="bg-transparent fs-12"
                 onBtnClick={() => route.push("/auth/customer/signin")}
               />
             </Box>
@@ -92,14 +90,9 @@ const ShopCode = () => {
             style={{ height: "75px" }}
             className="d-flex justify-content-center align-items-center mt-4"
           >
-            <Image
-              //   height="1200"
-              className="img-fluid"
-              src={favicon}
-              alt="logo"
-            />
+            <Image src={assetsJson.logo} alt="" width={300} height={120} />
           </Box>
-          <Typography variant="h6" className="color-white text-center fs-16">
+          <Typography variant="h6" className=" text-center fs-16 mt-4">
             A Multi Ecommerce Store
           </Typography>
           <Box className="mt-4 mb-2">
@@ -114,12 +107,9 @@ const ShopCode = () => {
                   shopCode: e.target.value,
                 }));
               }}
-              labelColorWhite={{ color: "#fff" }}
               InputProps={{
                 style: {
                   fontSize: "14px",
-                  color: "#fff",
-                  borderColor: "#fff !important",
                 },
               }}
               value={formValues.shopCode}
@@ -135,7 +125,7 @@ const ShopCode = () => {
               onBtnClick={handleSubmit}
             />
           </Box>
-          <Typography className="fs-12 text-center color-white mt-2">
+          <Typography className="fs-12 text-center  mt-2">
             You will get access to all products category
             <span className="color-orange cursor-pointer ms-2">Click Here</span>
           </Typography>

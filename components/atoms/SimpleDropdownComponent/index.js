@@ -25,7 +25,7 @@ const SimpleDropdownComponent = ({
     components: {
       MuiFormLabel: {
         styleOverrides: {
-          asterisk: { color: "red", fontWeight: 700, fontSize: 22 },
+          asterisk: { color: "#dd5e5e", fontWeight: 700, fontSize: 22 },
         },
       },
     },

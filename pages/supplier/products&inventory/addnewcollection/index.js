@@ -1,18 +1,20 @@
 import { Paper } from "@mui/material";
-import VariationForm from "components/forms/supplier/products/newCollections/VariationForm";
-import ProductsLayout from "components/forms/supplier/products/newproductforms";
-import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
-import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
-import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
 import { useEffect, useRef, useState } from "react";
+import ProductsLayout from "@/forms/supplier/products/productform";
 import ZoneCharges from "@/forms/supplier/products/newCollections/addzone";
+
+import ProductPoliciesForm from "@/forms/supplier/products/productform/ProductPoliciesForm";
+import LinkedForm from "@/forms/supplier/products/productform/LinkedForm";
+import AttributesForm from "@/forms/supplier/products/productform/AttributesForm";
+import VariationForm from "@/forms/supplier/products/newCollections/VariationForm";
 
 const NewProducts = () => {
   const formsRef = useRef(null);
   const [showGroupVariant, setShowGroupVariant] = useState(false);
   const [formData, setFormData] = useState({
-    mainform: {
-      commision_mode: "",
+    productImage: [],
+    mainForm: {
+      commision_mode: null,
       product_type: "",
       brand: "",
       short_description: {
@@ -24,49 +26,80 @@ const NewProducts = () => {
         text: "",
       },
       sub_category_id: "",
-      tags: "",
+      tags: [],
       limit_per_order: "",
+      selectb2binvoice: [],
+      tradeMarkCheck: false,
+      category: {},
+      brandradio: true,
+      genericradio: false,
+      b2bdocument: [],
+      b2bdocumentfile: [],
+      setsValue: {},
+      subCategoryValue: {},
     },
     inventory: {
       sku: "",
-      stock_status: "",
-      allow_backorders: "",
-      stock_qty: "",
+      stockqty: "",
+      stock_status: {},
+      allow_backorders: {},
       back_Orders: "",
-      shipping_class: "",
+      shipping_class: {},
       product_title: "",
-      business_processing_days: "",
-      seo_title: "",
+      business_processing_days: {},
+      seo_title: [],
       meta_description: "",
-      meta_keyword: "",
+      meta_keyword: [],
+      modalname: "",
+      manageStock: false,
     },
     linked: {
-      upSells: "",
-      crossSells: "",
+      upSells: {},
+      crossSells: {},
     },
     pricing: {
       sale_price: "",
       mrp: "",
       return_order_accepted: false,
-      cash_on_accepted: "",
+      cash_on_accepted: false,
       product_weight: "",
       length: "",
       width: "",
       height: "",
       delivery_charge: "",
+      sale_price_logistics: "",
+      returnorder: {},
+      defaultZoneData: {
+        zoneA: "",
+        zoneB: "",
+        zoneC: "",
+        zoneD: "",
+        zoneE: "",
+      },
+      freeDeliveryCheckbox: false,
     },
     policy: {
       policyTabLabel: "",
-      refundPolicy: { media: {}, text: "" },
-      cancellationPolicy: { media: {}, text: "" },
-      shippingPolicy: { media: {}, text: "" },
+      refundPolicy: { media: [], text: "" },
+      cancellationPolicy: { media: [], text: "" },
+      shippingPolicy: { media: [], text: "" },
       warranty: false,
       warrantyperiod: {},
     },
-    grouped: {},
-    variation: {},
+    variation: {
+      expiryDate: null,
+      countryOfOrigin: null,
+      others: null,
+    },
     attribute: {},
-    zonecharge: {},
+    mrMrsCartFormData: {
+      sellwithus: false,
+      free_delivery: "",
+      paid_delivery: "",
+      return: false,
+      cashondelivery: false,
+      returnorder: {},
+    },
   });
 
   const zonepagetabs = [
@@ -171,7 +204,6 @@ const NewProducts = () => {
     ]);
   }, [formData]);
 
-  const handleSubmitClick = () => {};
   return (
     <Paper
       className="d-flex"
@@ -185,7 +217,6 @@ const NewProducts = () => {
         type="collections"
         formData={formData}
         setFormData={setFormData}
-        handleSubmitClick={handleSubmitClick}
         tabsList={tabsList}
         formsRef={formsRef}
         showGroupVariant={showGroupVariant}

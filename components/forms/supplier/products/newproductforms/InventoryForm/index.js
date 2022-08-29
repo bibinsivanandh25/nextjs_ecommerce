@@ -17,6 +17,7 @@ import {
 const InventoryForm = forwardRef(({ formData = {} }, ref) => {
   const [manageStock, setManageStock] = useState(false);
   const [inventoryFormData, setInventoryFormData] = useState({
+    modalname: "",
     sku: "",
     stockqty: "",
     stock_status: null,
@@ -29,7 +30,6 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     seo_title: [],
     meta_description: "",
     meta_keyword: [],
-    modalname: "",
   });
   const [errorObj, setErrorObj] = useState({
     sku: "",
@@ -44,7 +44,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     seo_title: "",
     meta_description: "",
     meta_keyword: "",
-    modalname: "",
+    modal_name: "",
   });
   const handleInputChange = (e) => {
     setInventoryFormData((prev) => {
@@ -72,20 +72,20 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       seo_title: "",
       meta_description: "",
       meta_keyword: "",
-      modalname: "",
+      modal_name: "",
     };
     if (inventoryFormData.stock_status === null) {
       flag = true;
       errObj.stock_status = validateMessage.field_required;
     }
-    if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
-      flag = true;
-      errObj.stockqty = validateMessage.field_required;
-    } else if (parseInt(inventoryFormData.stockqty, 10) < 1) {
-      flag = true;
-      errObj.stockqty = "Stock Qty must be greater then or equal to 1";
-    }
     if (manageStock) {
+      if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
+        flag = true;
+        errObj.stockqty = validateMessage.field_required;
+      } else if (parseInt(inventoryFormData.stockqty, 10) < 1) {
+        flag = true;
+        errObj.stockqty = "Stock Qty must be greater then or equal to 1";
+      }
       if (inventoryFormData.allow_backorders === null) {
         flag = true;
         errObj.allow_backorders = validateMessage.field_required;
@@ -95,7 +95,10 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.business_processing_days = validateMessage.field_required;
     }
-
+    if (inventoryFormData.shipping_class === "") {
+      flag = true;
+      errObj.shipping_class = validateMessage.field_required;
+    }
     if (!inventoryFormData.seo_title.length) {
       flag = true;
       errObj.seo_title = validateMessage.field_required;
@@ -127,10 +130,10 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
     }
     if (inventoryFormData.modalname === "") {
       flag = true;
-      errObj.modalname = validateMessage.field_required;
+      errObj.modal_name = validateMessage.field_required;
     } else if (inventoryFormData.modalname?.length > 100) {
       flag = true;
-      errObj.modalname = validateMessage.alpha_numeric_max_100;
+      errObj.modal_name = validateMessage.alpha_numeric_max_100;
     }
     setErrorObj(errObj);
     return !flag;
@@ -175,7 +178,7 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
           seo_title: "",
           meta_description: "",
           meta_keyword: "",
-          modalname: "",
+          modal_name: "",
         });
         setManageStock(false);
       },
@@ -209,39 +212,22 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             </Tooltip>
           </div>
         </Grid>
-        <Grid item md={12} className="d-flex align-items-center">
-          <div className="w-70p">
-            <InputBox
-              id="stockqty"
-              label="Stock Qty *"
-              onInputChange={(e) => {
-                setInventoryFormData((prev) => {
-                  return {
-                    ...prev,
-                    stockqty: e.target.value
-                      .replaceAll("-", "")
-                      .replaceAll("e", ""),
-                  };
-                });
-              }}
-              value={inventoryFormData.stockqty}
-              placeholder="Stock Qty"
-              inputlabelshrink
-              fullWidth
-              helperText={errorObj.stockqty}
-              error={errorObj.stockqty !== ""}
-              type="number"
-            />
-          </div>
-        </Grid>
+
         <Grid item md={12} className="pt-4">
           <div className="d-flex align-items-center">
-            <Typography className="fw-600 me-3">Manage Stocks?</Typography>
+            <Typography className="fw-600 me-3">
+              Manage Stocks?
+              <span className="color-red fs-16 fw-bold">&nbsp;*</span>
+            </Typography>
             <CheckBoxComponent
               label=""
               isChecked={manageStock}
               checkBoxClick={() => {
                 setManageStock(!manageStock);
+                setInventoryFormData((prev) => {
+                  return { ...prev, stockqty: "" };
+                });
+                setErrorObj((prev) => ({ ...prev, stockqty: "" }));
               }}
               size="small"
               showIcon
@@ -249,13 +235,41 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             />
           </div>
         </Grid>
+        {manageStock && (
+          <Grid item md={12} className="d-flex align-items-center">
+            <div className="w-70p">
+              <InputBox
+                id="stockqty"
+                label="Stock Qty *"
+                onInputChange={(e) => {
+                  setInventoryFormData((prev) => {
+                    return {
+                      ...prev,
+                      stockqty: e.target.value
+                        .replaceAll("-", "")
+                        .replaceAll("e", ""),
+                    };
+                  });
+                }}
+                value={inventoryFormData.stockqty}
+                placeholder="Stock Qty"
+                inputlabelshrink
+                fullWidth
+                helperText={errorObj.stockqty}
+                error={errorObj.stockqty !== ""}
+                type="number"
+              />
+            </div>
+          </Grid>
+        )}
         <Grid item md={12} className="d-flex align-items-center">
           <div className="w-70p">
             <SimpleDropdownComponent
+              required
               inputlabelshrink
               list={stock_status}
               id="stockstatus"
-              label="Stock Status*"
+              label="Stock Status"
               size="small"
               // fullWidth={false}
               // className="w-70p"
@@ -275,10 +289,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             <Grid item md={12} className="d-flex align-items-center">
               <div className="w-70p">
                 <SimpleDropdownComponent
+                  required
                   inputlabelshrink
                   list={allowback_orders}
                   id="Allow Backorders ?"
-                  label="Allow Backorders ?*"
+                  label="Allow Backorders ?"
                   size="small"
                   fullWidth={false}
                   value={inventoryFormData.allow_backorders}
@@ -296,8 +311,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
             {inventoryFormData.allow_backorders?.value === "allow" ? (
               <Grid item md={12}>
                 <InputBox
+                  required
                   id="back_Orders"
-                  label="Back Orders*"
+                  label="Back Orders"
                   onInputChange={handleInputChange}
                   value={inventoryFormData.back_Orders}
                   placeholder="Back Orders"
@@ -315,10 +331,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         ) : null}
         <Grid item md={12}>
           <SimpleDropdownComponent
+            required
             inputlabelshrink
             list={shipping_class}
             id="ShippingClass"
-            label="Shipping Class*"
+            label="Shipping Class"
             size="small"
             fullWidth={false}
             value={inventoryFormData.shipping_class}
@@ -332,8 +349,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="product_title"
-            label="Product Title*"
+            label="Product Title"
             onInputChange={handleInputChange}
             value={inventoryFormData.product_title}
             inputlabelshrink
@@ -344,10 +362,11 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <SimpleDropdownComponent
+            required
             inputlabelshrink
             list={[...business_processing_days]}
             id="business_processing_days"
-            label="Business Processing Days*"
+            label="Business Processing Days"
             size="small"
             fullWidth={false}
             value={inventoryFormData.business_processing_days}
@@ -367,8 +386,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputFieldWithChip
+            required
             id="seo_title"
-            label="SEO Title*"
+            label="SEO Title"
             value={inventoryFormData.seo_title}
             inputlabelshrink
             handleChange={(_, val) => {
@@ -384,8 +404,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="meta_description"
-            label="Meta Description*"
+            label="Meta Description"
             onInputChange={handleInputChange}
             value={inventoryFormData.meta_description}
             inputlabelshrink
@@ -398,8 +419,9 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputFieldWithChip
+            required
             id="meta_keyword"
-            label="Meta Keywords*"
+            label="Meta Keywords"
             value={inventoryFormData.meta_keyword}
             inputlabelshrink
             handleChange={(_, val) => {
@@ -415,13 +437,14 @@ const InventoryForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="modalname"
-            label="Model Name*"
+            label="Model Name"
             onInputChange={handleInputChange}
             value={inventoryFormData.modalname}
             inputlabelshrink
-            helperText={errorObj.modalname}
-            error={errorObj.modalname && errorObj.modalname !== ""}
+            helperText={errorObj.modal_name}
+            error={errorObj.modal_name !== ""}
             placeholder="Enter Model Name"
           />
         </Grid>

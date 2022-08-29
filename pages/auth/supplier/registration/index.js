@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
-import axios from "axios";
+import serviceUtil from "services/utils";
+import { assetsJson } from "public/assets";
 import styles from "./Registration.module.css";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
 
@@ -121,9 +122,9 @@ const Registration = () => {
         supplierReferralCode: "",
         wished: false,
       };
-      await axios
+      await serviceUtil
         .post(
-          `${process.env.DOMAIN}users/registration/send-otp?mobileNumber=${
+          `users/registration/send-otp?mobileNumber=${
             formValues.mobile
           }&userType=${route.pathname.split("/")[2].toUpperCase()}`
         )
@@ -153,20 +154,25 @@ const Registration = () => {
         <Grid container spacing={2} className="">
           <Grid item sm={12} className="mt-2">
             <div
+              style={{
+                backgroundImage: `url(${assetsJson.login_background})`,
+              }}
               className={`${styles.imgContainer} mx-2 d-flex flex-column justify-content-center align-items-center`}
             >
-              <Typography variant="h3" className="color-orange text-center">
-                Supplier Registration
-              </Typography>
-              <Box className="w-50 mx-auto mt-2">
-                {" "}
-                <Typography className="text-white text-center h-5">
-                  Change Your Ordinary Store To a Virtual Store. Let Customer
-                  Have a Visibility of All Products You Have For Selling.
-                  Register With Us And You Are Free From Commission For Your
-                  First 50 Orders. Happy Selling Grow Your Income.
+              <div className={styles.titleContainer}>
+                <Typography variant="h3" className="color-orange text-center">
+                  Supplier Registration
                 </Typography>
-              </Box>
+                <Box className="w-50 mx-auto mt-2">
+                  {" "}
+                  <Typography className=" text-center h-5">
+                    Change Your Ordinary Store To a Virtual Store. Let Customer
+                    Have a Visibility of All Products You Have For Selling.
+                    Register With Us And You Are Free From Commission For Your
+                    First 50 Orders. Happy Selling Grow Your Income.
+                  </Typography>
+                </Box>
+              </div>
             </div>
           </Grid>
           <Grid item sm={12} className="d-flex justify-content-center ">

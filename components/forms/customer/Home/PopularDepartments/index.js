@@ -1,8 +1,8 @@
 import { Box, Card, Grid, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
+import serviceUtil from "services/utils";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ProductCard from "./ProductCard";
@@ -52,7 +52,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   };
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);

@@ -324,7 +324,7 @@ const RegistrationForm = ({
       )}
       {displayType === "otp" && (
         <div className="d-flex flex-column justify-content-center">
-          <OtpForm otp={otp} setotp={setotp} />
+          <OtpForm otp={otp} setotp={setotp} handleEnter={handleSubmit} />
           <div className="w-100 d-flex flex-column align-items-center">
             <ButtonComponent
               label="Submit"

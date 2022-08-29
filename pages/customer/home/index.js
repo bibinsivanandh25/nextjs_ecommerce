@@ -236,12 +236,8 @@ const Home = () => {
         </div>
       ) : (
         <>
-          {bannerImages.length > 0 ? (
-            <CarousalComponent
-              list={[...bannerImages]}
-              interval={4000}
-              carouselImageMinHeight="65vh"
-            />
+          {bannerImages.length ? (
+            <CarousalComponent list={[...bannerImages]} interval={4000} />
           ) : null}
           <Box className="py-2">
             <HomeComponent

@@ -16,9 +16,11 @@ const TextAreaComponent = ({
   error = false,
   helperText = null,
   placeholder = "",
+  id = "",
+  required = false,
 }) => {
   return (
-    <div className={`${widthClassName}`}>
+    <div className={`${widthClassName}`} id={id}>
       <div
         className={`d-flex flex-row-reverse p-1 rounded-top ${
           styles.fieldset
@@ -26,10 +28,15 @@ const TextAreaComponent = ({
       >
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label
-          className={`${styles.legend} fs-14 ${error && "error-text"}`}
-          style={{ color: "#6E6E6E" }}
+          className={`${styles.legend} fs-12 ${error && "error-text"}`}
+          style={{
+            color: error ? "#dd5e5e" : "#6E6E6E",
+          }}
         >
-          {legend}
+          {legend}{" "}
+          {required && (
+            <span className="color-red fs-16 fw-bolder">* &nbsp;</span>
+          )}
         </label>
         <ButtonComponent
           label={btnLabel}

@@ -14,11 +14,11 @@ import {
 import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 // import toastify from "services/utils/toastUtils";
 import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
+import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -154,9 +154,9 @@ const ProductDetails = () => {
   }, [size]);
   const getProductDetails = async () => {
     const status = "APPROVED";
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `products/master-product/product-variations?id=${router.query.id}&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -182,8 +182,8 @@ const ProductDetails = () => {
   });
   const getfrequentProduct = async (id) => {
     const ids = router.query.id ? router.query.id : id;
-    await axios
-      .get(`${process.env.DOMAIN}products/grouped-product/${ids}`)
+    await serviceUtil
+      .get(`products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -227,10 +227,8 @@ const ProductDetails = () => {
   // coupons api
   const [couponMasterData, setCouponsMasterData] = useState([]);
   const getCouponsData = async () => {
-    await axios
-      .get(
-        `${process.env.DOMAIN}users/customer/store-coupon?supplierId=${router.query.supplierId}`
-      )
+    await serviceUtil
+      .get(`users/customer/store-coupon?supplierId=${router.query.supplierId}`)
       .then((res) => {
         setCouponsMasterData(res.data.data);
       })
@@ -243,9 +241,9 @@ const ProductDetails = () => {
   // minimum cart value
   const [minCartValue, setMinCartValue] = useState("");
   const getMinimumCart = async () => {
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
@@ -272,7 +270,7 @@ const ProductDetails = () => {
     setCount((prev) => (prev > 1 ? prev - 1 : 1));
   };
   const handlePlusClick = () => {
-    setCount((prev) => prev + 1);
+    setCount((prev) => (masterData.limitsPerOrder > prev ? prev + 1 : prev));
   };
   const renderDiscriptionImage = (data) => {
     return data?.map((item) => {
@@ -280,8 +278,8 @@ const ProductDetails = () => {
         return (
           <Box className="me-2">
             <Image
-              // src={item}
-              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+              src={item}
+              // src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
               height={100}
               width={100}
               layout="intrinsic"
@@ -640,7 +638,7 @@ const ProductDetails = () => {
                     </Typography>
                     <Grid item xs={10}>
                       <div
-                        className="d-flex bg-white rounded-end justify-content-between"
+                        className="d-flex bg-white rounded justify-content-between"
                         style={{
                           border: "1px solid #c0ad9d",
                         }}
@@ -652,6 +650,7 @@ const ProductDetails = () => {
                             background: "#fae1cc",
                             outline: "none",
                             border: "none",
+                            borderRadius: "5px",
                           }}
                         />
                         <Box
@@ -747,7 +746,7 @@ const ProductDetails = () => {
                 <Grid container>
                   <Grid item xs={10}>
                     <div
-                      className="d-flex bg-white rounded-end justify-content-between"
+                      className="d-flex bg-white rounded justify-content-between"
                       style={{
                         border: "1px solid #c0ad9d",
                       }}
@@ -759,6 +758,7 @@ const ProductDetails = () => {
                           background: "#fae1cc",
                           outline: "none",
                           border: "none",
+                          borderRadius: "5px",
                         }}
                       />
                       <Box
@@ -913,7 +913,7 @@ const ProductDetails = () => {
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
                         <div
-                          className="d-flex bg-white rounded-end justify-content-between"
+                          className="d-flex bg-white rounded justify-content-between"
                           style={{
                             border: "1px solid #c0ad9d",
                           }}
@@ -925,6 +925,7 @@ const ProductDetails = () => {
                               background: "#fae1cc",
                               outline: "none",
                               border: "none",
+                              borderRadius: "5px",
                             }}
                           />
                           <Box
@@ -1009,7 +1010,7 @@ const ProductDetails = () => {
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
                         <div
-                          className="d-flex bg-white rounded-end justify-content-between"
+                          className="d-flex bg-white rounded justify-content-between"
                           style={{
                             border: "1px solid #c0ad9d",
                           }}
@@ -1021,6 +1022,7 @@ const ProductDetails = () => {
                               background: "#fae1cc",
                               outline: "none",
                               border: "none",
+                              borderRadius: "5px",
                             }}
                           />
                           <Box
@@ -1062,7 +1064,7 @@ const ProductDetails = () => {
                   <div className="me-3" onClick={() => handleMinusClick()}>
                     <CustomIcon
                       type="removeIcon"
-                      className="border rounded-circle fs-20"
+                      className="border rounded-circle color-black fs-20"
                       showColorOnHover={false}
                     />
                   </div>
@@ -1070,7 +1072,7 @@ const ProductDetails = () => {
                   <div className="ms-3" onClick={() => handlePlusClick()}>
                     <CustomIcon
                       type="add"
-                      className="border rounded-circle  fs-20"
+                      className="border rounded-circle color-black fs-20"
                       showColorOnHover={false}
                     />
                   </div>
