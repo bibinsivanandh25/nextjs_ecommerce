@@ -270,7 +270,7 @@ const ProductsLayout = ({
       errObj.short_description.text = validateMessage.field_required;
       flag = true;
     } else if (mainFormData.short_description.text.length > 90) {
-      errObj.short_description.text = validateMessage.alpha_numeric_max_255;
+      errObj.short_description.text = validateMessage.alpha_numeric_max_90;
       flag = true;
     }
     if (mainFormData.long_description.text === "") {

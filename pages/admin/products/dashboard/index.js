@@ -181,7 +181,6 @@ const ProductDashboard = () => {
           <TableComponent
             showCheckbox={false}
             columns={columns}
-            showPagination={false}
             tableRows={rows}
             showSearchbar={false}
           />
@@ -200,7 +199,6 @@ const ProductDashboard = () => {
           <TableComponent
             showCheckbox={false}
             columns={columnsTwo}
-            showPagination={false}
             tableRows={rowsTwo}
             showSearchbar={false}
           />

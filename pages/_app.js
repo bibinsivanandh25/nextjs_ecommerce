@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps, router }) {
   };
   const theme = createTheme({
     typography: {
-      fontFamily: ["Open Sans"].join(","),
+      fontFamily: `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
     },
   });
   return (

@@ -160,7 +160,7 @@ const CustomerSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                showPagination={false}
+                // showPagination={false}
                 tableRows={tableRows}
                 table_heading="Customer Support"
                 // showSearchbar={false}

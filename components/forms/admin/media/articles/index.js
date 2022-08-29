@@ -191,7 +191,7 @@ const Articles = ({ rowsDataObjectsForArticles }) => {
             <TableComponent
               columns={tableColumns}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               tableRows={tableRows}
               showSearchbar={false}
               showDateFilterBtn
