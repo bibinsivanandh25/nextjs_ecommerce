@@ -278,6 +278,7 @@ const Login = () => {
                       user: e.target.value,
                     }));
                   }}
+                  onEnter={handleSubmit}
                   className="w-100"
                   placeholder="Enter your E-mail Id / Mobile No."
                   InputProps={{
@@ -296,6 +297,7 @@ const Login = () => {
                 <InputBox
                   value={formValues.password}
                   label="Password"
+                  onEnter={handleSubmit}
                   onInputChange={(e) => {
                     setFormValues((prev) => ({
                       ...prev,

@@ -32,6 +32,7 @@ const InputBox = ({
   textInputProps = {},
   showAutoCompleteOff = "on",
   labelColorWhite = null,
+  onEnter = () => {},
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -75,6 +76,11 @@ const InputBox = ({
         }}
         inputRef={inputRef}
         onKeyDown={onKeyDown}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            onEnter();
+          }
+        }}
         variant={variant}
         type={type}
         id={id}

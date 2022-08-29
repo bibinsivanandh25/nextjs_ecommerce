@@ -109,7 +109,7 @@ const OtpLogIn = () => {
         <div style={{ width: "400px" }}>
           {submited ? (
             <>
-              <OtpForm otp={otp} setotp={setotp} />
+              <OtpForm otp={otp} setotp={setotp} handleEnter={handleSubmit} />
               <div className="w-100 d-flex flex-column align-items-center">
                 <ButtonComponent
                   label="Login"

@@ -1,11 +1,19 @@
 import InputBox from "components/atoms/InputBoxComponent";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
-const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
+const OtpForm = ({
+  otp = "xxxx",
+  setotp = () => {},
+  handleEnter = () => {},
+}) => {
   const firstInputRef = useRef();
   const secondInputRef = useRef();
   const thirdInputRef = useRef();
   const fourthInputRef = useRef();
+  useEffect(() => {
+    firstInputRef.current.focus();
+  }, []);
+
   return (
     <div className="d-flex justify-content-evenly w-250px mx-auto mb-3 mt-4">
       <div

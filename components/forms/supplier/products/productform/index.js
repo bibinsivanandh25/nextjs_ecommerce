@@ -216,8 +216,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -930,6 +930,7 @@ const ProductsLayout = ({
           </Box>
           {showFileUploadModal !== "" ? (
             <FileUploadModal
+              maxFileSize={4e6}
               showModal={showFileUploadModal !== ""}
               setShowModal={setShowFileUploadModal}
               getUploadedFiles={(val) => {
