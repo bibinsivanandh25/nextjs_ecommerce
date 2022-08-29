@@ -20,7 +20,7 @@ const Registration = () => {
     mainCat: [],
     gstin: "",
     stockCount: "",
-    site: "",
+    site: [],
     siteLink: "",
     firstName: "",
     lastName: "",
@@ -82,7 +82,7 @@ const Registration = () => {
       flag = true;
       errObj.stockCount = "Please select one option";
     }
-    if (formValues.site === "") {
+    if (formValues.site.length === 0) {
       flag = true;
       errObj.site = "Please select one option";
     }
