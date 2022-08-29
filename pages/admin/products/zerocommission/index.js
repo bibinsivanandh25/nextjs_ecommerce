@@ -83,7 +83,6 @@ const FixedMargin = () => {
     });
 
     const temp = await Promise.all(promiseArr);
-    console.log(temp, "asd");
     const tabs = JSON.parse(JSON.stringify(tabList));
     temp.forEach((item) => {
       if (Object.keys(item)[0] === "INITIATED") {
@@ -120,7 +119,6 @@ const FixedMargin = () => {
         });
       }
     });
-    console.log(tabs, "tabs");
     setTabList([...tabs]);
   };
 

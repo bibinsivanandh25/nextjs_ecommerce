@@ -30,7 +30,7 @@ const NewProducts = () => {
       limit_per_order: "",
       selectb2binvoice: [],
       tradeMarkCheck: false,
-      category: {},
+      category: null,
       brandradio: true,
       genericradio: false,
       b2bdocument: [],

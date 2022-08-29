@@ -44,6 +44,8 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
 
 const CustomIcon = ({
   title = "",
@@ -106,6 +108,8 @@ const CustomIcon = ({
     addNote: NoteAddIcon,
     arrowUpward: ArrowUpwardIcon,
     expandMore: ExpandMoreIcon,
+    chatBubbleIcon: ChatBubbleIcon,
+    attachMoneyOutlinedIcon: AttachMoneyOutlinedIcon,
   };
 
   const [hover, setHover] = useState(false);

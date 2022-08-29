@@ -30,12 +30,12 @@
   content: "";
   display: block;
   position: absolute;
-  top: 10px;
-  left: -17px;
+  top: 12px;
+  left: -16px;
   background: #f0f0f0;
   border-bottom-right-radius: 13px;
   height: 20px;
-  width: 18px;
+  width: 16px;
   z-index: 1;
 }
 .activeTab::after {
@@ -43,7 +43,7 @@
   content: "";
   display: block;
   position: absolute;
-  top: 14px;
+  top: 15px;
   right: -15px;
   background: #f0f0f0;
   border-bottom-left-radius: 17px;
@@ -91,11 +91,11 @@
   content: "";
   display: block;
   position: absolute;
-  top: 10px;
-  left: -17px;
+  top: 12px;
+  left: -16px;
   background: #f0f0f0;
   border-bottom-right-radius: 13px;
   height: 20px;
-  width: 18px;
+  width: 16px;
   z-index: 1;
 }

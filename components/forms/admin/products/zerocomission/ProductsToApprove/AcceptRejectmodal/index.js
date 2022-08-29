@@ -7,6 +7,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const AcceptRejectModal = ({
+  getCount = () => {},
   rowsDataObjects = [],
   openAcceptRejectModal,
   setOpenAcceptRejectModal = () => {},
@@ -29,6 +30,7 @@ const AcceptRejectModal = ({
       status,
     };
     const { data, err } = await acceptOrRejectProduct(payload);
+
     if (data) {
       setOpenAcceptRejectModal(false);
     }
@@ -145,6 +147,7 @@ const AcceptRejectModal = ({
             onBtnClick={() => {
               approveOrRejectProduct("REJECTED");
               getTableData();
+              getCount();
             }}
           />
           <ButtonComponent
@@ -153,6 +156,7 @@ const AcceptRejectModal = ({
             onBtnClick={() => {
               approveOrRejectProduct("APPROVED");
               getTableData();
+              getCount();
             }}
           />
         </Box>

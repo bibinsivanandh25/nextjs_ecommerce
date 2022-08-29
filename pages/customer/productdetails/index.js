@@ -271,7 +271,7 @@ const ProductDetails = () => {
     setCount((prev) => (prev > 1 ? prev - 1 : 1));
   };
   const handlePlusClick = () => {
-    setCount((prev) => prev + 1);
+    setCount((prev) => (masterData.limitsPerOrder > prev ? prev + 1 : prev));
   };
   const renderDiscriptionImage = (data) => {
     return data?.map((item) => {
@@ -279,8 +279,8 @@ const ProductDetails = () => {
         return (
           <Box className="me-2">
             <Image
-              // src={item}
-              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+              src={item}
+              // src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
               height={100}
               width={100}
               layout="intrinsic"
@@ -639,7 +639,7 @@ const ProductDetails = () => {
                     </Typography>
                     <Grid item xs={10}>
                       <div
-                        className="d-flex bg-white rounded-end justify-content-between"
+                        className="d-flex bg-white rounded justify-content-between"
                         style={{
                           border: "1px solid #c0ad9d",
                         }}
@@ -651,6 +651,7 @@ const ProductDetails = () => {
                             background: "#fae1cc",
                             outline: "none",
                             border: "none",
+                            borderRadius: "5px",
                           }}
                         />
                         <Box
@@ -746,7 +747,7 @@ const ProductDetails = () => {
                 <Grid container>
                   <Grid item xs={10}>
                     <div
-                      className="d-flex bg-white rounded-end justify-content-between"
+                      className="d-flex bg-white rounded justify-content-between"
                       style={{
                         border: "1px solid #c0ad9d",
                       }}
@@ -758,6 +759,7 @@ const ProductDetails = () => {
                           background: "#fae1cc",
                           outline: "none",
                           border: "none",
+                          borderRadius: "5px",
                         }}
                       />
                       <Box
@@ -912,7 +914,7 @@ const ProductDetails = () => {
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
                         <div
-                          className="d-flex bg-white rounded-end justify-content-between"
+                          className="d-flex bg-white rounded justify-content-between"
                           style={{
                             border: "1px solid #c0ad9d",
                           }}
@@ -924,6 +926,7 @@ const ProductDetails = () => {
                               background: "#fae1cc",
                               outline: "none",
                               border: "none",
+                              borderRadius: "5px",
                             }}
                           />
                           <Box
@@ -1008,7 +1011,7 @@ const ProductDetails = () => {
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
                         <div
-                          className="d-flex bg-white rounded-end justify-content-between"
+                          className="d-flex bg-white rounded justify-content-between"
                           style={{
                             border: "1px solid #c0ad9d",
                           }}
@@ -1020,6 +1023,7 @@ const ProductDetails = () => {
                               background: "#fae1cc",
                               outline: "none",
                               border: "none",
+                              borderRadius: "5px",
                             }}
                           />
                           <Box
@@ -1061,7 +1065,7 @@ const ProductDetails = () => {
                   <div className="me-3" onClick={() => handleMinusClick()}>
                     <CustomIcon
                       type="removeIcon"
-                      className="border rounded-circle fs-20"
+                      className="border rounded-circle color-black fs-20"
                       showColorOnHover={false}
                     />
                   </div>
@@ -1069,7 +1073,7 @@ const ProductDetails = () => {
                   <div className="ms-3" onClick={() => handlePlusClick()}>
                     <CustomIcon
                       type="add"
-                      className="border rounded-circle  fs-20"
+                      className="border rounded-circle color-black fs-20"
                       showColorOnHover={false}
                     />
                   </div>

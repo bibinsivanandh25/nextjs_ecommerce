@@ -113,12 +113,17 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Do You Want To Sell With Us
         </Typography>
       </Grid>
       <Grid item md={12}>
         <InputBox
+          required
           id="free_delivery"
           label="Sale Price With Free Delivery Returns"
           onInputChange={handleInputChange}
@@ -131,6 +136,7 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
       </Grid>
       <Grid item md={12}>
         <InputBox
+          required
           id="paid_delivery"
           label="Sale Price With Out Free Delivery Returns"
           onInputChange={handleInputChange}
@@ -154,7 +160,11 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Return Order Accepted
         </Typography>
       </Grid>
@@ -172,13 +182,18 @@ const PricingForMrMRsCartForm = forwardRef(({ formData = {} }, ref) => {
           showIcon
           varient="filled"
         />
-        <Typography component="span" className="h-5">
+        <Typography
+          component="span"
+          className="h-5"
+          sx={{ marginLeft: "-20px" }}
+        >
           Cash on Delivery Available
         </Typography>
       </Grid>
       {mrMrsCartFormData.return && (
         <Grid item xs={12}>
           <SimpleDropdownComponent
+            required
             list={returnOrderData}
             id="returnorder"
             label="Return Period"

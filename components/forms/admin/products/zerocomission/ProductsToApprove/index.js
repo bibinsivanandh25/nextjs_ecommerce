@@ -270,6 +270,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
