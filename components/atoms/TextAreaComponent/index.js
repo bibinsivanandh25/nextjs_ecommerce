@@ -30,8 +30,7 @@ const TextAreaComponent = ({
         <label
           className={`${styles.legend} fs-12 ${error && "error-text"}`}
           style={{
-            color: error ? "#dd5e5e" : "#444545",
-            fontFamily: "inherit",
+            color: error ? "#dd5e5e" : "#6E6E6E",
           }}
         >
           {legend}{" "}

@@ -33,6 +33,7 @@ const AcceptRejectModal = ({
 
     if (data) {
       setOpenAcceptRejectModal(false);
+      toastify(data.message);
     }
     if (err) {
       toastify(err.response.data.message);

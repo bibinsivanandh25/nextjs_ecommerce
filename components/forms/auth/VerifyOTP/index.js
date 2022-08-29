@@ -43,7 +43,7 @@ const VerifyOTP = ({
               })
               .then((res) => {
                 if (res) {
-                  setShowVerifyOTP(false);
+                  // setShowVerifyOTP(false);
                   setShowModal(true);
                 }
               })
