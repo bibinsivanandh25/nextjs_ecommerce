@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
@@ -138,14 +138,18 @@ const SupplierApproval = () => {
             <span className="h-5" id="gstinnumber">
               {item.gstin}
             </span>
-            <CustomIcon
-              type="filecopy"
-              size="small"
-              className="fs-18"
-              onIconClick={() => {
-                copyText();
-              }}
-            />
+            <Tooltip title="copy" placement="top">
+              <Typography className="text-truncate text-center h-5 fw-bold">
+                <CustomIcon
+                  type="filecopy"
+                  size="small"
+                  className="fs-18"
+                  onIconClick={() => {
+                    copyText();
+                  }}
+                />
+              </Typography>
+            </Tooltip>
           </Box>
         ),
         col5: item.mainCategories.join(", "),
