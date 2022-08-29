@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 import axios from "axios";
-import { getSession } from "next-auth/react";
 import { store } from "store";
 
 const baseURL = `${process.env.DOMAIN}`;

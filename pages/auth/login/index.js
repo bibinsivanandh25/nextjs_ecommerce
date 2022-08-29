@@ -232,9 +232,8 @@ const Login = () => {
       await serviceUtil
         .post(`auth/authenticate`, payload)
         .catch((err) => {
-          // const errRes = err.response.data?.message;
-          // toastify(errRes, "error");
-          console.log(err);
+          const errRes = err.response.data?.message;
+          toastify(errRes, "error");
         })
         .then(async (data) => {
           if (data) {
