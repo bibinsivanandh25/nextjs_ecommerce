@@ -1,11 +1,7 @@
 import InputBox from "components/atoms/InputBoxComponent";
 import { useEffect, useRef } from "react";
 
-const OtpForm = ({
-  otp = "xxxx",
-  setotp = () => {},
-  handleEnter = () => {},
-}) => {
+const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
   const firstInputRef = useRef();
   const secondInputRef = useRef();
   const thirdInputRef = useRef();

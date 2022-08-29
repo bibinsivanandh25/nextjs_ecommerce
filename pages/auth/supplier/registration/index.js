@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
-import axios from "axios";
+import serviceUtil from "services/utils";
 import styles from "./Registration.module.css";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
 

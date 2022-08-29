@@ -1,5 +1,4 @@
 import { Grid, Pagination, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import Image from "next/image";

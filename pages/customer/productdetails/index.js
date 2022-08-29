@@ -14,7 +14,6 @@ import {
 import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 // import toastify from "services/utils/toastUtils";
 import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";

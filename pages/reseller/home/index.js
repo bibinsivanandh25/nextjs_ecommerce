@@ -1,5 +1,4 @@
 import { Box, Paper } from "@mui/material";
-import axios from "axios";
 import CarouselComponent from "components/atoms/Carousel";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";

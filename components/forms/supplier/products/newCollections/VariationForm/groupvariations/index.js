@@ -471,6 +471,7 @@ const GroupVariationForm = forwardRef(
         if (!res.error) {
           return { [`${type}`]: res.data };
         }
+        return null;
       });
     };
 

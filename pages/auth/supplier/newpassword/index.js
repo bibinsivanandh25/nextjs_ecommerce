@@ -1,5 +1,4 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import NewPasswordForm from "components/forms/supplier/newpassword";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

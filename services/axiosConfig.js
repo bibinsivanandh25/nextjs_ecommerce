@@ -24,11 +24,11 @@ axiosInstance.interceptors.request.use(async (config) => {
   return config;
 });
 
-async function getLatestToken() {
-  const { accessToken, error } = await getSession();
-  // if (!error) store.dispatch(setToken(accessToken));
-  return { accessTokem, error };
-}
+// async function getLatestToken() {
+//   const { accessToken, error } = await getSession();
+//   // if (!error) store.dispatch(setToken(accessToken));
+//   return { accessTokem, error };
+// }
 
 axiosInstance.interceptors.request.use(
   function (config) {

@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import axios from "axios";
 import CarouselComponent from "components/atoms/Carousel";
 import InputBox from "components/atoms/InputBoxComponent";
 import { useEffect, useState } from "react";

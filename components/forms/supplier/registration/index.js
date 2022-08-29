@@ -1,5 +1,4 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";

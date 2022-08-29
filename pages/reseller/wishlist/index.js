@@ -1,5 +1,4 @@
 import { Grid, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 import { useEffect, useState } from "react";

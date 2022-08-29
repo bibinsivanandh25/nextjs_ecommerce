@@ -1,6 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputBox from "components/atoms/InputBoxComponent";
