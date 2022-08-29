@@ -25,13 +25,11 @@ const ZeroCommission = () => {
 
   const callApi = (type, payload) => {
     // eslint-disable-next-line consistent-return
-    return getAdminProductsByFilter(payload).then((res) => {
-      if (!res.error) {
-        toastify(res?.data.message, "error");
-        return { [`${type}`]: res.data };
-      }
-      toastify(res?.error?.response?.data?.message, "error");
-    });
+    const { data } = getAdminProductsByFilter(payload);
+    if (data) {
+      return { [`${type}`]: data };
+    }
+    return null;
   };
 
   const getCount = async () => {
@@ -85,6 +83,7 @@ const ZeroCommission = () => {
     const temp = await Promise.all(promiseArr);
     const tabs = JSON.parse(JSON.stringify(tabList));
     temp.forEach((item) => {
+      if (!item) return;
       if (Object.keys(item)[0] === "INITIATED") {
         tabs.map((element) => {
           if (element.label === "Products to approve")
