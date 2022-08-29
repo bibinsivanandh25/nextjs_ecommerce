@@ -11,7 +11,6 @@ import {
 } from "next-auth/react";
 import { useState } from "react";
 import Image from "next/image";
-import axios from "axios";
 import { assetsJson } from "public/assets";
 import {
   // Box,

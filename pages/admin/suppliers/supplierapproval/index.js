@@ -7,7 +7,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { inviteSupplier } from "services/admin/supplier/supplierapproval";
-import axios from "axios";
 import serviceUtil from "services/utils";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
