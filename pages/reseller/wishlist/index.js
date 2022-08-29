@@ -1,8 +1,8 @@
 import { Grid, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonTabsList from "components/atoms/ButtonTabsList";
 import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 
 const WishList = () => {
   const tabsList = [
@@ -24,7 +24,7 @@ const WishList = () => {
 
   const getProducts = async () => {
     if (activeTab === 0) {
-      await axios
+      await serviceUtil
         .get("https://fakestoreapi.com/products")
         .then((data) => {
           setProductDetails([...data.data]);

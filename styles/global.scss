@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
-@import url('http://fonts.cdnfonts.com/css/segoe-ui-4');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
                 
 
 .overflow-y-scroll {
@@ -7,7 +8,9 @@
 }
 
 p,div,span{
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  // font-family: 'Poppins', sans-serif;
+  // font-family: 'Montserrat', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .overflow-x-scroll {
@@ -308,9 +311,10 @@ opacity: 0.8;
 }
 
 textarea::placeholder {
-  color: #A2A2A2;
-  font-size: 18px;
-  font-family: inherit;  
+  color: #a2a2a2;
+  font-weight: 400;
+  font-size: 16px;
+  // font-family: inherit;  
 }
 
 .zIndex-100 {

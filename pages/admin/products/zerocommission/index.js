@@ -6,13 +6,14 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TabsCard from "components/molecule/TabsCard";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import toastify from "services/utils/toastUtils";
 import ProductsToApprove from "@/forms/admin/products/zerocomission/ProductsToApprove";
 import Rejected from "@/forms/admin/products/zerocomission/Rejected";
 import Queries from "@/forms/admin/products/zerocomission/Queries";
 import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
 import Updated from "@/forms/admin/products/zerocomission/Updated";
 
-const FixedMargin = () => {
+const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Products to approve", isSelected: true },
@@ -26,8 +27,10 @@ const FixedMargin = () => {
     // eslint-disable-next-line consistent-return
     return getAdminProductsByFilter(payload).then((res) => {
       if (!res.error) {
+        toastify(res?.data.message, "error");
         return { [`${type}`]: res.data };
       }
+      toastify(res?.error?.response?.data?.message, "error");
     });
   };
 
@@ -168,4 +171,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default ZeroCommission;

@@ -16,10 +16,11 @@ const TextAreaComponent = ({
   error = false,
   helperText = null,
   placeholder = "",
+  id = "",
   required = false,
 }) => {
   return (
-    <div className={`${widthClassName}`}>
+    <div className={`${widthClassName}`} id={id}>
       <div
         className={`d-flex flex-row-reverse p-1 rounded-top ${
           styles.fieldset
@@ -29,8 +30,7 @@ const TextAreaComponent = ({
         <label
           className={`${styles.legend} fs-12 ${error && "error-text"}`}
           style={{
-            color: error ? "#dd5e5e" : "#444545",
-            fontFamily: "inherit",
+            color: error ? "#dd5e5e" : "#6E6E6E",
           }}
         >
           {legend}{" "}

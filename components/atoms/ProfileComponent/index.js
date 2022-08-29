@@ -9,6 +9,8 @@ import {
 import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "store/userSlice";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
@@ -20,6 +22,8 @@ const ProfileComponent = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   return (
     <div>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -31,8 +35,12 @@ const ProfileComponent = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar className="cursor-pointer" sx={{ width: 32, height: 32 }}>
-              M
+            <Avatar
+              className="cursor-pointer"
+              sx={{ width: 32, height: 32 }}
+              src={user.profileImageUrl ? user.profileImageUrl : null}
+            >
+              {user.profileImageUrl ? "" : user.firstName.toUpperCase()[0]}
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -79,6 +87,7 @@ const ProfileComponent = () => {
           onClick={() => {
             window.localStorage.setItem("moduleType", null);
             signOut({ callbackUrl: "/auth/login" });
+            dispatch(clearUser());
           }}
         >
           Logout

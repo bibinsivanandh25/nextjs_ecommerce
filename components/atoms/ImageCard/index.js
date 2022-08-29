@@ -18,11 +18,11 @@ const ImageCard = ({
     <div className={`mt-2 mb-2 d-flex position-relative ${className}`}>
       {showClose && (
         <div
-          className="bg-light-gray rounded-circle fit-content float-right px-1"
+          className="bg-light-gray cursor-pointer rounded-circle fit-content float-right px-1"
           style={{
             position: "absolute",
             top: "-10px",
-            left: `${width - 15}px`,
+            left: `${width - 25}px`,
           }}
         >
           <CloseIcon fontSize="15px" onClick={handleCloseClick} />
@@ -48,9 +48,7 @@ const ImageCard = ({
               className="d-none"
               ref={inputRef}
               accept="image/*"
-              onChange={(e) => {
-                handleImageUpload(e);
-              }}
+              onChange={handleImageUpload}
             />
             <AddOutlinedIcon
               className="color-light-gray cursor-pointer"

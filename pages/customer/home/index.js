@@ -107,7 +107,7 @@ const Home = () => {
       const temp = [];
       data?.forEach((ele) => {
         temp.push({
-          src: ele.bannerImageUrl,
+          src: ele.bannerImageUrlForWeb,
           navigateUrl: ele.navigationUrl,
         });
       });

@@ -7,7 +7,7 @@ import Image from "next/image";
 import * as React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { getBase64 } from "services/utils/functionUtils";
-import { FcDocument, FcVideoFile } from "react-icons/fc";
+import { VscFilePdf } from "react-icons/vsc";
 import ButtonComponent from "../ButtonComponent";
 import ModalComponent from "../ModalComponent";
 
@@ -19,6 +19,7 @@ const FileUploadModal = ({
   maxNoofFiles = 5,
   type = "base64",
   value = {},
+  acceptedTypes = ["png", "jpg", "pdf"],
 }) => {
   const fileUploadRef = useRef(null);
   const [binaryStr, setbinaryStr] = useState([]);
@@ -41,12 +42,20 @@ const FileUploadModal = ({
     }
     const arr = [...binaryStr];
     const reader = new FileReader();
-
     if (acceptedFiles.length !== 0 && acceptedFiles.length <= 5) {
       if (Array.isArray(acceptedFiles)) {
         const promiseArr = [];
+        let flag = false;
         acceptedFiles.forEach((item) => {
-          if (item.size <= maxFileSize) {
+          if (!acceptedTypes.includes(item.name.split(".")[1])) {
+            if (!flag) {
+              flag = true;
+              toastify(
+                `Only ${acceptedTypes.join()} types are accepted`,
+                "error"
+              );
+            }
+          } else if (item.size <= maxFileSize) {
             promiseArr.push(getBase64(item));
           } else {
             toastify("File size should be less than 2 MB", "error");
@@ -60,7 +69,7 @@ const FileUploadModal = ({
         } else {
           toastify("Maximum 5 files can be uploaded", "error");
         }
-      } else {
+      } else if (!acceptedTypes.includes(acceptedFiles[0].name.split(".")[1])) {
         reader.readAsDataURL(acceptedFiles[0]);
         reader.onloadend = () => {
           const bitStr = reader.result;
@@ -71,6 +80,8 @@ const FileUploadModal = ({
             toastify("Maximum 5 files can be uploaded", "error");
           }
         };
+      } else {
+        toastify(`Only ${acceptedTypes.join()} types are accepted`, "error");
       }
     } else {
       toastify("Maximum 5 files can be uploaded", "error");
@@ -136,14 +147,8 @@ const FileUploadModal = ({
                 <div className="me-2">
                   {ele.includes("image") ? (
                     <Image src={ele} width={60} height={60} alt="" />
-                  ) : ele.includes("video") ? (
-                    <FcVideoFile
-                      style={{
-                        fontSize: "65px",
-                      }}
-                    />
                   ) : (
-                    <FcDocument
+                    <VscFilePdf
                       style={{
                         fontSize: "65px",
                       }}

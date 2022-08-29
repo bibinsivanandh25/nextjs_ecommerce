@@ -1,10 +1,10 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import NewPasswordForm from "components/forms/supplier/newpassword";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toastify from "services/utils/toastUtils";
 import atob from "atob";
+import serviceUtil from "services/utils";
 import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
@@ -30,8 +30,8 @@ const Newpassword = () => {
   }, [router.query.user]);
 
   const handleSubmit = () => {
-    axios
-      .post(`${process.env.DOMAIN}users/registration/reset-password`, {
+    serviceUtil
+      .post(`users/registration/reset-password`, {
         userName: formValues.userId,
         newPassword: formValues.password,
         reEnterPassword: formValues.rePassword,

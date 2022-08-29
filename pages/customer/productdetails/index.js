@@ -14,11 +14,11 @@ import {
 import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 // import toastify from "services/utils/toastUtils";
 import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
+import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -154,9 +154,9 @@ const ProductDetails = () => {
   }, [size]);
   const getProductDetails = async () => {
     const status = "APPROVED";
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `products/master-product/product-variations?id=${router.query.id}&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
@@ -182,8 +182,8 @@ const ProductDetails = () => {
   });
   const getfrequentProduct = async (id) => {
     const ids = router.query.id ? router.query.id : id;
-    await axios
-      .get(`${process.env.DOMAIN}products/grouped-product/${ids}`)
+    await serviceUtil
+      .get(`products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -227,10 +227,8 @@ const ProductDetails = () => {
   // coupons api
   const [couponMasterData, setCouponsMasterData] = useState([]);
   const getCouponsData = async () => {
-    await axios
-      .get(
-        `${process.env.DOMAIN}users/customer/store-coupon?supplierId=${router.query.supplierId}`
-      )
+    await serviceUtil
+      .get(`users/customer/store-coupon?supplierId=${router.query.supplierId}`)
       .then((res) => {
         setCouponsMasterData(res.data.data);
       })
@@ -243,9 +241,9 @@ const ProductDetails = () => {
   // minimum cart value
   const [minCartValue, setMinCartValue] = useState("");
   const getMinimumCart = async () => {
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);

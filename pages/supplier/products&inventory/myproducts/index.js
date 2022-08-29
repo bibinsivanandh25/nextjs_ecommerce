@@ -36,6 +36,7 @@ const MyProducts = () => {
       isFilter: false,
       minWidth: 100,
       align: "center",
+      data_align: "center",
     },
     {
       align: "center",

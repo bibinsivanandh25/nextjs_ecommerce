@@ -261,6 +261,7 @@ export default function TableComponent({
   draggableHeader = false,
   stickyCheckBox = false,
   showDateFilterBtn = false,
+  showDateFilterSearch = true,
   dateFilterBtnName = "Add",
   dateFilterBtnClick = () => {},
   stickyHeader = true,
@@ -399,7 +400,7 @@ export default function TableComponent({
             container
             display="flex"
             alignItems="center"
-            justifyContent="end"
+            justifyContent={showDateFilterSearch ? "end" : "center"}
           >
             <Grid
               item
@@ -451,39 +452,41 @@ export default function TableComponent({
                 // min={dateValue.from}
               />
             </Grid>
-            <Grid
-              item
-              // xl={5}
-              md={4}
-              container
-              alignItems="center"
-              spacing={1}
-              justifyContent="space-around"
-            >
-              <Grid item sm={10}>
-                <InputBox
-                  value={searchText}
-                  label="Search"
-                  className="w-100"
-                  fullWidth
-                  size="small"
-                  onInputChange={(e) => {
-                    setsearchText(e.target.value);
-                  }}
-                />
+            {showDateFilterSearch ? (
+              <Grid
+                item
+                // xl={5}
+                md={4}
+                container
+                alignItems="center"
+                spacing={1}
+                justifyContent="space-around"
+              >
+                <Grid item sm={10}>
+                  <InputBox
+                    value={searchText}
+                    label="Search"
+                    className="w-100"
+                    fullWidth
+                    size="small"
+                    onInputChange={(e) => {
+                      setsearchText(e.target.value);
+                    }}
+                  />
+                </Grid>
+                <Grid item sm={2}>
+                  <div
+                    style={{ width: "35px", height: "38px" }}
+                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
+                    onClick={() => {
+                      handlePageEnd(searchText, searchFilter?.value);
+                    }}
+                  >
+                    <SearchOutlinedIcon style={{ color: "white" }} />
+                  </div>
+                </Grid>
               </Grid>
-              <Grid item sm={2}>
-                <div
-                  style={{ width: "35px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
-                  onClick={() => {
-                    handlePageEnd(searchText, searchFilter?.value);
-                  }}
-                >
-                  <SearchOutlinedIcon style={{ color: "white" }} />
-                </div>
-              </Grid>
-            </Grid>
+            ) : null}
           </Grid>
           {showDateFilterBtn && (
             <Grid item sm={2} justifyContent="center" display="flex">

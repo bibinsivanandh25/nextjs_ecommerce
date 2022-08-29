@@ -1,11 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const RegistrationForm = ({
@@ -16,8 +16,8 @@ const RegistrationForm = ({
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
-    const { data, err } = await axios.get(
-      `${process.env.DOMAIN}products/main-category/drop-down-list`
+    const { data } = await serviceUtil.get(
+      `products/main-category/drop-down-list`
     );
     if (data) {
       const result = [];
@@ -29,8 +29,6 @@ const RegistrationForm = ({
         });
       });
       setMainCategories([...result]);
-    } else if (err) {
-      console.log(err);
     }
   };
   useEffect(() => {
@@ -292,11 +290,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Amazon"
-                isChecked={formValues.site === "Amazon"}
+                isChecked={formValues.site.includes("Amazon")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Amazon",
+                    site: prev.site.includes("Amazon")
+                      ? prev.site.filter((item) => item !== "Amazon")
+                      : [...prev.site, "Amazon"],
                   }));
                 }}
                 size="medium"
@@ -305,11 +305,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Flipkart"
-                isChecked={formValues.site === "Flipkart"}
+                isChecked={formValues.site.includes("Flipkart")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Flipkart",
+                    site: prev.site.includes("Flipkart")
+                      ? prev.site.filter((item) => item !== "Flipkart")
+                      : [...prev.site, "Flipkart"],
                   }));
                 }}
                 size="medium"
@@ -318,11 +320,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Others"
-                isChecked={formValues.site === "Others"}
+                isChecked={formValues.site.includes("Others")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Others",
+                    site: prev.site.includes("Others")
+                      ? prev.site.filter((item) => item !== "Others")
+                      : [...prev.site, "Others"],
                   }));
                 }}
                 size="medium"

@@ -1,18 +1,19 @@
 import { Paper } from "@mui/material";
-import ProductsLayout from "components/forms/supplier/products/newproductforms";
-import AttributesForm from "components/forms/supplier/products/newproductforms/AttributesForm";
-import InventoryForm from "components/forms/supplier/products/newproductforms/InventoryForm";
-import LinkedForm from "components/forms/supplier/products/newproductforms/LinkedForm";
-import PricingForm from "components/forms/supplier/products/newproductforms/Pricing&Weight";
-import ProductPoliciesForm from "components/forms/supplier/products/newproductforms/ProductPoliciesForm";
-import VariationForm from "components/forms/supplier/products/newproductforms/VariationForm";
 import { useEffect, useRef, useState } from "react";
-import PricingForMrMRsCartForm from "@/forms/supplier/products/newproductforms/pricingformrmrscartForm";
+import ProductsLayout from "@/forms/supplier/products/productform";
+import InventoryForm from "@/forms/supplier/products/productform/InventoryForm";
+import PricingForm from "@/forms/supplier/products/productform/Pricing&Weight";
+import LinkedForm from "@/forms/supplier/products/productform/LinkedForm";
+import ProductPoliciesForm from "@/forms/supplier/products/productform/ProductPoliciesForm";
+import AttributesForm from "@/forms/supplier/products/productform/AttributesForm";
+import VariationForm from "@/forms/supplier/products/productform/VariationForm";
+import PricingForMrMRsCartForm from "@/forms/supplier/products/productform/pricingformrmrscartForm";
 
 const NewProducts = () => {
   const formsRef = useRef(null);
-  const [formData, setFormData] = useState({
-    mainform: {
+  const schema = {
+    productImage: [],
+    mainForm: {
       commision_mode: null,
       product_type: "",
       brand: "",
@@ -25,58 +26,161 @@ const NewProducts = () => {
         text: "",
       },
       sub_category_id: "",
-      tags: {},
+      tags: [],
       limit_per_order: "",
-      selectb2binvoice: null,
+      selectb2binvoice: [],
       tradeMarkCheck: false,
       category: null,
       brandradio: true,
       genericradio: false,
-      b2bdocument: {},
+      b2bdocument: [],
       b2bdocumentfile: [],
-      setsValue: null,
-      subCategoryValue: null,
+      setsValue: {},
+      subCategoryValue: {},
     },
     inventory: {
       sku: "",
-      stock_status: null,
-      allow_backorders: null,
-      stock_qty: "",
+      stockqty: "",
+      stock_status: {},
+      allow_backorders: {},
       back_Orders: "",
-      shipping_class: "",
+      shipping_class: {},
       product_title: "",
-      business_processing_days: null,
-      seo_title: "",
+      business_processing_days: {},
+      seo_title: [],
       meta_description: "",
       meta_keyword: [],
       modalname: "",
-      stockqty: "",
+      manageStock: false,
     },
     linked: {
-      upSells: "",
-      crossSells: "",
+      upSells: {},
+      crossSells: {},
     },
     pricing: {
       sale_price: "",
       mrp: "",
       return_order_accepted: false,
-      cash_on_accepted: "",
+      cash_on_accepted: false,
       product_weight: "",
       length: "",
       width: "",
       height: "",
       delivery_charge: "",
+      sale_price_logistics: "",
+      returnorder: {},
+      defaultZoneData: {
+        zoneA: "",
+        zoneB: "",
+        zoneC: "",
+        zoneD: "",
+        zoneE: "",
+      },
+      freeDeliveryCheckbox: false,
     },
     policy: {
       policyTabLabel: "",
-      refundPolicy: { media: {}, text: "" },
-      cancellationPolicy: { media: {}, text: "" },
-      shippingPolicy: { media: {}, text: "" },
+      refundPolicy: { media: [], text: "" },
+      cancellationPolicy: { media: [], text: "" },
+      shippingPolicy: { media: [], text: "" },
       warranty: false,
       warrantyperiod: {},
     },
-    grouped: {},
-    variation: {},
+    variation: {
+      expiryDate: null,
+      countryOfOrigin: null,
+      others: null,
+    },
+    attribute: {},
+    mrMrsCartFormData: {
+      sellwithus: false,
+      free_delivery: "",
+      paid_delivery: "",
+      return: false,
+      cashondelivery: false,
+      returnorder: {},
+    },
+  };
+  const [formData, setFormData] = useState({
+    productImage: [],
+    mainForm: {
+      commision_mode: null,
+      product_type: "",
+      brand: "",
+      short_description: {
+        media: [],
+        text: "",
+      },
+      long_description: {
+        media: [],
+        text: "",
+      },
+      sub_category_id: "",
+      tags: [],
+      limit_per_order: "",
+      selectb2binvoice: [],
+      tradeMarkCheck: false,
+      category: {},
+      brandradio: true,
+      genericradio: false,
+      b2bdocument: [],
+      b2bdocumentfile: [],
+      setsValue: {},
+      subCategoryValue: {},
+    },
+    inventory: {
+      sku: "",
+      stockqty: "",
+      stock_status: {},
+      allow_backorders: {},
+      back_Orders: "",
+      shipping_class: {},
+      product_title: "",
+      business_processing_days: {},
+      seo_title: [],
+      meta_description: "",
+      meta_keyword: [],
+      modalname: "",
+      manageStock: false,
+    },
+    linked: {
+      upSells: {},
+      crossSells: {},
+    },
+    pricing: {
+      sale_price: "",
+      mrp: "",
+      return_order_accepted: false,
+      cash_on_accepted: false,
+      product_weight: "",
+      length: "",
+      width: "",
+      height: "",
+      delivery_charge: "",
+      sale_price_logistics: "",
+      returnorder: {},
+      defaultZoneData: {
+        zoneA: "",
+        zoneB: "",
+        zoneC: "",
+        zoneD: "",
+        zoneE: "",
+      },
+      freeDeliveryCheckbox: false,
+    },
+    policy: {
+      policyTabLabel: "",
+      refundPolicy: { media: [], text: "" },
+      cancellationPolicy: { media: [], text: "" },
+      shippingPolicy: { media: [], text: "" },
+      warranty: false,
+      warrantyperiod: {},
+    },
+    variation: {
+      expiryDate: null,
+      countryOfOrigin: null,
+      others: null,
+    },
     attribute: {},
     mrMrsCartFormData: {
       sellwithus: false,
@@ -136,7 +240,6 @@ const NewProducts = () => {
           formData={formData}
           ref={formsRef}
           setFormData={setFormData}
-          getFormData={() => JSON.parse(JSON.stringify(formData))}
         />
       ),
     },
@@ -238,10 +341,6 @@ const NewProducts = () => {
     ]);
   }, [formData]);
 
-  const handleSubmitClick = (data) => {
-    console.log(data, "submit");
-  };
-
   return (
     <Paper
       className="d-flex"
@@ -255,9 +354,9 @@ const NewProducts = () => {
         type="simple"
         formData={formData}
         setFormData={setFormData}
-        handleSubmitClick={handleSubmitClick}
         tabsList={tabsList}
         formsRef={formsRef}
+        schema={schema}
       />
     </Paper>
   );

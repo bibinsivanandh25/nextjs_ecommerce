@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { store } from "store";
 
 const baseURL = `${process.env.DOMAIN}`;
 // axios.defaults.baseURL = baseURL;
@@ -14,24 +14,20 @@ const setHeaders = (commmonHeaders) => {
   axiosInstance.defaults.headers.common = commmonHeaders;
 };
 // const user = useUserInfo();
-let user;
-
 axiosInstance.interceptors.request.use(async (config) => {
   config.headers = {
     "Access-Control-Allow-Origin": "*",
     ...config.headers,
-    userId: await getSession().then((res) => {
-      return res.user.id;
-    }),
+    userId: store.getState()?.user?.supplierId,
   };
   return config;
 });
 
-async function getLatestToken() {
-  const { accessToken, error } = await getSession();
-  // if (!error) store.dispatch(setToken(accessToken));
-  return { accessTokem, error };
-}
+// async function getLatestToken() {
+//   const { accessToken, error } = await getSession();
+//   // if (!error) store.dispatch(setToken(accessToken));
+//   return { accessTokem, error };
+// }
 
 axiosInstance.interceptors.request.use(
   function (config) {

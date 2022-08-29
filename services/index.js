@@ -1,8 +1,8 @@
-import axios from "axios";
+import serviceUtil from "./utils";
 
 const loginCall = (payload) => {
-  return axios
-    .post(`${process.env.DOMAIN}authenticate`, payload)
+  return serviceUtil
+    .post(`authenticate`, payload)
     .then((res) => {
       const data = res && res.data;
       return { data };
@@ -14,14 +14,10 @@ const loginCall = (payload) => {
 };
 
 const getOtp = (payload) => {
-  return axios
-    .post(
-      `${process.env.DOMAIN}users/registration/forgot-password/send-otp`,
-      payload,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    )
+  return serviceUtil
+    .post(`users/registration/forgot-password/send-otp`, payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
     .then((res) => {
       const data = res && res.data;
       return { data };
@@ -33,8 +29,8 @@ const getOtp = (payload) => {
 };
 
 const verifyOtp = (payload) => {
-  return axios
-    .post(`${process.env.DOMAIN}users/registration/verify-otp`, payload, {
+  return serviceUtil
+    .post(`users/registration/verify-otp`, payload, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     .then((res) => {

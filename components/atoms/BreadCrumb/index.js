@@ -18,12 +18,16 @@ const BreadCrumb = () => {
     const str = path[pLength];
     path[pLength] = route.query[`${str.substring(1, str.length - 1)}`];
   }
+  const router = useRouter();
   return (
     <Grid container item xs={12}>
       <div className="d-flex align-items-center">
-        <Link href="/" passHref>
-          <CustomIcon type="home" />
-        </Link>
+        <CustomIcon
+          type="home"
+          onIconClick={() => {
+            router.push("/supplier/dashboard");
+          }}
+        />
         {path.map((item, index) => {
           completePath =
             completePath === "/"
