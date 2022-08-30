@@ -520,7 +520,10 @@ const GroupVariationForm = forwardRef(
           }
         });
       });
-      console.log({ prodImages });
+      Object.keys(prodImages).forEach((item) => {
+        promiseAll.push(saveimg(item, prodImages[item]));
+      });
+      console.log({ promiseAll });
       const imgdata = await Promise.all(promiseAll);
       const imgData = {};
       imgdata.forEach((ele) => {
@@ -530,11 +533,8 @@ const GroupVariationForm = forwardRef(
     };
 
     const handleSubmit = async () => {
-      const flag = validate();
-      if (!flag) {
-        console.log({ variationData });
-        createPayload(await uploadImages());
-      }
+      createPayload(await uploadImages());
+      console.log("jsgdvcjhsdbjhdsb");
     };
 
     return (
