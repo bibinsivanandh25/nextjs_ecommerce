@@ -556,7 +556,12 @@ const GroupVariationForm = forwardRef(
         toastify(err.response.data.message, "error");
       } else if (data) {
         toastify(data.message, "success");
-        router.replace("/supplier/mycollections");
+        router.replace({
+          pathname: `"/supplier/products&inventory/myproducts"`,
+          query: {
+            active: "2",
+          },
+        });
       }
     };
 
