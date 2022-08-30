@@ -30,6 +30,17 @@ const AttributesForm = forwardRef(
       values: "",
     });
     const user = useUserInfo();
+
+    useEffect(() => {
+      if (Object.keys(formData.attribute).length) {
+        const temp = {};
+        Object.keys(formData.attribute).forEach((item) => {
+          temp[item] = [...formData.attribute[item]];
+        });
+        setSelectedAttribute(JSON.parse(JSON.stringify(temp)));
+      }
+    }, []);
+
     const getAttributeValues = () => {
       return attributeList.map((ele, index) => {
         const options = [];
@@ -57,7 +68,18 @@ const AttributesForm = forwardRef(
                 label={ele.attribute}
                 isChecked={ele.selected}
                 id={ele.id}
-                checkBoxClick={(id) => {
+                checkBoxClick={(id, checked) => {
+                  if (!checked) {
+                    setFormData((pre) => {
+                      return {
+                        ...pre,
+                        attribute: {
+                          ...pre.attribute,
+                          [id]: [],
+                        },
+                      };
+                    });
+                  }
                   const arr = JSON.parse(JSON.stringify(attributeList));
                   arr.forEach((ele1) => {
                     if (ele1.id === id) {
@@ -78,7 +100,11 @@ const AttributesForm = forwardRef(
               <Grid item lg={9} sm={12} container rowGap={1}>
                 <Grid item sm={12}>
                   <MultiSelectComponent
-                    placeholder={`Select ${ele.attribute}`}
+                    placeholder={`${
+                      selectedAttribute?.[ele.id]?.length
+                        ? ""
+                        : `Select ${ele.attribute}`
+                    }`}
                     helperText={formErrorObj[ele.id]}
                     error={formErrorObj[ele.id]?.length}
                     label={ele.attribute}

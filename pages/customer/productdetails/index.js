@@ -17,6 +17,7 @@ import React, { useEffect, useState } from "react";
 // import toastify from "services/utils/toastUtils";
 import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -143,6 +144,10 @@ const ProductDetails = () => {
   });
   const [count, setCount] = useState(1);
   const [showLongDescription, setShowLongDescription] = useState(false);
+  const storeDetails = useSelector((state) => ({
+    supplierId: state.customer.supplierId,
+    storeCode: state.customer.storeCode,
+  }));
 
   useEffect(() => {
     if (size.width > 800) {
@@ -228,7 +233,7 @@ const ProductDetails = () => {
   const [couponMasterData, setCouponsMasterData] = useState([]);
   const getCouponsData = async () => {
     await serviceUtil
-      .get(`users/customer/store-coupon?supplierId=${router.query.supplierId}`)
+      .get(`users/customer/store-coupon?supplierId=${storeDetails.supplierId}`)
       .then((res) => {
         setCouponsMasterData(res.data.data);
       })
@@ -243,7 +248,7 @@ const ProductDetails = () => {
   const getMinimumCart = async () => {
     await serviceUtil
       .get(
-        `users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `users/supplier/supplier-store-configuration?storeCode=${storeDetails.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);

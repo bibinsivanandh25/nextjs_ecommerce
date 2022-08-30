@@ -20,32 +20,17 @@ const getMainCategories = () => {
     .catch((err) => ({ err }));
 };
 
-// {
-//   "supplierId": "string",
-//   "businessName": "string",
-//   "emailId": "string",
-//   "mobileNumber": "string",
-//   "gstin": "string",
-//   "avgStockCount": "string",
-//   "mainCategories": [
-//     "string"
-//   ],
-//   "websiteName": "string",
-//   "profileImageUrl": "string",
-//   "websiteLink": "string",
-//   "city": "string",
-//   "firstName": "string",
-//   "lastName": "string",
-//   "supplierReferralCode": "string",
-//   "wished": true
-// }
 const updateSupplierProfile = (payload) => {
   return serviceUtil
-    .put(`/api/v1/users/supplier-profile`, payload)
+    .put(`/users/supplier-profile`, payload)
     .then((res) => {
       return res?.data;
     })
     .catch((err) => ({ err }));
+};
+
+const UpdateProfilePicture = (payload) => {
+  serviceUtil.put("products/supplier/supplier-profile", payload);
 };
 export {
   getSupplierDetailsBySupplierId,

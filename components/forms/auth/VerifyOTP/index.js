@@ -36,7 +36,6 @@ const VerifyOTP = ({
         .post(`users/registration/verify-otp`, formData, config)
         .then(async (data) => {
           if (data) {
-            toastify(data.data.message, "success");
             await serviceUtil
               .post(`users/supplier/register-supplier`, {
                 ...payLoad,

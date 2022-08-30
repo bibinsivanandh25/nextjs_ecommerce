@@ -257,7 +257,7 @@ const validatePolicy = (productPolicyFormData) => {
 
   return { errObj, flag };
 };
-const validateVariation = (dropdowns) => {
+const validateVariation = (dropdowns, currentData) => {
   const errObj = {};
   let flag = false;
   dropdowns.forEach((el) => {
@@ -269,6 +269,8 @@ const validateVariation = (dropdowns) => {
       !el.validation.test(el.value)
     ) {
       errObj[el.id] = el.errorMessage;
+    } else if (el.type === "date" && el.value && el.value < currentData) {
+      errObj[el.id] = "Past date is not allowed";
     } else {
       errObj[el.id] = null;
     }
