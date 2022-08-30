@@ -66,7 +66,7 @@ const MrMrsAddNewCoupons = ({
   }, []);
 
   const validateForm = () => {
-    const errObj = { ...error };
+    const errObj = {};
 
     const validateFields = (id, validation, errorMessage) => {
       if (!formValues[id]) {
@@ -88,20 +88,32 @@ const MrMrsAddNewCoupons = ({
       /^.{1,255}$/,
       validateMessage.alpha_numeric_max_255
     );
-    validateFields("code");
-    // validateFields("couponExpiryDate");
+    // validateFields("code");
+    validateFields("couponExpiryDate");
     validateFields("discountType");
     validateFields("categoryInclude");
-    // validateFields("productsIncludeObj");
+    validateFields("productsIncludeObj");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimittoXTimes");
     validateFields("usageLimitPerUser");
-    validateFields("minpurchaseamount");
+    if (purchaseCheckbox) {
+      validateFields("minpurchaseamount");
+    }
     validateFields("subcategory");
+    validateFields("new");
 
-    setError({ ...errObj });
+    const limitErrors = {
+      limitError: null,
+    };
+    if (formValues.usageLimitPerCoupon <= formValues.usageLimitPerUser) {
+      limitErrors.limitError =
+        "Usage Limit PerCoupon Should Allways Lessthen Usage Limit PerUser";
+    }
+    const finalErrorObj = { ...errObj, ...limitErrors };
+    console.log(finalErrorObj, "finalErrorObj");
+    setError({ ...finalErrorObj });
     let valid = true;
-    Object.values(errObj).forEach((i) => {
+    Object.values(finalErrorObj).forEach((i) => {
       if (i) {
         valid = false;
       }
@@ -142,29 +154,31 @@ const MrMrsAddNewCoupons = ({
   const handleSubmitClick = async (couponStatus) => {
     // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
-    // if (isValid) {
-    const payload = {
-      description: formValues.description,
-      discountType: formValues.discountTypeObj.value,
-      couponAmount: parseInt(formValues.couponAmount, 10),
-      subCategoryIncluded: formValues.subcategoryObj.value,
-      couponExpiryDate: formValues.couponExpiryDate,
-      categoryIncluded: formValues.categoryIncludeObj.value,
-      productsIncluded: formValues.productsIncludeObj.map((ele) => ele.value),
-      usageLimitPerCoupon: formValues.usageLimitPerCoupon,
-      usageLimitPerUser: parseInt(formValues.usageLimitPerUser, 10),
-      usageLimitToXItems: parseInt(formValues.usageLimittoXTimes, 10),
-      couponStatus,
-    };
-    const { data, err } = await CreateStoreCoupons(payload);
-    if (data) {
-      toastify(data.message, "success");
-      setOpenAddModal(false);
-      getTableData();
-    } else if (err) {
-      toastify(err.response.data.message, "error");
+    if (isValid) {
+      const payload = {
+        description: formValues.description,
+        discountType: formValues.discountTypeObj?.value,
+        couponAmount: parseInt(formValues.couponAmount, 10),
+        subCategoryIncluded: formValues.subcategoryObj?.value,
+        couponExpiryDate: formValues.couponExpiryDate,
+        categoryIncluded: formValues.categoryIncludeObj?.value,
+        productsIncluded: formValues.productsIncludeObj?.map(
+          (ele) => ele?.value
+        ),
+        usageLimitPerCoupon: formValues.usageLimitPerCoupon,
+        usageLimitPerUser: parseInt(formValues.usageLimitPerUser, 10),
+        usageLimitToXItems: parseInt(formValues.usageLimittoXTimes, 10),
+        couponStatus,
+      };
+      const { data, err } = await CreateStoreCoupons(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenAddModal(false);
+        getTableData();
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
     }
-    // }
   };
 
   return (
@@ -194,19 +208,21 @@ const MrMrsAddNewCoupons = ({
           }}
         >
           <Grid container item xs={10} spacing={2} pt={4}>
-            <Grid item xs={12}>
+            <Grid item xs={12} display="flex">
               <InputBox
+                disabled
                 label="Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
                 id="code"
                 name="code"
-                onInputChange={handleInputChange}
-                error={Boolean(error.code)}
-                helperText={error.code}
-                required
+                // onInputChange={handleInputChange}
+                // error={Boolean(error.code)}
+                // helperText={error.code}
+                // required
               />
+              <InfoOutlinedIcon className="ms-1 mt-2" />
             </Grid>
             <Grid item xs={12}>
               <InputBox
@@ -334,7 +350,16 @@ const MrMrsAddNewCoupons = ({
                         ? "bg-light-orange"
                         : "bg-light-gray text-dark"
                     } shadow-none`}
-                    onClick={() => setSelectedTab(tab.id)}
+                    onClick={() => {
+                      setSelectedTab(tab.id);
+                      setFormValues((pre) => ({
+                        ...pre,
+                        usageLimittoXTimes: formValues.productsIncludeObj
+                          ?.length
+                          ? formValues.productsIncludeObj?.length
+                          : "",
+                      }));
+                    }}
                   >
                     {tab.title}
                   </Button>
@@ -418,8 +443,8 @@ const MrMrsAddNewCoupons = ({
                           // onDropdownSelect={(val) =>
                           // }
                           list={[...products]}
-                          error={Boolean(error.productsInclude)}
-                          helperText={error.productsInclude}
+                          error={Boolean(error.productsIncludeObj)}
+                          helperText={error.productsIncludeObj}
                         />
                       </div>
                       <InfoOutlinedIcon className="ms-2 mt-2" />
@@ -445,6 +470,7 @@ const MrMrsAddNewCoupons = ({
                   </Grid>
                   <Grid item xs={11}>
                     <InputBox
+                      disabled
                       placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
@@ -467,8 +493,10 @@ const MrMrsAddNewCoupons = ({
                         id="usageLimitPerUser"
                         name="usageLimitPerUser"
                         onInputChange={handleInputChange}
-                        error={Boolean(error.usageLimitPerUser)}
-                        helperText={error.usageLimitPerUser}
+                        error={Boolean(
+                          error.usageLimitPerUser || error.limitError
+                        )}
+                        helperText={error.usageLimitPerUser || error.limitError}
                         type="number"
                       />
                       <InfoOutlinedIcon className="ms-1 mt-2" />

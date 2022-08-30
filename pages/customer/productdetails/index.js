@@ -8,8 +8,8 @@ import {
   AirportShuttle,
   CopyAllSharp,
   RemoveRedEye,
-  // Shield,
-  // SwapHoriz,
+  Shield,
+  SwapHoriz,
 } from "@mui/icons-material";
 import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 import Image from "next/image";
@@ -56,66 +56,66 @@ function useWindowSize() {
   }, []); // Empty array ensures that effect is only run on mount
   return windowSize;
 }
-// const ownersCoupons = [
-//   {
-//     id: 1,
-//     toolName: "Spin Wheel",
-//     campaign: "",
-//     validity: "",
-//   },
-//   {
-//     id: 1,
-//     toolName: "Scratch Card",
-//     campaign: "",
-//     validity: "",
-//   },
-// ];
-// const otherSellers = [
-//   {
-//     title: "New (4) From",
-//     ActualPrice: {
-//       start: "675",
-//       end: "766",
-//     },
-//     delivery: {
-//       start: "675",
-//       end: "766",
-//     },
-//   },
-// ];
+const ownersCoupons = [
+  {
+    id: 1,
+    toolName: "Spin Wheel",
+    campaign: "",
+    validity: "",
+  },
+  {
+    id: 1,
+    toolName: "Scratch Card",
+    campaign: "",
+    validity: "",
+  },
+];
+const otherSellers = [
+  {
+    title: "New (0) From",
+    ActualPrice: {
+      start: "00",
+      end: "00",
+    },
+    delivery: {
+      start: "00",
+      end: "00",
+    },
+  },
+];
 const handPick = true;
-// const sameProduct = [
-//   {
-//     id: 1,
-//     image:
-//       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-//     amount: "1250",
-//     color: "Blue",
-//   },
-//   {
-//     id: 2,
-//     image:
-//       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-//     amount: "1050",
-//     color: "Black",
-//   },
-//   {
-//     id: 3,
-//     image:
-//       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-//     amount: "1350",
-//     color: "Red",
-//   },
-//   {
-//     id: 4,
-//     image:
-//       "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-//     amount: "1450",
-//     color: "Green",
-//   },
-// ];
+const sameProduct = [
+  {
+    id: 1,
+    image:
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    amount: "1250",
+    color: "Blue",
+  },
+  {
+    id: 2,
+    image:
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    amount: "1050",
+    color: "Black",
+  },
+  {
+    id: 3,
+    image:
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    amount: "1350",
+    color: "Red",
+  },
+  {
+    id: 4,
+    image:
+      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+    amount: "1450",
+    color: "Green",
+  },
+];
 
-// const sizeData = ["S", "M", "L", "XL", "XXL"];
+const sizeData = ["S", "M", "L", "XL", "XXL"];
 const ProductDetails = () => {
   // Windos Size
   const size = useWindowSize();
@@ -284,7 +284,6 @@ const ProductDetails = () => {
           <Box className="me-2">
             <Image
               src={item}
-              // src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
               height={100}
               width={100}
               layout="intrinsic"
@@ -424,7 +423,7 @@ const ProductDetails = () => {
               </Typography>
             </Grid>
           </Grid>
-          {/* <Grid container>
+          <Grid container>
             <Grid item md={2} />
             <Grid item md={10}>
               <Typography className="h-4 fw-bold">
@@ -468,8 +467,8 @@ const ProductDetails = () => {
                 </Box>
               ))}
             </Grid>
-          </Grid> */}
-          {/* <Grid container>
+          </Grid>
+          <Grid container>
             <Grid item md={2} />
             <Grid item md={10}>
               <Typography className="h-4 fw-bold">
@@ -515,7 +514,7 @@ const ProductDetails = () => {
                 </Typography>
               </Box>
             </Grid>
-          </Grid> */}
+          </Grid>
         </Grid>
         <Grid item md={8.5}>
           <Box className="d-flex justify-content-between me-3">
@@ -797,7 +796,7 @@ const ProductDetails = () => {
                   </>
                 )}
               </Box>
-              {/* <Grid container mt={1}>
+              <Grid container mt={1}>
                 <Grid item md={12}>
                   <Typography className="h-4 color-blue">
                     Add a Protection Plan
@@ -810,8 +809,8 @@ const ProductDetails = () => {
                     showIcon
                     varient="filled"
                   />
-                  <Typography className="h-5">
-                    1 Year Extended Warranty For RS.255
+                  <Typography className="h-5" sx={{ marginLeft: "-15px" }}>
+                    0 Year Extended Warranty For RS.00.00
                   </Typography>
                 </Grid>
                 <Grid item md={7} display="flex" alignItems="center">
@@ -821,12 +820,12 @@ const ProductDetails = () => {
                     showIcon
                     varient="filled"
                   />
-                  <Typography className="h-5">
-                    1 Year Extended Warranty For RS.255
+                  <Typography className="h-5" sx={{ marginLeft: "-15px" }}>
+                    0 Year Extended Warranty For RS.00.00
                   </Typography>
                 </Grid>
-              </Grid> */}
-              {/* <Grid container mt={1} columnGap={5}>
+              </Grid>
+              <Grid container mt={1} columnGap={5}>
                 <Grid item md={2}>
                   <Box className="border rounded d-center">
                     <AirportShuttle
@@ -860,7 +859,7 @@ const ProductDetails = () => {
                     1 Year Warranty
                   </Typography>
                 </Grid>
-              </Grid> */}
+              </Grid>
             </Grid>
             <Grid item md={6}>
               {selectedMasterData.rtoAccepted && (
@@ -1092,45 +1091,45 @@ const ProductDetails = () => {
                 />
                 <ButtonComponent label="Buy Now" muiProps="w-25 me-3 py-2" />
               </Box>
-              {/* <Box>
+              <Box>
                 <Typography className="color-light-green h-5 fw-bold">
                   In Stock
                 </Typography>
                 <Typography className="h-5 mt-1">
                   Sold By{" "}
                   <span className="h-5 color-blue">
-                    Appario Retail Private Ltd
+                    Balu Enterprises pvt ltd
                   </span>
                 </Typography>
                 <Typography className="h-5 mt-1">
-                  <span className="color-blue">New (9) From </span>
-                  <span className="color-orange">Rs 1500.00</span>
+                  <span className="color-blue">New (0) From </span>
+                  <span className="color-orange">Rs 00.00</span>
                 </Typography>
-              </Box> */}
+              </Box>
               <Box className="mt-3">
-                {/* <Grid container gap={1}>
-                  {sameProduct.map((item) => (
+                <Grid container gap={1}>
+                  {sameProduct.map(() => (
                     <Grid
                       item
                       md={3.8}
                       className="border-orange border rounded p-1"
                     >
-                      <Box className="d-flex">
-                        <Image
+                      <Box className="d-flex" height={50} width={50}>
+                        {/* <Image
                           height={50}
                           width={50}
                           src={item.image}
                           layout="intrinsic"
-                        />
+                        /> */}
                         <Typography className="h-6 color-orange d-center ms-1">
-                          Rs {item.amount}.00
+                          {/* Rs {item.amount}.00 */}
                         </Typography>
                       </Box>
                     </Grid>
                   ))}
-                </Grid> */}
+                </Grid>
               </Box>
-              {/* <Box className="d-flex mt-2 align-items-center">
+              <Box className="d-flex mt-2 align-items-center">
                 <Typography>Size : &nbsp;</Typography>
                 {sizeData.map((item) => (
                   <Typography className="border rounded px-2 py-1 mx-2 h-5">
@@ -1140,7 +1139,7 @@ const ProductDetails = () => {
                 <Typography className="h-5 color-blue cursor-pointer">
                   Size Chart
                 </Typography>
-              </Box> */}
+              </Box>
             </Grid>
           </Grid>
           {masterData?.productVariations ? (
