@@ -19,8 +19,8 @@ const acceptOrRejectProduct = (payLoad) => {
       },
     })
     .then((res) => {
-      const { data } = res && res.data;
-      return { data };
+      const { data, message } = res && res.data;
+      return { data, message };
     })
     .catch((err) => ({ err }));
 };

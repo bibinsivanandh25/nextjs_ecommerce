@@ -14,10 +14,9 @@ const AcceptRejectModal = ({
   getTableData = () => {},
 }) => {
   const returnImages = () => {
-    return rowsDataObjects.variationMedia.map((val) => {
+    return rowsDataObjects.variationMedia?.map((val) => {
       return (
         <Grid item xs={2} className="ms-2 text-center">
-          {" "}
           <Image src={val} width={50} height={50} />{" "}
         </Grid>
       );
@@ -29,14 +28,14 @@ const AcceptRejectModal = ({
       productVariationId: rowsDataObjects.productVariationId,
       status,
     };
-    const { data, err } = await acceptOrRejectProduct(payload);
+    const { data, err, message } = await acceptOrRejectProduct(payload);
 
     if (data) {
       setOpenAcceptRejectModal(false);
-      toastify(data.message);
+      toastify(message, "success");
     }
     if (err) {
-      toastify(err.response.data.message);
+      toastify(err.response.data.message, "error");
     }
   };
   return (
