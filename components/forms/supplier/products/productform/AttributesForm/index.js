@@ -101,7 +101,7 @@ const AttributesForm = forwardRef(
                 <Grid item sm={12}>
                   <MultiSelectComponent
                     placeholder={`${
-                      selectedAttribute?.[ele.id].length
+                      selectedAttribute?.[ele.id]?.length
                         ? ""
                         : `Select ${ele.attribute}`
                     }`}

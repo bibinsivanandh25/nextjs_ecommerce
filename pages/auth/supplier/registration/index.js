@@ -183,24 +183,6 @@ const Registration = () => {
               errorObj={errorObj}
             />
           </Grid>
-          <ModalComponent
-            ModalTitle=""
-            showFooter={false}
-            showHeader={false}
-            showClearBtn={false}
-            showCloseIcon={false}
-            showSaveBtn={false}
-            open={showModal}
-            ModalWidth={350}
-          >
-            <div className="text-center">
-              <div className={styles.modalImgContainer} />
-              <Typography className="my-2 fw-600">
-                A mail has been delivered. A link to create a password will be
-                sent to you once the verification is finished.
-              </Typography>
-            </div>
-          </ModalComponent>
         </Grid>
       ) : (
         <VerifyOTP
@@ -209,6 +191,24 @@ const Registration = () => {
           setShowModal={setShowModal}
         />
       )}
+      <ModalComponent
+        ModalTitle=""
+        showFooter={false}
+        showHeader={false}
+        showClearBtn={false}
+        showCloseIcon={false}
+        showSaveBtn={false}
+        open={showModal}
+        ModalWidth={350}
+      >
+        <div className="text-center">
+          <div className={styles.modalImgContainer} />
+          <Typography className="my-2 fw-600">
+            A mail has been delivered. A link to create a password will be sent
+            to you once the verification is finished.
+          </Typography>
+        </div>
+      </ModalComponent>
     </>
   );
 };
