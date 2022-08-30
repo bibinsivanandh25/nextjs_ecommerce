@@ -83,7 +83,7 @@ const StoreSettings = () => {
                     sx={{
                       backgroundColor: "#e56700",
                       fontSize: "0.7rem !important",
-                      paddingX: "1.65rem !important",
+                      paddingX: "1.40rem !important",
                       "&:hover": {
                         backgroundColor: "#e56700",
                       },

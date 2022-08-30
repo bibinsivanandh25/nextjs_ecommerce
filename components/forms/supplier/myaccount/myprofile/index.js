@@ -1,5 +1,5 @@
-import { Avatar, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Avatar, Badge, Grid } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CustomIcon from "services/iconUtils";
@@ -9,7 +9,9 @@ import {
   getSupplierDetailsBySupplierId,
   updateSupplierProfile,
 } from "services/supplier/myprofile";
+import { getBase64 } from "services/utils/functionUtils";
 import { useUserInfo } from "services/hooks";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useSelector } from "react-redux";
 import InputBox from "@/atoms/InputBoxComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -49,10 +51,13 @@ const MyProfile = () => {
   const [errorObj, setErrorObj] = useState({ ...formObj });
   const [showUpdate, setShowUpdate] = useState(false);
   const [mainCategories, setMainCategories] = useState([]);
+  const [profileImage, setProfileImage] = useState();
 
   const user = useSelector((state) => {
     return state.user;
   });
+
+  const profilePicRef = useRef(null);
 
   const validateForm = () => {
     let flag = false;
@@ -114,6 +119,7 @@ const MyProfile = () => {
     }
     return flag;
   };
+
   const handleUpdateProfile = async () => {
     const flag = validateForm();
     if (!flag) {
@@ -193,11 +199,41 @@ const MyProfile = () => {
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded px-4">
       <div className="mt-4 d-flex align-items-center">
         <div>
-          <Avatar
-            src={formValues.profileImage}
-            sx={{
-              height: 100,
-              width: 100,
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            badgeContent={
+              <Avatar
+                className={`bg-white shadow cursor-pointer ${
+                  showUpdate ? "" : "d-none"
+                }`}
+                onClick={() => {
+                  profilePicRef.current.click();
+                }}
+              >
+                <CameraAltIcon className="color-black" />
+              </Avatar>
+            }
+          >
+            <Avatar
+              src={profileImage}
+              sx={{
+                height: 100,
+                width: 100,
+              }}
+            />
+          </Badge>
+
+          <input
+            type="file"
+            hidden
+            ref={profilePicRef}
+            onChange={async (e) => {
+              let binary;
+              if (e.target.files[0]) {
+                binary = await getBase64(e.target.files[0]);
+              }
+              setProfileImage(binary);
             }}
           />
         </div>

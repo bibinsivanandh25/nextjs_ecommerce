@@ -275,7 +275,7 @@ const Login = () => {
         setSelectedIndex={setSelectedIndex}
       /> */}
       <Paper elevation={24}>
-        <div className="p-5 " style={{ width: "450px", height: "450px" }}>
+        <div className="p-5 " style={{ width: "450px" }}>
           <div className="d-flex justify-content-center">
             <Image src={assetsJson.logo} alt="" width={300} height={120} />
           </div>
