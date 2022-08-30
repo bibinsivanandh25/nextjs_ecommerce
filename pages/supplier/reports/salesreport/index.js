@@ -4,6 +4,135 @@ const SalesReport = () => {
   return (
     <div>
       <ReportLayout
+        showCurrentDateTable
+        dateTableTitle="Current Day Sales Data"
+        dateSummaryTitle="Current Date Sales Summary"
+        Datecolumns={[
+          {
+            id: "col1", // id value in column should be presented in row as key
+            label: "Date",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col2",
+            label: "No. of Sales",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+        ]}
+        dateRows={[
+          {
+            id: "1",
+            col1: "1 Jan 2021",
+            col2: 33333,
+          },
+          {
+            id: "2",
+            col1: "2 Feb 2022",
+            col2: 22222,
+          },
+        ]}
+        dateSelectList={[
+          {
+            id: 1,
+            value: 2021,
+            label: 2021,
+          },
+          {
+            id: 2,
+            value: 2022,
+            label: 2022,
+          },
+          {
+            id: 3,
+            value: 2023,
+            label: 2023,
+          },
+        ]}
+        dateMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
+        summarydateSelectList={[
+          {
+            id: 1,
+            value: 2021,
+            label: 2021,
+          },
+          {
+            id: 2,
+            value: 2022,
+            label: 2022,
+          },
+          {
+            id: 3,
+            value: 2023,
+            label: 2023,
+          },
+        ]}
+        summarydateMenuList={["Sort By Price", "Sort By Date", "Download"]}
+        summaryDateColumns={[
+          {
+            id: "col1",
+            label: "Payment ID",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col1",
+            label: "Product",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col3",
+            label: "Customer",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col4",
+            label: "Date",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col5",
+            label: "Amount",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+        ]}
+        summaryDateRows={[
+          {
+            id: "1",
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+          },
+          {
+            id: "2",
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+          },
+        ]}
         barGraphLabels={[
           "Jan",
           "Feb",
@@ -130,7 +259,31 @@ const SalesReport = () => {
         ]}
         summaryColumns={[
           {
-            id: "col1", // id value in column should be presented in row as key
+            id: "col1",
+            label: "Payment ID",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col1",
+            label: "Product",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col3",
+            label: "Customer",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col4",
             label: "Date",
             minWidth: 100,
             align: "center",
@@ -138,8 +291,16 @@ const SalesReport = () => {
             data_classname: "",
           },
           {
-            id: "col2",
-            label: "No. of Sales",
+            id: "col5",
+            label: "Amount",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col6",
+            label: "Status",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -149,13 +310,21 @@ const SalesReport = () => {
         summaryRows={[
           {
             id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+            col6: "Completed",
           },
           {
             id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+            col6: "Completed",
           },
         ]}
         cardDetails={[

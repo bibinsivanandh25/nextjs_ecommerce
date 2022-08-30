@@ -275,6 +275,7 @@ const CreateBanner = ({
       }}
       ClearBtnText="Cancel"
       saveBtnText={saveBtnName == "save" ? "Save" : "Edit"}
+      titleClassName="fw-bold color-orange h-5"
     >
       <Grid container spacing={2} className="my-2">
         <Grid
