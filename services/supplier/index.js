@@ -11,5 +11,16 @@ const getSupplierDetailsById = (id) => {
       return err;
     });
 };
+const getCurrentData = () => {
+  return serviceUtil
+    .get(`products/local-date-time`)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
-export { getSupplierDetailsById };
+export { getSupplierDetailsById, getCurrentData };
