@@ -18,7 +18,6 @@ const VariationForm = forwardRef(
         type: "date",
         id: "expiryDate",
         value: null,
-        required: true,
       },
       {
         label: "Country of Origin",
