@@ -55,7 +55,7 @@ const CreateBanner = ({ showModal = false, setShowModal = () => {} }) => {
                 <input
                   type="date"
                   // value={dateValue.from}
-                  className={styles.dateinput}
+                  className={styles.timepicker}
                   style={{
                     border: "none",
                     outline: "none",
