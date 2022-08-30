@@ -17,6 +17,7 @@ const SimpleDropdownComponent = ({
   className = "",
   helperText = null,
   required = false,
+  disabled = false,
   removeRadius = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
@@ -34,6 +35,7 @@ const SimpleDropdownComponent = ({
   return (
     <ThemeProvider theme={theme}>
       <Autocomplete
+        disabled={disabled}
         value={value}
         onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
