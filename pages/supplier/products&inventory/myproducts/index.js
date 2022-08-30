@@ -126,9 +126,9 @@ const MyProducts = () => {
     data.forEach((masterProduct) => {
       masterProduct.productVariations.forEach((variation) => {
         result.push({
-          col1: (
+          col1: variation.variationMedia ? (
             <Image src={variation.variationMedia[0]} height={50} width={50} />
-          ),
+          ) : null,
           col2: masterProduct.productType,
           col3: variation.productVariationId,
           col4: variation.productTitle,
