@@ -69,7 +69,7 @@ const FileUploadModal = ({
         } else {
           toastify("Maximum 5 files can be uploaded", "error");
         }
-      } else if (!acceptedTypes.includes(acceptedFiles[0].name.split(".")[1])) {
+      } else if (acceptedTypes.includes(acceptedFiles[0].name.split(".")[1])) {
         reader.readAsDataURL(acceptedFiles[0]);
         reader.onloadend = () => {
           const bitStr = reader.result;
