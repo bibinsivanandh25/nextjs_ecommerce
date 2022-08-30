@@ -9,6 +9,7 @@ import {
   getTopProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import HotDealsOfTheDay from "@/forms/customer/Home/HotDealsOfTheDay";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
@@ -75,12 +76,16 @@ const Home = () => {
   const [products, setProducts] = useState([]);
 
   const route = useRouter();
+  const storeDetails = useSelector((state) => ({
+    supplierId: state.customer.supplierId,
+    storeCode: state.customer.storeCode,
+  }));
 
   useEffect(() => {
-    if (!Object.keys(route.query).length) {
+    if (storeDetails.storeCode === "" || storeDetails.supplierId === "") {
       route.push("/auth/customer");
     }
-  }, [route.query]);
+  }, [storeDetails]);
 
   const getCategories = async () => {
     const { data, err } = await getMainCategories();
@@ -100,9 +105,7 @@ const Home = () => {
   };
 
   const getBanners = async () => {
-    const { data, err } = await getBannersBySupplierId(
-      route?.query?.supplierId
-    );
+    const { data, err } = await getBannersBySupplierId(storeDetails.supplierId);
     if (data) {
       const temp = [];
       data?.forEach((ele) => {
@@ -119,7 +122,7 @@ const Home = () => {
   };
 
   const getProducts = async () => {
-    const { data, err } = await getTopProducts(route?.query?.supplierId);
+    const { data, err } = await getTopProducts(storeDetails.supplierId);
     if (data) {
       const result = [];
       data.forEach((variations) => {
@@ -253,8 +256,6 @@ const Home = () => {
                   route.push({
                     pathname: `/customer/productdetails`,
                     query: {
-                      supplierId: route.query.supplierId,
-                      storeCode: route.query.storeCode,
                       id: data.id,
                     },
                   });
