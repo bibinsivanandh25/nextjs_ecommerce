@@ -29,7 +29,6 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
-import serviceUtil from "services/utils";
 import { getSupplierDetailsById } from "services/supplier";
 import { store } from "store";
 import { storeUserInfo } from "features/userSlice";
