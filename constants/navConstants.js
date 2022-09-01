@@ -201,6 +201,11 @@ const supplierMenu = [
         path_name: "salesreport",
         navigate: true,
       },
+      {
+        title: "Revenue Sales",
+        path_name: "revenuesales",
+        navigate: true,
+      },
     ],
   },
   {

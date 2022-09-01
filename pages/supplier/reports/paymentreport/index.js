@@ -128,7 +128,31 @@ const PaymentReports = () => {
         ]}
         summaryColumns={[
           {
-            id: "col1", // id value in column should be presented in row as key
+            id: "col1",
+            label: "Payment ID",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col1",
+            label: "Product",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col3",
+            label: "Customer",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col4",
             label: "Date",
             minWidth: 100,
             align: "center",
@@ -136,8 +160,16 @@ const PaymentReports = () => {
             data_classname: "",
           },
           {
-            id: "col2",
-            label: "No. of Sales",
+            id: "col5",
+            label: "Amount",
+            minWidth: 100,
+            align: "center",
+            data_align: "center",
+            data_classname: "",
+          },
+          {
+            id: "col6",
+            label: "Status",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -147,13 +179,21 @@ const PaymentReports = () => {
         summaryRows={[
           {
             id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+            col6: "Completed",
           },
           {
             id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
+            col1: "#897656",
+            col2: "Green Sport Shoes",
+            col3: "Martin Hughes",
+            col4: "4 Jul 2020",
+            col5: "4,200.00",
+            col6: "Completed",
           },
         ]}
         cardDetails={[
