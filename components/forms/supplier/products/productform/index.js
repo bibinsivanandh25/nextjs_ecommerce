@@ -444,7 +444,12 @@ const ProductsLayout = ({
       toastify(err.response.data.message, "error");
     } else if (data) {
       toastify(data.message, "success");
-      router.replace("/supplier/products&inventory/myproducts");
+      router.replace({
+        pathname: `"/supplier/products&inventory/myproducts"`,
+        query: {
+          active: "2",
+        },
+      });
     }
   };
 
