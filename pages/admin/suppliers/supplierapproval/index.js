@@ -380,6 +380,7 @@ const SupplierApproval = () => {
           onCloseIconClick={() => {
             setModalUserData("");
             setOpenInviteModal(false);
+            setModalInputError(false);
           }}
           ModalTitle="Invite Supplier"
           ClearBtnText="Close"
@@ -388,7 +389,9 @@ const SupplierApproval = () => {
             handleInviteSupplierClick();
           }}
           onClearBtnClick={() => {
+            setModalUserData("");
             setOpenInviteModal(false);
+            setModalInputError(false);
           }}
           footerClassName="justify-content-end"
         >
