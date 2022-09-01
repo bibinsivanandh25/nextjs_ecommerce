@@ -990,7 +990,8 @@ const ProductsLayout = ({
           setTagInputError("");
         }}
         onClearBtnClick={() => {
-          setOpenModal(false);
+          setcreateTagModal(false);
+          setTagInputError("");
         }}
         onSaveBtnClick={handleTagSubmit}
       >
