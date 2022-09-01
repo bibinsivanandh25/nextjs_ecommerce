@@ -33,6 +33,7 @@ import serviceUtil from "services/utils";
 import { getSupplierDetailsById } from "services/supplier";
 import { store } from "store";
 import { storeUserInfo } from "features/userSlice";
+import axios from "axios";
 import styles from "./Login.module.css";
 
 // const options = ["Supplier", "Reseller", "Customer"];
@@ -229,8 +230,8 @@ const Login = () => {
         password: formValues.password,
         userType: "SUPPLIER",
       };
-      await serviceUtil
-        .post(`auth/authenticate`, payload)
+      await axios
+        .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
           const errRes = err.response.data?.message;
           toastify(errRes, "error");

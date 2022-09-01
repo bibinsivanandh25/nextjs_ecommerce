@@ -87,6 +87,11 @@ const VariationForm = forwardRef(
 
     useEffect(() => {
       getDate();
+      const temp = JSON.parse(JSON.stringify(dropdowns));
+      temp.forEach((item) => {
+        item.value = formData.variation[item.id];
+      });
+      setDropdowns(temp);
     }, []);
 
     const handleInputChange = (val, ele) => {
