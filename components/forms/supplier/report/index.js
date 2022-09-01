@@ -81,6 +81,17 @@ const ReportLayout = ({
   cardLabel = "",
   tableLabel1 = "",
   tableLabel2 = "",
+  showCurrentDateTable = false,
+  dateTableTitle = "",
+  dateSummaryTitle = "",
+  summarydateSelectList = [],
+  dateMenuList = [],
+  dateSelectList = [],
+  summarydateMenuList = [],
+  summaryDateColumns = [],
+  summaryDateRows = [],
+  dateRows = [],
+  Datecolumns = [],
 }) => {
   const [tableRows, setTableRows] = useState([...Detailrows]);
   const [summarytableRows, setsummaryTableRows] = useState([...summaryRows]);
@@ -150,9 +161,22 @@ const ReportLayout = ({
     return cardDetails.map((ele, ind) => {
       return (
         <>
-          <Grid className="" item xs={3} key={ind}>
+          <Grid
+            className=""
+            item
+            md={2.9}
+            key={ind}
+            sm={3.8}
+            xs={5.8}
+            sx={{
+              boxShadow: "0px 0px 4px #0000003D",
+              border: "3px solid #FFFFFF",
+              borderRadius: "8px",
+              opacity: "0.9",
+            }}
+          >
             <Paper
-              className="px-3 py-2"
+              className="px-3 py-2 h-100"
               sx={{
                 backgroundColor: ele.background,
                 color: "white",
@@ -169,7 +193,7 @@ const ReportLayout = ({
   return (
     <Paper>
       <Grid className="p-3">
-        <Grid container spacing={3}>
+        <Grid container gap={1}>
           {getCardDetails()}
         </Grid>
         <Grid container spacing={3} className="mt-2">
@@ -194,14 +218,14 @@ const ReportLayout = ({
           </Grid>
         </Grid>
         <Grid container spacing={3} className="mt-2">
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Paper sx={{ borderRadius: 4 }}>
               <Grid className="d-flex align-items-center ">
                 <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
-                <Grid className="ms-auto ">
+                <Grid className="ms-auto " mt={2}>
                   <SelectComponent disableUnderline list={detailSelectList} />
                 </Grid>
-                <Grid className="mt-3 cursor-pointer ">
+                <Grid className="mt-3 cursor-pointer zIndex-100">
                   {/* <MoreVert /> */}
                   <BasicMenu
                     menuList={detailMenuList}
@@ -216,21 +240,27 @@ const ReportLayout = ({
                 showSearchbar={false}
                 columns={[...Detailcolumns]}
                 tableRows={[...tableRows]}
+                showCheckbox={false}
               />
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <Paper sx={{ borderRadius: 4 }}>
               <Grid className="d-flex align-items-center justify-content-between">
                 <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
                 <Grid className="d-flex justify-content-between align-items-center">
-                  <SelectComponent
-                    disableUnderline
-                    list={summaryStatusList}
-                    label="Status"
-                  />
-                  <SelectComponent disableUnderline list={summarySelectList} />
-                  <Grid className="mt-3 cursor-pointer">
+                  <Grid mt={2}>
+                    <SelectComponent
+                      disableUnderline
+                      list={summaryStatusList}
+                      label="Status"
+                    />
+                    <SelectComponent
+                      disableUnderline
+                      list={summarySelectList}
+                    />
+                  </Grid>
+                  <Grid className="mt-3 cursor-pointer zIndex-100">
                     <BasicMenu
                       menuList={summaryMenuList}
                       getSelectedValue={(item) => {
@@ -246,10 +276,76 @@ const ReportLayout = ({
                 showSearchbar={false}
                 tableRows={[...summarytableRows]}
                 columns={[...summaryColumns]}
+                showCheckbox={false}
               />
             </Paper>
           </Grid>
         </Grid>
+        {showCurrentDateTable ? (
+          <Grid container spacing={3} className="mt-2">
+            <Grid item xs={4}>
+              <Paper sx={{ borderRadius: 4 }}>
+                <Grid className="d-flex align-items-center ">
+                  <Grid className="fs-12 fw-bold px-2 mt-3">
+                    {dateTableTitle}
+                  </Grid>
+                  <Grid className="ms-auto " mt={2}>
+                    <SelectComponent disableUnderline list={dateSelectList} />
+                  </Grid>
+                  <Grid className="mt-3 cursor-pointer zIndex-100">
+                    {/* <MoreVert /> */}
+                    <BasicMenu
+                      menuList={dateMenuList}
+                      getSelectedValue={(item) => {
+                        sortTable(item);
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <TableComponent
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  columns={[...Datecolumns]}
+                  tableRows={[...dateRows]}
+                  showCheckbox={false}
+                />
+              </Paper>
+            </Grid>
+            <Grid item xs={8}>
+              <Paper sx={{ borderRadius: 4 }}>
+                <Grid className="d-flex align-items-center justify-content-between">
+                  <Grid className="fs-12 fw-bold px-2 mt-3">
+                    {dateSummaryTitle}
+                  </Grid>
+                  <Grid className="d-flex justify-content-between align-items-center">
+                    <Grid mt={2}>
+                      <SelectComponent
+                        disableUnderline
+                        list={summarydateSelectList}
+                      />
+                    </Grid>
+                    <Grid className="mt-3 cursor-pointer zIndex-100">
+                      <BasicMenu
+                        menuList={summarydateMenuList}
+                        getSelectedValue={(item) => {
+                          sortSummaryTable(item);
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <TableComponent
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  tableRows={[...summaryDateRows]}
+                  columns={[...summaryDateColumns]}
+                  showCheckbox={false}
+                />
+              </Paper>
+            </Grid>
+          </Grid>
+        ) : null}
       </Grid>
     </Paper>
   );
