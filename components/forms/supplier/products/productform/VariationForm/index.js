@@ -72,9 +72,13 @@ const VariationForm = forwardRef(
               return ele;
             }
           }) || [];
-        setDropdowns([...dataCopy, ...defaultList]);
+        const temp = JSON.parse(JSON.stringify([...dataCopy, ...defaultList]));
+        temp.forEach((item) => {
+          item.value = formData?.variation[item.id];
+        });
+        setDropdowns([...temp]);
       }
-    }, [formData?.attribute]);
+    }, [formData?.attribute, formData?.variation]);
 
     let currentData = new Date();
 
@@ -87,11 +91,6 @@ const VariationForm = forwardRef(
 
     useEffect(() => {
       getDate();
-      const temp = JSON.parse(JSON.stringify(dropdowns));
-      temp.forEach((item) => {
-        item.value = formData.variation[item.id];
-      });
-      setDropdowns(temp);
     }, []);
 
     const handleInputChange = (val, ele) => {
