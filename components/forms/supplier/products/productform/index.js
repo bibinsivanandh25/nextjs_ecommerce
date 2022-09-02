@@ -217,8 +217,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -346,6 +346,10 @@ const ProductsLayout = ({
       });
       return variationProperty;
     };
+    const otherInformation = {};
+    formData.variation.others.forEach((item) => {
+      otherInformation[item.label] = item.value;
+    });
 
     const payload = {
       brand: formData.mainForm.brand,
@@ -434,7 +438,7 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformation: {},
+      otherInformation,
       zoneChargeInfo: {},
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,

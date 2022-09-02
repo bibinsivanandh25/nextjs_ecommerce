@@ -275,6 +275,7 @@ const validateVariation = (dropdowns, currentData) => {
       errObj[el.id] = null;
     }
   });
+
   Object.values(errObj).forEach((i) => {
     if (i) {
       flag = true;

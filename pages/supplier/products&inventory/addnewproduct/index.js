@@ -89,7 +89,12 @@ const NewProducts = () => {
     variation: {
       expiryDate: null,
       countryOfOrigin: null,
-      others: null,
+      others: [
+        {
+          label: "",
+          value: "",
+        },
+      ],
     },
     attribute: {},
     mrMrsCartFormData: {
@@ -179,7 +184,12 @@ const NewProducts = () => {
     variation: {
       expiryDate: null,
       countryOfOrigin: null,
-      others: null,
+      others: [
+        {
+          label: "",
+          value: "",
+        },
+      ],
     },
     attribute: {},
     mrMrsCartFormData: {
