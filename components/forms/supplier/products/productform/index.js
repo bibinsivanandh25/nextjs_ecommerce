@@ -37,6 +37,7 @@ const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
   formData = {},
   setFormData = () => {},
+  setShowGroupVariant = () => {},
   tabsList = [],
   formsRef = null,
   showGroupVariant = false,
@@ -217,8 +218,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
+      setactiveTab((prev) => prev + 1);
     }
-    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -519,9 +520,73 @@ const ProductsLayout = ({
               ) : null}
             </Box>
           )}
-          <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll">
+          <Box className="border-end p-2 w-30p mxh-75vh overflow-y-scroll py-3">
             <div className="px-2">
               <Grid container spacing={2}>
+                <Grid item md={12}>
+                  <SimpleDropdownComponent
+                    list={categoryData}
+                    id="category"
+                    label="Select Category*"
+                    size="small"
+                    inputlabelshrink
+                    error={errorObj.category && errorObj.category !== ""}
+                    helperText={errorObj.category ?? ""}
+                    onDropdownSelect={(value) => {
+                      if (value) {
+                        setShowCategoryModal(true);
+                        setFormData((prev) => ({
+                          ...prev,
+                          mainForm: {
+                            ...prev.mainForm,
+                            category: value,
+                            setsValue: {},
+                            subCategoryValue: {},
+                            commision_mode: value?.commission_mode
+                              ? value.commission_mode
+                              : "",
+                          },
+                        }));
+                      } else {
+                        setFormData((prev) => ({
+                          ...prev,
+                          mainForm: {
+                            ...prev.mainForm,
+                            category: {},
+                            setsValue: {},
+                            subCategoryValue: {},
+                            commision_mode: "",
+                          },
+                        }));
+                        setSubCategoryData([]);
+                        setSetsData([]);
+                      }
+                    }}
+                    value={formData?.mainForm?.category}
+                    placeholder="Select Category"
+                  />
+                  {formData?.mainForm?.category &&
+                  Object.keys(formData?.mainForm?.category).length ? (
+                    <Typography
+                      className="h-6 mt-1 cursor-pointer color-blue d-inline"
+                      onClick={() => {
+                        setShowCategoryModal(true);
+                      }}
+                    >
+                      Edit sub-category <EditIcon className="ms-1 h-5" />
+                    </Typography>
+                  ) : null}
+                </Grid>
+                <Grid item md={12}>
+                  <InputBox
+                    id="commisionmode"
+                    label="Commision Mode*"
+                    value={formData?.mainForm?.commision_mode}
+                    placeholder="Commission Mode"
+                    inputlabelshrink
+                    disabled
+                  />
+                </Grid>
                 <Grid item md={12}>
                   <InputBox
                     id="brand"
@@ -616,70 +681,7 @@ const ProductsLayout = ({
                     helperText={errorObj?.long_description?.text}
                   />
                 </Grid>
-                <Grid item md={12}>
-                  <SimpleDropdownComponent
-                    list={categoryData}
-                    id="category"
-                    label="Select Category*"
-                    size="small"
-                    inputlabelshrink
-                    error={errorObj.category && errorObj.category !== ""}
-                    helperText={errorObj.category ?? ""}
-                    onDropdownSelect={(value) => {
-                      if (value) {
-                        setShowCategoryModal(true);
-                        setFormData((prev) => ({
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            category: value,
-                            setsValue: {},
-                            subCategoryValue: {},
-                            commision_mode: value?.commission_mode
-                              ? value.commission_mode
-                              : "",
-                          },
-                        }));
-                      } else {
-                        setFormData((prev) => ({
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            category: {},
-                            setsValue: {},
-                            subCategoryValue: {},
-                            commision_mode: "",
-                          },
-                        }));
-                        setSubCategoryData([]);
-                        setSetsData([]);
-                      }
-                    }}
-                    value={formData?.mainForm?.category}
-                    placeholder="Select Category"
-                  />
-                  {formData?.mainForm?.category &&
-                  Object.keys(formData?.mainForm?.category).length ? (
-                    <Typography
-                      className="h-6 mt-1 cursor-pointer color-blue d-inline"
-                      onClick={() => {
-                        setShowCategoryModal(true);
-                      }}
-                    >
-                      Edit sub-category <EditIcon className="ms-1 h-5" />
-                    </Typography>
-                  ) : null}
-                </Grid>
-                <Grid item md={12}>
-                  <InputBox
-                    id="commisionmode"
-                    label="Commision Mode*"
-                    value={formData?.mainForm?.commision_mode}
-                    placeholder="Commission Mode"
-                    inputlabelshrink
-                    disabled
-                  />
-                </Grid>
+
                 <Grid item md={12}>
                   <MultiSelectComponent
                     list={tagValues}
@@ -973,7 +975,7 @@ const ProductsLayout = ({
         <GroupVariationForm
           formData={formData}
           ref={formsRef}
-          // setShowGroupVariant={setShowGroupVariant}
+          setShowGroupVariant={setShowGroupVariant}
           // imagedata={imagedata}
           // short_descriptionImg={short_descriptionImg}
           // long_descriptionImg={long_descriptionImg}

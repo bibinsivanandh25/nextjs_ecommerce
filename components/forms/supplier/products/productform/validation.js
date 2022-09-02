@@ -6,6 +6,10 @@ import toastify from "services/utils/toastUtils";
 const validateMainForm = (mainFormData) => {
   const errObj = {};
   let flag = false;
+  if (!Object.keys(mainFormData.category).length) {
+    errObj.category = validateMessage.field_required;
+    flag = true;
+  }
   if (mainFormData.brand === null || mainFormData.brand === "") {
     errObj.brand = validateMessage.field_required;
     flag = true;
@@ -22,10 +26,6 @@ const validateMainForm = (mainFormData) => {
     flag = true;
   } else if (mainFormData.long_description.text.length > 255) {
     errObj.long_description = { text: validateMessage.alpha_numeric_max_255 };
-    flag = true;
-  }
-  if (!Object.keys(mainFormData.category).length) {
-    errObj.category = validateMessage.field_required;
     flag = true;
   }
 
