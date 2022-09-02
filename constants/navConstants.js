@@ -332,6 +332,7 @@ const supplierMenu = [
     path_name: "inviteuser",
     navigate: true,
     child: [],
+    disabled: true,
   },
   {
     title: "My Shared Products",
