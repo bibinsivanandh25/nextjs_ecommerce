@@ -356,7 +356,7 @@ export default function TableComponent({
     if (dateValue.from && dateValue.to) {
       const startDate = new Date(dateValue.from);
       const endDate = new Date(dateValue.to);
-      const resultProductData = tableRows.filter(function (a) {
+      const resultProductData = tableRows.filter((a) => {
         for (const i of dateFilterColName) {
           const date = new Date(a[i]);
           return date >= startDate && date <= endDate;
@@ -601,7 +601,8 @@ export default function TableComponent({
                     className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
                     onClick={() => {
                       // if (searchText !== "") {
-                      handlePageEnd(searchText, searchFilter?.value);
+                      setPage(0);
+                      handlePageEnd(searchText, searchFilter?.value, 0);
                       // }
                     }}
                   >

@@ -45,7 +45,6 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
 
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
-    console.log(val, "asds");
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
     }

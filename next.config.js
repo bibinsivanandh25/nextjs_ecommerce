@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   webpack: (config, { isServer }) => {
     const configCopy = { ...config };
     if (!isServer) configCopy.resolve.fallback.fs = false;
@@ -16,5 +15,6 @@ const nextConfig = {
   env: {
     DOMAIN: process.env.DOMAIN,
   },
+  reactStrictMode: false,
 };
 module.exports = nextConfig;
