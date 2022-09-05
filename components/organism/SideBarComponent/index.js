@@ -415,7 +415,7 @@ const SideBarComponent = ({ children }) => {
         >
           <BreadCrumb />
         </Box>
-        <AnimatePresence initial={false} exitBeforeEnter>
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
             sx={{
               maxHeight: route.pathname.startsWith("/admin")

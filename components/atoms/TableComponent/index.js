@@ -285,7 +285,7 @@ export default function TableComponent({
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
   useEffect(() => {
-    setSearchFilterList(filterList);
+    if (filterList.length) setSearchFilterList(filterList);
   }, [filterList]);
 
   useEffect(() => {
@@ -302,7 +302,7 @@ export default function TableComponent({
   }, [draggableHeader]);
 
   useEffect(() => {
-    setRows(tableRows);
+    if (tableRows.length) setRows(tableRows);
   }, [tableRows]);
 
   const handleChangePage = (event, newPage) => {
@@ -652,7 +652,7 @@ export default function TableComponent({
     if (position === "sticky" && index === columns.length - 1)
       return classes.lastrow;
   };
-
+  // return <div>table component</div>;
   return (
     <div>
       <Grid
