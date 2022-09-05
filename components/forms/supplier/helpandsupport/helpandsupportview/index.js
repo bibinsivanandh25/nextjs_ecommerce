@@ -1,11 +1,11 @@
 /* eslint-disable consistent-return */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
-import { Grid, Paper } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
 
-const HelpandsupportView = ({ selectedData }) => {
+const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
@@ -44,6 +44,14 @@ const HelpandsupportView = ({ selectedData }) => {
 
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
+      <Typography
+        className="h-5 color-orange cursor-pointer ms-2 mt-1"
+        onClick={() => {
+          setShowModal({ show: false, id: null });
+        }}
+      >
+        {"<"} Back
+      </Typography>
       <p className="fs-16 fw-bold p-3 border-bottom">
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>

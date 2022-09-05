@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Badge, Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
@@ -5,8 +7,10 @@ import HelpandsupportCreate from "components/forms/supplier/helpandsupport/helpa
 import HelpAndSupportNotification from "components/forms/supplier/helpandsupport/helpandsupportnotification";
 import HelpandsupportView from "components/forms/supplier/helpandsupport/helpandsupportview";
 import CustomIcon from "services/iconUtils";
+import styles from "./helpandsupport.module.css";
 
 const HelpAndSupport = () => {
+  const [selectTab, setSelectTab] = useState("tab1");
   const [tableRows, setTableRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -179,14 +183,51 @@ const HelpAndSupport = () => {
   useEffect(() => {
     setTableRows(mapRowsToTable(tableData));
   }, [tableData]);
-
+  const handletabClick = () => {
+    setShowCreateComponent(false);
+    setShowModal({
+      show: false,
+      id: null,
+    });
+  };
   return (
     <>
+      <div className="d-flex tabcontainer">
+        <div
+          className={`px-4 py-1 border fs-14 ${
+            selectTab === "tab1" ? styles.activeTab : styles.inActivetab
+          }`}
+          onClick={() => {
+            setSelectTab("tab1");
+            handletabClick();
+          }}
+        >
+          Admin Tickets
+        </div>
+        <div
+          className={`px-4 py-1 border fs-14 ${
+            selectTab === "tab2" ? styles.activeTab : styles.inActivetab
+          }`}
+          onClick={() => {
+            setSelectTab("tab2");
+            handletabClick();
+          }}
+        >
+          Customer Tickets
+        </div>
+      </div>
       {/* eslint-disable-next-line no-nested-ternary */}
       {showCreateComponent ? (
-        <HelpandsupportCreate setShowCreateComponent={setShowCreateComponent} />
+        <HelpandsupportCreate
+          setShowCreateComponent={setShowCreateComponent}
+          selectTab={selectTab}
+        />
       ) : showModal.show && showModal.type === "view" ? (
-        <HelpandsupportView selectedData={selectedData} />
+        <HelpandsupportView
+          selectedData={selectedData}
+          setShowModal={setShowModal}
+          selectTab={selectTab}
+        />
       ) : (
         <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
           <Grid container>
@@ -199,7 +240,11 @@ const HelpAndSupport = () => {
             >
               <Grid item sx={{ p: 2 }}>
                 <p>
-                  <span className="fs-16 fw-bold px-3">Help & Support</span>
+                  <span className="fs-16 fw-bold px-3">
+                    {selectTab == "tab1"
+                      ? `Admin Help & Support`
+                      : `Customer Help & Support`}
+                  </span>
                   <span className="fs-12 fw-normal text-secondary">
                     (We ensure to solve your issues within 3 working days)
                   </span>
@@ -231,6 +276,7 @@ const HelpAndSupport = () => {
               <HelpAndSupportNotification
                 show={showModal.show}
                 setShowModal={setShowModal}
+                selectTab={selectTab}
               />
             )}
           </Grid>

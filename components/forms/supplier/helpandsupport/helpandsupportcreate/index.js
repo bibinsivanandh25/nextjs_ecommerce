@@ -7,9 +7,12 @@ import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
 import { useState } from "react";
 
-const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
+const HelpandsupportCreate = ({
+  setShowCreateComponent = () => {},
+  selectTab = {},
+}) => {
   // const inputField = useRef();
-
+  console.log(selectTab, "selectTab");
   const issueTypes = [
     {
       label: "Order",
