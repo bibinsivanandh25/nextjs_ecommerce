@@ -19,6 +19,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -30,6 +31,7 @@ const MyProducts = () => {
   const [tabList, setTabList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
   const [search, setsearch] = useState("");
+  const [viewModal, setViewModal] = useState({});
   const columns = [
     {
       label: "Image",
@@ -141,7 +143,14 @@ const MyProducts = () => {
           col10: variation.lastUpdatedAt,
           col11: (
             <Grid container className="h-6">
-              <Grid item xs={3}>
+              <Grid
+                item
+                xs={3}
+                onClick={() => {
+                  setViewModal(JSON.parse(JSON.stringify(variation)));
+                  console.log("asdsads", variation);
+                }}
+              >
                 <CustomIcon className="fs-6" title="View" type="view" />
               </Grid>
               <Grid item xs={3}>
@@ -443,6 +452,12 @@ const MyProducts = () => {
           </ModalComponent>
         </Paper>
       </Box>
+      <ViewModal
+        details={viewModal}
+        modalClose={() => {
+          setViewModal({});
+        }}
+      />
     </Paper>
   );
 };

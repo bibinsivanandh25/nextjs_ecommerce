@@ -252,7 +252,7 @@ export default function TableComponent({
   // onCustomSearchButtonClick = () => {},
   disableCustomButton = false,
   showCellBorders = true,
-  tHeadBgColor = "",
+  tHeadBgColor = "bg-light-gray",
   showDateFilter = false,
   dateFilterColName = [],
   customDropDownPlaceholder = "",
