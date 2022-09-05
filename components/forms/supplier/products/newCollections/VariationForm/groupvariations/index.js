@@ -65,7 +65,6 @@ const GroupVariationForm = forwardRef(
     },
     ref
   ) => {
-    console.log({ formData });
     const tempObj = {
       images: [],
       inventory: {
@@ -557,7 +556,7 @@ const GroupVariationForm = forwardRef(
       } else if (data) {
         toastify(data.message, "success");
         router.replace({
-          pathname: `"/supplier/products&inventory/myproducts"`,
+          pathname: "/supplier/products&inventory/myproducts",
           query: {
             active: "2",
           },

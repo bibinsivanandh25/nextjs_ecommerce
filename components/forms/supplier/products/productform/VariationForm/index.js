@@ -2,13 +2,16 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-prototype-builtins */
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import { getCurrentData } from "services/supplier";
+import CustomIcon from "services/iconUtils";
+import { Country } from "country-state-city";
 import { validateVariation } from "../validation";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const VariationForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
@@ -23,26 +26,20 @@ const VariationForm = forwardRef(
         label: "Country of Origin",
         type: "dropdown",
         id: "countryOfOrigin",
-        options: [
-          {
-            id: "india",
-            label: "India",
-          },
-          { id: "japan", label: "Japan" },
-        ],
-        value: null,
-        required: true,
-      },
-      {
-        label: "Others",
-        type: "textarea",
-        id: "others",
+        options: [],
         value: null,
         required: true,
       },
     ];
+    const countries = Country.getAllCountries();
     const [dropdowns, setDropdowns] = useState([]);
     const [error, setError] = useState({});
+    const countryList = countries.map((item) => ({
+      label: item.name,
+      value: item.name,
+      id: item.name,
+    }));
+
     useEffect(() => {
       let tempFormData = {};
       tempFormData = { ...JSON.parse(JSON.stringify(formData)) };
@@ -72,9 +69,13 @@ const VariationForm = forwardRef(
               return ele;
             }
           }) || [];
-        setDropdowns([...dataCopy, ...defaultList]);
+        const temp = JSON.parse(JSON.stringify([...dataCopy, ...defaultList]));
+        temp.forEach((item) => {
+          item.value = formData?.variation[item.id];
+        });
+        setDropdowns([...temp]);
       }
-    }, [formData?.attribute]);
+    }, [formData?.attribute, formData?.variation]);
 
     let currentData = new Date();
 
@@ -122,7 +123,11 @@ const VariationForm = forwardRef(
           return ["attribute", {}];
         },
         validate: () => {
-          const { errObj, flag } = validateVariation(dropdowns, currentData);
+          const { errObj, flag } = validateVariation(
+            dropdowns,
+            currentData,
+            formData.variation.others
+          );
           if (Object.keys(errObj).length) {
             const element = document.getElementById(Object.keys(errObj)[0]);
             if (element) {
@@ -139,6 +144,15 @@ const VariationForm = forwardRef(
       };
     });
 
+    const addOtherField = () => {
+      const temp = JSON.parse(JSON.stringify(formData));
+      temp.variation.others.push({
+        label: "",
+        value: "",
+      });
+      setFormData(temp);
+    };
+
     return (
       <Grid container spacing={2} className="">
         {dropdowns.map((ele) => {
@@ -152,26 +166,20 @@ const VariationForm = forwardRef(
                   <SimpleDropdownComponent
                     id={ele.id}
                     size="small"
-                    list={ele.options}
+                    list={
+                      ele.id === "countryOfOrigin" ? countryList : ele.options
+                    }
                     value={
-                      ele.options.find(
-                        (op) => op.id === formData?.variation[ele.id]
-                      ) ?? {}
+                      ele.id === "countryOfOrigin"
+                        ? countryList.find(
+                            (op) => op.id === formData?.variation[ele.id]
+                          )
+                        : ele.options.find(
+                            (op) => op.id === formData?.variation[ele.id]
+                          ) ?? {}
                     }
                     onDropdownSelect={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
-                  />
-                )}
-                {ele.type === "textarea" && (
-                  <InputBox
-                    id={ele.id}
-                    value={formData?.variation?.others ?? ""}
-                    isMultiline
-                    onInputChange={(e) =>
-                      handleInputChange(e.target.value, ele)
-                    }
-                    helperText={error[ele.id]}
-                    error={Boolean(error[ele.id])}
                   />
                 )}
                 {ele.type === "date" && (
@@ -188,6 +196,68 @@ const VariationForm = forwardRef(
             </Grid>
           );
         })}
+        <Grid item lg={9} md={9} xs={12}>
+          Other
+        </Grid>
+        <Grid item md={3} className="d-flex flex-row-reverse">
+          <ButtonComponent
+            label="Add"
+            variant="outlined"
+            size="small"
+            onBtnClick={addOtherField}
+            muiProps="m-0 p-0 fs-12"
+            showIcon
+            iconOrintation="end"
+            iconName="add"
+            iconColorClass="fs-16 color-orange"
+          />
+        </Grid>
+        <Grid item md={12} xs={12} container spacing={1} className="mx-2">
+          {formData?.variation?.others?.map((item, index) => (
+            <>
+              <Grid item md={12} lg={4}>
+                <InputBox
+                  id={`label${index}`}
+                  value={item.label}
+                  onInputChange={(e) => {
+                    const temp = JSON.parse(JSON.stringify(formData));
+                    temp.variation.others[index].label = e.target.value;
+                    setFormData(temp);
+                  }}
+                  label="Label"
+                />
+              </Grid>
+              <Grid item md={12} lg={8} className="d-flex align-items-start">
+                <InputBox
+                  id={`value${index}`}
+                  isMultiline
+                  value={item.value}
+                  onInputChange={(e) => {
+                    const temp = JSON.parse(JSON.stringify(formData));
+                    temp.variation.others[index].value = e.target.value;
+                    setFormData(temp);
+                  }}
+                />
+                {formData?.variation?.others.length - 1 ? (
+                  <Box
+                    className="bg-orange rounded-circle ms-2"
+                    onClick={() => {
+                      const temp = JSON.parse(JSON.stringify(formData));
+                      temp.variation.others.splice(index, 1);
+                      setFormData(temp);
+                    }}
+                  >
+                    <CustomIcon
+                      type="removeIcon"
+                      size="12"
+                      className="color-white"
+                    />
+                  </Box>
+                ) : null}
+              </Grid>
+            </>
+          ))}
+        </Grid>
       </Grid>
     );
   }

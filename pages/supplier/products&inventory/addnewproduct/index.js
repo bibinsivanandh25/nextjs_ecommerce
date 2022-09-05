@@ -30,7 +30,7 @@ const NewProducts = () => {
       limit_per_order: "",
       selectb2binvoice: [],
       tradeMarkCheck: false,
-      category: null,
+      category: {},
       brandradio: true,
       genericradio: false,
       b2bdocument: [],
@@ -89,7 +89,12 @@ const NewProducts = () => {
     variation: {
       expiryDate: null,
       countryOfOrigin: null,
-      others: null,
+      others: [
+        {
+          label: "",
+          value: "",
+        },
+      ],
     },
     attribute: {},
     mrMrsCartFormData: {
@@ -179,7 +184,12 @@ const NewProducts = () => {
     variation: {
       expiryDate: null,
       countryOfOrigin: null,
-      others: null,
+      others: [
+        {
+          label: "",
+          value: "",
+        },
+      ],
     },
     attribute: {},
     mrMrsCartFormData: {

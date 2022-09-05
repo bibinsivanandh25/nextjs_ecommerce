@@ -188,6 +188,8 @@ const Header = () => {
               removeRadius
               fullWidth
               className="bg-white rounded"
+              list={[{ label: "All Categories", value: "all" }]}
+              value={{ label: "All Categories", value: "all" }}
             />
           </div>
           <div

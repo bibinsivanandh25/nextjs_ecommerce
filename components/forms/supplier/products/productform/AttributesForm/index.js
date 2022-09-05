@@ -365,6 +365,7 @@ const AttributesForm = forwardRef(
         <ModalComponent
           open={showAddAttributeModal}
           ModalTitle="Add new Attribute"
+          titleClassName="color-orange fs-14"
           showClearBtn={false}
           saveBtnText="submit"
           onCloseIconClick={() => {

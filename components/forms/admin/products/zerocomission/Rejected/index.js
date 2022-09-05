@@ -121,7 +121,7 @@ const Rejected = () => {
               </Typography>
             </>
           ),
-          col2: (
+          col2: val.variationMedia ? (
             <Box className="d-flex align-items-end justify-content-center">
               <Box
                 onClick={() => {
@@ -143,7 +143,7 @@ const Rejected = () => {
                 /{val.variationMedia.length}
               </Typography>
             </Box>
-          ),
+          ) : null,
           col3: val.productTitle,
           col4: val.skuId,
           col5: (
