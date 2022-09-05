@@ -1,12 +1,19 @@
+/* eslint-disable no-empty-pattern */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import { signIn } from "next-auth/react";
+import { assetsJson } from "public/assets";
+import { useRouter } from "next/router";
+import { login } from "services/customer/auth";
+import atob from "atob";
+import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import styles from "./signin.module.css";
-import favicon from "../../../../public/assets/favicon.png";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 
 const SignIn = () => {
@@ -23,6 +30,8 @@ const SignIn = () => {
   const [errorObj, setErrorObj] = useState({
     ...formObj,
   });
+
+  const router = useRouter();
 
   const validateForm = () => {
     let flag = false;
@@ -44,39 +53,55 @@ const SignIn = () => {
     return flag;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const flag = validateForm();
     if (!flag) {
-      signIn("credentials", {
-        username: formValues.mobileNoOrEmail,
+      login({
+        userName: formValues.mobileNoOrEmail,
         password: formValues.password,
-        role: "customer",
-        roleId: 3,
-        callbackUrl: "/customer/home",
+        userType: "CUSTOMER",
+      }).then(async (res) => {
+        const { data } = res;
+        const decoded = JSON.parse(atob(data.token.split(".")[1].toString()));
+        const userData = decoded.sub.split(",");
+        const respo = signIn("credentials", {
+          id: userData[0],
+          email: userData[1],
+          role: decoded.roles[0],
+          token: data.token,
+          redirect: false,
+          callbackUrl: "/customer/home",
+        });
+        if (respo?.error) {
+          toastify("Invalid credentials", "error");
+          return null;
+        }
+        // await storedatatoRedux(userData[0]);
+        router.push(`/customer/home`);
+        return null;
       });
     }
   };
 
   return (
     <Box
+      sx={{
+        backgroundImage: `url(${assetsJson.login_background})`,
+      }}
       className={`w-100 mnh-100vh d-flex justify-content-center align-items-center ${styles.container}`}
     >
-      <Paper
-        className="w-400px rounded-1"
-        sx={{ background: "rgba(1,1,1,0.4)" }}
-        elevation={6}
-      >
+      <Paper className="w-400px rounded-1" elevation={24}>
         <Box className="w-100 p-4 rounded-1">
           <Box className="d-flex justify-content-end align-items-center">
-            <Typography className="color-white fs-14 cursor-pointer">
-              New Customer
-            </Typography>
+            <Typography className=" fs-14">New Customer</Typography>
             <Box className="ps-2">
               <ButtonComponent
                 label="Sign Up"
                 variant="outlined"
-                muiProps="bg-transparent color-white fs-12"
-                borderColor="border-white"
+                muiProps="bg-transparent  fs-12"
+                onBtnClick={() => {
+                  router.push("/auth/customer/register");
+                }}
               />
             </Box>
           </Box>
@@ -85,13 +110,14 @@ const SignIn = () => {
             className="d-flex justify-content-center align-items-center"
           >
             <Image
-              height="1200"
+              width={300}
+              height={120}
               className="img-fluid"
-              src={favicon}
+              src={assetsJson.logo}
               alt="logo"
             />
           </Box>
-          <Typography variant="h6" className="color-white text-center fs-16">
+          <Typography variant="h6" className="mt-3 text-center fs-16">
             A Multi Ecommrece Store
           </Typography>
           <InputBoxComponent
@@ -132,9 +158,17 @@ const SignIn = () => {
               onBtnClick={handleSubmit}
             />
           </Box>
-          <Typography className="fs-12 text-center color-white mt-2">
-            Dont have an account?{" "}
-            <span className="color-orange cursor-pointer">Register</span>
+          <Typography className="fs-12 text-center mt-2">
+            Dont have an account?
+            <span
+              className="color-orange cursor-pointer"
+              onClick={() => {
+                router.push("/auth/customer/register");
+              }}
+            >
+              {" "}
+              Register
+            </span>
           </Typography>
         </Box>
       </Paper>

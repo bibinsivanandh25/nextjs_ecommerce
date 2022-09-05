@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   customerId: "",
-  firstName: "",
-  lastName: "",
+  name: "",
   supplierId: "",
   supplierStoreLogo: "",
   supplierStoreName: "",

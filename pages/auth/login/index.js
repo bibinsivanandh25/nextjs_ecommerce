@@ -277,7 +277,7 @@ const Login = () => {
       <Paper elevation={24}>
         <div className="p-5 " style={{ width: "450px" }}>
           <div className="d-flex justify-content-center">
-            <Image src={assetsJson.logo} alt="" width={300} height={120} />
+            <Image src={assetsJson.logo} alt="logo" width={300} height={120} />
           </div>
           <Typography className="text-center fw-bold">
             A Multi Ecommerce Store
