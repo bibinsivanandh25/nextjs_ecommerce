@@ -8,8 +8,8 @@ import Sms from "@/forms/admin/settings/Sms";
 const Settings = () => {
   const [tabList, setTabList] = useState([
     { label: "Push notification", isSelected: true },
-    { label: "E-mail", isSelected: true },
-    { label: "SMS", isSelected: true },
+    { label: "E-mail", isSelected: false },
+    { label: "SMS", isSelected: false },
   ]);
 
   const handleSelect = (index) => {
