@@ -12,6 +12,7 @@ import Image from "next/image";
 import {
   getTabledata,
   getSupplierProductCountByStatus,
+  markOutOfStock,
 } from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
@@ -148,7 +149,6 @@ const MyProducts = () => {
                 xs={3}
                 onClick={() => {
                   setViewModal(JSON.parse(JSON.stringify(variation)));
-                  console.log("asdsads", variation);
                 }}
               >
                 <CustomIcon className="fs-6" title="View" type="view" />
@@ -284,6 +284,25 @@ const MyProducts = () => {
     }
   }, [value]);
 
+  const handleCustomButtonClick = async () => {
+    const payload = [];
+    tableRows.forEach((ele) => {
+      if (selected.includes(ele.col3))
+        payload.push({
+          productVariationId: ele.col3,
+          skuId: ele.col5,
+        });
+    });
+    const { data, message, err } = await markOutOfStock(payload);
+    if (data) {
+      toastify(message, "success");
+      getTabList();
+      getTableData("", "", 0);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <Paper
       sx={{ height: "100%" }}
@@ -299,7 +318,7 @@ const MyProducts = () => {
             customDropdownLabel="Style Code"
             customButtonLabel="Mark Out Of Stock"
             showCustomButton
-            onCustomButtonClick={() => console.log("custom search button")}
+            onCustomButtonClick={handleCustomButtonClick}
             // searchBarSizeMd={4}
             disableCustomButton={!selected.length}
             OnSelectionChange={(vals) => setSelected(vals)}
