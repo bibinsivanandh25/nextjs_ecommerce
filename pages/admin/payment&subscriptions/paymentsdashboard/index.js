@@ -537,9 +537,9 @@ const PaymentDashboard = () => {
   //----------------------------------------------------------------
 
   const getTableRowsForFailedTransactions = () => {
-    const anArray = [];
+    const result = [];
     rowsForFailedTransactions.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: val.col1,
         col2: <Typography className="color-blue h-5">{val.col2}</Typography>,
@@ -549,13 +549,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForFailedTransactions(anArray);
+    setTableRowsForFailedTransactions(result);
   };
 
   const getTableRowsDataForLastRelease = () => {
-    const anArray = [];
+    const result = [];
     rowsForLastRelease.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: <Typography className="color-blue h-5">{val.col1}</Typography>,
         col2: val.col2,
@@ -563,13 +563,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForLastReleased(anArray);
+    setTableRowsForLastReleased(result);
   };
 
   const getTableRowsDataForNextRelease = () => {
-    const anArray = [];
+    const result = [];
     rowsForNextRelease.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: <Typography className="color-blue h-5">{val.col1}</Typography>,
         col2: val.col2,
@@ -577,13 +577,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForNextRelease(anArray);
+    setTableRowsForNextRelease(result);
   };
 
   const getTableRowsForLastPaymentRelease = () => {
-    const anArray = [];
+    const result = [];
     rowsForLastPaymentRelease.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: <Typography className="h-5 text-primary">{val.col1}</Typography>,
         col2: val.col2,
@@ -594,13 +594,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForLastPaymentRelease(anArray);
+    setTableRowsForLastPaymentRelease(result);
   };
 
   const getTableRowsForPaymentPending = () => {
-    const anArray = [];
+    const result = [];
     rowsForPaymentPending.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: <Typography className="h-5 text-primary">{val.col1}</Typography>,
         col2: val.col2,
@@ -611,13 +611,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForPaymentPending(anArray);
+    setTableRowsForPaymentPending(result);
   };
 
   const getTableRowsForSupplierChargesPaid = () => {
-    const anArray = [];
+    const result = [];
     rowsForSupplierChargesPaid.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: (
           <Typography className="h-5 text-decoration-underline text-primary">
@@ -639,13 +639,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForSupplierChargesPaidColumns(anArray);
+    setTableRowsForSupplierChargesPaidColumns(result);
   };
 
   const getTableRowsForSupplierChargesPending = () => {
-    const anArray = [];
+    const result = [];
     rowsForSupplierChargesPending.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: (
           <Typography className="h-5 text-decoration-underline text-primary">
@@ -667,13 +667,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForSupplierChargesPendingColumns(anArray);
+    setTableRowsForSupplierChargesPendingColumns(result);
   };
 
   const getTableRowsForCodOrderPaymentsSettled = () => {
-    const anArray = [];
+    const result = [];
     rowsForCodOrderPaymentsPendingOrder.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: val.col1,
         col2: val.col2,
@@ -685,13 +685,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForCodOrderPaymentsPendingOrder(anArray);
+    setTableRowsForCodOrderPaymentsPendingOrder(result);
   };
 
   const getTableRowsForCodOrderPaymentsPendingOrder = () => {
-    const anArray = [];
+    const result = [];
     rowsForCodOrderPaymentsSettled.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: val.col1,
         col2: val.col2,
@@ -703,13 +703,13 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForCodOrderPaymentsSettled(anArray);
+    setTableRowsForCodOrderPaymentsSettled(result);
   };
 
   const getTableRowsForResellerSubscriptions = () => {
-    const anArray = [];
+    const result = [];
     rowsForResellerSubscriptionsColumns.forEach((val, index) => {
-      anArray.push({
+      result.push({
         id: index + 1,
         col1: (
           <Typography className="color-blue h-5 text-decoration-underline">
@@ -739,7 +739,7 @@ const PaymentDashboard = () => {
       });
     });
 
-    setTableRowsForResellerSubscriptions(anArray);
+    setTableRowsForResellerSubscriptions(result);
   };
 
   useEffect(() => {

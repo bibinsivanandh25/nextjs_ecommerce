@@ -60,12 +60,7 @@ const ImagesInfoTable = ({
         col1: (
           <Box className="d-flex align-items-end justify-content-center">
             <Box
-              onClick={() => {
-                // setImages([...val.col2.imgSrc]);
-                // setImageIndexForImageModal(0);
-                // setModalId(index);
-                // setOpenImagesArrayModal(true);
-              }}
+              onClick={() => {}}
               className="h-30 border d-flex justify-content-center"
             >
               <Image
@@ -112,9 +107,10 @@ const ImagesInfoTable = ({
     <Box>
       <Typography
         onClick={() => {
+          console.log("Hi");
           setShowImageInfoTable(false);
         }}
-        className="color-orange fs-14 cursor-pointer ps-3"
+        className="color-orange fs-14 cursor-pointer ps-3 mb-3"
       >
         {"<"}
         Back

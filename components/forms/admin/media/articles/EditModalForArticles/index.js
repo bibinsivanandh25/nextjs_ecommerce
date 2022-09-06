@@ -1,16 +1,28 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { AddCircle } from "@mui/icons-material";
 import Image from "next/image";
+import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
-import DropdownComponent from "@/atoms/DropdownComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+
+let errObj = {
+  articleTitle: false,
+  externalLink: false,
+  category: false,
+  image: false,
+};
 
 const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
   const [articleTitle, setArticleTitle] = useState("");
   const [externalLink, setExternalLink] = useState("");
+  const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
+  const [error, setError] = useState(errObj);
+
+  const categoryList = [{ label: "Category One" }, { label: "Category Two" }];
 
   const onImgeChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -22,11 +34,46 @@ const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
     }
   };
 
+  const handleError = () => {
+    errObj = {
+      articleTitle: false,
+      externalLink: false,
+      category: false,
+      image: false,
+    };
+    if (articleTitle === "") {
+      errObj.articleTitle = true;
+    }
+    if (externalLink === "") {
+      errObj.externalLink = true;
+    }
+    if (category === "") {
+      errObj.category = true;
+    }
+    if (image === null) {
+      errObj.image = true;
+    }
+    return errObj;
+  };
+
+  const handleSaveBtnClick = () => {
+    const theErrObj = handleError();
+    setError(theErrObj);
+  };
+
   const onClose = () => {
+    errObj = {
+      articleTitle: false,
+      externalLink: false,
+      category: false,
+      image: false,
+    };
     setOpenEditModal(false);
     setArticleTitle("");
     setExternalLink("");
+    setCategory("");
     setImage(null);
+    setError(errObj);
   };
 
   return (
@@ -42,7 +89,7 @@ const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
         ModalWidth={650}
         onCloseIconClick={onClose}
         onSaveBtnClick={() => {
-          // handleSaveBtnClickOfEditModal();
+          handleSaveBtnClick();
         }}
         onClearBtnClick={() => {
           // handleClearAll();
@@ -68,13 +115,13 @@ const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
                       onChange={onImgeChange}
                     />
                   </Box>
-                  {/* {error.images ? (
-                  <Typography className="fs-12 mt-1 text-danger">
-                    Image Required
-                  </Typography>
-                ) : (
-                  ""
-                )} */}
+                  {error.image ? (
+                    <Typography className="fs-12 mt-1 text-danger">
+                      Image Required
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
                 </Box>
               </label>
             ) : (
@@ -102,12 +149,25 @@ const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
               onInputChange={(e) => {
                 setArticleTitle(e.target.value);
               }}
+              error={error.articleTitle}
+              helperText={
+                error.articleTitle ? validateMessage.field_required : ""
+              }
             />
             <Box className="mt-3">
-              <DropdownComponent
+              <SimpleDropdownComponent
                 placeholder="eg. Simple Product"
                 label="Category"
                 size="small"
+                onDropdownSelect={(value) => {
+                  setCategory(value);
+                }}
+                list={categoryList}
+                helperText={
+                  error.category ? validateMessage.field_required : ""
+                }
+                className="mb-3"
+                inputlabelshrink
               />
             </Box>
             <InputBox
@@ -118,6 +178,10 @@ const EditModalForArticles = ({ openEditModal, setOpenEditModal }) => {
               onInputChange={(e) => {
                 setExternalLink(e.target.value);
               }}
+              error={error.externalLink}
+              helperText={
+                error.externalLink ? validateMessage.field_required : ""
+              }
             />
           </Box>
         </Box>
