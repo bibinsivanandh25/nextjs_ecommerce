@@ -2,13 +2,19 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import logo from "public/assets/logo.jpeg";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import { maxLengthValidator } from "services/validationUtils";
 import { Star } from "@mui/icons-material";
+import toastify from "services/utils/toastUtils";
+import {
+  getAllCustomerReview,
+  reviewReply,
+} from "services/supplier/customerreview";
+import { useSelector } from "react-redux";
 
 const CustomerReview = () => {
+  const user = useSelector((state) => state.user);
   const [tableRows, setTableRows] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [replyData, setReplyData] = useState({ value: "", id: null });
@@ -17,6 +23,7 @@ const CustomerReview = () => {
     show: false,
     id: null,
   });
+  const [selectedData, setSelectedData] = useState({});
   const columns = [
     {
       label: "Image",
@@ -60,34 +67,34 @@ const CustomerReview = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, index) => {
       result.push({
         col1: (
           <div>
-            <Image src={logo} height={50} width={50} alt="" />
+            <Image src={row.profileImageUrl} height={50} width={50} alt="" />
             <Typography fontSize={10} pl={1}>
-              {row.productId}
+              {index}
             </Typography>
           </div>
         ),
-        col2: row.skuid,
-        col3: row.name,
-        col4: row.email,
-        col5: row.mobileno,
+        col2: row.skuId,
+        col3: row.customerName,
+        col4: row.emailId,
+        col5: row.mobileNumber,
         col6: (
           <span>
-            {row.ratings}
+            {row.sellerRatings}
             <Star sx={{ color: "gold", zoom: 0.6 }} />
           </span>
         ),
         col7: (
           <div className="mxh-50 overflow-y-scroll overflow-text">
-            {row.questions}
+            {row.customerReview}
           </div>
         ),
         col8: (
           <div className="mxh-50 overflow-y-scroll overflow-text">
-            {row.supplierreply}
+            {row.sellerResponse}
           </div>
         ),
         col9: (
@@ -97,9 +104,10 @@ const CustomerReview = () => {
             sx={{ fontSize: 8 }}
             className="bg-orange"
             onClick={() => {
+              setSelectedData(row);
               setShowReplyModal({
                 show: true,
-                id: row.productId,
+                id: index,
               });
             }}
           >
@@ -110,59 +118,38 @@ const CustomerReview = () => {
     });
     return result;
   };
-
+  const getAllTableData = async () => {
+    const { data, err } = await getAllCustomerReview(user.supplierId);
+    if (data) {
+      setTableData(data);
+    } else if (err) {
+      setTableData([]);
+      toastify(err.response.data.message, "error");
+    }
+  };
   useEffect(() => {
-    const rows = [
-      {
-        productId: "#123458",
-        skuid: "123456",
-        email: "tom@gmail.com",
-        name: "Tom",
-        mobileno: "9988293842",
-        ratings: "4.5",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply: "PRODUCT LIVE",
-      },
-      {
-        productId: "#123456",
-        skuid: "123456",
-        email: "jerry@gmail.com",
-        name: "Jerry",
-        mobileno: "9988293840",
-        ratings: "5",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-      {
-        productId: "#123459",
-        skuid: "123423",
-        email: "jessy@gmail.com",
-        name: "Jessy",
-        mobileno: "9988293849",
-        ratings: "3",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-    ];
-    setTableData(rows);
+    getAllTableData();
   }, []);
 
   useEffect(() => {
     setTableRows(mapRowsToTable(tableData));
   }, [tableData]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const errMsg = maxLengthValidator(replyData.value, 255);
     setError(errMsg);
     if (!errMsg) {
-      setShowReplyModal({ show: false, id: null });
-      console.log(replyData);
-      setReplyData({ value: "", id: null });
+      const payload = {
+        sellerReviewId: selectedData.id,
+        sellerResponse: replyData.value,
+      };
+      const { data, err } = await reviewReply(payload);
+      if (data) {
+        setShowReplyModal({ show: false, id: null });
+        setReplyData({ value: "", id: null });
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
     }
   };
 

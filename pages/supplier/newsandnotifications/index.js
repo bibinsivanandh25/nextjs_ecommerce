@@ -69,8 +69,8 @@ const NewsandNotifications = () => {
       <Grid container className="ps-3">
         {notificationData.map((data) => (
           <Grid item lg={6} md={6} sm={12} className="mt-3">
-            <div className="border rounded me-4">
-              <Card className="d-flex">
+            <div className="border rounded me-4 h-100">
+              <Card className="d-flex h-100">
                 {data.imagesrc && (
                   <CardMedia
                     component="img"

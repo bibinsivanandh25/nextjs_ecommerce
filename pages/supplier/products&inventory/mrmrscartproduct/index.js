@@ -1,11 +1,14 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
+import { format } from "date-fns";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
+import { getTableData } from "services/supplier/MrMrsCartProducts";
 
 const MrMrsCartProducts = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Image",
@@ -65,82 +68,72 @@ const MrMrsCartProducts = () => {
       isFilter: false,
     },
   ];
+  const filterList = [
+    { label: "All", id: "0", value: "ALL" },
+    { label: "Name", id: "0", value: "PRODUCT_TITLE" },
+    { label: "SKU", id: "0", value: "SKU" },
+    { label: "MRP", id: "0", value: "MRP" },
+    { label: "Listing Price", id: "0", value: "LISTING_PRICE" },
+  ];
 
   const mapRowsToTable = (data) => {
     const result = [];
     data.forEach((row) => {
-      result.push({
-        col1: row.purchaseid,
-        col2: row.productType,
-        col3: row.productId,
-        col4: row.name,
-        col5: row.sku,
-        col6: row.size,
-        col7: row.listingPrice,
-        col8: row.mrpPrice,
-        col9: row.stock,
-        col10: row.status,
-        col11: row.updateAndDate,
-        col12: (
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <CustomIcon type="view" title="View" />
+      row.productVariations.forEach((ele) => {
+        result.push({
+          col1: ele?.variationMedia.length ? (
+            <div>
+              <Image src={ele.variationMedia[0]} width={40} height={40} />
+            </div>
+          ) : null,
+          col2: row.productType.split("_").join(" "),
+          col3: ele.productVariationId,
+          col4: ele.productTitle,
+          col5: ele.skuId,
+          col6: "",
+          col7: ele.salePrice,
+          col8: ele.mrp,
+          col9: ele.stockStatus,
+          col10: ele.status,
+          col11: format(new Date(ele.lastUpdatedAt), "dd-MM-yyyy HH:mm"),
+          col12: (
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <CustomIcon type="view" title="View" />
+              </Grid>
+              <Grid item xs={4}>
+                <CustomIcon type="filecopy" title="Copy" />
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <CustomIcon type="filecopy" title="Copy" />
-            </Grid>
-          </Grid>
-        ),
+          ),
+        });
       });
     });
     return result;
   };
 
+  const getData = async (
+    filterStatus = "ALL",
+    keyword = "",
+    pageIndex = pageNumber
+  ) => {
+    const { data, err } = await getTableData(filterStatus, keyword, pageIndex);
+    if (!err && data) {
+      if (pageIndex === 0) {
+        setTableRows(mapRowsToTable(data.data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data.data)]);
+      }
+    }
+  };
   useEffect(() => {
-    const rows = [
-      {
-        productType: "Simple Product",
-        productId: "#45523232",
-        name: "Bag",
-        sku: "SL 9083",
-        size: "UK24",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-      {
-        productType: "Simple Product",
-        productId: "#45523232",
-        name: "Mouse",
-        sku: "SL 9083",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        size: "UK24",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-      {
-        productType: "Simple Product",
-        size: "UK24",
-        productId: "#45523232",
-        name: "Bagd",
-        sku: "SL 9083",
-        listingPrice: "500",
-        mrpPrice: "1000",
-        stock: "In Stock",
-        status: "Available",
-        updateAndDate: "12-01-2022 12:00",
-      },
-    ];
-    setTableData(rows);
+    if (columns.length) getData();
+    return () => {
+      setTableRows([]);
+    };
   }, []);
-
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
 
   return (
     <Paper
@@ -164,6 +157,17 @@ const MrMrsCartProducts = () => {
             tableRows={tableRows}
             table_heading={`Total Products ${tableRows.length}`}
             showCheckbox={false}
+            filterList={filterList}
+            handlePageEnd={(
+              searchText = "",
+              filterText = "ALL",
+              page = pageNumber
+            ) => {
+              getData(filterText.toUpperCase(), searchText, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       </Box>

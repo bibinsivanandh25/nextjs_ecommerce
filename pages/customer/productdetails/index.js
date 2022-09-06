@@ -116,7 +116,7 @@ const handPick = true;
 // ];
 
 // const sizeData = ["S", "M", "L", "XL", "XXL"];
-const ProductDetails = () => {
+const ProductDetails = ({ productId }) => {
   // Windos Size
   const size = useWindowSize();
 
@@ -161,12 +161,17 @@ const ProductDetails = () => {
     const status = "APPROVED";
     await serviceUtil
       .get(
-        `products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `products/master-product/product-variations?id=${
+          router.query.id ?? productId
+        }&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
         res.data?.data?.productVariations.forEach((item) => {
-          if (item.productVariationId === router.query.id) {
+          if (
+            item.productVariationId === router.query.id ||
+            item.productVariationId === productId
+          ) {
             setSelectedMasterData(item);
             setSelectedImage(item.variationMedia[0]);
           }
@@ -186,7 +191,7 @@ const ProductDetails = () => {
     storeowner: "",
   });
   const getfrequentProduct = async (id) => {
-    const ids = router.query.id ? router.query.id : id;
+    const ids = (router.query.id ? router.query.id : id) ?? productId;
     await serviceUtil
       .get(`products/grouped-product/${ids}`)
       .then((res) => {

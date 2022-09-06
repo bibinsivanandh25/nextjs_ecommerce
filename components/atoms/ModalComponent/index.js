@@ -20,6 +20,7 @@ const ModalComponent = ({
   onClearBtnClick = () => {},
   showCloseIcon = true,
   onCloseIconClick = () => {},
+  modalClose = () => {},
   open = false,
   footerClassName = "justify-content-center",
   footerPadding = "px-4 py-2",
@@ -49,7 +50,7 @@ const ModalComponent = ({
 
   return (
     <div>
-      <Modal open={open}>
+      <Modal open={open} onClose={modalClose}>
         <Box sx={style}>
           {showHeader ? (
             <div

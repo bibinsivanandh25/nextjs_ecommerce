@@ -1,13 +1,26 @@
 import { Box, Grid, Paper } from "@mui/material";
+import validateMessage from "constants/validateMessages";
 import { useState } from "react";
+import validationRegex from "services/utils/regexUtils";
 import TableComponent from "@/atoms/TableComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
-import TextArea from "@/atoms/SimpleTextArea";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
 const InviteUser = () => {
   const [showInviteUser, setShowInviteUser] = useState(false);
+  const [defaultFormData, setDefaultFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    address: "",
+  });
+  const [error, setError] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    address: "",
+  });
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -71,7 +84,67 @@ const InviteUser = () => {
       col5: "--",
     },
   ];
-
+  const validation = () => {
+    const errorObj = {
+      name: "",
+      email: "",
+      mobile: "",
+      address: "",
+    };
+    let flag = true;
+    const { name, email, mobile, address } = defaultFormData;
+    if (name.length === 0) {
+      flag = false;
+      errorObj.name = validateMessage.field_required;
+    } else if (name.length > 100) {
+      flag = false;
+      errorObj.name = validateMessage.alpha_numeric_max_100;
+    }
+    if (email.length === 0) {
+      flag = false;
+      errorObj.email = validateMessage.field_required;
+    } else if (!validationRegex.email.test(email)) {
+      flag = false;
+      errorObj.email = validateMessage.email;
+    }
+    if (mobile.length === 0) {
+      flag = false;
+      errorObj.mobile = validateMessage.field_required;
+    } else if (!validationRegex.mobile.test(mobile)) {
+      flag = false;
+      errorObj.mobile = validateMessage.mobile;
+    }
+    if (address.length === 0) {
+      flag = false;
+      errorObj.address = validateMessage.field_required;
+    } else if (address.length > 255) {
+      flag = false;
+      errorObj.address = validateMessage.alpha_numeric_max_255;
+    }
+    setError(errorObj);
+    return flag;
+  };
+  const handleSaveClick = () => {
+    if (validation()) {
+      setShowInviteUser(false);
+      setDefaultFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        address: "",
+      });
+    }
+  };
+  const handleCloseClick = () => {
+    setError({ name: "", email: "", mobile: "", address: "" });
+    setDefaultFormData({
+      name: "",
+      email: "",
+      mobile: "",
+      address: "",
+    });
+    setShowInviteUser(false);
+  };
   return (
     <Paper className="mxh-80vh mnh-80vh hide-scrollbar-overflow-auto">
       <div className="border-bottom">
@@ -91,21 +164,80 @@ const InviteUser = () => {
       <ModalComponent
         ModalTitle="Invite User"
         open={showInviteUser}
-        onCloseIconClick={() => setShowInviteUser(false)}
+        onCloseIconClick={() => handleCloseClick()}
         footerClassName="justify-content-end"
+        onSaveBtnClick={() => {
+          handleSaveClick();
+        }}
+        onClearBtnClick={() => {
+          handleCloseClick();
+        }}
+        titleClassName="color-orange h-4"
+        ClearBtnText="Cancel"
       >
         <Grid container spacing={2} alignSelf="center" className="py-3">
           <Grid item sm={12}>
-            <InputBox placeholder="Name" />
+            <InputBox
+              label="Name"
+              required
+              value={defaultFormData.name}
+              onInputChange={(e) => {
+                setDefaultFormData((pre) => ({ ...pre, name: e.target.value }));
+              }}
+              inputlabelshrink
+              error={error.name !== ""}
+              helperText={error.name}
+            />
           </Grid>
           <Grid item sm={12}>
-            <InputBox placeholder="Email" />
+            <InputBox
+              label="Email"
+              required
+              value={defaultFormData.email}
+              onInputChange={(e) => {
+                setDefaultFormData((pre) => ({
+                  ...pre,
+                  email: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              error={error.email !== ""}
+              helperText={error.email}
+            />
           </Grid>{" "}
           <Grid item sm={12}>
-            <InputBox placeholder="Mobile" />
+            <InputBox
+              label="Moblie"
+              required
+              value={defaultFormData.mobile}
+              onInputChange={(e) => {
+                setDefaultFormData((pre) => ({
+                  ...pre,
+                  mobile: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              error={error.mobile !== ""}
+              helperText={error.mobile}
+            />
           </Grid>
           <Grid item sm={12}>
-            <TextArea placeholder="Address" rows={3} />
+            <InputBox
+              isMultiline
+              rows={3}
+              label="Address"
+              required
+              value={defaultFormData.address}
+              onInputChange={(e) => {
+                setDefaultFormData((pre) => ({
+                  ...pre,
+                  address: e.target.value,
+                }));
+              }}
+              inputlabelshrink
+              error={error.address !== ""}
+              helperText={error.address}
+            />
           </Grid>
         </Grid>
       </ModalComponent>
