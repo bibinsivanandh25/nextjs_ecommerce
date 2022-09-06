@@ -9,9 +9,7 @@ import AttributesForm from "@/forms/supplier/products/productform/AttributesForm
 import VariationForm from "@/forms/supplier/products/newCollections/VariationForm";
 
 const NewProducts = () => {
-  const formsRef = useRef(null);
-  const [showGroupVariant, setShowGroupVariant] = useState(false);
-  const [formData, setFormData] = useState({
+  const schema = {
     productImage: [],
     mainForm: {
       commision_mode: null,
@@ -100,7 +98,10 @@ const NewProducts = () => {
       cashondelivery: false,
       returnorder: {},
     },
-  });
+  };
+  const formsRef = useRef(null);
+  const [showGroupVariant, setShowGroupVariant] = useState(false);
+  const [formData, setFormData] = useState(JSON.parse(JSON.stringify(schema)));
 
   const zonepagetabs = [
     {
@@ -222,6 +223,7 @@ const NewProducts = () => {
         showGroupVariant={showGroupVariant}
         setShowGroupVariant={setShowGroupVariant}
         zonepagetabs={zonepagetabs}
+        schema={schema}
       />
     </Paper>
   );
