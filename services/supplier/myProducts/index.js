@@ -43,4 +43,19 @@ const markOutOfStock = (payload) => {
     .catch((err) => ({ err }));
 };
 
-export { getSupplierProductCountByStatus, getTabledata, markOutOfStock };
+const deleteSingleProduct = (id) => {
+  return serviceUtil
+    .deleteById(`products/variation/${id}`)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
+export {
+  getSupplierProductCountByStatus,
+  getTabledata,
+  markOutOfStock,
+  deleteSingleProduct,
+};

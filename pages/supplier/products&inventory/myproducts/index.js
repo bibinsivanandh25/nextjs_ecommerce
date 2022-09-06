@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-param-reassign */
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
@@ -13,6 +14,7 @@ import {
   getTabledata,
   getSupplierProductCountByStatus,
   markOutOfStock,
+  deleteSingleProduct,
 } from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
@@ -125,6 +127,12 @@ const MyProducts = () => {
     setShowMenu(null);
   };
 
+  const deleteSingleRow = (productId) => {
+    console.log(productId);
+    deleteSingleProduct(productId);
+    getTableData("", "", 0);
+  };
+
   const mapRowsToTable = (data) => {
     const result = [];
     data.forEach((masterProduct) => {
@@ -159,12 +167,20 @@ const MyProducts = () => {
                   title="share"
                   type="share"
                   onIconClick={() => {
-                    setShowShareModal(true);
+                    navigator.clipboard.writeText(variation.productVariationId);
+                    toastify("Product ID Copied To The Clip Board", "success");
                   }}
                 />
               </Grid>
               <Grid item xs={3}>
-                <CustomIcon className="fs-6" title="Delete" type="delete" />
+                <CustomIcon
+                  onIconClick={() => {
+                    deleteSingleRow(variation.productVariationId);
+                  }}
+                  className="fs-6"
+                  title="Delete"
+                  type="delete"
+                />
               </Grid>
               <Grid item xs={3}>
                 <CustomIcon
