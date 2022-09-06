@@ -65,9 +65,11 @@ const column = [
 // ];
 const ReferredSupplier = () => {
   const [rows, setRows] = useState([]);
+  const [referralCode, setReferralCode] = useState("");
 
   const getTableRows = async () => {
     const { data } = await getReferredSupplier("SP0822000002");
+    setReferralCode(data.supplierReferralCode);
     const tableRows = [];
     data.list.forEach((val) => {
       tableRows.push({
@@ -115,7 +117,7 @@ const ReferredSupplier = () => {
                 </Typography>
                 <ShareIcon
                   onClick={() => {
-                    navigator.clipboard.writeText("Referral ID");
+                    navigator.clipboard.writeText(referralCode);
                     toastify("Referral ID Copied To The Clip Board", "success");
                   }}
                   className="cursor-pointer mx-2"
