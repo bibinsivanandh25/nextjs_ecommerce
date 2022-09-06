@@ -1,9 +1,11 @@
 import { Grid } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 
-const HelpAndSupportNotification = (props) => {
-  const { show = false, setShowModal = () => {} } = props;
-
+const HelpAndSupportNotification = ({
+  show = false,
+  setShowModal = () => {},
+  selectedData = {},
+}) => {
   const getParagraph = (param1, param2) => {
     return (
       <Grid container my={1}>
@@ -19,6 +21,16 @@ const HelpAndSupportNotification = (props) => {
       </Grid>
     );
   };
+  const showFileNames = (value) => {
+    const data = [];
+    value?.forEach((item) => {
+      if (typeof item.mediaUrl == "string") {
+        const x = item.mediaUrl.split("-");
+        data.push({ url: item.mediaUrl, filename: x[x.length - 1] });
+      }
+    });
+    return data;
+  };
 
   return (
     <ModalComponent
@@ -31,11 +43,52 @@ const HelpAndSupportNotification = (props) => {
     >
       <Grid container my={2}>
         <Grid xs={12} item className="fs-15 fw-500">
-          {getParagraph("Date & Time", "12-03-2021, 04:23 AM")}
-          {getParagraph("Ticket ID", "#12445")}
-          {getParagraph("Subject", "Request for refund has not approved yet")}
-          {getParagraph("Reply from admin", "12-03-2021, 04:23 AM")}
-          {getParagraph("Attached File", "12-03-2021, 04:23 AM")}
+          {getParagraph(
+            "Date & Time",
+            new Date(selectedData.createdDate).toLocaleString()
+          )}
+          {getParagraph("Ticket ID", selectedData.ticketId)}
+          {getParagraph("Subject", selectedData.issueSubject)}
+          <Grid container my={1}>
+            <Grid item xs={2}>
+              Reply from Admin
+            </Grid>
+            <Grid item xs={1}>
+              :
+            </Grid>
+            <Grid item xs={9}>
+              <div
+                className=""
+                dangerouslySetInnerHTML={{
+                  __html: selectedData.helpSupportMessages[0].message,
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container my={1}>
+            <Grid item xs={2}>
+              Attached File
+            </Grid>
+            <Grid item xs={1}>
+              :
+            </Grid>
+            <Grid item xs={9}>
+              {showFileNames(
+                selectedData.helpSupportMessages[0].helpSupportMessageMedias
+              ).map((item) => (
+                <a
+                  href={item.url}
+                  download
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-break d-block fit-content"
+                >
+                  {item.filename}
+                </a>
+              ))}
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </ModalComponent>
