@@ -26,11 +26,11 @@ import {
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
 const ProductsLayout = ({
