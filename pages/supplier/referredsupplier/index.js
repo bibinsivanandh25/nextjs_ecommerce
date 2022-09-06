@@ -69,32 +69,36 @@ const ReferredSupplier = () => {
 
   const getTableRows = async () => {
     const { data } = await getReferredSupplier("SP0822000002");
-    setReferralCode(data.supplierReferralCode);
     const tableRows = [];
-    data.list.forEach((val) => {
-      tableRows.push({
-        id: val.supplierId,
-        col1: val.supplierId,
-        col2: (
-          <Paper
-            elevation={4}
-            sx={{ width: "fit-content" }}
-            className="mx-auto"
-          >
-            <Image
-              width={40}
-              height={40}
-              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
-              alt="alt"
-            />
-          </Paper>
-        ),
-        col3: <div className="w-100">{`${val.firstName} ${val.lastName}`}</div>,
-        col4: val.supplierStoreName,
-        col5: val.signupFreeOrderCount,
+    if (data) {
+      setReferralCode(data.supplierReferralCode);
+      data.list.forEach((val) => {
+        tableRows.push({
+          id: val.supplierId,
+          col1: val.supplierId,
+          col2: (
+            <Paper
+              elevation={4}
+              sx={{ width: "fit-content" }}
+              className="mx-auto"
+            >
+              <Image
+                width={40}
+                height={40}
+                src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+                alt="alt"
+              />
+            </Paper>
+          ),
+          col3: (
+            <div className="w-100">{`${val.firstName} ${val.lastName}`}</div>
+          ),
+          col4: val.supplierStoreName,
+          col5: val.signupFreeOrderCount,
+        });
       });
-    });
-    setRows([...tableRows]);
+      setRows([...tableRows]);
+    }
   };
 
   useEffect(() => {
