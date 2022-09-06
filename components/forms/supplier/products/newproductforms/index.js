@@ -24,10 +24,10 @@ import {
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
