@@ -23,11 +23,11 @@ import {
 } from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page

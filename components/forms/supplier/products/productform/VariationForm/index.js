@@ -10,8 +10,8 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { getCurrentData } from "services/supplier";
 import CustomIcon from "services/iconUtils";
 import { Country } from "country-state-city";
-import { validateVariation } from "../validation";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import { validateVariation } from "../validation";
 
 const VariationForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
