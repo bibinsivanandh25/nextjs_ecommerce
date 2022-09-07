@@ -121,6 +121,7 @@ const MyProducts = () => {
   ];
 
   const { id } = useUserInfo();
+  const router = useRouter();
 
   const handleClose = () => {
     setShowMenu(null);
@@ -243,7 +244,6 @@ const MyProducts = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const router = useRouter();
   useEffect(() => {
     setValue(0);
   }, []);

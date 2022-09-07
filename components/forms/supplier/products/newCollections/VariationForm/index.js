@@ -281,7 +281,7 @@ const VariationForm = forwardRef(
             </div>
           </ModalComponent>
           <ModalComponent
-            ModalTitle=""
+            ModalTitle="Upload Product Variation Images"
             showClearBtn={false}
             saveBtnText="Submit"
             onSaveBtnClick={handleImageSubmit}
@@ -293,11 +293,9 @@ const VariationForm = forwardRef(
             minHeightClassName="mnh-100 p-3  d-flex justify-content-center"
             headerClassName="border-0"
             minWidth="75%"
+            titleClassName="fs-16 fw-500 color-orange"
           >
             <div className="">
-              <Typography className="fs-16 fw-500 color-orange">
-                Upload Product Variation Images
-              </Typography>
               <Box className="mxw-70vw d-flex overflow-x-scroll justify-content-center align-items-center">
                 {imagedata.length > 0
                   ? imagedata.map((item, index) => (
