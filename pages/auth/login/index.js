@@ -202,6 +202,7 @@ const Login = () => {
         profileImageUrl: data.profileImageUrl,
         supplierId: data.supplierId,
         storeCode: data.supplierStoreInfo.supplierStoreCode,
+        isAddressSaved: data.userAddressDetails.length,
       };
       store.dispatch(storeUserInfo(supplierDetails));
     }

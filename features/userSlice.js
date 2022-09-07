@@ -7,6 +7,7 @@ const initialState = {
   profileImageUrl: "",
   supplierId: "",
   storeCode: "",
+  isAddressSaved: false,
 };
 
 export const userSlice = createSlice({

@@ -20,6 +20,7 @@ const AddAddressModal = (props) => {
     type = "",
     showAddressModal = false,
     getAllAddress = () => {},
+    supplierId = "",
   } = props;
   const [formValues, setFormValues] = useState({
     name: "",
@@ -171,7 +172,7 @@ const AddAddressModal = (props) => {
         delete temp.addressId;
         const payload = {
           ...temp,
-          supplierId: user,
+          supplierId: user ?? supplierId,
         };
         const { data } = await addNewAddress(payload);
         if (data) {
