@@ -18,6 +18,7 @@ import { getBase64 } from "services/utils/functionUtils";
 import toastify from "services/utils/toastUtils";
 import { Country } from "country-state-city";
 import { getCurrentData } from "services/supplier";
+import ImageGuidelines from "components/molecule/ImageGuidelines";
 import InputBox from "@/atoms/InputBoxComponent";
 import { validateOtherInfo } from "../../productform/validation";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -289,40 +290,53 @@ const VariationForm = forwardRef(
               setShowImageModal(false);
             }}
             open={showImageModal}
-            minHeightClassName="mnh-100 p-4  d-flex justify-content-center"
+            minHeightClassName="mnh-100 p-3  d-flex justify-content-center"
             headerClassName="border-0"
-            minWidth={700}
+            minWidth="75%"
           >
-            <Box className="w-100 d-flex justify-content-center align-items-center">
-              {imagedata.length > 0
-                ? imagedata.map((item, index) => (
-                    <ImageCard
-                      className="mx-3"
-                      key={index}
-                      imgSrc={item}
-                      handleCloseClick={() => {
-                        setImageData((prev) => {
-                          const temp = [...prev];
-                          temp.splice(index, 1);
-                          return [...temp];
-                        });
-                      }}
-                    />
-                  ))
-                : null}
-              <div ref={addRef}>
-                <ImageCard
-                  className="mx-3"
-                  showClose={false}
-                  handleImageUpload={async (e) => {
-                    if (e.target.files.length) {
-                      const file = await getBase64(e.target.files[0]);
-                      setImageData((pre) => [...pre, file]);
-                    }
-                  }}
-                />
+            <div className="">
+              <Typography className="fs-16 fw-500 color-orange">
+                Upload Product Variation Images
+              </Typography>
+              <Box className="mxw-70vw d-flex overflow-x-scroll justify-content-center align-items-center">
+                {imagedata.length > 0
+                  ? imagedata.map((item, index) => (
+                      <ImageCard
+                        className="mx-3"
+                        key={index}
+                        imgSrc={item}
+                        handleCloseClick={() => {
+                          setImageData((prev) => {
+                            const temp = [...prev];
+                            temp.splice(index, 1);
+                            return [...temp];
+                          });
+                        }}
+                      />
+                    ))
+                  : null}
+                <div ref={addRef}>
+                  <ImageCard
+                    className="mx-3"
+                    showClose={false}
+                    handleImageUpload={async (e) => {
+                      if (e.target.files.length) {
+                        const file = await getBase64(e.target.files[0]);
+                        setImageData((pre) => [...pre, file]);
+                      }
+                    }}
+                  />
+                </div>
+              </Box>
+              <div className="mt-3 ">
+                <Typography className="fs-16 fw-500 color-orange">
+                  Image Guidelines
+                </Typography>
+                <div className="mxh-50vh overflow-y-scroll hide-scrollbar">
+                  <ImageGuidelines />
+                </div>
               </div>
-            </Box>
+            </div>
           </ModalComponent>
         </Box>
       </Box>

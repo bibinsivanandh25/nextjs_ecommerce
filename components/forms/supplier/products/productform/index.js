@@ -29,6 +29,7 @@ import toastify from "services/utils/toastUtils";
 import { clearProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
+import ImageGuidelines from "components/molecule/ImageGuidelines";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -71,6 +72,7 @@ const ProductsLayout = ({
   const dispatch = useDispatch();
   const [showOthersField, setshowOthersField] = useState(false);
   const variationData = useSelector((state) => state.product.variationData);
+  const [showGuidelines, setShowGuidlines] = useState(false);
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -230,8 +232,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
+      setactiveTab((prev) => prev + 1);
     }
-    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -707,6 +709,14 @@ const ProductsLayout = ({
         <Box className="d-flex flex-grow-1 flex-row">
           {type === "simple" && (
             <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
+              <Box
+                className="color-blue fs-12 cursor-pointer"
+                onClick={() => {
+                  setShowGuidlines(true);
+                }}
+              >
+                Image Guidelines
+              </Box>
               {formData.productImage.length > 0
                 ? formData.productImage.map((item, index) => (
                     <ImageCard
@@ -1313,6 +1323,20 @@ const ProductsLayout = ({
           </Box>
         </ModalComponent>
       )}
+      <ModalComponent
+        open={showGuidelines}
+        ModalTitle="Image Guidelines"
+        titleClassName="color-orange fs-14"
+        clearBtnClassName="px-4"
+        ClearBtnText="Cancel"
+        onCloseIconClick={() => {
+          setShowGuidlines(false);
+        }}
+        ModalWidth="75%"
+        showFooter={false}
+      >
+        <ImageGuidelines />
+      </ModalComponent>
     </>
   );
 };
