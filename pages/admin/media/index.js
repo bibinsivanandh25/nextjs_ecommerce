@@ -1,14 +1,18 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useState } from "react";
+import TabsCard from "components/molecule/TabsCard";
 import Articles from "@/forms/admin/media/articles";
-import styles from "./media.module.css";
 import Products from "@/forms/admin/media/products";
 import Logos from "@/forms/admin/media/logos";
 
 const Media = () => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const titles = ["Articles", "Products", "Logos"];
+  const [tabList, setTabList] = useState([
+    { label: "Articles", isSelected: true },
+    { label: "Products", isSelected: false },
+    { label: "Logos", isSelected: false },
+  ]);
 
   const [rowsDataObjectsForArticles, setrowsDataObjectsForArticles] = useState([
     {
@@ -191,51 +195,59 @@ const Media = () => {
     // },
   ]);
 
-  const returnTabs = () => {
-    return titles.map((val, index) => {
-      return (
-        <Box
-          onClick={() => {
-            setActiveTab(index);
-          }}
-          className={`px-4 py-1 border fs-14 cursor-pointer 
-          ${activeTab === index ? styles.activeTab : styles.inActivetab}
-          `}
-          key={val}
-        >
-          <Typography className="cursor-pointer fs-14">{val}</Typography>
-        </Box>
-      );
+  const handleSelect = (index) => {
+    setTabList((list) => {
+      const theList = list;
+      theList.forEach((val, forEachIndex) => {
+        if (forEachIndex === index) {
+          const theVal = val;
+          theVal.isSelected = true;
+        } else {
+          const theVal = val;
+          theVal.isSelected = false;
+        }
+      });
+      return theList;
     });
+    setActiveTab(index);
   };
 
   return (
     <>
       <Box>
-        <Box className="d-flex mt-3">{returnTabs()}</Box>
-        <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
-          <Box className="px-1 pt-2">
-            {activeTab === 0 && (
-              <Articles
-                rowsDataObjectsForArticles={rowsDataObjectsForArticles}
-                setrowsDataObjectsForArticles={setrowsDataObjectsForArticles}
-              />
-            )}
-            {activeTab === 1 && (
-              <Products
-                rowsDataObjectsForProducts={rowsDataObjectsForProducts}
-                setrowsDataObjectsForProducts={setRowsDataObjectsForProducts}
-              />
-            )}
+        <TabsCard
+          tabList={tabList}
+          onSelect={(index) => {
+            handleSelect(index);
+          }}
+        >
+          <Paper
+            sx={{ height: "78vh" }}
+            className="overflow-auto hide-scrollbar"
+          >
+            <Box className="px-1 pt-2">
+              {activeTab === 0 && (
+                <Articles
+                  rowsDataObjectsForArticles={rowsDataObjectsForArticles}
+                  setrowsDataObjectsForArticles={setrowsDataObjectsForArticles}
+                />
+              )}
+              {activeTab === 1 && (
+                <Products
+                  rowsDataObjectsForProducts={rowsDataObjectsForProducts}
+                  setrowsDataObjectsForProducts={setRowsDataObjectsForProducts}
+                />
+              )}
 
-            {activeTab === 2 && (
-              <Logos
-                rowsDataObjectsForLogos={rowsDataObjectsForLogos}
-                setRowsDataObjectsForLogos={setRowsDataObjectsForLogos}
-              />
-            )}
-          </Box>
-        </Paper>
+              {activeTab === 2 && (
+                <Logos
+                  rowsDataObjectsForLogos={rowsDataObjectsForLogos}
+                  setRowsDataObjectsForLogos={setRowsDataObjectsForLogos}
+                />
+              )}
+            </Box>
+          </Paper>
+        </TabsCard>
       </Box>
     </>
   );
