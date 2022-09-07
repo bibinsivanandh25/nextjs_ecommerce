@@ -128,11 +128,11 @@ const ReportLayout = ({
   };
   const sortSummaryTable = (val) => {
     let sortCol;
-    const rows = [...tableRows];
+    const rows = [...summarytableRows];
     if (val.label === "Sort By Price") {
-      sortCol = "col2";
+      sortCol = "col5";
     } else if (val.label === "Sort By Date") {
-      sortCol = "col1";
+      sortCol = "col4";
     }
 
     if (val.sort === "ascending") {
@@ -183,7 +183,7 @@ const ReportLayout = ({
               }}
             >
               <Grid className="fs-12">{ele.label}</Grid>
-              <Grid className="fs-2">{ele.value}</Grid>
+              <Grid className="fs-2 text-break">{ele.value}</Grid>
             </Paper>
           </Grid>
         </>
