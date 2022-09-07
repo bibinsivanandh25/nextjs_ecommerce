@@ -193,6 +193,7 @@ const Login = () => {
 
   const storedatatoRedux = async (id) => {
     const { data, err } = await getSupplierDetailsById(id);
+
     if (!err) {
       const supplierDetails = {
         emailId: data.emailId,
@@ -200,6 +201,7 @@ const Login = () => {
         lastName: data.lastName,
         profileImageUrl: data.profileImageUrl,
         supplierId: data.supplierId,
+        storeCode: data.supplierStoreInfo.supplierStoreCode,
       };
       store.dispatch(storeUserInfo(supplierDetails));
     }
