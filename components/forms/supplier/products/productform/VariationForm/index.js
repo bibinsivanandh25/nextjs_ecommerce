@@ -7,6 +7,7 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
+import { getCurrentData } from "services/supplier";
 import { validateVariation } from "../validation";
 
 const VariationForm = forwardRef(
@@ -17,7 +18,6 @@ const VariationForm = forwardRef(
         type: "date",
         id: "expiryDate",
         value: null,
-        required: true,
       },
       {
         label: "Country of Origin",
@@ -76,6 +76,19 @@ const VariationForm = forwardRef(
       }
     }, [formData?.attribute]);
 
+    let currentData = new Date();
+
+    const getDate = async () => {
+      const { data, err } = await getCurrentData();
+      if (!err) {
+        currentData = new Date(data);
+      }
+    };
+
+    useEffect(() => {
+      getDate();
+    }, []);
+
     const handleInputChange = (val, ele) => {
       const getData = () => {
         if (ele.type === "dropdown") {
@@ -109,7 +122,7 @@ const VariationForm = forwardRef(
           return ["attribute", {}];
         },
         validate: () => {
-          const { errObj, flag } = validateVariation(dropdowns);
+          const { errObj, flag } = validateVariation(dropdowns, currentData);
           if (Object.keys(errObj).length) {
             const element = document.getElementById(Object.keys(errObj)[0]);
             if (element) {

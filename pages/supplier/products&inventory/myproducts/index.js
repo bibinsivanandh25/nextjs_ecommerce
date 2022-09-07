@@ -14,6 +14,7 @@ import {
   getSupplierProductCountByStatus,
 } from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
+import { useRouter } from "next/router";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -231,9 +232,15 @@ const MyProducts = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const router = useRouter();
   useEffect(() => {
     setValue(0);
   }, []);
+  useEffect(() => {
+    if (Object.keys(router?.query ?? {}).length) {
+      setValue(parseInt(router?.query?.active, 10));
+    }
+  }, [router?.query]);
 
   const getTabList = async () => {
     const { data } = await getSupplierProductCountByStatus(id);

@@ -22,6 +22,7 @@ import validationRegex from "services/utils/regexUtils";
 import { saveProduct, saveMediaFile } from "services/supplier/AddProducts";
 import { useUserInfo } from "services/hooks";
 import { useRouter } from "next/router";
+import { getCurrentData } from "services/supplier";
 import {
   allowback_orders,
   business_processing_days,
@@ -165,18 +166,44 @@ const GroupVariationForm = forwardRef(
       setVariationData(temp);
     };
 
+    let currentData = new Date();
+
+    const getDate = async () => {
+      const { data, err } = await getCurrentData();
+      if (data) {
+        currentData = new Date(data);
+      }
+    };
+    useEffect(() => {
+      getDate();
+    }, []);
+
     const validate = () => {
       const errObj = JSON.parse(JSON.stringify({ ...emptyObj }));
       let flag = false;
+      Object.keys(errObj).forEach((item, index) => {
+        delete errObj[item].expand;
+        delete errObj[item].images;
+        delete errObj[item].manageStock;
+        Object.keys(errObj[item]).forEach((ele) => {
+          Object.keys(errObj[item][ele]).forEach((el) => {
+            errObj[item][ele][el] = "";
+          });
+        });
+      });
       Object.keys(emptyObj).forEach((item, index) => {
         Object.keys(variationData[item]).forEach((ele, ind) => {
           if (ele !== "images") {
             if (ele === "inventory") {
-              const tempInventory = { ...variationData[item].inventory };
+              const tempInventory = JSON.parse(
+                JSON.stringify(variationData[item].inventory)
+              );
               if (!Object.keys(tempInventory.stock_status).length) {
                 flag = true;
                 errObj[item].inventory.stock_status =
                   validateMessage.field_required;
+              } else {
+                errObj[item].inventory.stock_status = "";
               }
               if (variationData[item].manageStock) {
                 if (tempInventory.stock_qty === "") {
@@ -187,17 +214,23 @@ const GroupVariationForm = forwardRef(
                   flag = true;
                   errObj[item].inventory.stock_qty =
                     "Stock Qty must be greater then or equal to 1";
+                } else {
+                  errObj[item].inventory.stock_qty = "";
                 }
                 if (!Object.keys(tempInventory.allow_backorders).length) {
                   flag = true;
                   errObj[item].inventory.allow_backorders =
                     validateMessage.field_required;
+                } else {
+                  errObj[item].inventory.allow_backorders = "";
                 }
               }
               if (!Object.keys(tempInventory.business_processing_days).length) {
                 flag = true;
                 errObj[item].inventory.business_processing_days =
                   validateMessage.field_required;
+              } else {
+                errObj[item].inventory.business_processing_days = "";
               }
 
               if (tempInventory.modalname === "") {
@@ -206,6 +239,8 @@ const GroupVariationForm = forwardRef(
               } else if (tempInventory.modalname?.length > 100) {
                 flag = true;
                 errObj[item].modalname = validateMessage.alpha_numeric_max_100;
+              } else {
+                errObj[item].inventory.modalname = "";
               }
 
               if (tempInventory.seo_title === "") {
@@ -216,6 +251,8 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].inventory.seo_title =
                   validateMessage.alpha_numeric_max_100;
+              } else {
+                errObj[item].inventory.seo_title = "";
               }
               if (tempInventory.meta_description === "") {
                 flag = true;
@@ -225,6 +262,8 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].inventory.meta_description =
                   validateMessage.alpha_numeric_max_100;
+              } else {
+                errObj[item].inventory.meta_description = "";
               }
               if (!tempInventory.meta_keyword.length) {
                 flag = true;
@@ -236,6 +275,8 @@ const GroupVariationForm = forwardRef(
                     flag = true;
                     errObj[item].inventory.meta_keyword =
                       validateMessage.field_required;
+                  } else {
+                    errObj[item].inventory.meta_keyword = "";
                   }
                 });
               if (tempInventory.product_title === "") {
@@ -246,9 +287,13 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].inventory.product_title =
                   validateMessage.alpha_numeric_max_100;
+              } else {
+                errObj[item].inventory.product_title = "";
               }
             } else if (ele === "pricing") {
-              const tempPricing = { ...variationData[item].pricing };
+              const tempPricing = JSON.parse(
+                JSON.stringify(variationData[item].pricing)
+              );
               if (tempPricing.sale_price === "") {
                 flag = true;
                 errObj[item].pricing.sale_price =
@@ -261,6 +306,8 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].pricing.sale_price =
                   validateMessage.decimal_2digits;
+              } else {
+                errObj[item].pricing.sale_price = "";
               }
               if (
                 tempPricing.fd_rot &&
@@ -269,6 +316,8 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].pricing.sale_price_logistics =
                   validateMessage.field_required;
+              } else {
+                errObj[item].pricing.sale_price_logistics = "";
               }
               if (tempPricing.mrp === "") {
                 flag = true;
@@ -280,6 +329,8 @@ const GroupVariationForm = forwardRef(
               ) {
                 flag = true;
                 errObj[item].pricing.mrp = validateMessage.decimal_2digits;
+              } else {
+                errObj[item].pricing.mrp = "";
               }
               if (tempPricing.product_weight === "") {
                 flag = true;
@@ -292,30 +343,46 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].pricing.product_weight =
                   "weight should be between 100 to 100000 grams";
+              } else {
+                errObj[item].pricing.sale_price = "";
               }
               if (tempPricing.length === "") {
                 flag = true;
                 errObj[item].pricing.length = validateMessage.field_required;
+              } else {
+                errObj[item].pricing.length = "";
               }
               if (tempPricing.width === "") {
                 flag = true;
                 errObj[item].pricing.width = validateMessage.field_required;
+              } else {
+                errObj[item].pricing.width = "";
               }
               if (tempPricing.height === "") {
                 flag = true;
                 errObj[item].pricing.height = validateMessage.field_required;
+              } else {
+                errObj[item].pricing.height = "";
               }
             } else if (ele === "variation") {
-              const tempVariation = { ...variationData[item].variation };
-              if (tempVariation.expiryDate === null) {
+              const tempVariation = JSON.parse(
+                JSON.stringify(variationData[item].variation)
+              );
+              if (
+                tempVariation.expiryDate !== null &&
+                tempVariation.expiryDate < currentData
+              ) {
                 flag = true;
-                errObj[item].variation.expiryDate =
-                  validateMessage.field_required;
+                errObj[item].variation.expiryDate = "Past date is not allowed";
+              } else {
+                errObj[item].variation.expiryDate = "";
               }
               if (tempVariation.countryOfOrigin === null) {
                 flag = true;
                 errObj[item].variation.countryOfOrigin =
                   validateMessage.field_required;
+              } else {
+                errObj[item].variation.countryOfOrigin = "";
               }
               if (tempVariation.others === "") {
                 flag = true;
@@ -324,6 +391,8 @@ const GroupVariationForm = forwardRef(
                 flag = true;
                 errObj[item].variation.others =
                   validateMessage.alpha_numeric_max_255;
+              } else {
+                errObj[item].variation.others = "";
               }
               Object.keys(tempVariation).forEach((element) => {
                 if (
@@ -333,9 +402,34 @@ const GroupVariationForm = forwardRef(
                     flag = true;
                     errObj[item].variation[element] =
                       validateMessage.field_required;
+                  } else {
+                    errObj[item].variation[element] = "";
                   }
                 }
               });
+            } else if (ele === "mmcartPricing") {
+              const mrMrsCartFormData = JSON.parse(
+                JSON.stringify(variationData[item].mmcartPricing)
+              );
+              if (mrMrsCartFormData.sellwithus) {
+                if (mrMrsCartFormData.free_delivery == "") {
+                  flag = true;
+                  errObj[item].mmcartPricing.free_delivery =
+                    validateMessage.field_required;
+                }
+                if (mrMrsCartFormData.paid_delivery == "") {
+                  flag = true;
+                  errObj[item].mmcartPricing.paid_delivery =
+                    validateMessage.field_required;
+                }
+              }
+              if (mrMrsCartFormData.rot) {
+                if (!Object.keys(mrMrsCartFormData.returnorder).length) {
+                  flag = true;
+                  errObj[item].mmcartPricing.returnorder =
+                    validateMessage.field_required;
+                }
+              }
             }
           }
         });
@@ -462,7 +556,12 @@ const GroupVariationForm = forwardRef(
         toastify(err.response.data.message, "error");
       } else if (data) {
         toastify(data.message, "success");
-        router.replace("/supplier/mycollections");
+        router.replace({
+          pathname: `"/supplier/products&inventory/myproducts"`,
+          query: {
+            active: "2",
+          },
+        });
       }
     };
 
@@ -520,7 +619,10 @@ const GroupVariationForm = forwardRef(
           }
         });
       });
-      console.log({ prodImages });
+      Object.keys(prodImages).forEach((item) => {
+        promiseAll.push(saveimg(item, prodImages[item]));
+      });
+      console.log({ promiseAll });
       const imgdata = await Promise.all(promiseAll);
       const imgData = {};
       imgdata.forEach((ele) => {
@@ -1400,6 +1502,14 @@ const GroupVariationForm = forwardRef(
                                 disabled={
                                   !variationData[item].mmcartPricing.sellwithus
                                 }
+                                helperText={
+                                  errorObj[item]?.mmcartPricing.free_delivery
+                                }
+                                error={
+                                  errorObj[item]?.mmcartPricing.free_delivery &&
+                                  errorObj[item]?.mmcartPricing
+                                    .free_delivery !== ""
+                                }
                               />
                             </Grid>
                             <Grid item md={12}>
@@ -1418,6 +1528,14 @@ const GroupVariationForm = forwardRef(
                                 }}
                                 disabled={
                                   !variationData[item].mmcartPricing.sellwithus
+                                }
+                                helperText={
+                                  errorObj[item]?.mmcartPricing.paid_delivery
+                                }
+                                error={
+                                  errorObj[item]?.mmcartPricing.paid_delivery &&
+                                  errorObj[item]?.mmcartPricing
+                                    .paid_delivery !== ""
                                 }
                               />
                             </Grid>
@@ -1497,6 +1615,14 @@ const GroupVariationForm = forwardRef(
                                   }}
                                   inputlabelshrink
                                   placeholder="Return Period"
+                                  helperText={
+                                    errorObj[item]?.mmcartPricing.returnorder
+                                  }
+                                  error={
+                                    errorObj[item]?.mmcartPricing.returnorder &&
+                                    errorObj[item]?.mmcartPricing
+                                      .returnorder !== ""
+                                  }
                                 />
                               </Grid>
                             )}

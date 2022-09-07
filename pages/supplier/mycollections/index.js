@@ -27,13 +27,13 @@ const MyCollections = () => {
     data.forEach((row) => {
       if (row.productType === "VARIABLE_PRODUCT") {
         result.push({
-          col1: (
+          col1: row.productVariations[0]?.variationMedia?.length ? (
             <Image
-              src={row.productVariations[0].variationMedia[0]}
+              src={row.productVariations[0]?.variationMedia[0]}
               height={50}
               width={50}
             />
-          ),
+          ) : null,
           col2: row.commissionMode,
           col3: row.productType,
           col4: row.subCategoryName,
