@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-param-reassign */
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
@@ -16,11 +17,12 @@ import {
 } from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import ViewModal from "@/forms/supplier/myproducts/viewModal";
+// import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -32,7 +34,6 @@ const MyProducts = () => {
   const [tabList, setTabList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
   const [search, setsearch] = useState("");
-  const [viewModal, setViewModal] = useState({});
   const columns = [
     {
       label: "Image",
@@ -144,14 +145,14 @@ const MyProducts = () => {
           col10: variation.lastUpdatedAt,
           col11: (
             <Grid container className="h-6">
-              <Grid
-                item
-                xs={3}
-                onClick={() => {
-                  setViewModal(JSON.parse(JSON.stringify(variation)));
-                }}
-              >
-                <CustomIcon className="fs-6" title="View" type="view" />
+              <Grid item xs={3}>
+                <Link
+                  href={`/supplier/products&inventory/myproducts/viewModal?productVariationId=${variation.productVariationId}`}
+                >
+                  <a target="_blank">
+                    <CustomIcon className="fs-6" title="View" type="view" />
+                  </a>
+                </Link>
               </Grid>
               <Grid item xs={3}>
                 <CustomIcon
@@ -471,12 +472,6 @@ const MyProducts = () => {
           </ModalComponent>
         </Paper>
       </Box>
-      <ViewModal
-        details={viewModal}
-        modalClose={() => {
-          setViewModal({});
-        }}
-      />
     </Paper>
   );
 };

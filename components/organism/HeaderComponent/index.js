@@ -15,7 +15,7 @@ const HeaderComponent = () => {
   return (
     <Box
       className={`${styles.container} shadow-sm bg-white`}
-      sx={{ position: "fixed", top: 0, left: 0, zIndex: "10", width: "100vw" }}
+      sx={{ position: "fixed", top: 0, left: 0, zIndex: "101", width: "100vw" }}
     >
       <Grid container spacing={2}>
         <Grid item xs={9}>
