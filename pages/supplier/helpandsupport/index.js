@@ -32,7 +32,7 @@ const HelpAndSupport = () => {
     show: false,
     id: null,
   });
-  const [pageNumber, setpageNumber] = useState(0);
+  // const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Serial No.",
@@ -120,7 +120,7 @@ const HelpAndSupport = () => {
         (item) => item.viewedById == user.supplierId
       );
       result.push({
-        col1: index + 1 + tableRows.length,
+        col1: index + 1,
         col2: row.ticketId,
         col3: row.issueType,
         col4: row.userToType,
@@ -142,6 +142,7 @@ const HelpAndSupport = () => {
                 onIconClick={() => {
                   handleViewClick(row, "view");
                 }}
+                className="fs-18 me-2 fit-content"
               />
             </Grid>
             <Grid item xs={6}>
@@ -159,6 +160,7 @@ const HelpAndSupport = () => {
                   onIconClick={() => {
                     handleViewClick(row, "notification");
                   }}
+                  className="fs-18"
                 />
               </Badge>
             </Grid>
@@ -168,40 +170,41 @@ const HelpAndSupport = () => {
     });
     return result;
   };
-  const getAllData = async (
-    searchText = "",
-    filterText = "",
-    page = pageNumber
-  ) => {
+  const getAllData = async (searchText = "", filterText = "", page = "") => {
     const payload = {
       userId: user.supplierId,
       userFromType: "SUPPLIER",
       ticketType: selectTab == "tab1" ? "ADMIN" : "CUSTOMER",
-      filterType: filterText == "All" ? null : filterText || null,
+      filterType:
+        filterText?.toLocaleLowerCase() == "all" ? null : filterText || null,
       keyword: searchText || "",
     };
-    const { data, err } = await getAllHelpandSupportData(payload, pageNumber);
-    if (data?.length) {
-      if (page == 0) {
-        setTableRows(mapRowsToTable(data));
-        setpageNumber((pre) => pre + 1);
-      } else {
-        setpageNumber((pre) => pre + 1);
-        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
-      }
-    } else {
-      setTableRows([]);
+    const { data, err } = await getAllHelpandSupportData(payload, page);
+    if (data) {
+      setTableRows(mapRowsToTable(data));
     }
+    // if (data?.length) {
+    //   if (page == 0) {
+    //     setTableRows(mapRowsToTable(data));
+    //     setpageNumber((pre) => pre + 1);
+    //   } else {
+    //     setpageNumber((pre) => pre + 1);
+    //     setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+    //   }
+    // } else {
+    //   setpageNumber(0);
+    //   setTableRows([]);
+    // }
     if (err) {
       toastify(err.response.data.err, "errror");
     }
   };
   useEffect(() => {
-    getAllData("", "", pageNumber);
+    getAllData("", "", 0);
   }, [selectTab]);
 
   const handletabClick = () => {
-    setpageNumber(0);
+    // setpageNumber(0);
     setShowCreateComponent(false);
     setShowModal({
       show: false,
@@ -294,12 +297,16 @@ const HelpAndSupport = () => {
                   tableRows={tableRows}
                   showCheckbox={false}
                   showSearchFilter
-                  handlePageEnd={(searchText = "", filterText = "", page) => {
-                    getAllData(searchText, filterText, page);
-                  }}
-                  handleRowsPerPageChange={() => {
-                    setpageNumber(0);
-                  }}
+                  // handlePageEnd={(
+                  //   searchText = "",
+                  //   filterText = "",
+                  //   page = pageNumber
+                  // ) => {
+                  //   getAllData(searchText, filterText, page);
+                  // }}
+                  // handleRowsPerPageChange={() => {
+                  //   setpageNumber(0);
+                  // }}
                 />
               </Paper>
             </Grid>
