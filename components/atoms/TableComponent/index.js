@@ -252,7 +252,7 @@ export default function TableComponent({
   // onCustomSearchButtonClick = () => {},
   disableCustomButton = false,
   showCellBorders = true,
-  tHeadBgColor = "",
+  tHeadBgColor = "bg-light-gray",
   showDateFilter = false,
   dateFilterColName = [],
   customDropDownPlaceholder = "",
@@ -285,7 +285,7 @@ export default function TableComponent({
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
   useEffect(() => {
-    setSearchFilterList(filterList);
+    if (filterList.length) setSearchFilterList(filterList);
   }, [filterList]);
 
   useEffect(() => {
@@ -302,7 +302,7 @@ export default function TableComponent({
   }, [draggableHeader]);
 
   useEffect(() => {
-    setRows(tableRows);
+    if (tableRows.length) setRows(tableRows);
   }, [tableRows]);
 
   const handleChangePage = (event, newPage) => {
@@ -356,7 +356,7 @@ export default function TableComponent({
     if (dateValue.from && dateValue.to) {
       const startDate = new Date(dateValue.from);
       const endDate = new Date(dateValue.to);
-      const resultProductData = tableRows.filter(function (a) {
+      const resultProductData = tableRows.filter((a) => {
         for (const i of dateFilterColName) {
           const date = new Date(a[i]);
           return date >= startDate && date <= endDate;
@@ -601,7 +601,8 @@ export default function TableComponent({
                     className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
                     onClick={() => {
                       // if (searchText !== "") {
-                      handlePageEnd(searchText, searchFilter?.value);
+                      setPage(0);
+                      handlePageEnd(searchText, searchFilter?.value, 0);
                       // }
                     }}
                   >
@@ -651,7 +652,7 @@ export default function TableComponent({
     if (position === "sticky" && index === columns.length - 1)
       return classes.lastrow;
   };
-
+  // return <div>table component</div>;
   return (
     <div>
       <Grid

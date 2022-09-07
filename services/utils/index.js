@@ -21,8 +21,8 @@ const remove = (url, id) => {
   return axiosInstance.delete(`${url}/${id}`);
 };
 
-const deleteById = (url, id) => {
-  return axiosInstance.get(`${url}/${id}`);
+const deleteById = (url) => {
+  return axiosInstance.delete(`${url}`);
 };
 
 const deleteAll = (url, reqObj) => {

@@ -126,9 +126,12 @@ const CustomerQnA = () => {
       col5: "25 may 2021, 21:22",
       col6: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
-          <Reply className="fs-5" onClick={() => setShowReplyModal(true)} />
+          <Reply
+            className="fs-5 cursor-pointer"
+            onClick={() => setShowReplyModal(true)}
+          />
           <RemoveRedEye
-            className="fs-5"
+            className="fs-5 cursor-pointer"
             onClick={() => setShowViewModal(true)}
           />
           <MenuOption
@@ -178,8 +181,8 @@ const CustomerQnA = () => {
       col5: "25 may 2022, 21:22",
       col6: (
         <div className="d-flex justify-content-center align-items-center text-secondary">
-          <Reply className="fs-5" />
-          <RemoveRedEye className="fs-5" />
+          <Reply className="fs-5 cursor-pointer" />
+          <RemoveRedEye className="fs-5 cursor-pointer" />
           <MenuOption
             IconclassName="fs-5"
             getSelectedItem={(ele) => console.log(ele)}
@@ -400,7 +403,6 @@ const CustomerQnA = () => {
           showDateFilter
           showDateFilterBtn={false}
           dateFilterColName={["col5"]}
-          showda
         />
       </Paper>
       <ViewModal

@@ -154,11 +154,6 @@ const SideBarComponent = ({ children }) => {
     setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
   }, [route.pathname]);
 
-  useEffect(() => {
-    if (itemRef.current) {
-      itemRef.current.scrollIntoView();
-    }
-  }, [menuList]);
   useMemo(() => {
     if (session && session.user) {
       setMenuList([...mapList(session.user?.role)]);
@@ -307,6 +302,7 @@ const SideBarComponent = ({ children }) => {
                     sx={{ display: "block" }}
                     className="cursor-pointer"
                     ref={item.selected ? itemRef : null}
+                    disabled={item?.disabled ?? false}
                   >
                     <ListItemButton
                       sx={{
@@ -316,6 +312,7 @@ const SideBarComponent = ({ children }) => {
                       }}
                       className="cursor-pointer"
                       onClick={() => {
+                        if (item?.disabled) return;
                         if (item.navigate) {
                           route.push(`${item.path_name}`);
                         }
@@ -418,7 +415,7 @@ const SideBarComponent = ({ children }) => {
         >
           <BreadCrumb />
         </Box>
-        <AnimatePresence initial={false} exitBeforeEnter>
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
             sx={{
               maxHeight: route.pathname.startsWith("/admin")

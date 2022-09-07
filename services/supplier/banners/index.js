@@ -8,7 +8,7 @@ const getAllData = (id) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const dateFilterTableData = () => {
@@ -19,7 +19,7 @@ const dateFilterTableData = () => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const saveBanner = (payload) => {
@@ -30,7 +30,7 @@ const saveBanner = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const bannnerMedia = async (payload) => {
@@ -45,7 +45,7 @@ const bannnerMedia = async (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const deleteBanner = (id) => {
@@ -55,7 +55,7 @@ const deleteBanner = (id) => {
       return res;
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const updateBanner = (payload) => {
@@ -70,7 +70,7 @@ const updateBanner = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 

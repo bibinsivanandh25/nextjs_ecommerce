@@ -33,4 +33,14 @@ const getSupplierProductCountByStatus = (userId) => {
     .catch((err) => ({ err }));
 };
 
-export { getSupplierProductCountByStatus, getTabledata };
+const markOutOfStock = (payload) => {
+  return serviceUtil
+    .put(`products/master-product/out-of-stock`, payload)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
+export { getSupplierProductCountByStatus, getTabledata, markOutOfStock };

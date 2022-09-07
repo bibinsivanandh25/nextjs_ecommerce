@@ -29,10 +29,10 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
-import serviceUtil from "services/utils";
 import { getSupplierDetailsById } from "services/supplier";
 import { store } from "store";
 import { storeUserInfo } from "features/userSlice";
+import axios from "axios";
 import styles from "./Login.module.css";
 
 // const options = ["Supplier", "Reseller", "Customer"];
@@ -231,8 +231,8 @@ const Login = () => {
         password: formValues.password,
         userType: "SUPPLIER",
       };
-      await serviceUtil
-        .post(`auth/authenticate`, payload)
+      await axios
+        .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
           const errRes = err.response.data?.message;
           toastify(errRes, "error");
@@ -279,7 +279,7 @@ const Login = () => {
       <Paper elevation={24}>
         <div className="p-5 " style={{ width: "450px" }}>
           <div className="d-flex justify-content-center">
-            <Image src={assetsJson.logo} alt="" width={300} height={120} />
+            <Image src={assetsJson.logo} alt="logo" width={300} height={120} />
           </div>
           <Typography className="text-center fw-bold">
             A Multi Ecommerce Store

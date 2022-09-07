@@ -220,7 +220,7 @@ const PricingForm = forwardRef(
                       ...pre,
                       pricing: {
                         ...pre.pricing,
-                        returnorder: value,
+                        returnorder: value ?? {},
                       },
                     };
                   });
