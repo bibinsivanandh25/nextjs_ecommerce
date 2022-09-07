@@ -107,7 +107,9 @@ const GroupVariationForm = ({
     },
   };
 
-  const [variationData, setVariationData] = useState({});
+  const [variationData, setVariationData] = useState(
+    useSelector((state) => state.product.variationData) ?? {}
+  );
   const [optionsValue, setoptionsValue] = useState({});
   const [emptyObj, setEmptyObj] = useState({});
   const [errorObj, setErrorObj] = useState({});
@@ -117,7 +119,7 @@ const GroupVariationForm = ({
   const { formData } = useSelector((state) => state.product);
 
   useEffect(() => {
-    if (formData?.productImage.length) {
+    if (formData?.productImage.length && !Object.keys(variationData).length) {
       const temp = {};
       const dropDownVal = {};
       const tempImg = {};
@@ -161,18 +163,6 @@ const GroupVariationForm = ({
     temp[item][key][name] = val;
     setVariationData(temp);
   };
-
-  let currentData = new Date();
-
-  const getDate = async () => {
-    const { data, err } = await getCurrentData();
-    if (data) {
-      currentData = new Date(data);
-    }
-  };
-  useEffect(() => {
-    getDate();
-  }, []);
 
   const validate = () => {
     const errObj = JSON.parse(JSON.stringify({ ...emptyObj }));
@@ -356,32 +346,6 @@ const GroupVariationForm = ({
             const tempVariation = JSON.parse(
               JSON.stringify(variationData[item].variation)
             );
-            if (
-              tempVariation.expiryDate !== null &&
-              tempVariation.expiryDate < currentData
-            ) {
-              flag = true;
-              errObj[item].variation.expiryDate = "Past date is not allowed";
-            } else {
-              errObj[item].variation.expiryDate = "";
-            }
-            if (tempVariation.countryOfOrigin === null) {
-              flag = true;
-              errObj[item].variation.countryOfOrigin =
-                validateMessage.field_required;
-            } else {
-              errObj[item].variation.countryOfOrigin = "";
-            }
-            // if (tempVariation.others === "") {
-            //   flag = true;
-            //   errObj[item].variation.others = validateMessage.field_required;
-            // } else if (tempVariation.others.length > 255) {
-            //   flag = true;
-            //   errObj[item].variation.others =
-            //     validateMessage.alpha_numeric_max_255;
-            // } else {
-            //   errObj[item].variation.others = "";
-            // }
             Object.keys(tempVariation).forEach((element) => {
               if (
                 !["expiryDate", "countryOfOrigin", "others"].includes(element)
@@ -631,7 +595,7 @@ const GroupVariationForm = ({
       handleSubmit();
     }
   };
-
+  console.log("variationData", variationData);
   return (
     <div className="d-flex flex-column w-100">
       <div className="p-3  d-flex flex-column flex-grow-1">
@@ -648,738 +612,670 @@ const GroupVariationForm = ({
           style={{ maxWidth: "87vw" }}
           className={` d-flex flex-grow-1 mb-1 py-1 pb-2 hide-scrollbar overflow-x-scroll`}
         >
-          {Object.keys(variationData).map((item, index) => {
-            return (
-              <div
-                // eslint-disable-next-line react/no-array-index-key
-                key={index}
-                style={{
-                  height: variationData[item].expand ? "100%" : "fit-content",
-                }}
-              >
-                <Paper
-                  className={` mx-2 px-2 mt-1 overflow-y-scroll hide-scrollbar ${
-                    variationData[item].expand ? "" : styles.papershrink
-                  }`}
-                  sx={{ minWidth: "400px", maxWidth: "500px" }}
-                  elevation={3}
-                >
-                  <div className={` pb-3 `}>
-                    <div
-                      className={`w-100 d-flex justify-content-between align-items-center p-2 px-3                      
+          {variationData
+            ? Object.keys(variationData).map((item, index) => {
+                return (
+                  <div
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
+                    style={{
+                      height: variationData[item].expand
+                        ? "100%"
+                        : "fit-content",
+                    }}
+                  >
+                    <Paper
+                      className={` mx-2 px-2 mt-1 overflow-y-scroll hide-scrollbar ${
+                        variationData[item].expand ? "" : styles.papershrink
+                      }`}
+                      sx={{ minWidth: "400px", maxWidth: "500px" }}
+                      elevation={3}
+                    >
+                      <div className={` pb-3 `}>
+                        <div
+                          className={`w-100 d-flex justify-content-between align-items-center p-2 px-3                      
                     ${
                       variationData[item].expand
                         ? styles.invoiceContainer
                         : "border-none"
                     }`}
-                    >
-                      <Typography className="fs-16 fw-600">{item}</Typography>
-                      {variationData[item].expand ? (
-                        <KeyboardArrowUpRoundedIcon
-                          onClick={() => {
-                            setVariationData((pre) => {
-                              const temp = JSON.parse(JSON.stringify(pre));
-                              temp[item].expand = false;
-                              return temp;
-                            });
-                          }}
-                          className="cursor-pointer"
-                        />
-                      ) : (
-                        <KeyboardArrowDownRoundedIcon
-                          onClick={() => {
-                            setVariationData((pre) => {
-                              const temp = JSON.parse(JSON.stringify(pre));
-                              temp[item].expand = true;
-                              return temp;
-                            });
-                          }}
-                          className="cursor-pointer"
-                        />
-                      )}
-                    </div>
-                    <div
-                      className={`w-100 ${
-                        variationData[item].expand
-                          ? styles.expand
-                          : styles.shrink
-                      }`}
-                    >
-                      <div
-                        className={` d-flex p-2 overflow-auto hide-scrollbar`}
-                      >
-                        <ImageCard
-                          imgSrc={variationData[item].images[0]}
-                          showClose={false}
-                        />
-                        <div className="d-flex mt-2 ms-2 flex-column w-100">
-                          <Typography className="h-5 fw-bold">
-                            Add more images of the product
+                        >
+                          <Typography className="fs-16 fw-600">
+                            {item}
                           </Typography>
-                          <div className="d-flex w-100">
-                            {variationData[item].images.map((ele, ind) => {
-                              return ind > 0 ? (
-                                <div className="m-2">
-                                  <ImageCard
-                                    imgSrc={ele ?? ""}
-                                    showClose={false}
-                                    height="65"
-                                    width="65"
-                                    handleImageUpload={async (e) => {
-                                      if (e.target.files.length) {
-                                        if (e.target.files[0].size <= 2000000) {
-                                          const temp = await getBase64(
-                                            e.target.files[0]
-                                          );
-                                          setVariationData((pre) => {
-                                            const copy = JSON.parse(
-                                              JSON.stringify({ ...pre })
-                                            );
-                                            copy[item].images[
-                                              copy[item].images.indexOf("")
-                                            ] = temp;
+                          {variationData[item].expand ? (
+                            <KeyboardArrowUpRoundedIcon
+                              onClick={() => {
+                                setVariationData((pre) => {
+                                  const temp = JSON.parse(JSON.stringify(pre));
+                                  temp[item].expand = false;
+                                  return temp;
+                                });
+                              }}
+                              className="cursor-pointer"
+                            />
+                          ) : (
+                            <KeyboardArrowDownRoundedIcon
+                              onClick={() => {
+                                setVariationData((pre) => {
+                                  const temp = JSON.parse(JSON.stringify(pre));
+                                  temp[item].expand = true;
+                                  return temp;
+                                });
+                              }}
+                              className="cursor-pointer"
+                            />
+                          )}
+                        </div>
+                        <div
+                          className={`w-100 ${
+                            variationData[item].expand
+                              ? styles.expand
+                              : styles.shrink
+                          }`}
+                        >
+                          <div
+                            className={` d-flex p-2 overflow-auto hide-scrollbar`}
+                          >
+                            <ImageCard
+                              imgSrc={variationData[item].images[0]}
+                              showClose={false}
+                            />
+                            <div className="d-flex mt-2 ms-2 flex-column w-100">
+                              <Typography className="h-5 fw-bold">
+                                Add more images of the product
+                              </Typography>
+                              <div className="d-flex w-100">
+                                {variationData[item].images.map((ele, ind) => {
+                                  return ind > 0 ? (
+                                    <div className="m-2">
+                                      <ImageCard
+                                        imgSrc={ele ?? ""}
+                                        showClose={false}
+                                        height="65"
+                                        width="65"
+                                        handleImageUpload={async (e) => {
+                                          if (e.target.files.length) {
+                                            if (
+                                              e.target.files[0].size <= 2000000
+                                            ) {
+                                              const temp = await getBase64(
+                                                e.target.files[0]
+                                              );
+                                              setVariationData((pre) => {
+                                                const copy = JSON.parse(
+                                                  JSON.stringify({ ...pre })
+                                                );
+                                                copy[item].images[
+                                                  copy[item].images.indexOf("")
+                                                ] = temp;
 
-                                            return copy;
-                                          });
-                                        } else {
-                                          toastify(
-                                            "Image size should be less than 2MB",
-                                            "error"
-                                          );
-                                        }
-                                      }
+                                                return copy;
+                                              });
+                                            } else {
+                                              toastify(
+                                                "Image size should be less than 2MB",
+                                                "error"
+                                              );
+                                            }
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  ) : null;
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="w-100 mt-3">
+                            <Grid container className="w-100" spacing={2}>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="sku"
+                                  label="SKU"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "inventory");
+                                  }}
+                                  value={variationData[item].inventory.sku}
+                                  placeholder="SKU"
+                                  inputlabelshrink
+                                  fullWidth={false}
+                                  className="w-70p"
+                                  disabled
+                                  helperText={errorObj[item]?.inventory.sku}
+                                  error={
+                                    errorObj[item]?.inventory.sku &&
+                                    errorObj[item]?.inventory.sku !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="stock_qty"
+                                  label="Stock Qty*"
+                                  placeholder="Enter Stock Qty"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "inventory");
+                                  }}
+                                  value={
+                                    variationData[item].inventory.stock_qty
+                                  }
+                                  type="number"
+                                  inputlabelshrink
+                                  helperText={
+                                    errorObj[item]?.inventory.stock_qty
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory.stock_qty &&
+                                    errorObj[item]?.inventory.stock_qty !== ""
+                                  }
+                                  className="w-70p"
+                                />
+                              </Grid>
+                              <Grid item md={12} className="pt-4">
+                                <div className="d-flex align-items-center">
+                                  <Typography className="h-4 fw-600 me-3">
+                                    Manage Stocks?
+                                  </Typography>
+                                  <CheckBoxComponent
+                                    label=""
+                                    isChecked={variationData[item].manageStock}
+                                    checkBoxClick={(_, val) => {
+                                      setVariationData((pre) => {
+                                        const temp = JSON.parse(
+                                          JSON.stringify(pre)
+                                        );
+                                        temp[item].manageStock = val;
+                                        return temp;
+                                      });
                                     }}
+                                    size="small"
+                                    showIcon
+                                    varient="filled"
                                   />
                                 </div>
-                              ) : null;
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-100 mt-3">
-                        <Grid container className="w-100" spacing={2}>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="sku"
-                              label="SKU"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "inventory");
-                              }}
-                              value={variationData[item].inventory.sku}
-                              placeholder="SKU"
-                              inputlabelshrink
-                              fullWidth={false}
-                              className="w-70p"
-                              disabled
-                              helperText={errorObj[item]?.inventory.sku}
-                              error={
-                                errorObj[item]?.inventory.sku &&
-                                errorObj[item]?.inventory.sku !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="stock_qty"
-                              label="Stock Qty*"
-                              placeholder="Enter Stock Qty"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "inventory");
-                              }}
-                              value={variationData[item].inventory.stock_qty}
-                              type="number"
-                              inputlabelshrink
-                              helperText={errorObj[item]?.inventory.stock_qty}
-                              error={
-                                errorObj[item]?.inventory.stock_qty &&
-                                errorObj[item]?.inventory.stock_qty !== ""
-                              }
-                              className="w-70p"
-                            />
-                          </Grid>
-                          <Grid item md={12} className="pt-4">
-                            <div className="d-flex align-items-center">
-                              <Typography className="h-4 fw-600 me-3">
-                                Manage Stocks?
-                              </Typography>
-                              <CheckBoxComponent
-                                label=""
-                                isChecked={variationData[item].manageStock}
-                                checkBoxClick={(_, val) => {
-                                  setVariationData((pre) => {
-                                    const temp = JSON.parse(
-                                      JSON.stringify(pre)
-                                    );
-                                    temp[item].manageStock = val;
-                                    return temp;
-                                  });
-                                }}
-                                size="small"
-                                showIcon
-                                varient="filled"
-                              />
-                            </div>
-                          </Grid>
-                          <Grid item md={12}>
-                            <SimpleDropdownComponent
-                              inputlabelshrink
-                              list={stock_status}
-                              id="stockstatus"
-                              label="Stock Status*"
-                              size="small"
-                              fullWidth={false}
-                              className="w-70p"
-                              value={variationData[item].inventory.stock_status}
-                              placeholder="Select Stock Status"
-                              onDropdownSelect={(value) => {
-                                handleDropDownChange(
-                                  item,
-                                  "inventory",
-                                  "stock_status",
-                                  value
-                                );
-                              }}
-                              helperText={
-                                errorObj[item]?.inventory.stock_status
-                              }
-                              error={
-                                errorObj[item]?.inventory.stock_status &&
-                                errorObj[item]?.inventory.stock_status !== null
-                              }
-                            />
-                          </Grid>
-                          {variationData[item].manageStock ? (
-                            <>
+                              </Grid>
                               <Grid item md={12}>
                                 <SimpleDropdownComponent
                                   inputlabelshrink
-                                  list={allowback_orders}
-                                  id="Allow Backorders ?"
-                                  label="Allow Backorders ?*"
+                                  list={stock_status}
+                                  id="stockstatus"
+                                  label="Stock Status*"
                                   size="small"
                                   fullWidth={false}
+                                  className="w-70p"
                                   value={
-                                    variationData[item].inventory
-                                      .allow_backorders
+                                    variationData[item].inventory.stock_status
                                   }
-                                  placeholder="All Backorders"
+                                  placeholder="Select Stock Status"
                                   onDropdownSelect={(value) => {
                                     handleDropDownChange(
                                       item,
                                       "inventory",
-                                      "allow_backorders",
+                                      "stock_status",
                                       value
                                     );
                                   }}
                                   helperText={
-                                    errorObj[item]?.inventory.allow_backorders
+                                    errorObj[item]?.inventory.stock_status
                                   }
                                   error={
-                                    errorObj[item]?.inventory
-                                      .allow_backorders &&
-                                    errorObj[item]?.inventory
-                                      .allow_backorders !== null
+                                    errorObj[item]?.inventory.stock_status &&
+                                    errorObj[item]?.inventory.stock_status !==
+                                      null
                                   }
                                 />
                               </Grid>
-                              {variationData[item].inventory?.allow_backorders
-                                ?.value === "allow" ? (
-                                <Grid item md={12}>
-                                  <InputBox
-                                    id="back_Orders"
-                                    label="Back Orders*"
-                                    size="small"
-                                    placeholder="Enter Back Orders Quantities"
-                                    value={
-                                      variationData[item].inventory.back_Orders
-                                    }
-                                    onInputChange={(e) => {
-                                      handleInputChange(e, item, "inventory");
-                                    }}
-                                    type="number"
-                                  />
-                                </Grid>
+                              {variationData[item].manageStock ? (
+                                <>
+                                  <Grid item md={12}>
+                                    <SimpleDropdownComponent
+                                      inputlabelshrink
+                                      list={allowback_orders}
+                                      id="Allow Backorders ?"
+                                      label="Allow Backorders ?*"
+                                      size="small"
+                                      fullWidth={false}
+                                      value={
+                                        variationData[item].inventory
+                                          .allow_backorders
+                                      }
+                                      placeholder="All Backorders"
+                                      onDropdownSelect={(value) => {
+                                        handleDropDownChange(
+                                          item,
+                                          "inventory",
+                                          "allow_backorders",
+                                          value
+                                        );
+                                      }}
+                                      helperText={
+                                        errorObj[item]?.inventory
+                                          .allow_backorders
+                                      }
+                                      error={
+                                        errorObj[item]?.inventory
+                                          .allow_backorders &&
+                                        errorObj[item]?.inventory
+                                          .allow_backorders !== null
+                                      }
+                                    />
+                                  </Grid>
+                                  {variationData[item].inventory
+                                    ?.allow_backorders?.value === "allow" ? (
+                                    <Grid item md={12}>
+                                      <InputBox
+                                        id="back_Orders"
+                                        label="Back Orders*"
+                                        size="small"
+                                        placeholder="Enter Back Orders Quantities"
+                                        value={
+                                          variationData[item].inventory
+                                            .back_Orders
+                                        }
+                                        onInputChange={(e) => {
+                                          handleInputChange(
+                                            e,
+                                            item,
+                                            "inventory"
+                                          );
+                                        }}
+                                        type="number"
+                                      />
+                                    </Grid>
+                                  ) : null}
+                                </>
                               ) : null}
-                            </>
-                          ) : null}
-                          <Grid item md={12}>
-                            <SimpleDropdownComponent
-                              inputlabelshrink
-                              list={[...shipping_class]}
-                              id="ShippingClass"
-                              label="Shipping Class*"
-                              size="small"
-                              fullWidth={false}
-                              value={
-                                variationData[item].inventory.shipping_class
-                              }
-                              placeholder="Select Shipping Class"
-                              onDropdownSelect={(value) => {
-                                handleDropDownChange(
-                                  item,
-                                  "inventory",
-                                  "shipping_class",
-                                  value
+                              <Grid item md={12}>
+                                <SimpleDropdownComponent
+                                  inputlabelshrink
+                                  list={[...shipping_class]}
+                                  id="ShippingClass"
+                                  label="Shipping Class*"
+                                  size="small"
+                                  fullWidth={false}
+                                  value={
+                                    variationData[item].inventory.shipping_class
+                                  }
+                                  placeholder="Select Shipping Class"
+                                  onDropdownSelect={(value) => {
+                                    handleDropDownChange(
+                                      item,
+                                      "inventory",
+                                      "shipping_class",
+                                      value
+                                    );
+                                  }}
+                                  helperText={
+                                    errorObj[item]?.inventory.shipping_class
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory.shipping_class &&
+                                    errorObj[item]?.inventory.shipping_class !==
+                                      null
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="product_title"
+                                  label="Product Title*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "inventory");
+                                  }}
+                                  placeholder="Enter Product Title"
+                                  value={
+                                    variationData[item].inventory.product_title
+                                  }
+                                  inputlabelshrink
+                                  helperText={
+                                    errorObj[item]?.inventory.product_title
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory.product_title &&
+                                    errorObj[item]?.inventory.product_title !==
+                                      ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <SimpleDropdownComponent
+                                  inputlabelshrink
+                                  placeholder="Select Business Processing Days"
+                                  list={[...business_processing_days]}
+                                  id="business_processing_days"
+                                  label="Business Processing Days*"
+                                  size="small"
+                                  fullWidth={false}
+                                  value={
+                                    variationData[item].inventory
+                                      .business_processing_days
+                                  }
+                                  onDropdownSelect={(value) => {
+                                    handleDropDownChange(
+                                      item,
+                                      "inventory",
+                                      "business_processing_days",
+                                      value
+                                    );
+                                  }}
+                                  helperText={
+                                    errorObj[item]?.inventory
+                                      .business_processing_days
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory
+                                      .business_processing_days &&
+                                    errorObj[item]?.inventory
+                                      .business_processing_days !== null
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputFieldWithChip
+                                  id="seo_title"
+                                  label="SEO Title*"
+                                  placeholder="Enter SEO Title"
+                                  value={
+                                    variationData[item].inventory.seo_title
+                                  }
+                                  inputlabelshrink
+                                  handleChange={(_, val) => {
+                                    const temp = JSON.parse(
+                                      JSON.stringify({ ...variationData })
+                                    );
+                                    temp[item].inventory.seo_title = val;
+                                    setVariationData(temp);
+                                  }}
+                                  helperText={
+                                    errorObj[item]?.inventory.seo_title
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory.seo_title &&
+                                    errorObj[item]?.inventory.seo_title !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="meta_description"
+                                  label="Meta Description*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "inventory");
+                                  }}
+                                  value={
+                                    variationData[item].inventory
+                                      .meta_description
+                                  }
+                                  inputlabelshrink
+                                  helperText={
+                                    errorObj[item]?.inventory.meta_description
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory
+                                      .meta_description &&
+                                    errorObj[item]?.inventory
+                                      .meta_description !== ""
+                                  }
+                                  placeholder="Enter Meta Description"
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputFieldWithChip
+                                  id="meta_keyword"
+                                  label="Meta Keywords*"
+                                  onInputChange={(e) => {}}
+                                  handleChange={(_, val) => {
+                                    setVariationData((pre) => {
+                                      const temp = JSON.parse(
+                                        JSON.stringify(pre)
+                                      );
+                                      temp[item].inventory.meta_keyword = [
+                                        ...val,
+                                      ];
+                                      return temp;
+                                    });
+                                  }}
+                                  placeholder="Enter Meta Keywords"
+                                  value={
+                                    variationData[item].inventory.meta_keyword
+                                  }
+                                  inputlabelshrink
+                                  helperText={
+                                    errorObj[item]?.inventory.meta_keyword
+                                  }
+                                  error={
+                                    errorObj[item]?.inventory.meta_keyword &&
+                                    errorObj[item]?.inventory.meta_keyword !==
+                                      ""
+                                  }
+                                />
+                              </Grid>
+                            </Grid>
+                          </div>
+                          <div className="w-100 mt-3 pb-3">
+                            <Grid container className="w-100" spacing={2}>
+                              {Object.keys(optionsValue).map((ele, index) => {
+                                return (
+                                  // eslint-disable-next-line react/no-array-index-key
+                                  <Grid item md={12} container key={index}>
+                                    <Grid
+                                      item
+                                      md={4}
+                                      className="d-flex align-items-center"
+                                    >
+                                      <Typography className="h-5">
+                                        {optionsValue[ele][0].variationName}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid item md={8}>
+                                      <SimpleDropdownComponent
+                                        inputlabelshrink
+                                        id={ele}
+                                        list={[...optionsValue[ele]]}
+                                        label=""
+                                        size="small"
+                                        fullWidth={false}
+                                        value={
+                                          variationData[item].variation?.[ele]
+                                        }
+                                        placeholder={`Select ${optionsValue[ele][0].variationName}`}
+                                        onDropdownSelect={(value) => {
+                                          handleDropDownChange(
+                                            item,
+                                            "variation",
+                                            ele,
+                                            value
+                                          );
+                                        }}
+                                        helperText={
+                                          errorObj[item]?.variation?.[ele]
+                                        }
+                                        error={
+                                          errorObj[item]?.variation?.[ele] &&
+                                          errorObj[item]?.variation?.[ele] !==
+                                            null
+                                        }
+                                      />
+
+                                      {variationData[item].variation?.[ele] !==
+                                        null && (
+                                        <Typography
+                                          className="h-6 mt-1 cursor-pointer color-blue"
+                                          onClick={() => {
+                                            if (
+                                              variationData[item].variation?.[
+                                                ele
+                                              ]
+                                            ) {
+                                              const temp = JSON.parse(
+                                                JSON.stringify(variationData)
+                                              );
+                                              Object.keys(temp).forEach(
+                                                (element) => {
+                                                  temp[element].variation[ele] =
+                                                    {
+                                                      ...variationData[item]
+                                                        .variation?.[ele],
+                                                    };
+                                                }
+                                              );
+                                              setVariationData(temp);
+                                            }
+                                          }}
+                                        >
+                                          Copy to all products
+                                        </Typography>
+                                      )}
+                                    </Grid>
+                                  </Grid>
                                 );
-                              }}
-                              helperText={
-                                errorObj[item]?.inventory.shipping_class
-                              }
-                              error={
-                                errorObj[item]?.inventory.shipping_class &&
-                                errorObj[item]?.inventory.shipping_class !==
-                                  null
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="product_title"
-                              label="Product Title*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "inventory");
-                              }}
-                              placeholder="Enter Product Title"
-                              value={
-                                variationData[item].inventory.product_title
-                              }
-                              inputlabelshrink
-                              helperText={
-                                errorObj[item]?.inventory.product_title
-                              }
-                              error={
-                                errorObj[item]?.inventory.product_title &&
-                                errorObj[item]?.inventory.product_title !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <SimpleDropdownComponent
-                              inputlabelshrink
-                              placeholder="Select Business Processing Days"
-                              list={[...business_processing_days]}
-                              id="business_processing_days"
-                              label="Business Processing Days*"
-                              size="small"
-                              fullWidth={false}
-                              value={
-                                variationData[item].inventory
-                                  .business_processing_days
-                              }
-                              onDropdownSelect={(value) => {
-                                handleDropDownChange(
-                                  item,
-                                  "inventory",
-                                  "business_processing_days",
-                                  value
-                                );
-                              }}
-                              helperText={
-                                errorObj[item]?.inventory
-                                  .business_processing_days
-                              }
-                              error={
-                                errorObj[item]?.inventory
-                                  .business_processing_days &&
-                                errorObj[item]?.inventory
-                                  .business_processing_days !== null
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputFieldWithChip
-                              id="seo_title"
-                              label="SEO Title*"
-                              placeholder="Enter SEO Title"
-                              value={variationData[item].inventory.seo_title}
-                              inputlabelshrink
-                              handleChange={(_, val) => {
-                                const temp = JSON.parse(
-                                  JSON.stringify({ ...variationData })
-                                );
-                                temp[item].inventory.seo_title = val;
-                                setVariationData(temp);
-                              }}
-                              helperText={errorObj[item]?.inventory.seo_title}
-                              error={
-                                errorObj[item]?.inventory.seo_title &&
-                                errorObj[item]?.inventory.seo_title !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="meta_description"
-                              label="Meta Description*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "inventory");
-                              }}
-                              value={
-                                variationData[item].inventory.meta_description
-                              }
-                              inputlabelshrink
-                              helperText={
-                                errorObj[item]?.inventory.meta_description
-                              }
-                              error={
-                                errorObj[item]?.inventory.meta_description &&
-                                errorObj[item]?.inventory.meta_description !==
-                                  ""
-                              }
-                              placeholder="Enter Meta Description"
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputFieldWithChip
-                              id="meta_keyword"
-                              label="Meta Keywords*"
-                              onInputChange={(e) => {}}
-                              handleChange={(_, val) => {
-                                setVariationData((pre) => {
-                                  const temp = JSON.parse(JSON.stringify(pre));
-                                  temp[item].inventory.meta_keyword = [...val];
-                                  return temp;
-                                });
-                              }}
-                              placeholder="Enter Meta Keywords"
-                              value={variationData[item].inventory.meta_keyword}
-                              inputlabelshrink
-                              helperText={
-                                errorObj[item]?.inventory.meta_keyword
-                              }
-                              error={
-                                errorObj[item]?.inventory.meta_keyword &&
-                                errorObj[item]?.inventory.meta_keyword !== ""
-                              }
-                            />
-                          </Grid>
-                        </Grid>
-                      </div>
-                      <div className="w-100 mt-3 pb-3">
-                        <Grid container className="w-100" spacing={2}>
-                          {Object.keys(optionsValue).map((ele, index) => {
-                            return (
-                              // eslint-disable-next-line react/no-array-index-key
-                              <Grid item md={12} container key={index}>
-                                <Grid
-                                  item
-                                  md={4}
-                                  className="d-flex align-items-center"
-                                >
-                                  <Typography className="h-5">
-                                    {optionsValue[ele][0].variationName}
-                                  </Typography>
-                                </Grid>
-                                <Grid item md={8}>
-                                  <SimpleDropdownComponent
-                                    inputlabelshrink
-                                    id={ele}
-                                    list={[...optionsValue[ele]]}
+                              })}
+                              <Grid item md={6}>
+                                <InputBox
+                                  id="sale_price"
+                                  label="Sale Price*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  placeholder="Enter Sale Price"
+                                  value={variationData[item].pricing.sale_price}
+                                  inputlabelshrink
+                                  type="number"
+                                  helperText={
+                                    errorObj[item]?.pricing.sale_price
+                                  }
+                                  error={
+                                    errorObj[item]?.pricing.sale_price &&
+                                    errorObj[item]?.pricing.sale_price !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={6}>
+                                <InputBox
+                                  id="mrp"
+                                  label="MRP*"
+                                  placeholder="Enter MRP"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  value={variationData[item].pricing.mrp}
+                                  inputlabelshrink
+                                  helperText={errorObj[item]?.pricing.mrp}
+                                  error={
+                                    errorObj[item]?.pricing.mrp &&
+                                    errorObj[item]?.pricing.mrp !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <Box className=" d-flex align-items-center mb-2">
+                                  <CheckBoxComponent
                                     label=""
                                     size="small"
-                                    fullWidth={false}
-                                    value={variationData[item].variation?.[ele]}
-                                    placeholder={`Select ${optionsValue[ele][0].variationName}`}
-                                    onDropdownSelect={(value) => {
-                                      handleDropDownChange(
-                                        item,
-                                        "variation",
-                                        ele,
-                                        value
-                                      );
+                                    showIcon
+                                    varient="filled"
+                                    isChecked={
+                                      variationData[item].pricing.fd_rot
+                                    }
+                                    checkBoxClick={(_, val) => {
+                                      setVariationData((pre) => {
+                                        const temp = JSON.parse(
+                                          JSON.stringify(pre)
+                                        );
+                                        temp[item].pricing.fd_rot = val;
+                                        return temp;
+                                      });
                                     }}
-                                    helperText={
-                                      errorObj[item]?.variation?.[ele]
-                                    }
-                                    error={
-                                      errorObj[item]?.variation?.[ele] &&
-                                      errorObj[item]?.variation?.[ele] !== null
-                                    }
                                   />
-
-                                  {variationData[item].variation?.[ele] !==
-                                    null && (
-                                    <Typography
-                                      className="h-6 mt-1 cursor-pointer color-blue"
-                                      onClick={() => {
-                                        if (
-                                          variationData[item].variation?.[ele]
-                                        ) {
-                                          const temp = JSON.parse(
-                                            JSON.stringify(variationData)
-                                          );
-                                          Object.keys(temp).forEach(
-                                            (element) => {
-                                              temp[element].variation[ele] = {
-                                                ...variationData[item]
-                                                  .variation?.[ele],
-                                              };
-                                            }
-                                          );
-                                          setVariationData(temp);
-                                        }
-                                      }}
-                                    >
-                                      Copy to all products
-                                    </Typography>
-                                  )}
-                                </Grid>
-                              </Grid>
-                            );
-                          })}
-                          {/* <Grid item md={12} container>
-                          <Grid
-                            item
-                            md={4}
-                            className="d-flex align-items-center"
-                          >
-                            <Typography className="h-5">Style Code</Typography>
-                          </Grid>
-                          <Grid item md={8}>
-                            <SimpleDropdownComponent
-                              inputlabelshrink
-                              list={[]}
-                              id={item}
-                              label=""
-                              size="small"
-                              value={variationData[item]}
-                              onDropdownSelect={(value) => {
-                              handleDropDownChange(item,"attribute",ele,value)
-                              }}
-                            />
-                          </Grid>
-                        </Grid> */}
-                          <Grid item md={12} container>
-                            <Grid
-                              item
-                              md={4}
-                              className="d-flex align-items-center"
-                            >
-                              <Typography className="h-5">
-                                Expire Date*
-                              </Typography>
-                            </Grid>
-                            <Grid item md={8}>
-                              <DatePickerComponent
-                                label=""
-                                size="small"
-                                value={variationData[item].variation.expiryDate}
-                                onDateChange={(val) => {
-                                  setVariationData((pre) => {
-                                    const temp = JSON.parse(
-                                      JSON.stringify(pre)
-                                    );
-                                    temp[item].variation.expiryDate = val;
-                                    return temp;
-                                  });
-                                }}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid item md={12} container>
-                            <Grid
-                              item
-                              md={4}
-                              className="d-flex align-items-center"
-                            >
-                              <Typography className="h-5">
-                                Country of Origin*
-                              </Typography>
-                            </Grid>
-                            <Grid item md={8}>
-                              <SimpleDropdownComponent
-                                placeholder="Select Country of Origin"
-                                inputlabelshrink
-                                list={[
-                                  { id: 1, label: "India", value: "India" },
-                                ]}
-                                id={item}
-                                label=""
-                                size="small"
-                                value={
-                                  variationData[item].variation.countryOfOrigin
-                                }
-                                onDropdownSelect={(value) => {
-                                  handleDropDownChange(
-                                    item,
-                                    "variation",
-                                    "countryOfOrigin",
-                                    value
-                                  );
-                                }}
-                                helperText={
-                                  errorObj[item]?.variation.countryOfOrigin
-                                }
-                                error={
-                                  errorObj[item]?.variation.countryOfOrigin &&
-                                  errorObj[item]?.variation.countryOfOrigin !==
-                                    null
-                                }
-                              />
-                            </Grid>
-                          </Grid>
-                          {/* <Grid item md={12} container>
-                              <Grid
-                                item
-                                md={4}
-                                className="d-flex align-items-center"
-                              >
-                                <Typography className="h-5">Others*</Typography>
-                              </Grid>
-                              <Grid item md={8}>
+                                  <Typography className="h-5">
+                                    Provide Free Delivery & Return To Your
+                                    Customer
+                                  </Typography>
+                                </Box>
                                 <InputBox
-                                  placeholder="Enter Other Info"
-                                  id="others"
-                                  label=""
+                                  id="sale_price_logistics"
+                                  label="Sale Price With Logistics*"
+                                  placeholder="Enter Sale Price With Logistics"
                                   onInputChange={(e) => {
-                                    handleInputChange(e, item, "variation");
+                                    handleInputChange(e, item, "pricing");
                                   }}
-                                  value={variationData[item].variation.others}
                                   inputlabelshrink
-                                  isMultiline
-                                  helperText={errorObj[item]?.variation.others}
-                                  error={
-                                    errorObj[item]?.variation.others &&
-                                    errorObj[item]?.variation.others !== ""
+                                  helperText={
+                                    errorObj[item]?.pricing.sale_price_logistics
                                   }
+                                  value={
+                                    variationData[item].pricing
+                                      .sale_price_logistics
+                                  }
+                                  type="number"
+                                  error={
+                                    errorObj[item]?.pricing
+                                      .sale_price_logistics &&
+                                    errorObj[item]?.pricing
+                                      .sale_price_logistics !== null
+                                  }
+                                  disabled={!variationData[item].pricing.fd_rot}
                                 />
                               </Grid>
-                            </Grid> */}
-                          <Grid item md={6}>
-                            <InputBox
-                              id="sale_price"
-                              label="Sale Price*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              placeholder="Enter Sale Price"
-                              value={variationData[item].pricing.sale_price}
-                              inputlabelshrink
-                              type="number"
-                              helperText={errorObj[item]?.pricing.sale_price}
-                              error={
-                                errorObj[item]?.pricing.sale_price &&
-                                errorObj[item]?.pricing.sale_price !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={6}>
-                            <InputBox
-                              id="mrp"
-                              label="MRP*"
-                              placeholder="Enter MRP"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              value={variationData[item].pricing.mrp}
-                              inputlabelshrink
-                              helperText={errorObj[item]?.pricing.mrp}
-                              error={
-                                errorObj[item]?.pricing.mrp &&
-                                errorObj[item]?.pricing.mrp !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <Box className=" d-flex align-items-center mb-2">
-                              <CheckBoxComponent
-                                label=""
-                                size="small"
-                                showIcon
-                                varient="filled"
-                                isChecked={variationData[item].pricing.fd_rot}
-                                checkBoxClick={(_, val) => {
-                                  setVariationData((pre) => {
-                                    const temp = JSON.parse(
-                                      JSON.stringify(pre)
-                                    );
-                                    temp[item].pricing.fd_rot = val;
-                                    return temp;
-                                  });
-                                }}
-                              />
-                              <Typography className="h-5">
-                                Provide Free Delivery & Return To Your Customer
-                              </Typography>
-                            </Box>
-                            <InputBox
-                              id="sale_price_logistics"
-                              label="Sale Price With Logistics*"
-                              placeholder="Enter Sale Price With Logistics"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              inputlabelshrink
-                              helperText={
-                                errorObj[item]?.pricing.sale_price_logistics
-                              }
-                              value={
-                                variationData[item].pricing.sale_price_logistics
-                              }
-                              type="number"
-                              error={
-                                errorObj[item]?.pricing.sale_price_logistics &&
-                                errorObj[item]?.pricing.sale_price_logistics !==
-                                  null
-                              }
-                              disabled={!variationData[item].pricing.fd_rot}
-                            />
-                          </Grid>
 
-                          <Grid item md={6}>
-                            <div className="d-flex align-items-center justify-content-center">
-                              <CheckBoxComponent
-                                label=""
-                                isChecked={
-                                  variationData[item].pricing
-                                    .return_order_accepted
-                                }
-                                checkBoxClick={(_, val) => {
-                                  setVariationData((pre) => {
-                                    const temp = JSON.parse(
-                                      JSON.stringify(pre)
-                                    );
-                                    temp[item].pricing.return_order_accepted =
-                                      val;
-                                    return temp;
-                                  });
-                                }}
-                                size="small"
-                                showIcon
-                                varient="filled"
-                              />
-                              <Typography className="fs-12 mt-1">
-                                Return Order Accepted
-                              </Typography>
-                            </div>
-                          </Grid>
+                              <Grid item md={6}>
+                                <div className="d-flex align-items-center justify-content-center">
+                                  <CheckBoxComponent
+                                    label=""
+                                    isChecked={
+                                      variationData[item].pricing
+                                        .return_order_accepted
+                                    }
+                                    checkBoxClick={(_, val) => {
+                                      setVariationData((pre) => {
+                                        const temp = JSON.parse(
+                                          JSON.stringify(pre)
+                                        );
+                                        temp[
+                                          item
+                                        ].pricing.return_order_accepted = val;
+                                        return temp;
+                                      });
+                                    }}
+                                    size="small"
+                                    showIcon
+                                    varient="filled"
+                                  />
+                                  <Typography className="fs-12 mt-1">
+                                    Return Order Accepted
+                                  </Typography>
+                                </div>
+                              </Grid>
 
-                          <Grid item md={6}>
-                            <div className="d-flex align-items-center justify-content-center">
-                              <CheckBoxComponent
-                                label=""
-                                isChecked={
-                                  variationData[item].pricing.cash_on_delivary
-                                }
-                                checkBoxClick={(_, val) => {
-                                  setVariationData((pre) => {
-                                    const temp = JSON.parse(
-                                      JSON.stringify(pre)
-                                    );
-                                    temp[item].pricing.cash_on_delivary = val;
-                                    return temp;
-                                  });
-                                }}
-                                size="small"
-                                showIcon
-                                varient="filled"
-                              />
-                              <Typography className="fs-12 mt-1">
-                                Cash on Delivary
-                              </Typography>
-                            </div>
-                          </Grid>
-                          {/* <Grid item md={6}>
+                              <Grid item md={6}>
+                                <div className="d-flex align-items-center justify-content-center">
+                                  <CheckBoxComponent
+                                    label=""
+                                    isChecked={
+                                      variationData[item].pricing
+                                        .cash_on_delivary
+                                    }
+                                    checkBoxClick={(_, val) => {
+                                      setVariationData((pre) => {
+                                        const temp = JSON.parse(
+                                          JSON.stringify(pre)
+                                        );
+                                        temp[item].pricing.cash_on_delivary =
+                                          val;
+                                        return temp;
+                                      });
+                                    }}
+                                    size="small"
+                                    showIcon
+                                    varient="filled"
+                                  />
+                                  <Typography className="fs-12 mt-1">
+                                    Cash on Delivary
+                                  </Typography>
+                                </div>
+                              </Grid>
+                              {/* <Grid item md={6}>
                               <InputBox
                                 id="delivery_charge"
                                 label="Delivery Charge"
@@ -1401,272 +1297,313 @@ const GroupVariationForm = ({
                                 }
                               />
                             </Grid> */}
-                          {variationData[item].pricing
-                            .return_order_accepted && (
-                            <Grid item xs={12}>
-                              <SimpleDropdownComponent
-                                list={returnOrderData}
-                                id="returnorder"
-                                label="Return Period*"
-                                size="small"
-                                value={variationData[item].pricing.returnorder}
-                                placeholder="Select Return Period"
-                                onDropdownSelect={(value) => {
-                                  handleDropDownChange(
-                                    item,
-                                    "pricing",
-                                    "returnorder",
-                                    value
-                                  );
-                                }}
-                                inputlabelshrink
-                              />
-                            </Grid>
-                          )}
-                          <Grid item md={12}>
-                            <Typography className="h-4 color-orange fw-bold">
-                              Pricing For MrMrsCart
-                            </Typography>
-                          </Grid>
-                          <Grid item md={12} display="flex" alignItems="center">
-                            <CheckBoxComponent
-                              label=""
-                              isChecked={
-                                variationData[item].mmcartPricing.sellwithus
-                              }
-                              checkBoxClick={(_, val) => {
-                                setVariationData((pre) => {
-                                  const temp = JSON.parse(JSON.stringify(pre));
-                                  temp[item].mmcartPricing.sellwithus = val;
-                                  return temp;
-                                });
-                              }}
-                              showIcon
-                              varient="filled"
-                            />
-                            <Typography component="span" className="h-5">
-                              Do You Want To Sell With Us
-                            </Typography>
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="free_delivery"
-                              label="Sale Price With Free Delivery Returns*"
-                              inputlabelshrink
-                              type="number"
-                              value={
-                                variationData[item].mmcartPricing.free_delivery
-                              }
-                              placeholder="Enter Sale Price With Free Delivery Returns"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "mmcartPricing");
-                              }}
-                              disabled={
-                                !variationData[item].mmcartPricing.sellwithus
-                              }
-                              helperText={
-                                errorObj[item]?.mmcartPricing.free_delivery
-                              }
-                              error={
-                                errorObj[item]?.mmcartPricing.free_delivery &&
-                                errorObj[item]?.mmcartPricing.free_delivery !==
-                                  ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="paid_delivery"
-                              placeholder="Enter Sale Price With Out Free Delivery Returns"
-                              label="Sale Price With Out Free Delivery Returns*"
-                              inputlabelshrink
-                              type="number"
-                              value={
-                                variationData[item].mmcartPricing.paid_delivery
-                              }
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "mmcartPricing");
-                              }}
-                              disabled={
-                                !variationData[item].mmcartPricing.sellwithus
-                              }
-                              helperText={
-                                errorObj[item]?.mmcartPricing.paid_delivery
-                              }
-                              error={
-                                errorObj[item]?.mmcartPricing.paid_delivery &&
-                                errorObj[item]?.mmcartPricing.paid_delivery !==
-                                  ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={6} display="flex" alignItems="center">
-                            <CheckBoxComponent
-                              label=""
-                              isChecked={variationData[item].mmcartPricing.rto}
-                              checkBoxClick={(_, val) => {
-                                setVariationData((pre) => {
-                                  const temp = JSON.parse(JSON.stringify(pre));
-                                  temp[item].mmcartPricing.rto = val;
-                                  return temp;
-                                });
-                              }}
-                              showIcon
-                              varient="filled"
-                            />
-                            <Typography component="span" className="h-5">
-                              Return Order Accepted
-                            </Typography>
-                          </Grid>
+                              {variationData[item].pricing
+                                .return_order_accepted && (
+                                <Grid item xs={12}>
+                                  <SimpleDropdownComponent
+                                    list={returnOrderData}
+                                    id="returnorder"
+                                    label="Return Period*"
+                                    size="small"
+                                    value={
+                                      variationData[item].pricing.returnorder
+                                    }
+                                    placeholder="Select Return Period"
+                                    onDropdownSelect={(value) => {
+                                      handleDropDownChange(
+                                        item,
+                                        "pricing",
+                                        "returnorder",
+                                        value
+                                      );
+                                    }}
+                                    inputlabelshrink
+                                  />
+                                </Grid>
+                              )}
+                              <Grid item md={12}>
+                                <Typography className="h-4 color-orange fw-bold">
+                                  Pricing For MrMrsCart
+                                </Typography>
+                              </Grid>
+                              <Grid
+                                item
+                                md={12}
+                                display="flex"
+                                alignItems="center"
+                              >
+                                <CheckBoxComponent
+                                  label=""
+                                  isChecked={
+                                    variationData[item].mmcartPricing.sellwithus
+                                  }
+                                  checkBoxClick={(_, val) => {
+                                    setVariationData((pre) => {
+                                      const temp = JSON.parse(
+                                        JSON.stringify(pre)
+                                      );
+                                      temp[item].mmcartPricing.sellwithus = val;
+                                      return temp;
+                                    });
+                                  }}
+                                  showIcon
+                                  varient="filled"
+                                />
+                                <Typography component="span" className="h-5">
+                                  Do You Want To Sell With Us
+                                </Typography>
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="free_delivery"
+                                  label="Sale Price With Free Delivery Returns*"
+                                  inputlabelshrink
+                                  type="number"
+                                  value={
+                                    variationData[item].mmcartPricing
+                                      .free_delivery
+                                  }
+                                  placeholder="Enter Sale Price With Free Delivery Returns"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "mmcartPricing");
+                                  }}
+                                  disabled={
+                                    !variationData[item].mmcartPricing
+                                      .sellwithus
+                                  }
+                                  helperText={
+                                    errorObj[item]?.mmcartPricing.free_delivery
+                                  }
+                                  error={
+                                    errorObj[item]?.mmcartPricing
+                                      .free_delivery &&
+                                    errorObj[item]?.mmcartPricing
+                                      .free_delivery !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="paid_delivery"
+                                  placeholder="Enter Sale Price With Out Free Delivery Returns"
+                                  label="Sale Price With Out Free Delivery Returns*"
+                                  inputlabelshrink
+                                  type="number"
+                                  value={
+                                    variationData[item].mmcartPricing
+                                      .paid_delivery
+                                  }
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "mmcartPricing");
+                                  }}
+                                  disabled={
+                                    !variationData[item].mmcartPricing
+                                      .sellwithus
+                                  }
+                                  helperText={
+                                    errorObj[item]?.mmcartPricing.paid_delivery
+                                  }
+                                  error={
+                                    errorObj[item]?.mmcartPricing
+                                      .paid_delivery &&
+                                    errorObj[item]?.mmcartPricing
+                                      .paid_delivery !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid
+                                item
+                                md={6}
+                                display="flex"
+                                alignItems="center"
+                              >
+                                <CheckBoxComponent
+                                  label=""
+                                  isChecked={
+                                    variationData[item].mmcartPricing.rto
+                                  }
+                                  checkBoxClick={(_, val) => {
+                                    setVariationData((pre) => {
+                                      const temp = JSON.parse(
+                                        JSON.stringify(pre)
+                                      );
+                                      temp[item].mmcartPricing.rto = val;
+                                      return temp;
+                                    });
+                                  }}
+                                  showIcon
+                                  varient="filled"
+                                />
+                                <Typography component="span" className="h-5">
+                                  Return Order Accepted
+                                </Typography>
+                              </Grid>
 
-                          <Grid item md={6} display="flex" alignItems="center">
-                            <CheckBoxComponent
-                              label=""
-                              isChecked={variationData[item].mmcartPricing.cod}
-                              checkBoxClick={(_, val) => {
-                                setVariationData((pre) => {
-                                  const temp = JSON.parse(JSON.stringify(pre));
-                                  temp[item].mmcartPricing.cod = val;
-                                  return temp;
-                                });
-                              }}
-                              showIcon
-                              varient="filled"
-                            />
-                            <Typography component="span" className="h-5">
-                              Cash on Delivery Available
-                            </Typography>
-                          </Grid>
-                          {variationData[item].mmcartPricing.rto && (
-                            <Grid item xs={12}>
-                              <SimpleDropdownComponent
-                                list={returnOrderData}
-                                id="returnorder"
-                                label="Return Period*"
-                                size="small"
-                                value={
-                                  variationData[item].mmcartPricing.returnorder
-                                }
-                                onDropdownSelect={(value) => {
-                                  handleDropDownChange(
-                                    item,
-                                    "mmcartPricing",
-                                    "returnorder",
-                                    value
-                                  );
-                                }}
-                                inputlabelshrink
-                                placeholder="Return Period"
-                                helperText={
-                                  errorObj[item]?.mmcartPricing.returnorder
-                                }
-                                error={
-                                  errorObj[item]?.mmcartPricing.returnorder &&
-                                  errorObj[item]?.mmcartPricing.returnorder !==
-                                    ""
-                                }
-                              />
+                              <Grid
+                                item
+                                md={6}
+                                display="flex"
+                                alignItems="center"
+                              >
+                                <CheckBoxComponent
+                                  label=""
+                                  isChecked={
+                                    variationData[item].mmcartPricing.cod
+                                  }
+                                  checkBoxClick={(_, val) => {
+                                    setVariationData((pre) => {
+                                      const temp = JSON.parse(
+                                        JSON.stringify(pre)
+                                      );
+                                      temp[item].mmcartPricing.cod = val;
+                                      return temp;
+                                    });
+                                  }}
+                                  showIcon
+                                  varient="filled"
+                                />
+                                <Typography component="span" className="h-5">
+                                  Cash on Delivery Available
+                                </Typography>
+                              </Grid>
+                              {variationData[item].mmcartPricing.rto && (
+                                <Grid item xs={12}>
+                                  <SimpleDropdownComponent
+                                    list={returnOrderData}
+                                    id="returnorder"
+                                    label="Return Period*"
+                                    size="small"
+                                    value={
+                                      variationData[item].mmcartPricing
+                                        .returnorder
+                                    }
+                                    onDropdownSelect={(value) => {
+                                      handleDropDownChange(
+                                        item,
+                                        "mmcartPricing",
+                                        "returnorder",
+                                        value
+                                      );
+                                    }}
+                                    inputlabelshrink
+                                    placeholder="Return Period"
+                                    helperText={
+                                      errorObj[item]?.mmcartPricing.returnorder
+                                    }
+                                    error={
+                                      errorObj[item]?.mmcartPricing
+                                        .returnorder &&
+                                      errorObj[item]?.mmcartPricing
+                                        .returnorder !== ""
+                                    }
+                                  />
+                                </Grid>
+                              )}
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="product_weight"
+                                  label="Product Weight(inclusive of package)*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  value={
+                                    variationData[item].pricing.product_weight
+                                  }
+                                  inputlabelshrink
+                                  type="number"
+                                  placeholder="Weight in grams"
+                                  helperText={
+                                    errorObj[item]?.pricing.product_weight
+                                  }
+                                  error={
+                                    errorObj[item]?.pricing.product_weight &&
+                                    errorObj[item]?.pricing.product_weight !==
+                                      ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="length"
+                                  label="Length(inclusive of package)*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  value={variationData[item].pricing.length}
+                                  inputlabelshrink
+                                  type="number"
+                                  placeholder="Length in cms"
+                                  helperText={errorObj[item]?.pricing.length}
+                                  error={
+                                    errorObj[item]?.pricing.length &&
+                                    errorObj[item]?.pricing.length !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="height"
+                                  label="Height(inclusive of package)*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  value={variationData[item].pricing.height}
+                                  inputlabelshrink
+                                  type="number"
+                                  placeholder="Height in cms"
+                                  helperText={errorObj[item]?.pricing.height}
+                                  error={
+                                    errorObj[item]?.pricing.height &&
+                                    errorObj[item]?.pricing.height !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="width"
+                                  label="Width(inclusive of package)*"
+                                  onInputChange={(e) => {
+                                    handleInputChange(e, item, "pricing");
+                                  }}
+                                  value={variationData[item].pricing.width}
+                                  inputlabelshrink
+                                  type="number"
+                                  placeholder="Width in cms"
+                                  helperText={errorObj[item]?.pricing.width}
+                                  error={
+                                    errorObj[item]?.pricing.width &&
+                                    errorObj[item]?.pricing.width !== ""
+                                  }
+                                />
+                              </Grid>
+                              <Grid item md={12}>
+                                <InputBox
+                                  id="modalname"
+                                  label="Modal Name*"
+                                  onInputChange={(e) =>
+                                    handleInputChange(e, item, "inventory")
+                                  }
+                                  value={
+                                    variationData[item].inventory.modalname
+                                  }
+                                  inputlabelshrink
+                                  helperText={errorObj.modalname}
+                                  error={
+                                    errorObj[item]?.inventory.modalname &&
+                                    errorObj[item]?.inventory.modalname !== ""
+                                  }
+                                  placeholder="Enter Modal Name"
+                                />
+                              </Grid>
                             </Grid>
-                          )}
-                          <Grid item md={12}>
-                            <InputBox
-                              id="product_weight"
-                              label="Product Weight(inclusive of package)*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              value={variationData[item].pricing.product_weight}
-                              inputlabelshrink
-                              type="number"
-                              placeholder="Weight in grams"
-                              helperText={
-                                errorObj[item]?.pricing.product_weight
-                              }
-                              error={
-                                errorObj[item]?.pricing.product_weight &&
-                                errorObj[item]?.pricing.product_weight !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="length"
-                              label="Length(inclusive of package)*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              value={variationData[item].pricing.length}
-                              inputlabelshrink
-                              type="number"
-                              placeholder="Length in cms"
-                              helperText={errorObj[item]?.pricing.length}
-                              error={
-                                errorObj[item]?.pricing.length &&
-                                errorObj[item]?.pricing.length !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="height"
-                              label="Height(inclusive of package)*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              value={variationData[item].pricing.height}
-                              inputlabelshrink
-                              type="number"
-                              placeholder="Height in cms"
-                              helperText={errorObj[item]?.pricing.height}
-                              error={
-                                errorObj[item]?.pricing.height &&
-                                errorObj[item]?.pricing.height !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="width"
-                              label="Width(inclusive of package)*"
-                              onInputChange={(e) => {
-                                handleInputChange(e, item, "pricing");
-                              }}
-                              value={variationData[item].pricing.width}
-                              inputlabelshrink
-                              type="number"
-                              placeholder="Width in cms"
-                              helperText={errorObj[item]?.pricing.width}
-                              error={
-                                errorObj[item]?.pricing.width &&
-                                errorObj[item]?.pricing.width !== ""
-                              }
-                            />
-                          </Grid>
-                          <Grid item md={12}>
-                            <InputBox
-                              id="modalname"
-                              label="Modal Name*"
-                              onInputChange={(e) =>
-                                handleInputChange(e, item, "inventory")
-                              }
-                              value={variationData[item].inventory.modalname}
-                              inputlabelshrink
-                              helperText={errorObj.modalname}
-                              error={
-                                errorObj[item]?.inventory.modalname &&
-                                errorObj[item]?.inventory.modalname !== ""
-                              }
-                              placeholder="Enter Modal Name"
-                            />
-                          </Grid>
-                        </Grid>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </Paper>
                   </div>
-                </Paper>
-              </div>
-            );
-          })}
+                );
+              })
+            : null}
         </div>
       </div>
       <div className="d-flex justify-content-end mb-3 me-3">

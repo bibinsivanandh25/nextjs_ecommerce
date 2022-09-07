@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -15,8 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import { getBase64 } from "services/utils/functionUtils";
 import toastify from "services/utils/toastUtils";
+import { Country } from "country-state-city";
+import { getCurrentData } from "services/supplier";
 import InputBox from "@/atoms/InputBoxComponent";
 import { validateOtherInfo } from "../../productform/validation";
+import DatePickerComponent from "@/atoms/DatePickerComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const VariationForm = forwardRef(
   ({ setShowGroupVariant = () => {}, setFormData = () => {} }, ref) => {
@@ -27,27 +32,50 @@ const VariationForm = forwardRef(
     const dispatch = useDispatch();
     const [otherInfo, setOtherInfo] = useState([{ value: "", label: "" }]);
     const [error, setErrorInfo] = useState([]);
+    const [expireDate, setexpireDate] = useState(null);
+    const [expireDateErr, setexpireDateErr] = useState("");
+    const [country, setcountry] = useState({});
     const variationData = useSelector((state) => state.product.variationData);
-
+    const countries = Country.getAllCountries();
+    const countryList = countries.map((item) => ({
+      label: item.name,
+      value: item.name,
+      id: item.name,
+    }));
     useEffect(() => {
       if (addRef.current) addRef.current.scrollIntoView();
     }, [imagedata]);
+    let currentData = new Date();
+    const getDate = async () => {
+      const { data } = await getCurrentData();
+      if (data) {
+        currentData = new Date(data);
+      }
+    };
+    useEffect(() => {
+      getDate();
+    }, []);
 
     useImperativeHandle(ref, () => {
       return {
-        handleSendFormData: () => {
-          return ["policy", {}];
-        },
         validate: () => {
-          const { errObj, flag } = validateOtherInfo(otherInfo);
+          let { errObj, flag } = validateOtherInfo(otherInfo);
+          if (expireDate && expireDate <= currentData) {
+            setexpireDateErr("Please Select Future Date");
+            flag = true;
+          } else {
+            setexpireDateErr("");
+          }
           setErrorInfo(errObj);
-          return { flag, otherInfo };
+          return { flag, otherInfo, country, expireDate };
         },
         clearPage: () => {
-          setOtherInfo({
-            label: "",
-            value: "",
-          });
+          setOtherInfo([
+            {
+              label: "",
+              value: "",
+            },
+          ]);
         },
       };
     });
@@ -94,9 +122,49 @@ const VariationForm = forwardRef(
               }}
             />
           ) : (
-            <Grid container>
+            <Grid container spacing={2}>
+              <Grid item md={12} className="d-flex justify-content-end">
+                <Typography
+                  className="h-5 color-orange cursor-pointer"
+                  onClick={() => {
+                    setShowGroupVariant(true);
+                  }}
+                >
+                  <CustomIcon type="edit" className="fs-14 mx-1 color-orange" />
+                  Edit variation
+                </Typography>
+              </Grid>
+              <Grid item md={4} className="d-flex align-items-center">
+                <Typography className="h-5">Expire Date</Typography>
+              </Grid>
+              <Grid item md={8}>
+                <DatePickerComponent
+                  label=""
+                  size="small"
+                  value={expireDate}
+                  onDateChange={(val) => {
+                    setexpireDate(val);
+                  }}
+                  helperText={expireDateErr}
+                  error={!!expireDateErr}
+                />
+              </Grid>
+              <Grid item md={4} className="d-flex align-items-center">
+                <Typography className="h-5">Country Of Origin</Typography>
+              </Grid>
+              <Grid item md={8}>
+                <SimpleDropdownComponent
+                  id="country"
+                  size="small"
+                  list={countryList}
+                  value={countryList.find((op) => op.id === country.id)}
+                  onDropdownSelect={(val) => {
+                    setcountry(val);
+                  }}
+                />
+              </Grid>
               <Grid item lg={9} md={9} xs={12}>
-                Other Info :
+                <Typography className="h-5">Other Info* :</Typography>
               </Grid>
               <Grid item md={3} className="d-flex flex-row-reverse">
                 <ButtonComponent

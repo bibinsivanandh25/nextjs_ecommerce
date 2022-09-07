@@ -28,6 +28,7 @@ import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import { clearProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { format } from "date-fns";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -671,6 +672,8 @@ const ProductsLayout = ({
         productVariations: getVariationsPayload(),
 
         otherInformationObject: { ...otherObj },
+        expiryDate: format(other.expireDate, "yyyy-MM-dd"),
+        countryOfOrigin: other.country,
         zoneChargeInfo: {},
         productType: "VARIABLE_PRODUCT",
         supplierId: userInfo.id,
@@ -679,13 +682,14 @@ const ProductsLayout = ({
       if (err) {
         toastify(err.response.data.message, "error");
       } else if (data) {
-        toastify(data.message, "success");
+        dispatch(clearProduct());
         router.replace({
           pathname: "/supplier/products&inventory/myproducts",
           query: {
             active: "2",
           },
         });
+        toastify(data.message, "success");
       }
     };
 
