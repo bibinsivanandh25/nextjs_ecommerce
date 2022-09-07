@@ -6,6 +6,7 @@ import toastify from "services/utils/toastUtils";
 import atob from "atob";
 import serviceUtil from "services/utils";
 import styles from "./Newpassword.module.css";
+import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 
 const Newpassword = () => {
   const [formValues, setFormValues] = useState({
@@ -13,12 +14,16 @@ const Newpassword = () => {
     password: "",
     rePassword: "",
   });
+  const [supplierId, setSupplierId] = useState("");
+  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (router.query.user) {
       try {
         const temp = atob(router.query.user).split(",")[1];
+        const supId = atob(router.query.user).split(",")[2];
+        setSupplierId(supId);
         setFormValues((pre) => ({
           ...pre,
           userId: temp,
@@ -39,9 +44,10 @@ const Newpassword = () => {
       })
       .then((data) => {
         toastify(data.data.message, "success");
-        if (data) {
-          router.push("/auth/login");
-        }
+        setShowAddAddressModal(true);
+        // if (data) {
+        //   router.push("/auth/login");
+        // }
       })
       .catch((err) => {
         toastify(err.response.data.message, "error");
@@ -69,6 +75,12 @@ const Newpassword = () => {
           />
         </div>
       </Grid>
+      <AddAddressModal
+        setShowAddAddressModal={setShowAddAddressModal}
+        type="add"
+        showAddressModal={showAddAddressModal}
+        supplierId={supplierId}
+      />
     </Grid>
   );
 };

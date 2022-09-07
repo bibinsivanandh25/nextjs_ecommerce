@@ -5,6 +5,11 @@ import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  addNewAddress,
+  updateAddress,
+} from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 
 const AddAddressModal = (props) => {
@@ -13,8 +18,23 @@ const AddAddressModal = (props) => {
     values = {},
     setSelectId = () => {},
     type = "",
+    showAddressModal = false,
+    getAllAddress = () => {},
+    supplierId = "",
   } = props;
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    name: "",
+    mobileNumber: "",
+    pinCode: "",
+    location: "",
+    address: "",
+    cityDistrictTown: "",
+    state: "",
+    landmark: "",
+    latitudeValue: "",
+    longitudeValue: "",
+    alternativeMobileNumber: "",
+  });
   const [error, setError] = useState({});
 
   const [inputFields, setInputFields] = useState([
@@ -23,7 +43,7 @@ const AddAddressModal = (props) => {
       id: "name",
       value: null,
       required: true,
-      validation: /^[A-Za-z]{1,50}$/,
+      validation: /^.{1,50}$/,
       errorMessage: validateMessage.alphabets_50,
     },
     {
@@ -37,7 +57,7 @@ const AddAddressModal = (props) => {
     },
     {
       label: "Pin Code",
-      id: "pincode",
+      id: "pinCode",
       value: null,
       required: true,
       validation: /^([a-zA-Z0-9_-]){1,6}$/,
@@ -62,7 +82,7 @@ const AddAddressModal = (props) => {
     },
     {
       label: "City / District / Town",
-      id: "city",
+      id: "cityDistrictTown",
       value: null,
       required: true,
       validation: /^.{1,50}$/,
@@ -91,21 +111,21 @@ const AddAddressModal = (props) => {
     },
     {
       label: "Alternate Number (Optional)",
-      id: "alternateNumber",
+      id: "alternativeMobileNumber",
       value: null,
       errorMessage: validateMessage.mobile,
       validation: validationRegex.mobile,
     },
     {
       label: "Latitude Value (Optional)",
-      id: "latitude",
+      id: "latitudeValue",
       value: null,
       validation: /^.{1,100}$/,
       errorMessage: validateMessage.alpha_numeric_max_100,
     },
     {
       label: "Longitude Value (Optional)",
-      id: "longitude",
+      id: "longitudeValue",
       value: null,
       validation: /^.{1,100}$/,
       errorMessage: validateMessage.alpha_numeric_max_100,
@@ -143,11 +163,33 @@ const AddAddressModal = (props) => {
     });
     return valid;
   };
-
-  const handleSave = () => {
+  const user = useSelector((state) => state.user.supplierId);
+  const handleSave = async () => {
     const isValid = validateForm();
     if (isValid) {
-      console.log(formValues);
+      if (type === "add") {
+        const temp = JSON.parse(JSON.stringify(formValues));
+        delete temp.addressId;
+        const payload = {
+          ...temp,
+          supplierId: user ?? supplierId,
+        };
+        const { data } = await addNewAddress(payload);
+        if (data) {
+          getAllAddress();
+          setShowAddAddressModal(false);
+        }
+      } else if (type === "edit") {
+        const payload = {
+          ...formValues,
+          supplierId: user,
+        };
+        const { data } = await updateAddress(payload);
+        if (data) {
+          getAllAddress();
+          setShowAddAddressModal(false);
+        }
+      }
     }
   };
 
@@ -171,6 +213,7 @@ const AddAddressModal = (props) => {
       }
       return val;
     };
+
     setFormValues((prev) => {
       return {
         ...prev,
@@ -181,8 +224,10 @@ const AddAddressModal = (props) => {
 
   return (
     <ModalComponent
-      open
-      ModalTitle="Add New Pickup Address"
+      open={showAddressModal}
+      ModalTitle={
+        type === "add" ? "Add New Pickup Address" : "Edit Pickup Address"
+      }
       showFooter
       onCloseIconClick={() => {
         if (type === "edit") {
@@ -214,7 +259,9 @@ const AddAddressModal = (props) => {
                 size="small"
                 list={field.options}
                 label={field.label}
-                value={field.options.find((op) => op.id === field.value)}
+                value={field.options.find(
+                  (op) => op.id?.toLowerCase() === field.value?.toLowerCase()
+                )}
                 onDropdownSelect={(val) => handleInputChange(val, field)}
                 helperText={error[field.id]}
               />
