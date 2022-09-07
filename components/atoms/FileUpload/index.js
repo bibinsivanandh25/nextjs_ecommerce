@@ -160,6 +160,11 @@ const FileUploadModal = ({
                     const temp = [...binaryStr];
                     temp.splice(ind, 1);
                     setbinaryStr([...temp]);
+                    if (type !== "base64") {
+                      const multiTemp = [...multiPart];
+                      multiTemp.splice(ind, 1);
+                      setMultiPart([...multiTemp]);
+                    }
                   }}
                   className="position-absolute bottom-0 end-0 p-1 rounded-circle bg-secondary text-white"
                 />

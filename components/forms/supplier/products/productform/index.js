@@ -26,11 +26,14 @@ import {
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
+import { clearProduct } from "features/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { format } from "date-fns";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
 const ProductsLayout = ({
@@ -65,6 +68,9 @@ const ProductsLayout = ({
   const [createTagModal, setcreateTagModal] = useState(false);
   const [tagInputError, setTagInputError] = useState("");
   const [errorObj, setErrObj] = useState({});
+  const dispatch = useDispatch();
+  const [showOthersField, setshowOthersField] = useState(false);
+  const variationData = useSelector((state) => state.product.variationData);
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -73,6 +79,12 @@ const ProductsLayout = ({
       setTabsLists([...tabsList]);
     }
   }, [formData?.mainForm?.category]);
+
+  useEffect(() => {
+    if (variationData && Object.keys(variationData).length) {
+      setshowOthersField(true);
+    }
+  }, [variationData]);
 
   const saveTag = async (payload) => {
     await serviceUtil
@@ -218,8 +230,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -472,6 +484,223 @@ const ProductsLayout = ({
     }
   };
 
+  const handleVariationSubmit = async () => {
+    const savevariationimg = (type, imgList) => {
+      return saveMediaFile(userInfo.id, imgList).then((res) => {
+        if (!res.error) {
+          return { [`${type}`]: res.data };
+        }
+        return null;
+      });
+    };
+
+    const uploadImages = async () => {
+      const promiseAll = [];
+      if (formData.mainForm.short_description?.media?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "short_description",
+            formData.mainForm.short_description.media
+          )
+        );
+      }
+      if (formData.mainForm.long_description?.media?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "long_description",
+            formData.mainForm.long_description.media
+          )
+        );
+      }
+      if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "cancellationPolicy",
+            formData.policy.cancellationPolicy.media.binaryStr
+          )
+        );
+      }
+      if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "refundPolicy",
+            formData.policy.refundPolicy.media.binaryStr
+          )
+        );
+      }
+      if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "shippingPolicy",
+            formData.policy.shippingPolicy.media.binaryStr
+          )
+        );
+      }
+      const prodImages = {};
+      Object.keys(variationData).forEach((item) => {
+        prodImages[item] = [];
+        variationData[item].images.forEach((ele) => {
+          if (ele) {
+            prodImages[item].push(ele);
+          }
+        });
+      });
+      Object.keys(prodImages).forEach((item) => {
+        promiseAll.push(savevariationimg(item, prodImages[item]));
+      });
+      const imgdata = await Promise.all(promiseAll);
+      const imgData = {};
+      imgdata.forEach((ele) => {
+        imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
+      });
+      return imgData;
+    };
+    const { errObj, flag } = validateMainForm(formData.mainForm);
+    const other = formsRef.current.validate();
+    const otherObj = {};
+    other?.otherInfo.forEach((ele) => {
+      otherObj[`${ele.label}`] = "";
+      otherObj[`${ele.label}`] = ele.value;
+    });
+    const otherFlag = other.flag;
+    const createvariationPayload = async (imgdata) => {
+      const { mainFormData, attribute, policy, linked } = JSON.parse(
+        JSON.stringify(formData)
+      );
+      const getvariationProperty = (ele) => {
+        const temp = ["countryOfOrigin", "others", "expiryDate"];
+        const variationProperty = [];
+        Object.keys(variationData[ele].variation).forEach((item) => {
+          if (!temp.includes(item)) {
+            variationProperty.push({
+              variationId: item,
+              optionId: variationData[ele].variation[item].id,
+              variationType: formData.attribute[item][0]?.variationType,
+            });
+          }
+        });
+        return variationProperty;
+      };
+      const getVariationsPayload = () => {
+        const temp = [];
+        Object.keys(variationData).forEach((ele) => {
+          const { inventory, mmcartPricing, pricing } = JSON.parse(
+            JSON.stringify(variationData[ele])
+          );
+          temp.push({
+            productTitle: inventory.product_title,
+            shippingClass: inventory.shipping_class.value,
+            businessProcessingDays: inventory.business_processing_days.value,
+            seoTitle: inventory.seo_title,
+            metaDescription: inventory.meta_description,
+            metaKeywords: inventory.meta_keyword.join(),
+            isStoreFDR: pricing.fd_rot,
+            salePriceWithLogistics: parseInt(pricing.sale_price_logistics, 10),
+            rtoAccepted: pricing.return_order_accepted,
+            rtoDays: pricing?.returnorder?.value ?? null,
+            codAvailable: pricing.cash_on_delivary,
+            deliveryCharge: pricing.delivery_charge,
+            packageLength: parseFloat(pricing.length),
+            packageWidth: parseFloat(pricing.width),
+            packageHeight: parseFloat(pricing.height),
+            weightInclusivePackage: parseFloat(pricing.product_weight),
+            salePrice: parseInt(pricing.sale_price, 10),
+            mrp: parseInt(pricing.mrp, 10),
+            stockQty: parseInt(inventory.stockqty, 10),
+            modelName: inventory.modalname,
+            sellWithMrMrsCart: mmcartPricing.sellwithus,
+            mrmrscartSalePriceWithFDR: mmcartPricing.free_delivery,
+            mrmrscartSalePriceWithOutFDR: mmcartPricing.paid_delivery,
+            mrmrscartRtoAccepted: mmcartPricing.rto,
+            mrmrscartRtoDays: mmcartPricing.returnorder.id,
+            mrmrscartCodAvailable: mmcartPricing.cod,
+            stockStatus: inventory.stock_status.label,
+            allowBackOrders: inventory?.allow_backorders?.label ?? "",
+            backOrders: parseInt(inventory.back_Orders, 10) || 0,
+            variationMedia: imgdata[ele],
+            variationProperty: getvariationProperty(ele),
+          });
+        });
+        return temp;
+      };
+      const payload = {
+        brand: formData.mainForm.brand,
+        longDescription: formData.mainForm.long_description.text,
+        longDescriptionFileUrls: imgdata.long_description,
+        shortDescription: formData.mainForm.short_description.text,
+        shortDescriptionFileUrls: imgdata.short_description,
+        subCategoryId: formData.mainForm.subCategoryValue.id,
+        subCategoryName: formData.mainForm.subCategoryValue.label,
+        commissionMode: formData.mainForm.commision_mode,
+        tags: formData.mainForm.tags.length
+          ? formData.mainForm.tags.map((item) => {
+              return item.id;
+            })
+          : [],
+        limitsPerOrder: parseInt(formData.mainForm.limit_per_order, 10),
+        trademarkLetterIdList: formData.mainForm.b2bdocument.length
+          ? formData.mainForm.b2bdocument.map((item) => {
+              return item.id;
+            })
+          : [],
+        bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+          ? formData.mainForm.selectb2binvoice.map((item) => {
+              return item.id;
+            })
+          : [],
+        isGenericProduct: formData.mainForm.genericradio,
+
+        linkedProducts: {
+          upSells: [formData.linked.upSells.value],
+          crossSells: [formData.linked.crossSells.value],
+        },
+
+        productPolicies: {
+          policyTabLabel: formData.policy.policyTabLabel,
+          shippingPolicy: formData.policy.shippingPolicy.text,
+          shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
+          refundPolicy: formData.policy.refundPolicy.text,
+          refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
+          cancellationPolicy: formData.policy.cancellationPolicy.text,
+          cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
+          warrantyAvailable: formData.policy.warranty,
+          warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
+            ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
+            : null,
+        },
+
+        productVariations: getVariationsPayload(),
+
+        otherInformationObject: { ...otherObj },
+        expiryDate: format(other.expireDate, "yyyy-MM-dd"),
+        countryOfOrigin: other.country,
+        zoneChargeInfo: {},
+        productType: "VARIABLE_PRODUCT",
+        supplierId: userInfo.id,
+      };
+      const { data, err } = await saveProduct(payload);
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+        toastify(data.message, "success");
+      }
+    };
+
+    if (flag || validateProductImg(formData.productImage) || otherFlag) {
+      setErrObj(errObj);
+    } else {
+      setErrObj({});
+      createvariationPayload(await uploadImages());
+    }
+  };
+
   return (
     <>
       {!showGroupVariant ? (
@@ -628,7 +857,7 @@ const ProductsLayout = ({
                         };
                       });
                     }}
-                    value={formData?.mainForm?.short_description.text}
+                    value={formData?.mainForm?.short_description?.text}
                     onBtnClick={() => {
                       setShowFileUploadModal("short_description");
                     }}
@@ -649,7 +878,7 @@ const ProductsLayout = ({
                   <TextAreaComponent
                     id="long_description"
                     legend="Long Description*"
-                    value={formData?.mainForm?.long_description.text}
+                    value={formData?.mainForm?.long_description?.text}
                     placeholder="Enter long description"
                     onChange={(e) => {
                       setFormData((prev) => {
@@ -915,6 +1144,7 @@ const ProductsLayout = ({
                   setFormData(schema);
                   setErrObj({});
                   setactiveTab(0);
+                  dispatch(clearProduct());
                 }}
                 muiProps="me-2"
               />
@@ -929,15 +1159,23 @@ const ProductsLayout = ({
                   muiProps="me-2"
                 />
               ) : null}
-              <ButtonComponent
-                label={activeTab === tabsList.length - 1 ? "Submit" : "Next"}
-                size="small"
-                onBtnClick={
-                  activeTab === tabsLists.length - 1
-                    ? handleSubmit
-                    : handleNextClick
-                }
-              />
+              {activeTab !== tabsList.length - 1 && (
+                <ButtonComponent
+                  label="Next"
+                  size="small"
+                  onBtnClick={handleNextClick}
+                />
+              )}
+              {(type === "simple" || showOthersField) &&
+                activeTab === tabsList.length - 1 && (
+                  <ButtonComponent
+                    label="Submit"
+                    size="small"
+                    onBtnClick={
+                      type === "simple" ? handleSubmit : handleVariationSubmit
+                    }
+                  />
+                )}
             </Box>
           </Box>
           {showFileUploadModal !== "" ? (
@@ -973,9 +1211,10 @@ const ProductsLayout = ({
         </Box>
       ) : (
         <GroupVariationForm
-          formData={formData}
-          ref={formsRef}
           setShowGroupVariant={setShowGroupVariant}
+          handleSubmit={() => {
+            setShowGroupVariant(false);
+          }}
           // imagedata={imagedata}
           // short_descriptionImg={short_descriptionImg}
           // long_descriptionImg={long_descriptionImg}
