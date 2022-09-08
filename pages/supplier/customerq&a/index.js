@@ -446,7 +446,7 @@ const CustomerQnA = () => {
       tempArray.push({
         id: val.customerQuestionId,
         col1: index < 9 ? `0${index + 1}` : index + 1,
-        col2: val.customerQuestionId,
+        col2: val.createdBy,
         col3: (
           <div className="d-flex justify-content-center">
             <Image src={val.productImages[0]} height={40} width={40} />
@@ -514,7 +514,7 @@ const CustomerQnA = () => {
       tempArray.push({
         id: val.customerQuestionId,
         col1: index < 9 ? `0${index + 1}` : index + 1,
-        col2: val.customerQuestionId,
+        col2: val.createdBy,
         col3: (
           <div className="d-flex justify-content-center">
             <Image src={val.productImages[0]} height={40} width={40} />
