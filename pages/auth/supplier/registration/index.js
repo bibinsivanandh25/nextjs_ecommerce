@@ -41,7 +41,7 @@ const Registration = () => {
       flag = true;
     } else if (formValues.firstName.length > 50) {
       flag = true;
-      errObj.firstName = validateMessage.alpha_numeric_max_50;
+      errObj.firstName = validateMessage.alphabets_50;
     }
     if (formValues.lastName === "") {
       flag = true;
