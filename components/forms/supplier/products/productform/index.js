@@ -390,27 +390,43 @@ const ProductsLayout = ({
     formData.variation.others.forEach((item) => {
       otherInformation[item.label] = item.value;
     });
-
+    debugger;
     const payload = {
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
-      longDescriptionFileUrls: [
-        ...imgdata.long_description,
-        ...formData.productImage.filter((item) => {
-          if (item.includes("https://")) {
-            return item;
-          }
-        }),
-      ],
+      longDescriptionFileUrls: imgdata.long_description
+        ? [
+            ...imgdata.long_description,
+            ...formData.mainForm.long_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ]
+        : [
+            ...formData.mainForm.long_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ],
       shortDescription: formData.mainForm.short_description.text,
-      shortDescriptionFileUrls: [
-        ...imgdata.short_description,
-        ...formData.mainForm.short_description.media.filter((item) => {
-          if (item.includes("https://")) {
-            return item;
-          }
-        }),
-      ],
+      shortDescriptionFileUrls: imgdata.short_description
+        ? [
+            ...imgdata.short_description,
+            ...formData.mainForm.short_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ]
+        : [
+            ...formData.mainForm.short_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ],
       subCategoryId: formData.mainForm.subCategoryValue.id,
       subCategoryName: formData.mainForm.subCategoryValue.label,
       commissionMode: formData.mainForm.commision_mode,
@@ -440,37 +456,64 @@ const ProductsLayout = ({
       productPolicies: {
         policyTabLabel: formData.policy.policyTabLabel,
         shippingPolicy: formData.policy.shippingPolicy.text,
-        shippingPolicyMediaUrls:
-          [
-            ...imgdata?.shippingPolicy,
-            ...formData.policy.shippingPolicy.media.binaryStr.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ] ?? [],
+        shippingPolicyMediaUrls: imgdata?.shippingPolicy
+          ? [
+              ...imgdata?.shippingPolicy,
+              ...formData.policy.shippingPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ]
+          : [
+              ...formData.policy.shippingPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ],
         refundPolicy: formData.policy.refundPolicy.text,
-        refundPolicyMediaUrls:
-          [
-            ...imgdata?.refundPolicy,
-            ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ] ?? [],
-        cancellationPolicy: formData.policy.cancellationPolicy.text,
-        cancellationPolicyMediaUrls:
-          [
-            ...imgdata?.cancellationPolicy,
-            ...formData.policy.cancellationPolicy.media.binaryStr.filter(
-              (item) => {
+        refundPolicyMediaUrls: imgdata?.refundPolicy
+          ? [
+              ...imgdata?.refundPolicy,
+              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
                 if (item.includes("https://")) {
                   return item;
                 }
-              }
-            ),
-          ] ?? [],
+              }),
+            ]
+          : [
+              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }),
+            ],
+        cancellationPolicy: formData.policy.cancellationPolicy.text,
+        cancellationPolicyMediaUrls: imgdata?.cancellationPolicy
+          ? [
+              ...imgdata?.cancellationPolicy,
+              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ]
+          : [
+              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ],
         warrantyAvailable: formData.policy.warranty,
         warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
           ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
@@ -502,7 +545,7 @@ const ProductsLayout = ({
           salePrice: parseInt(formData.pricing.sale_price, 10),
           mrp: parseInt(formData.pricing.mrp, 10),
           stockQty: parseInt(formData.inventory.stockqty, 10),
-          modelName: formData.inventory.modelname,
+          modelName: formData.inventory.modalname,
           sellWithMrMrsCart: formData.mrMrsCartFormData.sellwithus,
           mrmrscartSalePriceWithFDR: formData.mrMrsCartFormData.free_delivery,
           mrmrscartSalePriceWithOutFDR:
@@ -518,8 +561,14 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformation,
+      otherInformationObject: otherInformation,
       zoneChargeInfo: {},
+      countryOfOrigin: formData.variation.countryOfOrigin,
+      expiryDate: null,
+      // format(
+      //   new Date(formData.variation.expiryDate),
+      //   "MM-dd-yyyy HH:mm:ss"
+      // ),
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
     };
@@ -528,6 +577,7 @@ const ProductsLayout = ({
       toastify(err.response.data.message, "error");
     } else if (data) {
       toastify(data.message, "success");
+      dispatch(clearProduct());
       router.replace({
         pathname: "/supplier/products&inventory/myproducts",
         query: {

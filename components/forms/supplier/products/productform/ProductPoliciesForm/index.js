@@ -214,7 +214,7 @@ const ProductPoliciesForm = forwardRef(
                 policy: {
                   ...pre.policy,
                   [showFileUploadModal]: {
-                    ...pre.policy.cancellationPolicy,
+                    ...pre.policy[`${showFileUploadModal}`],
                     media: val,
                   },
                 },

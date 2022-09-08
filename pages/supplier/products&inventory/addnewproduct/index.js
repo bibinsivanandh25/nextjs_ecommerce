@@ -536,7 +536,6 @@ const NewProducts = () => {
     temp.mrMrsCartFormData.cashondelivery =
       productDetails.variationData.mrmrscartCodAvailable;
     temp.mrMrsCartFormData.returnorder = {};
-    debugger;
     if (productDetails.variationData.mrmrscartRtoAccepted) {
       returnOrderData.forEach((item) => {
         if (productDetails.variationData.mrmrscartRtoDays === item.value) {
@@ -572,7 +571,6 @@ const NewProducts = () => {
         }
       });
     });
-
     console.log({ temp });
     setFormData(temp);
   };
