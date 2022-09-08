@@ -1,5 +1,13 @@
 /* eslint-disable no-use-before-define */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-param-reassign */
+import {
+  getTabledata,
+  getSupplierProductCountByStatus,
+  markOutOfStock,
+  deleteSingleProduct,
+  getVariation,
+} from "services/supplier/myProducts";
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
@@ -10,19 +18,16 @@ import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { useUserInfo } from "services/hooks";
 import Image from "next/image";
-import {
-  getTabledata,
-  getSupplierProductCountByStatus,
-  markOutOfStock,
-  deleteSingleProduct,
-} from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { duplicateProduct, updateProduct } from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import ViewModal from "@/forms/supplier/myproducts/viewModal";
+// import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -34,7 +39,7 @@ const MyProducts = () => {
   const [tabList, setTabList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
   const [search, setsearch] = useState("");
-  const [viewModal, setViewModal] = useState({});
+  const dispatch = useDispatch();
   const columns = [
     {
       label: "Image",
@@ -42,7 +47,6 @@ const MyProducts = () => {
       isFilter: false,
       minWidth: 100,
       align: "center",
-      data_align: "center",
     },
     {
       align: "center",
@@ -120,8 +124,13 @@ const MyProducts = () => {
       minWidth: 100,
     },
   ];
+  const [ids, setIds] = useState({
+    masterProductId: "",
+    variationId: "",
+  });
 
   const { id } = useUserInfo();
+  const router = useRouter();
 
   const handleClose = () => {
     setShowMenu(null);
@@ -138,9 +147,9 @@ const MyProducts = () => {
     data.forEach((masterProduct) => {
       masterProduct.productVariations.forEach((variation) => {
         result.push({
-          col1: variation.variationMedia ? (
+          col1: (
             <Image src={variation.variationMedia[0]} height={50} width={50} />
-          ) : null,
+          ),
           col2: masterProduct.productType,
           col3: variation.productVariationId,
           col4: variation.productTitle,
@@ -152,14 +161,14 @@ const MyProducts = () => {
           col10: variation.lastUpdatedAt,
           col11: (
             <Grid container className="h-6">
-              <Grid
-                item
-                xs={3}
-                onClick={() => {
-                  setViewModal(JSON.parse(JSON.stringify(variation)));
-                }}
-              >
-                <CustomIcon className="fs-6" title="View" type="view" />
+              <Grid item xs={3}>
+                <Link
+                  href={`/supplier/products&inventory/myproducts/viewModal?productVariationId=${variation.productVariationId}`}
+                >
+                  <a target="_blank">
+                    <CustomIcon className="fs-6" title="View" type="view" />
+                  </a>
+                </Link>
               </Grid>
               <Grid item xs={3}>
                 <CustomIcon
@@ -187,7 +196,13 @@ const MyProducts = () => {
                   className="fs-6"
                   title="More"
                   type="more"
-                  onIconClick={(event) => setShowMenu(event.currentTarget)}
+                  onIconClick={(event) => {
+                    setIds({
+                      masterProductId: masterProduct.masterProductId,
+                      variationId: variation.productVariationId,
+                    });
+                    setShowMenu(event.currentTarget);
+                  }}
                 />
               </Grid>
             </Grid>
@@ -258,7 +273,6 @@ const MyProducts = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const router = useRouter();
   useEffect(() => {
     setValue(0);
   }, []);
@@ -319,6 +333,29 @@ const MyProducts = () => {
     }
   };
 
+  const editClick = async () => {
+    const { data, err } = await getVariation([ids]);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      console.log(data);
+      setIds({ masterProductId: "", variationId: "" });
+      dispatch(updateProduct(data[0]));
+      router.push("/supplier/products&inventory/addnewproduct");
+    }
+  };
+  const duplicateClick = async () => {
+    const { data, err } = await getVariation([ids]);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      console.log(data);
+      setIds({ masterProductId: "", variationId: "" });
+      dispatch(duplicateProduct(data[0]));
+      router.push("/supplier/products&inventory/addnewproduct");
+    }
+  };
+
   return (
     <Paper
       sx={{ height: "100%" }}
@@ -355,7 +392,7 @@ const MyProducts = () => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={editClick}>
               <CustomIcon
                 type="edit"
                 className="text-secondary"
@@ -364,11 +401,7 @@ const MyProducts = () => {
               />
               <span className="fs-12 ms-2">Edit</span>
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleClose();
-              }}
-            >
+            <MenuItem onClick={duplicateClick}>
               <CustomIcon
                 type="filecopy"
                 muiProps={{ sx: { zoom: 0.8 } }}
@@ -487,12 +520,6 @@ const MyProducts = () => {
           </ModalComponent>
         </Paper>
       </Box>
-      <ViewModal
-        details={viewModal}
-        modalClose={() => {
-          setViewModal({});
-        }}
-      />
     </Paper>
   );
 };

@@ -4,11 +4,24 @@ import TextEditor from "components/atoms/TextEditor";
 import { Grid, Paper, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
+import {
+  helpandsupportFileUpload,
+  replyHelpandSupport,
+} from "services/supplier/helpandsupport";
+import toastify from "services/utils/toastUtils";
+import { Close } from "@mui/icons-material";
 
-const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
+const HelpandsupportView = ({
+  selectedData,
+  setShowModal = () => {},
+  user = {},
+  getAllData = () => {},
+  selectTab = {},
+}) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState([]);
 
   const getContent = (label, value, className) => {
     return (
@@ -20,9 +33,12 @@ const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
   };
 
   const getClassName = () => {
-    if (selectedData.status.toLowerCase() === "open") return "text-success";
-    if (selectedData.status.toLowerCase() === "pending") return "text-warning";
-    if (selectedData.status.toLowerCase() === "rejected") return "text-danger";
+    if (selectedData.ticketStatus.toLowerCase() === "open")
+      return "text-success";
+    if (selectedData.ticketStatus.toLowerCase() === "pending")
+      return "text-warning";
+    if (selectedData.ticketStatus.toLowerCase() === "rejected")
+      return "text-danger";
   };
 
   const validateForm = () => {
@@ -35,13 +51,65 @@ const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
     }
     return Boolean(error);
   };
-
-  const handleCreateBtnClick = () => {
-    if (validateForm()) {
-      console.log(formValue);
+  const handleFileUpload = async () => {
+    if (selectedFile.length) {
+      const fileFormData = new FormData();
+      fileFormData.set("data", {});
+      selectedFile.forEach((item) => {
+        fileFormData.append("imageList", item);
+      });
+      fileFormData.append(
+        "ticketCreatedByType",
+        selectTab == "tab1" ? "ADMIN" : "CUSTOMER"
+      );
+      fileFormData.append(
+        "ticketCreatedById",
+        selectTab == "tab1" ? "ADM001" : ""
+      );
+      const { data, err } = await helpandsupportFileUpload(fileFormData);
+      if (data) {
+        const datas = data;
+        return { datas };
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
+    return [];
   };
 
+  const handleCreateBtnClick = async () => {
+    if (!validateForm()) {
+      const { datas } = await handleFileUpload();
+      const media = [];
+      datas?.forEach((item) => {
+        media.push({
+          mediaUrl: item,
+        });
+      });
+
+      const payload = {
+        ticketId: selectedData.ticketId,
+        messageFromId: user.supplierId,
+        messageFromType: "SUPPLIER",
+        message: formValue,
+        imageUrlList: media || [],
+      };
+      const { data, err } = await replyHelpandSupport(payload);
+      if (data) {
+        getAllData("", null, 0);
+        setShowModal(false);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+  const handleFileDelete = (index) => {
+    const temp = [...selectedFile];
+    temp.splice(index, 1);
+    setSelectedFile([...temp]);
+  };
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <Typography
@@ -57,10 +125,13 @@ const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
       <div className="fs-12 border-bottom px-4 py-1">
-        {getContent("Date & Time", selectedData.lastUpdateDateAndTime)}
+        {getContent(
+          "Date & Time",
+          new Date(selectedData.lastModifiedDate).toLocaleString()
+        )}
         {getContent("Ticket ID", selectedData.ticketId)}
-        {getContent("Subject", selectedData.subject)}
-        {getContent("Status", selectedData.status, getClassName())}
+        {getContent("Subject", selectedData.issueSubject)}
+        {getContent("Status", selectedData.ticketStatus, getClassName())}
       </div>
       <div className="my-2 border-bottom">
         <div className="px-4 pt-2">
@@ -89,7 +160,9 @@ const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
                 type="file"
                 hidden
                 ref={inputField}
-                onChange={(e) => console.log(e.target.files[0])}
+                onChange={(e) =>
+                  setSelectedFile((prev) => [...prev, e.target.files[0]])
+                }
               />
               <ButtonComponent
                 label="Choose File"
@@ -107,6 +180,18 @@ const HelpandsupportView = ({ selectedData, setShowModal = () => {} }) => {
             />
           </Grid>
         </Grid>
+        {selectedFile &&
+          selectedFile.map((item, index) => (
+            <Typography className="h-5 ms-5">
+              {item.name}
+              <Close
+                onClick={() => {
+                  handleFileDelete(index);
+                }}
+                className="h-5 color-orange cursor-pointer ms-1"
+              />
+            </Typography>
+          ))}
       </div>
     </Paper>
   );

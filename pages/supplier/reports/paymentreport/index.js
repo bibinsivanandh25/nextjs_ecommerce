@@ -182,7 +182,7 @@ const PaymentReports = () => {
             col1: "#897656",
             col2: "Green Sport Shoes",
             col3: "Martin Hughes",
-            col4: "4 Jul 2020",
+            col4: "5 Jul 2020",
             col5: "4,200.00",
             col6: "Completed",
           },
@@ -192,7 +192,7 @@ const PaymentReports = () => {
             col2: "Green Sport Shoes",
             col3: "Martin Hughes",
             col4: "4 Jul 2020",
-            col5: "4,200.00",
+            col5: "4,800.00",
             col6: "Completed",
           },
         ]}

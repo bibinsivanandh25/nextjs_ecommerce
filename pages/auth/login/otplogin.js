@@ -13,6 +13,9 @@ import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import serviceUtil from "services/utils";
+import { getSupplierDetailsById } from "services/supplier";
+import { storeUserInfo } from "features/userSlice";
+import { store } from "store";
 // import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
@@ -29,6 +32,22 @@ const OtpLogIn = () => {
   }, []);
 
   const route = useRouter();
+  const storedatatoRedux = async (id) => {
+    const { data, err } = await getSupplierDetailsById(id);
+
+    if (!err) {
+      const supplierDetails = {
+        emailId: data.emailId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImageUrl: data.profileImageUrl,
+        supplierId: data.supplierId,
+        storeCode: data.supplierStoreInfo.supplierStoreCode,
+        isAddressSaved: data.userAddressDetails.length,
+      };
+      store.dispatch(storeUserInfo(supplierDetails));
+    }
+  };
 
   const handleSubmit = async () => {
     const formdata = new FormData();
@@ -58,6 +77,7 @@ const OtpLogIn = () => {
         toastify("Invalid credentials", "error");
         return null;
       }
+      await storedatatoRedux(userData[0]);
       route.push(`/supplier/dashboard`);
     }
   };

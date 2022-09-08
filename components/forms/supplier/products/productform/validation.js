@@ -126,13 +126,35 @@ const validateInventory = (inventoryFormData) => {
       }
     });
 
-  if (inventoryFormData.modalname === "") {
-    flag = true;
-    errObj.modalname = validateMessage.field_required;
-  } else if (inventoryFormData.modalname?.length > 100) {
+  if (
+    inventoryFormData.modalname !== "" &&
+    inventoryFormData.modalname?.length > 100
+  ) {
     flag = true;
     errObj.modalname = validateMessage.alpha_numeric_max_100;
   }
+  return { errObj, flag };
+};
+const validateOtherInfo = (data) => {
+  const errObj = [];
+  let flag = false;
+  data.forEach((ele, ind) => {
+    errObj.push({ label: "", value: "" });
+    if (!ele.label) {
+      errObj[ind].label = validateMessage.field_required;
+      flag = true;
+    } else if (ele.label > 50) {
+      errObj[ind].label = validateMessage.alpha_numeric_max_50;
+      flag = true;
+    }
+    if (!ele.value) {
+      errObj[ind].value = validateMessage.field_required;
+      flag = true;
+    } else if (ele.value > 255) {
+      errObj[ind].value = validateMessage.alpha_numeric_max_255;
+      flag = true;
+    }
+  });
   return { errObj, flag };
 };
 const validatePricing = (pricingFormData) => {
@@ -346,4 +368,5 @@ export {
   validateAttribute,
   validateVariation,
   validatePricingForMrMRsCartForm,
+  validateOtherInfo,
 };

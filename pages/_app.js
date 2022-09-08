@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Auth from "components/auth";
+import { useEffect } from "react";
 import ToastComponent from "components/molecule/toastcomponent";
 import Layout from "../components/organism/Layout";
 import Loading from "../components/organism/Loading";
@@ -20,6 +21,29 @@ import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
 
 function MyApp({ Component, pageProps, router }) {
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      document.getElementById("loader").classList.add("loadContainer");
+    });
+    router.events.on("routeChangeComplete", () => {
+      document.getElementById("loader").classList.remove("loadContainer");
+    });
+    router.events.on("routeChangeError", () => {
+      document.getElementById("loader").classList.remove("loadContainer");
+    });
+    return () => {
+      router.events.off("routeChangeComplete", () => {
+        document.getElementById("loader").classList.remove("loadContainer");
+      });
+      router.events.off("routeChangeError", () => {
+        document.getElementById("loader").classList.remove("loadContainer");
+      });
+      router.events.off("routeChangeStart", () => {
+        document.getElementById("loader").classList.add("loadContainer");
+      });
+    };
+  }, []);
+
   const renderPages = () => {
     if (router.pathname.startsWith("/auth/")) {
       return (

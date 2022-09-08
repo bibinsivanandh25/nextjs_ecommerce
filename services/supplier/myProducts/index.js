@@ -42,6 +42,15 @@ const markOutOfStock = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const getVariation = (payload) => {
+  return serviceUtil
+    .post(`products/master-product/product-variation`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 
 const deleteSingleProduct = (id) => {
   return serviceUtil
@@ -58,4 +67,5 @@ export {
   getTabledata,
   markOutOfStock,
   deleteSingleProduct,
+  getVariation,
 };

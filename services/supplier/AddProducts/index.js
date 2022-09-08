@@ -92,6 +92,17 @@ const saveMediaFile = async (id, payload) => {
       return err;
     });
 };
+const getCategorySubCategory = async (id) => {
+  return serviceUtil
+    .get(`products/sub-category/category-set/main-category/dropdown/${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data: data.data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
 export {
   getSet,
@@ -101,4 +112,5 @@ export {
   saveProduct,
   saveMedia,
   saveMediaFile,
+  getCategorySubCategory,
 };

@@ -23,6 +23,7 @@ const InputFieldWithChip = ({
   handleChange = () => {},
   value = [],
   required,
+  disabled = false,
 }) => {
   const [text, setText] = useState("");
   useEffect(() => {
@@ -94,6 +95,7 @@ const InputFieldWithChip = ({
             }
           }}
           onChange={handleChange}
+          disabled={disabled}
         />
       </ThemeProvider>
     </div>

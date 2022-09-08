@@ -30,10 +30,34 @@ const updateSupplierProfile = (payload) => {
 };
 
 const UpdateProfilePicture = (payload) => {
-  serviceUtil.put("products/supplier/supplier-profile", payload);
+  return serviceUtil
+    .put("products/supplier/supplier-profile", payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const sendOTP = (user) => {
+  const formdata = new FormData();
+  formdata.append("mobileNumber", user);
+  formdata.append("userType", "SUPPLIER");
+  return serviceUtil
+    .post("users/registration/send-otp", formdata, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => ({ err }));
 };
 export {
   getSupplierDetailsBySupplierId,
   updateSupplierProfile,
   getMainCategories,
+  UpdateProfilePicture,
+  sendOTP,
 };
