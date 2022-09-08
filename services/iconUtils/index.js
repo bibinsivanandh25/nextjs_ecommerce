@@ -47,6 +47,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MessageIcon from "@mui/icons-material/Message";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const CustomIcon = ({
   title = "",
@@ -63,6 +64,7 @@ const CustomIcon = ({
 }) => {
   const Map = {
     send: SendIcon,
+    dot: FiberManualRecordIcon,
     flag: FlagIcon,
     view: VisibilityIcon,
     arrowforward: ArrowForwardIosIcon,

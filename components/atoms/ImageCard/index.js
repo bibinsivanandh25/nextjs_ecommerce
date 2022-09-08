@@ -29,8 +29,12 @@ const ImageCard = ({
         </div>
       )}
       <Card
+        elevation={24}
         sx={{ width: `${width}px`, height: `${height}px` }}
         className="p-0 d-flex align-items-center justify-content-center "
+        onClick={() => {
+          if (imgSrc === "") inputRef.current.click();
+        }}
       >
         {imgSrc !== "" ? (
           <CardMedia
@@ -50,12 +54,7 @@ const ImageCard = ({
               accept="image/*"
               onChange={handleImageUpload}
             />
-            <AddOutlinedIcon
-              className="color-light-gray cursor-pointer"
-              onClick={() => {
-                inputRef.current.click();
-              }}
-            />
+            <AddOutlinedIcon className="color-light-gray cursor-pointer" />
           </Box>
         )}
       </Card>
