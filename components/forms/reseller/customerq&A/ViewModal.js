@@ -6,12 +6,26 @@ const ViewModal = ({
   showViewModal = false,
   setShowViewModal = () => {},
   dataForViewModal,
+  tabType = "tab1",
+  handleOpenReplyModal,
+  handleMenuSelecteItemsForAnswers,
 }) => {
-  // customerId: "",
-  //   productImages: [],
-  //   question: "",
-  //   dateAndTime: "",
-  //   answer: "",
+  const handleSaveBtnClick = () => {
+    if (tabType === "tab1")
+      handleOpenReplyModal(
+        dataForViewModal.customerQId,
+        dataForViewModal.varId
+      );
+    else
+      handleMenuSelecteItemsForAnswers(
+        "Edit",
+        dataForViewModal.answer,
+        dataForViewModal.customerQId,
+        dataForViewModal.varId
+      );
+    setShowViewModal(false);
+  };
+
   return (
     <ModalComponent
       open={showViewModal}
@@ -21,10 +35,13 @@ const ViewModal = ({
       footerClassName="justify-content-start  border-top flex-row-reverse"
       ClearBtnText="Cancel"
       saveBtnClassName="mx-2"
-      saveBtnText="Reply"
+      saveBtnText={tabType === "tab1" ? "Reply" : "Update"}
       onCloseIconClick={() => setShowViewModal(false)}
       onClearBtnClick={() => {
         setShowViewModal(false);
+      }}
+      onSaveBtnClick={() => {
+        handleSaveBtnClick();
       }}
     >
       <Grid className="mb-4">
@@ -40,7 +57,7 @@ const ViewModal = ({
           </Grid>
           <Grid item sm={7}>
             <Typography className="fw-bold h-5">
-              {dataForViewModal.customerId}
+              {dataForViewModal.customerQId}
             </Typography>
           </Grid>
         </Grid>

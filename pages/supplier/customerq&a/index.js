@@ -384,11 +384,12 @@ const CustomerQnA = () => {
   });
   const [reply, setReply] = useState("");
   const [dataForViewModal, setdataForViewModal] = useState({
-    customerId: "",
+    customerQId: "",
     productImages: [],
     question: "",
     dateAndTime: "",
     answer: "",
+    varId: "",
   });
 
   const handleOpenReplyModal = (questionId, varId) => {
@@ -417,23 +418,26 @@ const CustomerQnA = () => {
     images,
     customerQuestion,
     createdAt,
-    userAnswer = ""
+    userAnswer,
+    variationId
   ) => {
     if (userAnswer === "") {
       setdataForViewModal({
-        customerId: questionId,
+        customerQId: questionId,
         productImages: images,
         question: customerQuestion,
         dateAndTime: createdAt,
         answer: "",
+        varId: variationId,
       });
     } else {
       setdataForViewModal({
-        customerId: questionId,
+        customerQId: questionId,
         productImages: images,
         question: customerQuestion,
         dateAndTime: createdAt,
         answer: userAnswer,
+        varId: variationId,
       });
     }
 
@@ -486,7 +490,8 @@ const CustomerQnA = () => {
                   val.productImages,
                   val.customerQuestion,
                   val.createdAt,
-                  val.userAnswer
+                  val.userAnswer,
+                  val.variationId
                 );
               }}
             />
@@ -548,7 +553,9 @@ const CustomerQnA = () => {
                   val.customerQuestionId,
                   val.productImages,
                   val.customerQuestion,
-                  val.createdAt
+                  val.createdAt,
+                  "",
+                  val.variationId
                 )
               }
             />
@@ -639,6 +646,10 @@ const CustomerQnA = () => {
         showViewModal={showViewModal}
         setShowViewModal={setShowViewModal}
         dataForViewModal={dataForViewModal}
+        setShowReplyModal={setShowReplyModal}
+        tabType={tabType}
+        handleOpenReplyModal={handleOpenReplyModal}
+        handleMenuSelecteItemsForAnswers={handleMenuSelecteItemsForAnswers}
       />
       <ReplyModal
         showReplyModal={showReplyModal}
