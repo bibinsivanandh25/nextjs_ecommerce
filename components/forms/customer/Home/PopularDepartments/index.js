@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import serviceUtil from "services/utils";
-import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import DrawerComponent from "@/atoms/DrawerComponent";
-import ProductCard from "./ProductCard";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SimilarProducts from "../../searchedproduct/SimilarProduct";
+import ProductCard from "./ProductCard";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 
 const comparProductData = [

@@ -6,7 +6,6 @@ import React, { useState, useRef } from "react";
 import { Box, Rating, Typography } from "@mui/material";
 // import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import CustomIcon from "services/iconUtils";
-import SearchComponent from "../../../components/atoms/SearchComponent";
 import NotYetShipped from "@/forms/customer/Orders/notyetshipped/NotYetShipped";
 import CancelledOrder from "@/forms/customer/Orders/cancelledorders/CancelledOrder";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -14,6 +13,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import MyOrders from "@/forms/customer/Orders/myorders/MyOrders";
 import OrderReturn from "@/forms/customer/OrderReturn";
 import ReturnedOrders from "@/forms/customer/Orders/returnedorders/ReturnedOrders";
+import SearchComponent from "../../../components/atoms/SearchComponent";
 
 const Orders = () => {
   const [selectedLink, setSelectedLink] = useState("orders");
