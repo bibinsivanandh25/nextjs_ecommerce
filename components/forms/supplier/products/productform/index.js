@@ -789,7 +789,7 @@ const ProductsLayout = ({
         productVariations: getVariationsPayload(),
 
         otherInformationObject: { ...otherObj },
-        expiryDate: format(other.expireDate, "yyyy-MM-dd"),
+        expiryDate: format(other.expireDate, "MM-dd-yyyy HH:mm:ss"),
         countryOfOrigin: other.country,
         zoneChargeInfo: {},
         productType: "VARIABLE_PRODUCT",
