@@ -13,8 +13,8 @@ const post = (url, reqObj, args) => {
   return axiosInstance.post(url, reqObj, args);
 };
 
-const put = (url, reqObj) => {
-  return axiosInstance.put(url, reqObj);
+const put = (url, reqObj, args) => {
+  return axiosInstance.put(url, reqObj, args);
 };
 
 const remove = (url, id) => {

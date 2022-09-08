@@ -1,18 +1,37 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+/* eslint-disable no-nested-ternary */
+import { Box, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import { maxLengthValidator } from "services/validationUtils";
 import { Star } from "@mui/icons-material";
+import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import {
   getAllCustomerReview,
   reviewReply,
 } from "services/supplier/customerreview";
 import { useSelector } from "react-redux";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
+const selectTypeList = [
+  {
+    id: "ALL",
+    label: "ALL",
+    value: "ALL",
+  },
+  {
+    id: "name",
+    label: "Name",
+    value: "NAME",
+  },
+  {
+    id: "ratings",
+    label: "Ratings",
+    value: "RATINGS",
+  },
+];
 const CustomerReview = () => {
   const user = useSelector((state) => state.user);
   const [tableRows, setTableRows] = useState([]);
@@ -24,6 +43,7 @@ const CustomerReview = () => {
     id: null,
   });
   const [selectedData, setSelectedData] = useState({});
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Image",
@@ -71,10 +91,9 @@ const CustomerReview = () => {
       result.push({
         col1: (
           <div>
-            <Image src={row.profileImageUrl} height={50} width={50} alt="" />
-            <Typography fontSize={10} pl={1}>
-              {index}
-            </Typography>
+            {row.profileImageUrl ? (
+              <Image src={row.profileImageUrl} height={50} width={50} alt="" />
+            ) : null}
           </div>
         ),
         col2: row.skuId,
@@ -93,33 +112,50 @@ const CustomerReview = () => {
           </div>
         ),
         col8: (
-          <div className="mxh-50 overflow-y-scroll overflow-text">
-            {row.sellerResponse}
+          <div className="mxh-50 overflow-y-scroll overflow-text ps-2">
+            {row.sellerResponse ? row.sellerResponse : "--"}
           </div>
         ),
         col9: (
-          <Button
-            variant="contained"
+          <ButtonComponent
+            label="Reply"
+            variant="outlined"
             size="small"
             sx={{ fontSize: 8 }}
             className="bg-orange"
-            onClick={() => {
+            onBtnClick={() => {
               setSelectedData(row);
               setShowReplyModal({
                 show: true,
                 id: index,
               });
             }}
-          >
-            Reply
-          </Button>
+          />
         ),
       });
     });
     return result;
   };
-  const getAllTableData = async () => {
-    const { data, err } = await getAllCustomerReview(user.supplierId);
+  const getAllTableData = async (searchText = "", filterText = "", page) => {
+    const payload = {
+      filterType:
+        filterText?.toLocaleLowerCase() == "all"
+          ? null
+          : searchText == ""
+          ? null
+          : filterText,
+      keyword:
+        filterText?.toLocaleLowerCase() == "all" && searchText !== ""
+          ? null
+          : searchText == ""
+          ? null
+          : searchText,
+    };
+    const { data, err } = await getAllCustomerReview(
+      user.supplierId,
+      payload,
+      page
+    );
     if (data) {
       setTableData(data);
     } else if (err) {
@@ -128,7 +164,7 @@ const CustomerReview = () => {
     }
   };
   useEffect(() => {
-    getAllTableData();
+    getAllTableData("", "ALL", 0);
   }, []);
 
   useEffect(() => {
@@ -136,15 +172,21 @@ const CustomerReview = () => {
   }, [tableData]);
 
   const handleSubmit = async () => {
-    const errMsg = maxLengthValidator(replyData.value, 255);
+    let errMsg = "";
+    if (replyData.value.length == 0) {
+      errMsg = validateMessage.field_required;
+    } else if (replyData.value.length > 255) {
+      errMsg = validateMessage.alpha_numeric_max_255;
+    }
     setError(errMsg);
-    if (!errMsg) {
+    if (errMsg == "") {
       const payload = {
-        sellerReviewId: selectedData.id,
+        sellerReviewId: selectedData.sellerReviewsId,
         sellerResponse: replyData.value,
       };
       const { data, err } = await reviewReply(payload);
       if (data) {
+        getAllTableData("", "ALL", 0);
         setShowReplyModal({ show: false, id: null });
         setReplyData({ value: "", id: null });
       } else if (err) {
@@ -178,9 +220,20 @@ const CustomerReview = () => {
             columns={columns}
             tableRows={tableRows}
             showCheckbox={false}
-            showSearchFilter={false}
+            showSearchFilter
             searchBarSizeMd={4}
             tableMaxHeight="none"
+            filterList={[...selectTypeList]}
+            handlePageEnd={(
+              searchText = "",
+              filterText = "ALL",
+              page = pageNumber
+            ) => {
+              getAllTableData(searchText, filterText, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       </Box>
