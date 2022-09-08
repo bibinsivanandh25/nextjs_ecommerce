@@ -111,7 +111,7 @@ const Registration = () => {
         gstin: formValues.gstin,
         avgStockCount: formValues.stockCount,
         mainCategories: formValues.mainCat.map((ele) => {
-          return ele.title;
+          return ele.id;
         }),
         websiteName: formValues.site?.join("") ?? "",
         profileImageUrl: null,

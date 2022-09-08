@@ -95,7 +95,10 @@ const ReportLayout = ({
 }) => {
   const [tableRows, setTableRows] = useState([...Detailrows]);
   const [summarytableRows, setsummaryTableRows] = useState([...summaryRows]);
+  const [dateTableRows, setDateTableRows] = useState([...summaryDateRows]);
+  const [daterows, setDateRows] = useState([...dateRows]);
 
+  // table 1
   const sortTable = (val) => {
     let sortCol;
     const rows = [...tableRows];
@@ -128,8 +131,69 @@ const ReportLayout = ({
   };
   const sortSummaryTable = (val) => {
     let sortCol;
-    const rows = [...tableRows];
+    const rows = [...summarytableRows];
     if (val.label === "Sort By Price") {
+      sortCol = "col5";
+    } else if (val.label === "Sort By Date") {
+      sortCol = "col4";
+    }
+
+    if (val.sort === "ascending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] > b[sortCol]) {
+          return -1;
+        }
+        if (a[sortCol] < b[sortCol]) {
+          return 1;
+        }
+      });
+    } else if (val.sort === "descending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] < b[sortCol]) {
+          return -1;
+        }
+        if (a[sortCol] > b[sortCol]) {
+          return 1;
+        }
+      });
+    }
+    setsummaryTableRows([...rows]);
+  };
+  // table 2 sort
+  const sortDateSummaryTable = (val) => {
+    let sortCol;
+    const rows = [...dateTableRows];
+    if (val.label === "Sort By Price") {
+      sortCol = "col5";
+    } else if (val.label === "Sort By Date") {
+      sortCol = "col4";
+    }
+
+    if (val.sort === "ascending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] > b[sortCol]) {
+          return -1;
+        }
+        if (a[sortCol] < b[sortCol]) {
+          return 1;
+        }
+      });
+    } else if (val.sort === "descending") {
+      rows.sort((a, b) => {
+        if (a[sortCol] < b[sortCol]) {
+          return -1;
+        }
+        if (a[sortCol] > b[sortCol]) {
+          return 1;
+        }
+      });
+    }
+    setDateTableRows([...rows]);
+  };
+  const sortDateTable = (val) => {
+    let sortCol;
+    const rows = [...daterows];
+    if (val.label === "Sort By Sale Count") {
       sortCol = "col2";
     } else if (val.label === "Sort By Date") {
       sortCol = "col1";
@@ -154,7 +218,7 @@ const ReportLayout = ({
         }
       });
     }
-    setsummaryTableRows([...rows]);
+    setDateRows([...rows]);
   };
 
   const getCardDetails = () => {
@@ -182,8 +246,8 @@ const ReportLayout = ({
                 color: "white",
               }}
             >
-              <Grid className="fs-12">{ele.label}</Grid>
-              <Grid className="fs-2">{ele.value}</Grid>
+              <Grid className="fs-12 text-break">{ele.label}</Grid>
+              <Grid className="fs-2 text-break">{ele.value}</Grid>
             </Paper>
           </Grid>
         </>
@@ -197,7 +261,7 @@ const ReportLayout = ({
           {getCardDetails()}
         </Grid>
         <Grid container spacing={3} className="mt-2">
-          <Grid item xs={6}>
+          <Grid item sm={12} md={6}>
             <Paper sx={{ borderRadius: 4 }}>
               <p className="fs-12 fw-bold px-4 pt-2 mb-2">{cardLabel}</p>
               <Bargraph
@@ -208,7 +272,7 @@ const ReportLayout = ({
               />
             </Paper>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item md={6} sm={12}>
             <Paper className="h-100" sx={{ borderRadius: 4 }}>
               <p className="fs-12 fw-bold px-4 pt-2 ">{cardLabel} (%)</p>
               <Grid className="mt-5 w-100">
@@ -297,7 +361,7 @@ const ReportLayout = ({
                     <BasicMenu
                       menuList={dateMenuList}
                       getSelectedValue={(item) => {
-                        sortTable(item);
+                        sortDateTable(item);
                       }}
                     />
                   </Grid>
@@ -328,7 +392,7 @@ const ReportLayout = ({
                       <BasicMenu
                         menuList={summarydateMenuList}
                         getSelectedValue={(item) => {
-                          sortSummaryTable(item);
+                          sortDateSummaryTable(item);
                         }}
                       />
                     </Grid>
@@ -338,7 +402,7 @@ const ReportLayout = ({
                 <TableComponent
                   showSearchFilter={false}
                   showSearchbar={false}
-                  tableRows={[...summaryDateRows]}
+                  tableRows={[...dateTableRows]}
                   columns={[...summaryDateColumns]}
                   showCheckbox={false}
                 />

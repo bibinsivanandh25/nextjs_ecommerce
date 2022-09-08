@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAllCustomerReview = (supplierId) => {
+const getAllCustomerReview = (supplierId, payload) => {
   return serviceUtil
-    .get(`users/supplier/seller-review/0/10?supplierId=${supplierId}`)
+    .post(`users/supplier/seller-review/0/10?supplierId=${supplierId}`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };

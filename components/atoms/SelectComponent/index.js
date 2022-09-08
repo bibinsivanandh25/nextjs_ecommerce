@@ -6,11 +6,14 @@ export default function SelectComponent({
   list = [],
   defaultValue = "",
   className = "",
+  onChange = () => {},
+  value = null,
 }) {
   return (
     // <Box sx={{ minWidth: 120 }}>
     <FormControl>
       <NativeSelect
+        value={value}
         id="demo-select-small"
         disableUnderline
         defaultValue={defaultValue}
@@ -18,6 +21,7 @@ export default function SelectComponent({
           id: "uncontrolled-native",
         }}
         className={className}
+        onChange={onChange}
       >
         {/* <option value=""></option> */}
         {list.map((item) => (

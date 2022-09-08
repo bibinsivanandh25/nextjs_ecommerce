@@ -1,13 +1,147 @@
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  FormHelperText,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import { getBase64 } from "services/utils/functionUtils";
 import { QrCode2 } from "@mui/icons-material";
+import validateMessage from "constants/validateMessages";
+import {
+  getSupplierStoreConfiguration,
+  supplierStoreImageConfig,
+  updateSupplierStoreConfiguration,
+} from "services/supplier/myaccount/storesettings";
+import { useSelector } from "react-redux";
 import InputBox from "@/atoms/InputBoxComponent";
 import ImageCard from "@/atoms/ImageCard";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+
+const timeToProcessList = [
+  {
+    id: "1",
+    label: "1-2 hrs",
+    value: "1-2 hrs",
+  },
+  {
+    id: "2",
+    label: "2-3 hrs",
+    value: "2-3 hrs",
+  },
+  {
+    id: "3",
+    label: "3-4 hrs",
+    value: "3-4 hrs",
+  },
+  {
+    id: "4",
+    label: "5-10 hrs",
+    value: "5-10 hrs",
+  },
+  {
+    id: "5",
+    label: "10+ hrs",
+    value: "10+ hrs",
+  },
+];
+
+const deliveryRangeList = [
+  {
+    id: "1",
+    label: "0-1 km",
+    value: "0-1 km",
+  },
+  {
+    id: "2",
+    label: "1-2 km",
+    value: "1-2 km",
+  },
+  {
+    id: "3",
+    label: "2-3 km",
+    value: "2-3 km",
+  },
+  {
+    id: "4",
+    label: "3-4 km",
+    value: "3-4 km",
+  },
+  {
+    id: "5",
+    label: "4-5 km",
+    value: "4-5 km",
+  },
+  {
+    id: "6",
+    label: "5-6 km",
+    value: "5-6 km",
+  },
+  {
+    id: "7",
+    label: "6-7 km",
+    value: "6-7 km",
+  },
+  {
+    id: "8",
+    label: "7-8 km",
+    value: "7-8 km",
+  },
+  {
+    id: "9",
+    label: "8-9 km",
+    value: "8-9 km",
+  },
+  {
+    id: "10",
+    label: "9-10 km",
+    value: "9-10 km",
+  },
+];
+
+const daysList = [
+  {
+    id: "1",
+    title: "Monday",
+    value: "Monday",
+  },
+  {
+    id: "2",
+    title: "Tuesday",
+    value: "Tuesday",
+  },
+  {
+    id: "3",
+    title: "Wednesday",
+    value: "Wednesday",
+  },
+  {
+    id: "4",
+    title: "Thursday",
+    value: "Thursday",
+  },
+  {
+    id: "5",
+    title: "Friday",
+    value: "Friday",
+  },
+  {
+    id: "6",
+    title: "Saturday",
+    value: "Saturday",
+  },
+  {
+    id: "7",
+    title: "Sunday",
+    value: "Sunday",
+  },
+];
 
 const themeColor = [
   "#e01313",
@@ -18,13 +152,198 @@ const themeColor = [
   "#d6c20f",
 ];
 const StoreSettings = () => {
-  const [imageUrl, setImageUrl] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
+  const [formValues, setFormValues] = useState({
+    storeName: "",
+    storeCode: "",
+    minOrderAmount: "",
+    maxTimeToProcessOrder: "",
+    maxOrderDeliveryRange: "",
+    shopOPenDays: [],
+    shopOpenTimings: "",
+    shopCloseTimings: "",
+    description: "",
+  });
+
+  const [storeLogo, setStoreLogo] = useState({
+    file: null,
+    url: "",
+  });
+  const [discriptionImage, setDiscriptionImage] = useState({
+    file: null,
+    url: "",
+  });
+
+  const [errorObj, setErrorObj] = useState({
+    storeName: "",
+    storeLogo: "",
+    minOrderAmount: "",
+    maxTimeToProcessOrder: "",
+    maxOrderDeliveryRange: "",
+    shopOPenDays: "",
+    shopOpenTimings: "",
+    shopCloseTimings: "",
+    description: "",
+  });
+  const user = useSelector((state) => {
+    return state.user;
+  });
+
+  // const get12hourformat = (time) => {
+  //   // Prepend any date. Use your birthday.
+  //   const timeString12hr = new Date(
+  //     // eslint-disable-next-line prefer-template
+  //     "1970-01-01T" + time + "Z"
+  //   ).toLocaleTimeString("en-US", {
+  //     timeZone: "UTC",
+  //     hour12: true,
+  //     hour: "numeric",
+  //     minute: "numeric",
+  //   });
+  //   return timeString12hr;
+  // };
+
+  const getStoreInfo = async () => {
+    const { data } = await getSupplierStoreConfiguration(user?.storeCode);
+    if (data) {
+      setFormValues((pre) => ({
+        ...pre,
+        storeName: data.supplierStoreName,
+        storeCode: data.supplierStoreCode,
+        minOrderAmount: data.minimumOrderAmount,
+        maxTimeToProcessOrder: data.maxOrderProcessingTime,
+        maxOrderDeliveryRange: data.maxOrderDeliveryRange,
+        shopOPenDays: data.shopOpeningDays,
+        shopTimings: data.shopTimings,
+        description: data.shopDescription,
+        supplierStoreInfoId: data.supplierStoreInfoId,
+      }));
+      setStoreLogo((pre) => ({
+        ...pre,
+        url: data.supplierStoreLogo,
+      }));
+      setDiscriptionImage((pre) => ({
+        ...pre,
+        url: data.shopDescriptionImageUrl,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    getStoreInfo();
+  }, []);
+
+  const validateForm = () => {
+    let flag = false;
+    const errObj = {
+      storeName: "",
+      storeLogo: "",
+      minOrderAmount: "",
+      maxTimeToProcessOrder: "",
+      maxOrderDeliveryRange: "",
+      shopOPenDays: "",
+      shopOpenTimings: "",
+      shopCloseTimings: "",
+      description: "",
+    };
+
+    if (formValues.storeName === "") {
+      flag = true;
+      errObj.storeName = validateMessage.field_required;
+    }
+    // if (formValues.storeCode === "") {
+    //   flag = true;
+    //   errObj.storeCode = validateMessage.field_required;
+    // }
+    if (formValues.minOrderAmount === "") {
+      flag = true;
+      errObj.minOrderAmount = validateMessage.field_required;
+    }
+    if (formValues.maxTimeToProcessOrder === "") {
+      flag = true;
+      errObj.maxTimeToProcessOrder = validateMessage.field_required;
+    }
+    if (!formValues.maxOrderDeliveryRange) {
+      flag = true;
+      errObj.maxOrderDeliveryRange = validateMessage.field_required;
+    }
+    if (!formValues.shopOPenDays.length) {
+      flag = true;
+      errObj.shopOPenDays = validateMessage.field_required;
+    }
+    if (formValues.shopOpenTimings === "") {
+      flag = true;
+      errObj.shopOpenTimings = validateMessage.field_required;
+    }
+    if (formValues.shopCloseTimings === "") {
+      flag = true;
+      errObj.shopCloseTimings = validateMessage.field_required;
+    }
+    if (formValues.description === "") {
+      flag = true;
+      errObj.description = validateMessage.field_required;
+    }
+    if (storeLogo.file === null && storeLogo.url === "") {
+      flag = true;
+      errObj.storeLogo = validateMessage.field_required;
+    }
+    setErrorObj({ ...errObj });
+    return flag;
+  };
+
+  const updateSupplierStore = async () => {
+    const payload = {
+      supplierStoreInfoId: formValues.supplierStoreInfoId,
+      supplierStoreCode: formValues.storeCode,
+      supplierStoreName: formValues.storeName,
+      minimumOrderAmount: formValues.minOrderAmount,
+      maxOrderProcessingTime: formValues.maxTimeToProcessOrder.value,
+      maxOrderDeliveryRange: formValues.maxOrderDeliveryRange.value,
+      shopOpeningDays: formValues.shopOPenDays.map((ele) => ele.value),
+      shopTimings: `${formValues.shopOpenTimings}  -  ${formValues.shopCloseTimings}`,
+      shopDescription: formValues.description,
+      shopDescriptionImageUrl: discriptionImage.url,
+      supplierStoreLogo: storeLogo.url,
+      storeThemes: [
+        {
+          storeThemeId: 0,
+          colorName: "string",
+          colorCode: "string",
+        },
+      ],
+    };
+
+    const { data, err } = await updateSupplierStoreConfiguration(payload);
+    if (data) {
+      console.log(data);
+    } else if (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const flag = validateForm();
+    if (!flag) {
+      if (storeLogo.file || discriptionImage.file) {
+        const formData = new FormData();
+        formData.append("supplierLogo", storeLogo.file);
+        formData.append("storeImage", discriptionImage.file);
+        formData.append("supplierId", user?.supplierId);
+        const { data, err } = await supplierStoreImageConfig(formData);
+        if (data) {
+          updateSupplierStore();
+        } else if (err) {
+          console.log(err.response);
+        }
+      } else {
+        updateSupplierStore();
+      }
+    }
+  };
 
   return (
-    <Paper className="mnh-70vh mxh-70vh overflow-auto hide-scrollbar">
+    <Paper className="mnh-70vh overflow-auto hide-scrollbar">
       <Box>
-        <Typography className="h-4 color-orange fw-bold ps-4 pt-3">
+        <Typography className="h-4 color-orange fw-bold ps-4 pt-1">
           Store Settings
         </Typography>
       </Box>
@@ -36,24 +355,32 @@ const StoreSettings = () => {
                 <Typography className="h-5 color-gray">
                   Supplier Logo<span className="h-4 color-red">*</span>
                 </Typography>
-                {/* <Box
-                  className="d-center p-5 bg-light-gray rounded"
-                  sx={{ border: "1px dashed gray" }}
-                >
-                  <AddCircle />
-                </Box> */}
                 <ImageCard
                   className=""
                   height={100}
                   width={100}
-                  handleCloseClick={() => setLogoUrl("")}
-                  showClose={!!logoUrl.length}
-                  imgSrc={logoUrl}
+                  handleCloseClick={() =>
+                    setStoreLogo(() => ({
+                      url: "",
+                      file: null,
+                    }))
+                  }
+                  showClose={storeLogo.url}
+                  imgSrc={storeLogo.url ? storeLogo.url : ""}
                   handleImageUpload={async (e) => {
                     const file = await getBase64(e.target.files[0]);
-                    setLogoUrl(file);
+
+                    setStoreLogo(() => ({
+                      url: file,
+                      file: e.target.files[0],
+                    }));
                   }}
                 />
+                {errorObj.storeLogo ? (
+                  <FormHelperText error className="ms-3">
+                    {validateMessage.field_required}
+                  </FormHelperText>
+                ) : null}
               </Box>
               <Box>
                 <Typography className="h-5 color-gray">Add Image</Typography>
@@ -66,12 +393,21 @@ const StoreSettings = () => {
                 <ImageCard
                   height={100}
                   width={100}
-                  handleCloseClick={() => setImageUrl("")}
-                  showClose={!!imageUrl.length}
-                  imgSrc={imageUrl}
+                  handleCloseClick={() =>
+                    setDiscriptionImage(() => ({
+                      url: "",
+                      file: null,
+                    }))
+                  }
+                  showClose={discriptionImage.url}
+                  imgSrc={discriptionImage.url ? discriptionImage.url : ""}
                   handleImageUpload={async (e) => {
                     const file = await getBase64(e.target.files[0]);
-                    setImageUrl(file);
+
+                    setDiscriptionImage(() => ({
+                      url: file,
+                      file: e.target.files[0],
+                    }));
                   }}
                 />
               </Box>
@@ -112,7 +448,7 @@ const StoreSettings = () => {
                     Invite and earn 50 more Orders
                   </Typography>
                 </Box>
-                <Box>
+                <Box className="mt-2">
                   <Box className="d-center w-75">
                     <CustomIcon
                       type="filecopy"
@@ -133,47 +469,103 @@ const StoreSettings = () => {
           <Grid item sm={8} className="ps-2 mt-2">
             <Grid container spacing={2} className="mb-3">
               <Grid item xs={6}>
-                <InputBox label="Store Name" inputlabelshrink />
+                <InputBox
+                  onInputChange={(e) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      storeName: e.target.value,
+                    }));
+                  }}
+                  helperText={errorObj.storeName}
+                  error={errorObj.storeName}
+                  label="Store Name"
+                  inputlabelshrink
+                  value={formValues.storeName}
+                />
               </Grid>
-              <Grid item xs={6}>
-                <InputBox label="Store Code" inputlabelshrink />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2} className="mb-3">
               <Grid item xs={6}>
                 <InputBox
+                  // onInputChange={(e) => {
+                  //   setFormValues((pre) => ({
+                  //     ...pre,
+                  //     storeCode: e.target.value,
+                  //   }));
+                  // }}
+                  // helperText={errorObj.storeCode}
+                  // error={errorObj.storeCode}
+                  label="Store Code"
+                  inputlabelshrink
+                  value={formValues.storeCode}
+                  disabled
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <InputBox
+                  onInputChange={(e) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      minOrderAmount: e.target.value,
+                    }));
+                  }}
+                  helperText={errorObj.minOrderAmount}
+                  error={errorObj.minOrderAmount}
                   label="Minimum Order Amount For The Free Delivery"
                   inputlabelshrink
+                  value={formValues.minOrderAmount}
                 />
               </Grid>
               <Grid item xs={6}>
                 <SimpleDropdownComponent
+                  list={[...timeToProcessList]}
+                  helperText={errorObj.maxTimeToProcessOrder}
+                  error={errorObj.maxTimeToProcessOrder}
                   size="small"
                   label="Max Time To Process Order"
                   inputlabelshrink
                   className=""
+                  onDropdownSelect={(val) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      maxTimeToProcessOrder: val,
+                    }));
+                  }}
+                  value={formValues.maxTimeToProcessOrder}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={2} className="mb-3">
               <Grid item xs={6}>
                 <SimpleDropdownComponent
+                  list={[...deliveryRangeList]}
+                  helperText={errorObj.maxOrderDeliveryRange}
+                  error={errorObj.maxOrderDeliveryRange}
                   size="small"
                   label="Max Order delivery Range"
                   inputlabelshrink
                   className=""
+                  onDropdownSelect={(val) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      maxOrderDeliveryRange: val,
+                    }));
+                  }}
+                  value={formValues.maxOrderDeliveryRange}
                 />
               </Grid>
               <Grid item xs={6}>
-                <InputBox label="E-Mail ID" inputlabelshrink />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2} className="mb-3">
-              <Grid item xs={6}>
-                <SimpleDropdownComponent
+                <MultiSelectComponent
+                  list={[...daysList]}
+                  helperText={errorObj.shopOPenDays}
+                  error={errorObj.shopOPenDays}
                   size="small"
                   label="Shop Open Days"
                   inputlabelshrink
+                  onSelectionChange={(_, val) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      shopOPenDays: val,
+                    }));
+                  }}
+                  value={formValues.shopOPenDays}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -193,15 +585,24 @@ const StoreSettings = () => {
                       top: -11,
                       left: 10,
                       backgroundColor: "#fff",
-                      color: "rgba(0, 0, 0, 0.6)",
+                      color: errorObj.shopOpenTimings
+                        ? "#d32f2f"
+                        : "rgba(0, 0, 0, 0.6)",
                       fontSize: "11px",
                       cursor: "pointer",
                     }}
                     className="px-1"
                   >
-                    Shop Timings
+                    Shop Open Timings
                   </span>
                   <input
+                    onChange={(e) => {
+                      setFormValues((pre) => ({
+                        ...pre,
+                        shopOpenTimings: e.target.value,
+                      }));
+                    }}
+                    value={formValues.shopOpenTimings}
                     type="time"
                     style={{
                       width: "100%",
@@ -211,21 +612,85 @@ const StoreSettings = () => {
                     }}
                   />
                 </div>
+                {errorObj.shopOpenTimings ? (
+                  <FormHelperText error className="ms-3">
+                    {validateMessage.field_required}
+                  </FormHelperText>
+                ) : null}
               </Grid>
-            </Grid>
-            <Grid container className="mb-3">
+              <Grid item xs={6}>
+                <div
+                  className="input-border"
+                  style={{
+                    position: "relative",
+                    borderRadius: "5px",
+                    outline: "none",
+                    width: "100%",
+                    padding: 5,
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: -11,
+                      left: 10,
+                      backgroundColor: "#fff",
+                      color: errorObj.shopCloseTimings
+                        ? "#d32f2f"
+                        : "rgba(0, 0, 0, 0.6)",
+                      fontSize: "11px",
+                      cursor: "pointer",
+                    }}
+                    className="px-1"
+                  >
+                    Shop Close Timings
+                  </span>
+                  <input
+                    onChange={(e) => {
+                      setFormValues((pre) => ({
+                        ...pre,
+                        shopCloseTimings: e.target.value,
+                      }));
+                    }}
+                    value={formValues.shopCloseTimings}
+                    type="time"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      outline: "none",
+                      border: "none",
+                    }}
+                  />
+                </div>
+                {errorObj.shopCloseTimings ? (
+                  <FormHelperText error className="ms-3">
+                    {validateMessage.field_required}
+                  </FormHelperText>
+                ) : null}
+              </Grid>
               <Grid item sm={12} className="w-100">
-                <TextEditor className="w-100" />
+                <TextEditor
+                  className="w-100"
+                  content={formValues.description}
+                  getContent={(val) => {
+                    setFormValues((pre) => ({
+                      ...pre,
+                      description: val,
+                    }));
+                  }}
+                />
               </Grid>
             </Grid>
           </Grid>
           <Grid item sm={6} md={2}>
             <Box>
-              <Typography className="h-5 fw-bold mb-1">Choose Theme</Typography>
+              <Typography className="h-5 fw-bold mb-1 ms-2">
+                Choose Theme
+              </Typography>
             </Box>
-            <Grid container spacing={2} className="">
+            <Grid container spacing={2} justifyContent="space-around">
               {themeColor.map((item) => (
-                <Grid item sm={5}>
+                <Grid item sm={5} justifyContent="space-around">
                   <div
                     style={{
                       backgroundColor: `${item}`,
@@ -237,10 +702,12 @@ const StoreSettings = () => {
                 </Grid>
               ))}
             </Grid>
-            <Box>
-              <Box className="bg-orange rounded d-center my-2 w-75">
-                <QrCode2 className="h-1 me-2 ps-1" />
-                <Typography className="h-5">Download QR Code</Typography>
+            <Box className="d-flex flex-column  mx-2">
+              <Box className="bg-orange rounded my-2 w-90p d-flex align-items-center p-1">
+                <QrCode2 className="h-1 " />
+                <Typography className="h-5 text-white">
+                  Download QR Code
+                </Typography>
               </Box>
               <Typography className="h-6">
                 Download & take printout of QR Code of your store. Stick in your
@@ -258,7 +725,11 @@ const StoreSettings = () => {
               variant="outlined"
               muiProps="me-3 w-10p"
             />
-            <ButtonComponent label="Submit" muiProps="me-2 w-10p" />
+            <ButtonComponent
+              label="Submit"
+              muiProps="me-2 w-10p"
+              onBtnClick={handleSubmit}
+            />
           </Grid>
         </Grid>
       </Box>
