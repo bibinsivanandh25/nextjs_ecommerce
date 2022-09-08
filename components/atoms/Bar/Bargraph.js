@@ -34,6 +34,7 @@ const Bargraph = ({
   showXaxisTicks = true,
   showGridY = true,
   borderRadius = 0,
+  label = "Dataset",
 }) => {
   const [datasets, setDatasets] = useState([]);
   const chartRef = useRef();
@@ -48,6 +49,7 @@ const Bargraph = ({
   useEffect(() => {
     const temp = [];
     temp.push({
+      label,
       barThickness: 15,
       borderRadius,
       // label: "amount",
@@ -57,7 +59,7 @@ const Bargraph = ({
       borderSkipped: false,
     });
     setDatasets([...temp]);
-  }, []);
+  }, [data]);
 
   const options = {
     indexAxis: barDirection,
@@ -124,15 +126,17 @@ const Bargraph = ({
         height,
       }}
     >
-      <Bar
-        onClick={onClick}
-        ref={chartRef}
-        data={{
-          labels,
-          datasets,
-        }}
-        options={options}
-      />
+      {data && (
+        <Bar
+          onClick={onClick}
+          ref={chartRef}
+          data={{
+            labels,
+            datasets,
+          }}
+          options={options}
+        />
+      )}
     </div>
   );
 };

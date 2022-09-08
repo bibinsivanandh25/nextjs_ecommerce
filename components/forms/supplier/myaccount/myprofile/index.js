@@ -173,6 +173,7 @@ const MyProfile = () => {
         profileImageUrl: data.profileImageUrl,
         supplierId: data.supplierId,
         storeCode: data.supplierStoreInfo.supplierStoreCode,
+        isAddressSaved: data.userAddressDetails.length,
       };
       dispatch(storeUserInfo(supplierDetails));
     }
