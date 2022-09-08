@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
@@ -7,35 +8,32 @@ import InputBox from "components/atoms/InputBoxComponent";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import validateMessage from "constants/validateMessages";
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  addGroupedProducts,
+  getChildProductList,
+  getParentProductList,
+} from "services/supplier/addgroupproduct";
+import toastify from "services/utils/toastUtils";
 
 const AddGroupProducts = () => {
-  const [parentProduct, setParentProduct] = useState([
-    { id: 1, label: "abc", value: "abc" },
-    { id: 2, label: "efg", value: "efg" },
-    { id: 3, label: "ijk", value: "ijk" },
-  ]);
-  const [childProduct, setChildProduct] = useState([
-    { id: 1, title: "abc", value: "abc" },
-    { id: 2, title: "efg", value: "efg" },
-    { id: 3, title: "ijk", value: "ijk" },
-  ]);
+  const [parentProduct, setParentProduct] = useState([]);
+  const [childProduct, setChildProduct] = useState([]);
   const [formData, setFormData] = useState({
-    partentproduct: null,
+    parentproduct: null,
     childproduct: [],
   });
-  const [childDetails, setChildDetails] = useState([
-    { title: "child1", price: "price", active: false },
-    { title: "child2", price: "price", active: false },
-    { title: "child3", price: "price", active: false },
-  ]);
+  const [childDetails, setChildDetails] = useState([]);
   const [parentDetails, setParentDetails] = useState({
-    title: "parent",
-    description: "content",
+    title: "",
+    description: "",
+    imageUrl: "",
   });
   const [price, setPrice] = useState("");
   const [errorObj, setErrorObj] = useState({
-    partentproduct: "",
+    parentproduct: "",
     childproduct: "",
   });
 
@@ -45,14 +43,96 @@ const AddGroupProducts = () => {
     });
   };
 
+  const supplierId = useSelector((state) => state.user?.supplierId);
+
+  const getParentProducts = async () => {
+    const payload = new FormData();
+    payload.append("supplierId", supplierId);
+    payload.append("status", "APPROVED");
+    const { data } = await getParentProductList(payload);
+    if (data) {
+      const parentList = [];
+      data.forEach((ele) => {
+        parentList.push({
+          id: ele.subCategoryId,
+          label: ele.productTitle,
+          value: ele.productTitle,
+          imageUrl: ele.imageUrl,
+          shortDescription: ele.shortDescription,
+          productId: ele.productVariationId,
+        });
+      });
+      setParentProduct(parentList);
+    }
+  };
+
+  const getChildProducts = async () => {
+    const payload = {
+      subCategoryId: formData.parentproduct?.id,
+      supplierId,
+      status: "APPROVED",
+    };
+
+    const { data } = await getChildProductList(payload);
+    if (data) {
+      const result = [];
+      data.forEach((ele) => {
+        if (ele.productVariationId !== formData.parentproduct.productId)
+          result.push({
+            id: ele.productVariationId,
+            title: ele.productTitle,
+            value: ele.productTitle,
+            imageUrl: ele.imageUrl,
+            salePrice: ele.salePrice,
+          });
+      });
+      setChildProduct([...result]);
+    }
+  };
+
+  useEffect(() => {
+    getParentProducts();
+  }, []);
+
+  useEffect(() => {
+    if (formData.parentproduct) {
+      getChildProducts();
+    }
+    setParentDetails({
+      description: formData.parentproduct?.shortDescription,
+      title: formData.parentproduct?.label,
+      imageUrl: formData.parentproduct?.imageUrl,
+      id: formData.parentproduct?.productId,
+    });
+    if (childDetails.length) {
+      setChildDetails([]);
+    }
+    setFormData((pre) => ({ ...pre, childproduct: [] }));
+  }, [formData.parentproduct]);
+
+  const renderChildDetails = (data) => {
+    if (data) {
+      const result = [];
+      data.forEach((ele) => {
+        result.push({
+          title: ele.title,
+          imageUrl: ele.imageUrl,
+          price: ele.salePrice,
+          id: ele.id,
+        });
+      });
+      setChildDetails([...result]);
+    }
+  };
+
   const validate = () => {
-    const errObj = { partentproduct: "", childproduct: "" };
+    const errObj = { parentproduct: "", childproduct: "" };
     let flag = false;
     if (
-      formData.partentproduct === null ||
-      !Object.keys(formData.partentproduct).length
+      formData.parentproduct === null ||
+      !Object.keys(formData.parentproduct).length
     ) {
-      errObj.partentproduct = validateMessage.field_required;
+      errObj.parentproduct = validateMessage.field_required;
       flag = true;
     }
     if (!formData.childproduct.length) {
@@ -63,8 +143,36 @@ const AddGroupProducts = () => {
     return flag;
   };
 
-  const handleSubmit = () => {
+  const getChilddiscount = () => {
+    const temp = JSON.parse(JSON.stringify(childDetails));
+    const result = [];
+    temp.forEach((ele) => {
+      result.push({
+        childProductId: ele.id,
+        discountPercentage: parseInt(ele.discountPrice, 10) || 0,
+      });
+    });
+    return result;
+  };
+  const handleSubmit = async () => {
     const flag = validate();
+    const payload = {
+      groupedProductId: parentDetails.id,
+      childProducts: getChilddiscount(),
+    };
+    const { data, err } = await addGroupedProducts(payload);
+    if (data) {
+      toastify(data.message, "success");
+      setParentDetails({});
+      setChildDetails([]);
+      setChildProduct([]);
+      setFormData({
+        parentproduct: [],
+        childproduct: [],
+      });
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
   };
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
@@ -73,16 +181,16 @@ const AddGroupProducts = () => {
           <div className="mb-2">
             <SimpleDropdownComponent
               list={parentProduct}
-              id="partentproduct"
+              id="parentproduct"
               label="Parent Product"
               size="small"
-              value={formData.partentproduct}
+              value={formData.parentproduct}
               onDropdownSelect={(value) => {
-                handleDropdownChange(value, "partentproduct");
+                handleDropdownChange(value, "parentproduct");
               }}
               inputlabelshrink
-              helperText={errorObj.partentproduct}
-              error={errorObj.partentproduct !== ""}
+              helperText={errorObj.parentproduct}
+              error={errorObj.parentproduct !== ""}
             />
           </div>
           <div className="mt-3">
@@ -91,7 +199,15 @@ const AddGroupProducts = () => {
               list={childProduct}
               value={formData.childproduct}
               onSelectionChange={(a, val) => {
-                setFormData((prev) => ({ ...prev, childproduct: [...val] }));
+                if (val.length <= 5) {
+                  setFormData((prev) => ({ ...prev, childproduct: [...val] }));
+                  renderChildDetails(val);
+                } else {
+                  toastify(
+                    "More than five products cannot be combined.",
+                    "error"
+                  );
+                }
               }}
               helperText={errorObj.childproduct}
               error={errorObj.childproduct !== ""}
@@ -99,15 +215,24 @@ const AddGroupProducts = () => {
           </div>
         </Box>
         <Box className="d-flex flex-column w-100">
-          {Object.keys(parentDetails).length ? (
+          {parentDetails?.title?.length ? (
             <Card className="w-100 mb-3" variant="outlined">
               <CardContent className="w-100">
                 <div className="d-flex flex-column w-100">
                   <Typography className="h-3">Parent product</Typography>
                   <div className="d-flex flex-md-column flex-lg-row">
-                    <div className="w-20p h-10p bg-info me-2">Image</div>
+                    <div className="me-2">
+                      {parentDetails?.imageUrl ? (
+                        <Image
+                          src={parentDetails?.imageUrl}
+                          height={150}
+                          width={150}
+                          layout="intrinsic"
+                        />
+                      ) : null}
+                    </div>
                     <div className="w-100 d-flex flex-column">
-                      <Typography className="h-3">
+                      <Typography variant="h5">
                         {parentDetails.title}
                       </Typography>
                       <div className="w-100 flex-wrap">
@@ -124,7 +249,7 @@ const AddGroupProducts = () => {
               </CardContent>
             </Card>
           ) : null}
-          {childDetails.length ? (
+          {childDetails?.length ? (
             <Card className="w-100" variant="outlined">
               <CardContent className="w-100">
                 <div className="d-flex flex-column w-100">
@@ -135,19 +260,29 @@ const AddGroupProducts = () => {
                         <Grid item md={6} lg={4} key={index}>
                           <Card className="" variant="outlined" key={index}>
                             <CardContent className="w-100 d-flex">
-                              <Box className="w-40p">Image</Box>
-                              <Box className="d-flex flex-column">
-                                <Typography component="div" className="h-3">
+                              {item.imageUrl ? (
+                                <Image
+                                  src={item.imageUrl}
+                                  height={125}
+                                  width={125}
+                                  fill="intrinsic"
+                                />
+                              ) : null}
+                              <Box className="mx-1">
+                                <Typography
+                                  component="div"
+                                  className="h-4 fw-bold"
+                                >
                                   {item.title}
                                 </Typography>
                                 {!item.active ? (
                                   <>
-                                    <Typography component="div" className="h-2">
-                                      {item.price}
+                                    <Typography component="div" className="h-3">
+                                      ₹ {item.price}
                                     </Typography>
                                     <Typography
                                       component="div"
-                                      className="fs-12 color-orange"
+                                      className="fs-12 color-orange cursor-pointer"
                                       onClick={() => {
                                         setChildDetails((pre) => {
                                           const temp = [...pre];
@@ -162,19 +297,28 @@ const AddGroupProducts = () => {
                                         });
                                       }}
                                     >
-                                      Change Price
+                                      Enter Discount %
                                     </Typography>
                                   </>
                                 ) : (
                                   <>
                                     <InputBox
                                       id={item?.id}
-                                      value={price}
+                                      value={item.discountPrice || ""}
                                       label=""
                                       className=""
                                       size="small"
                                       onInputChange={(e) => {
-                                        setPrice(e.target.value);
+                                        setChildDetails((pre) => {
+                                          const temp = [...pre];
+                                          temp.forEach((element, i) => {
+                                            if (i === index) {
+                                              element.discountPrice =
+                                                e.target.value;
+                                            }
+                                          });
+                                          return temp;
+                                        });
                                       }}
                                       type="number"
                                       inputlabelshrink
@@ -184,8 +328,8 @@ const AddGroupProducts = () => {
                                       component="div"
                                       className="fs-12 color-orange mt-1"
                                       onClick={() => {
-                                        setChildDetails((pre) => {
-                                          const temp = [...pre];
+                                        setChildDetails((prev) => {
+                                          const temp = [...prev];
                                           temp.forEach((ele) => {
                                             if (ele.active && price !== "") {
                                               ele.price = price;
@@ -221,7 +365,7 @@ const AddGroupProducts = () => {
           size="small"
           onBtnClick={() => {
             setFormData({
-              partentproduct: {},
+              parentproduct: {},
               childproduct: [],
             });
             setParentDetails({});
