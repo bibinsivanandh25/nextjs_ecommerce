@@ -8,8 +8,8 @@ import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
 import serviceUtil from "services/utils";
 import { assetsJson } from "public/assets";
-import styles from "./Registration.module.css";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
+import styles from "./Registration.module.css";
 
 const Registration = () => {
   const formObj = {

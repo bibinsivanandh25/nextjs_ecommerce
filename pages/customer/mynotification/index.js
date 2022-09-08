@@ -8,12 +8,12 @@ import { Box, CardMedia, Grid, Typography } from "@mui/material";
 import { RemoveRedEye, Reply } from "@mui/icons-material";
 import CustomIcon from "services/iconUtils";
 import Notification from "@/forms/customer/mynotification/notification";
-import style from "./mynotification.module.css";
 import TableComponent from "@/atoms/TableComponent";
 import ImageCard from "@/atoms/ImageCard";
 import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import style from "./mynotification.module.css";
 
 const MyNotification = () => {
   const [tabChange, setTabChange] = useState(true);
