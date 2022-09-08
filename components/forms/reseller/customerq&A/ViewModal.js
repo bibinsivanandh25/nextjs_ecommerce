@@ -16,7 +16,7 @@ const ViewModal = ({
         dataForViewModal.customerQId,
         dataForViewModal.varId
       );
-    else
+    else if (tabType === "tab2")
       handleMenuSelecteItemsForAnswers(
         "Edit",
         dataForViewModal.answer,

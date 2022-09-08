@@ -13,7 +13,7 @@ const ReplyModal = ({
   showReplyModal = false,
   setShowReplyModal = () => {},
   dataForSendingReply,
-  getUnansweredQuestions,
+  getQuestionsOrAnsweredQuestions,
   reply = "",
   setReply = () => {},
   tabType = false,
@@ -42,10 +42,11 @@ const ReplyModal = ({
       const { someError } = await answerTheQuestions(payload);
       if (!someError) {
         if (tabType === "tab1") {
-          await getUnansweredQuestions(false);
+          await getQuestionsOrAnsweredQuestions(false);
+          await getQuestionsOrAnsweredQuestions(true);
           toastify("Your answer has been recorded", "success");
-        } else {
-          await getUnansweredQuestions(true);
+        } else if (tabType === "tab2") {
+          await getQuestionsOrAnsweredQuestions(true);
           toastify("Your answer has been updated", "success");
         }
 
@@ -67,7 +68,7 @@ const ReplyModal = ({
       footerClassName="justify-content-start flex-row-reverse"
       ClearBtnText="Cancel"
       saveBtnClassName="mx-2"
-      saveBtnText="Reply"
+      saveBtnText={tabType === "tab1" ? "Reply" : "Update"}
       onCloseIconClick={() => setShowReplyModal(false)}
       onSaveBtnClick={handleSubmit}
       onClearBtnClick={handleClearBtnClick}

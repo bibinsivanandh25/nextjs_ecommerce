@@ -10,6 +10,7 @@ import ViewModal from "components/forms/reseller/customerq&A/ViewModal";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getQuestionsAndAnswers } from "services/supplier/customerq&a";
+import toastify from "services/utils/toastUtils";
 import styles from "./customerqna.module.css";
 
 const CustomerQnA = () => {
@@ -578,13 +579,16 @@ const CustomerQnA = () => {
       dateFrom: "",
       dateTo: "",
     });
-    if (data && !error) {
-      if (tabType === "tab1") {
+    console.log(data, error.response?.data?.message, "balu");
+    if (data) {
+      if (!check) {
+        console.log(data, "unans");
         const tempArray = setUnansweredQuestionsRows(data);
         console.log("tab1");
         setQuestionCount(data.count);
         setQuestions([...tempArray]);
       } else {
+        console.log(data, "ans");
         const tempArray = setAnsweredQuestionsRows(data);
         console.log("Answer data ", data);
         console.log("tab2");
@@ -592,22 +596,18 @@ const CustomerQnA = () => {
         setAnswers([...tempArray]);
       }
     }
+    if (error) {
+      if (tabType === "tab1" && !check) {
+        toastify(error.response?.data?.message, "error");
+      } else if (tabType === "tab2" && check) {
+        toastify(error.response?.data?.message, "error");
+      }
+    }
   };
 
   useEffect(() => {
-    if (tabType === "tab1") {
-      getQuestionsOrAnsweredQuestions(false);
-    } else {
-      getQuestionsOrAnsweredQuestions(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (tabType === "tab1") {
-      getQuestionsOrAnsweredQuestions(false);
-    } else {
-      getQuestionsOrAnsweredQuestions(true);
-    }
+    getQuestionsOrAnsweredQuestions(false);
+    getQuestionsOrAnsweredQuestions(true);
   }, [tabType]);
 
   return (
@@ -655,7 +655,7 @@ const CustomerQnA = () => {
         showReplyModal={showReplyModal}
         setShowReplyModal={setShowReplyModal}
         dataForSendingReply={dataForSendingReply}
-        getUnansweredQuestions={getQuestionsOrAnsweredQuestions}
+        getQuestionsOrAnsweredQuestions={getQuestionsOrAnsweredQuestions}
         reply={reply}
         setReply={setReply}
         tabType={tabType}

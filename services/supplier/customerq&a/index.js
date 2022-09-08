@@ -5,12 +5,11 @@ const getQuestionsAndAnswers = (supplierId, payload) => {
     .post(`products/customer-question-answer/0/10/${supplierId}`, payload)
     .then((res) => {
       const { data } = res;
-      console.log("the data -----", data);
       return data;
     })
-    .catch((err) => {
-      console.log("Some error", err);
-      return err;
+    .catch((error) => {
+      console.log(error, "error message");
+      return { error };
     });
 };
 
