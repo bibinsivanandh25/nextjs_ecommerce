@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable default-case */
 /* eslint-disable no-shadow */
@@ -7,7 +8,7 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -26,11 +27,15 @@ import {
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
+import { clearProduct } from "features/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { format } from "date-fns";
+import ImageGuidelines from "components/molecule/ImageGuidelines";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
 const ProductsLayout = ({
@@ -46,6 +51,7 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
+  const { editProduct } = useSelector((state) => state.product);
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -65,6 +71,10 @@ const ProductsLayout = ({
   const [createTagModal, setcreateTagModal] = useState(false);
   const [tagInputError, setTagInputError] = useState("");
   const [errorObj, setErrObj] = useState({});
+  const dispatch = useDispatch();
+  const [showOthersField, setshowOthersField] = useState(false);
+  const variationData = useSelector((state) => state.product.variationData);
+  const [showGuidelines, setShowGuidlines] = useState(false);
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -73,6 +83,12 @@ const ProductsLayout = ({
       setTabsLists([...tabsList]);
     }
   }, [formData?.mainForm?.category]);
+
+  useEffect(() => {
+    if (variationData && Object.keys(variationData).length) {
+      setshowOthersField(true);
+    }
+  }, [variationData]);
 
   const saveTag = async (payload) => {
     await serviceUtil
@@ -192,14 +208,13 @@ const ProductsLayout = ({
     getSelectCategoryData();
     getB2BTradmarkValues("B2B_INVOICE");
   }, []);
-
-  useEffect(() => {
+  useMemo(() => {
     if (formData?.mainForm?.category?.value) {
       getSets();
     }
   }, [formData?.mainForm?.category]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (formData?.mainForm?.setsValue?.value) {
       getSubCategoryList();
     }
@@ -218,8 +233,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -295,37 +310,61 @@ const ProductsLayout = ({
 
   const createPayload = async () => {
     const promiseAll = [];
-    promiseAll.push(saveimg("productImage", formData.productImage));
+    let tempArr = [];
+    formData.productImage.forEach((item) => {
+      if (!item.includes("https://")) {
+        tempArr.push(item);
+      }
+    });
+    if (tempArr.length) {
+      promiseAll.push(saveimg("productImage", tempArr));
+    }
     if (formData.mainForm.short_description?.media?.length) {
-      promiseAll.push(
-        saveimg("short_description", formData.mainForm.short_description.media)
-      );
+      tempArr = [];
+      formData.mainForm.short_description.media.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length)
+        promiseAll.push(saveimg("short_description", tempArr));
     }
     if (formData.mainForm.long_description?.media?.length) {
-      promiseAll.push(
-        saveimg("long_description", formData.mainForm.long_description.media)
-      );
+      tempArr = [];
+      formData.mainForm.long_description.media.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("long_description", tempArr));
     }
     if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "cancellationPolicy",
-          formData.policy.cancellationPolicy.media.binaryStr
-        )
-      );
+      tempArr = [];
+      formData.policy.cancellationPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length)
+        promiseAll.push(saveimg("cancellationPolicy", tempArr));
     }
     if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg("refundPolicy", formData.policy.refundPolicy.media.binaryStr)
-      );
+      tempArr = [];
+      formData.policy.refundPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("refundPolicy", tempArr));
     }
     if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "shippingPolicy",
-          formData.policy.shippingPolicy.media.binaryStr
-        )
-      );
+      tempArr = [];
+      formData.policy.shippingPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("shippingPolicy", tempArr));
     }
     const temp = await Promise.all(promiseAll);
     const imgdata = {};
@@ -351,13 +390,43 @@ const ProductsLayout = ({
     formData.variation.others.forEach((item) => {
       otherInformation[item.label] = item.value;
     });
-
+    debugger;
     const payload = {
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
-      longDescriptionFileUrls: imgdata.long_description,
+      longDescriptionFileUrls: imgdata.long_description
+        ? [
+            ...imgdata.long_description,
+            ...formData.mainForm.long_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ]
+        : [
+            ...formData.mainForm.long_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ],
       shortDescription: formData.mainForm.short_description.text,
-      shortDescriptionFileUrls: imgdata.short_description,
+      shortDescriptionFileUrls: imgdata.short_description
+        ? [
+            ...imgdata.short_description,
+            ...formData.mainForm.short_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ]
+        : [
+            ...formData.mainForm.short_description.media.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ],
       subCategoryId: formData.mainForm.subCategoryValue.id,
       subCategoryName: formData.mainForm.subCategoryValue.label,
       commissionMode: formData.mainForm.commision_mode,
@@ -380,18 +449,71 @@ const ProductsLayout = ({
       isGenericProduct: formData.mainForm.genericradio,
 
       linkedProducts: {
-        upSells: formData.linked.upSells.value,
-        crossSells: formData.linked.crossSells.value,
+        upSells: [formData.linked.upSells.value],
+        crossSells: [formData.linked.crossSells.value],
       },
 
       productPolicies: {
         policyTabLabel: formData.policy.policyTabLabel,
         shippingPolicy: formData.policy.shippingPolicy.text,
-        shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
+        shippingPolicyMediaUrls: imgdata?.shippingPolicy
+          ? [
+              ...imgdata?.shippingPolicy,
+              ...formData.policy.shippingPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ]
+          : [
+              ...formData.policy.shippingPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ],
         refundPolicy: formData.policy.refundPolicy.text,
-        refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
+        refundPolicyMediaUrls: imgdata?.refundPolicy
+          ? [
+              ...imgdata?.refundPolicy,
+              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }),
+            ]
+          : [
+              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }),
+            ],
         cancellationPolicy: formData.policy.cancellationPolicy.text,
-        cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
+        cancellationPolicyMediaUrls: imgdata?.cancellationPolicy
+          ? [
+              ...imgdata?.cancellationPolicy,
+              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ]
+          : [
+              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+                (item) => {
+                  if (item.includes("https://")) {
+                    return item;
+                  }
+                }
+              ),
+            ],
         warrantyAvailable: formData.policy.warranty,
         warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
           ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
@@ -423,13 +545,13 @@ const ProductsLayout = ({
           salePrice: parseInt(formData.pricing.sale_price, 10),
           mrp: parseInt(formData.pricing.mrp, 10),
           stockQty: parseInt(formData.inventory.stockqty, 10),
-          modelName: formData.inventory.modelname,
+          modelName: formData.inventory.modalname,
           sellWithMrMrsCart: formData.mrMrsCartFormData.sellwithus,
           mrmrscartSalePriceWithFDR: formData.mrMrsCartFormData.free_delivery,
           mrmrscartSalePriceWithOutFDR:
             formData.mrMrsCartFormData.paid_delivery,
           mrmrscartRtoAccepted: formData.mrMrsCartFormData.return,
-          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.id,
+          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.value,
           mrmrscartCodAvailable: formData.mrMrsCartFormData.cashondelivery,
           stockStatus: formData.inventory.stock_status.label,
           allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
@@ -439,8 +561,14 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformation,
+      otherInformationObject: otherInformation,
       zoneChargeInfo: {},
+      countryOfOrigin: formData.variation.countryOfOrigin,
+      expiryDate: null,
+      // format(
+      //   new Date(formData.variation.expiryDate),
+      //   "MM-dd-yyyy HH:mm:ss"
+      // ),
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
     };
@@ -449,6 +577,7 @@ const ProductsLayout = ({
       toastify(err.response.data.message, "error");
     } else if (data) {
       toastify(data.message, "success");
+      dispatch(clearProduct());
       router.replace({
         pathname: "/supplier/products&inventory/myproducts",
         query: {
@@ -472,12 +601,237 @@ const ProductsLayout = ({
     }
   };
 
+  const handleVariationSubmit = async () => {
+    const savevariationimg = (type, imgList) => {
+      return saveMediaFile(userInfo.id, imgList).then((res) => {
+        if (!res.error) {
+          return { [`${type}`]: res.data };
+        }
+        return null;
+      });
+    };
+
+    const uploadImages = async () => {
+      const promiseAll = [];
+      if (formData.mainForm.short_description?.media?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "short_description",
+            formData.mainForm.short_description.media
+          )
+        );
+      }
+      if (formData.mainForm.long_description?.media?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "long_description",
+            formData.mainForm.long_description.media
+          )
+        );
+      }
+      if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "cancellationPolicy",
+            formData.policy.cancellationPolicy.media.binaryStr
+          )
+        );
+      }
+      if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "refundPolicy",
+            formData.policy.refundPolicy.media.binaryStr
+          )
+        );
+      }
+      if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
+        promiseAll.push(
+          savevariationimg(
+            "shippingPolicy",
+            formData.policy.shippingPolicy.media.binaryStr
+          )
+        );
+      }
+      const prodImages = {};
+      Object.keys(variationData).forEach((item) => {
+        prodImages[item] = [];
+        variationData[item].images.forEach((ele) => {
+          if (ele) {
+            prodImages[item].push(ele);
+          }
+        });
+      });
+      Object.keys(prodImages).forEach((item) => {
+        promiseAll.push(savevariationimg(item, prodImages[item]));
+      });
+      const imgdata = await Promise.all(promiseAll);
+      const imgData = {};
+      imgdata.forEach((ele) => {
+        imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
+      });
+      return imgData;
+    };
+    const { errObj, flag } = validateMainForm(formData.mainForm);
+    const other = formsRef.current.validate();
+    const otherObj = {};
+    other?.otherInfo.forEach((ele) => {
+      otherObj[`${ele.label}`] = "";
+      otherObj[`${ele.label}`] = ele.value;
+    });
+    const otherFlag = other.flag;
+    const createvariationPayload = async (imgdata) => {
+      const { mainFormData, attribute, policy, linked } = JSON.parse(
+        JSON.stringify(formData)
+      );
+      const getvariationProperty = (ele) => {
+        const temp = ["countryOfOrigin", "others", "expiryDate"];
+        const variationProperty = [];
+        Object.keys(variationData[ele].variation).forEach((item) => {
+          if (!temp.includes(item)) {
+            variationProperty.push({
+              variationId: item,
+              optionId: variationData[ele].variation[item].id,
+              variationType: formData.attribute[item][0]?.variationType,
+            });
+          }
+        });
+        return variationProperty;
+      };
+      const getVariationsPayload = () => {
+        const temp = [];
+        Object.keys(variationData).forEach((ele) => {
+          const { inventory, mmcartPricing, pricing } = JSON.parse(
+            JSON.stringify(variationData[ele])
+          );
+          temp.push({
+            productTitle: inventory.product_title,
+            shippingClass: inventory.shipping_class.value,
+            businessProcessingDays: inventory.business_processing_days.value,
+            seoTitle: inventory.seo_title,
+            metaDescription: inventory.meta_description,
+            metaKeywords: inventory.meta_keyword.join(),
+            isStoreFDR: pricing.fd_rot,
+            salePriceWithLogistics: parseInt(pricing.sale_price_logistics, 10),
+            rtoAccepted: pricing.return_order_accepted,
+            rtoDays: pricing?.returnorder?.value ?? null,
+            codAvailable: pricing.cash_on_delivary,
+            deliveryCharge: pricing.delivery_charge,
+            packageLength: parseFloat(pricing.length),
+            packageWidth: parseFloat(pricing.width),
+            packageHeight: parseFloat(pricing.height),
+            weightInclusivePackage: parseFloat(pricing.product_weight),
+            salePrice: parseInt(pricing.sale_price, 10),
+            mrp: parseInt(pricing.mrp, 10),
+            stockQty: parseInt(inventory.stockqty, 10),
+            modelName: inventory.modalname,
+            sellWithMrMrsCart: mmcartPricing.sellwithus,
+            mrmrscartSalePriceWithFDR: mmcartPricing.free_delivery,
+            mrmrscartSalePriceWithOutFDR: mmcartPricing.paid_delivery,
+            mrmrscartRtoAccepted: mmcartPricing.rto,
+            mrmrscartRtoDays: mmcartPricing.returnorder.id,
+            mrmrscartCodAvailable: mmcartPricing.cod,
+            stockStatus: inventory.stock_status.label,
+            allowBackOrders: inventory?.allow_backorders?.label ?? "",
+            backOrders: parseInt(inventory.back_Orders, 10) || 0,
+            variationMedia: imgdata[ele],
+            variationProperty: getvariationProperty(ele),
+          });
+        });
+        return temp;
+      };
+      const payload = {
+        brand: formData.mainForm.brand,
+        longDescription: formData.mainForm.long_description.text,
+        longDescriptionFileUrls: imgdata.long_description,
+        shortDescription: formData.mainForm.short_description.text,
+        shortDescriptionFileUrls: imgdata.short_description,
+        subCategoryId: formData.mainForm.subCategoryValue.id,
+        subCategoryName: formData.mainForm.subCategoryValue.label,
+        commissionMode: formData.mainForm.commision_mode,
+        tags: formData.mainForm.tags.length
+          ? formData.mainForm.tags.map((item) => {
+              return item.id;
+            })
+          : [],
+        limitsPerOrder: parseInt(formData.mainForm.limit_per_order, 10),
+        trademarkLetterIdList: formData.mainForm.b2bdocument.length
+          ? formData.mainForm.b2bdocument.map((item) => {
+              return item.id;
+            })
+          : [],
+        bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+          ? formData.mainForm.selectb2binvoice.map((item) => {
+              return item.id;
+            })
+          : [],
+        isGenericProduct: formData.mainForm.genericradio,
+
+        linkedProducts: {
+          upSells: [formData.linked.upSells.value],
+          crossSells: [formData.linked.crossSells.value],
+        },
+
+        productPolicies: {
+          policyTabLabel: formData.policy.policyTabLabel,
+          shippingPolicy: formData.policy.shippingPolicy.text,
+          shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
+          refundPolicy: formData.policy.refundPolicy.text,
+          refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
+          cancellationPolicy: formData.policy.cancellationPolicy.text,
+          cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
+          warrantyAvailable: formData.policy.warranty,
+          warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
+            ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
+            : null,
+        },
+
+        productVariations: getVariationsPayload(),
+
+        otherInformationObject: { ...otherObj },
+        expiryDate: format(other.expireDate, "MM-dd-yyyy HH:mm:ss"),
+        countryOfOrigin: other.country,
+        zoneChargeInfo: {},
+        productType: "VARIABLE_PRODUCT",
+        supplierId: userInfo.id,
+      };
+      const { data, err } = await saveProduct(payload);
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+        toastify(data.message, "success");
+      }
+    };
+
+    if (flag || validateProductImg(formData.productImage) || otherFlag) {
+      setErrObj(errObj);
+    } else {
+      setErrObj({});
+      createvariationPayload(await uploadImages());
+    }
+  };
+
   return (
     <>
       {!showGroupVariant ? (
         <Box className="d-flex flex-grow-1 flex-row">
           {type === "simple" && (
             <Box className="border-end p-2 py-2 fit-content pb-0 overflow-y-scroll mxh-75vh">
+              <Box
+                className="color-blue fs-12 cursor-pointer"
+                onClick={() => {
+                  setShowGuidlines(true);
+                }}
+              >
+                Image Guidelines
+              </Box>
               {formData.productImage.length > 0
                 ? formData.productImage.map((item, index) => (
                     <ImageCard
@@ -564,6 +918,7 @@ const ProductsLayout = ({
                     }}
                     value={formData?.mainForm?.category}
                     placeholder="Select Category"
+                    disabled={editProduct}
                   />
                   {formData?.mainForm?.category &&
                   Object.keys(formData?.mainForm?.category).length ? (
@@ -628,7 +983,7 @@ const ProductsLayout = ({
                         };
                       });
                     }}
-                    value={formData?.mainForm?.short_description.text}
+                    value={formData?.mainForm?.short_description?.text}
                     onBtnClick={() => {
                       setShowFileUploadModal("short_description");
                     }}
@@ -649,7 +1004,7 @@ const ProductsLayout = ({
                   <TextAreaComponent
                     id="long_description"
                     legend="Long Description*"
-                    value={formData?.mainForm?.long_description.text}
+                    value={formData?.mainForm?.long_description?.text}
                     placeholder="Enter long description"
                     onChange={(e) => {
                       setFormData((prev) => {
@@ -701,6 +1056,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -730,6 +1086,7 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj.limit_per_order ?? ""}
                     placeholder="Enter the order limit(eg.: 1)"
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -749,6 +1106,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -769,6 +1127,7 @@ const ProductsLayout = ({
                       }));
                     }}
                     size="small"
+                    disabled={editProduct}
                   />
                   <RadiobuttonComponent
                     size="small"
@@ -784,6 +1143,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12} display="flex" alignItems="center">
@@ -807,7 +1167,7 @@ const ProductsLayout = ({
                     lableFontSize="h-5"
                     varient="filled"
                     showIcon
-                    isDisabled={formData?.mainForm?.genericradio}
+                    isDisabled={formData?.mainForm?.genericradio || editProduct}
                   />
                   <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
@@ -835,6 +1195,7 @@ const ProductsLayout = ({
                           },
                         }));
                       }}
+                      disabled={editProduct}
                     />
                     <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
@@ -915,6 +1276,7 @@ const ProductsLayout = ({
                   setFormData(schema);
                   setErrObj({});
                   setactiveTab(0);
+                  dispatch(clearProduct());
                 }}
                 muiProps="me-2"
               />
@@ -929,15 +1291,23 @@ const ProductsLayout = ({
                   muiProps="me-2"
                 />
               ) : null}
-              <ButtonComponent
-                label={activeTab === tabsList.length - 1 ? "Submit" : "Next"}
-                size="small"
-                onBtnClick={
-                  activeTab === tabsLists.length - 1
-                    ? handleSubmit
-                    : handleNextClick
-                }
-              />
+              {activeTab !== tabsList.length - 1 && (
+                <ButtonComponent
+                  label="Next"
+                  size="small"
+                  onBtnClick={handleNextClick}
+                />
+              )}
+              {(type === "simple" || showOthersField) &&
+                activeTab === tabsList.length - 1 && (
+                  <ButtonComponent
+                    label="Submit"
+                    size="small"
+                    onBtnClick={
+                      type === "simple" ? handleSubmit : handleVariationSubmit
+                    }
+                  />
+                )}
             </Box>
           </Box>
           {showFileUploadModal !== "" ? (
@@ -973,9 +1343,10 @@ const ProductsLayout = ({
         </Box>
       ) : (
         <GroupVariationForm
-          formData={formData}
-          ref={formsRef}
           setShowGroupVariant={setShowGroupVariant}
+          handleSubmit={() => {
+            setShowGroupVariant(false);
+          }}
           // imagedata={imagedata}
           // short_descriptionImg={short_descriptionImg}
           // long_descriptionImg={long_descriptionImg}
@@ -1031,6 +1402,7 @@ const ProductsLayout = ({
           onSaveBtnClick={() => {
             handleCategorySubmitClick();
           }}
+          showSaveBtn={!editProduct}
         >
           <Box>
             <Box className="d-flex align-items-center">
@@ -1055,6 +1427,7 @@ const ProductsLayout = ({
                       setSubCategoryData([]);
                     }
                   }}
+                  disabled={editProduct}
                 />
               </Grid>
               <Grid item md={6}>
@@ -1068,12 +1441,27 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "subCategoryValue");
                   }}
+                  disabled={editProduct}
                 />
               </Grid>
             </Grid>
           </Box>
         </ModalComponent>
       )}
+      <ModalComponent
+        open={showGuidelines}
+        ModalTitle="Image Guidelines"
+        titleClassName="color-orange fs-14"
+        clearBtnClassName="px-4"
+        ClearBtnText="Cancel"
+        onCloseIconClick={() => {
+          setShowGuidlines(false);
+        }}
+        ModalWidth="75%"
+        showFooter={false}
+      >
+        <ImageGuidelines />
+      </ModalComponent>
     </>
   );
 };

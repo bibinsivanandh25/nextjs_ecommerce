@@ -145,12 +145,17 @@ const VariationForm = forwardRef(
     });
 
     const addOtherField = () => {
-      const temp = JSON.parse(JSON.stringify(formData));
-      temp.variation.others.push({
+      const temp = JSON.parse(JSON.stringify(formData.variation));
+      temp.others.push({
         label: "",
         value: "",
       });
-      setFormData(temp);
+      setFormData((pre) => {
+        return {
+          ...pre,
+          variation: temp,
+        };
+      });
     };
 
     return (
@@ -220,9 +225,14 @@ const VariationForm = forwardRef(
                   id={`label${index}`}
                   value={item.label}
                   onInputChange={(e) => {
-                    const temp = JSON.parse(JSON.stringify(formData));
-                    temp.variation.others[index].label = e.target.value;
-                    setFormData(temp);
+                    const temp = JSON.parse(JSON.stringify(formData.variation));
+                    temp.others[index].label = e.target.value;
+                    setFormData((pre) => {
+                      return {
+                        ...pre,
+                        variation: temp,
+                      };
+                    });
                   }}
                   label="Label"
                 />
@@ -233,9 +243,14 @@ const VariationForm = forwardRef(
                   isMultiline
                   value={item.value}
                   onInputChange={(e) => {
-                    const temp = JSON.parse(JSON.stringify(formData));
-                    temp.variation.others[index].value = e.target.value;
-                    setFormData(temp);
+                    const temp = JSON.parse(JSON.stringify(formData.variation));
+                    temp.others[index].value = e.target.value;
+                    setFormData((pre) => {
+                      return {
+                        ...pre,
+                        variation: temp,
+                      };
+                    });
                   }}
                 />
                 {formData?.variation?.others.length - 1 ? (

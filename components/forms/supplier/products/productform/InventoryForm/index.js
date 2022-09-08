@@ -6,6 +6,7 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { forwardRef, useImperativeHandle, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   allowback_orders,
   business_processing_days,
@@ -17,6 +18,7 @@ import { validateInventory } from "../validation";
 const InventoryForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
+    const { editProduct } = useSelector((state) => state.product);
     useImperativeHandle(ref, () => {
       return {
         validate: () => {
@@ -75,13 +77,15 @@ const InventoryForm = forwardRef(
                 disabled
               />
             </div>
-            <div className="mx-2">
-              <Tooltip title="SKU Will Be Generated Once The Product Is Approved">
-                <IconButton>
-                  <InfoOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
+            {!editProduct && (
+              <div className="mx-2">
+                <Tooltip title="SKU Will Be Generated Once The Product Is Approved">
+                  <IconButton>
+                    <InfoOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            )}
           </Grid>
           <Grid item md={12} className="d-flex align-items-center">
             <div className="w-70p">
@@ -108,6 +112,7 @@ const InventoryForm = forwardRef(
                 inputlabelshrink
                 fullWidth
                 type="number"
+                disabled={editProduct}
               />
             </div>
           </Grid>
@@ -131,6 +136,7 @@ const InventoryForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={editProduct}
               />
             </div>
           </Grid>
@@ -152,6 +158,7 @@ const InventoryForm = forwardRef(
                 }}
                 placeholder="Select stock status"
                 type="number"
+                disabled={editProduct}
               />
             </div>
           </Grid>
@@ -175,13 +182,15 @@ const InventoryForm = forwardRef(
                       errorObj.allow_backorders &&
                       errorObj.allow_backorders !== ""
                     }
+                    disabled={editProduct}
                   />
                 </div>
                 <div className="mx-2">
                   <InfoOutlinedIcon />
                 </div>
               </Grid>
-              {formData?.inventory?.allow_backorders?.value === "allow" ? (
+              {formData?.inventory?.allow_backorders?.value?.toLowerCase() ===
+              "allow" ? (
                 <Grid item md={12}>
                   <InputBox
                     id="back_Orders"
@@ -196,6 +205,7 @@ const InventoryForm = forwardRef(
                     type="number"
                     helperText={errorObj.back_Orders ?? ""}
                     error={errorObj.back_Orders && errorObj.back_Orders !== ""}
+                    disabled={editProduct}
                   />
                 </Grid>
               ) : null}
@@ -216,6 +226,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.shipping_class ?? ""}
               error={errorObj.shipping_class ?? errorObj.shipping_class !== ""}
               placeholder="Select shipping class"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -228,6 +239,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.product_title ?? ""}
               error={errorObj.product_title && errorObj.product_title !== ""}
               placeholder="Enter product title"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -248,12 +260,13 @@ const InventoryForm = forwardRef(
                 handleDropdownChange(value, "business_processing_days");
               }}
               placeholder="Select processing days"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
             <InputFieldWithChip
               id="seo_title"
-              label="SEO Title*"
+              label="SEO By Product Title*"
               value={formData?.inventory?.seo_title}
               inputlabelshrink
               handleChange={(_, val) => {
@@ -284,6 +297,7 @@ const InventoryForm = forwardRef(
                 errorObj.meta_description && errorObj.meta_description !== ""
               }
               placeholder="Enter meta description"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -306,18 +320,20 @@ const InventoryForm = forwardRef(
               helperText={errorObj.meta_keyword ?? ""}
               error={errorObj.meta_keyword && errorObj.meta_keyword !== ""}
               placeholder="Enter keywords"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
             <InputBox
               id="modalname"
-              label="Model Name*"
+              label="Model Name"
               onInputChange={handleInputChange}
               value={formData?.inventory?.modalname}
               inputlabelshrink
               helperText={errorObj.modalname ?? ""}
               error={errorObj.modalname && errorObj.modalname !== ""}
               placeholder="Enter Model Name"
+              disabled={editProduct}
             />
           </Grid>
         </Grid>

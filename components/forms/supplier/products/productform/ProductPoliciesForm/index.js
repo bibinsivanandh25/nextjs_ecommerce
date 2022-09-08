@@ -5,28 +5,11 @@ import InputBoxComponent from "components/atoms/InputBoxComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TextAreaComponent from "components/atoms/TextAreaComponent";
 import FileUploadModal from "components/atoms/FileUpload";
+import { warrantyData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { validatePolicy } from "../validation";
 
-const warrantyData = [
-  {
-    label: "3 Months",
-    value: "3 Months",
-  },
-  {
-    label: "6 Months",
-    value: "6 Months",
-  },
-  {
-    label: "9 Months",
-    value: "9 Months",
-  },
-  {
-    label: "12 Months",
-    value: "12 Months",
-  },
-];
 const ProductPoliciesForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [showFileUploadModal, setShowFileUploadModal] = useState("");
@@ -231,13 +214,12 @@ const ProductPoliciesForm = forwardRef(
                 policy: {
                   ...pre.policy,
                   [showFileUploadModal]: {
-                    ...pre.policy.cancellationPolicy,
+                    ...pre.policy[`${showFileUploadModal}`],
                     media: val,
                   },
                 },
               }));
             }}
-            type="multipart"
             value={
               showFileUploadModal === "refundPolicy"
                 ? formData?.policy?.refundPolicy.media
