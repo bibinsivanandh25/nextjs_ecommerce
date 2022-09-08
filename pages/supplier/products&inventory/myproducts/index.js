@@ -1,5 +1,13 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-param-reassign */
+import {
+  getTabledata,
+  getSupplierProductCountByStatus,
+  markOutOfStock,
+  deleteSingleProduct,
+  getVariation,
+} from "services/supplier/myProducts";
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
@@ -10,12 +18,6 @@ import Share from "@mui/icons-material/Share";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { useUserInfo } from "services/hooks";
 import Image from "next/image";
-import {
-  getTabledata,
-  getSupplierProductCountByStatus,
-  markOutOfStock,
-  getVariation,
-} from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -134,6 +136,12 @@ const MyProducts = () => {
     setShowMenu(null);
   };
 
+  const deleteSingleRow = (productId) => {
+    console.log(productId);
+    deleteSingleProduct(productId);
+    getTableData("", "", 0);
+  };
+
   const mapRowsToTable = (data) => {
     const result = [];
     data.forEach((masterProduct) => {
@@ -168,12 +176,20 @@ const MyProducts = () => {
                   title="share"
                   type="share"
                   onIconClick={() => {
-                    setShowShareModal(true);
+                    navigator.clipboard.writeText(variation.productVariationId);
+                    toastify("Product ID Copied To The Clip Board", "success");
                   }}
                 />
               </Grid>
               <Grid item xs={3}>
-                <CustomIcon className="fs-6" title="Delete" type="delete" />
+                <CustomIcon
+                  onIconClick={() => {
+                    deleteSingleRow(variation.productVariationId);
+                  }}
+                  className="fs-6"
+                  title="Delete"
+                  type="delete"
+                />
               </Grid>
               <Grid item xs={3}>
                 <CustomIcon
