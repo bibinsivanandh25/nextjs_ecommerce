@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable default-case */
 /* eslint-disable no-shadow */
@@ -7,7 +8,7 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
 import ImageCard from "components/atoms/ImageCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -50,6 +51,7 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
+  const { editProduct } = useSelector((state) => state.product);
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -206,14 +208,13 @@ const ProductsLayout = ({
     getSelectCategoryData();
     getB2BTradmarkValues("B2B_INVOICE");
   }, []);
-
-  useEffect(() => {
+  useMemo(() => {
     if (formData?.mainForm?.category?.value) {
       getSets();
     }
   }, [formData?.mainForm?.category]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (formData?.mainForm?.setsValue?.value) {
       getSubCategoryList();
     }
@@ -232,8 +233,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -309,37 +310,61 @@ const ProductsLayout = ({
 
   const createPayload = async () => {
     const promiseAll = [];
-    promiseAll.push(saveimg("productImage", formData.productImage));
+    let tempArr = [];
+    formData.productImage.forEach((item) => {
+      if (!item.includes("https://")) {
+        tempArr.push(item);
+      }
+    });
+    if (tempArr.length) {
+      promiseAll.push(saveimg("productImage", tempArr));
+    }
     if (formData.mainForm.short_description?.media?.length) {
-      promiseAll.push(
-        saveimg("short_description", formData.mainForm.short_description.media)
-      );
+      tempArr = [];
+      formData.mainForm.short_description.media.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length)
+        promiseAll.push(saveimg("short_description", tempArr));
     }
     if (formData.mainForm.long_description?.media?.length) {
-      promiseAll.push(
-        saveimg("long_description", formData.mainForm.long_description.media)
-      );
+      tempArr = [];
+      formData.mainForm.long_description.media.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("long_description", tempArr));
     }
     if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "cancellationPolicy",
-          formData.policy.cancellationPolicy.media.binaryStr
-        )
-      );
+      tempArr = [];
+      formData.policy.cancellationPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length)
+        promiseAll.push(saveimg("cancellationPolicy", tempArr));
     }
     if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg("refundPolicy", formData.policy.refundPolicy.media.binaryStr)
-      );
+      tempArr = [];
+      formData.policy.refundPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("refundPolicy", tempArr));
     }
     if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "shippingPolicy",
-          formData.policy.shippingPolicy.media.binaryStr
-        )
-      );
+      tempArr = [];
+      formData.policy.shippingPolicy.media.binaryStr.forEach((item) => {
+        if (!item.includes("https://")) {
+          tempArr.push(item);
+        }
+      });
+      if (tempArr.length) promiseAll.push(saveimg("shippingPolicy", tempArr));
     }
     const temp = await Promise.all(promiseAll);
     const imgdata = {};
@@ -369,9 +394,23 @@ const ProductsLayout = ({
     const payload = {
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
-      longDescriptionFileUrls: imgdata.long_description,
+      longDescriptionFileUrls: [
+        ...imgdata.long_description,
+        ...formData.productImage.filter((item) => {
+          if (item.includes("https://")) {
+            return item;
+          }
+        }),
+      ],
       shortDescription: formData.mainForm.short_description.text,
-      shortDescriptionFileUrls: imgdata.short_description,
+      shortDescriptionFileUrls: [
+        ...imgdata.short_description,
+        ...formData.mainForm.short_description.media.filter((item) => {
+          if (item.includes("https://")) {
+            return item;
+          }
+        }),
+      ],
       subCategoryId: formData.mainForm.subCategoryValue.id,
       subCategoryName: formData.mainForm.subCategoryValue.label,
       commissionMode: formData.mainForm.commision_mode,
@@ -394,18 +433,44 @@ const ProductsLayout = ({
       isGenericProduct: formData.mainForm.genericradio,
 
       linkedProducts: {
-        upSells: formData.linked.upSells.value,
-        crossSells: formData.linked.crossSells.value,
+        upSells: [formData.linked.upSells.value],
+        crossSells: [formData.linked.crossSells.value],
       },
 
       productPolicies: {
         policyTabLabel: formData.policy.policyTabLabel,
         shippingPolicy: formData.policy.shippingPolicy.text,
-        shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
+        shippingPolicyMediaUrls:
+          [
+            ...imgdata?.shippingPolicy,
+            ...formData.policy.shippingPolicy.media.binaryStr.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ] ?? [],
         refundPolicy: formData.policy.refundPolicy.text,
-        refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
+        refundPolicyMediaUrls:
+          [
+            ...imgdata?.refundPolicy,
+            ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }),
+          ] ?? [],
         cancellationPolicy: formData.policy.cancellationPolicy.text,
-        cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
+        cancellationPolicyMediaUrls:
+          [
+            ...imgdata?.cancellationPolicy,
+            ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+              (item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }
+            ),
+          ] ?? [],
         warrantyAvailable: formData.policy.warranty,
         warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
           ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
@@ -443,7 +508,7 @@ const ProductsLayout = ({
           mrmrscartSalePriceWithOutFDR:
             formData.mrMrsCartFormData.paid_delivery,
           mrmrscartRtoAccepted: formData.mrMrsCartFormData.return,
-          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.id,
+          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.value,
           mrmrscartCodAvailable: formData.mrMrsCartFormData.cashondelivery,
           stockStatus: formData.inventory.stock_status.label,
           allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
@@ -803,6 +868,7 @@ const ProductsLayout = ({
                     }}
                     value={formData?.mainForm?.category}
                     placeholder="Select Category"
+                    disabled={editProduct}
                   />
                   {formData?.mainForm?.category &&
                   Object.keys(formData?.mainForm?.category).length ? (
@@ -940,6 +1006,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -969,6 +1036,7 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj.limit_per_order ?? ""}
                     placeholder="Enter the order limit(eg.: 1)"
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -988,6 +1056,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1008,6 +1077,7 @@ const ProductsLayout = ({
                       }));
                     }}
                     size="small"
+                    disabled={editProduct}
                   />
                   <RadiobuttonComponent
                     size="small"
@@ -1023,6 +1093,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12} display="flex" alignItems="center">
@@ -1046,7 +1117,7 @@ const ProductsLayout = ({
                     lableFontSize="h-5"
                     varient="filled"
                     showIcon
-                    isDisabled={formData?.mainForm?.genericradio}
+                    isDisabled={formData?.mainForm?.genericradio || editProduct}
                   />
                   <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
@@ -1074,6 +1145,7 @@ const ProductsLayout = ({
                           },
                         }));
                       }}
+                      disabled={editProduct}
                     />
                     <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
@@ -1280,6 +1352,7 @@ const ProductsLayout = ({
           onSaveBtnClick={() => {
             handleCategorySubmitClick();
           }}
+          showSaveBtn={!editProduct}
         >
           <Box>
             <Box className="d-flex align-items-center">
@@ -1304,6 +1377,7 @@ const ProductsLayout = ({
                       setSubCategoryData([]);
                     }
                   }}
+                  disabled={editProduct}
                 />
               </Grid>
               <Grid item md={6}>
@@ -1317,6 +1391,7 @@ const ProductsLayout = ({
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "subCategoryValue");
                   }}
+                  disabled={editProduct}
                 />
               </Grid>
             </Grid>

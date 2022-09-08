@@ -42,5 +42,19 @@ const markOutOfStock = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const getVariation = (payload) => {
+  return serviceUtil
+    .post(`products/master-product/product-variation`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 
-export { getSupplierProductCountByStatus, getTabledata, markOutOfStock };
+export {
+  getSupplierProductCountByStatus,
+  getVariation,
+  getTabledata,
+  markOutOfStock,
+};

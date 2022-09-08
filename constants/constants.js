@@ -89,6 +89,47 @@ const business_processing_days = [
     label: "1-2 weeks",
   },
 ];
+const returnOrderData = [
+  {
+    id: 1,
+    value: 7,
+    label: "7 Days",
+  },
+  {
+    id: 1,
+    value: 14,
+    label: "14 Days",
+  },
+  {
+    id: 1,
+    value: 21,
+    label: "21 Days",
+  },
+  {
+    id: 1,
+    value: 28,
+    label: "28 Days",
+  },
+];
+
+const warrantyData = [
+  {
+    label: "3 Months",
+    value: "3 Months",
+  },
+  {
+    label: "6 Months",
+    value: "6 Months",
+  },
+  {
+    label: "9 Months",
+    value: "9 Months",
+  },
+  {
+    label: "12 Months",
+    value: "12 Months",
+  },
+];
 
 export {
   commisiondata,
@@ -98,4 +139,6 @@ export {
   allowback_orders,
   stock_status,
   business_processing_days,
+  returnOrderData,
+  warrantyData,
 };

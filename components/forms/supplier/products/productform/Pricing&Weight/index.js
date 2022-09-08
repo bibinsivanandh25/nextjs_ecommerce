@@ -7,39 +7,20 @@ import validateMessage from "constants/validateMessages";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import validationRegex from "services/utils/regexUtils";
+import { returnOrderData } from "constants/constants";
+import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { validatePricing } from "../validation";
 
-const returnOrderData = [
-  {
-    id: 1,
-    value: 7,
-    label: "7 Days",
-  },
-  {
-    id: 1,
-    value: 14,
-    label: "14 Days",
-  },
-  {
-    id: 1,
-    value: 21,
-    label: "21 Days",
-  },
-  {
-    id: 1,
-    value: 28,
-    label: "28 Days",
-  },
-];
 const PricingForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [showZoneModal, setShowZoneModal] = useState(false);
     const [openViewModal, setOPenViewModal] = useState(false);
     const [viewModalData, setViewModalData] = useState([]);
     const [errorObj, setErrorObj] = useState({});
+    const { editProduct } = useSelector((state) => state.product);
 
     const handleInputChange = (e) => {
       setFormData((pre) => {
@@ -90,6 +71,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.sale_price ?? ""}
               error={errorObj.sale_price && errorObj.sale_price !== ""}
               placeholder="eg.: 100"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={6}>
@@ -103,6 +85,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.mrp ?? ""}
               error={errorObj.mrp && errorObj.mrp !== ""}
               placeholder="eg.: 100"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -135,6 +118,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={editProduct}
               />
               <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                 Provide Free Delivery & Return To Your Customer
@@ -152,7 +136,7 @@ const PricingForm = forwardRef(
                 errorObj.sale_price_logistics &&
                 errorObj.sale_price_logistics !== ""
               }
-              disabled={!formData?.pricing?.freeDeliveryCheckbox}
+              disabled={editProduct || !formData?.pricing?.freeDeliveryCheckbox}
             />
           </Grid>
           <Grid item md={6}>
@@ -175,6 +159,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={editProduct}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Return Order Accepted
@@ -200,6 +185,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={editProduct}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Cash on Delivery
@@ -229,6 +215,7 @@ const PricingForm = forwardRef(
                 helperText={errorObj.returnorder ?? ""}
                 error={errorObj.returnorder && errorObj.returnorder !== ""}
                 placeholder="Return Period"
+                disabled={editProduct}
               />
             </Grid>
           )}
@@ -299,6 +286,7 @@ const PricingForm = forwardRef(
               placeholder="eg.:200"
               helperText={errorObj.product_weight ?? ""}
               error={errorObj.product_weight && errorObj.product_weight !== ""}
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -312,6 +300,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.length ?? ""}
               error={errorObj.length && errorObj.length !== ""}
               placeholder="eg.: 200"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -325,6 +314,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.height ?? ""}
               error={errorObj.height && errorObj.height !== ""}
               placeholder="eg.: 200"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -338,6 +328,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.width ?? ""}
               error={errorObj.width && errorObj.width !== ""}
               placeholder="eg.: 200"
+              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
