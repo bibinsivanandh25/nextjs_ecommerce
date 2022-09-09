@@ -1,9 +1,8 @@
-// import { Delete, RemoveRedEye, Share, WhatsApp } from "@mui/icons-material";
 import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import CreateDiscount from "components/forms/supplier/marketingtools/creatediscount";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 
 const CreateDiscountCoupons = () => {
@@ -130,6 +129,12 @@ const CreateDiscountCoupons = () => {
   ];
 
   const [showCreateDiscount, setShowCreateDiscount] = useState(false);
+
+  const getTableRows = () => {};
+
+  useEffect(() => {
+    getTableRows();
+  }, []);
 
   return (
     <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
