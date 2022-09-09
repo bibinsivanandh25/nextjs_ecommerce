@@ -9,8 +9,8 @@ import ReplyModal from "components/forms/reseller/customerq&A/ReplyModal";
 import ViewModal from "components/forms/reseller/customerq&A/ViewModal";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { getQuestionsAndAnswers } from "services/supplier/customerq&a";
-import toastify from "services/utils/toastUtils";
 import styles from "./customerqna.module.css";
 
 const CustomerQnA = () => {
@@ -393,6 +393,11 @@ const CustomerQnA = () => {
     varId: "",
   });
 
+  const [pageNoForQuestions, setPageNoForQuestions] = useState(0);
+  const [pageNoForAnswers, setPageNoForAnswers] = useState(0);
+  const [fromDate] = useState("");
+  const [toDate] = useState("");
+
   const handleOpenReplyModal = (questionId, varId) => {
     setReply("");
     setDataForSendingReply({
@@ -482,7 +487,6 @@ const CustomerQnA = () => {
         col7: val.lastModifiedAt,
         col8: (
           <div className="d-flex justify-content-center align-items-center text-secondary">
-            {/* <Reply className="fs-5" /> */}
             <RemoveRedEye
               className="fs-5"
               onClick={() => {
@@ -572,43 +576,133 @@ const CustomerQnA = () => {
     return tempArray;
   };
 
-  const getQuestionsOrAnsweredQuestions = async (check) => {
-    const { data, error } = await getQuestionsAndAnswers("SP0822000040", {
-      status: check,
-      keyword: "",
-      dateFrom: "",
-      dateTo: "",
-    });
-    console.log(data, error.response?.data?.message, "balu");
+  const supplierId = useSelector((state) => state?.user?.supplierId);
+  const getQuestionsOrAnsweredQuestions = async (
+    check,
+    pageNum = 0,
+    keyword = "",
+    dateFrom = "",
+    dateTo = ""
+  ) => {
+    const { data, error } = await getQuestionsAndAnswers(
+      supplierId,
+      {
+        status: check,
+        keyword,
+        dateFrom,
+        dateTo,
+      },
+      pageNum
+    );
+
+    console.log(data);
+
     if (data) {
       if (!check) {
-        console.log(data, "unans");
         const tempArray = setUnansweredQuestionsRows(data);
-        console.log("tab1");
         setQuestionCount(data.count);
         setQuestions([...tempArray]);
-      } else {
-        console.log(data, "ans");
+      } else if (check) {
         const tempArray = setAnsweredQuestionsRows(data);
-        console.log("Answer data ", data);
-        console.log("tab2");
         setAnswerCount(data.count);
         setAnswers([...tempArray]);
       }
     }
     if (error) {
       if (tabType === "tab1" && !check) {
-        toastify(error.response?.data?.message, "error");
+        // toastify(error?.response?.data?.message, "error");
+        setQuestions([]);
       } else if (tabType === "tab2" && check) {
-        toastify(error.response?.data?.message, "error");
+        // toastify(error?.response?.data?.message, "error");
+        setAnswers([]);
+      }
+    }
+  };
+
+  const getQuestionsOrAnsweredQuestionsForSearch = async (
+    check,
+    pageNum = tabType === "tab1" ? pageNoForQuestions : pageNoForAnswers,
+    keyword = "",
+    dateFrom = fromDate,
+    dateTo = toDate
+  ) => {
+    const { data, error } = await getQuestionsAndAnswers(
+      supplierId,
+      {
+        status: check,
+        keyword,
+        dateFrom,
+        dateTo,
+      },
+      pageNum
+    );
+
+    console.log(data);
+
+    if (data) {
+      if (!check) {
+        const tempArray = setUnansweredQuestionsRows(data);
+        if (pageNoForQuestions < Math.floor(data.count / 50))
+          setPageNoForQuestions((pre) => pre + 1);
+        setQuestionCount(data.count);
+        if (pageNoForQuestions === 0) {
+          setQuestions([...tempArray]);
+        } else {
+          setQuestions((pre) => [...pre, ...tempArray]);
+        }
+      } else if (check) {
+        const tempArray = setAnsweredQuestionsRows(data);
+        setAnswerCount(data.count);
+        if (pageNoForAnswers < Math.floor(data.count / 50))
+          setPageNoForAnswers((pre) => pre + 1);
+        if (pageNoForAnswers === 0) {
+          setAnswers([...tempArray]);
+        } else {
+          setAnswers((pre) => [...pre, ...tempArray]);
+        }
+      }
+    }
+    if (error) {
+      if (tabType === "tab1" && !check) {
+        // toastify(error?.response?.data?.message, "error");
+        setQuestions([]);
+      } else if (tabType === "tab2" && check) {
+        // toastify(error?.response?.data?.message, "error");
+        setAnswers([]);
       }
     }
   };
 
   useEffect(() => {
-    getQuestionsOrAnsweredQuestions(false);
-    getQuestionsOrAnsweredQuestions(true);
+    getQuestionsOrAnsweredQuestions(true, 0);
+    getQuestionsOrAnsweredQuestions(false, 0);
   }, [tabType]);
+
+  console.log("page number for answers ", pageNoForAnswers);
+  const handleSearchClick = (searchText) => {
+    console.log(searchText);
+    if (!searchText) {
+      if (tabType === "tab1") {
+        getQuestionsOrAnsweredQuestionsForSearch(false, pageNoForQuestions);
+      } else if (tabType === "tab2") {
+        getQuestionsOrAnsweredQuestionsForSearch(true, pageNoForAnswers);
+      }
+      return;
+    }
+    if (tabType === "tab1") {
+      getQuestionsOrAnsweredQuestions(
+        false,
+        pageNoForQuestions,
+        searchText.toUpperCase()
+      );
+    } else if (tabType === "tab2") {
+      getQuestionsOrAnsweredQuestions(
+        true,
+        pageNoForAnswers,
+        searchText.toUpperCase()
+      );
+    }
+  };
 
   return (
     <div>
@@ -640,6 +734,14 @@ const CustomerQnA = () => {
           showDateFilter
           showDateFilterBtn={false}
           dateFilterColName={["col5"]}
+          searchBarPlaceHolderText="Search By Customer"
+          handlePageEnd={(searchText) => {
+            handleSearchClick(searchText);
+          }}
+          handleRowsPerPageChange={() => {
+            setPageNoForQuestions(0);
+            setPageNoForAnswers(0);
+          }}
         />
       </Paper>
       <ViewModal
