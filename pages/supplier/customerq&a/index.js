@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getQuestionsAndAnswers } from "services/supplier/customerq&a";
+import toastify from "services/utils/toastUtils";
 import styles from "./customerqna.module.css";
 
 const CustomerQnA = () => {
@@ -610,10 +611,10 @@ const CustomerQnA = () => {
     }
     if (error) {
       if (tabType === "tab1" && !check) {
-        // toastify(error?.response?.data?.message, "error");
+        toastify(error?.response?.data?.message, "error");
         setQuestions([]);
       } else if (tabType === "tab2" && check) {
-        // toastify(error?.response?.data?.message, "error");
+        toastify(error?.response?.data?.message, "error");
         setAnswers([]);
       }
     }
@@ -664,10 +665,8 @@ const CustomerQnA = () => {
     }
     if (error) {
       if (tabType === "tab1" && !check) {
-        // toastify(error?.response?.data?.message, "error");
         setQuestions([]);
       } else if (tabType === "tab2" && check) {
-        // toastify(error?.response?.data?.message, "error");
         setAnswers([]);
       }
     }
