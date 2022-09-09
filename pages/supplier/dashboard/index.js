@@ -270,9 +270,7 @@ const barGraphLabels = [
   "Nov",
   "Dec",
 ];
-const barGraphData = [
-  1000, 3000, 5000, 4000, 2000, 7000, 3000, 5000, 900, 1000, 200, 9000,
-];
+
 const revenueSelectList = [
   {
     value: 2021,
@@ -304,10 +302,12 @@ const Dashboard = () => {
   const user = useSelector((state) => state.user);
   const [masterCardData, setMasterCardData] = useState([]);
   const [showAddressModal, setShowAddressModal] = useState(false);
+  // month wise Sale
   const [currentYear, setCurrentYear] = useState({
     value: new Date().getFullYear().toString(),
     label: new Date().getFullYear().toString(),
   });
+  const [monthWiseSaleData, setMonthWiseSaleData] = useState([]);
   // referral chart
   const [referralData, setReferralData] = useState([]);
   const [referralCurrentYear, setReferralCurrentYear] = useState({
@@ -402,6 +402,23 @@ const Dashboard = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const handleMonthWiseSale = async () => {
+    const { data, err } = await getCustomerChartData(
+      user.storeCode,
+      currentYear.value
+    );
+    if (data) {
+      setMonthWiseSaleData(data);
+    }
+    if (err) {
+      setMonthWiseSaleData([]);
+      toastify(err.response.data.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    handleMonthWiseSale();
+  }, [currentYear.value]);
 
   useEffect(() => {
     handleCustomerData();
@@ -416,7 +433,7 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-
+  console.log(monthWiseSaleData.at, "monthWiseSaleData");
   return (
     <div>
       {showAddressModal ? (
@@ -489,7 +506,7 @@ const Dashboard = () => {
                 </Box>
                 <Bargraph
                   showGridY={false}
-                  data={barGraphData}
+                  data={referralData}
                   labels={barGraphLabels}
                   backgroundColor="#1f78b4"
                   hoverBackgroundColor="#ea7d30"
