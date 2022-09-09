@@ -371,7 +371,7 @@ const Dashboard = () => {
       setMasterCardData(cardDatas);
     }
     if (err) {
-      setMasterCardData({});
+      setMasterCardData([]);
       toastify(err.response.data.message, "error");
     }
   };
