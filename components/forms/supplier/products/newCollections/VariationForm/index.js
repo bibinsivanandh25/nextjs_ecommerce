@@ -20,9 +20,9 @@ import { Country } from "country-state-city";
 import { getCurrentData } from "services/supplier";
 import ImageGuidelines from "components/molecule/ImageGuidelines";
 import InputBox from "@/atoms/InputBoxComponent";
-import { validateOtherInfo } from "../../productform/validation";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { validateOtherInfo } from "../../productform/validation";
 
 const VariationForm = forwardRef(
   ({ setShowGroupVariant = () => {}, setFormData = () => {} }, ref) => {
