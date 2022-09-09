@@ -49,7 +49,7 @@ const RegistrationForm = ({
               onInputChange={(e) => {
                 setFormValues((prev) => ({
                   ...prev,
-                  referralCode: e.target.value,
+                  referralCode: e.target.value.replace(/\s\s+/g, " "),
                 }));
               }}
               inputlabelshrink
@@ -73,7 +73,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                firstName: e.target.value,
+                firstName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
@@ -92,7 +92,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                lastName: e.target.value,
+                lastName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
@@ -111,7 +111,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                businessName: e.target.value,
+                businessName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
