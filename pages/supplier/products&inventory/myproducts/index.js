@@ -360,7 +360,6 @@ const MyProducts = () => {
             disableCustomButton={!selected.length}
             OnSelectionChange={(vals) => setSelected(vals)}
             handlePageEnd={(searchText, filterText, page = pageNumber) => {
-              console.log("pageEnd", searchText);
               getTableData(searchText, filterText, page);
             }}
             handleRowsPerPageChange={() => {
