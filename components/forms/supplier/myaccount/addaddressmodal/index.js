@@ -5,12 +5,14 @@ import ModalComponent from "components/atoms/ModalComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getSupplierDetailsBySupplierId } from "services/supplier/myaccount/myprofile";
 import {
   addNewAddress,
   updateAddress,
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
+import { storeUserInfo } from "features/userSlice";
 
 const AddAddressModal = (props) => {
   const {
@@ -21,6 +23,8 @@ const AddAddressModal = (props) => {
     showAddressModal = false,
     getAllAddress = () => {},
     supplierId = "",
+    showCloseIcon = true,
+    disableCancel = false,
   } = props;
   const [formValues, setFormValues] = useState({
     name: "",
@@ -36,6 +40,7 @@ const AddAddressModal = (props) => {
     alternativeMobileNumber: "",
   });
   const [error, setError] = useState({});
+  const dispatch = useDispatch();
 
   const [inputFields, setInputFields] = useState([
     {
@@ -164,6 +169,21 @@ const AddAddressModal = (props) => {
     return valid;
   };
   const user = useSelector((state) => state.user.supplierId);
+  const getUpdateUserDetails = async () => {
+    const { data } = await getSupplierDetailsBySupplierId(supplierId);
+    if (data) {
+      const supplierDetails = {
+        emailId: data.emailId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImageUrl: data.profileImageUrl,
+        supplierId: data.supplierId,
+        storeCode: data.supplierStoreInfo.supplierStoreCode,
+        isAddressSaved: data.userAddressDetails.length,
+      };
+      dispatch(storeUserInfo(supplierDetails));
+    }
+  };
   const handleSave = async () => {
     const isValid = validateForm();
     if (isValid) {
@@ -177,6 +197,7 @@ const AddAddressModal = (props) => {
         const { data } = await addNewAddress(payload);
         if (data) {
           getAllAddress();
+          getUpdateUserDetails();
           setShowAddAddressModal(false);
         }
       } else if (type === "edit") {
@@ -249,6 +270,8 @@ const AddAddressModal = (props) => {
       footerClassName="justify-content-end  border-top me-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"
+      showCloseIcon={showCloseIcon}
+      clearBtnClassName={disableCancel ? "d-none" : ""}
     >
       <Grid container my={2} spacing={2}>
         {inputFields.map((field) => (

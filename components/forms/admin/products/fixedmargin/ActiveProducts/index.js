@@ -5,12 +5,12 @@ import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
+import SwitchComponent from "@/atoms/SwitchComponent";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import AddEditProductModal from "./AddEditProductModal";
 import ViewProducts from "./ViewProducts";
-import SwitchComponent from "@/atoms/SwitchComponent";
 import RaiseQueryModal from "./RaiseQueryModal";
 import DiscountModal from "./DiscountModal";
-import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Active = () => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);

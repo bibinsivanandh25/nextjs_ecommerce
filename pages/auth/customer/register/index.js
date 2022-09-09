@@ -8,10 +8,10 @@ import { useRouter } from "next/router";
 import { registerCustomer } from "services/customer/auth";
 import { format } from "date-fns";
 import toastify from "services/utils/toastUtils";
-import styles from "./customerregister.module.css";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
+import styles from "./customerregister.module.css";
+import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 
 const CustomerRegistration = () => {
   const formObj = {

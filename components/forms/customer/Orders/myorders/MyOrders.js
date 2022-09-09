@@ -3,15 +3,15 @@
 import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
+import ButtonComponent from "@/atoms/ButtonComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import ModalComponent from "@/atoms/ModalComponent";
 import serviceUtil from "services/utils";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import CancelOrReturnModal from "../CancelOrReturnModal";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import styles from "./MyOrders.module.css";
-import ButtonComponent from "@/atoms/ButtonComponent";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import CancelOrReturnModal from "../CancelOrReturnModal";
-import ModalComponent from "@/atoms/ModalComponent";
 
 const list = [
   { label: "Last 30 days" },

@@ -11,6 +11,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "features/userSlice";
+import { clearProduct } from "features/productsSlice";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
@@ -88,6 +89,7 @@ const ProfileComponent = () => {
             window.localStorage.setItem("moduleType", null);
             signOut({ callbackUrl: "/auth/login" });
             dispatch(clearUser());
+            dispatch(clearProduct());
           }}
         >
           Logout

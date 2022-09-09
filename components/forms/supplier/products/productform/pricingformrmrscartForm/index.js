@@ -1,32 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { Grid, Typography } from "@mui/material";
+import { returnOrderData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { validatePricingForMrMRsCartForm } from "../validation";
 
-const returnOrderData = [
-  {
-    id: 7,
-    value: "7 Days",
-    label: "7 Days",
-  },
-  {
-    id: 14,
-    value: "14 Days",
-    label: "14 Days",
-  },
-  {
-    id: 21,
-    value: "21 Days",
-    label: "21 Days",
-  },
-  {
-    id: 28,
-    value: "28 Days",
-    label: "28 Days",
-  },
-];
 const PricingForMrMRsCartForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});

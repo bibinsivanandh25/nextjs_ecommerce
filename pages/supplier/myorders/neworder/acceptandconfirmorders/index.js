@@ -9,11 +9,11 @@ import { Box, Button, Paper } from "@mui/material";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
 import CustomIcon from "services/iconUtils";
 import { useRouter } from "next/router";
-import logo from "../../../../../public/assets/logo.jpeg";
 
 import OrderConfirmModal from "@/forms/supplier/myorder/orderconfirmodal";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+import logo from "../../../../../public/assets/logo.jpeg";
 
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();

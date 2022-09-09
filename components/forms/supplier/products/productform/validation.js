@@ -126,10 +126,10 @@ const validateInventory = (inventoryFormData) => {
       }
     });
 
-  if (inventoryFormData.modalname === "") {
-    flag = true;
-    errObj.modalname = validateMessage.field_required;
-  } else if (inventoryFormData.modalname?.length > 100) {
+  if (
+    inventoryFormData.modalname !== "" &&
+    inventoryFormData.modalname?.length > 100
+  ) {
     flag = true;
     errObj.modalname = validateMessage.alpha_numeric_max_100;
   }

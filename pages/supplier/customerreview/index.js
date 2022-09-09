@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
@@ -14,6 +15,23 @@ import {
 import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
 
+const selectTypeList = [
+  {
+    id: "ALL",
+    label: "ALL",
+    value: "ALL",
+  },
+  {
+    id: "name",
+    label: "Name",
+    value: "NAME",
+  },
+  {
+    id: "ratings",
+    label: "Ratings",
+    value: "RATINGS",
+  },
+];
 const CustomerReview = () => {
   const user = useSelector((state) => state.user);
   const [tableRows, setTableRows] = useState([]);
@@ -25,6 +43,7 @@ const CustomerReview = () => {
     id: null,
   });
   const [selectedData, setSelectedData] = useState({});
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Image",
@@ -117,8 +136,26 @@ const CustomerReview = () => {
     });
     return result;
   };
-  const getAllTableData = async () => {
-    const { data, err } = await getAllCustomerReview(user.supplierId);
+  const getAllTableData = async (searchText = "", filterText = "", page) => {
+    const payload = {
+      filterType:
+        filterText?.toLocaleLowerCase() == "all"
+          ? null
+          : searchText == ""
+          ? null
+          : filterText,
+      keyword:
+        filterText?.toLocaleLowerCase() == "all" && searchText !== ""
+          ? null
+          : searchText == ""
+          ? null
+          : searchText,
+    };
+    const { data, err } = await getAllCustomerReview(
+      user.supplierId,
+      payload,
+      page
+    );
     if (data) {
       setTableData(data);
     } else if (err) {
@@ -127,7 +164,7 @@ const CustomerReview = () => {
     }
   };
   useEffect(() => {
-    getAllTableData();
+    getAllTableData("", "ALL", 0);
   }, []);
 
   useEffect(() => {
@@ -149,7 +186,7 @@ const CustomerReview = () => {
       };
       const { data, err } = await reviewReply(payload);
       if (data) {
-        getAllTableData();
+        getAllTableData("", "ALL", 0);
         setShowReplyModal({ show: false, id: null });
         setReplyData({ value: "", id: null });
       } else if (err) {
@@ -183,9 +220,20 @@ const CustomerReview = () => {
             columns={columns}
             tableRows={tableRows}
             showCheckbox={false}
-            showSearchFilter={false}
+            showSearchFilter
             searchBarSizeMd={4}
             tableMaxHeight="none"
+            filterList={[...selectTypeList]}
+            handlePageEnd={(
+              searchText = "",
+              filterText = "ALL",
+              page = pageNumber
+            ) => {
+              getAllTableData(searchText, filterText, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       </Box>
