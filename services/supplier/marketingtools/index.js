@@ -1,8 +1,17 @@
 import serviceUtil from "services/utils";
 
-const getUserMarketingTool = () => {
-  return serviceUtil.get(
-    `users/marketing-tool?userTypeId=SP0922000002&toolType=DISCOUNT_COUPON&pageNumber=0&pageSize=5`
-  );
+const getUserMarketingTool = (id, toolType, pageNumber) => {
+  const pageSize = 50;
+  return serviceUtil
+    .get(
+      `users/marketing-tool?userTypeId=${id}&toolType=${toolType}&pageNumber=${pageNumber}&pageSize=${pageSize}`
+    )
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
 };
 export { getUserMarketingTool };
