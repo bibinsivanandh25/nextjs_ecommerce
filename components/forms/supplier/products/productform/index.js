@@ -22,6 +22,7 @@ import { useUserInfo } from "services/hooks";
 import {
   getSet,
   getSubCategory,
+  saveDuplicateProduct,
   saveMediaFile,
   saveProduct,
 } from "services/supplier/AddProducts";
@@ -74,6 +75,9 @@ const ProductsLayout = ({
   const dispatch = useDispatch();
   const [showOthersField, setshowOthersField] = useState(false);
   const variationData = useSelector((state) => state.product.variationData);
+  const { productDetails, duplicateFlag } = useSelector(
+    (state) => state.product
+  );
   const [showGuidelines, setShowGuidlines] = useState(false);
 
   useEffect(() => {
@@ -565,26 +569,45 @@ const ProductsLayout = ({
       otherInformation,
       zoneChargeInfo: {},
       countryOfOrigin: formData.variation.countryOfOrigin,
-      expiryDate: null,
-      // format(
-      //   new Date(formData.variation.expiryDate),
-      //   "MM-dd-yyyy HH:mm:ss"
-      // ),
+      expiryDate: format(
+        new Date(formData.variation.expiryDate),
+        "MM-dd-yyyy HH:mm:ss"
+      ),
       productType: "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
     };
-    const { data, err } = await saveProduct(payload);
-    if (err) {
-      toastify(err.response.data.message, "error");
-    } else if (data) {
-      toastify(data.message, "success");
-      dispatch(clearProduct());
-      router.replace({
-        pathname: "/supplier/products&inventory/myproducts",
-        query: {
-          active: "2",
-        },
-      });
+    if (duplicateFlag) {
+      const { data, err } = await saveDuplicateProduct(
+        payload,
+        productDetails.supplierId,
+        productDetails.variationData.productVariationId
+      );
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        toastify(data.message, "success");
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+      }
+    } else {
+      const { data, err } = await saveProduct(payload);
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        toastify(data.message, "success");
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+      }
     }
   };
 
