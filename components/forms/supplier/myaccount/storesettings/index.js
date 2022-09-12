@@ -17,6 +17,7 @@ import {
   updateSupplierStoreConfiguration,
 } from "services/supplier/myaccount/storesettings";
 import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 import InputBox from "@/atoms/InputBoxComponent";
 import ImageCard from "@/atoms/ImageCard";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
@@ -151,6 +152,7 @@ const themeColor = [
   "#a316a8",
   "#d6c20f",
 ];
+
 const StoreSettings = () => {
   const [formValues, setFormValues] = useState({
     storeName: "",
@@ -187,6 +189,7 @@ const StoreSettings = () => {
   const user = useSelector((state) => {
     return state.user;
   });
+  console.log(formValues);
 
   // const get12hourformat = (time) => {
   //   // Prepend any date. Use your birthday.
@@ -210,10 +213,20 @@ const StoreSettings = () => {
         storeName: data.supplierStoreName,
         storeCode: data.supplierStoreCode,
         minOrderAmount: data.minimumOrderAmount,
-        maxTimeToProcessOrder: data.maxOrderProcessingTime,
-        maxOrderDeliveryRange: data.maxOrderDeliveryRange,
-        shopOPenDays: data.shopOpeningDays,
-        shopTimings: data.shopTimings,
+        maxTimeToProcessOrder:
+          timeToProcessList.filter(
+            (ele) => ele.value === data.maxOrderProcessingTime
+          )[0] ?? {},
+        maxOrderDeliveryRange:
+          deliveryRangeList.filter(
+            (ele) => ele.value === data.maxOrderDeliveryRange
+          )[0] ?? {},
+        shopOPenDays:
+          data.shopOpeningDays?.map((value) => {
+            return daysList.filter((ele) => ele.value === value)[0];
+          }) ?? [],
+        shopOpenTimings: data.shopTimings.split("-")[0].trim(),
+        shopCloseTimings: data.shopTimings.split("-")[1].trim(),
         description: data.shopDescription,
         supplierStoreInfoId: data.supplierStoreInfoId,
       }));
@@ -258,10 +271,11 @@ const StoreSettings = () => {
       flag = true;
       errObj.minOrderAmount = validateMessage.field_required;
     }
-    if (formValues.maxTimeToProcessOrder === "") {
+    if (!formValues.maxTimeToProcessOrder) {
       flag = true;
       errObj.maxTimeToProcessOrder = validateMessage.field_required;
     }
+
     if (!formValues.maxOrderDeliveryRange) {
       flag = true;
       errObj.maxOrderDeliveryRange = validateMessage.field_required;
@@ -287,22 +301,30 @@ const StoreSettings = () => {
       errObj.storeLogo = validateMessage.field_required;
     }
     setErrorObj({ ...errObj });
+    if (formValues.description === "") {
+      flag = true;
+      errObj.description = validateMessage.field_required;
+    }
     return flag;
   };
-
-  const updateSupplierStore = async () => {
+  useEffect(() => {
+    if (errorObj.description.length) {
+      toastify(validateMessage, "error");
+    }
+  }, [errorObj]);
+  const updateSupplierStore = async (image) => {
     const payload = {
       supplierStoreInfoId: formValues.supplierStoreInfoId,
       supplierStoreCode: formValues.storeCode,
       supplierStoreName: formValues.storeName,
       minimumOrderAmount: formValues.minOrderAmount,
-      maxOrderProcessingTime: formValues.maxTimeToProcessOrder.value,
-      maxOrderDeliveryRange: formValues.maxOrderDeliveryRange.value,
+      maxOrderProcessingTime: formValues.maxTimeToProcessOrder?.value,
+      maxOrderDeliveryRange: formValues.maxOrderDeliveryRange?.value,
       shopOpeningDays: formValues.shopOPenDays.map((ele) => ele.value),
       shopTimings: `${formValues.shopOpenTimings}  -  ${formValues.shopCloseTimings}`,
       shopDescription: formValues.description,
-      shopDescriptionImageUrl: discriptionImage.url,
-      supplierStoreLogo: storeLogo.url,
+      shopDescriptionImageUrl: image[1] ?? discriptionImage.url,
+      supplierStoreLogo: image[0] ?? storeLogo.url,
       storeThemes: [
         {
           storeThemeId: 0,
@@ -314,9 +336,10 @@ const StoreSettings = () => {
 
     const { data, err } = await updateSupplierStoreConfiguration(payload);
     if (data) {
-      console.log(data);
+      toastify(data.message, "success");
+      getStoreInfo();
     } else if (err) {
-      console.log(err);
+      toastify(err?.response?.data?.message);
     }
   };
 
@@ -330,12 +353,20 @@ const StoreSettings = () => {
         formData.append("supplierId", user?.supplierId);
         const { data, err } = await supplierStoreImageConfig(formData);
         if (data) {
-          updateSupplierStore();
+          setStoreLogo((pre) => ({
+            ...pre,
+            url: data[0] ?? pre.url,
+          }));
+          setDiscriptionImage((pre) => ({
+            ...pre,
+            url: data[1] ?? pre.url,
+          }));
+          updateSupplierStore(data);
         } else if (err) {
           console.log(err.response);
         }
       } else {
-        updateSupplierStore();
+        updateSupplierStore([storeLogo.url, discriptionImage.url]);
       }
     }
   };
@@ -669,16 +700,18 @@ const StoreSettings = () => {
                 ) : null}
               </Grid>
               <Grid item sm={12} className="w-100">
-                <TextEditor
-                  className="w-100"
-                  content={formValues.description}
-                  getContent={(val) => {
-                    setFormValues((pre) => ({
-                      ...pre,
-                      description: val,
-                    }));
-                  }}
-                />
+                {formValues.description && (
+                  <TextEditor
+                    className="w-100"
+                    content={formValues.description}
+                    getContent={(val) => {
+                      setFormValues((pre) => ({
+                        ...pre,
+                        description: val,
+                      }));
+                    }}
+                  />
+                )}
               </Grid>
             </Grid>
           </Grid>

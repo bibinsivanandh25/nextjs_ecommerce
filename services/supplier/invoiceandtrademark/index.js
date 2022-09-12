@@ -1,9 +1,9 @@
 import serviceUtil from "services/utils";
 
-const getProductandInventoryData = (supplierId) => {
+const getProductandInventoryData = (supplierId, search, page) => {
   return serviceUtil
     .get(
-      `products/supplier/product/trademark-invoice/0/10?supplierId=${supplierId}`
+      `products/supplier/product/trademark-invoice/${page}/50?supplierId=${supplierId}&keyword=${search}`
     )
     .then((res) => {
       const { data } = res && res.data;
