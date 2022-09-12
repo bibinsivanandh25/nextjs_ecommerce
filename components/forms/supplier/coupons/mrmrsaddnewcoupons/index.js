@@ -289,12 +289,14 @@ const MrMrsAddNewCoupons = ({
                 value={formValues.couponExpiryDate}
                 id="couponExpiryDate"
                 name="couponExpiryDate"
-                onDateChange={(val) =>
+                onDateChange={(val) => {
+                  console.log(val);
+
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,
-                  }))
-                }
+                  }));
+                }}
                 error={Boolean(error.couponExpiryDate)}
                 helperText={error.couponExpiryDate}
                 required
