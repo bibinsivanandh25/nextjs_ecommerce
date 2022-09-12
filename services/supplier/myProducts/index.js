@@ -52,9 +52,20 @@ const getVariation = (payload) => {
     .catch((err) => ({ err }));
 };
 
+const deleteSingleProduct = (id) => {
+  return serviceUtil
+    .deleteById(`products/variation/${id}`)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getSupplierProductCountByStatus,
-  getVariation,
   getTabledata,
   markOutOfStock,
+  deleteSingleProduct,
+  getVariation,
 };

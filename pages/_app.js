@@ -22,6 +22,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 function MyApp({ Component, pageProps, router }) {
   useEffect(() => {
+    document.addEventListener("wheel", () => {
+      if (document.activeElement.type === "number") {
+        document.activeElement.blur();
+      }
+    });
+
+    // activate loader while routing
     router.events.on("routeChangeStart", () => {
       document.getElementById("loader").classList.add("loadContainer");
     });
