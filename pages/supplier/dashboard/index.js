@@ -431,34 +431,35 @@ const Dashboard = () => {
       ) : (
         <Paper className="w-100 mnh-85vh mxh-85vh overflow-auto hide-scrollbar p-2">
           <Grid container className="" gap={0.5}>
-            {masterCardData &&
-              masterCardData?.map((item, index) => (
-                <Grid
-                  item
-                  lg={index % 2 == 0 ? 2 : 2.9}
-                  md={index % 2 == 0 ? 2 : 2.8}
-                  sm={5.9}
-                  xs={12}
-                  sx={{
-                    boxShadow: "0px 0px 4px #0000003D",
-                    border: "3px solid #FFFFFF",
-                    borderRadius: "8px",
-                    opacity: "0.9",
-                  }}
-                >
-                  <Box
-                    sx={{ backgroundColor: `${item.color}` }}
-                    className="py-3 rounded h-100"
+            {masterCardData?.length
+              ? masterCardData?.map((item, index) => (
+                  <Grid
+                    item
+                    lg={index % 2 == 0 ? 2 : 2.9}
+                    md={index % 2 == 0 ? 2 : 2.8}
+                    sm={5.9}
+                    xs={12}
+                    sx={{
+                      boxShadow: "0px 0px 4px #0000003D",
+                      border: "3px solid #FFFFFF",
+                      borderRadius: "8px",
+                      opacity: "0.9",
+                    }}
                   >
-                    <Typography className=" ps-2 text-break text-white h-5">
-                      {item.title}
-                    </Typography>
-                    <Typography className=" ps-2 text-break text-white h-3">
-                      {item.count}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
+                    <Box
+                      sx={{ backgroundColor: `${item.color}` }}
+                      className="py-3 rounded h-100"
+                    >
+                      <Typography className=" ps-2 text-break text-white h-5">
+                        {item.title}
+                      </Typography>
+                      <Typography className=" ps-2 text-break text-white h-3">
+                        {item.count}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))
+              : null}
           </Grid>
           <Grid container spacing={2} mt={1} className="h-100">
             <Grid item md={6} sm={12}>

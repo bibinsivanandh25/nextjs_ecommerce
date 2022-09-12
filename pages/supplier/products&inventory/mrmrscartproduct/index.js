@@ -1,10 +1,15 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import { format } from "date-fns";
+import { duplicateProduct } from "features/productsSlice";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import { getTableData } from "services/supplier/MrMrsCartProducts";
+import { getVariation } from "services/supplier/myProducts";
+import toastify from "services/utils/toastUtils";
 
 const MrMrsCartProducts = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -76,12 +81,27 @@ const MrMrsCartProducts = () => {
     { label: "Listing Price", id: "0", value: "LISTING_PRICE" },
   ];
 
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const duplicateClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(duplicateProduct(data[0]));
+      router.push("/supplier/products&inventory/addnewproduct");
+    }
+  };
+
   const mapRowsToTable = (data) => {
     const result = [];
     data.forEach((row) => {
       row.productVariations.forEach((ele) => {
         result.push({
-          col1: ele?.variationMedia.length ? (
+          col1: ele?.variationMedia?.length ? (
             <div>
               <Image src={ele.variationMedia[0]} width={40} height={40} />
             </div>
@@ -99,10 +119,20 @@ const MrMrsCartProducts = () => {
           col12: (
             <Grid container spacing={2}>
               <Grid item xs={4}>
-                <CustomIcon type="view" title="View" />
+                <CustomIcon type="view" title="View" className="fs-16" />
               </Grid>
               <Grid item xs={4}>
-                <CustomIcon type="filecopy" title="Copy" />
+                <Box
+                  onClick={() => {
+                    duplicateClick(row.masterProductId, ele.productVariationId);
+                  }}
+                >
+                  <CustomIcon
+                    type="filecopy"
+                    title="Duplicate Product"
+                    className="fs-16"
+                  />
+                </Box>
               </Grid>
             </Grid>
           ),
