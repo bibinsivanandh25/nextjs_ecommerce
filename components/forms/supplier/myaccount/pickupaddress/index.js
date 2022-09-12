@@ -66,7 +66,7 @@ const PickUpAddress = () => {
         </Grid>
         <Grid xs={6} item />
         {addressList.map((add) => (
-          <Grid xs={6} item key={add.addressId}>
+          <Grid xs={6} item key={add?.addressId}>
             <Grid
               container
               sx={{
@@ -74,7 +74,7 @@ const PickUpAddress = () => {
                 px: 3,
                 border: "1px solid lightgray",
                 backgroundColor:
-                  add.addressId === selectedAddress && "#F5E4D7 !important",
+                  add?.addressId === selectedAddress && "#F5E4D7 !important",
               }}
               className="fs-16 bg-white rounded h-100"
             >
