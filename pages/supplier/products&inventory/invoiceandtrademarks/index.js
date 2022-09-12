@@ -68,6 +68,7 @@ const columns = [
 ];
 const InvoiceAndTradeMarks = () => {
   const user = useSelector((state) => state.user);
+  const [pageNumber, setpageNumber] = useState(0);
   const [modalTitle, setModalTitle] = useState("add");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showViewModal, setshowViewModal] = useState(false);
@@ -106,12 +107,11 @@ const InvoiceAndTradeMarks = () => {
       setShowUploadModal(true);
     }
   };
-  const getAllTableData = async () => {
-    const finalData = [];
-    const { data, err } = await getProductandInventoryData(user.supplierId);
+  const getAllTableRows = (data) => {
+    const temp = [];
     if (data) {
       data.forEach((item, index) => {
-        finalData.push({
+        temp.push({
           id: index,
           col1: index + 1,
           col2: item.documentName,
@@ -157,19 +157,37 @@ const InvoiceAndTradeMarks = () => {
           ),
         });
       });
-      setRows(finalData);
-    } else if (err) {
-      console.log(err);
+    }
+    return temp;
+  };
+  const getAllTableData = async (searchText = "", filterText = "", page) => {
+    const { data, err } = await getProductandInventoryData(
+      user.supplierId,
+      searchText,
+      page,
+      filterText
+    );
+    if (data?.length) {
+      if (page == 0) {
+        setRows(getAllTableRows(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getAllTableRows(data)]);
+      }
+    }
+    if (err) {
       setRows([]);
+      toastify(err.response.data.message, "error");
     }
   };
   useEffect(() => {
-    getAllTableData();
+    getAllTableData("", "", 0);
   }, []);
   return (
     <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar py-2">
       <TableComponent
-        tableRows={[...rows]}
+        tableRows={rows}
         columns={[...columns]}
         showCustomButton
         showSearchFilter={false}
@@ -177,6 +195,16 @@ const InvoiceAndTradeMarks = () => {
         onCustomButtonClick={() => {
           setShowUploadModal(true);
           setModalTitle("add");
+        }}
+        handlePageEnd={(
+          searchText = "",
+          filterText = "ALL",
+          page = pageNumber
+        ) => {
+          getAllTableData(searchText, filterText, page);
+        }}
+        handleRowsPerPageChange={() => {
+          setpageNumber(0);
         }}
       />
       <UploadDocumentModal

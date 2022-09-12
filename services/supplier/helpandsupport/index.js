@@ -24,7 +24,7 @@ const saveHelpandSupport = (payload) => {
 };
 const getAllHelpandSupportData = (payload, page) => {
   return serviceUtil
-    .post(`help-and-support/supplier/ticket/${page}/10`, payload)
+    .post(`help-and-support/supplier/ticket/${page}/50`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };

@@ -5,6 +5,7 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import toastify from "services/utils/toastUtils";
 import {
+  dateFilterTableData,
   // dateFilterTableData,
   deleteBanner,
   getAllData,
@@ -134,13 +135,13 @@ const Banners = () => {
   const [saveBtnName, setSaveBtnName] = useState("save");
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewData, setViewData] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
 
-  const getAllTableData = async () => {
-    const { data, err } = await getAllData(userInfo.id);
-    const finalData = [];
+  const mapRowsToTable = (data) => {
+    const temp = [];
     if (data) {
       data.forEach((item, index) => {
-        finalData.push({
+        temp.push({
           id: index + 1,
           col1: index + 1,
           col2: item.bannerImageUrlForWeb ? (
@@ -197,10 +198,39 @@ const Banners = () => {
           ),
         });
       });
-      setTableRows(finalData);
+    }
+    return temp;
+  };
+  const dateFillter = async () => {
+    const { data, err } = await dateFilterTableData();
+    if (data) {
+      console.log(data, "datata");
     }
     if (err) {
       console.log(err, "err");
+    }
+  };
+  const getAllTableData = async (
+    searchText = "",
+    filterText = "",
+    page = pageNumber
+  ) => {
+    const { data, err } = await getAllData(
+      userInfo.id,
+      searchText,
+      filterText,
+      page
+    );
+    if (data?.length) {
+      if (page == 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+      }
+    }
+    if (err) {
       setTableRows([]);
       toastify(err.response.data.message, "error");
     }
@@ -280,8 +310,6 @@ const Banners = () => {
     if (selectdata) {
       const { data, err } = await deleteBanner(selectdata.bannerId);
       if (data?.data) {
-        console.log(data);
-        // getDateFilterTableData();
         toastify(data.message, "success");
         getAllTableData();
       } else if (err) {
@@ -327,12 +355,14 @@ const Banners = () => {
   useEffect(() => {
     // dateFillter API Call
     // getDateFilterTableData();
-    getAllTableData();
+    dateFillter();
+    getAllTableData("", "", 0);
   }, []);
 
   return (
     <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar py-2">
       <TableComponent
+        showCheckbox={false}
         tableRows={[...tableRows]}
         columns={[...columns]}
         showDateFilter
@@ -343,6 +373,16 @@ const Banners = () => {
         dateFilterBtnClick={() => {
           setShowCreateBanner(true);
           setSaveBtnName("save");
+        }}
+        handlePageEnd={(
+          searchText = "",
+          filterText = "ALL",
+          page = pageNumber
+        ) => {
+          getAllTableData(searchText, filterText, page);
+        }}
+        handleRowsPerPageChange={() => {
+          setpageNumber(0);
         }}
       />
       <CreateBanner

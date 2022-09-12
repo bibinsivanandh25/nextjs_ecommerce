@@ -26,13 +26,14 @@ const HelpAndSupport = () => {
   const user = useSelector((state) => state.user);
   const [selectTab, setSelectTab] = useState("tab1");
   const [tableRows, setTableRows] = useState([]);
+  const [customerRows, setCustomerRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [showModal, setShowModal] = useState({
     show: false,
     id: null,
   });
-  // const [pageNumber, setpageNumber] = useState(0);
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Serial No.",
@@ -171,32 +172,51 @@ const HelpAndSupport = () => {
     return result;
   };
   const getAllData = async (searchText = "", filterText = "", page = "") => {
-    const payload = {
-      userId: user.supplierId,
-      userFromType: "SUPPLIER",
-      ticketType: selectTab == "tab1" ? "ADMIN" : "CUSTOMER",
-      filterType:
-        filterText?.toLocaleLowerCase() == "all" ? null : filterText || null,
-      keyword: searchText || "",
-    };
-    const { data, err } = await getAllHelpandSupportData(payload, page);
-    if (data) {
-      setTableRows(mapRowsToTable(data));
+    if (selectTab == "tab1") {
+      const payload = {
+        userId: user.supplierId,
+        userFromType: "SUPPLIER",
+        ticketType: selectTab == "tab1" ? "ADMIN" : "CUSTOMER",
+        filterType:
+          filterText?.toLocaleLowerCase() == "all" ? null : filterText || null,
+        keyword: searchText || "",
+      };
+      const { data, err } = await getAllHelpandSupportData(payload, page);
+      if (data?.length) {
+        if (page == 0) {
+          setTableRows(mapRowsToTable(data));
+          setpageNumber((pre) => pre + 1);
+        } else {
+          setpageNumber((pre) => pre + 1);
+          setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        }
+      }
+      if (err) {
+        toastify(err.response.data.err, "errror");
+      }
     }
-    // if (data?.length) {
-    //   if (page == 0) {
-    //     setTableRows(mapRowsToTable(data));
-    //     setpageNumber((pre) => pre + 1);
-    //   } else {
-    //     setpageNumber((pre) => pre + 1);
-    //     setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
-    //   }
-    // } else {
-    //   setpageNumber(0);
-    //   setTableRows([]);
-    // }
-    if (err) {
-      toastify(err.response.data.err, "errror");
+    if (selectTab == "tab2") {
+      const payload = {
+        userId: user.supplierId,
+        userFromType: "SUPPLIER",
+        ticketType: selectTab == "tab1" ? "ADMIN" : "CUSTOMER",
+        filterType:
+          filterText?.toLocaleLowerCase() == "all" ? null : filterText || null,
+        keyword: searchText || "",
+      };
+      const { data, err } = await getAllHelpandSupportData(payload, page);
+      if (data?.length) {
+        if (page == 0) {
+          setCustomerRows(mapRowsToTable(data));
+          setpageNumber((pre) => pre + 1);
+        } else {
+          setpageNumber((pre) => pre + 1);
+          setCustomerRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        }
+      }
+      if (err) {
+        toastify(err.response.data.err, "errror");
+      }
     }
   };
   useEffect(() => {
@@ -204,7 +224,7 @@ const HelpAndSupport = () => {
   }, [selectTab]);
 
   const handletabClick = () => {
-    // setpageNumber(0);
+    setpageNumber(0);
     setShowCreateComponent(false);
     setShowModal({
       show: false,
@@ -294,19 +314,20 @@ const HelpAndSupport = () => {
                   filterList={filterData}
                   table_heading=""
                   columns={columns}
-                  tableRows={tableRows}
+                  tableRows={selectTab == "tab1" ? tableRows : customerRows}
                   showCheckbox={false}
                   showSearchFilter
-                  // handlePageEnd={(
-                  //   searchText = "",
-                  //   filterText = "",
-                  //   page = pageNumber
-                  // ) => {
-                  //   getAllData(searchText, filterText, page);
-                  // }}
-                  // handleRowsPerPageChange={() => {
-                  //   setpageNumber(0);
-                  // }}
+                  handlePageEnd={(
+                    searchText = "",
+                    filterText = "",
+                    page = pageNumber
+                  ) => {
+                    getAllData(searchText, filterText, page);
+                  }}
+                  handleRowsPerPageChange={() => {
+                    setpageNumber(0);
+                  }}
+                  tabChange={selectTab}
                 />
               </Paper>
             </Grid>
