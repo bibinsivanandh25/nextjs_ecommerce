@@ -42,9 +42,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   function (response) {
     // document.body.classList.remove("spinner");
-    setTimeout(() => {
-      document.getElementById("loader").classList.remove("loadContainer");
-    }, 1000);
+    document.getElementById("loader").classList.remove("loadContainer");
     return response;
   },
   function (error) {

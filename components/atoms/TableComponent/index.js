@@ -179,7 +179,7 @@ const EnhancedTableHead = (props) => {
                   ];
                 });
               }}
-              className={`fw-600 p-2 ${getStickyClass(
+              className={`fw-600 p-2 fw-500 ${getStickyClass(
                 column.position,
                 index
               )} ${tHeadBgColor !== "" ? tHeadBgColor : "bg-white"}`}

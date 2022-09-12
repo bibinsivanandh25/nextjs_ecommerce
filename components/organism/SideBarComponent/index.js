@@ -178,63 +178,58 @@ const SideBarComponent = ({ children }) => {
   };
 
   const getSubMenuList = (data = []) => {
-    return (
-      <>
-        {data.map((item, index) => {
-          // if (!item.selected) {
-          return (
-            <MenuItem
-              onClick={(e) => {
-                if (item.navigate) {
-                  route.push(`${item.path_name}`);
-                }
-                e.stopPropagation();
-                // if (item?.child?.length) {
-                setMenuList((pre) => {
-                  const temp = JSON.parse(JSON.stringify(pre));
-                  temp.forEach((ele) => {
-                    if (ele.selected && ele?.child?.length) {
-                      if (e.target.id.split("_").length === 2) {
-                        ele.child.forEach((element) => {
-                          element.selected = false;
-                        });
-                        ele.child[index].selected = !ele.child[index].selected;
-                      } else if (e.target.id.split("_").length === 3) {
-                        ele.child[`${e.target.id.split("_")[1]}`].child.forEach(
-                          (element) => {
-                            element.selected = false;
-                          }
-                        );
-                        ele.child[`${e.target.id.split("_")[1]}`].child[
-                          index
-                        ].selected =
-                          !ele.child[`${e.target.id.split("_")[1]}`].child[
-                            index
-                          ].selected;
+    return data.map((item, index) => {
+      // if (!item.selected) {
+      return (
+        <MenuItem
+          onClick={(e) => {
+            if (item.navigate) {
+              route.push(`${item.path_name}`);
+            }
+            e.stopPropagation();
+            // if (item?.child?.length) {
+            setMenuList((pre) => {
+              const temp = JSON.parse(JSON.stringify(pre));
+              temp.forEach((ele) => {
+                if (ele.selected && ele?.child?.length) {
+                  if (e.target.id.split("_").length === 2) {
+                    ele.child.forEach((element) => {
+                      element.selected = false;
+                    });
+                    ele.child[index].selected = !ele.child[index].selected;
+                  } else if (e.target.id.split("_").length === 3) {
+                    ele.child[`${e.target.id.split("_")[1]}`].child.forEach(
+                      (element) => {
+                        element.selected = false;
                       }
-                    }
-                  });
-                  return temp;
-                });
-                // }
-              }}
-              sx={getMenuStyles(item)}
-              key={index}
-              className="d-block"
-            >
-              <Box id={item.id} className="fs-13 cursor-pointer">
-                {item.title}
-              </Box>
-              {item.selected && item?.child?.length ? (
-                <MenuList>
-                  {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}
-                </MenuList>
-              ) : null}
-            </MenuItem>
-          );
-        })}
-      </>
-    );
+                    );
+                    ele.child[`${e.target.id.split("_")[1]}`].child[
+                      index
+                    ].selected =
+                      !ele.child[`${e.target.id.split("_")[1]}`].child[index]
+                        .selected;
+                  }
+                }
+              });
+              return temp;
+            });
+            // }
+          }}
+          sx={getMenuStyles(item)}
+          key={index}
+          className="d-block"
+        >
+          <Box id={item.id} className="fs-13 cursor-pointer">
+            {item.title}
+          </Box>
+          {item.selected && item?.child?.length ? (
+            <MenuList>
+              {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}
+            </MenuList>
+          ) : null}
+        </MenuItem>
+      );
+    });
   };
   return (
     <Box

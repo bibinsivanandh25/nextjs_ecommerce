@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import toastify from "services/utils/toastUtils";
 import atob from "atob";
 import serviceUtil from "services/utils";
-import styles from "./Newpassword.module.css";
 import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
+import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
   const [formValues, setFormValues] = useState({

@@ -358,9 +358,7 @@ const NewProducts = () => {
   };
   const categoryDetails = {};
   const getCategorySubCategoryList = async () => {
-    const { data, err } = await getCategorySubCategory(
-      productDetails.subCategoryId
-    );
+    const { data } = await getCategorySubCategory(productDetails.subCategoryId);
     if (data) {
       categoryDetails.categorySetId = data.categorySetId;
       categoryDetails.categorySetName = data.categorySetName;
@@ -510,10 +508,10 @@ const NewProducts = () => {
       ? new Date(productDetails.expiryDate)
       : null;
     temp.variation.countryOfOrigin = productDetails.countryOfOrigin ?? {};
-    temp.variation.others = productDetails.otherInformationObject
-      ? Object.keys(productDetails.otherInformationObject).map((ele) => ({
+    temp.variation.others = productDetails.otherInformation
+      ? Object.keys(productDetails.otherInformation).map((ele) => ({
           label: ele,
-          value: productDetails.otherInformationObject[ele],
+          value: productDetails.otherInformation[ele],
         }))
       : [
           {

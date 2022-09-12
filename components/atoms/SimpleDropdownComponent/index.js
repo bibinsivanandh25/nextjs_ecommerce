@@ -46,6 +46,9 @@ const SimpleDropdownComponent = ({
         size={size}
         fullWidth={fullWidth}
         getOptionLabel={(option) => option.label || ""}
+        isOptionEqualToValue={(option, val) =>
+          option?.id === val?.id || option.value === val.value
+        }
         sx={
           !removeRadius
             ? {
