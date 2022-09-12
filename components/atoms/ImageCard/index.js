@@ -29,7 +29,7 @@ const ImageCard = ({
         </div>
       )}
       <Card
-        elevation={24}
+        elevation={4}
         sx={{ width: `${width}px`, height: `${height}px` }}
         className="p-0 d-flex align-items-center justify-content-center "
         onClick={() => {

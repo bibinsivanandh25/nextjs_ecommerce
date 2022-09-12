@@ -16,7 +16,8 @@ const supplierStoreImageConfig = (payload) => {
       headers: { "Content-Type": "multipart/form-data" },
     })
     .then((res) => {
-      return res;
+      const { data } = res?.data;
+      return { data };
     })
     .catch((err) => ({ err }));
 };

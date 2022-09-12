@@ -38,9 +38,19 @@ const deleteBankDetails = (supplierId, bankId) => {
     })
     .catch((err) => ({ err }));
 };
+const setPrimaryBank = (supplierId, bankId) => {
+  return serviceUtil
+    .get(`users/supplier-primary-bank/${supplierId}/${bankId}`)
+    .then((res) => {
+      const { data } = res;
+      return data;
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getAllBankDetails,
   AddBankDetails,
   EditBankDetails,
   deleteBankDetails,
+  setPrimaryBank,
 };
