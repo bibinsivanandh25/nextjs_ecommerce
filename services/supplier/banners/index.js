@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAllData = (page, supplierId) => {
+const getAllData = (payload) => {
   return serviceUtil
-    .get(`users/banner/${page}/50?fromDate=&toDate=&createdById=${supplierId}`)
+    .put(`users/banner`, payload)
     .then((res) => {
       const { data } = res.data;
       return { data };

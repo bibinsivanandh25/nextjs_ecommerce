@@ -307,7 +307,11 @@ export default function TableComponent({
   }, [draggableHeader]);
 
   useEffect(() => {
-    if (tableRows.length) setRows(tableRows);
+    if (tableRows.length) {
+      setRows(tableRows);
+    } else {
+      setRows([]);
+    }
   }, [tableRows]);
 
   const handleChangePage = (event, newPage) => {
