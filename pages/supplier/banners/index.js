@@ -4,14 +4,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import toastify from "services/utils/toastUtils";
-import {
-  dateFilterTableData,
-  // dateFilterTableData,
-  deleteBanner,
-  getAllData,
-} from "services/supplier/banners";
+import { deleteBanner, getAllData } from "services/supplier/banners";
 import { format } from "date-fns";
-import { useUserInfo } from "services/hooks";
+import { useSelector } from "react-redux";
 import TableComponent from "@/atoms/TableComponent";
 import CreateBanner from "@/forms/supplier/banners/CreateBanners";
 import ViewBannerModal from "@/forms/supplier/banners/viewbannerModal";
@@ -116,7 +111,8 @@ const columns = [
   },
 ];
 const Banners = () => {
-  const userInfo = useUserInfo();
+  const userInfo = useSelector((state) => state.user);
+  console.log(userInfo, "userInfo");
 
   const [formData, setFormData] = useState({
     bannerId: "",
@@ -201,25 +197,17 @@ const Banners = () => {
     }
     return temp;
   };
-  const dateFillter = async () => {
-    const { data, err } = await dateFilterTableData();
-    if (data) {
-      console.log(data, "datata");
-    }
-    if (err) {
-      console.log(err, "err");
-    }
-  };
+
   const getAllTableData = async (
     searchText = "",
     filterText = "",
     page = pageNumber
   ) => {
     const { data, err } = await getAllData(
-      userInfo.id,
+      page,
+      userInfo.supplierId,
       searchText,
-      filterText,
-      page
+      filterText
     );
     if (data?.length) {
       if (page == 0) {
@@ -241,71 +229,7 @@ const Banners = () => {
       setViewModalOpen(true);
     }
   };
-  // const getDateFilterTableData = async () => {
-  //   const { data, err } = await dateFilterTableData();
-  //   const finalData = [];
-  //   if (data) {
-  //     data.forEach((item, index) => {
-  //       finalData.push({
-  //         id: index + 1,
-  //         col1: index + 1,
-  //         col2: item.bannerImageUrlForWeb ? (
-  //           <Image
-  //             src={item.bannerImageUrlForWeb}
-  //             height={100}
-  //             width={100}
-  //             alt="No Image"
-  //           />
-  //         ) : (
-  //           "--"
-  //         ),
-  //         col3: item.panelName,
-  //         col4: item.displayPage ? item.displayPage : "--",
-  //         col5: item.navigationUrl ? item.navigationUrl : "--------",
-  //         col6: item.buttonName ? item.buttonName : "--",
-  //         col7: item.createdAt
-  //           ? new Date(item.createdAt).toLocaleString()
-  //           : "--",
-  //         col8: item.startDateTime ? item.startDateTime : "--",
-  //         col9: item.endDateTime ? item.endDateTime : "--",
-  //         col10: item.status,
-  //         col11: (
-  //           <div className="d-flex justify-content-center align-items-center">
-  //             <CustomIcon
-  //               className="fs-5"
-  //               type="view"
-  //               title="View"
-  //               onIconClick={() => {
-  //                 //   setshowViewModal(true);
-  //               }}
-  //             />
-  //             <CustomIcon
-  //               title="Edit"
-  //               type="edit"
-  //               onIconClick={() => {
-  //                 //   setShowUploadModal(true);
-  //                 handleEditClick(item);
-  //               }}
-  //               className="fs-5 mx-2"
-  //             />
-  //             <CustomIcon
-  //               type="delete"
-  //               className=" fs-5"
-  //               title="Delete"
-  //               onIconClick={() => {
-  //                 handleDeleteClick(item);
-  //               }}
-  //             />
-  //           </div>
-  //         ),
-  //       });
-  //     });
-  //     setTableRows([...finalData]);
-  //   } else if (err) {
-  //     setTableRows([]);
-  //     toastify(err.response.data.message, "error");
-  //   }
-  // };
+
   const handleDeleteClick = async (selectdata) => {
     if (selectdata) {
       const { data, err } = await deleteBanner(selectdata.bannerId);
@@ -353,9 +277,6 @@ const Banners = () => {
   };
 
   useEffect(() => {
-    // dateFillter API Call
-    // getDateFilterTableData();
-    dateFillter();
     getAllTableData("", "", 0);
   }, []);
 
@@ -390,7 +311,6 @@ const Banners = () => {
         setShowModal={setShowCreateBanner}
         setFormData={setFormData}
         formData={formData}
-        // getDateFilterTableData={getDateFilterTableData}
         saveBtnName={saveBtnName}
         getAllTableData={getAllTableData}
       />
