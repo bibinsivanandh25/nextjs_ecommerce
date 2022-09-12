@@ -248,6 +248,7 @@ import { useSelector } from "react-redux";
 import {
   getAllDashboardData,
   getCustomerChartData,
+  getMonthWiseSale,
   getReferralChartData,
 } from "services/supplier/dashboard";
 import toastify from "services/utils/toastUtils";
@@ -403,8 +404,8 @@ const Dashboard = () => {
     }
   };
   const handleMonthWiseSale = async () => {
-    const { data, err } = await getCustomerChartData(
-      user.storeCode,
+    const { data, err } = await getMonthWiseSale(
+      user.supplierId,
       currentYear.value
     );
     if (data) {
@@ -433,7 +434,7 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-  console.log(monthWiseSaleData.at, "monthWiseSaleData");
+  console.log(currentYear, "currentYear");
   return (
     <div>
       {showAddressModal ? (
@@ -507,7 +508,7 @@ const Dashboard = () => {
                 </Box>
                 <Bargraph
                   showGridY={false}
-                  data={referralData}
+                  data={monthWiseSaleData}
                   labels={barGraphLabels}
                   backgroundColor="#1f78b4"
                   hoverBackgroundColor="#ea7d30"

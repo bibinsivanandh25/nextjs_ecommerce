@@ -234,7 +234,7 @@ const Banners = () => {
           createdById: userInfo.supplierId,
           fromDate: "",
           toDate: "",
-          pageNumber,
+          pageNumber: 0,
           pageSize: 50,
         };
         getAllTableData(payload, "", "", 0);
