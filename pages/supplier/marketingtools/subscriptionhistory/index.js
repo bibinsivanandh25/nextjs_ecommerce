@@ -114,7 +114,10 @@ const SubscriptionHistory = () => {
           searchText,
           filterText,
           page = pageNumber,
-          filterDate = {}
+          filterDate = {
+            fromDate: "",
+            toDate: "",
+          }
         ) => {
           console.log({ searchText, filterText, page, filterDate });
           getTableData(page, filterDate);
