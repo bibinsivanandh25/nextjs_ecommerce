@@ -33,4 +33,20 @@ const getCustomerChartData = (id, year) => {
       return { err };
     });
 };
-export { getAllDashboardData, getReferralChartData, getCustomerChartData };
+const getMonthWiseSale = (id, year) => {
+  return serviceUtil
+    .get(`users/reports/revenue-sales/sales?supplierId=${id}&year=${year}`)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+export {
+  getAllDashboardData,
+  getReferralChartData,
+  getCustomerChartData,
+  getMonthWiseSale,
+};

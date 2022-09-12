@@ -100,7 +100,7 @@ const MrMrsAddNewCoupons = ({
       validateFields("minpurchaseamount");
     }
     validateFields("subcategory");
-    validateFields("new");
+    // validateFields("new");
 
     const limitErrors = {
       limitError: null,
@@ -154,6 +154,7 @@ const MrMrsAddNewCoupons = ({
   const handleSubmitClick = async (couponStatus) => {
     // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
+    console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
@@ -183,7 +184,7 @@ const MrMrsAddNewCoupons = ({
 
   return (
     <Paper sx={{ minHeight: "80vh", py: 1 }}>
-      <Box className="fit-content">
+      <Box className="fit-content zIndex-1101">
         <Typography
           className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
@@ -533,7 +534,7 @@ const MrMrsAddNewCoupons = ({
                 size="small"
                 sx={{ width: "150px", textTransform: "none" }}
                 className="bg-orange"
-                onClick={() => handleSubmitClick("PUBLISH")}
+                onClick={() => handleSubmitClick("PUBLISHED")}
               >
                 Submit
               </Button>

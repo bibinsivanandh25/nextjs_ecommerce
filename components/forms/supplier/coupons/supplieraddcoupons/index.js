@@ -63,9 +63,11 @@ const SupplierAddCoupons = ({
     // validateFields("productsInclude");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimitPerUser");
-    validateFields("minpurchaseamount");
     // validateFields("subcategory");
-    validateFields("maximumamount");
+    if (purchaseCheckbox) {
+      validateFields("minpurchaseamount");
+      validateFields("maximumamount");
+    }
     validateFields("couponAmount");
 
     setError({ ...errObj });
@@ -106,13 +108,13 @@ const SupplierAddCoupons = ({
   };
   return (
     <Box className="p-2" sx={{ maxHeight: "80vh" }}>
-      <Box className="fit-contant">
-        <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center"
-          onClick={() => {
-            setOpenAddModal(false);
-          }}
-        >
+      <Box
+        className="fit-contant zIndex-1101"
+        onClick={() => {
+          setOpenAddModal(false);
+        }}
+      >
+        <Typography className="h-5 color-orange cursor-pointer d-flex align-items-center">
           <ArrowBackIosIcon className="fs-16" />
           Back
         </Typography>

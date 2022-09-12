@@ -474,7 +474,7 @@ const MyProfile = () => {
                       }));
                     }}
                     id="stockCount"
-                    isChecked={formValues.stockCount.includes("50")}
+                    isChecked={formValues.stockCount == "50"}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -489,7 +489,7 @@ const MyProfile = () => {
                       }));
                     }}
                     id="stockCount"
-                    isChecked={formValues.stockCount.includes("50-200")}
+                    isChecked={formValues.stockCount == "50-200"}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -504,7 +504,7 @@ const MyProfile = () => {
                       }));
                     }}
                     id="stockCount"
-                    isChecked={formValues.stockCount.includes("200")}
+                    isChecked={formValues.stockCount == "200"}
                   />
                 </Grid>
                 {errorObj.stockCount !== "" ? (

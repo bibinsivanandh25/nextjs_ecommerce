@@ -39,7 +39,7 @@ const updateAddress = (payload) => {
 };
 const deleteAddress = (supplierId, addressId) => {
   return serviceUtil
-    .remove(`/users/supplier-address/${supplierId}/`, addressId)
+    .remove(`/users/supplier-address/${supplierId}`, addressId)
     .then((res) => {
       const { data } = res;
       return data;
