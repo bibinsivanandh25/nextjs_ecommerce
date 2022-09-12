@@ -32,11 +32,11 @@ import { clearProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import ImageGuidelines from "components/molecule/ImageGuidelines";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
 const ProductsLayout = ({

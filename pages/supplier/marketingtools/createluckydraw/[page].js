@@ -1,13 +1,15 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
-import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenericForm from "components/forms/supplier/marketingtools/createluckydraw";
 import ModalComponent from "components/atoms/ModalComponent";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ViewPage from "components/forms/supplier/marketingtools/createluckydraw/ViewPage";
 import CustomIcon from "services/iconUtils";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
+import { getUserMarketingTool } from "services/supplier/marketingtools";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
@@ -90,64 +92,72 @@ const CreateQuiz = ({ pageName }) => {
     },
   ];
   const [showViewModal, setshowViewModal] = useState({});
-  const rows = [
-    {
-      id: "1",
-      col1: "Quiz",
-      col2: "Fixed",
-      col3: "Shirts",
-      col4: "Formal",
-      col5: "12/12/2020",
-      col6: "12/02/2021",
-      col7: "08/12/2020",
-      col8: "Regular",
-      col9: "Approved",
-      col10: "Active",
-
-      col11: (
-        <div className="d-flex justify-content-center">
-          <CustomIcon
-            type="remove"
-            className="fs-16"
-            onIconClick={() => {
-              setshowViewModal(rows.filter((item) => item.id === "1")[0]);
-            }}
-          />
-          <CustomIcon type="share" className="fs-16 mx-1" />
-          <CustomIcon type="delete" className="fs-16" />
-        </div>
-      ),
-    },
-    {
-      id: "2",
-      col1: "Quiz",
-      col2: "Fixed",
-      col3: "Shirts",
-      col4: "Formal",
-      col5: "12/12/2020",
-      col6: "12/02/2021",
-      col7: "08/12/2020",
-      col8: "Regular",
-      col9: "Approved",
-      col10: "Active",
-      col11: (
-        <div className="d-flex justify-content-center">
-          <CustomIcon
-            type="remove"
-            className="fs-16"
-            onIconClick={() => {
-              setshowViewModal(rows.filter((item) => item.id === "2")[0]);
-            }}
-          />
-          <CustomIcon type="share" className="fs-16 mx-1" />
-          <CustomIcon type="delete" className="fs-16" />
-        </div>
-      ),
-    },
-  ];
 
   const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const user = useSelector((state) => state.user);
+  const [masterData, setMasterData] = useState({});
+  const [row, setRow] = useState([]);
+  const handleTableRows = (data) => {
+    const temp = [];
+    if (data) {
+      data?.forEach((item, index) => {
+        temp.push({
+          id: index + 1,
+          col1: item.campaignTitle,
+          col2: item.marginType,
+          col3: item.category,
+          col4: item.subCategory,
+          col5: new Date(item.startDateTime).toLocaleString(),
+          col6: new Date(item.endDateTime).toLocaleString(),
+          col7: new Date(item.createdDate).toLocaleString(),
+          col8: item.customerType,
+          col9: item.adminApprovalStatus || "--",
+          col10: item.toolStatus,
+          col11: (
+            <div className="d-flex justify-content-center">
+              <CustomIcon type="remove" className="fs-16" />
+              <CustomIcon type="share" className="fs-16 mx-1" />
+              <CustomIcon type="delete" className="fs-16" />
+            </div>
+          ),
+        });
+      });
+    }
+    return temp;
+  };
+  const getTableRows = async (pagename) => {
+    const { data, err } = await getUserMarketingTool(
+      user.supplierId,
+      pagename,
+      0
+    );
+    if (data) {
+      setMasterData(data);
+      if (data.marketingToolResponsePojo) {
+        setRow(handleTableRows(data.marketingToolResponsePojo));
+      }
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const getPageName = () => {
+    if (pageName == "createquiz") {
+      return "QUIZ";
+    }
+    if (pageName == "spinwheel") {
+      return "SPIN_WHEEL";
+    }
+    if (pageName == "scratchcard") {
+      return "SCRATCH_CARD";
+    }
+    return null;
+  };
+  useEffect(() => {
+    const pagename = getPageName();
+    getTableRows(pagename);
+  }, [pageName]);
 
   return (
     <Paper className="mnh-80vh w-100 p-3">
@@ -156,13 +166,22 @@ const CreateQuiz = ({ pageName }) => {
           <Grid className="d-flex justify-content-between align-items-center my-2">
             <Grid>
               <Typography className="fs-12 fw-bold">
-                Subscription Start Date & time:
-                {format(new Date(), "dd/mm/yyyy")}
+                Subscription Start Date & time :{" "}
+                {masterData.subscriptionStartDateTime
+                  ? new Date(
+                      masterData.subscriptionStartDateTime
+                    ).toLocaleString()
+                  : "--"}
               </Typography>
             </Grid>
             <Grid>
               <Typography className="fs-12 fw-bold">
-                Subscription End Date & time:{format(new Date(), "dd/mm/yyyy")}
+                Subscription End Date & time :{" "}
+                {masterData.subscriptionEndDateTime
+                  ? new Date(
+                      masterData.subscriptionEndDateTime
+                    ).toLocaleString()
+                  : "--"}
               </Typography>
             </Grid>
             <Grid>
@@ -193,7 +212,7 @@ const CreateQuiz = ({ pageName }) => {
           </Grid>
           <Grid>
             <TableComponent
-              tableRows={[...rows]}
+              tableRows={[...row]}
               columns={[...columns]}
               showCheckbox
               showSearchFilter={false}

@@ -6,12 +6,17 @@ import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
-import { assetsJson } from "public/assets";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  getAllMainCategories,
+  getProductsBySubCategoryId,
+  getSetbyCategories,
+  getSubCategorybySets,
+} from "services/supplier/marketingtools";
 
 const CreateDiscount = ({
   setShowCreateDiscount = () => {},
@@ -32,80 +37,80 @@ const CreateDiscount = ({
     subCategory: [],
   });
 
-  const ProductsDetails = [
-    {
-      id: 1,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 2,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 3,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 4,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 5,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 6,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 7,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 8,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 9,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-    {
-      id: 10,
-      title: "Sarree",
-      image: assetsJson["Printed Dress"],
-      discount: "25% Margin",
-      isSelected: false,
-    },
-  ];
-  const [Products, setProducts] = useState([...ProductsDetails]);
-  const getProducts = () => {
+  const [categories, setCategories] = useState([]);
+  const [sets, setSets] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const getCategories = async () => {
+    const { data } = await getAllMainCategories();
+    if (data) {
+      const finalData = [];
+      data.forEach((item) => {
+        finalData.push({
+          id: item.mainCategoryId,
+          label: item.mainCategoryName,
+          isSelected: false,
+          marginType: item.commissionType,
+        });
+      });
+      setCategories(finalData);
+    }
+  };
+  const getSets = async (val) => {
+    const { data } = await getSetbyCategories(val?.id);
+    if (data) {
+      const finalData = [];
+      data.forEach((item) => {
+        finalData.push({
+          id: item.categorySetId,
+          label: item.setName,
+          isSelected: false,
+        });
+      });
+      setSets([...finalData]);
+    }
+  };
+
+  const getSubCategories = async (val) => {
+    const { data } = await getSubCategorybySets(val?.id);
+    if (data) {
+      const finalData = [];
+      data.forEach((item) => {
+        finalData.push({
+          id: item.subCategoryId,
+          label: item.subCategoryName,
+          isSelected: false,
+        });
+      });
+      setSubCategories([...finalData]);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const [Products, setProducts] = useState([]);
+
+  const supplierId = useSelector((state) => state.user.supplierId);
+
+  const getProducts = async (value) => {
+    const { data } = await getProductsBySubCategoryId(supplierId, value?.id);
+    if (data) {
+      const result = [];
+      data.forEach((product) => {
+        result.push({
+          id: product.productVariationId,
+          title: product.productTitle,
+          image: product.imageUrl,
+          discount: null,
+          isSelected: false,
+        });
+      });
+      setProducts([...result]);
+    }
+  };
+  const renderProducts = () => {
     return Products.map((ele, ind) => {
       return (
         <Grid item key={ind} lg={1.2} md={2} sm={3}>
@@ -133,6 +138,23 @@ const CreateDiscount = ({
         </Grid>
       );
     });
+  };
+
+  const getSelectedCategoriesLabels = () => {
+    // return `${`${categoriesList.category[0]?.label}   >` ?? ""}
+    //   ${`${categoriesList.set[0]?.label}   >` ?? ""}
+    //   ${`${categoriesList.subCategory[0]?.label}` ?? ""}`;
+    return `${
+      categoriesList.category[0]?.label
+        ? `${categoriesList.category[0]?.label}  >`
+        : ""
+    }${
+      categoriesList.set[0]?.label ? `${categoriesList.set[0]?.label}  >` : ""
+    }${
+      categoriesList.subCategory[0]?.label
+        ? `${categoriesList.subCategory[0]?.label}  `
+        : ""
+    }`;
   };
 
   const validateForm = () => {
@@ -210,23 +232,6 @@ const CreateDiscount = ({
         </span>
       )}
       <Grid container spacing={1} className="mt-1">
-        <Grid item sm={2}>
-          <SimpleDropdownComponent
-            size="small"
-            label="Margin type"
-            value={formValues.marginType}
-            onDropdownSelect={(val) =>
-              setFormValues((prev) => {
-                return {
-                  ...prev,
-                  marginType: val,
-                };
-              })
-            }
-            error={Boolean(error.marginType)}
-            helperText={error.marginType}
-          />
-        </Grid>
         <Grid item sm={5} className="d-flex position-relative" container>
           <InputBox
             iconName={!showListGroup ? "arrowDown" : "arrowUp"}
@@ -236,6 +241,7 @@ const CreateDiscount = ({
             error={Boolean(error.categories)}
             helperText={error.categories}
             showAutoCompleteOff="off"
+            value={getSelectedCategoriesLabels()}
           />
           {showListGroup ? (
             <Grid
@@ -257,13 +263,21 @@ const CreateDiscount = ({
                     showEditIcon={false}
                     showTitle
                     title="Category"
+                    data={categories}
                     onSelectionChange={(val) => {
+                      setFormValues((prev) => {
+                        return {
+                          ...prev,
+                          marginType: val[0].marginType,
+                        };
+                      });
                       setCategoriesList((prev) => {
                         return {
                           ...prev,
                           category: val,
                         };
                       });
+                      getSets(val[0]);
                     }}
                   />
                 </Grid>
@@ -274,7 +288,11 @@ const CreateDiscount = ({
                     showEditIcon={false}
                     showTitle
                     title="Set"
+                    data={[...sets]}
                     onSelectionChange={(val) => {
+                      if (val) {
+                        getSubCategories(val[0]);
+                      }
                       setCategoriesList((prev) => {
                         return {
                           ...prev,
@@ -291,7 +309,9 @@ const CreateDiscount = ({
                     showEditIcon={false}
                     showTitle
                     title="Sub Category"
+                    data={[...subCategories]}
                     onSelectionChange={(val) => {
+                      getProducts(val[0]);
                       setCategoriesList((prev) => {
                         return {
                           ...prev,
@@ -305,6 +325,17 @@ const CreateDiscount = ({
             </Grid>
           ) : null}
         </Grid>
+        <Grid item sm={2}>
+          <InputBox
+            size="small"
+            label="Margin type"
+            value={formValues.marginType}
+            disabled
+            error={Boolean(error.marginType)}
+            helperText={error.marginType}
+          />
+        </Grid>
+
         <Grid item sm={2}>
           <InputBox
             size="small"
@@ -434,7 +465,7 @@ const CreateDiscount = ({
           </p>
         )}
       </div>
-      <Grid container>{getProducts()}</Grid>
+      <Grid container>{renderProducts()}</Grid>
     </div>
   );
 };

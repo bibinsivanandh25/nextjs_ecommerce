@@ -1,9 +1,12 @@
+/* eslint-disable no-plusplus */
 import { Paper } from "@mui/material";
 import UnlockToolsForm from "components/forms/supplier/marketingtools/unlocktools/unlocktoolsform";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllIndividualPricing } from "services/supplier/marketingtools/unlocktools/single";
 
 const UnlockToolsSingle = () => {
   const [tableData, setTableData] = useState([]);
+  const [tableRows, setTableRows] = useState([]);
   const columns = [
     {
       label: "Tools / Subscription Period",
@@ -26,87 +29,58 @@ const UnlockToolsSingle = () => {
       id: "col5",
     },
     {
-      label: "360 Days",
+      label: "270 Days",
       id: "col6",
     },
     {
-      label: "Action",
+      label: "360 Days",
       id: "col7",
     },
     {
-      label: "",
+      label: "Action",
       id: "col8",
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      heading: "Create Today's Deal",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 2,
-      heading: "Create Discount",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 3,
-      heading: "Create Spin Wheel",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 4,
-      heading: "Scratch Card",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 5,
-      heading: "Quiz",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-  ];
+  const getTableRows = async () => {
+    const { data } = await getAllIndividualPricing();
+    if (data) {
+      const result = [];
+      let count;
+      data.forEach((ele) => {
+        result.push({
+          heading: ele.toolName,
+          isRadioSelected: false,
+        });
+        count = 2;
+        ele.adminMarketingTools.forEach((item) => {
+          result[result.length - 1][`col${count++}`] = {
+            label: item.price,
+            isChecked: false,
+            id: item.adminMarketingToolId,
+          };
+          result[result.length - 1].id = item.adminMarketingToolId;
+        });
+      });
+      setTableRows([...result]);
+    }
+  };
+  useEffect(() => {
+    getTableRows();
+  }, []);
 
   return (
     <Paper sx={{ p: 3 }}>
-      <UnlockToolsForm
-        heading="Marketing tools - Get Subscribed and start Attracting your customers
+      {tableRows.length ? (
+        <UnlockToolsForm
+          heading="Marketing tools - Get Subscribed and start Attracting your customers
         with Discount & Games"
-        columns={columns}
-        tableData={tableData}
-        setTableData={setTableData}
-        rows={rows}
-      />
+          columns={columns}
+          tableData={tableData}
+          setTableData={setTableData}
+          rows={tableRows}
+        />
+      ) : null}
     </Paper>
   );
 };

@@ -231,7 +231,7 @@ const ReportLayout = ({
             md={2.9}
             key={ind}
             sm={3.8}
-            xs={5.8}
+            xs={12}
             sx={{
               boxShadow: "0px 0px 4px #0000003D",
               border: "3px solid #FFFFFF",
