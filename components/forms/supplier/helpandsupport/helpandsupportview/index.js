@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable consistent-return */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
@@ -132,6 +133,15 @@ const HelpandsupportView = ({
         {getContent("Ticket ID", selectedData.ticketId)}
         {getContent("Subject", selectedData.issueSubject)}
         {getContent("Status", selectedData.ticketStatus, getClassName())}
+        <p className="mx-3 my-2 d-flex">
+          <span>Reply</span> :{" "}
+          <div
+            className="fw-bold"
+            dangerouslySetInnerHTML={{
+              __html: selectedData.helpSupportMessages[0].message,
+            }}
+          />
+        </p>
       </div>
       <div className="my-2 border-bottom">
         <div className="px-4 pt-2">

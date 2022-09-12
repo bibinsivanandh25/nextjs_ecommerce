@@ -112,8 +112,6 @@ const columns = [
 ];
 const Banners = () => {
   const userInfo = useSelector((state) => state.user);
-  console.log(userInfo, "userInfo");
-
   const [formData, setFormData] = useState({
     bannerId: "",
     url: "",
@@ -199,16 +197,12 @@ const Banners = () => {
   };
 
   const getAllTableData = async (
+    payload,
     searchText = "",
     filterText = "",
     page = pageNumber
   ) => {
-    const { data, err } = await getAllData(
-      page,
-      userInfo.supplierId,
-      searchText,
-      filterText
-    );
+    const { data, err } = await getAllData(payload, searchText, filterText);
     if (data?.length) {
       if (page == 0) {
         setTableRows(mapRowsToTable(data));
@@ -217,9 +211,10 @@ const Banners = () => {
         setpageNumber((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
       }
+    } else {
+      setTableRows([]);
     }
     if (err) {
-      setTableRows([]);
       toastify(err.response.data.message, "error");
     }
   };
@@ -235,7 +230,14 @@ const Banners = () => {
       const { data, err } = await deleteBanner(selectdata.bannerId);
       if (data?.data) {
         toastify(data.message, "success");
-        getAllTableData();
+        const payload = {
+          createdById: userInfo.supplierId,
+          fromDate: "",
+          toDate: "",
+          pageNumber,
+          pageSize: 50,
+        };
+        getAllTableData(payload, "", "", 0);
       } else if (err) {
         toastify(err.response.data.message, "error");
       }
@@ -277,7 +279,14 @@ const Banners = () => {
   };
 
   useEffect(() => {
-    getAllTableData("", "", 0);
+    const payload = {
+      createdById: userInfo.supplierId,
+      fromDate: "",
+      toDate: "",
+      pageNumber: 0,
+      pageSize: 50,
+    };
+    getAllTableData(payload, "", "", 0);
   }, []);
 
   return (
@@ -298,9 +307,21 @@ const Banners = () => {
         handlePageEnd={(
           searchText = "",
           filterText = "ALL",
-          page = pageNumber
+          page = pageNumber,
+          filteredDates
         ) => {
-          getAllTableData(searchText, filterText, page);
+          const payload = {
+            createdById: userInfo.supplierId,
+            fromDate: filteredDates?.fromDate
+              ? new Date(filteredDates?.fromDate).toISOString().substring(0, 19)
+              : "",
+            toDate: filteredDates?.toDate
+              ? new Date(filteredDates?.toDate).toISOString().substring(0, 19)
+              : "",
+            pageNumber: 0,
+            pageSize: 50,
+          };
+          getAllTableData(payload, searchText, filterText, page);
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);
@@ -313,6 +334,7 @@ const Banners = () => {
         formData={formData}
         saveBtnName={saveBtnName}
         getAllTableData={getAllTableData}
+        userInfo={userInfo}
       />
       {viewModalOpen && (
         <ViewBannerModal
