@@ -26,7 +26,11 @@ const BankDetails = () => {
     const { data } = await getAllBankDetails(user);
     const result = [];
     if (data) {
-      data.forEach((item) => {
+      const temp = JSON.parse(JSON.stringify(data)).filter(
+        (ele) => !ele.primary
+      );
+      temp.unshift(data.find((ele) => ele.primary));
+      temp.forEach((item) => {
         result.push({
           "Bank Name": item.bankName,
           "Account Holder Name": item.accountHolderName,
