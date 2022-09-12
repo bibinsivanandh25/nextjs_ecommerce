@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import serviceUtil from "services/utils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import serviceUtil from "services/utils";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 

@@ -270,9 +270,7 @@ const barGraphLabels = [
   "Nov",
   "Dec",
 ];
-const barGraphData = [
-  1000, 3000, 5000, 4000, 2000, 7000, 3000, 5000, 900, 1000, 200, 9000,
-];
+
 const revenueSelectList = [
   {
     value: 2021,
@@ -304,10 +302,12 @@ const Dashboard = () => {
   const user = useSelector((state) => state.user);
   const [masterCardData, setMasterCardData] = useState([]);
   const [showAddressModal, setShowAddressModal] = useState(false);
+  // month wise Sale
   const [currentYear, setCurrentYear] = useState({
     value: new Date().getFullYear().toString(),
     label: new Date().getFullYear().toString(),
   });
+  const [monthWiseSaleData, setMonthWiseSaleData] = useState([]);
   // referral chart
   const [referralData, setReferralData] = useState([]);
   const [referralCurrentYear, setReferralCurrentYear] = useState({
@@ -371,7 +371,7 @@ const Dashboard = () => {
       setMasterCardData(cardDatas);
     }
     if (err) {
-      setMasterCardData({});
+      setMasterCardData([]);
       toastify(err.response.data.message, "error");
     }
   };
@@ -402,6 +402,23 @@ const Dashboard = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const handleMonthWiseSale = async () => {
+    const { data, err } = await getCustomerChartData(
+      user.storeCode,
+      currentYear.value
+    );
+    if (data) {
+      setMonthWiseSaleData(data);
+    }
+    if (err) {
+      setMonthWiseSaleData([]);
+      toastify(err.response.data.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    handleMonthWiseSale();
+  }, [currentYear.value]);
 
   useEffect(() => {
     handleCustomerData();
@@ -416,7 +433,7 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-
+  console.log(monthWiseSaleData.at, "monthWiseSaleData");
   return (
     <div>
       {showAddressModal ? (
@@ -431,34 +448,35 @@ const Dashboard = () => {
       ) : (
         <Paper className="w-100 mnh-85vh mxh-85vh overflow-auto hide-scrollbar p-2">
           <Grid container className="" gap={0.5}>
-            {masterCardData &&
-              masterCardData?.map((item, index) => (
-                <Grid
-                  item
-                  lg={index % 2 == 0 ? 2 : 2.9}
-                  md={index % 2 == 0 ? 2 : 2.8}
-                  sm={5.9}
-                  xs={12}
-                  sx={{
-                    boxShadow: "0px 0px 4px #0000003D",
-                    border: "3px solid #FFFFFF",
-                    borderRadius: "8px",
-                    opacity: "0.9",
-                  }}
-                >
-                  <Box
-                    sx={{ backgroundColor: `${item.color}` }}
-                    className="py-3 rounded h-100"
+            {masterCardData?.length
+              ? masterCardData?.map((item, index) => (
+                  <Grid
+                    item
+                    lg={index % 2 == 0 ? 2 : 2.9}
+                    md={index % 2 == 0 ? 2 : 2.8}
+                    sm={5.9}
+                    xs={12}
+                    sx={{
+                      boxShadow: "0px 0px 4px #0000003D",
+                      border: "3px solid #FFFFFF",
+                      borderRadius: "8px",
+                      opacity: "0.9",
+                    }}
                   >
-                    <Typography className=" ps-2 text-break text-white h-5">
-                      {item.title}
-                    </Typography>
-                    <Typography className=" ps-2 text-break text-white h-3">
-                      {item.count}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
+                    <Box
+                      sx={{ backgroundColor: `${item.color}` }}
+                      className="py-3 rounded h-100"
+                    >
+                      <Typography className=" ps-2 text-break text-white h-5">
+                        {item.title}
+                      </Typography>
+                      <Typography className=" ps-2 text-break text-white h-3">
+                        {item.count}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))
+              : null}
           </Grid>
           <Grid container spacing={2} mt={1} className="h-100">
             <Grid item md={6} sm={12}>
@@ -489,7 +507,7 @@ const Dashboard = () => {
                 </Box>
                 <Bargraph
                   showGridY={false}
-                  data={barGraphData}
+                  data={referralData}
                   labels={barGraphLabels}
                   backgroundColor="#1f78b4"
                   hoverBackgroundColor="#ea7d30"

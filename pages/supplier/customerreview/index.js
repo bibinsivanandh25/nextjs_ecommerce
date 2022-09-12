@@ -35,7 +35,6 @@ const selectTypeList = [
 const CustomerReview = () => {
   const user = useSelector((state) => state.user);
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [replyData, setReplyData] = useState({ value: "", id: null });
   const [error, setError] = useState(null);
   const [showReplyModal, setShowReplyModal] = useState({
@@ -156,20 +155,23 @@ const CustomerReview = () => {
       payload,
       page
     );
-    if (data) {
-      setTableData(data);
-    } else if (err) {
-      setTableData([]);
+    if (data?.length) {
+      if (page == 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+      }
+    }
+    if (err) {
+      setTableRows([]);
       toastify(err.response.data.message, "error");
     }
   };
   useEffect(() => {
     getAllTableData("", "ALL", 0);
   }, []);
-
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
 
   const handleSubmit = async () => {
     let errMsg = "";

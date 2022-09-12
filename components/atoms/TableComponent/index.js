@@ -254,7 +254,6 @@ export default function TableComponent({
   showCellBorders = true,
   tHeadBgColor = "bg-light-gray",
   showDateFilter = false,
-  dateFilterColName = [],
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
   paginationType = "default",
@@ -270,6 +269,7 @@ export default function TableComponent({
   handlePageEnd = () => {},
   filterList = [],
   handleRowsPerPageChange = () => {},
+  tabChange = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -277,13 +277,18 @@ export default function TableComponent({
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
   const [searchFilterList, setSearchFilterList] = useState([]);
+  const [filteredDates, setFilteredDates] = useState({
+    fromDate: "",
+    toDate: "",
+  });
   const [searchFilter, setSearchFilter] = useState({
     label: "All",
     id: "0",
     value: "All",
   });
-  const [dateValue, setDateValue] = useState({ from: "", to: "" });
-
+  useEffect(() => {
+    setPage(0);
+  }, [tabChange]);
   useEffect(() => {
     if (filterList.length) setSearchFilterList(filterList);
   }, [filterList]);
@@ -308,7 +313,7 @@ export default function TableComponent({
   const handleChangePage = (event, newPage) => {
     const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
     if (newPage === numberOfPage - 1) {
-      handlePageEnd(searchText, searchFilter?.value);
+      handlePageEnd(searchText, searchFilter?.value, undefined, filteredDates);
     }
     setPage(newPage);
   };
@@ -316,8 +321,8 @@ export default function TableComponent({
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-    handleRowsPerPageChange(searchText, searchFilter?.value, 0);
-    handlePageEnd(searchText, searchFilter?.value, 0);
+    handleRowsPerPageChange(searchText, searchFilter?.value, 0, filteredDates);
+    handlePageEnd(searchText, searchFilter?.value, 0, filteredDates);
   };
 
   const handleSelectAllClick = (event, checked) => {
@@ -352,26 +357,19 @@ export default function TableComponent({
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  useEffect(() => {
-    if (dateValue.from && dateValue.to) {
-      const startDate = new Date(dateValue.from);
-      const endDate = new Date(dateValue.to);
-      const resultProductData = tableRows.filter((a) => {
-        for (const i of dateFilterColName) {
-          const date = new Date(a[i]);
-          return date >= startDate && date <= endDate;
-        }
-      });
-      setRows(resultProductData);
-    } else {
-      setRows(tableRows);
-    }
-  }, [dateValue, tableRows, dateFilterColName]);
+  // const getDates = (date, type) => {
+  //   const temp = filteredDates;
+  //   setFilteredDates((pre) => ({
+  //     ...pre,
+  //     [`${type}`]: date,
+  //   }));
+  //   temp[`${type}`] = date;
+  // };
 
   const getDateFilter = () => {
     return (
       <Grid container alignItems="center">
-        <Grid item container md={1} justifyContent="start">
+        <Grid item container md={1.5} justifyContent="start">
           {table_heading && (
             <Grid item md={12}>
               <Typography
@@ -391,7 +389,7 @@ export default function TableComponent({
           justifyContent="end"
           alignItems="center"
           item
-          md={11}
+          md={10.5}
           spacing={2}
         >
           <Grid
@@ -400,7 +398,7 @@ export default function TableComponent({
             container
             display="flex"
             alignItems="center"
-            justifyContent={showDateFilterSearch ? "end" : "center"}
+            justifyContent={showDateFilterSearch ? "center" : "end"}
           >
             <Grid
               item
@@ -410,7 +408,7 @@ export default function TableComponent({
               <span className="fs-12">From date:</span>
               <input
                 type="date"
-                value={dateValue.from}
+                value={filteredDates.fromDate}
                 className={styles.dateinput}
                 style={{
                   border: "none",
@@ -419,10 +417,14 @@ export default function TableComponent({
                   flexDirection: "row-reverse",
                 }}
                 onChange={(e) => {
-                  setDateValue((prev) => ({
-                    ...prev,
-                    from: e.target.value,
+                  setFilteredDates((pre) => ({
+                    ...pre,
+                    fromDate: e.target.value,
                   }));
+                  handlePageEnd(searchText, searchFilter?.value, undefined, {
+                    toDate: filteredDates.toDate,
+                    fromDate: e.target.value,
+                  });
                 }}
                 // max={dateValue.to}
               />
@@ -435,7 +437,7 @@ export default function TableComponent({
               <span className="fs-12">To date:</span>
               <input
                 type="date"
-                value={dateValue.to}
+                value={filteredDates.toDate}
                 className={styles.dateinput}
                 style={{
                   border: "none",
@@ -444,10 +446,14 @@ export default function TableComponent({
                   flexDirection: "row-reverse",
                 }}
                 onChange={(e) => {
-                  setDateValue((prev) => ({
-                    ...prev,
-                    to: e.target.value,
+                  setFilteredDates((pre) => ({
+                    ...pre,
+                    toDate: e.target.value,
                   }));
+                  handlePageEnd(searchText, searchFilter?.value, undefined, {
+                    fromDate: filteredDates.fromDate,
+                    toDate: e.target.value,
+                  });
                 }}
                 // min={dateValue.from}
               />
@@ -479,7 +485,12 @@ export default function TableComponent({
                     style={{ width: "35px", height: "38px" }}
                     className="bg-orange d-flex justify-content-center align-items-center rounded ms-2 cursor-pointer"
                     onClick={() => {
-                      handlePageEnd(searchText, searchFilter?.value);
+                      handlePageEnd(
+                        searchText,
+                        searchFilter?.value,
+                        undefined,
+                        filteredDates
+                      );
                     }}
                   >
                     <SearchOutlinedIcon style={{ color: "white" }} />
@@ -602,7 +613,12 @@ export default function TableComponent({
                     onClick={() => {
                       // if (searchText !== "") {
                       setPage(0);
-                      handlePageEnd(searchText, searchFilter?.value, 0);
+                      handlePageEnd(
+                        searchText,
+                        searchFilter?.value,
+                        0,
+                        filteredDates
+                      );
                       // }
                     }}
                   >
