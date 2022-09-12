@@ -73,7 +73,7 @@ const ProductPoliciesForm = forwardRef(
                   ...pre.policy,
                   shippingPolicy: {
                     ...pre.policy.shippingPolicy,
-                    text: e.target.value,
+                    text: e.target.value.replace(/\s\s+/g, " "),
                   },
                 },
               }));
@@ -105,7 +105,7 @@ const ProductPoliciesForm = forwardRef(
                   ...pre.policy,
                   refundPolicy: {
                     ...pre.policy.refundPolicy,
-                    text: e.target.value,
+                    text: e.target.value.replace(/\s\s+/g, " "),
                   },
                 },
               }));
@@ -135,7 +135,7 @@ const ProductPoliciesForm = forwardRef(
                   ...pre.policy,
                   cancellationPolicy: {
                     ...pre.policy.cancellationPolicy,
-                    text: e.target.value,
+                    text: e.target.value.replace(/\s\s+/g, " "),
                   },
                 },
               }));

@@ -31,11 +31,11 @@ import { clearProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import ImageGuidelines from "components/molecule/ImageGuidelines";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
 const ProductsLayout = ({
@@ -82,6 +82,8 @@ const ProductsLayout = ({
     } else {
       setTabsLists([...tabsList]);
     }
+    setSetsData([]);
+    setSubCategoryData([]);
   }, [formData?.mainForm?.category]);
 
   useEffect(() => {
@@ -445,7 +447,7 @@ const ProductsLayout = ({
             return item.id;
           })
         : [],
-      isGenericProduct: formData.mainForm.genericradio,
+      genericProduct: formData.mainForm.genericradio,
 
       linkedProducts: {
         upSells: [formData.linked.upSells.value],
@@ -528,7 +530,7 @@ const ProductsLayout = ({
           seoTitle: formData.inventory.seo_title,
           metaDescription: formData.inventory.meta_description,
           metaKeywords: formData.inventory.meta_keyword.join(),
-          isStoreFDR: formData.pricing.freeDeliveryCheckbox,
+          storeFDR: formData.pricing.freeDeliveryCheckbox,
           salePriceWithLogistics: parseInt(
             formData.pricing.sale_price_logistics,
             10
@@ -560,7 +562,7 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformationObject: otherInformation,
+      otherInformation,
       zoneChargeInfo: {},
       countryOfOrigin: formData.variation.countryOfOrigin,
       expiryDate: null,
@@ -710,7 +712,7 @@ const ProductsLayout = ({
             seoTitle: inventory.seo_title,
             metaDescription: inventory.meta_description,
             metaKeywords: inventory.meta_keyword.join(),
-            isStoreFDR: pricing.fd_rot,
+            storeFDR: pricing.fd_rot,
             salePriceWithLogistics: parseInt(pricing.sale_price_logistics, 10),
             rtoAccepted: pricing.return_order_accepted,
             rtoDays: pricing?.returnorder?.value ?? null,
@@ -764,7 +766,7 @@ const ProductsLayout = ({
               return item.id;
             })
           : [],
-        isGenericProduct: formData.mainForm.genericradio,
+        genericProduct: formData.mainForm.genericradio,
 
         linkedProducts: {
           upSells: [formData.linked.upSells.value],
@@ -787,7 +789,7 @@ const ProductsLayout = ({
 
         productVariations: getVariationsPayload(),
 
-        otherInformationObject: { ...otherObj },
+        otherInformation: { ...otherObj },
         expiryDate: format(other.expireDate, "MM-dd-yyyy HH:mm:ss"),
         countryOfOrigin: other.country,
         zoneChargeInfo: {},
@@ -976,7 +978,7 @@ const ProductsLayout = ({
                             ...prev.mainForm,
                             short_description: {
                               ...prev.mainForm.short_description.media,
-                              text: e.target.value,
+                              text: e.target.value.replace(/\s\s+/g, " "),
                             },
                           },
                         };
@@ -1013,7 +1015,7 @@ const ProductsLayout = ({
                             ...prev.mainForm,
                             long_description: {
                               ...prev.mainForm.long_description.media,
-                              text: e.target.value,
+                              text: e.target.value.replace(/\s\s+/g, " "),
                             },
                           },
                         };
@@ -1138,7 +1140,9 @@ const ProductsLayout = ({
                         mainForm: {
                           ...prev.mainForm,
                           brandradio: false,
+                          tradeMarkCheck: false,
                           genericradio: true,
+                          b2bdocument: {},
                         },
                       }));
                     }}
@@ -1364,8 +1368,10 @@ const ProductsLayout = ({
         onCloseIconClick={() => {
           setcreateTagModal(false);
           setTagInputError("");
+          setTagInputValue("");
         }}
         onClearBtnClick={() => {
+          setTagInputValue("");
           setcreateTagModal(false);
           setTagInputError("");
         }}
