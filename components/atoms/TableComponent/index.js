@@ -269,6 +269,7 @@ export default function TableComponent({
   handlePageEnd = () => {},
   filterList = [],
   handleRowsPerPageChange = () => {},
+  tabChange = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -285,7 +286,10 @@ export default function TableComponent({
     id: "0",
     value: "All",
   });
-
+  const [dateValue, setDateValue] = useState({ from: "", to: "" });
+  useEffect(() => {
+    setPage(0);
+  }, [tabChange]);
   useEffect(() => {
     if (filterList.length) setSearchFilterList(filterList);
   }, [filterList]);

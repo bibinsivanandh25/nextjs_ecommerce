@@ -135,7 +135,7 @@ const UploadDocumentModal = ({
         };
         const { data, err } = await saveInvoiceTradeMark(payload);
         if (data) {
-          getAllTableData();
+          getAllTableData("", "", 0);
           handleCloseClick();
         } else if (err) {
           toastify(err.response.data.message, "err");
@@ -155,7 +155,7 @@ const UploadDocumentModal = ({
       };
       const { data, err } = await editInvoiceTradeMark(payload);
       if (data) {
-        getAllTableData();
+        getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "err");

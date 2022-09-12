@@ -193,7 +193,7 @@ const CreateBanner = ({
       const { data, err } = await saveBanner(payload);
       if (data) {
         // getDateFilterTableData();
-        getAllTableData();
+        getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
@@ -253,7 +253,7 @@ const CreateBanner = ({
       const { data, err } = await updateBanner(payload);
       if (data) {
         // getDateFilterTableData();
-        getAllTableData();
+        getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
