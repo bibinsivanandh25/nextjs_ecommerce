@@ -390,7 +390,6 @@ const ProductsLayout = ({
     formData.variation.others.forEach((item) => {
       otherInformation[item.label] = item.value;
     });
-    debugger;
     const payload = {
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,

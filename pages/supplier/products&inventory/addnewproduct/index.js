@@ -358,9 +358,7 @@ const NewProducts = () => {
   };
   const categoryDetails = {};
   const getCategorySubCategoryList = async () => {
-    const { data, err } = await getCategorySubCategory(
-      productDetails.subCategoryId
-    );
+    const { data } = await getCategorySubCategory(productDetails.subCategoryId);
     if (data) {
       categoryDetails.categorySetId = data.categorySetId;
       categoryDetails.categorySetName = data.categorySetName;

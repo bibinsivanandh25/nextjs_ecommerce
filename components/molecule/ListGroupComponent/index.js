@@ -25,7 +25,7 @@ const ListGroupComponent = ({
   editBtnClick = () => {},
 }) => {
   const [list, setList] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
+  // const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     setList([...data]);
@@ -42,21 +42,20 @@ const ListGroupComponent = ({
       temp[index].isSelected = val;
     }
     setList([...temp]);
+    onSelectionChange(temp.filter((ele) => ele.isSelected));
   };
 
-  useEffect(() => {
-    if (list.length) {
-      setSelectedItems(() => {
-        const temp = list.filter((item) => {
-          return item.isSelected;
-        });
-        return temp;
-      });
-    }
-  }, [list]);
-  useEffect(() => {
-    onSelectionChange([...selectedItems]);
-  }, [selectedItems]);
+  // useEffect(() => {
+  //   if (list.length) {
+  //     const temp = list.filter((item) => {
+  //       return item.isSelected;
+  //     });
+  //     return temp;
+  //   }
+  // }, [list]);
+  // useEffect(() => {
+  //   onSelectionChange([...selectedItems]);
+  // }, [selectedItems]);
 
   return (
     <div className="w-100 border border-bottom-0">
@@ -77,7 +76,7 @@ const ListGroupComponent = ({
         {list.map((item, index) => (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events
           <div
-            className="border-bottom d-flex "
+            className="border-bottom d-flex bg-light-grey "
             onClick={() => {
               handleItemClick(index, !item.isSelected);
             }}
@@ -101,7 +100,7 @@ const ListGroupComponent = ({
             <Typography
               className={`${labelClassName} ${
                 !showRadioBtn && !showCheckBox && item.isSelected
-                  ? "color-orange fw-bold"
+                  ? "color-orange"
                   : ""
               }`}
             >

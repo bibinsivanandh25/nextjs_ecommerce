@@ -67,16 +67,23 @@ const SubscriptionHistory = () => {
   const supplierId = useSelector((state) => state?.user?.supplierId);
 
   const getTableData = async (page, date) => {
+    console.log(date);
+    // if (
+    //   (date?.fromDate === "" && date?.toDate === "") ||
+    //   (date?.fromDate.length && date?.toDate?.length)
+    // ) {
     const payload = {
       userType: "SUPPLIER",
       userId: supplierId,
-      fromDate: date?.fromDate
-        ? `${format(new Date(date?.fromDate), "yyyy-MM-dd")}T00:00:00`
-        : "",
+      fromDate:
+        date?.fromDate && date?.toDate
+          ? `${format(new Date(date?.fromDate), "MM-dd-yyyy")} 00:00:00`
+          : "",
       toDate: date?.toDate
-        ? `${format(new Date(date?.toDate), "yyyy-MM-dd")}T00:00:00`
+        ? `${format(new Date(date?.toDate), "MM-dd-yyyy")} 00:00:00`
         : "",
     };
+
     const { data } = await getSubscriptionHistoryBasedonSupplier(page, payload);
     if (data) {
       if (page === 0) {
@@ -87,6 +94,7 @@ const SubscriptionHistory = () => {
         setpageNumber((pre) => pre + 1);
       }
     }
+    // }
   };
 
   useEffect(() => {
