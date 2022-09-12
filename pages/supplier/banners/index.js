@@ -4,14 +4,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import toastify from "services/utils/toastUtils";
-import {
-  dateFilterTableData,
-  // dateFilterTableData,
-  deleteBanner,
-  getAllData,
-} from "services/supplier/banners";
+import { deleteBanner, getAllData } from "services/supplier/banners";
 import { format } from "date-fns";
-import { useUserInfo } from "services/hooks";
+import { useSelector } from "react-redux";
 import TableComponent from "@/atoms/TableComponent";
 import CreateBanner from "@/forms/supplier/banners/CreateBanners";
 import ViewBannerModal from "@/forms/supplier/banners/viewbannerModal";
@@ -116,8 +111,7 @@ const columns = [
   },
 ];
 const Banners = () => {
-  const userInfo = useUserInfo();
-
+  const userInfo = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     bannerId: "",
     url: "",
@@ -201,26 +195,14 @@ const Banners = () => {
     }
     return temp;
   };
-  const dateFillter = async () => {
-    const { data, err } = await dateFilterTableData();
-    if (data) {
-      console.log(data, "datata");
-    }
-    if (err) {
-      console.log(err, "err");
-    }
-  };
+
   const getAllTableData = async (
+    payload,
     searchText = "",
     filterText = "",
     page = pageNumber
   ) => {
-    const { data, err } = await getAllData(
-      userInfo.id,
-      searchText,
-      filterText,
-      page
-    );
+    const { data, err } = await getAllData(payload, searchText, filterText);
     if (data?.length) {
       if (page == 0) {
         setTableRows(mapRowsToTable(data));
@@ -229,9 +211,10 @@ const Banners = () => {
         setpageNumber((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
       }
+    } else {
+      setTableRows([]);
     }
     if (err) {
-      setTableRows([]);
       toastify(err.response.data.message, "error");
     }
   };
@@ -241,77 +224,20 @@ const Banners = () => {
       setViewModalOpen(true);
     }
   };
-  // const getDateFilterTableData = async () => {
-  //   const { data, err } = await dateFilterTableData();
-  //   const finalData = [];
-  //   if (data) {
-  //     data.forEach((item, index) => {
-  //       finalData.push({
-  //         id: index + 1,
-  //         col1: index + 1,
-  //         col2: item.bannerImageUrlForWeb ? (
-  //           <Image
-  //             src={item.bannerImageUrlForWeb}
-  //             height={100}
-  //             width={100}
-  //             alt="No Image"
-  //           />
-  //         ) : (
-  //           "--"
-  //         ),
-  //         col3: item.panelName,
-  //         col4: item.displayPage ? item.displayPage : "--",
-  //         col5: item.navigationUrl ? item.navigationUrl : "--------",
-  //         col6: item.buttonName ? item.buttonName : "--",
-  //         col7: item.createdAt
-  //           ? new Date(item.createdAt).toLocaleString()
-  //           : "--",
-  //         col8: item.startDateTime ? item.startDateTime : "--",
-  //         col9: item.endDateTime ? item.endDateTime : "--",
-  //         col10: item.status,
-  //         col11: (
-  //           <div className="d-flex justify-content-center align-items-center">
-  //             <CustomIcon
-  //               className="fs-5"
-  //               type="view"
-  //               title="View"
-  //               onIconClick={() => {
-  //                 //   setshowViewModal(true);
-  //               }}
-  //             />
-  //             <CustomIcon
-  //               title="Edit"
-  //               type="edit"
-  //               onIconClick={() => {
-  //                 //   setShowUploadModal(true);
-  //                 handleEditClick(item);
-  //               }}
-  //               className="fs-5 mx-2"
-  //             />
-  //             <CustomIcon
-  //               type="delete"
-  //               className=" fs-5"
-  //               title="Delete"
-  //               onIconClick={() => {
-  //                 handleDeleteClick(item);
-  //               }}
-  //             />
-  //           </div>
-  //         ),
-  //       });
-  //     });
-  //     setTableRows([...finalData]);
-  //   } else if (err) {
-  //     setTableRows([]);
-  //     toastify(err.response.data.message, "error");
-  //   }
-  // };
+
   const handleDeleteClick = async (selectdata) => {
     if (selectdata) {
       const { data, err } = await deleteBanner(selectdata.bannerId);
       if (data?.data) {
         toastify(data.message, "success");
-        getAllTableData();
+        const payload = {
+          createdById: userInfo.supplierId,
+          fromDate: "",
+          toDate: "",
+          pageNumber,
+          pageSize: 50,
+        };
+        getAllTableData(payload, "", "", 0);
       } else if (err) {
         toastify(err.response.data.message, "error");
       }
@@ -353,10 +279,14 @@ const Banners = () => {
   };
 
   useEffect(() => {
-    // dateFillter API Call
-    // getDateFilterTableData();
-    dateFillter();
-    getAllTableData("", "", 0);
+    const payload = {
+      createdById: userInfo.supplierId,
+      fromDate: "",
+      toDate: "",
+      pageNumber: 0,
+      pageSize: 50,
+    };
+    getAllTableData(payload, "", "", 0);
   }, []);
 
   return (
@@ -377,9 +307,21 @@ const Banners = () => {
         handlePageEnd={(
           searchText = "",
           filterText = "ALL",
-          page = pageNumber
+          page = pageNumber,
+          filteredDates
         ) => {
-          getAllTableData(searchText, filterText, page);
+          const payload = {
+            createdById: userInfo.supplierId,
+            fromDate: filteredDates?.fromDate
+              ? new Date(filteredDates?.fromDate).toISOString().substring(0, 19)
+              : "",
+            toDate: filteredDates?.toDate
+              ? new Date(filteredDates?.toDate).toISOString().substring(0, 19)
+              : "",
+            pageNumber: 0,
+            pageSize: 50,
+          };
+          getAllTableData(payload, searchText, filterText, page);
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);
@@ -390,9 +332,9 @@ const Banners = () => {
         setShowModal={setShowCreateBanner}
         setFormData={setFormData}
         formData={formData}
-        // getDateFilterTableData={getDateFilterTableData}
         saveBtnName={saveBtnName}
         getAllTableData={getAllTableData}
+        userInfo={userInfo}
       />
       {viewModalOpen && (
         <ViewBannerModal

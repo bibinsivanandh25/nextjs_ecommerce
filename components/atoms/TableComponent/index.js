@@ -307,7 +307,11 @@ export default function TableComponent({
   }, [draggableHeader]);
 
   useEffect(() => {
-    if (tableRows.length) setRows(tableRows);
+    if (tableRows.length) {
+      setRows(tableRows);
+    } else {
+      setRows([]);
+    }
   }, [tableRows]);
 
   const handleChangePage = (event, newPage) => {
@@ -566,11 +570,7 @@ export default function TableComponent({
                 value={searchFilter}
                 onDropdownSelect={(value) => {
                   // setSearchFilter(value);
-                  setSearchFilter(
-                    value === null
-                      ? { label: "ALL", id: 0, value: "ALL" }
-                      : { ...value }
-                  );
+                  setSearchFilter(value);
                 }}
                 placeholder={customDropDownPlaceholder}
               />
@@ -609,16 +609,25 @@ export default function TableComponent({
                 <Grid item xs={2} display="flex" justifyContent="end">
                   <div
                     style={{ width: "40px", height: "38px" }}
-                    className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
+                    className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
+                      searchText === "" && Object.keys(searchFilter)?.length
+                        ? "bg-gray"
+                        : ""
+                    }`}
                     onClick={() => {
                       // if (searchText !== "") {
-                      setPage(0);
-                      handlePageEnd(
-                        searchText,
-                        searchFilter?.value,
-                        0,
-                        filteredDates
-                      );
+                      if (
+                        searchText !== "" &&
+                        Object.keys(searchFilter)?.length
+                      ) {
+                        setPage(0);
+                        handlePageEnd(
+                          searchText,
+                          searchFilter?.value,
+                          0,
+                          filteredDates
+                        );
+                      }
                       // }
                     }}
                   >

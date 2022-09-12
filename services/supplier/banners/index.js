@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAllData = (id) => {
+const getAllData = (payload) => {
   return serviceUtil
-    .get(`users/supplier/banners?supplierId=${id}`)
+    .put(`users/banner`, payload)
     .then((res) => {
       const { data } = res.data;
       return { data };
@@ -11,17 +11,7 @@ const getAllData = (id) => {
       return { err };
     });
 };
-const dateFilterTableData = () => {
-  return serviceUtil
-    .get(`users/banner/0/10?fromDate=&toDate=`)
-    .then((res) => {
-      const { data } = res.data;
-      return { data };
-    })
-    .catch((err) => {
-      return { err };
-    });
-};
+
 const saveBanner = (payload) => {
   return serviceUtil
     .post(`users/banner`, payload)
@@ -74,11 +64,4 @@ const updateBanner = (payload) => {
     });
 };
 
-export {
-  getAllData,
-  dateFilterTableData,
-  saveBanner,
-  bannnerMedia,
-  deleteBanner,
-  updateBanner,
-};
+export { getAllData, saveBanner, bannnerMedia, deleteBanner, updateBanner };

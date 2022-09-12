@@ -4,7 +4,6 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { getBase64 } from "services/utils/functionUtils";
 import { format } from "date-fns";
-import { useUserInfo } from "services/hooks";
 import {
   bannnerMedia,
   saveBanner,
@@ -26,11 +25,10 @@ const CreateBanner = ({
   setShowModal = () => {},
   setFormData = () => {},
   formData = {},
-  // getDateFilterTableData = () => {},
   saveBtnName = "",
   getAllTableData = () => {},
+  userInfo = {},
 }) => {
-  const userInfo = useUserInfo();
   const [error, setError] = useState({
     url: "",
     displayPage: "",
@@ -192,8 +190,14 @@ const CreateBanner = ({
       };
       const { data, err } = await saveBanner(payload);
       if (data) {
-        // getDateFilterTableData();
-        getAllTableData("", "", 0);
+        const payloads = {
+          createdById: userInfo.supplierId,
+          fromDate: "",
+          toDate: "",
+          pageNumber: 0,
+          pageSize: 50,
+        };
+        getAllTableData(payloads, "", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
@@ -252,8 +256,14 @@ const CreateBanner = ({
       };
       const { data, err } = await updateBanner(payload);
       if (data) {
-        // getDateFilterTableData();
-        getAllTableData("", "", 0);
+        const payloads = {
+          createdById: userInfo.supplierId,
+          fromDate: "",
+          toDate: "",
+          pageNumber: 0,
+          pageSize: 50,
+        };
+        getAllTableData(payloads, "", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");

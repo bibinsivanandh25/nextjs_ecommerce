@@ -170,9 +170,12 @@ const SupplierStoreCoupons = () => {
       search,
       filter
     );
-    if (data) {
+    if (data.length) {
       setTableRows(mapRowsToTable(data));
-    } else if (err) {
+    } else {
+      setTableRows([]);
+    }
+    if (err) {
       toastify(err.response.data.message);
     }
   };
