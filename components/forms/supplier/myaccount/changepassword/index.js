@@ -6,6 +6,7 @@ import { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import { changeSupplierPassword } from "services/supplier/myaccount/changepassword";
 import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
 
 const ChangePassword = () => {
   const [formValues, setFormValues] = useState({});
@@ -60,12 +61,15 @@ const ChangePassword = () => {
     }
   };
 
+  const user = useSelector((state) => state.user);
+  console.log({ user });
+
   return (
     <Box className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded">
       <Grid container spacing={4} item xs={4} ml={30} mt={3}>
         <Grid item xs={12}>
           <InputBox
-            value={formValues.emailId}
+            value={user.emailId}
             label="E-mail ID"
             className="w-100"
             size="small"
@@ -79,6 +83,8 @@ const ChangePassword = () => {
             helperText={error?.emailId}
             type="email"
             inputlabelshrink
+            showAutoCompleteOff="off"
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
@@ -97,6 +103,7 @@ const ChangePassword = () => {
             helperText={error?.oldPassword}
             type="password"
             inputlabelshrink
+            showAutoCompleteOff="off"
           />
         </Grid>
         <Grid item xs={12}>
