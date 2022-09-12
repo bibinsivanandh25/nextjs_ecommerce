@@ -603,10 +603,12 @@ const CustomerQnA = () => {
         const tempArray = setUnansweredQuestionsRows(data);
         setQuestionCount(data.count);
         setQuestions([...tempArray]);
+        if (data.count > 50) setPageNoForQuestions(1);
       } else if (check) {
         const tempArray = setAnsweredQuestionsRows(data);
         setAnswerCount(data.count);
         setAnswers([...tempArray]);
+        if (data.count > 50) setPageNoForAnswers(1);
       }
     }
     if (error) {
@@ -624,6 +626,7 @@ const CustomerQnA = () => {
     check,
     pageNum = tabType === "tab1" ? pageNoForQuestions : pageNoForAnswers,
     keyword = "",
+    isSearched = false,
     dateFrom = fromDate,
     dateTo = toDate
   ) => {
@@ -638,13 +641,11 @@ const CustomerQnA = () => {
       pageNum
     );
 
-    console.log(data);
-
     if (data) {
       if (!check) {
         const tempArray = setUnansweredQuestionsRows(data);
         if (pageNoForQuestions < Math.floor(data.count / 50))
-          setPageNoForQuestions((pre) => pre + 1);
+          if (!isSearched) setPageNoForQuestions((pre) => pre + 1);
         setQuestionCount(data.count);
         if (pageNoForQuestions === 0) {
           setQuestions([...tempArray]);
@@ -655,7 +656,7 @@ const CustomerQnA = () => {
         const tempArray = setAnsweredQuestionsRows(data);
         setAnswerCount(data.count);
         if (pageNoForAnswers < Math.floor(data.count / 50))
-          setPageNoForAnswers((pre) => pre + 1);
+          if (!isSearched) setPageNoForAnswers((pre) => pre + 1);
         if (pageNoForAnswers === 0) {
           setAnswers([...tempArray]);
         } else {
@@ -682,23 +683,25 @@ const CustomerQnA = () => {
     console.log(searchText);
     if (!searchText) {
       if (tabType === "tab1") {
-        getQuestionsOrAnsweredQuestionsForSearch(false, pageNoForQuestions);
+        getQuestionsOrAnsweredQuestionsForSearch(false, 0, "", true);
       } else if (tabType === "tab2") {
-        getQuestionsOrAnsweredQuestionsForSearch(true, pageNoForAnswers);
+        getQuestionsOrAnsweredQuestionsForSearch(true, 0, "", true);
       }
       return;
     }
     if (tabType === "tab1") {
-      getQuestionsOrAnsweredQuestions(
+      getQuestionsOrAnsweredQuestionsForSearch(
         false,
-        pageNoForQuestions,
-        searchText.toUpperCase()
+        0,
+        searchText.toUpperCase(),
+        true
       );
     } else if (tabType === "tab2") {
-      getQuestionsOrAnsweredQuestions(
+      getQuestionsOrAnsweredQuestionsForSearch(
         true,
-        pageNoForAnswers,
-        searchText.toUpperCase()
+        0,
+        searchText.toUpperCase(),
+        true
       );
     }
   };
