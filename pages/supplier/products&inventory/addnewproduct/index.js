@@ -3,7 +3,7 @@
 /* eslint-disable consistent-return */
 import { Paper } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import serviceUtil from "services/utils";
 import {
   getAttributes,
@@ -14,6 +14,7 @@ import {
   returnOrderData,
   shipping_class,
 } from "constants/constants";
+import { clearProduct } from "features/productsSlice";
 import ProductsLayout from "@/forms/supplier/products/productform";
 import InventoryForm from "@/forms/supplier/products/productform/InventoryForm";
 import PricingForm from "@/forms/supplier/products/productform/Pricing&Weight";
@@ -569,7 +570,6 @@ const NewProducts = () => {
         }
       });
     });
-    console.log({ temp });
     setFormData(temp);
   };
 
@@ -578,6 +578,14 @@ const NewProducts = () => {
       resetFormData();
     }
   }, [editProduct]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearProduct());
+    };
+  }, []);
 
   useEffect(() => {
     setTabsList([

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { purchaseMarketingTool } from "services/supplier/marketingtools/unlocktools/single";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import toastify from "services/utils/toastUtils";
+import { useRouter } from "next/router";
 
 const UnlockToolsForm = ({
   heading = "",
@@ -14,6 +15,8 @@ const UnlockToolsForm = ({
   setTableData = () => {},
 }) => {
   const [tableRows, setTableRows] = useState([]);
+
+  const route = useRouter();
 
   const handleRadio = (row, radioId) => {
     const res = tableData.map((i) => {
@@ -50,6 +53,7 @@ const UnlockToolsForm = ({
     const { data, err } = await purchaseMarketingTool(payload);
     if (data) {
       toastify(data.message, "success");
+      route.push("/supplier/marketingtools/subscriptionhistory");
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }

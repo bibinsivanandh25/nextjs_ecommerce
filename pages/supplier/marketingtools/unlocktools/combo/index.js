@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getToolCampaignByDaysAndStoreType } from "services/supplier/marketingtools/unlocktools/combo";
 import toastify from "services/utils/toastUtils";
 import { purchaseMarketingTool } from "services/supplier/marketingtools/unlocktools/single";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import TableComponent from "@/atoms/TableComponent";
@@ -49,7 +50,7 @@ const UnlockToolsCombo = () => {
     },
   ];
   const supplierId = useSelector((state) => state?.user?.supplierId);
-
+  const route = useRouter();
   const handleBuyNow = async (row) => {
     const payload = {
       purchasedByType: "SUPPLIER",
@@ -61,6 +62,7 @@ const UnlockToolsCombo = () => {
     const { data, err } = await purchaseMarketingTool(payload);
     if (data) {
       toastify(data.message, "success");
+      route.push("/supplier/marketingtools/subscriptionhistory");
     } else if (err) {
       toastify(err?.response?.data?.message);
     }
@@ -107,7 +109,7 @@ const UnlockToolsCombo = () => {
   };
 
   useEffect(() => {
-    getAllTableData();
+    getAllTableData(0);
   }, []);
 
   return (

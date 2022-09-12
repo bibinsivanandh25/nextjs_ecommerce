@@ -5,7 +5,7 @@ import CreateDiscount from "components/forms/supplier/marketingtools/createdisco
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
-import { getCreateDiscountData } from "services/supplier/marketingtools/creatediscountcoupons";
+import { getUserMarketingTool } from "services/supplier/marketingtools";
 import toastify from "services/utils/toastUtils";
 
 const columns = [
@@ -121,7 +121,7 @@ const CreateTodaysDeals = () => {
     return temp;
   };
   const getTableRows = async () => {
-    const { data, err } = await getCreateDiscountData(
+    const { data, err } = await getUserMarketingTool(
       user.supplierId,
       "TODAYS_DEAL",
       0

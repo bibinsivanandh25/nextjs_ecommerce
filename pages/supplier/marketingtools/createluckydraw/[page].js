@@ -8,8 +8,8 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import ViewPage from "components/forms/supplier/marketingtools/createluckydraw/ViewPage";
 import CustomIcon from "services/iconUtils";
 import { useSelector } from "react-redux";
-import { getCreateDiscountData } from "services/supplier/marketingtools/creatediscountcoupons";
 import toastify from "services/utils/toastUtils";
+import { getUserMarketingTool } from "services/supplier/marketingtools";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
@@ -127,7 +127,7 @@ const CreateQuiz = ({ pageName }) => {
     return temp;
   };
   const getTableRows = async (pagename) => {
-    const { data, err } = await getCreateDiscountData(
+    const { data, err } = await getUserMarketingTool(
       user.supplierId,
       pagename,
       0

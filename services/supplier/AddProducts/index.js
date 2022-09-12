@@ -104,6 +104,21 @@ const getCategorySubCategory = async (id) => {
     });
 };
 
+const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
+  return serviceUtil
+    .post(
+      `products/master-product/duplicate-product?oldSupplierId=${oldSupplierId}&oldVariationId=${oldVariationId}`,
+      payload
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -113,4 +128,5 @@ export {
   saveMedia,
   saveMediaFile,
   getCategorySubCategory,
+  saveDuplicateProduct,
 };
