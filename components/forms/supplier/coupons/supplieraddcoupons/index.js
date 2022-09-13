@@ -108,13 +108,13 @@ const SupplierAddCoupons = ({
   };
   return (
     <Box className="p-2" sx={{ maxHeight: "80vh" }}>
-      <Box
-        className="fit-contant zIndex-1101"
-        onClick={() => {
-          setOpenAddModal(false);
-        }}
-      >
-        <Typography className="h-5 color-orange cursor-pointer d-flex align-items-center">
+      <Box className="">
+        <Typography
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
+          onClick={() => {
+            setOpenAddModal(false);
+          }}
+        >
           <ArrowBackIosIcon className="fs-16" />
           Back
         </Typography>
@@ -132,7 +132,7 @@ const SupplierAddCoupons = ({
             // minHeight: "80vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12}>
               <InputBox
                 label="Code"
