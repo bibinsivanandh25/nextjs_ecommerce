@@ -69,8 +69,17 @@ const SupplierAddCoupons = ({
       validateFields("maximumamount");
     }
     validateFields("couponAmount");
-
-    setError({ ...errObj });
+    const limitErrors = {
+      limitError: null,
+    };
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
+      limitErrors.limitError =
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+    }
+    setError({ ...errObj, ...limitErrors });
     let valid = true;
     Object.values(errObj).forEach((i) => {
       if (i) {
@@ -322,8 +331,10 @@ const SupplierAddCoupons = ({
                         id="usageLimitPerUser"
                         name="usageLimitPerUser"
                         onInputChange={handleInputChange}
-                        error={Boolean(error.usageLimitPerUser)}
-                        helperText={error.usageLimitPerUser}
+                        error={
+                          Boolean(error.usageLimitPerUser) || error.limitError
+                        }
+                        helperText={error.usageLimitPerUse || error.limitError}
                         type="number"
                       />
                       <InfoOutlinedIcon className="ms-1 mt-2" />

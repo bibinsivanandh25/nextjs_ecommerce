@@ -105,9 +105,12 @@ const MrMrsAddNewCoupons = ({
     const limitErrors = {
       limitError: null,
     };
-    if (formValues.usageLimitPerCoupon <= formValues.usageLimitPerUser) {
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
       limitErrors.limitError =
-        "Usage Limit PerCoupon Should Allways Lessthen Usage Limit PerUser";
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
     }
     const finalErrorObj = { ...errObj, ...limitErrors };
     console.log(finalErrorObj, "finalErrorObj");
