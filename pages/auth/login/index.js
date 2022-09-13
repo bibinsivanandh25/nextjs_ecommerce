@@ -191,41 +191,47 @@ const Login = () => {
   //   }
   // };
 
-  const storedatatoRedux = async (id) => {
-    const { data, err } = await getSupplierDetailsById(id);
+  const storedatatoRedux = async (id, role, staffDetails) => {
+    const { data, err } = await getSupplierDetailsById(
+      role === "SUPPLIER" ? id : staffDetails.supplierId
+    );
 
     if (!err) {
-      const supplierDetails = {
-        emailId: data.emailId,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        profileImageUrl: data.profileImageUrl,
-        supplierId: data.supplierId,
-        storeCode: data.supplierStoreInfo.supplierStoreCode,
-        isAddressSaved: data.userAddressDetails.length,
-      };
+      const supplierDetails =
+        role === "SUPPLIER"
+          ? {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+            }
+          : {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+              staffDetails: {
+                email: staffDetails.emailId,
+                firstName: staffDetails.firstName,
+                lastName: staffDetails.lastName,
+                mobileNumber: staffDetails.mobileNumber,
+                staffId: staffDetails.staffId,
+              },
+            };
       store.dispatch(storeUserInfo(supplierDetails));
     }
   };
 
   const handleSubmit = async () => {
     const flag = validateCredentials();
-    // await axios.post("authenticate", {
-    //   userName: formValues.user,
-    //   password: formValues.password,
-    // });
-
-    // loginCall({
-    //   userName: formValues.user,
-    //   password: formValues.password,
-    //   userType: options[selectedIndex],
-    // });
-    // if (data && !data?.data?.error) {
-    //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
-    // } else if (errRes) {
-    //   toastify("wrong credentials", "error");
-    // }
-
     if (!flag) {
       const payload = {
         userName: formValues.user,
@@ -255,7 +261,11 @@ const Login = () => {
               toastify("Invalid credentials", "error");
               return null;
             }
-            await storedatatoRedux(userData[0]);
+            await storedatatoRedux(
+              userData[0],
+              decoded.roles[0],
+              data.data.staffDetails
+            );
             route.push(`/supplier/dashboard`);
           }
         })

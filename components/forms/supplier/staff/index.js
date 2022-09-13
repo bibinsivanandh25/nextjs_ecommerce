@@ -1,72 +1,60 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
-import { Grid, Paper } from "@mui/material";
+import { Box, Collapse, Grid, List, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import SwitchComponent from "components/atoms/SwitchComponent";
 import { useEffect, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
+import supplierSideBar from "constants/supplierSideBar";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import { useSelector } from "react-redux";
+import { getStaffdetails, saveStaff } from "services/supplier/staff";
+import { useRouter } from "next/router";
 
-const dummyData = [
-  {
-    title: "Products",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-  {
-    title: "Types",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-  {
-    title: "Panels",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-  {
-    title: "Marketplace Withdrawal",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-  {
-    title: "Coupons",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-  {
-    title: "Orders",
-    items: ["Manage Products", "Add Products", "Publish Products"],
-  },
-];
 const tempObj = {
   firstName: "",
   last_Name: "",
   MobileNo: "",
   email: "",
 };
-const StaffForm = ({ handlebackClick }) => {
+const StaffForm = ({
+  handlebackClick,
+  type = "add",
+  viewStaffId = null,
+  setviewStaffId = () => {},
+}) => {
   const [capabilites, setCapabilities] = useState([]);
   const [formData, setFormData] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({ ...tempObj });
   const [checkbox, setCheckbox] = useState(true);
+  const router = useRouter();
+
+  const orginizeCapabilites = (data) => {
+    const temp = data.map((item) => {
+      return {
+        label: item.capabilityType,
+        isChecked: true,
+        expand: false,
+        children:
+          item.childCapabilityNameList && item.childCapabilityNameList.length
+            ? [...orginizeCapabilites(item.childCapabilityNameList)]
+            : [],
+      };
+    });
+    return temp;
+  };
 
   useEffect(() => {
-    setCapabilities(() => {
-      return dummyData.map((item) => {
-        return {
-          ...item,
-          items: [
-            ...item.items.map((ele) => {
-              return { name: ele, selected: true };
-            }),
-          ],
-        };
-      });
-    });
-  }, [dummyData]);
+    setCapabilities(orginizeCapabilites(supplierSideBar));
+  }, [supplierSideBar]);
   useEffect(() => {
     if (capabilites.length) {
-      const flag = capabilites.every((ele) => {
-        const temp = ele.items.map((item) => item.selected);
-        return temp.every((items) => items);
-      });
+      const flag = capabilites.every((ele) => ele.isChecked);
       setCheckbox(flag);
     }
   }, [capabilites]);
@@ -128,7 +116,10 @@ const StaffForm = ({ handlebackClick }) => {
     if (
       !checkbox &&
       !capabilites.some((ele) => {
-        const temp = ele.items.map((item) => item.selected);
+        if (!ele.children.length) {
+          return ele.isChecked;
+        }
+        const temp = ele.children.map((item) => item.isChecked);
         return temp.some((items) => items);
       })
     ) {
@@ -139,12 +130,94 @@ const StaffForm = ({ handlebackClick }) => {
     return flag;
   };
 
-  const handleSubmit = () => {
-    validate();
+  const supplierId = useSelector((state) => state.user.supplierId);
+
+  const createPayload = () => {
+    return {
+      firstName: formData.firstName,
+      lastName: formData.last_Name,
+      mobileNumber: formData.MobileNo,
+      emailId: formData.email,
+      supplierId,
+      // enableStaffCustomCapability: true,
+      staffCapabilityList: [
+        ...capabilites.map((item) => {
+          return item.children.length
+            ? {
+                capabilityType: item.label,
+                isEnable: item.isChecked,
+                childCapabilityNameList: item.children.map((child) => {
+                  return {
+                    capabilityType: child.label,
+                    isEnable: child.isChecked,
+                  };
+                }),
+              }
+            : {
+                capabilityType: item.label,
+                isEnable: item.isChecked,
+              };
+        }),
+      ],
+    };
   };
 
+  const addStaff = async (payload) => {
+    const { data, err } = await saveStaff(payload);
+    if (data) {
+      toastify(data, "success");
+      router.push("/supplier/staff");
+    } else if (err) {
+      console.log(err.response, err, "poiuhyjk");
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) {
+      addStaff(createPayload());
+    }
+  };
+
+  const expand = (index) => {
+    setCapabilities((pre) => {
+      const temp = JSON.parse(JSON.stringify(pre));
+      temp.forEach((element, ind) => {
+        if (ind === index) {
+          element.expand = !element.expand;
+        }
+      });
+      return temp;
+    });
+  };
+
+  const getStaff = async () => {
+    const { data, err } = await getStaffdetails(viewStaffId);
+    if (data) {
+      setFormData({
+        firstName: data.firstName,
+        last_Name: data.lastName,
+        MobileNo: data.mobileNumber,
+        email: data.emailId,
+      });
+      setCapabilities(orginizeCapabilites(data.staffCapabilityList));
+    } else {
+      toastify(err?.response?.data?.message);
+      setviewStaffId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (type === "view" && viewStaffId) {
+      getStaff();
+    }
+    setviewStaffId((pre) => {
+      return pre;
+    });
+  }, [viewStaffId, type]);
+
   return (
-    <Paper className="p-3 h-100 overflow-y-scroll">
+    <Paper className="p-3 h-100 overflow-y-scroll ">
       <Grid container className="mt-3">
         <Grid
           container
@@ -169,6 +242,7 @@ const StaffForm = ({ handlebackClick }) => {
                   helperText={errorObj.firstName}
                   error={errorObj.firstName !== ""}
                   placeholder="ed.: Sulesh"
+                  disabled={type === "view"}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -184,6 +258,7 @@ const StaffForm = ({ handlebackClick }) => {
                   helperText={errorObj.last_Name}
                   error={errorObj.last_Name !== ""}
                   placeholder="ed.: Sharma"
+                  disabled={type === "view"}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -199,6 +274,7 @@ const StaffForm = ({ handlebackClick }) => {
                   helperText={errorObj.MobileNo}
                   error={errorObj.MobileNo !== ""}
                   placeholder="ed.: 1234567890"
+                  disabled={type === "view"}
                 />
               </Grid>
               <Grid item sm={12}>
@@ -214,6 +290,7 @@ const StaffForm = ({ handlebackClick }) => {
                   helperText={errorObj.email}
                   error={errorObj.email !== ""}
                   placeholder="ed.: sulesh@gmail.com"
+                  disabled={type === "view"}
                 />
               </Grid>
               <Grid item sm={12} className="d-flex">
@@ -221,21 +298,24 @@ const StaffForm = ({ handlebackClick }) => {
                   Custom Capability :
                 </span>
                 <CheckBoxComponent
+                  isDisabled={type === "view"}
                   label=""
                   isChecked={checkbox}
                   checkBoxClick={(_, value) => {
+                    setCheckbox(value);
                     setCapabilities((pre) => {
                       const temp = pre.map((item) => {
                         return {
                           ...item,
-                          items: [
-                            ...item.items.map((ele) => {
-                              return {
-                                ...ele,
-                                selected: value,
-                              };
-                            }),
-                          ],
+                          isChecked: value,
+                          children: item.children.length
+                            ? item.children.map((ele) => {
+                                return {
+                                  ...ele,
+                                  isChecked: value,
+                                };
+                              })
+                            : [],
                         };
                       });
                       return temp;
@@ -247,49 +327,144 @@ const StaffForm = ({ handlebackClick }) => {
             </Grid>
           </div>
         </Grid>
-        <Grid container item md={7} lg={9} spacing={2} className="p-4">
+        <Grid
+          container
+          item
+          md={7}
+          lg={9}
+          spacing={2}
+          className=" p-4 pt-0 d-flex w-100 mxh-70vh overflow-y-scroll"
+        >
           {capabilites.map((item, index) => {
             return (
-              <Grid item container spacing={1} sm={12} md={6} key={index}>
-                <Grid item sm={12} className="color-orange fw-600 fs-14">
-                  {item.title}
-                </Grid>
-                {item.items.map((ele, ind) => (
-                  <Grid item container spacing={2} sm={12} key={ind}>
-                    <Grid item sm={6} className="">
-                      <div className="d-flex justify-content-end align-items-center me-2">
-                        {ele.name}
-                      </div>
-                    </Grid>
-                    <Grid item sm={6} className="d-flex align-items-center">
-                      <SwitchComponent
-                        label=""
-                        defaultChecked={ele.selected}
-                        ontoggle={(value) => {
-                          setCapabilities((pre) => {
-                            const temp = [...pre];
-                            temp[index].items[ind].selected = value;
-                            return temp;
+              <Grid item md={6}>
+                <Box
+                  className="d-flex align-items-center justify-content-between"
+                  onClick={() => {
+                    expand(index);
+                  }}
+                >
+                  <div className="d-flex align-items-center">
+                    <CheckBoxComponent
+                      isChecked={item.isChecked}
+                      isDisabled={type === "view"}
+                      size="small"
+                      checkBoxClick={(_, val) => {
+                        setCapabilities((pre) => {
+                          const temp = JSON.parse(JSON.stringify(pre));
+                          temp.forEach((element, ind) => {
+                            if (ind === index) {
+                              element.expand = true;
+                              element.isChecked = val;
+                              element.children = element.children.map(
+                                (child) => {
+                                  return { ...child, isChecked: val };
+                                }
+                              );
+                            }
                           });
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-                ))}
+                          return temp;
+                        });
+                      }}
+                    />
+                    <Typography
+                      onClick={() => {
+                        if (type === "view") return;
+                        setCapabilities((pre) => {
+                          const temp = JSON.parse(JSON.stringify(pre));
+                          temp.forEach((element, ind) => {
+                            if (ind === index) {
+                              element.expand = true;
+                              element.isChecked = !element.isChecked;
+                              element.children = element.children.map(
+                                (child) => {
+                                  return {
+                                    ...child,
+                                    isChecked: !child.isChecked,
+                                  };
+                                }
+                              );
+                            }
+                          });
+                          return temp;
+                        });
+                      }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </div>
+                  {item.children.length ? (
+                    item.expand ? (
+                      <ExpandLess />
+                    ) : (
+                      <ExpandMore />
+                    )
+                  ) : null}
+                </Box>
+                <Collapse
+                  in={item.expand}
+                  timeout="auto"
+                  unmountOnExit
+                  className="ms-4"
+                >
+                  <List component="div" disablePadding>
+                    {item.children.map((ele, ind) => {
+                      return (
+                        <Box className="d-flex align-items-center">
+                          <CheckBoxComponent
+                            isChecked={ele.isChecked}
+                            size="small"
+                            isDisabled={type === "view"}
+                            checkBoxClick={(_, val) => {
+                              const temp = JSON.parse(
+                                JSON.stringify(capabilites)
+                              );
+                              temp[index].children[ind].isChecked = val;
+                              temp[index].isChecked = temp[
+                                index
+                              ].children.every((child) => child.isChecked);
+
+                              setCapabilities(temp);
+                            }}
+                          />
+                          <Typography
+                            onClick={() => {
+                              if (type === "view") return;
+                              const temp = JSON.parse(
+                                JSON.stringify(capabilites)
+                              );
+                              temp[index].children[ind].isChecked =
+                                !temp[index].children[ind].isChecked;
+                              temp[index].isChecked = temp[
+                                index
+                              ].children.every((child) => child.isChecked);
+
+                              setCapabilities(temp);
+                            }}
+                          >
+                            {ele.label}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </List>
+                </Collapse>
               </Grid>
             );
           })}
         </Grid>
-        <Grid item sm={12}>
-          <div className="w-100 d-flex flex-row-reverse">
-            <ButtonComponent
-              label="Approve"
-              onBtnClick={handleSubmit}
-              muiProps="ms-3"
-            />
-            <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
-          </div>
-        </Grid>
+        {type === "add" && (
+          <Grid item sm={12}>
+            <div className="w-100 d-flex flex-row-reverse">
+              <ButtonComponent
+                label="Approve"
+                onBtnClick={handleSubmit}
+                muiProps="ms-3"
+              />
+              <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
+            </div>
+          </Grid>
+        )}
       </Grid>
     </Paper>
   );
