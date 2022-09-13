@@ -6,10 +6,12 @@ import { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import { changeSupplierPassword } from "services/supplier/myaccount/changepassword";
 import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
 
 const ChangePassword = () => {
-  const [formValues, setFormValues] = useState({});
   const [error, setError] = useState({});
+  const user = useSelector((state) => state.user);
+  const [formValues, setFormValues] = useState({ emailId: user.emailId });
 
   const validateForm = () => {
     const errObj = { ...error };
@@ -53,9 +55,9 @@ const ChangePassword = () => {
       };
       const { data, err } = await changeSupplierPassword(payload);
       if (data) {
-        toastify(data.message);
+        toastify(data.message, "success");
       } else if (err) {
-        toastify(err.response.data.message);
+        toastify(err.response.data.message, "error");
       }
     }
   };
@@ -79,6 +81,7 @@ const ChangePassword = () => {
             helperText={error?.emailId}
             type="email"
             inputlabelshrink
+            disabled
           />
         </Grid>
         <Grid item xs={12}>

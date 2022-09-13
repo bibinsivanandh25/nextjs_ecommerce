@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import { Grid, Typography } from "@mui/material";
+import { Grid, Tooltip, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import ImageCard from "components/atoms/ImageCard";
@@ -115,7 +115,11 @@ const CreateDiscount = ({
       return (
         <Grid item key={ind} lg={1.2} md={2} sm={3}>
           <ImageCard imgSrc={ele.image} showClose={false} />
-          <Typography className="text-center">{ele.title}</Typography>
+          <Tooltip title={ele.title}>
+            <Typography className="text-center text-truncate">
+              {ele.title}
+            </Typography>
+          </Tooltip>
           <Typography className="text-center color-dark-green h-5 fw-bold">
             {ele.discount}
           </Typography>

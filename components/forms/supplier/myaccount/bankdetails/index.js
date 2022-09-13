@@ -9,7 +9,9 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   deleteBankDetails,
   getAllBankDetails,
+  setPrimaryBank,
 } from "services/supplier/myaccount/bankdetails";
+import toastify from "services/utils/toastUtils";
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import AddBankDetailsModal from "./addbankdetails";
 
@@ -24,7 +26,11 @@ const BankDetails = () => {
     const { data } = await getAllBankDetails(user);
     const result = [];
     if (data) {
-      data.forEach((item) => {
+      const temp = JSON.parse(JSON.stringify(data)).filter(
+        (ele) => !ele.primary
+      );
+      temp.unshift(data.find((ele) => ele.primary));
+      temp.forEach((item) => {
         result.push({
           "Bank Name": item.bankName,
           "Account Holder Name": item.accountHolderName,
@@ -60,6 +66,22 @@ const BankDetails = () => {
       getAllBankData();
     }
   };
+  const updatePrimaryAccount = async (e, id) => {
+    const { data, err } = await setPrimaryBank(user, id);
+    if (data) {
+      setbankDetails((prev) => {
+        const temp = prev.map((item) => {
+          item.isChecked = false;
+          return item;
+        });
+        temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
+        return [...temp];
+      });
+      toastify(data, "success");
+    } else {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const renderBankDetails = () => {
     return bankDetails.map((ele, index) => {
       return (
@@ -76,15 +98,7 @@ const BankDetails = () => {
                 id={index}
                 isChecked={ele.isChecked}
                 onRadioChange={(e) => {
-                  setbankDetails((prev) => {
-                    const temp = prev.map((item) => {
-                      item.isChecked = false;
-                      return item;
-                    });
-                    temp[`${e.target.id}`].isChecked =
-                      !temp[`${e.target.id}`].isChecked;
-                    return [...temp];
-                  });
+                  updatePrimaryAccount(e, bankDetails[index].id);
                 }}
               />
             </Grid>
