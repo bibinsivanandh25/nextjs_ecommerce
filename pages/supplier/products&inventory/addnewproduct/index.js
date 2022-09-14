@@ -424,29 +424,15 @@ const NewProducts = () => {
         })
       : [];
     temp.mainForm.limit_per_order = productDetails.limitsPerOrder;
-    // temp.mainForm.selectb2binvoice = productDetails.bTobInvoiceIdList
-    //   ? productDetails.bTobInvoiceIdList.map((ele) => ({
-    //       id: ele,
-    //       value: ele,
-    //       title: "",
-    //     }))
-    //   : [];
-    if (productDetails?.bTobInvoiceIdList?.length) {
+    if (productDetails?.btobInvoiceList?.length) {
       b2bList.forEach((eles) => {
-        if (productDetails.bTobInvoiceIdList.includes(eles.id)) {
+        if (productDetails.btobInvoiceList.includes(eles.id)) {
           temp.mainForm.selectb2binvoice.push(eles);
         }
       });
     }
     temp.mainForm.tradeMarkCheck =
       !!productDetails.trademarkLetterIdList?.length;
-    // temp.mainForm.b2bdocument = productDetails.trademarkLetterIdList
-    //   ? productDetails.trademarkLetterIdList.map((ele) => ({
-    //       id: ele,
-    //       value: ele,
-    //       title: "",
-    //     }))
-    //   : [];
     if (productDetails?.trademarkLetterIdList?.length) {
       trademarkList.forEach((eles) => {
         if (productDetails.trademarkLetterIdList.includes(eles.id)) {

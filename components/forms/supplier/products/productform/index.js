@@ -450,7 +450,7 @@ const ProductsLayout = ({
             return item.id;
           })
         : [],
-      bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+      btobInvoiceList: formData.mainForm.selectb2binvoice.length
         ? formData.mainForm.selectb2binvoice.map((item) => {
             return item.id;
           })
@@ -808,7 +808,7 @@ const ProductsLayout = ({
               return item.id;
             })
           : [],
-        bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+        btobInvoiceList: formData.mainForm.selectb2binvoice.length
           ? formData.mainForm.selectb2binvoice.map((item) => {
               return item.id;
             })

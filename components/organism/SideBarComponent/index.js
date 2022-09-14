@@ -21,15 +21,17 @@ import { resellerMenu } from "constants/navConstants";
 import { MenuItem, MenuList, Tooltip } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getNavBarItems, getmarketingToolStatus } from "services/supplier";
 import CustomIcon from "services/iconUtils";
+import { updateUnlockedTools } from "features/userSlice";
 
 const drawerWidth = 245;
 
 const SideBarComponent = ({ children }) => {
   const route = useRouter();
   const [supplierMenu, setSupplierMenu] = useState([]);
+  const dispatch = useDispatch();
 
   const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -119,7 +121,8 @@ const SideBarComponent = ({ children }) => {
   const [menuList, setMenuList] = useState([]);
   const itemRef = React.useRef(null);
   const user = useSelector((state) => state.user);
-  const [marketingToolsList, setmarketingToolsList] = useState([]);
+  // const [marketingToolsList, setmarketingToolsList] = useState([]);
+  const marketingToolsList = user.unlockedTools;
 
   const mapList = (role) => {
     const addId = (id, item, path) => {
@@ -171,7 +174,7 @@ const SideBarComponent = ({ children }) => {
     Promise.all(promiseArr)
       .then((res) => {
         setSupplierMenu(res[0].nav);
-        setmarketingToolsList(res[1].marketingTools.unlockedTools || []);
+        dispatch(updateUnlockedTools(res[1].marketingTools.unlockedTools));
       })
       .catch(() => {});
   };
@@ -181,10 +184,10 @@ const SideBarComponent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (supplierMenu?.length) {
+    if (supplierMenu?.length && marketingToolsList?.length) {
       setMenuList(mapList(user.role));
     }
-  }, [supplierMenu]);
+  }, [supplierMenu, marketingToolsList]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
