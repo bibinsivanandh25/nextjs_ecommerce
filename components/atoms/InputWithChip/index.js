@@ -89,7 +89,7 @@ const InputFieldWithChip = ({
           )}
           onBlur={(e) => {
             if (e.target.value !== "") {
-              console.log(e.target.value, "ppp");
+              // console.log(e.target.value, "ppp");
               handleChange("", [...value, e.target.value]);
               setText("");
             }
