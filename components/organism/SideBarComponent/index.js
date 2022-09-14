@@ -212,7 +212,7 @@ const SideBarComponent = ({ children }) => {
           disabled={item.locked}
           onClick={(e) => {
             if (item.navigate) {
-              route.push(`${item.path_name}`);
+              route.push(`${item.pathName}`);
             }
             e.stopPropagation();
             setMenuList((pre) => {
