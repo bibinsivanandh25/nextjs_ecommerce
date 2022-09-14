@@ -9,12 +9,12 @@ import { useEffect, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
-import supplierSideBar from "constants/supplierSideBar";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
 import { getStaffdetails, saveStaff } from "services/supplier/staff";
 import { useRouter } from "next/router";
+import suppliercapability from "constants/suppliercapability";
 
 const tempObj = {
   firstName: "",
@@ -50,8 +50,8 @@ const StaffForm = ({
   };
 
   useEffect(() => {
-    setCapabilities(orginizeCapabilites(supplierSideBar));
-  }, [supplierSideBar]);
+    setCapabilities(orginizeCapabilites(suppliercapability));
+  }, [suppliercapability]);
   useEffect(() => {
     if (capabilites.length) {
       const flag = capabilites.every((ele) => ele.isChecked);
@@ -168,7 +168,6 @@ const StaffForm = ({
       toastify(data, "success");
       router.push("/supplier/staff");
     } else if (err) {
-      console.log(err.response, err, "poiuhyjk");
       toastify(err?.response?.data?.message, "error");
     }
   };

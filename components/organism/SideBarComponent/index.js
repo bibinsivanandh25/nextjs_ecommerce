@@ -4,7 +4,7 @@ import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -17,16 +17,18 @@ import ListItemText from "@mui/material/ListItemText";
 import { motion, AnimatePresence } from "framer-motion";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
-import { resellerMenu, supplierMenu } from "constants/navConstants";
-import { useSession } from "next-auth/react";
+import { resellerMenu } from "constants/navConstants";
 import { MenuItem, MenuList, Tooltip } from "@mui/material";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
+import { useSelector } from "react-redux";
+import { getNavBarItems, getmarketingToolStatus } from "services/supplier";
 
 const drawerWidth = 245;
 
 const SideBarComponent = ({ children }) => {
   const route = useRouter();
+  const [supplierMenu, setSupplierMenu] = useState([]);
 
   const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -97,7 +99,7 @@ const SideBarComponent = ({ children }) => {
     const temp = JSON.parse(JSON.stringify(list));
     const selectPath = (data, ind) => {
       return JSON.parse(JSON.stringify(data)).map((ele) => {
-        if (ele.path_name.split("/").includes(paths[ind])) {
+        if (ele.pathName.split("/").includes(paths[ind])) {
           ele.selected = true;
           if (ele?.child?.length && paths.length - 1 > ind) {
             ele.child = [...selectPath(ele.child, ind + 1)];
@@ -118,17 +120,17 @@ const SideBarComponent = ({ children }) => {
           ...item,
           id,
           selected: false,
-          path_name: `${path}/${item.path_name}`,
+          pathName: `${path}/${item.pathName}`,
         };
       }
       return {
         ...item,
         id,
         selected: false,
-        path_name: `${path}/${item.path_name}`,
+        pathName: `${path}/${item.pathName}`,
         child: [
           ...item.child.map((ele, index) => {
-            return addId(`${id}_${index}`, ele, `${path}/${item.path_name}`);
+            return addId(`${id}_${index}`, ele, `${path}/${item.pathName}`);
           }),
         ],
       };
@@ -141,24 +143,52 @@ const SideBarComponent = ({ children }) => {
     return JSON.parse(JSON.stringify(getInitialSelection([...list])));
   };
   const router = useRouter();
-  const { data: session } = useSession();
-  // const theme = useTheme();
   const [open, setOpen] = useState(false);
-  // const [path, setPath] = useState(route.pathname);
-  const [menuList, setMenuList] = useState([
-    ...mapList(session?.user?.role || "customer"),
-  ]);
+  const [menuList, setMenuList] = useState([]);
   const itemRef = React.useRef(null);
+  const user = useSelector((state) => state.user);
+  const [marketingToolsList, setmarketingToolsList] = useState([]);
+
+  const getSupplierNavitem = async () => {
+    const promiseArr = [
+      getNavBarItems().then((res) => {
+        return res.error ? null : { nav: res.data };
+      }),
+      getmarketingToolStatus(user.supplierId).then((res) => {
+        return res.error ? null : { marketingTools: res.data };
+      }),
+    ];
+    Promise.all(promiseArr)
+      .then((res) => {
+        setSupplierMenu(res[0].nav);
+        setmarketingToolsList(res[1].marketingTools.unlockedTools);
+      })
+      .catch(() => {});
+
+    // const { data } = await getNavBarItems();
+    // if (data) {
+    // }
+  };
 
   useEffect(() => {
-    setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
-  }, [route.pathname]);
+    getSupplierNavitem();
+  }, []);
 
-  useMemo(() => {
-    if (session && session.user) {
-      setMenuList([...mapList(session.user?.role)]);
+  useEffect(() => {
+    if (supplierMenu?.length) {
+      setMenuList(mapList(user.role));
     }
-  }, [session]);
+  }, [supplierMenu]);
+
+  // useEffect(() => {
+  //   setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
+  // }, [route.pathname]);
+
+  // useMemo(() => {
+  //   if (session && session.user) {
+  //     setMenuList([...mapList(session.user?.role)]);
+  //   }
+  // }, [session]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -309,7 +339,7 @@ const SideBarComponent = ({ children }) => {
                       onClick={() => {
                         if (item?.disabled) return;
                         if (item.navigate) {
-                          route.push(`${item.path_name}`);
+                          route.push(`${item.pathName}`);
                         }
                         setMenuList((pre) => {
                           const setSelectedToFalse = (data) => {

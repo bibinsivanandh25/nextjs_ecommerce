@@ -1,4 +1,4 @@
-const supplierSideBar = [
+const suppliercapability = [
   {
     capabilityType: "Dashboard",
     isEnable: false,
@@ -196,4 +196,4 @@ const supplierSideBar = [
     isEnable: false,
   },
 ];
-export default supplierSideBar;
+export default suppliercapability;
