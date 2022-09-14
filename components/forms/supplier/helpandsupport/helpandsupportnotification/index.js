@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import { Grid } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 

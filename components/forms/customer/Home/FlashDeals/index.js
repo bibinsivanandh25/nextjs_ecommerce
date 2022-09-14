@@ -11,11 +11,11 @@ const FlashDeals = () => {
     await serviceUtil
       .get("https://fakestoreapi.com/products/categories")
       .then((data) => {
-        console.log(data.data);
+        // console.log(data.data);
         setCategories([...data.data, ...data.data, ...data.data, ...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   const route = useRouter();

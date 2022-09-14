@@ -13,7 +13,7 @@ const Newpassword = () => {
   const router = useRouter();
   // const [showModal, setShowModal] = useState(false);
   const handleSubmit = () => {
-    console.log(formValues);
+    // console.log(formValues);
     // setShowModal(true);
     router.push("/auth/login");
   };

@@ -595,7 +595,7 @@ const GroupVariationForm = ({
       handleSubmit();
     }
   };
-  console.log("variationData", variationData);
+  // console.log("variationData", variationData);
   return (
     <div className="d-flex flex-column w-100">
       <div className="p-3  d-flex flex-column flex-grow-1">

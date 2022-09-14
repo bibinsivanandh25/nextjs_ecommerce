@@ -166,7 +166,7 @@ const Active = () => {
     }
 
     if (typeof ele === "object") {
-      console.log("Display button clicked");
+      // console.log("Display button clicked");
     }
 
     if (ele === "Remove") {
@@ -267,7 +267,7 @@ const Active = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  console.log("Index", index);
+                  // console.log("Index", index);
                   onClickOfMenuItem(ele, index);
                 }}
                 options={options}
@@ -281,7 +281,7 @@ const Active = () => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

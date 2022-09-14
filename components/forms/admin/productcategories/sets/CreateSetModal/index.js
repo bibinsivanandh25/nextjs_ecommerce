@@ -46,7 +46,7 @@ const CreateSetModal = ({
       returnError = true;
     }
     if (set === "") {
-      console.log("Hey");
+      // console.log("Hey");
       errObj.set = true;
       returnError = true;
     }
@@ -55,9 +55,9 @@ const CreateSetModal = ({
   };
 
   const handleSaveBtnClick = () => {
-    const [returnError, errObj] = handleError();
+    const [errObj] = handleError();
     setError(errObj);
-    console.log(returnError);
+    // console.log(returnError);
   };
 
   const handleClearAll = () => {
@@ -98,7 +98,7 @@ const CreateSetModal = ({
           inputlabelshrink
           size="small"
           onDropdownSelect={(value) => {
-            console.log(setDetails);
+            // console.log(setDetails);
             setSetDetails({ ...setDetails, category: { label: value?.label } });
           }}
           value={setDetails?.category}

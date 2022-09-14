@@ -99,7 +99,7 @@ const AdminCapabilities = ({ setShowAdminCapabilities }) => {
       description: false,
       users: false,
     };
-    console.log(adminManagers);
+    // console.log(adminManagers);
     if (groupName === "") {
       errObj.groupName = true;
     }

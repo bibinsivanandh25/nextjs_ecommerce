@@ -189,7 +189,7 @@ const StoreSettings = () => {
   const user = useSelector((state) => {
     return state.user;
   });
-  console.log(formValues);
+  // console.log(formValues);
 
   // const get12hourformat = (time) => {
   //   // Prepend any date. Use your birthday.
@@ -363,7 +363,7 @@ const StoreSettings = () => {
           }));
           updateSupplierStore(data);
         } else if (err) {
-          console.log(err.response);
+          // console.log(err.response);
         }
       } else {
         updateSupplierStore([storeLogo.url, discriptionImage.url]);

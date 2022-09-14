@@ -106,7 +106,7 @@ const Rejected = () => {
     const { data, err } = await getAdminProductsByFilter(payLoad);
 
     if (data) {
-      console.log("The data ", data);
+      // console.log("The data ", data);
       const result = [];
       data.products.forEach((val, index) => {
         result.push({
@@ -187,7 +187,7 @@ const Rejected = () => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

@@ -11,11 +11,11 @@ const CancelledOrder = () => {
     await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
-        // console.log(data.data);
+        // // console.log(data.data);
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 

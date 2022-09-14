@@ -39,7 +39,7 @@ const HelpandsupportView = ({ selectedData, setShowView }) => {
 
   const handleCreateBtnClick = () => {
     if (validateForm()) {
-      console.log(formValue);
+      // console.log(formValue);
     }
   };
 
@@ -92,12 +92,7 @@ const HelpandsupportView = ({ selectedData, setShowView }) => {
           <Grid item>
             <>
               <span className="me-2 fw-600">Attach File :</span>
-              <input
-                type="file"
-                hidden
-                ref={inputField}
-                onChange={(e) => console.log(e.target.files[0])}
-              />
+              <input type="file" hidden ref={inputField} onChange={() => {}} />
               <ButtonComponent
                 label="Choose File"
                 color="#e8e8e8"

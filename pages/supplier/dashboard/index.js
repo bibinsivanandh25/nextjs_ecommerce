@@ -66,7 +66,7 @@
 //   //     .get("/home")
 //   //     .then((data) => {})
 //   //     .catch((err) => {
-//   //       console.log(err);
+//   //       // console.log(err);
 //   //     });
 //   // }, []);
 //   const performance = {
@@ -434,7 +434,7 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-  console.log(currentYear, "currentYear");
+  // console.log(currentYear, "currentYear");
   return (
     <div>
       {showAddressModal ? (

@@ -26,7 +26,7 @@ const EditModal = ({ openEditModal, setOpenEditModal }) => {
 
   const handleSubmit = () => {
     const theError = handleError();
-    console.log(theError);
+    // console.log(theError);
     setError(theError);
   };
 

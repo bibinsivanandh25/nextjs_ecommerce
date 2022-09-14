@@ -74,7 +74,7 @@ const ProductDetailsCard = ({
       transformOrigin: "bottom left",
     },
   });
-  console.log(showIcon);
+  // console.log(showIcon);
 
   const getProductsCard = () => {
     {

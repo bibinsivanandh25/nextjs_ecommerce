@@ -260,7 +260,7 @@ const Login = () => {
           }
         })
         .catch((err) => {
-          console.log(err, "err");
+          // console.log(err, "err");
           throw err;
         });
     }

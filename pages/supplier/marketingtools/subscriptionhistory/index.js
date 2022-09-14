@@ -67,7 +67,7 @@ const SubscriptionHistory = () => {
   const supplierId = useSelector((state) => state?.user?.supplierId);
 
   const getTableData = async (page, date) => {
-    console.log(date);
+    // console.log(date);
     // if (
     //   (date?.fromDate === "" && date?.toDate === "") ||
     //   (date?.fromDate.length && date?.toDate?.length)
@@ -119,7 +119,7 @@ const SubscriptionHistory = () => {
             toDate: "",
           }
         ) => {
-          console.log({ searchText, filterText, page, filterDate });
+          // console.log({ searchText, filterText, page, filterDate });
           getTableData(page, filterDate);
         }}
         // getFilteredDates={(date) => {

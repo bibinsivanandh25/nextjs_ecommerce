@@ -21,8 +21,8 @@ const HomeComponent = ({
         <Typography className="fw-bold">{productTitle}</Typography>
         <ProductDetailsCard
           products={[...products]}
-          getSelectedItem={(item) => {
-            console.log(item);
+          getSelectedItem={() => {
+            // console.log(item);
           }}
           showMarginButton={showMarginButton}
         />

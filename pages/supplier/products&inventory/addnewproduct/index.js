@@ -338,7 +338,7 @@ const NewProducts = () => {
         };
       }),
     ];
-    // console.log({ temp1 });
+    // // console.log({ temp1 });
     // attributeList = [...temp1];
   };
   const tagValues = [];

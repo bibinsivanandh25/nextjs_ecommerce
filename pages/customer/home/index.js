@@ -100,7 +100,7 @@ const Home = () => {
         setCategories([...results]);
       });
     } else if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -117,7 +117,7 @@ const Home = () => {
       setBannerImages([...temp]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -140,7 +140,7 @@ const Home = () => {
       setProducts([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   useEffect(() => {
@@ -249,8 +249,8 @@ const Home = () => {
           ) : null}
           <Box className="py-2">
             <HomeComponent
-              onCategoryClick={(ele) => {
-                console.log(ele, "AS");
+              onCategoryClick={() => {
+                // console.log(ele, "AS");
               }}
               categories={[...categories]}
               products={[...products]}

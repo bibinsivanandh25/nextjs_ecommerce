@@ -116,19 +116,19 @@ const CreateDiscountModal = ({
         setError({ ...errObj });
         setEndDate(date);
       } else if (startDate.getTime() > date.getTime()) {
-        console.log("Hi");
+        // console.log("Hi");
         errObj.endDateSmaller = true;
         setError({ ...errObj });
         setEndDate(date);
       } else {
-        console.log(2);
-        console.log("Hi");
+        // console.log(2);
+        // console.log("Hi");
         errObj.endDateSmaller = false;
         setError({ ...errObj });
         setEndDate(date);
       }
     } else {
-      console.log(3);
+      // console.log(3);
       setEndDate(date);
     }
   };
@@ -186,7 +186,7 @@ const CreateDiscountModal = ({
               size="small"
               list={[{ label: "Day 1" }, { label: "Day 2" }]}
               onDropdownSelect={(value) => {
-                console.log(value);
+                // console.log(value);
                 setDays(value);
               }}
               value={days}

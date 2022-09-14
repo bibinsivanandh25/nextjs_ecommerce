@@ -202,7 +202,7 @@ const MyProfile = () => {
       setShowVerifyOtp(false);
       getSupplierDetails();
     } else if (err) {
-      console.log(err.response);
+      // console.log(err.response);
     }
   };
 
@@ -214,7 +214,7 @@ const MyProfile = () => {
       } else {
         const { data, err } = await sendOTP(formValues.mobile);
         if (data) {
-          console.log(data);
+          // console.log(data);
           setShowVerifyOtp(true);
         } else if (err) {
           toastify(err.response.data.message);
@@ -275,7 +275,7 @@ const MyProfile = () => {
       if (data) {
         setProfileImage(data?.data);
       } else if (err) {
-        console.log(err?.response?.data?.message);
+        // console.log(err?.response?.data?.message);
       }
     }
   };
@@ -625,7 +625,7 @@ const MyProfile = () => {
                 formData.append("otp", otp);
                 const { data, errRes } = await verifyOtp(formData);
                 if (data) {
-                  console.log(data);
+                  // console.log(data);
                   updateProfile();
                 } else if (errRes) {
                   toastify(errRes?.message, "error");

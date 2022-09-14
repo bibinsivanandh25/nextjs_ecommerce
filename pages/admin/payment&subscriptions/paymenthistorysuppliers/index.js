@@ -142,8 +142,8 @@ const PaymentHistorySuppliers = () => {
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                console.log("Index", index);
-                console.log("ele ", typeof ele);
+                // console.log("Index", index);
+                // console.log("ele ", typeof ele);
                 onClickOfMenuItem(ele, index);
               }}
               options={options}

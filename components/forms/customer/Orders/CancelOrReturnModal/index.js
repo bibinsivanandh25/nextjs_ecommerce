@@ -46,7 +46,7 @@ const CancelOrReturnModal = ({
                       ele.isSelected = !ele.isSelected;
                     }
                   });
-                  console.log(temp);
+                  // console.log(temp);
                   setSelectedProduct([...temp]);
                 }}
               />

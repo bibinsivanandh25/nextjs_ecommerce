@@ -61,12 +61,6 @@ const CreateCategories = ({ setShowCreateCategories }) => {
           <Box className="">
             <CustomIcon
               onIconClick={() => {
-                console.log(
-                  "name ",
-                  val.variationName,
-                  " Attributes ",
-                  val.variationAttributes
-                );
                 setVariationId(index);
                 setVariationName(val.variationName);
                 setcurrentVariationName(val.variationName);

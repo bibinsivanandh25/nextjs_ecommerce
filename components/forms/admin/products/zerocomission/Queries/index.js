@@ -17,7 +17,7 @@ const Queries = ({
   rowsDataObjectsForQueries = [],
   setrowsDataObjectsForQueries = () => {},
 }) => {
-  console.log("Hi");
+  // console.log("Hi");
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -196,7 +196,7 @@ const Queries = ({
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                console.log("Index", index);
+                // console.log("Index", index);
                 onClickOfMenuItem(ele, index);
               }}
               options={options}

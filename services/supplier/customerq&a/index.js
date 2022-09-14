@@ -8,7 +8,7 @@ const getQuestionsAndAnswers = (supplierId, payload) => {
       return data;
     })
     .catch((error) => {
-      console.log(error, "error message");
+      // console.log(error, "error message");
       return { error };
     });
 };

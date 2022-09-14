@@ -241,8 +241,8 @@ const ViewProducts = ({ setShowViewProduct = () => {} }) => {
     ]);
   }, [formData]);
 
-  const handleSubmitClick = (data) => {
-    console.log(data);
+  const handleSubmitClick = () => {
+    // console.log(data);
   };
 
   return (

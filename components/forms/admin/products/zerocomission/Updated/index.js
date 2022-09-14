@@ -77,7 +77,7 @@ const Updated = ({
   ];
 
   const onClickOfMenuItem = (ele, index) => {
-    console.log("Element ", ele);
+    // console.log("Element ", ele);
     if (ele === "Edit") {
       setModalId(index);
       setOpenEditModalForUpdated(true);
@@ -134,8 +134,8 @@ const Updated = ({
   //           />
   //           <MenuOption
   //             getSelectedItem={(ele) => {
-  //               console.log("Index", index);
-  //               console.log("ele ", typeof ele);
+  //               // console.log("Index", index);
+  //               // console.log("ele ", typeof ele);
   //               onClickOfMenuItem(ele, index);
   //             }}
   //             options={options}
