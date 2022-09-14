@@ -210,6 +210,10 @@ const ProductsLayout = ({
   };
 
   useEffect(() => {
+    if (editProduct || duplicateFlag) getB2BTradmarkValues("TRADEMARK_LETTER");
+  }, [editProduct, duplicateFlag]);
+
+  useEffect(() => {
     getTags();
     getSelectCategoryData();
     getB2BTradmarkValues("B2B_INVOICE");
@@ -594,6 +598,26 @@ const ProductsLayout = ({
           },
         });
       }
+    } else if (editProduct) {
+      // const { data, err } = await saveDuplicateProduct(
+      //   payload,
+      //   productDetails.supplierId,
+      //   productDetails.variationData.productVariationId
+      // );
+      // if (err) {
+      //   toastify(err.response.data.message, "error");
+      // } else if (data) {
+      //   toastify(data.message, "success");
+      //   dispatch(clearProduct());
+      //   router.replace({
+      //     pathname: "/supplier/products&inventory/myproducts",
+      //     query: {
+      //       active: "2",
+      //     },
+      //   });
+      // }
+      console.log("Update is incomplete", payload);
+      toastify("Update is incomplete", "info");
     } else {
       const { data, err } = await saveProduct(payload);
       if (err) {
@@ -986,6 +1010,7 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.brand && errorObj.brand !== ""}
                     helperText={errorObj.brand ?? ""}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1080,7 +1105,6 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
-                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1110,7 +1134,6 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj.limit_per_order ?? ""}
                     placeholder="Enter the order limit(eg.: 1)"
-                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1141,6 +1164,7 @@ const ProductsLayout = ({
                     label="Branded"
                     isChecked={formData?.mainForm?.brandradio}
                     onRadioChange={() => {
+                      if (editProduct) return;
                       setFormData((prev) => ({
                         ...prev,
                         mainForm: {
@@ -1158,6 +1182,7 @@ const ProductsLayout = ({
                     label="Generic"
                     isChecked={formData?.mainForm?.genericradio}
                     onRadioChange={() => {
+                      if (editProduct) return;
                       setFormData((prev) => ({
                         ...prev,
                         mainForm: {

@@ -112,7 +112,6 @@ const InventoryForm = forwardRef(
                 inputlabelshrink
                 fullWidth
                 type="number"
-                disabled={editProduct}
               />
             </div>
           </Grid>
@@ -136,7 +135,6 @@ const InventoryForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
-                isDisabled={editProduct}
               />
             </div>
           </Grid>
@@ -158,7 +156,6 @@ const InventoryForm = forwardRef(
                 }}
                 placeholder="Select stock status"
                 type="number"
-                disabled={editProduct}
               />
             </div>
           </Grid>
@@ -182,7 +179,6 @@ const InventoryForm = forwardRef(
                       errorObj.allow_backorders &&
                       errorObj.allow_backorders !== ""
                     }
-                    disabled={editProduct}
                   />
                 </div>
                 <div className="mx-2">
@@ -205,7 +201,6 @@ const InventoryForm = forwardRef(
                     type="number"
                     helperText={errorObj.back_Orders ?? ""}
                     error={errorObj.back_Orders && errorObj.back_Orders !== ""}
-                    disabled={editProduct}
                   />
                 </Grid>
               ) : null}
@@ -226,7 +221,6 @@ const InventoryForm = forwardRef(
               helperText={errorObj.shipping_class ?? ""}
               error={errorObj.shipping_class ?? errorObj.shipping_class !== ""}
               placeholder="Select shipping class"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -260,7 +254,6 @@ const InventoryForm = forwardRef(
                 handleDropdownChange(value, "business_processing_days");
               }}
               placeholder="Select processing days"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -297,7 +290,6 @@ const InventoryForm = forwardRef(
                 errorObj.meta_description && errorObj.meta_description !== ""
               }
               placeholder="Enter meta description"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -320,7 +312,6 @@ const InventoryForm = forwardRef(
               helperText={errorObj.meta_keyword ?? ""}
               error={errorObj.meta_keyword && errorObj.meta_keyword !== ""}
               placeholder="Enter keywords"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
