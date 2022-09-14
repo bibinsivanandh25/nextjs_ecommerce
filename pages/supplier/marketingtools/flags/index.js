@@ -1,11 +1,14 @@
 import { Box, Paper } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import ViewModal from "@/forms/supplier/marketingtools/flags/viewmodal";
 import FlagsEditModal from "@/forms/supplier/marketingtools/flags/flagseditmodal";
+import { getAllFlags } from "services/supplier/marketingtools/flags";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 
 const tableColumn = [
   {
@@ -213,6 +216,8 @@ const imageData = [
 const Flags = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
   const TableRows = [
     {
       id: 1,
@@ -251,14 +256,68 @@ const Flags = () => {
       ),
     },
   ];
+  const { supplierId, storeCode } = useSelector((state) => state.user);
+
+  const mapToTable = (data) => {
+    const temp = [];
+    data.forEach((item) => {
+      temp.push({
+        col1: item.flagTitle,
+        col2: item.imageUrl ? (
+          <Image src={item.imageUrl} height={50} width={50} />
+        ) : null,
+        col3: "--",
+        col4: item.startDate || "--",
+        col5: item.endDate || "--",
+        col6: item.status || "--",
+        col7: (
+          <Box className="d-flex">
+            <SwitchComponent label="" size="small" />
+            <CustomIcon type="share" className="fs-18 me-2" />
+            <CustomIcon
+              type="view"
+              className="fs-18 me-2"
+              onIconClick={() => {
+                setViewModalOpen(true);
+              }}
+            />
+            <CustomIcon
+              type="edit"
+              className="fs-18"
+              onIconClick={() => {
+                setEditModalOpen(true);
+              }}
+            />
+          </Box>
+        ),
+      });
+    });
+    setRows(temp);
+  };
+
+  const getRows = async () => {
+    const { data, err } = await getAllFlags(supplierId, storeCode, pageNumber);
+    if (data) {
+      mapToTable(data);
+    } else {
+      toastify(err?.response?.data?.message, "error");
+      setRows([]);
+    }
+  };
+
+  useEffect(() => {
+    getRows();
+  }, []);
+
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar p-3">
       <TableComponent
         table_heading="Flags"
         columns={tableColumn}
-        tableRows={TableRows}
+        tableRows={rows}
         showDateFilter
         tHeadBgColor="bg-tableGray"
+        showCheckbox={false}
       />
       {viewModalOpen && (
         <ViewModal
