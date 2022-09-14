@@ -131,7 +131,7 @@ const Tags = () => {
               options={["View", "Edit", "Delete"]}
               IconclassName="fs-5 cursor-pointer"
               getSelectedItem={(ele) => {
-                console.log(ele);
+                // console.log(ele);
                 if (ele === "View") {
                   setViewModalOpen(true);
                 }

@@ -140,10 +140,7 @@ const CustomerQnA = () => {
             className="fs-5 mx-2"
             onClick={() => setShowViewModal(true)}
           />
-          <MenuOption
-            IconclassName="fs-5"
-            getSelectedItem={(ele) => console.log(ele)}
-          />
+          <MenuOption IconclassName="fs-5" getSelectedItem={() => {}} />
         </div>
       ),
     },
@@ -201,10 +198,7 @@ const CustomerQnA = () => {
             className="fs-5 mx-2"
             onClick={() => setShowViewModal(true)}
           />
-          <MenuOption
-            IconclassName="fs-5"
-            getSelectedItem={(ele) => console.log(ele)}
-          />
+          <MenuOption IconclassName="fs-5" getSelectedItem={() => {}} />
         </div>
       ),
     },
@@ -330,10 +324,7 @@ const CustomerQnA = () => {
             className="fs-5"
             onClick={() => setShowViewModal(true)}
           />
-          <MenuOption
-            IconclassName="fs-5"
-            getSelectedItem={(ele) => console.log(ele)}
-          />
+          <MenuOption IconclassName="fs-5" getSelectedItem={() => {}} />
         </div>
       ),
     },
@@ -384,10 +375,7 @@ const CustomerQnA = () => {
             className="fs-5"
             onClick={() => setShowViewModal(true)}
           />
-          <MenuOption
-            IconclassName="fs-5"
-            getSelectedItem={(ele) => console.log(ele)}
-          />
+          <MenuOption IconclassName="fs-5" getSelectedItem={() => {}} />
         </div>
       ),
     },

@@ -28,7 +28,7 @@ const HomeComponent = ({
               products={[...products]}
               getSelectedItem={(item) => {
                 getProductDetails(item);
-                console.log(item);
+                // console.log(item);
               }}
               showMarginButton={showMarginButton}
               showIcon={false}

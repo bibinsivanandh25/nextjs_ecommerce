@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-return */
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { useEffect, useRef, useState } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -41,9 +42,9 @@ const Bargraph = ({
   const onClick = (event) => {
     const element = getElementAtEvent(chartRef.current, event);
     if (!element.length) return;
-    const { datasetIndex, index } = element[0];
-    console.log(datasets[datasetIndex].data[index]);
-    console.log(labels[index]);
+    // const { datasetIndex, index } = element[0];
+    // console.log(datasets[datasetIndex].data[index]);
+    // console.log(labels[index]);
   };
 
   useEffect(() => {

@@ -224,7 +224,7 @@ const CreateArticleModal = ({
               </Typography>
               <TextEditor
                 getContent={(content) => {
-                  console.log(content);
+                  // console.log(content);
                   setShortDescription(content);
                 }}
                 content={shortDescription}

@@ -137,7 +137,7 @@ const MyProducts = () => {
   };
 
   const deleteSingleRow = (productId) => {
-    console.log(productId);
+    // console.log(productId);
     deleteSingleProduct(productId);
     getTableData("", "", 0);
   };

@@ -62,7 +62,7 @@ const PushNotificationModal = ({
           <Box className="d-flex justify-content-center mb-1">
             <TextEditor
               getContent={(content) => {
-                console.log(content);
+                // console.log(content);
                 setBody(content);
               }}
               content={body}

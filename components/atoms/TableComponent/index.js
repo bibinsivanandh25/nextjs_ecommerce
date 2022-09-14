@@ -842,7 +842,7 @@ export default function TableComponent({
 //     col1: "India",
 //     col2: "IN",
 //     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => console.log(e)}>
+//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
 //         121212
 //       </div>
 //     ),

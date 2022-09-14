@@ -112,7 +112,7 @@ const AddEditProductModal = ({
 
   const handleSaveBtnClickOfEditModal = () => {
     const theErrObj = handleError();
-    console.log("Error Object ", theErrObj);
+    // console.log("Error Object ", theErrObj);
     setError(theErrObj);
     let isError = false;
 
@@ -181,10 +181,10 @@ const AddEditProductModal = ({
     let mrpPrice = 0;
     if (productDetails.salePriceAndMrp) {
       const tempArray = productDetails.salePriceAndMrp.split("/");
-      console.log(tempArray);
+      // console.log(tempArray);
       // eslint-disable-next-line prefer-destructuring
       mrpPrice = tempArray[1];
-      console.log(mrpPrice);
+      // console.log(mrpPrice);
     }
     return parseInt(mrpPrice, 10);
   };
@@ -193,10 +193,10 @@ const AddEditProductModal = ({
     let salePrice = 0;
     if (productDetails.salePriceAndMrp) {
       const tempArray = productDetails.salePriceAndMrp.split("/");
-      console.log(tempArray);
+      // console.log(tempArray);
       // eslint-disable-next-line prefer-destructuring
       salePrice = tempArray[0];
-      console.log(salePrice);
+      // console.log(salePrice);
     }
     return parseInt(salePrice, 10);
   };

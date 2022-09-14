@@ -138,7 +138,7 @@ const CustomerQnA = () => {
   //         />
   //         <MenuOption
   //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => console.log(ele)}
+  //           getSelectedItem={(ele) => // console.log(ele)}
   //         />
   //       </div>
   //     ),
@@ -187,7 +187,7 @@ const CustomerQnA = () => {
   //         <RemoveRedEye className="fs-5 cursor-pointer" />
   //         <MenuOption
   //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => console.log(ele)}
+  //           getSelectedItem={(ele) => // console.log(ele)}
   //         />
   //       </div>
   //     ),
@@ -315,7 +315,7 @@ const CustomerQnA = () => {
   //         />
   //         <MenuOption
   //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => console.log(ele)}
+  //           getSelectedItem={(ele) => // console.log(ele)}
   //         />
   //       </div>
   //     ),
@@ -364,7 +364,7 @@ const CustomerQnA = () => {
   //         <RemoveRedEye className="fs-5" />
   //         <MenuOption
   //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => console.log(ele)}
+  //           getSelectedItem={(ele) => // console.log(ele)}
   //         />
   //       </div>
   //     ),
@@ -404,7 +404,7 @@ const CustomerQnA = () => {
 
   const handleMenuSelecteItemsForAnswers = (ele, answer, questionId, varId) => {
     if (ele === "Edit") {
-      console.log("Answer ", answer);
+      // console.log("Answer ", answer);
       setReply(answer);
       setDataForSendingReply({
         customerQuestionId: questionId,
@@ -562,7 +562,7 @@ const CustomerQnA = () => {
             />
             <MenuOption
               IconclassName="fs-5"
-              getSelectedItem={(ele) => console.log(ele)}
+              getSelectedItem={() => {}}
               options={["Delete"]}
             />
           </div>
@@ -579,19 +579,19 @@ const CustomerQnA = () => {
       dateFrom: "",
       dateTo: "",
     });
-    console.log(data, error.response?.data?.message, "balu");
+    // console.log(data, error.response?.data?.message, "balu");
     if (data) {
       if (!check) {
-        console.log(data, "unans");
+        // console.log(data, "unans");
         const tempArray = setUnansweredQuestionsRows(data);
-        console.log("tab1");
+        // console.log("tab1");
         setQuestionCount(data.count);
         setQuestions([...tempArray]);
       } else {
-        console.log(data, "ans");
+        // console.log(data, "ans");
         const tempArray = setAnsweredQuestionsRows(data);
-        console.log("Answer data ", data);
-        console.log("tab2");
+        // console.log("Answer data ", data);
+        // console.log("tab2");
         setAnswerCount(data.count);
         setAnswers([...tempArray]);
       }

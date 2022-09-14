@@ -112,7 +112,7 @@ const MyNotification = () => {
           <MenuOption
             IconclassName="fs-5 cursor-pointer"
             getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+              // console.log(ele, "ele");
               if (ele == "Edit") {
                 setMyQueriesEditClick(true);
               }
@@ -158,7 +158,7 @@ const MyNotification = () => {
           />
           <MenuOption
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => console.log(ele)}
+            getSelectedItem={() => {}}
           />
         </div>
       ),

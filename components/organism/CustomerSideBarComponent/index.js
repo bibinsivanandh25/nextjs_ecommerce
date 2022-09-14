@@ -147,7 +147,7 @@ const CustomerSideBarComponent = ({ children }) => {
                       }}
                       className="cursor-pointer"
                       onClick={() => {
-                        console.log(item.path_name);
+                        // console.log(item.path_name);
                         // route.push(`${item.path_name}`);
                         setMenuList((pre) => {
                           const setSelectedToFalse = (data) => {

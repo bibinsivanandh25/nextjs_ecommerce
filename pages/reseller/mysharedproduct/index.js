@@ -16,8 +16,8 @@ const MySharedCategory = () => {
       .then((data) => {
         setCategoryData([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 

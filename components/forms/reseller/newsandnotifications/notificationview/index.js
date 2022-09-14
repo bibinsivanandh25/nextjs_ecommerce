@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import { Grid } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -58,12 +59,7 @@ const ResellerNotificationView = ({ notificationDetails }) => {
         >
           <Grid item>
             <span className="me-2 fw-600">Attach File :</span>
-            <input
-              type="file"
-              hidden
-              ref={inputField}
-              onChange={(e) => console.log(e.target.files[0])}
-            />
+            <input type="file" hidden ref={inputField} onChange={() => {}} />
             <ButtonComponent
               label="choose file"
               color="#e8e8e8"

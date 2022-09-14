@@ -305,12 +305,12 @@ const CreateFlagModal = ({ openCreateFlagModal, setOpenCreateFlagModal }) => {
             errObj.endTime = false;
             setEndTime(value);
           } else if (startHour === endHour && startMinute >= endMinute) {
-            console.log("Hi");
+            // console.log("Hi");
             errObj.invalidEndTime = true;
             errObj.invalidStartTime = true;
             setEndTime(value);
           } else if (startHour > endHour) {
-            console.log("Hey");
+            // console.log("Hey");
             errObj.invalidEndTime = true;
             errObj.invalidStartTime = true;
             setEndTime(value);
@@ -365,12 +365,12 @@ const CreateFlagModal = ({ openCreateFlagModal, setOpenCreateFlagModal }) => {
             errObj.startTime = false;
             setStartTime(value);
           } else if (startHour === endHour && startMinute >= endMinute) {
-            console.log("Hi");
+            // console.log("Hi");
             errObj.invalidStartTime = true;
             errObj.invalidEndTime = true;
             setStartTime(value);
           } else if (startHour > endHour) {
-            console.log("Hey");
+            // console.log("Hey");
             errObj.invalidStartTime = true;
             errObj.invalidEndTime = true;
             setStartTime(value);

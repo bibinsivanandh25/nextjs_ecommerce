@@ -77,8 +77,8 @@ const AdminFlags = () => {
             <Typography className="h-5">Disable</Typography>
           </Box>
           <MenuOption
-            getSelectedItem={(ele) => {
-              console.log(ele);
+            getSelectedItem={() => {
+              // console.log(ele);
               //   onClickOfMenuItem(ele);
             }}
             options={["view", "Edit", "Delete"]}

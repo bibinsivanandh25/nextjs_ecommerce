@@ -114,7 +114,7 @@ const CustomerRegistration = () => {
         wished: false,
       };
       const { data, err, message } = await registerCustomer(payload);
-      console.log({ data, err });
+      // console.log({ data, err });
       if (data) {
         toastify(message, "success");
         router.push("/auth/customer/signin");

@@ -43,7 +43,7 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
   const [files, setFiles] = useState([]);
 
   const fileRef = useRef(null);
-  console.log(files, "asljh");
+  // console.log(files, "asljh");
 
   return (
     <ModalComponent
@@ -163,7 +163,7 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
         ref={fileRef}
         hidden
         onChange={(e) => {
-          console.log(e.target.files);
+          // console.log(e.target.files);
           setFiles([...files, e.target.files[0].name]);
         }}
       />

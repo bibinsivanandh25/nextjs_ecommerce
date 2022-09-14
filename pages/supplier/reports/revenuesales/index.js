@@ -232,7 +232,7 @@ const RevenueSales = () => {
   //     .get("/home")
   //     .then((data) => {})
   //     .catch((err) => {
-  //       console.log(err);
+  //       // console.log(err);
   //     });
   // }, []);
   const performance = {

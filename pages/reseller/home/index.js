@@ -110,8 +110,8 @@ const Home = () => {
       .then((data) => {
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 

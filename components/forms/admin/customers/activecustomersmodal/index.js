@@ -28,7 +28,7 @@ const ActiveCustomerViewModal = () => {
         item.isSelected = false;
       }
     });
-    console.log(data, "data");
+    // console.log(data, "data");
     setTabListData(data);
   };
   return (

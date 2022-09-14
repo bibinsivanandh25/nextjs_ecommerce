@@ -177,9 +177,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     return flag;
   };
   const handleSubmit = () => {
-    console.log(validate());
+    validate();
     if (formRef.current) {
-      console.log(formRef.current.handleSendFormData());
+      // console.log(formRef.current.handleSendFormData());
     }
   };
 

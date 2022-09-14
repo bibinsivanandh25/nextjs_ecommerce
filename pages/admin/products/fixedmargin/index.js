@@ -116,7 +116,7 @@ const FixedMargin = () => {
         });
       }
     });
-    console.log(tabs, "tabs");
+    // console.log(tabs, "tabs");
     setTabList([...tabs]);
   };
 

@@ -156,7 +156,7 @@ const MrMrsAddNewCoupons = ({
   const handleSubmitClick = async (couponStatus) => {
     // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
-    console.log(isValid, "isValid");
+    // console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
@@ -293,7 +293,7 @@ const MrMrsAddNewCoupons = ({
                 id="couponExpiryDate"
                 name="couponExpiryDate"
                 onDateChange={(val) => {
-                  console.log(val);
+                  // console.log(val);
 
                   setFormValues((prev) => ({
                     ...prev,
@@ -438,7 +438,7 @@ const MrMrsAddNewCoupons = ({
                           id="productsInclude"
                           name="productsInclude"
                           onSelectionChange={(e, val) => {
-                            console.log(val, "ASds");
+                            // console.log(val, "ASds");
 
                             setFormValues((prev) => ({
                               ...prev,

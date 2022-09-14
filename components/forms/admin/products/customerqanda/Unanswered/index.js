@@ -250,7 +250,7 @@ const Unanswered = () => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

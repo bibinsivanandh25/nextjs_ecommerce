@@ -475,10 +475,7 @@ const DashBoard = () => {
   return (
     <Box className="">
       <Box className="my-2 p-1">
-        <NavTabComponent
-          listData={navData}
-          getFromDate={(val) => console.log(val)}
-        />
+        <NavTabComponent listData={navData} getFromDate={() => {}} />
       </Box>
       <Grid container className="px-3" spacing={2}>
         <Grid item md={6} sm={12} className="">

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-param-reassign */
 import React, { useEffect, useState } from "react";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -190,7 +192,7 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-  console.log(currentYear, "currentYear");
+  // console.log(currentYear, "currentYear");
   return (
     <div>
       {showAddressModal ? (

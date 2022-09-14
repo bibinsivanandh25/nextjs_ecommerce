@@ -219,7 +219,7 @@ export default function TableComponent({
         ? 1
         : -1;
     });
-    console.log({ arr });
+    // console.log({ arr });
     setfilteredColumns([...arr]);
   }, [column2, columns]);
 
@@ -322,7 +322,7 @@ export default function TableComponent({
     if (dateValue.from && dateValue.to) {
       const startDate = new Date(dateValue.from);
       const endDate = new Date(dateValue.to);
-      const resultProductData = tableRows.filter(function (a) {
+      const resultProductData = tableRows.filter((a) => {
         for (const i of dateFilterColName) {
           const date = new Date(a[i]);
           return date >= startDate && date <= endDate;
@@ -575,7 +575,7 @@ export default function TableComponent({
 //     col1: "India",
 //     col2: "IN",
 //     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => console.log(e)}>
+//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
 //         121212
 //       </div>
 //     ),
