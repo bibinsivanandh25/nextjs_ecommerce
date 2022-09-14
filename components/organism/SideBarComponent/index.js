@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
 import { getNavBarItems, getmarketingToolStatus } from "services/supplier";
+import CustomIcon from "services/iconUtils";
 
 const drawerWidth = 245;
 
@@ -113,6 +114,13 @@ const SideBarComponent = ({ children }) => {
     const tempList = selectPath(temp, 0);
     return JSON.parse(JSON.stringify(tempList));
   };
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [menuList, setMenuList] = useState([]);
+  const itemRef = React.useRef(null);
+  const user = useSelector((state) => state.user);
+  const [marketingToolsList, setmarketingToolsList] = useState([]);
+
   const mapList = (role) => {
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
@@ -121,6 +129,10 @@ const SideBarComponent = ({ children }) => {
           id,
           selected: false,
           pathName: `${path}/${item.pathName}`,
+          disabled: false,
+          locked: path.includes("/supplier/marketingtools")
+            ? !marketingToolsList.includes(item.pathName)
+            : false,
         };
       }
       return {
@@ -128,6 +140,10 @@ const SideBarComponent = ({ children }) => {
         id,
         selected: false,
         pathName: `${path}/${item.pathName}`,
+        disabled: false,
+        locked: path.includes("/supplier/marketingtools")
+          ? !marketingToolsList.includes(item.pathName)
+          : false,
         child: [
           ...item.child.map((ele, index) => {
             return addId(`${id}_${index}`, ele, `${path}/${item.pathName}`);
@@ -142,12 +158,6 @@ const SideBarComponent = ({ children }) => {
     getInitialSelection([...list]);
     return JSON.parse(JSON.stringify(getInitialSelection([...list])));
   };
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [menuList, setMenuList] = useState([]);
-  const itemRef = React.useRef(null);
-  const user = useSelector((state) => state.user);
-  const [marketingToolsList, setmarketingToolsList] = useState([]);
 
   const getSupplierNavitem = async () => {
     const promiseArr = [
@@ -161,13 +171,9 @@ const SideBarComponent = ({ children }) => {
     Promise.all(promiseArr)
       .then((res) => {
         setSupplierMenu(res[0].nav);
-        setmarketingToolsList(res[1].marketingTools.unlockedTools);
+        setmarketingToolsList(res[1].marketingTools.unlockedTools || []);
       })
       .catch(() => {});
-
-    // const { data } = await getNavBarItems();
-    // if (data) {
-    // }
   };
 
   useEffect(() => {
@@ -180,15 +186,6 @@ const SideBarComponent = ({ children }) => {
     }
   }, [supplierMenu]);
 
-  // useEffect(() => {
-  //   setMenuList(JSON.parse(JSON.stringify(getInitialSelection([...menuList]))));
-  // }, [route.pathname]);
-
-  // useMemo(() => {
-  //   if (session && session.user) {
-  //     setMenuList([...mapList(session.user?.role)]);
-  //   }
-  // }, [session]);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -212,12 +209,12 @@ const SideBarComponent = ({ children }) => {
       // if (!item.selected) {
       return (
         <MenuItem
+          disabled={item.locked}
           onClick={(e) => {
             if (item.navigate) {
               route.push(`${item.path_name}`);
             }
             e.stopPropagation();
-            // if (item?.child?.length) {
             setMenuList((pre) => {
               const temp = JSON.parse(JSON.stringify(pre));
               temp.forEach((ele) => {
@@ -243,15 +240,18 @@ const SideBarComponent = ({ children }) => {
               });
               return temp;
             });
-            // }
           }}
           sx={getMenuStyles(item)}
           key={index}
           className="d-block"
         >
-          <Box id={item.id} className="fs-13 cursor-pointer">
-            {item.title}
-          </Box>
+          <div className="d-flex justify-content-between">
+            <Box id={item.id} className="fs-13 cursor-pointer">
+              {item.title}
+            </Box>
+            {item.locked && <CustomIcon type="lock" className="fs-16" />}
+          </div>
+
           {item.selected && item?.child?.length ? (
             <MenuList>
               {getSubMenuList(JSON.parse(JSON.stringify([...item.child])))}

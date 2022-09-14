@@ -48,6 +48,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MessageIcon from "@mui/icons-material/Message";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import LockIcon from "@mui/icons-material/Lock";
 
 const CustomIcon = ({
   title = "",
@@ -86,6 +87,7 @@ const CustomIcon = ({
     gridview: GridViewIcon,
     tablerows: TableRowsIcon,
     reply: Reply,
+    lock: LockIcon,
     lineArrowIcon: ArrowForwardIcon,
     favoriteBorderIcon: FavoriteBorderIcon,
     viewCarouselIcon: ViewCarouselIcon,

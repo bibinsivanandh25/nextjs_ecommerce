@@ -57,6 +57,7 @@ const Staff = () => {
   const [rows, setRows] = useState([]);
   const supplierId = useSelector((state) => state.user.supplierId);
   const [viewStaffId, setviewStaffId] = useState(null);
+  const [editStaffId, seteditStaffId] = useState(null);
 
   const deletestaff = async (staffId) => {
     const { data, err, message } = await deleteStaff(staffId);
@@ -97,7 +98,11 @@ const Staff = () => {
               >
                 <CustomIcon type="delete" title="Delete" className="h-4 mx-2" />
               </Box>
-              <Box>
+              <Box
+                onClick={() => {
+                  seteditStaffId(item.staffId);
+                }}
+              >
                 <CustomIcon type="edit" title="Edit" className="h-4" />
               </Box>
             </div>
@@ -114,22 +119,34 @@ const Staff = () => {
 
   return (
     <>
-      <Paper className="mnh-80vh overflow-auto hide-scrollbar mxh-80vh">
-        <div className="border-bottom">
-          <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
-            <Box className="fs-16 fw-700 ps-4">Manage Staff</Box>
-            <Box>
-              <ButtonComponent
-                label="Add New Staffs"
-                onBtnClick={handleBtnClick}
-              />
+      {editStaffId === null ? (
+        <>
+          <Paper className="mnh-80vh overflow-auto hide-scrollbar mxh-80vh">
+            <div className="border-bottom">
+              <Box className=" d-flex justify-content-between align-items-center border-bottom-0 p-2 ">
+                <Box className="fs-16 fw-700 ps-4">Manage Staff</Box>
+                <Box>
+                  <ButtonComponent
+                    label="Add New Staffs"
+                    onBtnClick={handleBtnClick}
+                  />
+                </Box>
+              </Box>
+            </div>
+            <Box className="mt-4">
+              <TableComponent tableRows={rows} columns={tableHeaders} />
             </Box>
-          </Box>
-        </div>
-        <Box className="mt-4">
-          <TableComponent tableRows={rows} columns={tableHeaders} />
-        </Box>
-      </Paper>
+          </Paper>
+        </>
+      ) : (
+        <StaffForm
+          handlebackClick={() => {
+            seteditStaffId(null);
+          }}
+          viewStaffId={editStaffId}
+          type="edit"
+        />
+      )}
       <ModalComponent
         open={viewStaffId !== null}
         ModalWidth="90vw"

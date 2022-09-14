@@ -48,5 +48,16 @@ const deleteStaff = (staffId) => {
       return err;
     });
 };
+const updateStaffs = (payload) => {
+  return serviceUtil
+    .put(`users/staff-management`, payload)
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 
-export { getStaff, saveStaff, getStaffdetails, deleteStaff };
+export { getStaff, saveStaff, getStaffdetails, deleteStaff, updateStaffs };

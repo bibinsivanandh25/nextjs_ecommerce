@@ -12,7 +12,11 @@ import toastify from "services/utils/toastUtils";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
-import { getStaffdetails, saveStaff } from "services/supplier/staff";
+import {
+  getStaffdetails,
+  saveStaff,
+  updateStaffs,
+} from "services/supplier/staff";
 import { useRouter } from "next/router";
 import suppliercapability from "constants/suppliercapability";
 
@@ -38,7 +42,7 @@ const StaffForm = ({
     const temp = data.map((item) => {
       return {
         label: item.capabilityType,
-        isChecked: true,
+        isChecked: type === "add" ? true : item.isEnable,
         expand: false,
         children:
           item.childCapabilityNameList && item.childCapabilityNameList.length
@@ -171,10 +175,26 @@ const StaffForm = ({
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const updateStaff = async (payload) => {
+    payload.staffId = viewStaffId;
+    delete payload.supplierId;
+    delete payload.emailId;
+    const { data, message, err } = await updateStaffs(payload);
+    if (data) {
+      toastify(message, "success");
+      handlebackClick();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const handleSubmit = () => {
     if (!validate()) {
-      addStaff(createPayload());
+      if (type === "add") {
+        addStaff(createPayload());
+      } else {
+        updateStaff(createPayload());
+      }
     }
   };
 
@@ -207,7 +227,7 @@ const StaffForm = ({
   };
 
   useEffect(() => {
-    if (type === "view" && viewStaffId) {
+    if ((type === "view" || type === "edit") && viewStaffId) {
       getStaff();
     }
     setviewStaffId((pre) => {
@@ -240,7 +260,7 @@ const StaffForm = ({
                   onInputChange={handleInputChange}
                   helperText={errorObj.firstName}
                   error={errorObj.firstName !== ""}
-                  placeholder="ed.: Sulesh"
+                  placeholder="First Name"
                   disabled={type === "view"}
                 />
               </Grid>
@@ -256,7 +276,7 @@ const StaffForm = ({
                   onInputChange={handleInputChange}
                   helperText={errorObj.last_Name}
                   error={errorObj.last_Name !== ""}
-                  placeholder="ed.: Sharma"
+                  placeholder="Last Name"
                   disabled={type === "view"}
                 />
               </Grid>
@@ -272,7 +292,7 @@ const StaffForm = ({
                   onInputChange={handleInputChange}
                   helperText={errorObj.MobileNo}
                   error={errorObj.MobileNo !== ""}
-                  placeholder="ed.: 1234567890"
+                  placeholder="Mobile No."
                   disabled={type === "view"}
                 />
               </Grid>
@@ -288,8 +308,8 @@ const StaffForm = ({
                   onInputChange={handleInputChange}
                   helperText={errorObj.email}
                   error={errorObj.email !== ""}
-                  placeholder="ed.: sulesh@gmail.com"
-                  disabled={type === "view"}
+                  placeholder="E-mail"
+                  disabled={type === "view" || type === "edit"}
                 />
               </Grid>
               <Grid item sm={12} className="d-flex">
@@ -452,7 +472,7 @@ const StaffForm = ({
             );
           })}
         </Grid>
-        {type === "add" && (
+        {["add", "edit"].includes(type) && (
           <Grid item sm={12}>
             <div className="w-100 d-flex flex-row-reverse">
               <ButtonComponent
