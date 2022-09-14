@@ -63,12 +63,23 @@ const SupplierAddCoupons = ({
     // validateFields("productsInclude");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimitPerUser");
-    validateFields("minpurchaseamount");
     // validateFields("subcategory");
-    validateFields("maximumamount");
+    if (purchaseCheckbox) {
+      validateFields("minpurchaseamount");
+      validateFields("maximumamount");
+    }
     validateFields("couponAmount");
-
-    setError({ ...errObj });
+    const limitErrors = {
+      limitError: null,
+    };
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
+      limitErrors.limitError =
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+    }
+    setError({ ...errObj, ...limitErrors });
     let valid = true;
     Object.values(errObj).forEach((i) => {
       if (i) {
@@ -106,9 +117,9 @@ const SupplierAddCoupons = ({
   };
   return (
     <Box className="p-2" sx={{ maxHeight: "80vh" }}>
-      <Box className="fit-contant">
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -130,7 +141,7 @@ const SupplierAddCoupons = ({
             // minHeight: "80vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12}>
               <InputBox
                 label="Code"
@@ -320,8 +331,10 @@ const SupplierAddCoupons = ({
                         id="usageLimitPerUser"
                         name="usageLimitPerUser"
                         onInputChange={handleInputChange}
-                        error={Boolean(error.usageLimitPerUser)}
-                        helperText={error.usageLimitPerUser}
+                        error={
+                          Boolean(error.usageLimitPerUser) || error.limitError
+                        }
+                        helperText={error.usageLimitPerUse || error.limitError}
                         type="number"
                       />
                       <InfoOutlinedIcon className="ms-1 mt-2" />

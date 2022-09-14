@@ -100,17 +100,19 @@ const MrMrsAddNewCoupons = ({
       validateFields("minpurchaseamount");
     }
     validateFields("subcategory");
-    validateFields("new");
+    // validateFields("new");
 
     const limitErrors = {
       limitError: null,
     };
-    if (formValues.usageLimitPerCoupon <= formValues.usageLimitPerUser) {
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
       limitErrors.limitError =
-        "Usage Limit PerCoupon Should Allways Lessthen Usage Limit PerUser";
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
     }
     const finalErrorObj = { ...errObj, ...limitErrors };
-    console.log(finalErrorObj, "finalErrorObj");
     setError({ ...finalErrorObj });
     let valid = true;
     Object.values(finalErrorObj).forEach((i) => {
@@ -154,6 +156,7 @@ const MrMrsAddNewCoupons = ({
   const handleSubmitClick = async (couponStatus) => {
     // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
+    console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
@@ -183,9 +186,9 @@ const MrMrsAddNewCoupons = ({
 
   return (
     <Paper sx={{ minHeight: "80vh", py: 1 }}>
-      <Box className="fit-content">
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -207,7 +210,7 @@ const MrMrsAddNewCoupons = ({
             minHeight: "73vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12} display="flex">
               <InputBox
                 disabled
@@ -289,12 +292,14 @@ const MrMrsAddNewCoupons = ({
                 value={formValues.couponExpiryDate}
                 id="couponExpiryDate"
                 name="couponExpiryDate"
-                onDateChange={(val) =>
+                onDateChange={(val) => {
+                  console.log(val);
+
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,
-                  }))
-                }
+                  }));
+                }}
                 error={Boolean(error.couponExpiryDate)}
                 helperText={error.couponExpiryDate}
                 required
@@ -531,7 +536,7 @@ const MrMrsAddNewCoupons = ({
                 size="small"
                 sx={{ width: "150px", textTransform: "none" }}
                 className="bg-orange"
-                onClick={() => handleSubmitClick("PUBLISH")}
+                onClick={() => handleSubmitClick("PUBLISHED")}
               >
                 Submit
               </Button>

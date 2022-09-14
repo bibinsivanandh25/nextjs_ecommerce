@@ -20,17 +20,20 @@ const PickUpAddress = () => {
   const user = useSelector((state) => state.user?.supplierId);
 
   const getAllAddress = async () => {
-    const { data } = await getAllAddressofSupplier(user);
+    const { data, err } = await getAllAddressofSupplier(user);
     if (data) {
       const result = JSON.parse(JSON.stringify(data));
       const temp = result.filter((ele) => !ele.primary);
       temp.unshift(data.find((ele) => ele.primary));
       setAddressList([...temp]);
       temp.forEach((item) => {
-        if (item.primary) {
+        if (item?.primary) {
           setSelectedAddress(item.addressId);
         }
       });
+    }
+    if (err) {
+      setAddressList([]);
     }
   };
 
@@ -65,68 +68,71 @@ const PickUpAddress = () => {
           </Paper>
         </Grid>
         <Grid xs={6} item />
-        {addressList.map((add) => (
-          <Grid xs={6} item key={add.addressId}>
-            <Grid
-              container
-              sx={{
-                py: 1.5,
-                px: 3,
-                border: "1px solid lightgray",
-                backgroundColor:
-                  add.addressId === selectedAddress && "#F5E4D7 !important",
-              }}
-              className="fs-16 bg-white rounded h-100"
-            >
-              <Grid item xs={11}>
-                <Grid item xs={12} className="cursor-pointer d-inline">
-                  <CheckBoxComponent
-                    label={add.name}
-                    isChecked={add.addressId === selectedAddress}
-                    showIcon
-                    checkBoxClick={() => {
-                      setPrimaryAddress(add.addressId);
-                      setSelectedAddress(add.addressId);
-                    }}
-                    iconType="circled"
-                  />
-                </Grid>
-                <Grid item xs={12} className="fs-14 fw-bold my-1 mx-4">
-                  <Typography>
-                    {" "}
-                    {`${add.address}, ${add.location}, ${add.landmark}, ${add.cityDistrictTown}, ${add.state}, ${add.pinCode}`}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} className="fs-12 mx-4">
-                  <Typography> {add.mobileNumber}</Typography>
+        {addressList.length
+          ? addressList.map((add) => (
+              <Grid xs={6} item key={add?.addressId}>
+                <Grid
+                  container
+                  sx={{
+                    py: 1.5,
+                    px: 3,
+                    border: "1px solid lightgray",
+                    backgroundColor:
+                      add?.addressId === selectedAddress &&
+                      "#F5E4D7 !important",
+                  }}
+                  className="fs-16 bg-white rounded h-100"
+                >
+                  <Grid item xs={11}>
+                    <Grid item xs={12} className="cursor-pointer d-inline">
+                      <CheckBoxComponent
+                        label={add?.name}
+                        isChecked={add?.addressId === selectedAddress}
+                        showIcon
+                        checkBoxClick={() => {
+                          setPrimaryAddress(add?.addressId);
+                          setSelectedAddress(add?.addressId);
+                        }}
+                        iconType="circled"
+                      />
+                    </Grid>
+                    <Grid item xs={12} className="fs-14 fw-bold my-1 mx-4">
+                      <Typography>
+                        {" "}
+                        {`${add?.address}, ${add?.location}, ${add?.landmark}, ${add?.cityDistrictTown}, ${add?.state}, ${add?.pinCode}`}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} className="fs-12 mx-4">
+                      <Typography> {add?.mobileNumber}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={1}
+                    flexDirection="column"
+                    container
+                    alignItems="center"
+                  >
+                    <DeleteIcon
+                      className="cursor-pointer"
+                      sx={{ mb: 2 }}
+                      onClick={() => {
+                        deletedSelectedAddress(add.addressId);
+                        setSelectId({ type: "delete", id: add.addressId });
+                      }}
+                    />
+                    <EditIcon
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setShowAddAddressModal(true);
+                        setSelectId({ type: "edit", id: add.addressId });
+                      }}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                xs={1}
-                flexDirection="column"
-                container
-                alignItems="center"
-              >
-                <DeleteIcon
-                  className="cursor-pointer"
-                  sx={{ mb: 2 }}
-                  onClick={() => {
-                    deletedSelectedAddress(add.addressId);
-                    setSelectId({ type: "delete", id: add.addressId });
-                  }}
-                />
-                <EditIcon
-                  className="cursor-pointer"
-                  onClick={() => {
-                    setShowAddAddressModal(true);
-                    setSelectId({ type: "edit", id: add.addressId });
-                  }}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        ))}
+            ))
+          : null}
       </Grid>
       {showAddAddressModal && (
         <AddAddressModal

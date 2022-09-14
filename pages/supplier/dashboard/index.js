@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import {
   getAllDashboardData,
   getCustomerChartData,
+  getMonthWiseSale,
   getReferralChartData,
 } from "services/supplier/dashboard";
 import toastify from "services/utils/toastUtils";
 import Bargraph from "@/atoms/Bar/Bargraph";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import SelectComponent from "@/atoms/SelectComponent";
+import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 
 const barGraphLabels = [
   "Jan",
@@ -56,6 +58,7 @@ const revenueSelectList = [
 const Dashboard = () => {
   const user = useSelector((state) => state.user);
   const [masterCardData, setMasterCardData] = useState([]);
+  const [showAddressModal, setShowAddressModal] = useState(false);
   // month wise Sale
   const [currentYear, setCurrentYear] = useState({
     value: new Date().getFullYear().toString(),
@@ -157,8 +160,8 @@ const Dashboard = () => {
     }
   };
   const handleMonthWiseSale = async () => {
-    const { data, err } = await getCustomerChartData(
-      user.storeCode,
+    const { data, err } = await getMonthWiseSale(
+      user.supplierId,
       currentYear.value
     );
     if (data) {
@@ -182,166 +185,180 @@ const Dashboard = () => {
     handleReferralData();
   }, [referralCurrentYear.value]);
   useEffect(() => {
+    if (user.isAddressSaved === 0) {
+      setShowAddressModal(true);
+    }
     getMasterCardData();
   }, []);
-
+  console.log(currentYear, "currentYear");
   return (
     <div>
-      <Paper className="w-100 mnh-85vh mxh-85vh overflow-auto hide-scrollbar p-2">
-        <Grid container className="" gap={0.5}>
-          {masterCardData?.length
-            ? masterCardData?.map((item, index) => (
-                <Grid
-                  item
-                  lg={index % 2 == 0 ? 2 : 2.9}
-                  md={index % 2 == 0 ? 2 : 2.8}
-                  sm={5.9}
-                  xs={12}
-                  sx={{
-                    boxShadow: "0px 0px 4px #0000003D",
-                    border: "3px solid #FFFFFF",
-                    borderRadius: "8px",
-                    opacity: "0.9",
-                  }}
-                >
-                  <Box
-                    sx={{ backgroundColor: `${item.color}` }}
-                    className="py-3 rounded h-100"
+      {showAddressModal ? (
+        <AddAddressModal
+          showAddressModal={showAddressModal}
+          type="add"
+          setShowAddAddressModal={setShowAddressModal}
+          showCloseIcon={false}
+          disableCancel
+          supplierId={user.supplierId}
+        />
+      ) : (
+        <Paper className="w-100 mnh-85vh mxh-85vh overflow-auto hide-scrollbar p-2">
+          <Grid container className="" gap={0.5}>
+            {masterCardData?.length
+              ? masterCardData?.map((item, index) => (
+                  <Grid
+                    item
+                    lg={index % 2 == 0 ? 2 : 2.9}
+                    md={index % 2 == 0 ? 2 : 2.8}
+                    sm={5.9}
+                    xs={12}
+                    sx={{
+                      boxShadow: "0px 0px 4px #0000003D",
+                      border: "3px solid #FFFFFF",
+                      borderRadius: "8px",
+                      opacity: "0.9",
+                    }}
                   >
-                    <Typography className=" ps-2 text-break text-white h-5">
-                      {item.title}
-                    </Typography>
-                    <Typography className=" ps-2 text-break text-white h-3">
-                      {item.count}
+                    <Box
+                      sx={{ backgroundColor: `${item.color}` }}
+                      className="py-3 rounded h-100"
+                    >
+                      <Typography className=" ps-2 text-break text-white h-5">
+                        {item.title}
+                      </Typography>
+                      <Typography className=" ps-2 text-break text-white h-3">
+                        {item.count}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))
+              : null}
+          </Grid>
+          <Grid container spacing={2} mt={1} className="h-100">
+            <Grid item md={6} sm={12}>
+              <Paper elevation={3} className="h-100">
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box>
+                    <Typography className="ps-3 py-2 h-5 fw-bold">
+                      Month Wise Sales
                     </Typography>
                   </Box>
-                </Grid>
-              ))
-            : null}
-        </Grid>
-        <Grid container spacing={2} mt={1} className="h-100">
-          <Grid item md={6} sm={12}>
-            <Paper elevation={3} className="h-100">
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography className="ps-3 py-2 h-5 fw-bold">
-                    Month Wise Sales
-                  </Typography>
+                  <Box>
+                    <SelectComponent
+                      value={currentYear.value}
+                      disableUnderline
+                      list={revenueSelectList}
+                      onChange={(e) => {
+                        setCurrentYear({
+                          value: e.target.value,
+                          label: e.target.value,
+                        });
+                      }}
+                    />
+                  </Box>
                 </Box>
-                <Box>
-                  <SelectComponent
-                    value={currentYear.value}
-                    disableUnderline
-                    list={revenueSelectList}
-                    onChange={(e) => {
-                      setCurrentYear({
-                        value: e.target.value,
-                        label: e.target.value,
-                      });
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Bargraph
-                showGridY={false}
-                data={referralData}
-                labels={barGraphLabels}
-                backgroundColor="#1f78b4"
-                hoverBackgroundColor="#ea7d30"
-                height="273px"
-                label="Orders"
-              />
-            </Paper>
-          </Grid>
-          <Grid item md={6} sm={12}>
-            <Paper elevation={3} className="h-100">
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography className="ps-3 py-2 h-5 fw-bold">
-                    Referral Created Month Wise
-                  </Typography>
-                </Box>
-                <Box>
-                  <SelectComponent
-                    value={referralCurrentYear.value}
-                    disableUnderline
-                    list={revenueSelectList}
-                    onChange={(e) => {
-                      setReferralCurrentYear({
-                        value: e.target.value,
-                        label: e.target.value,
-                      });
-                    }}
-                  />
-                </Box>
-              </Box>
-              <LineChart
-                label="Referral Count"
-                data={referralData}
-                labels={barGraphLabels}
-                showYAxis={false}
-                lineColor="#1F78B4"
-                height="250px"
-              />
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper elevation={3} className="p-2">
-              <Grid container>
-                <Grid item sm={10} />
-                <Grid
-                  item
-                  sm={2}
-                  className="mb-2"
+                <Bargraph
+                  showGridY={false}
+                  data={monthWiseSaleData}
+                  labels={barGraphLabels}
+                  backgroundColor="#1f78b4"
+                  hoverBackgroundColor="#ea7d30"
+                  height="273px"
+                  label="Orders"
+                />
+              </Paper>
+            </Grid>
+            <Grid item md={6} sm={12}>
+              <Paper elevation={3} className="h-100">
+                <Box
                   display="flex"
-                  justifyContent="end"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  <SelectComponent
-                    value={customerCurrentYear.value}
-                    disableUnderline
-                    list={revenueSelectList}
-                    onChange={(e) => {
-                      setCustomerCurrentYear({
-                        value: e.target.value,
-                        label: e.target.value,
-                      });
-                    }}
-                  />
+                  <Box>
+                    <Typography className="ps-3 py-2 h-5 fw-bold">
+                      Referral Created Month Wise
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <SelectComponent
+                      value={referralCurrentYear.value}
+                      disableUnderline
+                      list={revenueSelectList}
+                      onChange={(e) => {
+                        setReferralCurrentYear({
+                          value: e.target.value,
+                          label: e.target.value,
+                        });
+                      }}
+                    />
+                  </Box>
+                </Box>
+                <LineChart
+                  label="Referral Count"
+                  data={referralData}
+                  labels={barGraphLabels}
+                  showYAxis={false}
+                  lineColor="#1F78B4"
+                  height="250px"
+                />
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper elevation={3} className="p-2">
+                <Grid container>
+                  <Grid item sm={10} />
+                  <Grid
+                    item
+                    sm={2}
+                    className="mb-2"
+                    display="flex"
+                    justifyContent="end"
+                  >
+                    <SelectComponent
+                      value={customerCurrentYear.value}
+                      disableUnderline
+                      list={revenueSelectList}
+                      onChange={(e) => {
+                        setCustomerCurrentYear({
+                          value: e.target.value,
+                          label: e.target.value,
+                        });
+                      }}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Grid item xs={9}>
-                {customerChartData && (
-                  <Bargraph
-                    data={customerChartData}
-                    labels={barGraphLabels}
-                    backgroundColor="#425568"
-                    hoverBackgroundColor="#ea7d30"
-                    barDirection="y"
-                    height="300px"
-                    showXAxis={false}
-                    showGridY={false}
-                    showDiffColors
-                    colorOfMax="#EB7C30"
-                    label="Customer Count"
-                  />
-                )}
-                <Typography className="text-center h-5 fw-bold">
-                  Total Customers :{" "}
-                  {customerChartData.reduce((a, b) => a + b, 0)}
-                </Typography>
-              </Grid>
-            </Paper>
+                <Grid item xs={9}>
+                  {customerChartData && (
+                    <Bargraph
+                      data={customerChartData}
+                      labels={barGraphLabels}
+                      backgroundColor="#425568"
+                      hoverBackgroundColor="#ea7d30"
+                      barDirection="y"
+                      height="300px"
+                      showXAxis={false}
+                      showGridY={false}
+                      showDiffColors
+                      colorOfMax="#EB7C30"
+                      label="Customer Count"
+                    />
+                  )}
+                  <Typography className="text-center h-5 fw-bold">
+                    Total Customers :{" "}
+                    {customerChartData.reduce((a, b) => a + b, 0)}
+                  </Typography>
+                </Grid>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      )}
     </div>
   );
 };
