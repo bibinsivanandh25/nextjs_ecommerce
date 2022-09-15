@@ -24,4 +24,14 @@ const getAllFlags = (
     });
 };
 
-export { getAllFlags };
+const updateFlag = (payload) => {
+  return serviceUtil
+    .put(`products/supplier-flag`, payload)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export { getAllFlags, updateFlag };
