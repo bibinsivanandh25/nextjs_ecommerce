@@ -251,7 +251,7 @@ const CreateQuiz = ({ pageName }) => {
             </Box>
           </ModalComponent>
           <ModalComponent
-            open={Object.keys(showViewModal).length}
+            open={!!Object.keys(showViewModal).length}
             ModalTitle="View campain name"
             onCloseIconClick={() => {
               setshowViewModal({});
