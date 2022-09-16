@@ -28,6 +28,7 @@ const CreateBanner = ({
   saveBtnName = "",
   getAllTableData = () => {},
   userInfo = {},
+  setpageNumber = () => {},
 }) => {
   const [error, setError] = useState({
     url: "",
@@ -190,14 +191,8 @@ const CreateBanner = ({
       };
       const { data, err } = await saveBanner(payload);
       if (data) {
-        const payloads = {
-          createdById: userInfo.supplierId,
-          fromDate: "",
-          toDate: "",
-          pageNumber: 0,
-          pageSize: 50,
-        };
-        getAllTableData(payloads, "", "", 0);
+        setpageNumber(0);
+        getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
@@ -256,14 +251,8 @@ const CreateBanner = ({
       };
       const { data, err } = await updateBanner(payload);
       if (data) {
-        const payloads = {
-          createdById: userInfo.supplierId,
-          fromDate: "",
-          toDate: "",
-          pageNumber: 0,
-          pageSize: 50,
-        };
-        getAllTableData(payloads, "", "", 0);
+        setpageNumber(0);
+        getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");

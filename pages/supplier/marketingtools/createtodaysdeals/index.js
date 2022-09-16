@@ -1,3 +1,6 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
+import ViewModal from "@/forms/supplier/marketingtools/viewmodal";
 import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -5,7 +8,10 @@ import CreateDiscount from "components/forms/supplier/marketingtools/createdisco
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
-import { getUserMarketingTool } from "services/supplier/marketingtools";
+import {
+  deleteMarketingToolData,
+  getUserMarketingTool,
+} from "services/supplier/marketingtools";
 import toastify from "services/utils/toastUtils";
 
 const columns = [
@@ -92,6 +98,27 @@ const CreateTodaysDeals = () => {
   const [showCreateDiscount, setShowCreateDiscount] = useState(false);
   const [masterData, setMasterData] = useState({});
   const [row, setRow] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewModalData, setViewModalData] = useState({});
+  const handleViewClick = (item) => {
+    if (item) {
+      setViewModalOpen(true);
+      setViewModalData(item);
+    }
+  };
+  const handleDeleteClick = async (item) => {
+    if (item) {
+      const { data, err } = await deleteMarketingToolData(item.marketingToolId);
+      if (data) {
+        setpageNumber(0);
+        getTableRows(0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
   const handleTableRows = (data) => {
     const temp = [];
     if (data) {
@@ -110,9 +137,19 @@ const CreateTodaysDeals = () => {
           col10: item.toolStatus,
           col11: (
             <div className="d-flex justify-content-center">
-              <CustomIcon type="remove" className="fs-16" />
+              <CustomIcon
+                type="remove"
+                className="fs-16"
+                onIconClick={() => handleViewClick(item)}
+              />
               <CustomIcon type="share" className="fs-16 mx-1" />
-              <CustomIcon type="delete" className="fs-16" />
+              <CustomIcon
+                type="delete"
+                className="fs-16"
+                onIconClick={() => {
+                  handleDeleteClick(item);
+                }}
+              />
             </div>
           ),
         });
@@ -120,16 +157,26 @@ const CreateTodaysDeals = () => {
     }
     return temp;
   };
-  const getTableRows = async () => {
+  const getTableRows = async (page) => {
     const { data, err } = await getUserMarketingTool(
       user.supplierId,
       "TODAYS_DEAL",
-      0
+      page
     );
     if (data) {
       setMasterData(data);
-      if (data.marketingToolResponsePojo) {
-        setRow(handleTableRows(data.marketingToolResponsePojo));
+      if (page == 0) {
+        setMasterData(data);
+        if (data.marketingToolResponsePojo) {
+          setRow(handleTableRows(data.marketingToolResponsePojo));
+        }
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setRow((pre) => [
+          ...pre,
+          ...handleTableRows(data.marketingToolResponsePojo),
+        ]);
       }
     }
     if (err) {
@@ -138,7 +185,7 @@ const CreateTodaysDeals = () => {
   };
 
   useEffect(() => {
-    getTableRows();
+    getTableRows(0);
   }, []);
 
   return (
@@ -193,15 +240,34 @@ const CreateTodaysDeals = () => {
                 showCheckbox
                 showSearchFilter={false}
                 showSearchbar={false}
+                handlePageEnd={(
+                  searchText = "",
+                  filterText = "ALL",
+                  page = pageNumber,
+                  filteredDates
+                ) => {
+                  getTableRows(page);
+                }}
               />
             </Grid>
           </div>
+          {viewModalOpen && (
+            <ViewModal
+              open={viewModalOpen}
+              data={viewModalData}
+              modalClose={setViewModalOpen}
+              modalTitle="Today's Deal View"
+            />
+          )}
         </Paper>
       ) : (
         <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
           <CreateDiscount
             setShowCreateDiscount={setShowCreateDiscount}
             btnText="View Today's Deal"
+            user={user}
+            getTableRows={getTableRows}
+            setpageNumber={setpageNumber}
           />
         </Paper>
       )}
