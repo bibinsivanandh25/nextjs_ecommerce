@@ -1,5 +1,5 @@
 import React from "react";
-import ScratchCard from "react-scratchcard";
+import ScratchCard from "react-scratchcard-v2";
 
 const ScratchCardComponent = ({ children }) => {
   const settings = {

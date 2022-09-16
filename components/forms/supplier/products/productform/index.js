@@ -25,6 +25,7 @@ import {
   saveDuplicateProduct,
   saveMediaFile,
   saveProduct,
+  updateProduct,
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
@@ -79,6 +80,9 @@ const ProductsLayout = ({
     (state) => state.product
   );
   const [showGuidelines, setShowGuidlines] = useState(false);
+  const { masterProductId } = useSelector(
+    (state) => state.product.productDetails
+  );
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -406,14 +410,14 @@ const ProductsLayout = ({
       longDescriptionFileUrls: imgdata.long_description
         ? [
             ...imgdata.long_description,
-            ...formData.mainForm.long_description.media.filter((item) => {
+            ...formData?.mainForm?.long_description?.media?.filter((item) => {
               if (item.includes("https://")) {
                 return item;
               }
             }),
           ]
         : [
-            ...formData.mainForm.long_description.media.filter((item) => {
+            ...formData?.mainForm?.long_description?.media?.filter((item) => {
               if (item.includes("https://")) {
                 return item;
               }
@@ -599,25 +603,24 @@ const ProductsLayout = ({
         });
       }
     } else if (editProduct) {
-      // const { data, err } = await saveDuplicateProduct(
-      //   payload,
-      //   productDetails.supplierId,
-      //   productDetails.variationData.productVariationId
-      // );
-      // if (err) {
-      //   toastify(err.response.data.message, "error");
-      // } else if (data) {
-      //   toastify(data.message, "success");
-      //   dispatch(clearProduct());
-      //   router.replace({
-      //     pathname: "/supplier/products&inventory/myproducts",
-      //     query: {
-      //       active: "2",
-      //     },
-      //   });
-      // }
-      console.log("Update is incomplete", payload);
-      toastify("Update is incomplete", "info");
+      payload.masterProductId = masterProductId;
+      payload.productVariations[0].productVariationId =
+        productDetails.variationData.productVariationId;
+      const { data, err } = await updateProduct(payload);
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        toastify(data.message, "success");
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+      }
+      // console.log("Update is incomplete", payload);
+      // toastify("Update is incomplete", "info");
     } else {
       const { data, err } = await saveProduct(payload);
       if (err) {
