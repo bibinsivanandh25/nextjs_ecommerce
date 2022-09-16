@@ -1,7 +1,9 @@
-import { forwardRef, useState, useImperativeHandle } from "react";
+import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import ScratchCardComponent from "components/forms/supplier/marketingtools/createluckydraw/createScratchCard/ScratchCard";
+import { getCategorys } from "services/supplier/marketingtools/luckydraw/scratchcard";
+import { useSelector } from "react-redux";
 
 const ScratchCardForm = forwardRef((_props, ref) => {
   useImperativeHandle(ref, () => {
@@ -12,6 +14,7 @@ const ScratchCardForm = forwardRef((_props, ref) => {
     };
   });
   const [mobile, setMobile] = useState("");
+  const { storeCode, storeName } = useSelector((state) => state.user);
 
   return (
     <Box
@@ -20,10 +23,10 @@ const ScratchCardForm = forwardRef((_props, ref) => {
     >
       <Box className="">
         <Typography className="h-5 mb-2 color-white">
-          Store Name: abc
+          Store Name: {storeName}
         </Typography>
         <Typography className="h-5 mb-2 color-white">
-          Store Code: #123
+          Store Code: {storeCode}
         </Typography>
         <InputBox
           label=""

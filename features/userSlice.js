@@ -15,6 +15,7 @@ const initialState = {
     "subscriptionhistory",
     "createluckydraw",
   ],
+  storeName: "",
 };
 
 export const userSlice = createSlice({

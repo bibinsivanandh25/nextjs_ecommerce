@@ -12,7 +12,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { commisiondata } from "constants/constants";
 import TextEditor from "components/atoms/TextEditor";
 import AddIcon from "@mui/icons-material/Add";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { format } from "date-fns";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
@@ -21,6 +21,9 @@ import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
 import ProductModal from "./ProductModal";
 import CreateQuiz from "./createquiz";
+import { getCategorys } from "services/supplier/marketingtools/luckydraw/scratchcard";
+import { useSelector } from "react-redux";
+import { getSet, getSubCategory } from "services/supplier/AddProducts";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();
@@ -49,6 +52,71 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const [showProducts, setShowProducts] = useState(false);
   const [createQuestions, setCreateQuestions] = useState(false);
   const formRef = useRef(null);
+  const [categoryList, setCategotyList] = useState([]);
+  const [subCategoryList, setSubCategotyList] = useState([]);
+  const [setsList, setSetsList] = useState([]);
+  const { storeCode, storeName } = useSelector((state) => state.user);
+
+  const getCategoryList = async () => {
+    const { data, err } = await getCategorys();
+    if (data) {
+      const finaData = [];
+      data.forEach((item) => {
+        finaData.push({
+          id: item.mainCategoryId,
+          value: item.mainCategoryName,
+          label: item.mainCategoryName,
+          commission_mode: item.commissionType,
+        });
+      });
+      setCategotyList(finaData);
+    }
+  };
+
+  const getSetsList = async () => {
+    const { data, err } = await getSet(formData.category.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.categorySetId,
+          value: item.setName,
+          label: item.setName,
+        });
+      });
+      setSetsList(finaData);
+    }
+  };
+
+  const getSubCategoryList = async () => {
+    const { data } = await getSubCategory(formData.sets.id);
+    if (data) {
+      const finaData = [];
+      data.data.forEach((item) => {
+        finaData.push({
+          id: item.subCategoryId,
+          value: item.subCategoryName,
+          label: item.subCategoryName,
+        });
+      });
+      setSubCategotyList(finaData);
+    }
+  };
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  useEffect(() => {
+    if (formData.sets?.id) {
+      getSubCategoryList();
+    }
+  }, [formData.sets]);
+  useEffect(() => {
+    if (formData.category?.id) {
+      getSetsList();
+    }
+  }, [formData.category]);
 
   const handleDropDownChange = (val, id) => {
     setFormData((pre) => ({
@@ -274,23 +342,6 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 }}
                 size="small"
               />
-              <CheckBoxComponent
-                label="Old Leads"
-                isChecked={formData.quiz_users.includes("old Leads")}
-                checkBoxClick={(_, val) => {
-                  setFormData((pre) => {
-                    const temp = [...pre.quiz_users];
-                    if (!val) {
-                      const ind = temp.indexOf("old Leads");
-                      temp.splice(ind, 1);
-                    } else {
-                      temp.push("old Leads");
-                    }
-                    return { ...pre, quiz_users: [...temp] };
-                  });
-                }}
-                size="small"
-              />
             </Box>
             {errorObj?.quiz_users && (
               <Typography className="h-5 color-error">
@@ -320,22 +371,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
           <Grid container spacing={2}>
             <Grid item md={4} lg={3}>
               <SimpleDropdownComponent
-                list={commisiondata}
-                id="commision_type"
-                label="Commision Mode"
-                size="small"
-                value={formData.commision_type}
-                onDropdownSelect={(val) => {
-                  handleDropDownChange(val, "commision_type");
-                }}
-                inputlabelshrink
-                error={errorObj.commision_type || false}
-                helperText={errorObj?.commision_type}
-              />
-            </Grid>
-            <Grid item md={4} lg={3}>
-              <SimpleDropdownComponent
-                list={commisiondata}
+                list={categoryList}
                 id="category"
                 label="Category"
                 size="small"
@@ -350,7 +386,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             </Grid>
             <Grid item md={4} lg={3}>
               <SimpleDropdownComponent
-                list={commisiondata}
+                list={setsList}
                 id="sets"
                 label="Sets"
                 size="small"
@@ -365,7 +401,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
             </Grid>
             <Grid item md={4} lg={3}>
               <SimpleDropdownComponent
-                list={commisiondata}
+                list={subCategoryList}
                 id="subCategory"
                 label="Sub Category"
                 size="small"
@@ -376,6 +412,17 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 inputlabelshrink
                 error={errorObj.subCategory || false}
                 helperText={errorObj?.subCategory}
+              />
+            </Grid>
+            <Grid item md={4} lg={3}>
+              <InputBox
+                id="commision_type"
+                label="Commision Mode"
+                size="small"
+                value={formData.category?.commission_mode ?? ""}
+                disabled
+                error={errorObj.commision_type || false}
+                helperText={errorObj?.commision_type}
               />
             </Grid>
 
