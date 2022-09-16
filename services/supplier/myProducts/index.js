@@ -56,8 +56,7 @@ const deleteSingleProduct = (id) => {
   return serviceUtil
     .deleteById(`products/variation/${id}`)
     .then((res) => {
-      const { data, message } = res && res.data;
-      return { data, message };
+      return res;
     })
     .catch((err) => ({ err }));
 };

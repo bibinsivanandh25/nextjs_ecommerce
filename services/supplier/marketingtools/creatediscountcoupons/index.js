@@ -14,4 +14,15 @@ const getCreateDiscountData = (id, toolType, pageNumber) => {
       return { err };
     });
 };
-export { getCreateDiscountData };
+const createDiscountCoupons = (payload) => {
+  return serviceUtil
+    .post(`users/marketing-tool`, payload)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+export { getCreateDiscountData, createDiscountCoupons };

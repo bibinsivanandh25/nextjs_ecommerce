@@ -61,10 +61,32 @@ const getProductsBySubCategoryId = (supplierId, subCategoryId) => {
       return err;
     });
 };
+const deleteMarketingToolData = (id) => {
+  return serviceUtil
+    .deleteById(`users/marketing-tool?marketingToolId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const getProductsForShareproduct = (payload) => {
+  return serviceUtil
+    .post("products/master-product/products/price", payload)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getUserMarketingTool,
   getAllMainCategories,
   getSetbyCategories,
   getSubCategorybySets,
   getProductsBySubCategoryId,
+  deleteMarketingToolData,
+  getProductsForShareproduct,
 };
