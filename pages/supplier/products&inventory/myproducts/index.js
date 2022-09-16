@@ -136,9 +136,13 @@ const MyProducts = () => {
     setShowMenu(null);
   };
 
-  const deleteSingleRow = (productId) => {
+  const deleteSingleRow = async (productId) => {
     // console.log(productId);
-    deleteSingleProduct(productId);
+    const { data } = await deleteSingleProduct(productId);
+    if (data) {
+      toastify(data.message, "success");
+      getTabList();
+    }
     getTableData("", "", 0);
   };
 
