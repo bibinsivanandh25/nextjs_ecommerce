@@ -21,12 +21,17 @@ import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
 import ProductModal from "./ProductModal";
 import CreateQuiz from "./createquiz";
-import { getCategorys } from "services/supplier/marketingtools/luckydraw/scratchcard";
+import {
+  getCategorys,
+  saveScratchCard,
+} from "services/supplier/marketingtools/luckydraw/scratchcard";
 import { useSelector } from "react-redux";
 import { getSet, getSubCategory } from "services/supplier/AddProducts";
+import { getCurrentData } from "services/supplier";
 
 const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const route = useRouter();
+  let currentDate = new Date();
   const tempFormData = {
     start_date: format(new Date(), "yyyy-MM-dd"),
     end_date: format(new Date(), "yyyy-MM-dd"),
@@ -55,7 +60,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const [categoryList, setCategotyList] = useState([]);
   const [subCategoryList, setSubCategotyList] = useState([]);
   const [setsList, setSetsList] = useState([]);
-  const { storeCode, storeName } = useSelector((state) => state.user);
+  const { storeCode, storeName, supplierId } = useSelector(
+    (state) => state.user
+  );
 
   const getCategoryList = async () => {
     const { data, err } = await getCategorys();
@@ -102,9 +109,16 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       setSubCategotyList(finaData);
     }
   };
+  const currentDateget = async () => {
+    const { data } = await getCurrentData();
+    if (data) {
+      currentDate = new Date(data);
+    }
+  };
 
   useEffect(() => {
     getCategoryList();
+    currentDateget();
   }, []);
 
   useEffect(() => {
@@ -124,6 +138,20 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       [id]: { ...val },
     }));
   };
+
+  const getSplitAmount = () => {
+    const temp = [];
+    Object.keys(formData.split_data).forEach((item) => {
+      temp.push({
+        splitAmount: parseFloat(formData.split_data[item]),
+        issuedToId: null,
+        expired: null,
+        issued: null,
+      });
+    });
+    return temp;
+  };
+
   const generateInputField = () => {
     if (formData.split_type === "equal_split") return [];
     const temp = [];
@@ -165,10 +193,10 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const validate = () => {
     const errObj = {};
     let flag = false;
-    if (formData.start_date < new Date()) {
+    if (new Date(formData.start_date) < currentDate) {
       flag = true;
       toastify("Start date should be a future date", "warning");
-    } else if (formData.start_date > formData.end_date) {
+    } else if (new Date(formData.start_date) > new Date(formData.end_date)) {
       flag = true;
       toastify("Start date should be less than end date", "warning");
     }
@@ -177,10 +205,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       flag = true;
       errObj.quiz_users = "Please selecte atleast one users";
     }
-    if (formData.commision_type === null) {
-      flag = true;
-      errObj.commision_type = validateMessage.field_required;
-    }
+
     if (formData.category === null) {
       flag = true;
       errObj.category = validateMessage.field_required;
@@ -226,6 +251,27 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
       flag = true;
       errObj.split_type = validateMessage.field_required;
     }
+    if (pageName !== "spinwheel" && formData.split_type === "random_split") {
+      const maxLength = Math.max(
+        formData.limit_per_coupon,
+        formData.limit_per_customer
+      );
+      if (Object.keys(formData.split_data).length !== maxLength) {
+        flag = true;
+        toastify("Enter Split Amount", "warning");
+      } else {
+        let localFlag = false;
+        Object.keys(formData.split_data).forEach((item) => {
+          if (formData.split_data[item] === "") {
+            localFlag = true;
+          }
+        });
+        if (localFlag) {
+          flag = true;
+          toastify("Enter Split Amount", "warning");
+        }
+      }
+    }
     if (formData.description === "") {
       flag = true;
       errObj.description = validateMessage.field_required;
@@ -244,10 +290,51 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     setErrorObj({ ...errObj });
     return flag;
   };
-  const handleSubmit = () => {
-    validate();
-    if (formRef.current) {
-      // console.log(formRef.current.handleSendFormData());
+  const handleSubmit = async () => {
+    const theme = formRef.current
+      ? formRef.current.handleSendFormData()[1]
+      : {};
+    if (!validate() && Object.keys(theme).length) {
+      const marketingToolProductList = [];
+      formData.products.forEach((item) => {
+        marketingToolProductList.push({
+          masterProductId: item.masterProductId,
+          variationId: item.productVariationId,
+        });
+      });
+      const payload = {
+        toolType: "SCRATCH_CARD",
+        startDateTime: format(
+          new Date(formData.start_date),
+          "MM-dd-yyyy HH:mm:ss"
+        ),
+        endDateTime: format(new Date(formData.end_date), "MM-dd-yyyy HH:mm:ss"),
+        description: formData.description,
+        campaignTitle: formData.campign_name,
+        totalDiscountValue: parseFloat(formData.highest_discount),
+        splitType: formData.split_type === "equal_split" ? "EQUAL" : "RANDOM",
+        couponUsageLimit: parseInt(formData.limit_per_coupon, 10),
+        customerUsageLimit: parseInt(formData.limit_per_customer, 10),
+        marginType: formData.category.commision_type,
+        mainCategoryId: formData.category.id,
+        subCategoryId: formData.subCategory.id,
+        productCatalogueUrl: null,
+        customerType: formData.quiz_users[0],
+        userType: "SUPPLIER",
+        userTypeId: supplierId,
+        marketingToolThemeId: theme.themeId,
+        marketingToolProductList,
+        splitDiscountDetailList:
+          formData.split_type === "equal_split" ? [] : getSplitAmount(),
+        marketingToolQuestionAnswerList: [],
+      };
+      const { data, message, err } = await saveScratchCard(payload);
+      if (data) {
+        toastify(message, "success");
+        setShowGenericForm(false);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
 
@@ -308,38 +395,30 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
           <Box className=" mb-3 ms-3">
             Whom you want to create the quiz
             <Box className="d-flex mt-1 ms-3">
-              <CheckBoxComponent
+              <RadiobuttonComponent
                 label="New Customer"
-                isChecked={formData.quiz_users.includes("New Customer")}
-                checkBoxClick={(_, val) => {
+                onRadioChange={() => {
                   setFormData((pre) => {
-                    const temp = [...pre.quiz_users];
-                    if (!val) {
-                      const ind = temp.indexOf("New Customer");
-                      temp.splice(ind, 1);
-                    } else {
-                      temp.push("New Customer");
-                    }
-                    return { ...pre, quiz_users: [...temp] };
+                    return {
+                      ...pre,
+                      quiz_users: ["NEW_CUSTOMER"],
+                    };
                   });
                 }}
+                isChecked={formData.quiz_users[0] === "NEW_CUSTOMER"}
                 size="small"
               />
-              <CheckBoxComponent
+              <RadiobuttonComponent
                 label="Existing Customer"
-                isChecked={formData.quiz_users.includes("Existing Customer")}
-                checkBoxClick={(_, val) => {
+                onRadioChange={() => {
                   setFormData((pre) => {
-                    const temp = [...pre.quiz_users];
-                    if (!val) {
-                      const ind = temp.indexOf("Existing Customer");
-                      temp.splice(ind, 1);
-                    } else {
-                      temp.push("Existing Customer");
-                    }
-                    return { ...pre, quiz_users: [...temp] };
+                    return {
+                      ...pre,
+                      quiz_users: ["EXISTING_CUSTOMER"],
+                    };
                   });
                 }}
+                isChecked={formData.quiz_users[0] === "EXISTING_CUSTOMER"}
                 size="small"
               />
             </Box>
@@ -603,6 +682,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
           }));
           setShowProducts(false);
         }}
+        subCategoryId={formData.subCategory?.id ?? null}
+        selected={formData.products}
       />
     </Box>
   );

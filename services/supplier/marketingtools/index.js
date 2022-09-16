@@ -81,6 +81,16 @@ const getProductsForShareproduct = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+
+const getThemes = () => {
+  return serviceUtil
+    .get("users/marketing-tool-themes")
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getUserMarketingTool,
   getAllMainCategories,
@@ -89,4 +99,5 @@ export {
   getProductsBySubCategoryId,
   deleteMarketingToolData,
   getProductsForShareproduct,
+  getThemes,
 };
