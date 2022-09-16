@@ -221,8 +221,8 @@ const Flags = () => {
         <Image
           src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
           layout="responsive"
-          width={130}
-          height={30}
+          width={50}
+          height={25}
         />
       ),
       col3: "--",
@@ -259,6 +259,7 @@ const Flags = () => {
         tableRows={TableRows}
         showDateFilter
         tHeadBgColor="bg-tableGray"
+        showDateFilterSearch={false}
       />
       {viewModalOpen && (
         <ViewModal

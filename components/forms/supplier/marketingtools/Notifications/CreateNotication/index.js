@@ -37,13 +37,11 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
       value: "Customer 5",
     },
   ];
-  const [checkedRadioId, setCheckedRadioId] = useState(null);
-  const [showAttachment, setShowAttachment] = useState(false);
+  const [checkedRadioId, setCheckedRadioId] = useState("Only Attachments");
+  const [showAttachment, setShowAttachment] = useState(true);
   const [showText, setShowText] = useState(false);
   const [files, setFiles] = useState([]);
-
   const fileRef = useRef(null);
-  // console.log(files, "asljh");
 
   return (
     <ModalComponent
@@ -57,13 +55,14 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
     >
       <Box className="py-2">
         <MultiSelectComponent
-          freeSolo
           list={[...list]}
           fullWidth
           value={selectedCustomers}
           onSelectionChange={(e, val) => {
             setSelectedCustomers([...val]);
           }}
+          label="Customer"
+          inputlabelshrink
         />
       </Box>
       {/* <Divider variant="fullWidth" /> */}
@@ -82,6 +81,7 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
             setCheckedRadioId(e.target.id);
             setShowAttachment(true);
             setShowText(false);
+            setFiles([]);
           }}
           label="Only Attachments"
           id="Only Attachments"
@@ -92,6 +92,7 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
             setCheckedRadioId(e.target.id);
             setShowAttachment(false);
             setShowText(true);
+            setFiles([]);
           }}
           label="Only Text"
           id="Only Text"
@@ -102,6 +103,7 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
             setCheckedRadioId(e.target.id);
             setShowAttachment(true);
             setShowText(true);
+            setFiles([]);
           }}
           label="Text With Attachments"
           id="Text With Attachments"
@@ -147,14 +149,33 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
           <div className="my-2 d-flex justify-content-center w-100 overflow-hidden">
             <TextEditor />
           </div>
-          <ButtonComponent
-            onBtnClick={() => {
-              fileRef.current.click();
-            }}
-            variant="outlined"
-            label="Attach File"
-            muiProps="ms-3 mb-3"
-          />
+          <div className="d-flex">
+            <ButtonComponent
+              onBtnClick={() => {
+                fileRef.current.click();
+              }}
+              variant="outlined"
+              label="Attach File"
+              muiProps="ms-3 mb-3"
+            />
+            <div className="d-flex align-items-center">
+              {files.map((ele, ind) => {
+                return (
+                  <Typography key={ele} className="color-blue h-5 ms-2">
+                    {ele}
+                    <CloseOutlined
+                      className="h-5 mx-2"
+                      onClick={() => {
+                        const temp = [...files];
+                        temp.splice(ind, 1);
+                        setFiles(temp);
+                      }}
+                    />
+                  </Typography>
+                );
+              })}
+            </div>
+          </div>
         </div>
       ) : null}
       <input
@@ -163,8 +184,9 @@ const CreateNotification = ({ showModal = false, setShowModal = () => {} }) => {
         ref={fileRef}
         hidden
         onChange={(e) => {
-          // console.log(e.target.files);
-          setFiles([...files, e.target.files[0].name]);
+          if (e.target.files?.length) {
+            setFiles([...files, e.target.files[0]?.name]);
+          }
         }}
       />
       <Box className="d-flex justify-content-end my-2">

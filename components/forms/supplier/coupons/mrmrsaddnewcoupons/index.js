@@ -113,7 +113,6 @@ const MrMrsAddNewCoupons = ({
         "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
     }
     const finalErrorObj = { ...errObj, ...limitErrors };
-    // console.log(finalErrorObj, "finalErrorObj");
     setError({ ...finalErrorObj });
     let valid = true;
     Object.values(finalErrorObj).forEach((i) => {
@@ -187,9 +186,9 @@ const MrMrsAddNewCoupons = ({
 
   return (
     <Paper sx={{ minHeight: "80vh", py: 1 }}>
-      <Box className="fit-content zIndex-1101">
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -211,7 +210,7 @@ const MrMrsAddNewCoupons = ({
             minHeight: "73vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12} display="flex">
               <InputBox
                 disabled

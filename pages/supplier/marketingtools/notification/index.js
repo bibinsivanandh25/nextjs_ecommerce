@@ -86,9 +86,12 @@ const Notification = () => {
       col10: "Active",
       col9: (
         <div className="d-flex justify-content-center">
-          <CustomIcon type="send" className="h-3 color-orange" />
-          <CustomIcon type="view" className="h-3 ms-1" />
-          <MenuOption options={["Edit", "Delete", "Resend"]} />
+          <CustomIcon type="send" className="h-4 " />
+          <CustomIcon type="view" className="h-4 ms-1" />
+          <MenuOption
+            options={["Edit", "Delete", "Resend"]}
+            IconclassName="h-4"
+          />
         </div>
       ),
     },
@@ -104,9 +107,12 @@ const Notification = () => {
       col8: "Regular",
       col9: (
         <div className="d-flex justify-content-center">
-          <CustomIcon type="send" className="h-3 color-orange" />
-          <CustomIcon type="view" className="h-3 ms-1" />
-          <MenuOption options={["Edit", "Delete", "Resend"]} />
+          <CustomIcon type="send" className="h-4" />
+          <CustomIcon type="view" className="h-4 ms-1" />
+          <MenuOption
+            options={["Edit", "Delete", "Resend"]}
+            IconclassName="h-4"
+          />
         </div>
       ),
     },

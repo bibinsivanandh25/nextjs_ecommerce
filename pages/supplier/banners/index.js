@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 import { Paper } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -196,13 +197,15 @@ const Banners = () => {
     return temp;
   };
 
-  const getAllTableData = async (
-    payload,
-    searchText = "",
-    filterText = "",
-    page = pageNumber
-  ) => {
-    const { data, err } = await getAllData(payload, searchText, filterText);
+  const getAllTableData = async (fromdate = "", endDate = "", page) => {
+    const payload = {
+      createdById: userInfo.supplierId,
+      fromDate: fromdate,
+      toDate: endDate,
+      pageNumber: fromdate ? 0 : page,
+      pageSize: 50,
+    };
+    const { data, err } = await getAllData(payload);
     if (data?.length) {
       if (page == 0) {
         setTableRows(mapRowsToTable(data));
@@ -211,8 +214,6 @@ const Banners = () => {
         setpageNumber((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
       }
-    } else {
-      setTableRows([]);
     }
     if (err) {
       toastify(err.response.data.message, "error");
@@ -230,14 +231,8 @@ const Banners = () => {
       const { data, err } = await deleteBanner(selectdata.bannerId);
       if (data?.data) {
         toastify(data.message, "success");
-        const payload = {
-          createdById: userInfo.supplierId,
-          fromDate: "",
-          toDate: "",
-          pageNumber: 0,
-          pageSize: 50,
-        };
-        getAllTableData(payload, "", "", 0);
+        setpageNumber(0);
+        getAllTableData("", "", 0);
       } else if (err) {
         toastify(err.response.data.message, "error");
       }
@@ -279,14 +274,7 @@ const Banners = () => {
   };
 
   useEffect(() => {
-    const payload = {
-      createdById: userInfo.supplierId,
-      fromDate: "",
-      toDate: "",
-      pageNumber: 0,
-      pageSize: 50,
-    };
-    getAllTableData(payload, "", "", 0);
+    getAllTableData("", "", 0);
   }, []);
 
   return (
@@ -310,18 +298,15 @@ const Banners = () => {
           page = pageNumber,
           filteredDates
         ) => {
-          const payload = {
-            createdById: userInfo.supplierId,
-            fromDate: filteredDates?.fromDate
+          getAllTableData(
+            filteredDates?.fromDate
               ? new Date(filteredDates?.fromDate).toISOString().substring(0, 19)
               : "",
-            toDate: filteredDates?.toDate
+            filteredDates?.toDate
               ? new Date(filteredDates?.toDate).toISOString().substring(0, 19)
               : "",
-            pageNumber: 0,
-            pageSize: 50,
-          };
-          getAllTableData(payload, searchText, filterText, page);
+            page
+          );
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);
@@ -335,6 +320,7 @@ const Banners = () => {
         saveBtnName={saveBtnName}
         getAllTableData={getAllTableData}
         userInfo={userInfo}
+        setpageNumber={setpageNumber}
       />
       {viewModalOpen && (
         <ViewBannerModal

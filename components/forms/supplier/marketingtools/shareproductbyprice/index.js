@@ -10,28 +10,22 @@ import InputBox from "components/atoms/InputBoxComponent";
 import TextEditor from "components/atoms/TextEditor";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
-import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   getAllMainCategories,
-  getProductsBySubCategoryId,
+  getProductsForShareproduct,
   getSetbyCategories,
   getSubCategorybySets,
 } from "services/supplier/marketingtools";
 import { createDiscountCoupons } from "services/supplier/marketingtools/creatediscountcoupons";
 import toastify from "services/utils/toastUtils";
 
-const CreateDiscount = ({
+const CreateShareProductByPrice = ({
   setShowCreateDiscount = () => {},
   btnText = "",
-  inputLabel = "Enter Discount %",
   showBackBtn = true,
-  // showTypography = true,
-  showDateAndTime = true,
-  // onCreateBtnClick = () => {},
   user = {},
-  // onCustomBtnClick = () => {},
   getTableRows = () => {},
   setpageNumber = () => {},
 }) => {
@@ -47,12 +41,6 @@ const CreateDiscount = ({
   const [categories, setCategories] = useState([]);
   const [sets, setSets] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [defaultDate, setDefaultDate] = useState({
-    startdate: "",
-    enddate: "",
-    starttime: "",
-    endtime: "",
-  });
   const [selectedCategorys, setSelectedCategory] = useState({
     mainCategoryId: "",
     subCategoryId: "",
@@ -111,8 +99,14 @@ const CreateDiscount = ({
 
   const supplierId = useSelector((state) => state.user.supplierId);
 
-  const getProducts = async (value) => {
-    const { data } = await getProductsBySubCategoryId(supplierId, value?.id);
+  const getProducts = async () => {
+    const payload = {
+      supplierId,
+      subCategoryId: selectedCategorys.subCategoryId,
+      priceStartRange: formValues.inputValue,
+      priceEndRange: formValues.priceEnd,
+    };
+    const { data } = await getProductsForShareproduct(payload);
     if (data) {
       const result = [];
       data.forEach((product) => {
@@ -128,6 +122,23 @@ const CreateDiscount = ({
       setProducts([...result]);
     }
   };
+
+  useEffect(() => {
+    const { inputValue, priceEnd } = formValues;
+    if (
+      inputValue !== undefined &&
+      inputValue !== "" &&
+      priceEnd !== undefined &&
+      priceEnd !== "" &&
+      selectedCategorys.subCategoryId !== ""
+    ) {
+      getProducts();
+    }
+  }, [
+    formValues.inputValue,
+    formValues.priceEnd,
+    selectedCategorys.subCategoryId,
+  ]);
   const renderProducts = () => {
     return Products.map((ele, ind) => {
       return (
@@ -160,9 +171,6 @@ const CreateDiscount = ({
     });
   };
   const getSelectedCategoriesLabels = () => {
-    // return `${`${categoriesList.category[0]?.label}   >` ?? ""}
-    //   ${`${categoriesList.set[0]?.label}   >` ?? ""}
-    //   ${`${categoriesList.subCategory[0]?.label}` ?? ""}`;
     return `${
       categoriesList.category[0]?.label
         ? `${categoriesList.category[0]?.label}  >`
@@ -175,12 +183,7 @@ const CreateDiscount = ({
         : ""
     }`;
   };
-  const addDateTime = (date, time) => {
-    const finalStartTime = time.split(":");
-    const fromData = new Date(date).setHours(finalStartTime[0]);
-    const FromDate = new Date(fromData).setMinutes(finalStartTime[1]);
-    return new Date(FromDate);
-  };
+
   const validateForm = () => {
     const errObj = { ...error };
     const validateFields = (id, errField, regex, errMsg) => {
@@ -193,7 +196,6 @@ const CreateDiscount = ({
       }
     };
     validateFields("marginType");
-    // validateFields("inputValue");
     validateFields(
       "campaignTitle",
       null,
@@ -202,13 +204,13 @@ const CreateDiscount = ({
     );
     if (formValues.inputValue == "" || formValues.inputValue == undefined) {
       errObj.inputValue = validateMessage.field_required;
-    } else if (
-      !(parseInt(formValues.inputValue, 10) <= 45) ||
-      !(parseInt(formValues.inputValue, 10) >= 5)
-    ) {
-      errObj.inputValue = "Discount Range Should be 5% to 45%.";
     } else {
       errObj.inputValue = null;
+    }
+    if (formValues.priceEnd == "" || formValues.priceEnd == undefined) {
+      errObj.priceEnd = validateMessage.field_required;
+    } else {
+      errObj.priceEnd = null;
     }
     if (!categoriesList.category.length) {
       errObj.categories = validateMessage.field_required;
@@ -227,41 +229,7 @@ const CreateDiscount = ({
     } else {
       errObj.content = null;
     }
-    if (showDateAndTime) {
-      if (defaultDate.startdate == "") {
-        errObj.startdate = validateMessage.field_required;
-      } else {
-        errObj.startdate = null;
-      }
-      if (defaultDate.enddate == "") {
-        errObj.enddate = validateMessage.field_required;
-      } else {
-        errObj.enddate = null;
-      }
-      if (defaultDate.starttime == "") {
-        errObj.starttime = validateMessage.field_required;
-      } else {
-        errObj.starttime = null;
-      }
-      if (defaultDate.endtime == "") {
-        errObj.endtime = validateMessage.field_required;
-      } else {
-        errObj.endtime = null;
-      }
 
-      const startdate = addDateTime(
-        defaultDate.startdate,
-        defaultDate.starttime
-      );
-      const enddate = addDateTime(defaultDate.enddate, defaultDate.endtime);
-      if (startdate && enddate) {
-        if (Date.parse(enddate) < Date.parse(startdate)) {
-          errObj.dateError = "Start Date should be Lessthan End Date";
-        } else {
-          errObj.dateError = null;
-        }
-      }
-    }
     setError(errObj);
     let valid = true;
     Object.values(errObj).forEach((i) => {
@@ -284,28 +252,16 @@ const CreateDiscount = ({
           });
         }
       });
-      const startdate = addDateTime(
-        defaultDate.startdate,
-        defaultDate.starttime
-      );
-      const enddate = addDateTime(defaultDate.enddate, defaultDate.endtime);
       // onCreateBtnClick();
       const payload = {
-        toolType:
-          btnText == "View Discount Product"
-            ? "DISCOUNT_COUPON"
-            : btnText == "View Today's Deal"
-            ? "TODAYS_DEAL"
-            : "PRICE_TARGETED",
-        startDateTime: showDateAndTime
-          ? format(startdate, "MM-dd-yyyy hh:mm:ss")
-          : null,
-        endDateTime: showDateAndTime
-          ? format(enddate, "MM-dd-yyyy hh:mm:ss")
-          : null,
+        toolType: "PRICE_TARGETED",
+        startDateTime: null,
+        endDateTime: null,
         description: formValues.content,
         campaignTitle: formValues.campaignTitle,
-        totalDiscountValue: formValues.inputValue,
+        totalDiscountValue: null,
+        priceStartRange: Number(formValues.inputValue),
+        priceEndRange: Number(formValues.priceEnd),
         splitType: null,
         couponUsageLimit: null,
         customerUsageLimit: null,
@@ -332,22 +288,7 @@ const CreateDiscount = ({
       }
     }
   };
-  useEffect(() => {
-    if (defaultDate.startdate && defaultDate.starttime) {
-      if (btnText == "View Today's Deal") {
-        const endDate = new Date(
-          new Date(defaultDate.startdate).setDate(
-            new Date(defaultDate.startdate).getDate() + 1
-          )
-        );
-        setDefaultDate((pre) => ({
-          ...pre,
-          enddate: format(endDate, "yyyy-MM-dd"),
-          endtime: defaultDate.starttime,
-        }));
-      }
-    }
-  }, [defaultDate.startdate, defaultDate.starttime]);
+
   return (
     <div>
       <div
@@ -370,7 +311,43 @@ const CreateDiscount = ({
         </span>
       )}
       <Grid container spacing={1} className="mt-1">
-        <Grid item sm={5} className="d-flex position-relative" container>
+        <Grid item sm={1.5}>
+          <InputBox
+            size="small"
+            placeholder="Price Start Range"
+            value={formValues.inputValue}
+            onInputChange={(e) =>
+              setFormValues((prev) => {
+                return {
+                  ...prev,
+                  inputValue: e.target.value,
+                };
+              })
+            }
+            type="number"
+            error={Boolean(error.inputValue)}
+            helperText={error.inputValue}
+          />
+        </Grid>
+        <Grid item sm={1.5}>
+          <InputBox
+            size="small"
+            placeholder="Price End Range"
+            value={formValues.priceEnd}
+            onInputChange={(e) =>
+              setFormValues((prev) => {
+                return {
+                  ...prev,
+                  priceEnd: e.target.value,
+                };
+              })
+            }
+            type="number"
+            error={Boolean(error.priceEnd)}
+            helperText={error.priceEnd}
+          />
+        </Grid>
+        <Grid item sm={4.5} className="d-flex position-relative" container>
           <InputBox
             iconName={!showListGroup ? "arrowDown" : "arrowUp"}
             onIconClick={() => {
@@ -458,7 +435,7 @@ const CreateDiscount = ({
                         ...pre,
                         subCategoryId: val[0]?.id,
                       }));
-                      getProducts(val[0]);
+                      // getProducts(val[0]);
                       setCategoriesList((prev) => {
                         return {
                           ...prev,
@@ -472,7 +449,7 @@ const CreateDiscount = ({
             </Grid>
           ) : null}
         </Grid>
-        <Grid item sm={2}>
+        <Grid item sm={1.5}>
           <InputBox
             size="small"
             label="Margin type"
@@ -483,24 +460,6 @@ const CreateDiscount = ({
           />
         </Grid>
 
-        <Grid item sm={2}>
-          <InputBox
-            size="small"
-            placeholder={inputLabel}
-            value={formValues.inputValue}
-            onInputChange={(e) =>
-              setFormValues((prev) => {
-                return {
-                  ...prev,
-                  inputValue: e.target.value,
-                };
-              })
-            }
-            type="number"
-            error={Boolean(error.inputValue)}
-            helperText={error.inputValue}
-          />
-        </Grid>
         <Grid item sm={3} className="d-flex align-items-between ">
           <div>
             <ButtonComponent
@@ -523,118 +482,6 @@ const CreateDiscount = ({
           </div>
         </Grid>
       </Grid>
-      {/* {showTypography && (
-        <Typography className="text-danger h-5 fw-bold my-2">
-          Discount starts from 5% to 30%
-        </Typography>
-      )} */}
-      {showDateAndTime && (
-        <>
-          <div className="d-flex w-75 justify-content-between mt-2">
-            <div>
-              <div className="d-flex align-items-center h-5">
-                Start Date:
-                <input
-                  type="date"
-                  value={defaultDate.startdate}
-                  style={{
-                    border: "none",
-                    outline: "none",
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                  }}
-                  onChange={(e) => {
-                    setDefaultDate((pre) => ({
-                      ...pre,
-                      startdate: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              {error.startdate !== "" ? (
-                <FormHelperText error>{error.startdate}</FormHelperText>
-              ) : null}
-            </div>
-            <div>
-              <div className="d-flex align-items-center h-5">
-                End Date:
-                <input
-                  type="date"
-                  value={defaultDate.enddate}
-                  style={{
-                    border: "none",
-                    outline: "none",
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                  }}
-                  disabled={btnText === "View Today's Deal"}
-                  onChange={(e) => {
-                    setDefaultDate((pre) => ({
-                      ...pre,
-                      enddate: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              {error.enddate !== null ? (
-                <FormHelperText error>{error.enddate}</FormHelperText>
-              ) : null}
-            </div>
-            <div>
-              <div className="d-flex align-items-center h-5">
-                Start time:
-                <input
-                  type="time"
-                  value={defaultDate.starttime}
-                  style={{
-                    border: "none",
-                    outline: "none",
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                  }}
-                  onChange={(e) => {
-                    setDefaultDate((pre) => ({
-                      ...pre,
-                      starttime: e.target.value,
-                    }));
-                  }}
-                />
-              </div>
-              {error.starttime !== null ? (
-                <FormHelperText error>{error.starttime}</FormHelperText>
-              ) : null}
-            </div>
-            <div>
-              <div className="d-flex align-items-center h-5">
-                End time:
-                <input
-                  type="time"
-                  value={defaultDate.endtime}
-                  style={{
-                    border: "none",
-                    outline: "none",
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                  }}
-                  onChange={(e) => {
-                    setDefaultDate((pre) => ({
-                      ...pre,
-                      endtime: e.target.value,
-                    }));
-                  }}
-                  disabled={btnText === "View Today's Deal"}
-                />
-              </div>
-              {error.endtime !== null ? (
-                <FormHelperText error>{error.endtime}</FormHelperText>
-              ) : null}
-            </div>
-          </div>
-          {error.dateError !== null ? (
-            <FormHelperText error>{error.dateError}</FormHelperText>
-          ) : null}
-        </>
-      )}
       <div className="w-25 my-3">
         <InputBox
           placeholder="Enter the campaign title"
@@ -676,4 +523,5 @@ const CreateDiscount = ({
     </div>
   );
 };
-export default CreateDiscount;
+
+export default CreateShareProductByPrice;
