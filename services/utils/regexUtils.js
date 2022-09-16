@@ -1,6 +1,6 @@
 const validationRegex = {
   mobile: /^([+]d{2})?\d{10}$/,
-  email: /^[\w-.][+\w]+@([\w-]+.)+[\w-]{2,4}$/,
+  email: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
   password:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
   upperCase: /^.*[A-Z].*$/,

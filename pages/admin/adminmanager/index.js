@@ -70,8 +70,8 @@ const AdminManger = () => {
     },
   ];
 
-  const onClickOfMenuItem = (ele) => {
-    console.log(ele);
+  const onClickOfMenuItem = () => {
+    // console.log(ele);
   };
 
   const rows = [

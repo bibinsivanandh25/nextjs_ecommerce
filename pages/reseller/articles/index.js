@@ -206,8 +206,8 @@ const Articles = () => {
             showCustomSearchButton
             onCustomSearchButtonClick={() => setShowModal(true)}
             searchBarSizeMd={4}
-            OnSelectionChange={(ele) => {
-              console.log(ele);
+            OnSelectionChange={() => {
+              // console.log(ele);
             }}
             customDropDownPlaceholder="Select Categories"
           />

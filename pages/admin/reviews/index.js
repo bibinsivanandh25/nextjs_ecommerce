@@ -109,8 +109,8 @@ const Reviews = () => {
             className="p-1 bg-danger color-white rounded ms-2"
           />
           <MenuOption
-            getSelectedItem={(ele) => {
-              console.log(ele);
+            getSelectedItem={() => {
+              // console.log(ele);
               //   onClickOfMenuItem(ele);
             }}
             options={["view", "Edit", "Delete"]}

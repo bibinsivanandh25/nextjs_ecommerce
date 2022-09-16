@@ -22,8 +22,8 @@ const AcceptRejectModal = ({
   };
 
   const returnDiscount = (salePrice, mrpPrice) => {
-    console.log("Sale Price ", salePrice);
-    console.log("Mrp price ", mrpPrice);
+    // console.log("Sale Price ", salePrice);
+    // console.log("Mrp price ", mrpPrice);
     const diff = mrpPrice - salePrice;
     const fraction = diff / mrpPrice;
     return Math.round(fraction * 100);

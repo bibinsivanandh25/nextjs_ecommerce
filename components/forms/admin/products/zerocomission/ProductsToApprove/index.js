@@ -192,7 +192,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 

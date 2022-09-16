@@ -487,7 +487,7 @@ export default function TableComponent({
                 <Grid item sm={2}>
                   <div
                     style={{ width: "35px", height: "38px" }}
-                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
+                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2 cursor-pointer"
                     onClick={() => {
                       handlePageEnd(
                         searchText,
@@ -842,7 +842,7 @@ export default function TableComponent({
 //     col1: "India",
 //     col2: "IN",
 //     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => console.log(e)}>
+//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
 //         121212
 //       </div>
 //     ),

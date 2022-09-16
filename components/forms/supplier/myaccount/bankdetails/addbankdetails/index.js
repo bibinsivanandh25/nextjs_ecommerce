@@ -102,7 +102,7 @@ const AddBankDetailsModal = ({
       accountHolderName: BankDetails["Account Holder Name"],
       ifscCode: BankDetails["IFSC code"],
     };
-    console.log(BankDetails);
+    // console.log(BankDetails);
     const { data } = await EditBankDetails(payload);
     if (data) {
       setShowModal(false);

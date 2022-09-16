@@ -177,8 +177,8 @@ const ProductDetails = ({ productId }) => {
           }
         });
       })
-      .catch((err) => {
-        console.log(err.response);
+      .catch(() => {
+        // console.log(err.response);
       });
   };
   const [selectedImageId, setSelectedImageId] = useState("1");
@@ -217,8 +217,8 @@ const ProductDetails = ({ productId }) => {
         });
         setfrequentProduct(res.data.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
         setfrequentProduct([]);
       });
   };
@@ -243,9 +243,8 @@ const ProductDetails = ({ productId }) => {
         setCouponsMasterData(res.data.data);
       })
       .catch((err) => {
-        const errMsg = err?.response?.data?.message;
-        console.log(errMsg);
-        setCouponsMasterData([]);
+        const error = { err };
+        if (error) setCouponsMasterData([]);
       });
   };
   // minimum cart value
@@ -258,8 +257,8 @@ const ProductDetails = ({ productId }) => {
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   useEffect(() => {

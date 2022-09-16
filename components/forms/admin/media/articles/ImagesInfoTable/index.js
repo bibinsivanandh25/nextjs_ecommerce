@@ -107,7 +107,7 @@ const ImagesInfoTable = ({
     <Box>
       <Typography
         onClick={() => {
-          console.log("Hi");
+          // console.log("Hi");
           setShowImageInfoTable(false);
         }}
         className="color-orange fs-14 cursor-pointer ps-3 mb-3"

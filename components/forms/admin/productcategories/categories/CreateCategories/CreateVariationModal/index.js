@@ -41,12 +41,12 @@ const CreateVariationModal = ({
   };
 
   useEffect(() => {
-    console.log(attributesArray);
+    // console.log(attributesArray);
     setInputChips(attributesArray);
   }, [attributesArray]);
 
   useEffect(() => {
-    console.log(attributesArray);
+    // console.log(attributesArray);
     setInputChips(attributesArray);
   }, []);
 
@@ -72,7 +72,7 @@ const CreateVariationModal = ({
     setError(errObj);
     if (!returnError) {
       if (variationId === null) {
-        console.log(variations);
+        // console.log(variations);
         const thePreVariations = [...variations];
         const newObj = {
           variationName,
@@ -82,15 +82,15 @@ const CreateVariationModal = ({
         setVariations([...thePreVariations]);
         setOpenVariationModal(false);
       } else {
-        console.log("Id ", variationId);
-        console.log("Variations with id ", variations);
+        // console.log("Id ", variationId);
+        // console.log("Variations with id ", variations);
         const thePreVariations = [...variations];
         const newObj = {
           variationName,
           variationAttributes: inputChips,
         };
         thePreVariations.splice(variationId, 1, newObj);
-        console.log("Pre variations ", thePreVariations);
+        // console.log("Pre variations ", thePreVariations);
         setVariations([...thePreVariations]);
         setOpenVariationModal(false);
       }

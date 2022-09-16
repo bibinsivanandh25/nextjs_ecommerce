@@ -119,9 +119,9 @@ const CreateSubCategoryModal = ({
   };
 
   const handleSaveBtnClick = () => {
-    const [returnError, errObjo] = handleError();
+    const [errObjo] = handleError();
     setError(errObjo);
-    console.log(returnError);
+    // console.log(returnError);
   };
 
   const handleClearAll = () => {

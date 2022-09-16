@@ -12,6 +12,7 @@ import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import { getAttributes, createAttributes } from "services/supplier/AddProducts";
 import { useUserInfo } from "services/hooks";
+import { useSelector } from "react-redux";
 import { validateAttribute } from "../validation";
 
 const AttributesForm = forwardRef(
@@ -30,6 +31,7 @@ const AttributesForm = forwardRef(
       values: "",
     });
     const user = useUserInfo();
+    const { editProduct } = useSelector((state) => state.product);
 
     useEffect(() => {
       if (Object.keys(formData.attribute).length) {
@@ -67,6 +69,7 @@ const AttributesForm = forwardRef(
               <CheckBoxComponent
                 label={ele.attribute}
                 isChecked={ele.selected}
+                isDisabled={editProduct}
                 id={ele.id}
                 checkBoxClick={(id, checked) => {
                   if (!checked) {
@@ -110,6 +113,7 @@ const AttributesForm = forwardRef(
                     label={ele.attribute}
                     list={[...options]}
                     id={ele.id}
+                    disabled={editProduct}
                     onSelectionChange={(e, val, id) => {
                       setSelectedAttribute((pre) => ({
                         ...pre,
@@ -141,6 +145,7 @@ const AttributesForm = forwardRef(
                 <Grid item xs={12} container spacing={2}>
                   <Grid item sm={4}>
                     <ButtonComponent
+                      disabled={editProduct}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Select All"
@@ -163,6 +168,7 @@ const AttributesForm = forwardRef(
                   </Grid>
                   <Grid item sm={4}>
                     <ButtonComponent
+                      disabled={editProduct}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Select None"
@@ -186,6 +192,7 @@ const AttributesForm = forwardRef(
                   </Grid>
                   <Grid item sm={4}>
                     <ButtonComponent
+                      disabled={editProduct}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Add New"
@@ -233,7 +240,7 @@ const AttributesForm = forwardRef(
     const getAttributesList = async (subCatId, pre) => {
       const { data } = await getAttributes(subCatId);
       const temp = [
-        ...data.othersVariationList.map((item) => {
+        ...data?.othersVariationList?.map((item) => {
           return {
             id: item.otherVariationId,
             attribute: item.variationName,
@@ -252,7 +259,7 @@ const AttributesForm = forwardRef(
             }),
           };
         }),
-        ...data.standardVariationList.map((item) => {
+        ...data?.standardVariationList?.map((item) => {
           return {
             id: item.standardVariationId,
             attribute: item.variationName,

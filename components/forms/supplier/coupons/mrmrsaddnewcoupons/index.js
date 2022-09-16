@@ -113,7 +113,6 @@ const MrMrsAddNewCoupons = ({
         "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
     }
     const finalErrorObj = { ...errObj, ...limitErrors };
-    console.log(finalErrorObj, "finalErrorObj");
     setError({ ...finalErrorObj });
     let valid = true;
     Object.values(finalErrorObj).forEach((i) => {
@@ -157,7 +156,7 @@ const MrMrsAddNewCoupons = ({
   const handleSubmitClick = async (couponStatus) => {
     // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
-    console.log(isValid, "isValid");
+    // console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
@@ -187,9 +186,9 @@ const MrMrsAddNewCoupons = ({
 
   return (
     <Paper sx={{ minHeight: "80vh", py: 1 }}>
-      <Box className="fit-content zIndex-1101">
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -211,7 +210,7 @@ const MrMrsAddNewCoupons = ({
             minHeight: "73vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12} display="flex">
               <InputBox
                 disabled
@@ -294,7 +293,7 @@ const MrMrsAddNewCoupons = ({
                 id="couponExpiryDate"
                 name="couponExpiryDate"
                 onDateChange={(val) => {
-                  console.log(val);
+                  // console.log(val);
 
                   setFormValues((prev) => ({
                     ...prev,
@@ -439,7 +438,7 @@ const MrMrsAddNewCoupons = ({
                           id="productsInclude"
                           name="productsInclude"
                           onSelectionChange={(e, val) => {
-                            console.log(val, "ASds");
+                            // console.log(val, "ASds");
 
                             setFormValues((prev) => ({
                               ...prev,

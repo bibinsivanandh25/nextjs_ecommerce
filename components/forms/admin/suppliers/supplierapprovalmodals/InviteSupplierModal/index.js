@@ -27,8 +27,8 @@ const InviteSupplierModal = ({
   };
 
   const handleSubmit = () => {
-    const [theError, errObjReturned] = handleError();
-    console.log(theError);
+    const [errObjReturned] = handleError();
+    // console.log(theError);
     setError(errObjReturned);
   };
   return (

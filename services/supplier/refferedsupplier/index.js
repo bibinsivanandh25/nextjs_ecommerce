@@ -5,7 +5,7 @@ const getReferredSupplier = (id) => {
     .get(`users/referred-supplier?supplierId=${id}`)
     .then((res) => {
       const { data } = res.data;
-      console.log("This is data ,", data);
+      // console.log("This is data ,", data);
       return { data };
     })
     .catch((err) => ({

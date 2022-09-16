@@ -42,11 +42,11 @@ const ReplyModal = ({
       const { someError } = await answerTheQuestions(payload);
       if (!someError) {
         if (tabType === "tab1") {
-          await getQuestionsOrAnsweredQuestions(false);
-          await getQuestionsOrAnsweredQuestions(true);
+          await getQuestionsOrAnsweredQuestions(false, 0);
+          await getQuestionsOrAnsweredQuestions(true, 0);
           toastify("Your answer has been recorded", "success");
         } else if (tabType === "tab2") {
-          await getQuestionsOrAnsweredQuestions(true);
+          await getQuestionsOrAnsweredQuestions(true, 0);
           toastify("Your answer has been updated", "success");
         }
 

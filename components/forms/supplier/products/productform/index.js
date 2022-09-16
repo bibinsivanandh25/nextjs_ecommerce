@@ -25,6 +25,7 @@ import {
   saveDuplicateProduct,
   saveMediaFile,
   saveProduct,
+  updateProduct,
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
@@ -79,6 +80,9 @@ const ProductsLayout = ({
     (state) => state.product
   );
   const [showGuidelines, setShowGuidlines] = useState(false);
+  const { masterProductId } = useSelector(
+    (state) => state.product.productDetails
+  );
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -208,6 +212,10 @@ const ProductsLayout = ({
       setSubCategoryData(finaData);
     }
   };
+
+  useEffect(() => {
+    if (editProduct || duplicateFlag) getB2BTradmarkValues("TRADEMARK_LETTER");
+  }, [editProduct, duplicateFlag]);
 
   useEffect(() => {
     getTags();
@@ -402,14 +410,14 @@ const ProductsLayout = ({
       longDescriptionFileUrls: imgdata.long_description
         ? [
             ...imgdata.long_description,
-            ...formData.mainForm.long_description.media.filter((item) => {
+            ...formData?.mainForm?.long_description?.media?.filter((item) => {
               if (item.includes("https://")) {
                 return item;
               }
             }),
           ]
         : [
-            ...formData.mainForm.long_description.media.filter((item) => {
+            ...formData?.mainForm?.long_description?.media?.filter((item) => {
               if (item.includes("https://")) {
                 return item;
               }
@@ -446,7 +454,7 @@ const ProductsLayout = ({
             return item.id;
           })
         : [],
-      bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+      btobInvoiceList: formData.mainForm.selectb2binvoice.length
         ? formData.mainForm.selectb2binvoice.map((item) => {
             return item.id;
           })
@@ -594,6 +602,25 @@ const ProductsLayout = ({
           },
         });
       }
+    } else if (editProduct) {
+      payload.masterProductId = masterProductId;
+      payload.productVariations[0].productVariationId =
+        productDetails.variationData.productVariationId;
+      const { data, err } = await updateProduct(payload);
+      if (err) {
+        toastify(err.response.data.message, "error");
+      } else if (data) {
+        toastify(data.message, "success");
+        dispatch(clearProduct());
+        router.replace({
+          pathname: "/supplier/products&inventory/myproducts",
+          query: {
+            active: "2",
+          },
+        });
+      }
+      // console.log("Update is incomplete", payload);
+      // toastify("Update is incomplete", "info");
     } else {
       const { data, err } = await saveProduct(payload);
       if (err) {
@@ -784,7 +811,7 @@ const ProductsLayout = ({
               return item.id;
             })
           : [],
-        bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
+        btobInvoiceList: formData.mainForm.selectb2binvoice.length
           ? formData.mainForm.selectb2binvoice.map((item) => {
               return item.id;
             })
@@ -986,6 +1013,7 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.brand && errorObj.brand !== ""}
                     helperText={errorObj.brand ?? ""}
+                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1080,7 +1108,6 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
-                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1110,7 +1137,6 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj.limit_per_order ?? ""}
                     placeholder="Enter the order limit(eg.: 1)"
-                    disabled={editProduct}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1141,6 +1167,7 @@ const ProductsLayout = ({
                     label="Branded"
                     isChecked={formData?.mainForm?.brandradio}
                     onRadioChange={() => {
+                      if (editProduct) return;
                       setFormData((prev) => ({
                         ...prev,
                         mainForm: {
@@ -1158,6 +1185,7 @@ const ProductsLayout = ({
                     label="Generic"
                     isChecked={formData?.mainForm?.genericradio}
                     onRadioChange={() => {
+                      if (editProduct) return;
                       setFormData((prev) => ({
                         ...prev,
                         mainForm: {

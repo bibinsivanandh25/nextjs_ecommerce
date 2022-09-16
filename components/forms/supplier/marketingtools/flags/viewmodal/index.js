@@ -6,7 +6,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 const ViewModal = ({
   viewModalOpen,
   setViewModalOpen = () => {},
-  imageData = [],
+  viewDetails = [],
 }) => {
   return (
     <ModalComponent
@@ -23,18 +23,19 @@ const ViewModal = ({
       showClearBtn={false}
       saveBtnText="Submit"
       ModalWidth={1000}
+      showFooter={false}
     >
       <Grid container spacing={2}>
-        {imageData.map((item) => (
+        {viewDetails.map((item) => (
           <Grid item sm={1.2} key={item.id}>
             <Image
-              src={item.src}
+              src={item.imageUrl}
               layout="responsive"
               width={100}
               height={100}
             />
             <Typography className="text-center fw-bold h-5 text-break">
-              {item.title}
+              {item.name}
             </Typography>
           </Grid>
         ))}

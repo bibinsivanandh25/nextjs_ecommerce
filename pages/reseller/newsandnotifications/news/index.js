@@ -21,8 +21,8 @@ const ResellerNews = () => {
       .then((data) => {
         setNewsData([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 

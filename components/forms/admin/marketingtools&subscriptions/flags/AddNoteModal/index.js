@@ -24,8 +24,8 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
   };
 
   const handleSubmit = () => {
-    const [theError, errObjReturned] = handleError();
-    console.log(theError);
+    const [errObjReturned] = handleError();
+    // console.log(theError);
     setError(errObjReturned);
   };
   return (

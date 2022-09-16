@@ -1,11 +1,13 @@
 import { Button, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { purchaseMarketingTool } from "services/supplier/marketingtools/unlocktools/single";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import { updateUnlockedTools } from "features/userSlice";
+import { getmarketingToolStatus } from "services/supplier";
 
 const UnlockToolsForm = ({
   heading = "",
@@ -40,6 +42,7 @@ const UnlockToolsForm = ({
   };
 
   const supplierId = useSelector((state) => state?.user?.supplierId);
+  const dispatch = useDispatch();
 
   const handleBuyNow = async (row) => {
     const price = Object.values(row).filter((value) => value.isChecked);
@@ -53,6 +56,9 @@ const UnlockToolsForm = ({
     const { data, err } = await purchaseMarketingTool(payload);
     if (data) {
       toastify(data.message, "success");
+      getmarketingToolStatus(supplierId).then((res) => {
+        if (res.data) dispatch(updateUnlockedTools(res.data.unlockedTools));
+      });
       route.push("/supplier/marketingtools/subscriptionhistory");
     } else if (err) {
       toastify(err?.response?.data?.message, "error");

@@ -1,14 +1,18 @@
 import serviceUtil from "services/utils";
 
-const getQuestionsAndAnswers = (supplierId, payload) => {
+const getQuestionsAndAnswers = (supplierId, payload, pageNumber = 0) => {
+  const pageSize = 50;
   return serviceUtil
-    .post(`products/customer-question-answer/0/10/${supplierId}`, payload)
+    .post(
+      `products/customer-question-answer/${pageNumber}/${pageSize}/${supplierId}`,
+      payload
+    )
     .then((res) => {
       const { data } = res;
       return data;
     })
     .catch((error) => {
-      console.log(error, "error message");
+      // console.log(error, "error message");
       return { error };
     });
 };

@@ -10,6 +10,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { getCurrentData } from "services/supplier";
 import CustomIcon from "services/iconUtils";
 import { Country } from "country-state-city";
+import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import { validateVariation } from "../validation";
 
@@ -39,6 +40,7 @@ const VariationForm = forwardRef(
       value: item.name,
       id: item.name,
     }));
+    const { editProduct } = useSelector((state) => state.product);
 
     useEffect(() => {
       let tempFormData = {};
@@ -185,6 +187,7 @@ const VariationForm = forwardRef(
                     }
                     onDropdownSelect={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
+                    disabled={editProduct}
                   />
                 )}
                 {ele.type === "date" && (
@@ -215,6 +218,7 @@ const VariationForm = forwardRef(
             iconOrintation="end"
             iconName="add"
             iconColorClass="fs-16 color-orange"
+            disabled={editProduct}
           />
         </Grid>
         <Grid item md={12} xs={12} container spacing={1} className="mx-2">
@@ -235,12 +239,12 @@ const VariationForm = forwardRef(
                     });
                   }}
                   label="Label"
+                  disabled={editProduct}
                 />
               </Grid>
               <Grid item md={12} lg={8} className="d-flex align-items-start">
                 <InputBox
                   id={`value${index}`}
-                  isMultiline
                   value={item.value}
                   onInputChange={(e) => {
                     const temp = JSON.parse(JSON.stringify(formData.variation));
@@ -252,6 +256,7 @@ const VariationForm = forwardRef(
                       };
                     });
                   }}
+                  disabled={editProduct}
                 />
                 {formData?.variation?.others.length - 1 ? (
                   <Box
@@ -261,6 +266,7 @@ const VariationForm = forwardRef(
                       temp.variation.others.splice(index, 1);
                       setFormData(temp);
                     }}
+                    disabled={editProduct}
                   >
                     <CustomIcon
                       type="removeIcon"

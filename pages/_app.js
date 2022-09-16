@@ -30,13 +30,16 @@ function MyApp({ Component, pageProps, router }) {
 
     // activate loader while routing
     router.events.on("routeChangeStart", () => {
-      document.getElementById("loader").classList.add("loadContainer");
+      if (document.getElementById("loader"))
+        document.getElementById("loader").classList.add("loadContainer");
     });
     router.events.on("routeChangeComplete", () => {
-      document.getElementById("loader").classList.remove("loadContainer");
+      if (document.getElementById("loader"))
+        document.getElementById("loader").classList.remove("loadContainer");
     });
     router.events.on("routeChangeError", () => {
-      document.getElementById("loader").classList.remove("loadContainer");
+      if (document.getElementById("loader"))
+        document.getElementById("loader").classList.remove("loadContainer");
     });
     return () => {
       router.events.off("routeChangeComplete", () => {

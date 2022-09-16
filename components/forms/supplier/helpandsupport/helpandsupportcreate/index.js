@@ -288,7 +288,7 @@ const HelpandsupportCreate = ({
             className=""
             hidden
             ref={inputField}
-            onChange={(e) => console.log(e.target.files[0])}
+            onChange={(e) => // console.log(e.target.files[0])}
           /> */}
             <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
               <ButtonComponent

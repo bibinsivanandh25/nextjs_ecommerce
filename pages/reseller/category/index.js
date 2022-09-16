@@ -388,7 +388,7 @@ const Category = () => {
                 <SearchComponent
                   placeholder="Search"
                   handleBtnSearch={(val) => {
-                    console.log(val);
+                    // console.log(val);
                   }}
                 />
               </Box>

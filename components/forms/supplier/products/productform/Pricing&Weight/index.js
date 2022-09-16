@@ -71,7 +71,6 @@ const PricingForm = forwardRef(
               helperText={errorObj.sale_price ?? ""}
               error={errorObj.sale_price && errorObj.sale_price !== ""}
               placeholder="eg.: 100"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={6}>
@@ -85,7 +84,6 @@ const PricingForm = forwardRef(
               helperText={errorObj.mrp ?? ""}
               error={errorObj.mrp && errorObj.mrp !== ""}
               placeholder="eg.: 100"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -159,7 +157,6 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
-                isDisabled={editProduct}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Return Order Accepted
@@ -185,7 +182,6 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
-                isDisabled={editProduct}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Cash on Delivery
@@ -215,7 +211,6 @@ const PricingForm = forwardRef(
                 helperText={errorObj.returnorder ?? ""}
                 error={errorObj.returnorder && errorObj.returnorder !== ""}
                 placeholder="Return Period"
-                disabled={editProduct}
               />
             </Grid>
           )}
@@ -286,7 +281,6 @@ const PricingForm = forwardRef(
               placeholder="eg.:200"
               helperText={errorObj.product_weight ?? ""}
               error={errorObj.product_weight && errorObj.product_weight !== ""}
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -300,7 +294,6 @@ const PricingForm = forwardRef(
               helperText={errorObj.length ?? ""}
               error={errorObj.length && errorObj.length !== ""}
               placeholder="eg.: 200"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -314,7 +307,6 @@ const PricingForm = forwardRef(
               helperText={errorObj.height ?? ""}
               error={errorObj.height && errorObj.height !== ""}
               placeholder="eg.: 200"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>
@@ -328,7 +320,6 @@ const PricingForm = forwardRef(
               helperText={errorObj.width ?? ""}
               error={errorObj.width && errorObj.width !== ""}
               placeholder="eg.: 200"
-              disabled={editProduct}
             />
           </Grid>
           <Grid item md={12}>

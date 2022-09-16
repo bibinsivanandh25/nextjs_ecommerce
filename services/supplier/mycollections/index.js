@@ -8,7 +8,7 @@ const getCollections = async (userId) => {
     return data.data;
   }
   if (err) {
-    console.log(err.response);
+    // console.log(err.response);
   }
   return null;
 };
