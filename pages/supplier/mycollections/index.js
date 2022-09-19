@@ -24,6 +24,7 @@ const MyCollections = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [allFlags, setAllFlags] = useState([]);
   const [productVariationId, setProductVariationId] = useState("");
+  const [masterProduct, setmasterProduct] = useState(null);
 
   const getAllTheFlags = async () => {
     const { data, error } = await getAllProductFlags("SP0822000040");
@@ -55,12 +56,17 @@ const MyCollections = () => {
             <>
               <CustomIcon
                 type="flagIcon"
-                className="me-2 fs-20"
+                className={`me-2 fs-20 ${
+                  row.productVariations.every((item) => item.flagged)
+                    ? "color-orange"
+                    : ""
+                }`}
                 onIconClick={() => {
                   getAllTheFlags();
                   setProductVariationId(
                     row.productVariations[0].productVariationId
                   );
+                  setmasterProduct(row);
                   setOpenModal(true);
                 }}
               />
@@ -178,6 +184,8 @@ const MyCollections = () => {
           setDefaultFormData={setDefaultFormData}
           allFlags={allFlags}
           productVariationId={productVariationId}
+          getMycollectionData={getMycollectionData}
+          masterProduct={masterProduct}
         />
       )}
       {showShareModal && (

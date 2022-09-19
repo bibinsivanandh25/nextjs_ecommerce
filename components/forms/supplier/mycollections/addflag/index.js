@@ -29,6 +29,8 @@ const AddFlag = ({
   setDefaultFormData = () => {},
   allFlags = [],
   productVariationId,
+  getMycollectionData = () => {},
+  masterProduct = [],
 }) => {
   const [allFlagsLabel, setAllFlagsLabel] = useState([]);
   const [dataForSingleDeal, setDataForSingleDeal] = useState("noData");
@@ -121,20 +123,18 @@ const AddFlag = ({
     const { errObj, theError } = handleError();
     setError(errObj);
     if (!theError) {
-      let theVariationList = [productVariationId];
+      let theVariationList = [];
 
+      masterProduct.productVariations.forEach((item) => {
+        theVariationList.push(item.productVariationId);
+      });
       if (dataForSingleDeal) {
-        let productVariationIdAlreadyPresent = false;
-        dataForSingleDeal?.variationList.forEach((val) => {
-          if (val === productVariationId)
-            productVariationIdAlreadyPresent = true;
-        });
-        if (!productVariationIdAlreadyPresent)
-          theVariationList = [
-            ...dataForSingleDeal?.variationList,
-            productVariationId,
-          ];
+        theVariationList = [
+          ...dataForSingleDeal?.variationList,
+          ...theVariationList,
+        ];
       }
+      theVariationList = [...new Set(theVariationList)];
       const payload = {
         flagTitle: defaultFormData.todaysDeals.label,
         imageUrl: defaultFormData.todaysDeals.imageUrl,
@@ -161,11 +161,12 @@ const AddFlag = ({
       const { data, error } = await postAFlag(payload);
       if (data) {
         toastify("Flag posted successfully", "success");
+        setOpenModal(false);
+        getMycollectionData();
+        handleClearBtnClick();
       } else if (error) {
         toastify(error, "error");
       }
-      setOpenModal(false);
-      handleClearBtnClick();
     }
   };
 
