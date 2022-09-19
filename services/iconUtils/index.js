@@ -14,6 +14,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
+import { TbMessageCircle2 } from "react-icons/tb";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -64,6 +65,7 @@ const CustomIcon = ({
 }) => {
   const Map = {
     send: SendIcon,
+    sendMessage: TbMessageCircle2,
     dot: FiberManualRecordIcon,
     flag: FlagIcon,
     view: VisibilityIcon,
