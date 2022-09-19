@@ -10,6 +10,7 @@ import CustomIcon from "services/iconUtils";
 import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
 import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
+import toastify from "services/utils/toastUtils";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -27,7 +28,7 @@ const MyCollections = () => {
   const getAllTheFlags = async () => {
     const { data, error } = await getAllProductFlags("SP0822000040");
     if (data) setAllFlags([...data]);
-    if (error) console.log("error --- ", error);
+    if (error) toastify(error, "error");
   };
 
   const { id } = useUserInfo();

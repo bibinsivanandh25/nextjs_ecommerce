@@ -36,7 +36,6 @@ const AddFlag = ({
 
   useEffect(() => {
     const tempArray = allFlags?.map((val) => {
-      console.log("value", val.name);
       return {
         label: val.name,
         id: val.id,
@@ -55,14 +54,13 @@ const AddFlag = ({
     );
 
     if (data) {
-      console.log("The data , ---- ", data);
       setDataForSingleDeal(data);
     }
     if (data === null) {
       setDataForSingleDeal(data);
     }
     if (error) {
-      console.log("error ", error);
+      toastify(error, "error");
     }
   };
 
@@ -94,9 +92,6 @@ const AddFlag = ({
       }
 
       if (!validationRegex.decimal_2digit.test(defaultFormData.discount)) {
-        console.log(
-          validationRegex.decimal_2digit.test(defaultFormData.discount)
-        );
         errObj.discountNotANumber = true;
         theError = true;
       }
@@ -104,8 +99,6 @@ const AddFlag = ({
 
     return { errObj, theError };
   };
-
-  console.log(defaultFormData);
 
   const handleClearBtnClick = () => {
     errObj = {
@@ -164,11 +157,9 @@ const AddFlag = ({
         userType: "SUPPLIER",
         purchaseId: defaultFormData.todaysDeals.purchaseId,
       };
-      console.log(payload);
 
       const { data, error } = await postAFlag(payload);
       if (data) {
-        console.log(data);
         toastify("Flag posted successfully", "success");
       } else if (error) {
         toastify(error, "error");
@@ -183,7 +174,6 @@ const AddFlag = ({
       return validateMessage.field_required;
     }
     if (error.discountNotANumber) {
-      console.log("Decimal Error");
       return validateMessage.decimal_2digits;
     }
     return "";
