@@ -1,56 +1,33 @@
 import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
-import ScratchCardComponent from "components/forms/supplier/marketingtools/createluckydraw/createScratchCard/ScratchCard";
-import { getCategorys } from "services/supplier/marketingtools/luckydraw/scratchcard";
 import { useSelector } from "react-redux";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import { getThemes } from "services/supplier/marketingtools";
-import { urltobaseurl } from "services/supplier";
+import Theme1 from "./Theme1";
+import Theme2 from "./Theme2";
 
 const ScratchCardForm = forwardRef((_props, ref) => {
+  const [themes, setThemes] = useState([
+    {
+      component: Theme1,
+      id: 1,
+    },
+    {
+      component: Theme2,
+      id: 2,
+    },
+  ]);
+  const [selectedTheme, setselectedTheme] = useState(1);
+  const { storeCode, storeName } = useSelector((state) => state.user);
+
   useImperativeHandle(ref, () => {
     return {
       handleSendFormData: () => {
-        return ["scratchcard", selectedthemes];
+        return ["scratchcard", selectedTheme];
       },
     };
   });
-  const [mobile, setMobile] = useState("");
-  const [themes, setThemes] = useState([]);
-  const [selectedthemes, setselectedthemes] = useState(null);
-  const { storeCode, storeName } = useSelector((state) => state.user);
 
-  const getAllTheme = async () => {
-    const { data, err } = await getThemes();
-    if (data) {
-      const temp = [];
-      data.forEach((item) => {
-        if (item.themeType === "SCRATCH_CARD") {
-          temp.push({
-            imageUrl: item.imageUrl,
-            colorCode: item.colorCode,
-            themeId: item.themeId,
-          });
-        }
-      });
-      setThemes(temp);
-      setselectedthemes({ ...temp[0] });
-    }
-  };
-  const getBaseUrl = async () => {
-    const { data, err } = await urltobaseurl(
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/09162022152020321"
-    );
-    if (data) {
-      console.log({ data });
-    }
-  };
-
-  useEffect(() => {
-    getAllTheme();
-    getBaseUrl();
-  }, []);
   return (
     <Box className="d-flex w-100 ms-3">
       <Box className="d-flex flex-column mt-3">
@@ -60,11 +37,9 @@ const ScratchCardForm = forwardRef((_props, ref) => {
               key={index}
               label={`Theme ${index + 1}`}
               onRadioChange={() => {
-                setselectedthemes(item);
+                setselectedTheme(item.id);
               }}
-              isChecked={
-                selectedthemes && item.themeId === selectedthemes.themeId
-              }
+              isChecked={selectedTheme === item.id}
               size="small"
             />
           );
@@ -74,8 +49,6 @@ const ScratchCardForm = forwardRef((_props, ref) => {
         className=" p-2 px-4 d-flex  mx-3 mt-3 border rounded  bg-red"
         style={{
           width: "350px",
-          // background:
-          //   selectedthemes && selectedthemes.colorCode[0].toLowerCase(),
         }}
       >
         <Box className="">
@@ -95,15 +68,26 @@ const ScratchCardForm = forwardRef((_props, ref) => {
             className="w-90p mb-3"
             disabled
           />
+          {selectedTheme === 1 ? (
+            <Theme1>
+              <div
+                style={{ height: "240px", width: "300px" }}
+                className=" shadow-lg bg-white d-flex justify-content-center align-items-center"
+              >
+                <h3>code: #12345</h3>
+              </div>
+            </Theme1>
+          ) : (
+            <Theme2>
+              <div
+                style={{ height: "240px", width: "300px" }}
+                className=" shadow-lg bg-white d-flex justify-content-center align-items-center"
+              >
+                <h3>code: #12345</h3>
+              </div>
+            </Theme2>
+          )}
 
-          <ScratchCardComponent>
-            <div
-              style={{ height: "240px", width: "300px" }}
-              className=" shadow-lg bg-white d-flex justify-content-center align-items-center"
-            >
-              <h3>code: #12345</h3>
-            </div>
-          </ScratchCardComponent>
           <Typography className="h-6 mt-2 color-white">
             Last date to redeem coupon 20-08-2021
           </Typography>

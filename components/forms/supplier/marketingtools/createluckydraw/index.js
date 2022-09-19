@@ -29,7 +29,11 @@ import { useSelector } from "react-redux";
 import { getSet, getSubCategory } from "services/supplier/AddProducts";
 import { getCurrentData } from "services/supplier";
 
-const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
+const GenericForm = ({
+  setShowGenericForm = () => {},
+  pageName = "",
+  getTableRows = () => {},
+}) => {
   const route = useRouter();
   let currentDate = new Date();
   const tempFormData = {
@@ -63,6 +67,7 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
   const { storeCode, storeName, supplierId } = useSelector(
     (state) => state.user
   );
+  const [numberOfQuestions, setNumberOfQuestions] = useState(3);
 
   const getCategoryList = async () => {
     const { data, err } = await getCategorys();
@@ -290,11 +295,34 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     setErrorObj({ ...errObj });
     return flag;
   };
+
+  const getAnswersList = () => {
+    const temp = [];
+    const data = formRef.current.handleSendFormData()[1];
+    data.forEach((item) => {
+      const questionOptions = [];
+      let answer = "";
+      Object.keys(item.options).forEach((ele) => {
+        questionOptions.push(item.options[ele].option);
+        if (item.options[ele].correct) {
+          answer = item.options[ele].option;
+        }
+      });
+      temp.push({
+        question: item.question,
+        questionOptions,
+        answer,
+      });
+    });
+    return temp;
+  };
+
   const handleSubmit = async () => {
     const theme = formRef.current
       ? formRef.current.handleSendFormData()[1]
       : {};
-    if (!validate() && Object.keys(theme).length) {
+    const flag = pageName === "createquiz" ? formRef.current.validate() : false;
+    if (!validate() && !flag) {
       const marketingToolProductList = [];
       formData.products.forEach((item) => {
         marketingToolProductList.push({
@@ -303,7 +331,12 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
         });
       });
       const payload = {
-        toolType: "SCRATCH_CARD",
+        toolType:
+          pageName === "spinwheel"
+            ? "SPIN_WHEEL"
+            : pageName === "scratchcard"
+            ? "SCRATCH_CARD"
+            : "QUIZ",
         startDateTime: format(
           new Date(formData.start_date),
           "MM-dd-yyyy HH:mm:ss"
@@ -315,23 +348,41 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
         splitType: formData.split_type === "equal_split" ? "EQUAL" : "RANDOM",
         couponUsageLimit: parseInt(formData.limit_per_coupon, 10),
         customerUsageLimit: parseInt(formData.limit_per_customer, 10),
-        marginType: formData.category.commision_type,
+        marginType: formData.category.commission_mode,
         mainCategoryId: formData.category.id,
         subCategoryId: formData.subCategory.id,
         productCatalogueUrl: null,
         customerType: formData.quiz_users[0],
         userType: "SUPPLIER",
         userTypeId: supplierId,
-        marketingToolThemeId: theme.themeId,
+        marketingToolThemeId: pageName === "createquiz" ? null : theme,
         marketingToolProductList,
         splitDiscountDetailList:
-          formData.split_type === "equal_split" ? [] : getSplitAmount(),
-        marketingToolQuestionAnswerList: [],
+          pageName === "spinwheel"
+            ? []
+            : formData.split_type === "equal_split"
+            ? []
+            : getSplitAmount(),
+        marketingToolQuestionAnswerList:
+          pageName === "createquiz" ? getAnswersList() : [],
+      };
+      const getPageName = () => {
+        if (pageName == "createquiz") {
+          return "QUIZ";
+        }
+        if (pageName == "spinwheel") {
+          return "SPIN_WHEEL";
+        }
+        if (pageName == "scratchcard") {
+          return "SCRATCH_CARD";
+        }
+        return null;
       };
       const { data, message, err } = await saveScratchCard(payload);
       if (data) {
         toastify(message, "success");
         setShowGenericForm(false);
+        getTableRows(getPageName());
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -456,7 +507,14 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
                 size="small"
                 value={formData.category}
                 onDropdownSelect={(val) => {
-                  handleDropDownChange(val, "category");
+                  setSetsList([]);
+                  setFormData((pre) => ({
+                    ...pre,
+                    category: { ...val },
+                    subCategory: null,
+                    sets: null,
+                  }));
+                  setSubCategotyList([]);
                 }}
                 inputlabelshrink
                 error={errorObj.category || false}
@@ -573,45 +631,45 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
           </Grid>
         </Box>
       </Box>
-      {pageName !== "spinwheel" ? (
-        <Box className="d-flex w-100 mt-3">
-          <Box className=" mb-3 ms-3">
-            How do you want to split the discount
-            <Box className="d-flex mt-1 ms-3">
-              <RadiobuttonComponent
-                label="Random Split"
-                isChecked={formData.split_type === "random_split"}
-                onRadioChange={() => {
-                  setFormData((pre) => ({
-                    ...pre,
-                    split_type: "random_split",
-                  }));
-                }}
-                size="small"
-              />
-              <RadiobuttonComponent
-                label="Equal Split"
-                isChecked={formData.split_type === "equal_split"}
-                onRadioChange={() => {
-                  setFormData((pre) => ({
-                    ...pre,
-                    split_type: "equal_split",
-                  }));
-                }}
-                size="small"
-              />
-            </Box>
-            {errorObj?.split_type && (
-              <Typography className="h-5 color-error">
-                {errorObj.split_type}
-              </Typography>
-            )}
+      <Box className="d-flex w-100 mt-3">
+        <Box className=" mb-3 ms-3">
+          How do you want to split the discount
+          <Box className="d-flex mt-1 ms-3">
+            <RadiobuttonComponent
+              label="Random Split"
+              isChecked={formData.split_type === "random_split"}
+              onRadioChange={() => {
+                setFormData((pre) => ({
+                  ...pre,
+                  split_type: "random_split",
+                }));
+              }}
+              size="small"
+            />
+            <RadiobuttonComponent
+              label="Equal Split"
+              isChecked={formData.split_type === "equal_split"}
+              onRadioChange={() => {
+                setFormData((pre) => ({
+                  ...pre,
+                  split_type: "equal_split",
+                }));
+              }}
+              size="small"
+            />
           </Box>
+          {errorObj?.split_type && (
+            <Typography className="h-5 color-error">
+              {errorObj.split_type}
+            </Typography>
+          )}
+        </Box>
+        {pageName !== "spinwheel" ? (
           <Box className="ms-4 d-flex flex-column mxh-200 overflow-y-scroll mb-3 p-1">
             {generateInputField()}
           </Box>
-        </Box>
-      ) : null}
+        ) : null}
+      </Box>
       <Box className="w-100 mx-3">
         <TextEditor
           getContent={(text) => {
@@ -643,7 +701,8 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
               error={errorObj.campign_name || false}
               helperText={errorObj?.campign_name}
             />
-            {!createQuestions && pageName === "createquiz" ? (
+
+            {/* {!createQuestions && pageName === "createquiz" ? (
               <div
                 onClick={() => {
                   setCreateQuestions(true);
@@ -652,11 +711,35 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
               >
                 <AddIcon className="color-white" />
               </div>
-            ) : null}
+            ) : null} */}
           </Grid>
+          {pageName === "createquiz" ? (
+            <Grid item md={12} className="mt-2">
+              <Box>
+                <RadiobuttonComponent
+                  label="3 Questions"
+                  isChecked={numberOfQuestions === 3}
+                  onRadioChange={() => {
+                    setNumberOfQuestions(3);
+                  }}
+                  size="small"
+                />
+                <RadiobuttonComponent
+                  label="5 Questions"
+                  isChecked={numberOfQuestions === 5}
+                  onRadioChange={() => {
+                    setNumberOfQuestions(5);
+                  }}
+                  size="small"
+                />
+              </Box>
+            </Grid>
+          ) : null}
         </Grid>
       </Box>
-      {createQuestions ? <CreateQuiz ref={formRef} /> : null}
+      {pageName === "createquiz" ? (
+        <CreateQuiz ref={formRef} numberOfQuestions={numberOfQuestions} />
+      ) : null}
       {pageName === "scratchcard" ? (
         <ScratchCardForm ref={formRef} />
       ) : pageName === "spinwheel" ? (

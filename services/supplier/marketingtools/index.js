@@ -91,6 +91,17 @@ const getThemes = () => {
     })
     .catch((err) => ({ err }));
 };
+
+const deleteMarketingTool = (id) => {
+  return serviceUtil
+    .deleteById(`users/marketing-tool?marketingToolId=${id}`)
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getUserMarketingTool,
   getAllMainCategories,
@@ -100,4 +111,5 @@ export {
   deleteMarketingToolData,
   getProductsForShareproduct,
   getThemes,
+  deleteMarketingTool,
 };
