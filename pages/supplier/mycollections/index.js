@@ -1,24 +1,35 @@
 import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import { getCollections } from "services/supplier/mycollections";
+import {
+  getAllProductFlags,
+  getCollections,
+} from "services/supplier/mycollections";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
 import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
+import toastify from "services/utils/toastUtils";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [defaultFormData, setDefaultFormData] = useState({
-    todaysDeals: {},
+    todaysDeals: { label: "" },
     saleprice: "",
     discount: "",
-    startDate: "",
     endDate: "",
   });
   const [showShareModal, setShowShareModal] = useState(false);
+  const [allFlags, setAllFlags] = useState([]);
+  const [productVariationId, setProductVariationId] = useState("");
+
+  const getAllTheFlags = async () => {
+    const { data, error } = await getAllProductFlags("SP0822000040");
+    if (data) setAllFlags([...data]);
+    if (error) toastify(error, "error");
+  };
 
   const { id } = useUserInfo();
 
@@ -46,6 +57,10 @@ const MyCollections = () => {
                 type="flagIcon"
                 className="me-2 fs-20"
                 onIconClick={() => {
+                  getAllTheFlags();
+                  setProductVariationId(
+                    row.productVariations[0].productVariationId
+                  );
                   setOpenModal(true);
                 }}
               />
@@ -161,6 +176,8 @@ const MyCollections = () => {
           setOpenModal={setOpenModal}
           defaultFormData={defaultFormData}
           setDefaultFormData={setDefaultFormData}
+          allFlags={allFlags}
+          productVariationId={productVariationId}
         />
       )}
       {showShareModal && (

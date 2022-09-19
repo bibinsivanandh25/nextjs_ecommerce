@@ -578,6 +578,7 @@ const CustomerQnA = () => {
   };
 
   const supplierId = useSelector((state) => state?.user?.supplierId);
+  console.log(supplierId);
   const getQuestionsOrAnsweredQuestions = async (
     check,
     pageNum = 0,
