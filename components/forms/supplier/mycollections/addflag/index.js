@@ -50,9 +50,9 @@ const AddFlag = ({
 
   const getSingleOptionFlag = async (value) => {
     const { data, error } = await getDataOfSingleFlagSelected(
-      value.id,
+      value?.id,
       "SUPS10STRE5DA",
-      value.purchaseId
+      value?.purchaseId
     );
 
     if (data) {
@@ -206,9 +206,9 @@ const AddFlag = ({
                 ...defaultFormData,
                 todaysDeals: {
                   label: value?.label,
-                  id: value.id,
-                  imageUrl: value.imageUrl,
-                  purchaseId: value.purchaseId,
+                  id: value?.id,
+                  imageUrl: value?.imageUrl,
+                  purchaseId: value?.purchaseId,
                 },
               });
               getSingleOptionFlag(value);
