@@ -153,7 +153,10 @@ const SideBarComponent = ({ children }) => {
           id,
           selected: false,
           pathName: `${path}/${item.pathName}`,
-          disabled: !staffCapabilityList.includes(item.title),
+          disabled:
+            user.role === "STAFF"
+              ? !staffCapabilityList.includes(item.title)
+              : false,
           locked: path.includes("/supplier/marketingtools")
             ? !marketingToolsList.includes(item.pathName)
             : false,
@@ -164,7 +167,10 @@ const SideBarComponent = ({ children }) => {
         id,
         selected: false,
         pathName: `${path}/${item.pathName}`,
-        disabled: !staffCapabilityList.includes(item.title),
+        disabled:
+          user.role === "STAFF"
+            ? !staffCapabilityList.includes(item.title)
+            : false,
         locked: path.includes("/supplier/marketingtools")
           ? !marketingToolsList.includes(item.pathName)
           : false,

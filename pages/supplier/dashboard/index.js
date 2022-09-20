@@ -132,7 +132,7 @@ const Dashboard = () => {
     }
     if (err) {
       setMasterCardData([]);
-      toastify(err.response.data.message, "error");
+      // toastify(err.response.data.message, "error");
     }
   };
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
     }
     if (err) {
       setReferralData([]);
-      toastify(err.response.data.message, "error");
+      // toastify(err.response.data.message, "error");
     }
   };
   const handleCustomerData = async () => {
@@ -159,7 +159,7 @@ const Dashboard = () => {
     }
     if (err) {
       setCustomerChartData([]);
-      toastify(err.response.data.message, "error");
+      // toastify(err.response.data.message, "error");
     }
   };
   const handleMonthWiseSale = async () => {
@@ -172,7 +172,7 @@ const Dashboard = () => {
     }
     if (err) {
       setMonthWiseSaleData([]);
-      toastify(err.response.data.message, "error");
+      // toastify(err.respon se.data.message, "error");
     }
   };
 
