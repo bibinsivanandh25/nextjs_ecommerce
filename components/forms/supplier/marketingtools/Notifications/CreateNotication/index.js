@@ -237,7 +237,7 @@ const CreateNotification = ({
     const { data, err } = await sendMarketingToolNotification(payload);
     if (data) {
       toastify(data?.message, "success");
-      getTableData();
+      getTableData(null, 0, "");
       setShowModal(false);
     }
     if (err) {

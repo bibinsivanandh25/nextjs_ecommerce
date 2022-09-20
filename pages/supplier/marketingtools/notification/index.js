@@ -118,7 +118,11 @@ const Notification = () => {
         id: ele.marketingToolNotificationId,
         col1: ind + 1,
         col2: ele.notificationTitle,
-        col3: <Image src={ele.attachmentUrl[0]} height={50} width={50} />,
+        col3: ele.attachmentUrl[0] ? (
+          <Image src={ele.attachmentUrl[0]} height={50} width={50} />
+        ) : (
+          "--"
+        ),
         col4: ele.notificationMessage ? (
           <p
             className=""
@@ -195,7 +199,7 @@ const Notification = () => {
     const payload = {
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      keyword: searchText,
+      keyword: searchText === "" ? null : searchText,
     };
     const { data } = await getAllNotificationWithFilters(
       supplierId,
@@ -210,6 +214,8 @@ const Notification = () => {
         setPageNumber((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...mapTableRows(data, date)]);
       }
+    } else if (page === 0 && ((date.fromDate && date.toDate) || searchText)) {
+      setTableRows([]);
     }
     // if (data) {
     //   setTableRows(mapTableRows(data));
@@ -288,8 +294,13 @@ const Notification = () => {
           setModalType("add");
         }}
         table_heading="Notification"
-        handlePageEnd={(searchText, searchFilter, page, filteredDates) => {
-          getTableData(searchText, pageNumber, filteredDates);
+        handlePageEnd={(
+          searchText,
+          searchFilter,
+          page = pageNumber,
+          filteredDates
+        ) => {
+          getTableData(searchText, page, filteredDates);
         }}
         // handleGetDate={(fromDate, toDate) => {
         //   if (fromDate && toDate) {
