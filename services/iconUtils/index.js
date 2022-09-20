@@ -50,6 +50,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MessageIcon from "@mui/icons-material/Message";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import LockIcon from "@mui/icons-material/Lock";
+import BlockIcon from "@mui/icons-material/Block";
 
 const CustomIcon = ({
   title = "",
@@ -118,6 +119,7 @@ const CustomIcon = ({
     arrowDropIcon: ArrowDropDownIcon,
     calendar: CalendarMonthIcon,
     message: MessageIcon,
+    block: BlockIcon,
   };
 
   const [hover, setHover] = useState(false);
