@@ -19,6 +19,7 @@ const SimpleDropdownComponent = ({
   required = false,
   disabled = false,
   removeRadius = false,
+  freeSolo = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -36,6 +37,7 @@ const SimpleDropdownComponent = ({
     <ThemeProvider theme={theme}>
       <Autocomplete
         disabled={disabled}
+        freeSolo={freeSolo}
         value={value}
         onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
