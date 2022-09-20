@@ -10,7 +10,7 @@ import {
   getMonthWiseSale,
   getReferralChartData,
 } from "services/supplier/dashboard";
-import toastify from "services/utils/toastUtils";
+// import toastify from "services/utils/toastUtils";
 import Bargraph from "@/atoms/Bar/Bargraph";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import SelectComponent from "@/atoms/SelectComponent";
