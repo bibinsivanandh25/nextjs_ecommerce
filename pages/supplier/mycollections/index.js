@@ -62,6 +62,8 @@ const MyCollections = () => {
                     : ""
                 }`}
                 onIconClick={() => {
+                  if (row.productVariations.every((item) => item.flagged))
+                    return;
                   getAllTheFlags();
                   setProductVariationId(
                     row.productVariations[0].productVariationId

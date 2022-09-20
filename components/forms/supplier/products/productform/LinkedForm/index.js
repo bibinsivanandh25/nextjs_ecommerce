@@ -3,10 +3,13 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { validateLinked } from "../validation";
+import { useSelector } from "react-redux";
 
 const LinkedForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
+    const { viewFlag } = useSelector((state) => state.product);
+
     const handleDropdownChange = (value, key) => {
       setFormData((pre) => ({
         ...pre,
@@ -66,6 +69,7 @@ const LinkedForm = forwardRef(
                 handleDropdownChange(value, "upSells");
               }}
               value={formData?.linked?.upSells}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item xs={3} className="d-flex align-items-center">
@@ -86,6 +90,7 @@ const LinkedForm = forwardRef(
               onDropdownSelect={(value) => {
                 handleDropdownChange(value, "crossSells");
               }}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item xs={3} className="d-flex align-items-center">

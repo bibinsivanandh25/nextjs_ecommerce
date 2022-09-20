@@ -53,7 +53,7 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
-  const { editProduct } = useSelector((state) => state.product);
+  const { editProduct, viewFlag } = useSelector((state) => state.product);
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -235,6 +235,10 @@ const ProductsLayout = ({
   }, [formData?.mainForm?.setsValue]);
 
   const handleNextClick = () => {
+    if (viewFlag) {
+      setactiveTab((prev) => prev + 1);
+      return;
+    }
     const { errObj, flag } = validateMainForm(formData.mainForm);
     const productImgFlag =
       type === "simple" ? validateProductImg(formData.productImage) : false;
@@ -581,7 +585,7 @@ const ProductsLayout = ({
         new Date(formData.variation.expiryDate),
         "MM-dd-yyyy HH:mm:ss"
       ),
-      productType: "SIMPLE_PRODUCT",
+      productType: editProduct ? productDetails.productType : "SIMPLE_PRODUCT",
       supplierId: userInfo.id,
     };
     if (duplicateFlag) {
@@ -969,7 +973,7 @@ const ProductsLayout = ({
                     }}
                     value={formData?.mainForm?.category}
                     placeholder="Select Category"
-                    disabled={editProduct}
+                    disabled={editProduct || viewFlag}
                   />
                   {formData?.mainForm?.category &&
                   Object.keys(formData?.mainForm?.category).length ? (
@@ -1013,7 +1017,7 @@ const ProductsLayout = ({
                     inputlabelshrink
                     error={errorObj.brand && errorObj.brand !== ""}
                     helperText={errorObj.brand ?? ""}
-                    disabled={editProduct}
+                    disabled={editProduct || viewFlag}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1050,6 +1054,7 @@ const ProductsLayout = ({
                       errorObj?.short_description?.text !== ""
                     }
                     helperText={errorObj?.short_description?.text ?? ""}
+                    disabled={viewFlag}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1086,6 +1091,7 @@ const ProductsLayout = ({
                       errorObj?.long_description?.text !== ""
                     }
                     helperText={errorObj?.long_description?.text}
+                    disabled={viewFlag}
                   />
                 </Grid>
 
@@ -1137,6 +1143,7 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj.limit_per_order ?? ""}
                     placeholder="Enter the order limit(eg.: 1)"
+                    disabled={viewFlag}
                   />
                 </Grid>
                 <Grid item md={12}>
@@ -1178,7 +1185,7 @@ const ProductsLayout = ({
                       }));
                     }}
                     size="small"
-                    disabled={editProduct}
+                    disabled={editProduct || viewFlag}
                   />
                   <RadiobuttonComponent
                     size="small"
@@ -1197,7 +1204,7 @@ const ProductsLayout = ({
                         },
                       }));
                     }}
-                    disabled={editProduct}
+                    disabled={editProduct || viewFlag}
                   />
                 </Grid>
                 <Grid item md={12} display="flex" alignItems="center">
@@ -1221,7 +1228,11 @@ const ProductsLayout = ({
                     lableFontSize="h-5"
                     varient="filled"
                     showIcon
-                    isDisabled={formData?.mainForm?.genericradio || editProduct}
+                    isDisabled={
+                      formData?.mainForm?.genericradio ||
+                      editProduct ||
+                      viewFlag
+                    }
                   />
                   <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
@@ -1249,7 +1260,7 @@ const ProductsLayout = ({
                           },
                         }));
                       }}
-                      disabled={editProduct}
+                      disabled={editProduct || viewFlag}
                     />
                     <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
@@ -1289,51 +1300,55 @@ const ProductsLayout = ({
               </Box>
             </Box>
             <Box className="d-flex justify-content-end me-3 mb-1">
-              <ButtonComponent
-                label="Clear"
-                variant="outlined"
-                size="small"
-                onBtnClick={() => {
-                  const getKey = (ind) => {
-                    switch (ind) {
-                      case 0:
-                        return "inventory";
-                      case 1:
-                        return "pricing";
-                      case 2:
-                        return "linked";
-                      case 3:
-                        return "policy";
-                      case 4:
-                        return "attribute";
-                      case 5:
-                        return "variation";
-                      case 6:
-                        return "mrMrsCartFormData";
-                    }
-                  };
-                  formsRef.current.clearPage();
-                  const key = getKey(activeTab);
-                  setFormData((pre) => ({
-                    ...pre,
-                    [key]: schema[key],
-                  }));
-                }}
-                muiProps="me-2"
-              />
-              <ButtonComponent
-                label="Clear All"
-                variant="outlined"
-                size="small"
-                onBtnClick={() => {
-                  formsRef.current.clearPage();
-                  setFormData(schema);
-                  setErrObj({});
-                  setactiveTab(0);
-                  dispatch(clearProduct());
-                }}
-                muiProps="me-2"
-              />
+              {!viewFlag && (
+                <ButtonComponent
+                  label="Clear"
+                  variant="outlined"
+                  size="small"
+                  onBtnClick={() => {
+                    const getKey = (ind) => {
+                      switch (ind) {
+                        case 0:
+                          return "inventory";
+                        case 1:
+                          return "pricing";
+                        case 2:
+                          return "linked";
+                        case 3:
+                          return "policy";
+                        case 4:
+                          return "attribute";
+                        case 5:
+                          return "variation";
+                        case 6:
+                          return "mrMrsCartFormData";
+                      }
+                    };
+                    formsRef.current.clearPage();
+                    const key = getKey(activeTab);
+                    setFormData((pre) => ({
+                      ...pre,
+                      [key]: schema[key],
+                    }));
+                  }}
+                  muiProps="me-2"
+                />
+              )}
+              {!viewFlag && (
+                <ButtonComponent
+                  label="Clear All"
+                  variant="outlined"
+                  size="small"
+                  onBtnClick={() => {
+                    formsRef.current.clearPage();
+                    setFormData(schema);
+                    setErrObj({});
+                    setactiveTab(0);
+                    dispatch(clearProduct());
+                  }}
+                  muiProps="me-2"
+                />
+              )}
               {activeTab !== 0 ? (
                 <ButtonComponent
                   label="Previous"
@@ -1352,7 +1367,8 @@ const ProductsLayout = ({
                   onBtnClick={handleNextClick}
                 />
               )}
-              {(type === "simple" || showOthersField) &&
+              {!viewFlag &&
+                (type === "simple" || showOthersField) &&
                 activeTab === tabsList.length - 1 && (
                   <ButtonComponent
                     label="Submit"

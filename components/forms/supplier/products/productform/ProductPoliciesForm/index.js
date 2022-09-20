@@ -9,11 +9,13 @@ import { warrantyData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { validatePolicy } from "../validation";
+import { useSelector } from "react-redux";
 
 const ProductPoliciesForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [showFileUploadModal, setShowFileUploadModal] = useState("");
     const [error, setError] = useState({});
+    const { viewFlag } = useSelector((state) => state.product);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -58,6 +60,7 @@ const ProductPoliciesForm = forwardRef(
               value={formData?.policy?.policyTabLabel}
               error={Boolean(error.policyTabLabel)}
               helperText={error.policyTabLabel}
+              disabled={viewFlag}
             />
             <InfoOutlinedIcon className="ms-1" />
           </div>
@@ -91,6 +94,7 @@ const ProductPoliciesForm = forwardRef(
             value={formData?.policy?.shippingPolicy.text}
             error={Boolean(error.shippingPolicy)}
             helperText={error.shippingPolicy}
+            disabled={viewFlag}
           />
         </Grid>
         <Grid item xs={11}>
@@ -122,6 +126,7 @@ const ProductPoliciesForm = forwardRef(
             muiProps="m-0 p-0 fs-10"
             error={Boolean(error.refundPolicy)}
             helperText={error.refundPolicy}
+            disabled={viewFlag}
           />
         </Grid>
         <Grid item xs={11}>
@@ -153,6 +158,7 @@ const ProductPoliciesForm = forwardRef(
             muiProps="m-0 p-0 fs-10"
             error={Boolean(error.cancellationPolicy)}
             helperText={error.cancellationPolicy}
+            disabled={viewFlag}
           />
           <Grid item md={6} display="flex" alignItems="center">
             <CheckBoxComponent
@@ -175,6 +181,7 @@ const ProductPoliciesForm = forwardRef(
               }}
               showIcon
               varient="filled"
+              isDisabled={viewFlag}
             />
             <Typography component="span" className="h-5">
               Warranty Available
@@ -200,6 +207,7 @@ const ProductPoliciesForm = forwardRef(
                 value={formData?.policy?.warrantyperiod}
                 error={Boolean(error.warrantyperiod)}
                 helperText={error.warrantyperiod ?? ""}
+                disabled={viewFlag}
               />
             </Grid>
           )}

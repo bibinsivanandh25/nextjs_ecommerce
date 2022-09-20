@@ -25,7 +25,11 @@ import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { duplicateProduct, updateProduct } from "features/productsSlice";
+import {
+  duplicateProduct,
+  updateProduct,
+  viewProduct,
+} from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -375,7 +379,7 @@ const MyProducts = () => {
       toastify(err?.response?.data?.messagea);
     } else {
       setIds({ masterProductId: "", variationId: "", flagged: false });
-      dispatch(duplicateProduct(data[0]));
+      dispatch(viewProduct(data[0]));
       router.push("/supplier/products&inventory/addnewproduct");
     }
   };
@@ -512,6 +516,7 @@ const MyProducts = () => {
             </MenuItem>
             <MenuItem
               onClick={() => {
+                if (ids.flagged) return;
                 handleClose();
                 setShowAddFlagModal(true);
                 setFlagFormData((pre) => ({

@@ -290,7 +290,7 @@ const NewProducts = () => {
       ),
     },
   ]);
-  const { editProduct, productDetails, duplicateFlag } = useSelector(
+  const { editProduct, productDetails, duplicateFlag, viewFlag } = useSelector(
     (state) => state.product
   );
   // const [tagValues, setTagValues] = useState([]);
@@ -610,7 +610,7 @@ const NewProducts = () => {
     setFormData(temp);
   };
   useEffect(() => {
-    if (editProduct || duplicateFlag) {
+    if (editProduct || duplicateFlag || viewFlag) {
       resetFormData();
     }
   }, [editProduct]);
