@@ -57,7 +57,7 @@ const ViewBannerModal = ({
           <Grid item sm={7}>
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="fw-bold">Navigation URL </Typography>
+                <Typography className="">Navigation URL </Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
