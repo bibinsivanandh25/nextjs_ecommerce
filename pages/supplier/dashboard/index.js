@@ -10,7 +10,6 @@ import {
   getMonthWiseSale,
   getReferralChartData,
 } from "services/supplier/dashboard";
-import toastify from "services/utils/toastUtils";
 import Bargraph from "@/atoms/Bar/Bargraph";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import SelectComponent from "@/atoms/SelectComponent";
@@ -132,7 +131,6 @@ const Dashboard = () => {
     }
     if (err) {
       setMasterCardData(cardDatas);
-      toastify(err.response.data.message, "error");
     }
   };
 
@@ -146,7 +144,6 @@ const Dashboard = () => {
     }
     if (err) {
       setReferralData([]);
-      toastify(err.response.data.message, "error");
     }
   };
   const handleCustomerData = async () => {
@@ -159,7 +156,6 @@ const Dashboard = () => {
     }
     if (err) {
       setCustomerChartData([]);
-      toastify(err.response.data.message, "error");
     }
   };
   const handleMonthWiseSale = async () => {
@@ -172,7 +168,6 @@ const Dashboard = () => {
     }
     if (err) {
       setMonthWiseSaleData([]);
-      toastify(err.response.data.message, "error");
     }
   };
 

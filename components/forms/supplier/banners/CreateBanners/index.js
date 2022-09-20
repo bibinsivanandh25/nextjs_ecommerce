@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { getBase64 } from "services/utils/functionUtils";
@@ -31,6 +31,14 @@ const CreateBanner = ({
   setpageNumber = () => {},
   tableDate = {},
 }) => {
+  const mobile = useRef(null);
+  const web = useRef(null);
+  const [ratio, setRatio] = useState({
+    mobileHeight: "",
+    mobileWidth: "",
+    webHeight: "",
+    webWidth: "",
+  });
   const [error, setError] = useState({
     url: "",
     displayPage: "",
@@ -50,6 +58,7 @@ const CreateBanner = ({
     return new Date(FromDate);
   };
   const validation = () => {
+    console.log(ratio, "ratio");
     const errorObj = {
       url: "",
       displayPage: "",
@@ -105,10 +114,22 @@ const CreateBanner = ({
     if (Object?.keys(mobileimage)?.length == 0 || mobileimage.length == 0) {
       flag = false;
       errorObj.mobileimage = validateMessage.field_required;
+    } else if (
+      Number(ratio.mobileHeight) > 100 ||
+      Number(ratio.mobileWidth) > 320
+    ) {
+      flag = false;
+      errorObj.mobileimage = "Required Image Ratio for Mobile 320*100";
     }
     if (Object?.keys(webimage)?.length == 0 || webimage.length == 0) {
       flag = false;
       errorObj.webimage = validateMessage.field_required;
+    } else if (
+      Number(ratio.webHeight) >= 250 &&
+      Number(ratio.webWidth) >= 970
+    ) {
+      flag = false;
+      errorObj.webimage = "Required Image Ratio for Web 970*250";
     }
     let finalFromDate = "";
     let finalToDate = "";
@@ -128,6 +149,7 @@ const CreateBanner = ({
         errorObj.dateError = "From Date should be Lessthan To Date";
       }
     }
+    console.log(errorObj, "errorObj");
     setError(errorObj);
     return flag;
   };
@@ -275,14 +297,23 @@ const CreateBanner = ({
         <Grid
           item
           sm={5}
-          className="d-flex justify-content-evenly"
-          alignSelf="center"
+          display="flex"
+          justifyContent="space-evenly"
+          alignItems="center"
         >
           <div>
-            <Typography className="h-6 text-center color-secondary">
+            <Typography className="h-5 color-secondary">
               Image For Mobile
             </Typography>
             <ImageCard
+              imageRef={mobile}
+              onLoad={() => {
+                setRatio((pre) => ({
+                  ...pre,
+                  mobileWidth: mobile.current.naturalWidth,
+                  mobileHeight: mobile.current.naturalHeight,
+                }));
+              }}
               imgSrc={
                 formData.mobileimage?.binary
                   ? formData.mobileimage?.binary
@@ -311,19 +342,26 @@ const CreateBanner = ({
                   }
                 }
               }}
-              className="mx-3"
             />
             {error.mobileimage ? (
-              <Typography className="h-5 text-center color-error">
+              <Typography className="h-5 color-error">
                 {error.mobileimage}
               </Typography>
             ) : null}
           </div>
           <div>
-            <Typography className="h-6 text-center color-secondary">
+            <Typography className="h-5 color-secondary">
               Image For Web
             </Typography>
             <ImageCard
+              imageRef={web}
+              onLoad={() => {
+                setRatio((pre) => ({
+                  ...pre,
+                  webWidth: web.current.naturalWidth,
+                  webHeight: web.current.naturalHeight,
+                }));
+              }}
               imgSrc={
                 formData.webimage?.binary
                   ? formData.webimage?.binary
@@ -352,10 +390,9 @@ const CreateBanner = ({
                   }
                 }
               }}
-              className="mx-3"
             />
             {error.webimage ? (
-              <Typography className="h-5 text-center color-error">
+              <Typography className="h-5 color-error">
                 {error.webimage}
               </Typography>
             ) : null}

@@ -12,6 +12,8 @@ const ImageCard = ({
   handleImageUpload = () => {},
   showCursorPointer = false,
   className = "",
+  imageRef = null,
+  onLoad = () => {},
 }) => {
   const inputRef = useRef(null);
   return (
@@ -38,12 +40,14 @@ const ImageCard = ({
       >
         {imgSrc !== "" ? (
           <CardMedia
+            ref={imageRef}
             component="img"
             height={`${height}px`}
             width={`${width}px`}
             image={imgSrc}
             alt=""
             className={showCursorPointer ? "cursor-pointer" : ""}
+            onLoad={onLoad}
           />
         ) : (
           <Box className="rounded-circle p-1 bg-gray ">
