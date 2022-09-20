@@ -195,7 +195,6 @@ const Login = () => {
     const { data, err } = await getSupplierDetailsById(
       role === "SUPPLIER" ? id : staffDetails.supplierId
     );
-
     if (!err) {
       const supplierDetails =
         role === "SUPPLIER"
@@ -208,6 +207,7 @@ const Login = () => {
               storeCode: data.supplierStoreInfo.supplierStoreCode,
               isAddressSaved: data.userAddressDetails.length,
               role,
+              storeName: data.supplierStoreInfo.supplierStoreName,
             }
           : {
               emailId: data.emailId,
@@ -225,6 +225,7 @@ const Login = () => {
                 mobileNumber: staffDetails.mobileNumber,
                 staffId: staffDetails.staffId,
               },
+              storeName: data.supplierStoreInfo.supplierStoreName,
             };
       store.dispatch(storeUserInfo(supplierDetails));
     }
@@ -270,7 +271,6 @@ const Login = () => {
           }
         })
         .catch((err) => {
-          // console.log(err, "err");
           throw err;
         });
     }

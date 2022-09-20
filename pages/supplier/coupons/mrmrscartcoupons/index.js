@@ -138,6 +138,10 @@ const Coupons = () => {
               padding: "2px",
               cursor: "pointer",
             }}
+            onClick={() => {
+              navigator.clipboard.writeText(row.couponCode);
+              toastify("Coupon Code Copied Successfully!", "success");
+            }}
           />
         ),
       });

@@ -410,7 +410,6 @@ const CustomerQnA = () => {
 
   const handleMenuSelecteItemsForAnswers = (ele, answer, questionId, varId) => {
     if (ele === "Edit") {
-      // console.log("Answer ", answer);
       setReply(answer);
       setDataForSendingReply({
         customerQuestionId: questionId,
@@ -596,8 +595,6 @@ const CustomerQnA = () => {
       pageNum
     );
 
-    console.log(data);
-
     if (data) {
       if (!check) {
         const tempArray = setUnansweredQuestionsRows(data);
@@ -678,9 +675,7 @@ const CustomerQnA = () => {
     getQuestionsOrAnsweredQuestions(false, 0);
   }, [tabType]);
 
-  console.log("page number for answers ", pageNoForAnswers);
   const handleSearchClick = (searchText) => {
-    console.log(searchText);
     if (!searchText) {
       if (tabType === "tab1") {
         getQuestionsOrAnsweredQuestionsForSearch(false, 0, "", true);

@@ -18,6 +18,7 @@ const TextAreaComponent = ({
   placeholder = "",
   id = "",
   required = false,
+  disabled = false,
 }) => {
   return (
     <div className={`${widthClassName}`} id={id}>
@@ -56,6 +57,7 @@ const TextAreaComponent = ({
         style={{
           padding: "5px 10px",
         }}
+        disabled={disabled}
       />
       {error && (
         <p className="error" id="textbox-helper-text">

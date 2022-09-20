@@ -44,10 +44,24 @@ const getmarketingToolStatus = (supplierId) => {
       return err;
     });
 };
+const urltobaseurl = (url) => {
+  const formData = new FormData();
+  formData.append("data", url);
+  return serviceUtil
+    .post(`products/url-to-baseurl`, formData)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
 export {
   getSupplierDetailsById,
   getCurrentData,
   getNavBarItems,
   getmarketingToolStatus,
+  urltobaseurl,
 };

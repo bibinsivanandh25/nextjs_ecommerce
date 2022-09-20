@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
-import ButtonComponent from "components/atoms/ButtonComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
-import { forwardRef, useState, useImperativeHandle } from "react";
+import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
 
-const CreateQuiz = forwardRef((_props, ref) => {
+const CreateQuiz = forwardRef(({ numberOfQuestions = 3 }, ref) => {
   const tempquestionObj = {
     question: "",
     options: {
@@ -27,12 +28,116 @@ const CreateQuiz = forwardRef((_props, ref) => {
       },
     },
   };
+  const temperrObj = {
+    question: "",
+    options: {
+      option1: "",
+      option2: "",
+      option3: "",
+      option4: "",
+    },
+  };
   const [questions, setQuestions] = useState([
-    { ...JSON.parse(JSON.stringify(tempquestionObj)) },
+    {
+      ...JSON.parse(JSON.stringify(tempquestionObj)),
+    },
+    {
+      ...JSON.parse(JSON.stringify(tempquestionObj)),
+    },
+    {
+      ...JSON.parse(JSON.stringify(tempquestionObj)),
+    },
   ]);
+  const [errorObj, setErrorObj] = useState([
+    {
+      ...temperrObj,
+    },
+    {
+      ...temperrObj,
+    },
+    {
+      ...temperrObj,
+    },
+  ]);
+
+  useEffect(() => {
+    if (questions.length === numberOfQuestions) return;
+    if (questions.length < numberOfQuestions) {
+      const temp = JSON.parse(JSON.stringify(questions));
+      temp.push(JSON.parse(JSON.stringify(tempquestionObj)));
+      temp.push(JSON.parse(JSON.stringify(tempquestionObj)));
+      setQuestions([...temp]);
+      const temp1 = [...errorObj];
+      temp1.push({ ...JSON.parse(JSON.stringify(temperrObj)) });
+      temp1.push({ ...JSON.parse(JSON.stringify(temperrObj)) });
+      setErrorObj(temp1);
+    } else {
+      const temp = JSON.parse(JSON.stringify(questions));
+      temp.pop();
+      temp.pop();
+      setQuestions([...temp]);
+      const temp1 = [...errorObj];
+      temp1.pop();
+      temp1.pop();
+      setErrorObj([...temp1]);
+    }
+  }, [numberOfQuestions]);
+
+  const validate = () => {
+    let flag = false;
+    const error = JSON.parse(JSON.stringify(errorObj));
+    questions.forEach((item, ind) => {
+      if (!item.question) {
+        flag = true;
+        error[ind].question = validateMessage.field_required;
+      } else {
+        error[ind].question = "";
+      }
+      if (item.options.option1.option === "") {
+        flag = true;
+        error[ind].options.option1 = validateMessage.field_required;
+      } else {
+        error[ind].options.option1 = "";
+      }
+      if (item.options.option2.option === "") {
+        error[ind].options.option2 = validateMessage.field_required;
+        flag = true;
+      } else {
+        error[ind].options.option2 = "";
+      }
+      if (item.options.option3.option === "") {
+        flag = true;
+        error[ind].options.option3 = validateMessage.field_required;
+      } else {
+        error[ind].options.option3 = "";
+      }
+      if (item.options.option4.option === "") {
+        flag = true;
+        error[ind].options.option4 = validateMessage.field_required;
+      } else {
+        error[ind].options.option4 = "";
+      }
+      const temp = [
+        item.options.option1.correct,
+        item.options.option2.correct,
+        item.options.option3.correct,
+        item.options.option4.correct,
+      ];
+      if (!temp.some((ele) => ele)) {
+        toastify(
+          `Please Select The Correct Answer For Question ${ind + 1}`,
+          "warning"
+        );
+        flag = true;
+      }
+    });
+    setErrorObj(error);
+    return flag;
+  };
 
   useImperativeHandle(ref, () => {
     return {
+      validate,
       handleSendFormData: () => {
         return ["quiz", [...questions]];
       },
@@ -67,6 +172,8 @@ const CreateQuiz = forwardRef((_props, ref) => {
                   style: { padding: 5 },
                 }}
                 fullWidth
+                error={errorObj[index].question !== ""}
+                helperText={errorObj[index].question}
               />
             </Grid>
             <Grid item md={12} className="d-flex mt-2">
@@ -96,6 +203,8 @@ const CreateQuiz = forwardRef((_props, ref) => {
                 textInputProps={{
                   style: { padding: 5 },
                 }}
+                error={errorObj[index].options.option1 !== ""}
+                helperText={errorObj[index].options.option1}
               />
             </Grid>
             <Grid item md={12} className="d-flex mt-2">
@@ -125,6 +234,8 @@ const CreateQuiz = forwardRef((_props, ref) => {
                   style: { padding: 5 },
                 }}
                 placeholder="Enter the option 2"
+                error={errorObj[index].options.option2 !== ""}
+                helperText={errorObj[index].options.option2}
               />
             </Grid>
             <Grid item md={12} className="d-flex mt-2">
@@ -154,6 +265,8 @@ const CreateQuiz = forwardRef((_props, ref) => {
                   style: { padding: 5 },
                 }}
                 placeholder="Enter the option 3"
+                error={errorObj[index].options.option3 !== ""}
+                helperText={errorObj[index].options.option3}
               />
             </Grid>
             <Grid item md={12} className="d-flex mt-2">
@@ -183,25 +296,12 @@ const CreateQuiz = forwardRef((_props, ref) => {
                   style: { padding: 5 },
                 }}
                 placeholder="Enter the option 4"
+                error={errorObj[index].options.option4 !== ""}
+                helperText={errorObj[index].options.option4}
               />
             </Grid>
           </Grid>
         ))}
-        {questions.length < 5 ? (
-          <Grid item md={12} className="d-flex justify-content-end">
-            <ButtonComponent
-              label="Add new Question"
-              onBtnClick={() => {
-                setQuestions((pre) => {
-                  const temp = [...JSON.parse(JSON.stringify(pre))];
-                  temp.push(JSON.parse(JSON.stringify(tempquestionObj)));
-                  return [...temp];
-                });
-              }}
-              muiProps="bg-black color-white"
-            />
-          </Grid>
-        ) : null}
       </Grid>
     </Box>
   );
