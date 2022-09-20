@@ -89,6 +89,8 @@ const SideBarComponent = ({ children }) => {
     switch (role) {
       case "SUPPLIER":
         return "supplier";
+      case "STAFF":
+        return "supplier";
       case "RESELLER":
         return "reseller";
       default:
@@ -123,6 +125,25 @@ const SideBarComponent = ({ children }) => {
   const user = useSelector((state) => state.user);
   // const [marketingToolsList, setmarketingToolsList] = useState([]);
   const marketingToolsList = user.unlockedTools;
+  const [staffCapabilityList, setstaffCapabilityList] = useState([]);
+  const getCapability = (data) => {
+    const temp = [];
+    data.forEach((item) => {
+      if (item?.childCapabilityNameList?.length) {
+        temp.push(...getCapability(item.childCapabilityNameList));
+      } else if (item.isEnable) {
+        temp.push(item.capabilityType);
+      }
+    });
+    return temp;
+  };
+  useEffect(() => {
+    if (user.role === "STAFF") {
+      setstaffCapabilityList(
+        getCapability([...user.staffDetails.staffCapabilityList])
+      );
+    }
+  }, [user]);
 
   const mapList = (role) => {
     const addId = (id, item, path) => {
@@ -132,7 +153,7 @@ const SideBarComponent = ({ children }) => {
           id,
           selected: false,
           pathName: `${path}/${item.pathName}`,
-          disabled: false,
+          disabled: !staffCapabilityList.includes(item.title),
           locked: path.includes("/supplier/marketingtools")
             ? !marketingToolsList.includes(item.pathName)
             : false,
@@ -143,7 +164,7 @@ const SideBarComponent = ({ children }) => {
         id,
         selected: false,
         pathName: `${path}/${item.pathName}`,
-        disabled: false,
+        disabled: !staffCapabilityList.includes(item.title),
         locked: path.includes("/supplier/marketingtools")
           ? !marketingToolsList.includes(item.pathName)
           : false,
@@ -154,7 +175,8 @@ const SideBarComponent = ({ children }) => {
         ],
       };
     };
-    const tempList = role === "SUPPLIER" ? supplierMenu : resellerMenu;
+    const tempList =
+      role === "SUPPLIER" || role === "STAFF" ? supplierMenu : resellerMenu;
     const list = [...tempList].map((item, index) => {
       return addId(index, item, `/${getBasePath(role)}`);
     });
