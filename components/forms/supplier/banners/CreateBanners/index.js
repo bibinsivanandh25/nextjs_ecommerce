@@ -29,6 +29,7 @@ const CreateBanner = ({
   getAllTableData = () => {},
   userInfo = {},
   setpageNumber = () => {},
+  tableDate = {},
 }) => {
   const [error, setError] = useState({
     url: "",
@@ -181,7 +182,7 @@ const CreateBanner = ({
       const payload = {
         bannerImageUrlForWeb: webImages?.data,
         bannerImageUrlForMobile: mobileImages?.data,
-        panelName: userInfo?.role,
+        panelName: "SUPPLIER",
         navigationUrl: formData.url,
         buttonName: formData.buttonlable.label,
         displayPage: formData.displayPage.label,
@@ -192,7 +193,7 @@ const CreateBanner = ({
       const { data, err } = await saveBanner(payload);
       if (data) {
         setpageNumber(0);
-        getAllTableData("", "", 0);
+        getAllTableData(tableDate.fromDate, tableDate.toDate, 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
@@ -219,12 +220,6 @@ const CreateBanner = ({
         mobileImages = await bannnerMedia(mobileFormdata);
       }
 
-      // const fromDate = new Date(
-      //   addDateTime(formData.starttime, formData.startdate)
-      // ).toISOString();
-      // const toDate = new Date(
-      //   addDateTime(formData.endtime, formData.enddate)
-      // ).toISOString();
       const startDateTime = new Date(
         addDateTime(formData.starttime, formData.startdate)
       );
@@ -247,12 +242,12 @@ const CreateBanner = ({
         status: "PUBLISHED",
         startDateTime: fromDate.toString(),
         endDateTime: toDate.toString(),
-        panelName: userInfo?.role,
+        panelName: "SUPPLIER",
       };
       const { data, err } = await updateBanner(payload);
       if (data) {
         setpageNumber(0);
-        getAllTableData("", "", 0);
+        getAllTableData(tableDate.fromDate, tableDate.toDate, 0);
         handleCloseClick();
       } else if (err) {
         toastify(err.response.data.message, "error");
