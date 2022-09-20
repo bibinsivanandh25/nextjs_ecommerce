@@ -28,7 +28,6 @@ const AddFlag = ({
   defaultFormData,
   setDefaultFormData = () => {},
   allFlags = [],
-  productVariationId,
   getMycollectionData = () => {},
   masterProduct = [],
 }) => {

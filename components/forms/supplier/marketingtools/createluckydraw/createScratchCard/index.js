@@ -1,4 +1,6 @@
-import { forwardRef, useState, useImperativeHandle, useEffect } from "react";
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-unused-vars */
+import { forwardRef, useState, useImperativeHandle } from "react";
 import { Box, Typography } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import { useSelector } from "react-redux";

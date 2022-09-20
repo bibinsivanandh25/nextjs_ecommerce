@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import {
   forwardRef,
   useState,
@@ -9,9 +10,9 @@ import { Box, Typography } from "@mui/material";
 // import WheelComponent from "react-wheel-of-prizes";
 import InputBox from "components/atoms/InputBoxComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import WheelSpin from "./WheelSpin";
 import { getThemes } from "services/supplier/marketingtools";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import WheelSpin from "./WheelSpin";
 
 const SpinWheel = forwardRef(
   ({ formData = {}, generateInputField = () => {} }, ref) => {
@@ -39,7 +40,7 @@ const SpinWheel = forwardRef(
     });
 
     const getAllTheme = async () => {
-      const { data, err } = await getThemes();
+      const { data } = await getThemes();
       if (data) {
         const temp = [];
         data.forEach((item) => {
@@ -60,23 +61,23 @@ const SpinWheel = forwardRef(
       getAllTheme();
     }, []);
 
-    const segColors = [
-      "#EE4040",
-      "#F0CF50",
-      "#815CD1",
-      "#3DA5E0",
-      "#34A24F",
-      "#F9AA1F",
-      "#EC3F3F",
-      "#FF9000",
-      "#F0CF50",
-      "#815CD1",
-      "#3DA5E0",
-      "#34A24F",
-      "#F9AA1F",
-      "#EC3F3F",
-      "#FF9000",
-    ];
+    // const segColors = [
+    //   "#EE4040",
+    //   "#F0CF50",
+    //   "#815CD1",
+    //   "#3DA5E0",
+    //   "#34A24F",
+    //   "#F9AA1F",
+    //   "#EC3F3F",
+    //   "#FF9000",
+    //   "#F0CF50",
+    //   "#815CD1",
+    //   "#3DA5E0",
+    //   "#34A24F",
+    //   "#F9AA1F",
+    //   "#EC3F3F",
+    //   "#FF9000",
+    // ];
     const onFinished = () => {};
 
     return (

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable prefer-destructuring */
 
 import React, { useEffect, useState } from "react";

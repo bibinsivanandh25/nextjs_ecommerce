@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";

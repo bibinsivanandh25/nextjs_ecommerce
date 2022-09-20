@@ -4,8 +4,8 @@ import { returnOrderData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import { validatePricingForMrMRsCartForm } from "../validation";
 import { useSelector } from "react-redux";
+import { validatePricingForMrMRsCartForm } from "../validation";
 
 const PricingForMrMRsCartForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {

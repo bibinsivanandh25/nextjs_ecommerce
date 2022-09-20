@@ -8,8 +8,8 @@ import FileUploadModal from "components/atoms/FileUpload";
 import { warrantyData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import { validatePolicy } from "../validation";
 import { useSelector } from "react-redux";
+import { validatePolicy } from "../validation";
 
 const ProductPoliciesForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {

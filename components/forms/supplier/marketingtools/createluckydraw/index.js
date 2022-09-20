@@ -4,23 +4,16 @@
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Box, Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
-import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import { useRouter } from "next/router";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import { commisiondata } from "constants/constants";
 import TextEditor from "components/atoms/TextEditor";
-import AddIcon from "@mui/icons-material/Add";
 import { useState, useRef, useEffect } from "react";
 import { format } from "date-fns";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
-import ScratchCardForm from "./createScratchCard";
-import SpinWheelForm from "./createSpinWheel";
-import ProductModal from "./ProductModal";
-import CreateQuiz from "./createquiz";
 import {
   getCategorys,
   saveScratchCard,
@@ -28,6 +21,10 @@ import {
 import { useSelector } from "react-redux";
 import { getSet, getSubCategory } from "services/supplier/AddProducts";
 import { getCurrentData } from "services/supplier";
+import ScratchCardForm from "./createScratchCard";
+import SpinWheelForm from "./createSpinWheel";
+import ProductModal from "./ProductModal";
+import CreateQuiz from "./createquiz";
 
 const GenericForm = ({
   setShowGenericForm = () => {},
@@ -59,18 +56,15 @@ const GenericForm = ({
     ...JSON.parse(JSON.stringify(tempFormData)),
   });
   const [showProducts, setShowProducts] = useState(false);
-  const [createQuestions, setCreateQuestions] = useState(false);
   const formRef = useRef(null);
   const [categoryList, setCategotyList] = useState([]);
   const [subCategoryList, setSubCategotyList] = useState([]);
   const [setsList, setSetsList] = useState([]);
-  const { storeCode, storeName, supplierId } = useSelector(
-    (state) => state.user
-  );
+  const { supplierId } = useSelector((state) => state.user);
   const [numberOfQuestions, setNumberOfQuestions] = useState(3);
 
   const getCategoryList = async () => {
-    const { data, err } = await getCategorys();
+    const { data } = await getCategorys();
     if (data) {
       const finaData = [];
       data.forEach((item) => {
@@ -86,7 +80,7 @@ const GenericForm = ({
   };
 
   const getSetsList = async () => {
-    const { data, err } = await getSet(formData.category.id);
+    const { data } = await getSet(formData.category.id);
     if (data) {
       const finaData = [];
       data.data.forEach((item) => {

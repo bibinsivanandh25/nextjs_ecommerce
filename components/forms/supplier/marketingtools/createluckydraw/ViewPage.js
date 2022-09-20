@@ -55,9 +55,8 @@ const ViewPage = ({ pageName = "", data = null }) => {
         </Grid>
       </Box>
     );
-  } else {
-    return null;
   }
+  return null;
 };
 
 export default ViewPage;

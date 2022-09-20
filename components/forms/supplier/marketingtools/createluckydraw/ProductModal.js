@@ -1,6 +1,7 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 import ModalComponent from "components/atoms/ModalComponent";
 import ImageCard from "components/atoms/ImageCard";
-import { assetsJson } from "public/assets";
 import { Typography, Box, Grid, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";

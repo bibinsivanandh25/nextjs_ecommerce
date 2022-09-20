@@ -34,7 +34,9 @@ export const userSlice = createSlice({
     updateUnlockedTools: (state, action) => {
       return {
         ...state,
-        unlockedTools: [...state.unlockedTools, ...action.payload],
+        unlockedTools: [
+          ...new Set([...state.unlockedTools, ...action.payload]),
+        ],
       };
     },
   },
