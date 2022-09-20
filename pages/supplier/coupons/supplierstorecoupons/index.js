@@ -150,6 +150,10 @@ const SupplierStoreCoupons = () => {
               padding: "2px",
               cursor: "pointer",
             }}
+            onClick={() => {
+              navigator.clipboard.writeText(row.storeCouponCode);
+              toastify("Coupon Code Copied Successfully!", "success");
+            }}
           />
         ),
       });

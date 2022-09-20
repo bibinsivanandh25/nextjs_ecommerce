@@ -342,6 +342,7 @@ const CreateNotification = ({
             placeholder="Title"
             freeSolo
             helperText={error.title}
+            inputlabelshrink
             fullWidth
             value={title}
             size="small"
