@@ -902,6 +902,7 @@ const ProductsLayout = ({
                         });
                       }}
                       className="mx-3"
+                      showClose={!viewFlag}
                     />
                   ))
                 : null}
