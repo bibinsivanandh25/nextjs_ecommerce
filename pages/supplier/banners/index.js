@@ -284,7 +284,7 @@ const Banners = () => {
   }, []);
 
   return (
-    <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar py-2">
+    <Paper className="mxh-82vh mnh-82vh overflow-auto hide-scrollbar pt-1">
       <TableComponent
         showCheckbox={false}
         tableRows={[...tableRows]}
