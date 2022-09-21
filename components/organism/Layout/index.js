@@ -5,11 +5,11 @@ import { Box } from "@mui/material";
 import { useRouter } from "next/router";
 // import { signOut } from "next-auth/react";
 import { useSelector } from "react-redux";
+import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 import HeaderComponent from "../HeaderComponent";
 import SideBarComponent from "../SideBarComponent";
 import CustomerSideBarComponent from "../CustomerSideBarComponent";
 import Header from "../CustomerHeaderComponent";
-import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 
 const Layout = ({ Component, pageProps }) => {
   // const { data: session } = useSession();

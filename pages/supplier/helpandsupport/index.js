@@ -192,7 +192,7 @@ const HelpAndSupport = () => {
         }
       }
       if (err) {
-        toastify(err.response.data.err, "errror");
+        toastify(err.response.data.message, "error");
       }
     }
     if (selectTab == "tab2") {

@@ -43,10 +43,7 @@ const WheelSpin = forwardRef(
     const centerY = 300;
     useEffect(() => {
       wheelInit();
-      setTimeout(() => {
-        window.scrollTo(0, 1);
-      }, 0);
-    }, []);
+    }, [segColors]);
     const wheelInit = () => {
       initCanvas();
       wheelDraw();

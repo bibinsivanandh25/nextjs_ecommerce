@@ -1,7 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import { format } from "date-fns";
-import { duplicateProduct } from "features/productsSlice";
+import { duplicateProduct, viewProduct } from "features/productsSlice";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -95,6 +95,17 @@ const MrMrsCartProducts = () => {
       router.push("/supplier/products&inventory/addnewproduct");
     }
   };
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(viewProduct(data[0]));
+      router.push("/supplier/products&inventory/addnewproduct");
+    }
+  };
 
   const mapRowsToTable = (data) => {
     const result = [];
@@ -119,7 +130,14 @@ const MrMrsCartProducts = () => {
           col12: (
             <Grid container spacing={2}>
               <Grid item xs={4}>
-                <CustomIcon type="view" title="View" className="fs-16" />
+                <CustomIcon
+                  onIconClick={() => {
+                    viewClick(row.masterProductId, ele.productVariationId);
+                  }}
+                  type="view"
+                  title="View"
+                  className="fs-16"
+                />
               </Grid>
               <Grid item xs={4}>
                 <Box

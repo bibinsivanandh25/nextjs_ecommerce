@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable prefer-destructuring */
 
 import React, { useEffect, useState } from "react";
@@ -9,7 +10,6 @@ import {
   getMonthWiseSale,
   getReferralChartData,
 } from "services/supplier/dashboard";
-import toastify from "services/utils/toastUtils";
 import Bargraph from "@/atoms/Bar/Bargraph";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import SelectComponent from "@/atoms/SelectComponent";
@@ -57,6 +57,43 @@ const revenueSelectList = [
   },
 ];
 
+const cardDatas = [
+  {
+    id: 1,
+    label: "totalOrders",
+    title: "Total Orders",
+    count: 0,
+    color: "#e87f28",
+  },
+  {
+    id: 2,
+    label: "totalSalesValue",
+    title: "Total Sales Value",
+    count: 0,
+    color: "#6e86c5",
+  },
+  {
+    id: 3,
+    label: "totalCustomers",
+    title: "Total Customers",
+    count: 0,
+    color: "#dbdb12",
+  },
+  {
+    id: 4,
+    label: "totalFreeOrders",
+    title: "Free Orders Earned Through Referrals",
+    count: 0,
+    color: "#76c44e",
+  },
+  {
+    id: 5,
+    label: "totalReferrals",
+    title: "Total Referrals",
+    count: 0,
+    color: "#12dbae",
+  },
+];
 const Dashboard = () => {
   const user = useSelector((state) => state.user);
   const [masterCardData, setMasterCardData] = useState([]);
@@ -83,43 +120,6 @@ const Dashboard = () => {
   const getMasterCardData = async () => {
     const { data, err } = await getAllDashboardData(user.supplierId);
     if (data) {
-      const cardDatas = [
-        {
-          id: 1,
-          label: "totalOrders",
-          title: "Total Orders",
-          count: "",
-          color: "#e87f28",
-        },
-        {
-          id: 2,
-          label: "totalSalesValue",
-          title: "Total Sales Value",
-          count: "",
-          color: "#6e86c5",
-        },
-        {
-          id: 3,
-          label: "totalCustomers",
-          title: "Total Customers",
-          count: "",
-          color: "#dbdb12",
-        },
-        {
-          id: 4,
-          label: "totalFreeOrders",
-          title: "Free Orders Earned Through Referrals",
-          count: "",
-          color: "#76c44e",
-        },
-        {
-          id: 5,
-          label: "totalReferrals",
-          title: "Total Referrals",
-          count: "",
-          color: "#12dbae",
-        },
-      ];
       Object.entries(data).forEach((item) => {
         cardDatas.forEach((value) => {
           if (value.label === item[0]) {
@@ -130,8 +130,7 @@ const Dashboard = () => {
       setMasterCardData(cardDatas);
     }
     if (err) {
-      setMasterCardData([]);
-      toastify(err.response.data.message, "error");
+      setMasterCardData(cardDatas);
     }
   };
 
@@ -145,7 +144,6 @@ const Dashboard = () => {
     }
     if (err) {
       setReferralData([]);
-      toastify(err.response.data.message, "error");
     }
   };
   const handleCustomerData = async () => {
@@ -158,7 +156,6 @@ const Dashboard = () => {
     }
     if (err) {
       setCustomerChartData([]);
-      toastify(err.response.data.message, "error");
     }
   };
   const handleMonthWiseSale = async () => {
@@ -171,7 +168,6 @@ const Dashboard = () => {
     }
     if (err) {
       setMonthWiseSaleData([]);
-      toastify(err.response.data.message, "error");
     }
   };
 
@@ -207,7 +203,7 @@ const Dashboard = () => {
       ) : (
         <Paper className="w-100 mnh-85vh mxh-85vh overflow-auto hide-scrollbar p-2">
           <Grid container className="" gap={0.5}>
-            {masterCardData?.length
+            {masterCardData
               ? masterCardData?.map((item, index) => (
                   <Grid
                     item

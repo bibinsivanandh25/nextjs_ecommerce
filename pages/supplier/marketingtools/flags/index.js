@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 import {
   Box,
   FormControlLabel,
@@ -16,7 +18,7 @@ import FlagsEditModal from "@/forms/supplier/marketingtools/flags/flagseditmodal
 import { getAllFlags } from "services/supplier/marketingtools/flags";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
-import { disableProductFlag, getFlagById } from "services/supplier/myProducts";
+import { disableProductFlag } from "services/supplier/myProducts";
 
 const tableColumn = [
   {
@@ -69,159 +71,8 @@ const tableColumn = [
     data_align: "center",
   },
 ];
-const imageData = [
-  {
-    id: 1,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 2,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 3,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 4,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 5,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 6,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 7,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 8,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 9,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 10,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 1,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 2,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 3,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 4,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 5,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 6,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 7,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 8,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 9,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "MidiMidiMidiMidi",
-  },
-  {
-    id: 10,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 1,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 2,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 3,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 4,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 5,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 6,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 7,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 8,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 9,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "Midi",
-  },
-  {
-    id: 10,
-    src: "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-    title: "MidiMidiMidiMidi",
-  },
-];
-const AntSwitch = styled(Switch)(({ theme }) => ({
+
+const AntSwitch = styled(Switch)(() => ({
   width: 28,
   height: 16,
   padding: 0,
@@ -280,11 +131,6 @@ const Flags = () => {
     }
   };
 
-  const handleView = (products) => {
-    setViewModalOpen(true);
-    setviewDetails(products);
-  };
-
   const mapToTable = (data) => {
     const temp = [];
     data.forEach((item) => {
@@ -313,7 +159,7 @@ const Flags = () => {
                       onChange={() => {
                         disableFlag(
                           item.supplierFlagId,
-                          item.status == "INACTIVE" ? false : true
+                          item.status != "INACTIVE"
                         );
                       }}
                       disable={!item.status}
@@ -364,6 +210,11 @@ const Flags = () => {
       toastify(err?.response?.data?.message, "error");
       setRows([]);
     }
+  };
+
+  const handleView = (products) => {
+    setViewModalOpen(true);
+    setviewDetails(products);
   };
 
   useEffect(() => {

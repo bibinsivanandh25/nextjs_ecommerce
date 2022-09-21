@@ -31,7 +31,7 @@ const AttributesForm = forwardRef(
       values: "",
     });
     const user = useUserInfo();
-    const { editProduct } = useSelector((state) => state.product);
+    const { editProduct, viewFlag } = useSelector((state) => state.product);
 
     useEffect(() => {
       if (Object.keys(formData.attribute).length) {
@@ -69,7 +69,7 @@ const AttributesForm = forwardRef(
               <CheckBoxComponent
                 label={ele.attribute}
                 isChecked={ele.selected}
-                isDisabled={editProduct}
+                isDisabled={editProduct || viewFlag}
                 id={ele.id}
                 checkBoxClick={(id, checked) => {
                   if (!checked) {
@@ -113,7 +113,7 @@ const AttributesForm = forwardRef(
                     label={ele.attribute}
                     list={[...options]}
                     id={ele.id}
-                    disabled={editProduct}
+                    disabled={editProduct || viewFlag}
                     onSelectionChange={(e, val, id) => {
                       setSelectedAttribute((pre) => ({
                         ...pre,
@@ -145,7 +145,7 @@ const AttributesForm = forwardRef(
                 <Grid item xs={12} container spacing={2}>
                   <Grid item sm={4}>
                     <ButtonComponent
-                      disabled={editProduct}
+                      disabled={editProduct || viewFlag}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Select All"
@@ -168,7 +168,7 @@ const AttributesForm = forwardRef(
                   </Grid>
                   <Grid item sm={4}>
                     <ButtonComponent
-                      disabled={editProduct}
+                      disabled={editProduct || viewFlag}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Select None"
@@ -192,7 +192,7 @@ const AttributesForm = forwardRef(
                   </Grid>
                   <Grid item sm={4}>
                     <ButtonComponent
-                      disabled={editProduct}
+                      disabled={editProduct || viewFlag}
                       muiProps="fs-10 w-100"
                       bgColor="bg-secondary"
                       label="Add New"

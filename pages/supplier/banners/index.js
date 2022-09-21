@@ -131,6 +131,7 @@ const Banners = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewData, setViewData] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
+  const [tableDate, setTableDate] = useState({ fromDate: "", toDate: "" });
 
   const mapRowsToTable = (data) => {
     const temp = [];
@@ -202,7 +203,7 @@ const Banners = () => {
       createdById: userInfo.supplierId,
       fromDate: fromdate,
       toDate: endDate,
-      pageNumber: fromdate ? 0 : page,
+      pageNumber,
       pageSize: 50,
     };
     const { data, err } = await getAllData(payload);
@@ -295,7 +296,7 @@ const Banners = () => {
         handlePageEnd={(
           searchText = "",
           filterText = "ALL",
-          page = pageNumber,
+          page,
           filteredDates
         ) => {
           getAllTableData(
@@ -321,6 +322,7 @@ const Banners = () => {
         getAllTableData={getAllTableData}
         userInfo={userInfo}
         setpageNumber={setpageNumber}
+        tableDate={tableDate}
       />
       {viewModalOpen && (
         <ViewBannerModal

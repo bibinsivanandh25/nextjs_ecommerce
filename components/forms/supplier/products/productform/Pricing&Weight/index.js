@@ -20,7 +20,7 @@ const PricingForm = forwardRef(
     const [openViewModal, setOPenViewModal] = useState(false);
     const [viewModalData, setViewModalData] = useState([]);
     const [errorObj, setErrorObj] = useState({});
-    const { editProduct } = useSelector((state) => state.product);
+    const { editProduct, viewFlag } = useSelector((state) => state.product);
 
     const handleInputChange = (e) => {
       setFormData((pre) => {
@@ -71,6 +71,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.sale_price ?? ""}
               error={errorObj.sale_price && errorObj.sale_price !== ""}
               placeholder="eg.: 100"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={6}>
@@ -84,6 +85,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.mrp ?? ""}
               error={errorObj.mrp && errorObj.mrp !== ""}
               placeholder="eg.: 100"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -116,7 +118,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
-                isDisabled={editProduct}
+                isDisabled={editProduct || viewFlag}
               />
               <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                 Provide Free Delivery & Return To Your Customer
@@ -134,7 +136,11 @@ const PricingForm = forwardRef(
                 errorObj.sale_price_logistics &&
                 errorObj.sale_price_logistics !== ""
               }
-              disabled={editProduct || !formData?.pricing?.freeDeliveryCheckbox}
+              disabled={
+                editProduct ||
+                !formData?.pricing?.freeDeliveryCheckbox ||
+                viewFlag
+              }
             />
           </Grid>
           <Grid item md={6}>
@@ -157,6 +163,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={viewFlag}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Return Order Accepted
@@ -182,6 +189,7 @@ const PricingForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
+                isDisabled={viewFlag}
               />
               <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
                 Cash on Delivery
@@ -211,6 +219,7 @@ const PricingForm = forwardRef(
                 helperText={errorObj.returnorder ?? ""}
                 error={errorObj.returnorder && errorObj.returnorder !== ""}
                 placeholder="Return Period"
+                disabled={viewFlag}
               />
             </Grid>
           )}
@@ -281,6 +290,7 @@ const PricingForm = forwardRef(
               placeholder="eg.:200"
               helperText={errorObj.product_weight ?? ""}
               error={errorObj.product_weight && errorObj.product_weight !== ""}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -294,6 +304,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.length ?? ""}
               error={errorObj.length && errorObj.length !== ""}
               placeholder="eg.: 200"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -307,6 +318,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.height ?? ""}
               error={errorObj.height && errorObj.height !== ""}
               placeholder="eg.: 200"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -320,6 +332,7 @@ const PricingForm = forwardRef(
               helperText={errorObj.width ?? ""}
               error={errorObj.width && errorObj.width !== ""}
               placeholder="eg.: 200"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -348,6 +361,7 @@ const PricingForm = forwardRef(
                   value={formData?.pricing?.defaultZoneData.zoneA}
                   inputlabelshrink
                   placeholder="Enter Price"
+                  disabled={viewFlag}
                 />
               </Grid>{" "}
               <Grid item xs={12}>
@@ -358,6 +372,7 @@ const PricingForm = forwardRef(
                   value={formData?.pricing?.defaultZoneData.zoneB}
                   inputlabelshrink
                   placeholder="Enter Price"
+                  disabled={viewFlag}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -368,6 +383,7 @@ const PricingForm = forwardRef(
                   value={formData?.pricing?.defaultZoneData.zoneC}
                   inputlabelshrink
                   placeholder="Enter Price"
+                  disabled={viewFlag}
                 />
               </Grid>{" "}
               <Grid item xs={12}>
@@ -378,6 +394,7 @@ const PricingForm = forwardRef(
                   value={formData?.pricing?.defaultZoneData.zoneD}
                   inputlabelshrink
                   placeholder="Enter Price"
+                  disabled={viewFlag}
                 />
               </Grid>{" "}
               <Grid item xs={12}>
@@ -388,6 +405,7 @@ const PricingForm = forwardRef(
                   value={formData?.pricing?.defaultZoneData.zoneE}
                   inputlabelshrink
                   placeholder="Enter Price"
+                  disabled={viewFlag}
                 />
               </Grid>
             </Grid>
