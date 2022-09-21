@@ -8,6 +8,7 @@ import serviceUtil from "services/utils";
 import {
   getAttributes,
   getCategorySubCategory,
+  upsellsProduct,
 } from "services/supplier/AddProducts";
 import {
   business_processing_days,
@@ -338,8 +339,6 @@ const NewProducts = () => {
         };
       }),
     ];
-    // // console.log({ temp1 });
-    // attributeList = [...temp1];
   };
   const tagValues = [];
   const getTags = async () => {
@@ -358,6 +357,20 @@ const NewProducts = () => {
       .catch(() => {});
   };
   const categoryDetails = {};
+  const upsellesProducts = [];
+
+  const getProductsList = async (supplierId, categoryid) => {
+    const { data } = await upsellsProduct(supplierId, categoryid);
+    if (data) {
+      data.data.forEach((item) => {
+        upsellesProducts.push({
+          label: item.productTitle,
+          value: item.productVariationId,
+        });
+      });
+    }
+  };
+
   const getCategorySubCategoryList = async () => {
     const { data } = await getCategorySubCategory(productDetails.subCategoryId);
     if (data) {
@@ -365,6 +378,10 @@ const NewProducts = () => {
       categoryDetails.categorySetName = data.categorySetName;
       categoryDetails.mainCategoryId = data.mainCategoryId;
       categoryDetails.mainCategoryName = data.mainCategoryName;
+      await getProductsList(
+        productDetails.supplierId,
+        categoryDetails.mainCategoryId
+      );
     }
   };
   const [b2bList, setb2bList] = useState([]);
@@ -408,6 +425,7 @@ const NewProducts = () => {
     await getAttributesList(productDetails.subCategoryId, formData);
     await getB2BTradmarkValues("B2B_INVOICE");
     await getB2BTradmarkValues("TRADEMARK_LETTER");
+
     const temp = JSON.parse(JSON.stringify(schema));
     temp.productImage = [...productDetails.variationData.variationMedia];
     temp.mainForm.commision_mode = productDetails.commissionMode;
@@ -493,14 +511,18 @@ const NewProducts = () => {
     temp.inventory.modalname = productDetails.variationData.modelName;
     temp.inventory.manageStock = !!productDetails.variationData.allowBackOrders;
 
-    temp.linked.upSells = {
-      value: productDetails.linkedProducts.upSells[0],
-      label: productDetails.linkedProducts.upSells[0],
-    };
-    temp.linked.crossSells = {
-      value: productDetails.linkedProducts.crossSells[0],
-      label: productDetails.linkedProducts.crossSells[0],
-    };
+    temp.linked.upSells = productDetails.linkedProducts.upSells[0]
+      ? upsellesProducts.filter((item) => {
+          if (productDetails.linkedProducts.upSells[0] === item.value)
+            return item;
+        })[0]
+      : {};
+    temp.linked.crossSells = productDetails.linkedProducts.upSells[0]
+      ? upsellesProducts.filter((item) => {
+          if (productDetails.linkedProducts.upSells[0] === item.value)
+            return item;
+        })[0]
+      : {};
 
     temp.pricing.sale_price = productDetails.variationData.salePrice;
     temp.pricing.mrp = productDetails.variationData.mrp;

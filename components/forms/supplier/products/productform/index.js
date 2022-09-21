@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable default-case */
@@ -251,8 +252,8 @@ const ProductsLayout = ({
       }
     } else {
       setErrObj({});
-      setactiveTab((prev) => prev + 1);
     }
+    setactiveTab((prev) => prev + 1);
   };
 
   const handleInputChange = (e) => {
@@ -412,14 +413,16 @@ const ProductsLayout = ({
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
       longDescriptionFileUrls: imgdata.long_description
-        ? [
-            ...imgdata.long_description,
-            ...formData?.mainForm?.long_description?.media?.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ]
+        ? formData?.mainForm?.long_description?.media?.filter.length
+          ? [
+              ...imgdata.long_description,
+              ...formData?.mainForm?.long_description?.media?.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }),
+            ]
+          : [...imgdata.long_description]
         : [
             ...formData?.mainForm?.long_description?.media?.filter((item) => {
               if (item.includes("https://")) {
@@ -429,14 +432,16 @@ const ProductsLayout = ({
           ],
       shortDescription: formData.mainForm.short_description.text,
       shortDescriptionFileUrls: imgdata.short_description
-        ? [
-            ...imgdata.short_description,
-            ...formData.mainForm.short_description.media.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ]
+        ? formData.mainForm.short_description.media.length
+          ? [
+              ...imgdata.short_description,
+              ...formData.mainForm.short_description.media.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }),
+            ]
+          : [...imgdata.short_description]
         : [
             ...formData.mainForm.short_description.media.filter((item) => {
               if (item.includes("https://")) {
@@ -474,16 +479,18 @@ const ProductsLayout = ({
         policyTabLabel: formData.policy.policyTabLabel,
         shippingPolicy: formData.policy.shippingPolicy.text,
         shippingPolicyMediaUrls: imgdata?.shippingPolicy
-          ? [
-              ...imgdata?.shippingPolicy,
-              ...formData.policy.shippingPolicy.media.binaryStr.filter(
-                (item) => {
-                  if (item.includes("https://")) {
-                    return item;
+          ? formData.policy.shippingPolicy.media.binaryStr.length
+            ? [
+                ...imgdata?.shippingPolicy,
+                ...formData.policy.shippingPolicy.media.binaryStr.filter(
+                  (item) => {
+                    if (item.includes("https://")) {
+                      return item;
+                    }
                   }
-                }
-              ),
-            ]
+                ),
+              ]
+            : [...imgdata?.shippingPolicy]
           : [
               ...formData.policy.shippingPolicy.media.binaryStr.filter(
                 (item) => {
@@ -495,14 +502,18 @@ const ProductsLayout = ({
             ],
         refundPolicy: formData.policy.refundPolicy.text,
         refundPolicyMediaUrls: imgdata?.refundPolicy
-          ? [
-              ...imgdata?.refundPolicy,
-              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
-                if (item.includes("https://")) {
-                  return item;
-                }
-              }),
-            ]
+          ? formData.policy.refundPolicy.media.binaryStr.length
+            ? [
+                ...imgdata?.refundPolicy,
+                ...formData.policy.refundPolicy.media.binaryStr.filter(
+                  (item) => {
+                    if (item.includes("https://")) {
+                      return item;
+                    }
+                  }
+                ),
+              ]
+            : [...imgdata?.refundPolicy]
           : [
               ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
                 if (item.includes("https://")) {
@@ -512,16 +523,18 @@ const ProductsLayout = ({
             ],
         cancellationPolicy: formData.policy.cancellationPolicy.text,
         cancellationPolicyMediaUrls: imgdata?.cancellationPolicy
-          ? [
-              ...imgdata?.cancellationPolicy,
-              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
-                (item) => {
-                  if (item.includes("https://")) {
-                    return item;
+          ? formData.policy.cancellationPolicy.media.binaryStr.length
+            ? [
+                ...imgdata?.cancellationPolicy,
+                ...formData.policy.cancellationPolicy.media.binaryStr.filter(
+                  (item) => {
+                    if (item.includes("https://")) {
+                      return item;
+                    }
                   }
-                }
-              ),
-            ]
+                ),
+              ]
+            : [...imgdata?.cancellationPolicy]
           : [
               ...formData.policy.cancellationPolicy.media.binaryStr.filter(
                 (item) => {
@@ -623,8 +636,6 @@ const ProductsLayout = ({
           },
         });
       }
-      // console.log("Update is incomplete", payload);
-      // toastify("Update is incomplete", "info");
     } else {
       const { data, err } = await saveProduct(payload);
       if (err) {

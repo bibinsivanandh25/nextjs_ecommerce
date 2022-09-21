@@ -1,14 +1,38 @@
 import { Grid } from "@mui/material";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector } from "react-redux";
+import { upsellsProduct } from "services/supplier/AddProducts";
 import { validateLinked } from "../validation";
 
 const LinkedForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
     const { viewFlag } = useSelector((state) => state.product);
+    const [productsList, setProductsList] = useState([]);
+    const { supplierId } = useSelector((state) => state.user);
+
+    const getProductsList = async () => {
+      const { data } = await upsellsProduct(
+        supplierId,
+        formData.mainForm.category.id
+      );
+      if (data) {
+        setProductsList(
+          data.data.map((item) => {
+            return {
+              label: item.productTitle,
+              value: item.productVariationId,
+            };
+          })
+        );
+      }
+    };
+
+    useEffect(() => {
+      if (formData?.mainForm?.category?.value) getProductsList();
+    }, [formData?.mainForm?.category?.value]);
 
     const handleDropdownChange = (value, key) => {
       setFormData((pre) => ({
@@ -19,20 +43,6 @@ const LinkedForm = forwardRef(
         },
       }));
     };
-
-    const upSellsArray = [
-      {
-        value: "upsells",
-        label: "Up Sells",
-      },
-    ];
-
-    const crossSellsArray = [
-      {
-        value: "crosssells",
-        label: "Cross Sells",
-      },
-    ];
 
     useImperativeHandle(ref, () => {
       return {
@@ -64,7 +74,7 @@ const LinkedForm = forwardRef(
               label="Up-Sells*"
               placeholder="Filter By Product..."
               inputlabelshrink
-              list={[...upSellsArray]}
+              list={productsList}
               onDropdownSelect={(value) => {
                 handleDropdownChange(value, "upSells");
               }}
@@ -85,7 +95,7 @@ const LinkedForm = forwardRef(
               label="Cross-Sells*"
               placeholder="Filter By Product..."
               inputlabelshrink
-              list={[...crossSellsArray]}
+              list={productsList}
               value={formData?.linked?.crossSells}
               onDropdownSelect={(value) => {
                 handleDropdownChange(value, "crossSells");

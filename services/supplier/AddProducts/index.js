@@ -131,6 +131,20 @@ const updateProduct = (payload) => {
     });
 };
 
+const upsellsProduct = (supplierId, mainCatgoryId) => {
+  return serviceUtil
+    .get(
+      `products/master-product/upsells-product?supplierId=${supplierId}&mainCatgoryId=${mainCatgoryId}`
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -142,4 +156,5 @@ export {
   getCategorySubCategory,
   saveDuplicateProduct,
   updateProduct,
+  upsellsProduct,
 };

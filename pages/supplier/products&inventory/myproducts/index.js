@@ -25,7 +25,7 @@ import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import { duplicateProduct, updateProduct } from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -158,7 +158,6 @@ const MyProducts = () => {
   };
 
   const deleteSingleRow = async (productId) => {
-    // console.log(productId);
     const { data } = await deleteSingleProduct(productId);
     if (data) {
       toastify(data.message, "success");
@@ -375,7 +374,7 @@ const MyProducts = () => {
       toastify(err?.response?.data?.messagea);
     } else {
       setIds({ masterProductId: "", variationId: "", flagged: false });
-      dispatch(viewProduct(data[0]));
+      dispatch(duplicateProduct(data[0]));
       router.push("/supplier/products&inventory/addnewproduct");
     }
   };
