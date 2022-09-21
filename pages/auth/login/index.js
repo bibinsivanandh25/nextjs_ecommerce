@@ -35,93 +35,6 @@ import { storeUserInfo } from "features/userSlice";
 import axios from "axios";
 import styles from "./Login.module.css";
 
-// const options = ["Supplier", "Reseller", "Customer"];
-
-// const SelectComponent = ({
-//   selectedIndex = 1,
-//   setSelectedIndex = () => {},
-// }) => {
-//   const [anchorEl, setAnchorEl] = useState(false);
-//   const open = anchorEl;
-//   const handleClick = (event) => {
-//     setAnchorEl(event.currentTarget);
-//   };
-//   const handleClose = () => {
-//     setAnchorEl(false);
-//   };
-//   const handleMenuItemClick = (index) => {
-//     setSelectedIndex(index);
-//     setAnchorEl(false);
-//   };
-//   return (
-//     <div style={{ position: "fixed", top: "0", left: "0" }}>
-//       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-//         <IconButton
-//           onClick={handleClick}
-//           size="small"
-//           aria-controls={open ? "user-menu" : undefined}
-//           aria-haspopup="true"
-//           aria-expanded={open ? "true" : undefined}
-//           sx={{ pl: 0, pt: 0 }}
-//         >
-//           <div style={{ background: "white" }}>
-//             <ArrowDropDownIcon />
-//           </div>
-//           <span className="color-white mx-2 fs-16">Choose your profile</span>
-//         </IconButton>
-//       </Box>
-//       <Menu
-//         anchorEl={anchorEl}
-//         id="user-menu"
-//         open={open}
-//         onClose={handleClose}
-//         onClick={handleClose}
-//         PaperProps={{
-//           elevation: 0,
-//           sx: {
-//             overflow: "visible",
-//             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-//             mt: 1.5,
-//             "& .MuiAvatar-root": {
-//               width: 32,
-//               height: 32,
-//               ml: -0.5,
-//               mr: 1,
-//             },
-//             "&:before": {
-//               content: '""',
-//               display: "block",
-//               position: "absolute",
-//               top: 0,
-//               left: 14,
-//               width: 10,
-//               height: 10,
-//               bgcolor: "background.paper",
-//               transform: "translateY(-50%) rotate(45deg)",
-//               zIndex: 0,
-//             },
-//           },
-//         }}
-//         transformOrigin={{ horizontal: "left", vertical: "top" }}
-//         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-//       >
-//         {options.map((item, index) => {
-//           return (
-//             <MenuItem
-//               key={item}
-//               // disabled={index === 0}
-//               selected={index === selectedIndex}
-//               onClick={() => handleMenuItemClick(index)}
-//             >
-//               {item}
-//             </MenuItem>
-//           );
-//         })}
-//       </Menu>
-//     </div>
-//   );
-// };
-
 const Login = () => {
   // const [selectedIndex, setSelectedIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
@@ -224,6 +137,7 @@ const Login = () => {
                 lastName: staffDetails.lastName,
                 mobileNumber: staffDetails.mobileNumber,
                 staffId: staffDetails.staffId,
+                staffCapabilityList: staffDetails.staffCapabilityList,
               },
               storeName: data.supplierStoreInfo.supplierStoreName,
             };

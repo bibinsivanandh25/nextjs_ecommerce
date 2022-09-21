@@ -48,10 +48,10 @@ const sendMarketingToolNotification = (payload) => {
     .catch((err) => ({ err }));
 };
 const getAllNotificationWithFilters = (supplierId, pageNumber, payload) => {
-  const pageSize = 50;
+  const pageSize = 21;
   return serviceUtil
     .post(
-      `notification/marketing-tool-notification/${pageNumber}/${pageSize}/${supplierId}?keyword=`,
+      `notification/marketing-tool-notification/${pageNumber}/${pageSize}/${supplierId}`,
       payload
     )
     .then((res) => {

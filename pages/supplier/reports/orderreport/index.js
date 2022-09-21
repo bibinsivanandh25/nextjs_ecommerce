@@ -1,9 +1,185 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-destructuring */
 import ReportLayout from "components/forms/supplier/report";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import {
+  getOrderChartData,
+  getOrderReportCardData,
+  getSummaryTableData,
+} from "services/supplier/reports/orderreport";
 
+const cardDetails = [
+  {
+    title: "totalOrders",
+    label: "Total Orders",
+    value: 0,
+    background: "#e98129",
+  },
+  {
+    title: "ordersCompleted",
+    label: "Orders Completed",
+    value: 0,
+    background: "#76c44e",
+  },
+  {
+    title: "ordersCancelled",
+    label: "Orders Cancelled",
+    value: 0,
+    background: "#f13e22",
+  },
+  {
+    title: "ordersPending",
+    label: "Orders Pending",
+    value: 0,
+    background: "#83b2f1",
+  },
+];
 const OrderReport = () => {
+  const user = useSelector((state) => state.user);
+  const [cardData, setCardData] = useState([]);
+  // Bar chart
+  const [monthBarChart, setMonthBarChart] = useState([]);
+  const [currentYear, setCurrentYear] = useState({
+    value: new Date().getFullYear().toString(),
+    label: new Date().getFullYear().toString(),
+  });
+  // Doughnut chart
+  const [monthDoughnutChart, setMonthDoughnutChart] = useState([]);
+  const [doughnutCurrentYear, setDoughnutCurrentYear] = useState({
+    value: new Date().getFullYear().toString(),
+    label: new Date().getFullYear().toString(),
+  });
+  // first table
+  const [monthTable, setMonthTable] = useState([]);
+  const [monthCurrentYear, setMonthCurrentYear] = useState({
+    value: new Date().getFullYear().toString(),
+    label: new Date().getFullYear().toString(),
+  });
+  const [summaryTableData, setSummaryTableData] = useState([]);
+  const [summaryYear, setSummaryYear] = useState({
+    value: new Date().getFullYear().toString(),
+    label: new Date().getFullYear().toString(),
+  });
+  const [summaryStatus, setSummaryStatus] = useState({
+    value: "COMPLETED",
+    label: "COMPLETED",
+  });
+  const getCardData = async () => {
+    const { data } = await getOrderReportCardData(user.supplierId);
+    if (data) {
+      cardDetails.forEach((item) => {
+        Object.entries(data).forEach((val) => {
+          if (item.title === val[0]) {
+            item.value = val[1];
+          }
+        });
+      });
+      setCardData(cardDetails);
+    } else {
+      setCardData(cardDetails);
+    }
+  };
+  // Bar Chart
+  const getChartData = async (year) => {
+    const { data } = await getOrderChartData(user.supplierId, year);
+    if (data) {
+      setMonthBarChart(data);
+    } else {
+      setMonthBarChart([]);
+    }
+  };
+  useEffect(() => {
+    getChartData(currentYear.value);
+  }, [currentYear.value]);
+  // doughnutchart
+  const getDoughnutChartData = async (year) => {
+    const { data } = await getOrderChartData(user.supplierId, year);
+    if (data) {
+      setMonthDoughnutChart(data);
+    } else {
+      setMonthDoughnutChart([]);
+    }
+  };
+  useEffect(() => {
+    getDoughnutChartData(doughnutCurrentYear.value);
+  }, [doughnutCurrentYear.value]);
+  // first Table
+  const getMonthTableData = async (year) => {
+    const { data } = await getOrderChartData(user.supplierId, year);
+    if (data) {
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      const temp = [];
+      monthNames.forEach((item, index) => {
+        data.forEach((value, ind) => {
+          if (index === ind) {
+            temp.push({
+              id: index + 1,
+              col1: item,
+              col2: value,
+            });
+          }
+        });
+      });
+      setMonthTable(temp);
+    } else {
+      setMonthTable([]);
+    }
+  };
+  const getTableRows = (data) => {
+    const result = [];
+    if (data) {
+      data.forEach((item) => {
+        result.push({
+          id: item.orderId,
+          col1: item.orderId,
+          col2: item.productName,
+          col3: item.customerName,
+          col4: item.orderDate,
+          col5: item.orderAmount,
+          col6: item.orderStatus,
+        });
+      });
+    }
+    return result;
+  };
+  const getSummaryTable = async (year, page, status) => {
+    const { data } = await getSummaryTableData(
+      user.supplierId,
+      year,
+      page,
+      status.toUpperCase()
+    );
+    if (data) {
+      setSummaryTableData(getTableRows(data));
+    }
+  };
+  useEffect(() => {
+    getSummaryTable(summaryYear.value, 0, summaryStatus.value);
+  }, [summaryYear.value, summaryStatus.value]);
+  useEffect(() => {
+    getMonthTableData(monthCurrentYear.value);
+  }, [monthCurrentYear.value]);
+  useEffect(() => {
+    getCardData();
+  }, []);
   return (
     <>
       <ReportLayout
+        barChartDataSet="Orders"
         barGraphLabels={[
           "Jan",
           "Feb",
@@ -18,9 +194,7 @@ const OrderReport = () => {
           "Nov",
           "Dec",
         ]}
-        barGraphData={[
-          1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
-        ]}
+        barGraphData={monthBarChart}
         doughnutLabels={[
           "Jan",
           "Feb",
@@ -35,63 +209,72 @@ const OrderReport = () => {
           "Nov",
           "Dec",
         ]}
-        doughnutData={[
-          1000, 3000, 5000, 4000, 6000, 7000, 3000, 8000, 9000, 10000, 200,
-        ]}
+        doughnutData={monthDoughnutChart}
         detailSelectList={[
           {
-            id: 1,
             value: 2021,
             label: 2021,
           },
           {
-            id: 2,
             value: 2022,
             label: 2022,
           },
           {
-            id: 3,
             value: 2023,
             label: 2023,
           },
         ]}
         detailMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
+        handleMonthTableYear={(e) => {
+          setMonthCurrentYear({
+            value: e.target.value,
+            label: e.target.value,
+          });
+        }}
+        monthCurrentYear={monthCurrentYear}
         summarySelectList={[
           {
-            id: 1,
             value: 2021,
             label: 2021,
           },
           {
-            id: 2,
             value: 2022,
             label: 2022,
           },
           {
-            id: 3,
             value: 2023,
             label: 2023,
           },
         ]}
+        currentYear={currentYear}
+        handleMonthOrderYear={(e) => {
+          setCurrentYear({
+            value: e.target.value,
+            label: e.target.value,
+          });
+        }}
+        doughnutCurrentYear={doughnutCurrentYear}
+        handleMonthDoghnutOrderYear={(e) => {
+          setDoughnutCurrentYear({
+            value: e.target.value,
+            label: e.target.value,
+          });
+        }}
         summaryMenuList={["Sort By Price", "Sort By Date", "Download"]}
         summaryStatusList={[
           {
-            id: 1,
             value: "completed",
             label: "completed",
           },
           {
-            id: 2,
             value: "pending",
             label: "pending",
           },
           {
-            id: 3,
             value: "refunded",
             label: "refunded",
           },
           {
-            id: 4,
             value: "cancelled",
             label: "cancelled",
           },
@@ -114,18 +297,21 @@ const OrderReport = () => {
             data_classname: "",
           },
         ]}
-        Detailrows={[
-          {
-            id: "1",
-            col1: "1 Jan 2021",
-            col2: 33333,
-          },
-          {
-            id: "2",
-            col1: "2 Feb 2022",
-            col2: 22222,
-          },
-        ]}
+        Detailrows={[...monthTable]}
+        summaryYear={summaryYear}
+        handleSummaryYear={(e) => {
+          setSummaryYear({
+            value: e.target.value,
+            label: e.target.value,
+          });
+        }}
+        summaryStatus={summaryStatus}
+        handleSummaryStatus={(e) => {
+          setSummaryStatus({
+            value: e.target.value,
+            label: e.target.value,
+          });
+        }}
         summaryColumns={[
           {
             id: "col1",
@@ -176,48 +362,8 @@ const OrderReport = () => {
             data_classname: "",
           },
         ]}
-        summaryRows={[
-          {
-            id: "1",
-            col1: "#897656",
-            col2: "Green Sport Shoes",
-            col3: "Martin Hughes",
-            col4: "4 Jul 2020",
-            col5: "4,200.00",
-            col6: "Completed",
-          },
-          {
-            id: "2",
-            col1: "#897656",
-            col2: "Green Sport Shoes",
-            col3: "Martin Hughes",
-            col4: "4 Jul 2020",
-            col5: "4,200.00",
-            col6: "Completed",
-          },
-        ]}
-        cardDetails={[
-          {
-            label: "Total Orders",
-            value: "5,23,390",
-            background: "#e98129",
-          },
-          {
-            label: "Orders Completed",
-            value: "4,23,300",
-            background: "#76c44e",
-          },
-          {
-            label: "Orders Cancelled",
-            value: " 2000",
-            background: "#f13e22",
-          },
-          {
-            label: "Orders Pending",
-            value: "12,40,000",
-            background: "#83b2f1",
-          },
-        ]}
+        summaryRows={[...summaryTableData]}
+        cardDetails={[...cardData]}
         barGraphHoverBackgroundColor="#4f98b5"
         barGraphBackgroundColor="#1f78b4"
         cardLabel="Month Wise Orders"

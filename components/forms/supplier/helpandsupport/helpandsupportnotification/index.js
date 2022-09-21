@@ -59,7 +59,7 @@ const HelpAndSupportNotification = ({
             </Grid>
             <Grid item xs={9}>
               <div
-                className=""
+                className="text-break"
                 dangerouslySetInnerHTML={{
                   __html: selectedData.helpSupportMessages[0].message,
                 }}

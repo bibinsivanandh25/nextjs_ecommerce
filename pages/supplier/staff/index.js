@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 import { Box, Paper } from "@mui/material";
@@ -63,10 +64,11 @@ const Staff = () => {
     const { data, err, message } = await deleteStaff(staffId);
     if (data) {
       toastify(message, "success");
-      const temp = rows.filter((item) => {
-        if (item.col1 !== staffId) return item;
-      });
-      setRows(temp);
+      // const temp = rows.filter((item) => {
+      //   if (item.col1 !== staffId) return item;
+      // });
+      // setRows(temp);
+      getData();
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }

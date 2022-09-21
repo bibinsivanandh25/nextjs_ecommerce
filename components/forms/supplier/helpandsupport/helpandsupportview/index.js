@@ -43,14 +43,18 @@ const HelpandsupportView = ({
   };
 
   const validateForm = () => {
+    let errorText = true;
     if (formValue.replace(/<[^>]*>/g, "").length === 0) {
+      errorText = false;
       setError(validateMessage.field_required);
     } else if (formValue.replace(/<[^>]*>/g, "").length > 1000) {
+      errorText = false;
       setError(validateMessage.alpha_numeric_max_1000);
     } else {
+      errorText = true;
       setError(null);
     }
-    return Boolean(error);
+    return errorText;
   };
   const handleFileUpload = async () => {
     if (selectedFile.length) {
@@ -80,7 +84,7 @@ const HelpandsupportView = ({
   };
 
   const handleCreateBtnClick = async () => {
-    if (!validateForm()) {
+    if (validateForm()) {
       const { datas } = await handleFileUpload();
       const media = [];
       datas?.forEach((item) => {
@@ -136,7 +140,7 @@ const HelpandsupportView = ({
         <p className="mx-3 my-2 d-flex">
           <span>Reply</span> :{" "}
           <div
-            className="fw-bold"
+            className="fw-bold text-break"
             dangerouslySetInnerHTML={{
               __html: selectedData.helpSupportMessages[0].message,
             }}
