@@ -226,7 +226,7 @@ const ReportLayout = ({
         </Grid>
         <Grid container spacing={3} className="mt-2">
           <Grid item sm={12} md={6}>
-            <Paper sx={{ borderRadius: 4 }}>
+            <Paper className="rounded h-100">
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -250,7 +250,7 @@ const ReportLayout = ({
             </Paper>
           </Grid>
           <Grid item md={6} sm={12}>
-            <Paper className="h-100" sx={{ borderRadius: 4 }}>
+            <Paper className="h-100 rounded">
               <Box
                 display="flex"
                 justifyContent="space-between"
@@ -272,7 +272,7 @@ const ReportLayout = ({
         </Grid>
         <Grid container spacing={3} className="mt-2">
           <Grid item md={4.3} sm={12}>
-            <Paper sx={{ borderRadius: 4 }}>
+            <Paper className="rounded h-100">
               <Grid className="d-flex align-items-center ">
                 <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel1}</Grid>
                 <Grid className="ms-auto " mt={2}>
@@ -305,7 +305,7 @@ const ReportLayout = ({
             </Paper>
           </Grid>
           <Grid item md={7.7} sm={12}>
-            <Paper sx={{ borderRadius: 4 }}>
+            <Paper className="rounded h-100">
               <Grid className="d-flex align-items-center justify-content-between">
                 <Grid className="fs-12 fw-bold px-2 mt-3">{tableLabel2}</Grid>
                 <Grid className="d-flex justify-content-between align-items-center">
@@ -349,7 +349,7 @@ const ReportLayout = ({
         {showCurrentDateTable ? (
           <Grid container spacing={3} className="mt-2">
             <Grid item xs={4}>
-              <Paper sx={{ borderRadius: 4 }}>
+              <Paper className="h-100 rounded">
                 <Grid className="d-flex align-items-center ">
                   <Grid className="fs-12 fw-bold px-2 mt-3">
                     {dateTableTitle}
@@ -377,7 +377,7 @@ const ReportLayout = ({
               </Paper>
             </Grid>
             <Grid item xs={8}>
-              <Paper sx={{ borderRadius: 4 }}>
+              <Paper className="h-100 rounded">
                 <Grid className="d-flex align-items-center justify-content-between">
                   <Grid className="fs-12 fw-bold px-2 mt-3">
                     {dateSummaryTitle}
