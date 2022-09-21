@@ -24,8 +24,10 @@ const DropDownWithAddNewOptions = ({
       return (
         <Box
           onClick={() => {
-            setSelectedOption(val);
-            if (inputLabelShrink) setshowOptions(false);
+            if (inputLabelShrink) {
+              setSelectedOption(val);
+              setshowOptions();
+            }
           }}
           className="ps-3 py-2 d-flex align-items-center cursor-pointer  border-bottom border-1"
         >
@@ -48,7 +50,7 @@ const DropDownWithAddNewOptions = ({
           sx={{ height: "40px" }}
           className="border w-100 rounded bg-white position-relative cursor-pointer"
           onClick={() => {
-            setshowOptions(!showOptions);
+            setshowOptions();
           }}
         >
           {inputLabelShrink && (
@@ -65,6 +67,21 @@ const DropDownWithAddNewOptions = ({
               >
                 {selectedOption}
               </Typography>
+              {selectedOption !== "" && (
+                <Box
+                  sx={{ left: "88%", top: "3px" }}
+                  className="position-absolute"
+                  onClick={() => {
+                    setSelectedOption("");
+                  }}
+                >
+                  <CustomIcon
+                    type="close"
+                    className="h-5"
+                    showColorOnHover={false}
+                  />
+                </Box>
+              )}
             </Box>
           )}
           {!inputLabelShrink && (

@@ -14,6 +14,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
+import { TbMessageCircle2 } from "react-icons/tb";
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -44,6 +45,12 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MessageIcon from "@mui/icons-material/Message";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import LockIcon from "@mui/icons-material/Lock";
+import BlockIcon from "@mui/icons-material/Block";
 
 const CustomIcon = ({
   title = "",
@@ -60,6 +67,8 @@ const CustomIcon = ({
 }) => {
   const Map = {
     send: SendIcon,
+    sendMessage: TbMessageCircle2,
+    dot: FiberManualRecordIcon,
     flag: FlagIcon,
     view: VisibilityIcon,
     arrowforward: ArrowForwardIosIcon,
@@ -81,6 +90,7 @@ const CustomIcon = ({
     gridview: GridViewIcon,
     tablerows: TableRowsIcon,
     reply: Reply,
+    lock: LockIcon,
     lineArrowIcon: ArrowForwardIcon,
     favoriteBorderIcon: FavoriteBorderIcon,
     viewCarouselIcon: ViewCarouselIcon,
@@ -106,6 +116,10 @@ const CustomIcon = ({
     addNote: NoteAddIcon,
     arrowUpward: ArrowUpwardIcon,
     expandMore: ExpandMoreIcon,
+    arrowDropIcon: ArrowDropDownIcon,
+    calendar: CalendarMonthIcon,
+    message: MessageIcon,
+    block: BlockIcon,
   };
 
   const [hover, setHover] = useState(false);

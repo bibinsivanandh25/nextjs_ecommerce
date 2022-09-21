@@ -55,11 +55,11 @@ const AcceptandConfirmAdress = ({ setshowConfirmAdress = () => {} }) => {
     },
   ]);
   const route = useRouter();
-  const handleEditClick = (ind) => {
-    console.log(pickupDetails[ind].name);
+  const handleEditClick = () => {
+    // console.log(pickupDetails[ind].name);
   };
-  const handleDeleteClick = (ind) => {
-    console.log(pickupDetails[ind].address);
+  const handleDeleteClick = () => {
+    // console.log(pickupDetails[ind].address);
   };
   const getPickUpAdress = () => {
     return pickupDetails.map((ele, index) => {

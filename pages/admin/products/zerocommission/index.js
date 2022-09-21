@@ -12,7 +12,7 @@ import Queries from "@/forms/admin/products/zerocomission/Queries";
 import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
 import Updated from "@/forms/admin/products/zerocomission/Updated";
 
-const FixedMargin = () => {
+const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Products to approve", isSelected: true },
@@ -24,14 +24,16 @@ const FixedMargin = () => {
 
   const callApi = (type, payload) => {
     // eslint-disable-next-line consistent-return
-    return getAdminProductsByFilter(payload).then((res) => {
-      if (!res.error) {
+    return getAdminProductsByFilter(payload)
+      .then((res) => {
         return { [`${type}`]: res.data };
-      }
-    });
+      })
+      .catch(() => {
+        return null;
+      });
   };
 
-  const getTableData = async () => {
+  const getCount = async () => {
     const status = ["INITIATED", "APPROVED", "REJECTED"];
     const promiseArr = [];
     status.forEach((ele) => {
@@ -80,9 +82,9 @@ const FixedMargin = () => {
     });
 
     const temp = await Promise.all(promiseArr);
-    console.log(temp, "asd");
     const tabs = JSON.parse(JSON.stringify(tabList));
     temp.forEach((item) => {
+      if (!item) return;
       if (Object.keys(item)[0] === "INITIATED") {
         tabs.map((element) => {
           if (element.label === "Products to approve")
@@ -117,12 +119,11 @@ const FixedMargin = () => {
         });
       }
     });
-    console.log(tabs, "tabs");
     setTabList([...tabs]);
   };
 
   useEffect(() => {
-    getTableData();
+    getCount();
     // setTabList([...temp]);
   }, []);
 
@@ -145,7 +146,6 @@ const FixedMargin = () => {
 
   return (
     <>
-      {" "}
       <Box>
         <TabsCard
           tabList={tabList}
@@ -154,15 +154,15 @@ const FixedMargin = () => {
           }}
         >
           <Box className="px-1 pt-2">
-            {activeTab === 0 && <ProductsToApprove />}
+            {activeTab === 0 && <ProductsToApprove getCount={getCount} />}
 
-            {activeTab === 4 && <Rejected />}
+            {activeTab === 4 && <Rejected getCount={getCount} />}
 
-            {activeTab === 1 && <Queries />}
+            {activeTab === 1 && <Queries getCount={getCount} />}
 
-            {activeTab === 2 && <Active />}
+            {activeTab === 2 && <Active getCount={getCount} />}
 
-            {activeTab === 3 && <Updated />}
+            {activeTab === 3 && <Updated getCount={getCount} />}
           </Box>
         </TabsCard>
       </Box>
@@ -170,4 +170,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default ZeroCommission;

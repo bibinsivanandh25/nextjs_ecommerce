@@ -13,16 +13,16 @@ const post = (url, reqObj, args) => {
   return axiosInstance.post(url, reqObj, args);
 };
 
-const put = (url, reqObj) => {
-  return axiosInstance.put(url, reqObj);
+const put = (url, reqObj, args) => {
+  return axiosInstance.put(url, reqObj, args);
 };
 
 const remove = (url, id) => {
   return axiosInstance.delete(`${url}/${id}`);
 };
 
-const deleteById = (url, id) => {
-  return axiosInstance.get(`${url}/${id}`);
+const deleteById = (url) => {
+  return axiosInstance.delete(`${url}`);
 };
 
 const deleteAll = (url, reqObj) => {

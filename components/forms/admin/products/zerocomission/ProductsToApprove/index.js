@@ -4,17 +4,17 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
-import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-import AcceptRejectModal from "./AcceptRejectModal";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import ViewProducts from "./ViewProducts";
+import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
-import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
-const ProductsToApprove = () => {
+const ProductsToApprove = ({ getCount = () => {} }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -45,7 +45,6 @@ const ProductsToApprove = () => {
 
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
-    console.log(val, "asds");
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
     }
@@ -127,7 +126,7 @@ const ProductsToApprove = () => {
               </Typography>
             </>
           ),
-          col2: (
+          col2: val.variationMedia ? (
             <Box className="d-flex align-items-end justify-content-center">
               <Box
                 onClick={() => {
@@ -149,7 +148,7 @@ const ProductsToApprove = () => {
                 /{val.variationMedia.length}
               </Typography>
             </Box>
-          ),
+          ) : null,
           col3: val.productTitle,
           col4: val.skuId,
           col5: (
@@ -193,7 +192,7 @@ const ProductsToApprove = () => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -214,7 +213,7 @@ const ProductsToApprove = () => {
                 <TableComponent
                   columns={columns}
                   tHeadBgColor="bg-light-gray"
-                  showPagination={false}
+                  showPagination
                   tableRows={tableRows}
                   // showSearchbar={false}
                   showDateFilterBtn
@@ -270,6 +269,7 @@ const ProductsToApprove = () => {
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}

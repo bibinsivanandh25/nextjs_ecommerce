@@ -1,8 +1,10 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ShareIcon from "@mui/icons-material/Share";
 import Image from "next/image";
-import { assetsJson } from "public/assets";
+
+import { getReferredSupplier } from "services/supplier/refferedsupplier";
+import toastify from "services/utils/toastUtils";
 import TableComponent from "@/atoms/TableComponent";
 
 const column = [
@@ -47,21 +49,62 @@ const column = [
     data_classname: "",
   },
 ];
-const rows = [
-  {
-    id: "1",
-    col1: "12154235",
-    col2: (
-      <Paper elevation={4} sx={{ width: "fit-content" }} className="mx-auto">
-        <Image width={40} height={40} src={assetsJson.person} alt="alt" />
-      </Paper>
-    ),
-    col3: <div className="w-100">Balu</div>,
-    col4: "Sharan Jewelry",
-    col5: "500",
-  },
-];
+// const rows = [
+//   {
+//     id: "1",
+//     col1: "12154235",
+//     col2: (
+//       <Paper elevation={4} sx={{ width: "fit-content" }} className="mx-auto">
+//         <Image width={40} height={40} src={assetsJson.person} alt="alt" />
+//       </Paper>
+//     ),
+//     col3: <div className="w-100">Balu</div>,
+//     col4: "Sharan Jewelry",
+//     col5: "500",
+//   },
+// ];
 const ReferredSupplier = () => {
+  const [rows, setRows] = useState([]);
+  const [referralCode, setReferralCode] = useState("");
+
+  const getTableRows = async () => {
+    const { data } = await getReferredSupplier("SP0822000002");
+    const tableRows = [];
+    if (data) {
+      setReferralCode(data.supplierReferralCode);
+      data.list.forEach((val) => {
+        tableRows.push({
+          id: val.supplierId,
+          col1: val.supplierId,
+          col2: (
+            <Paper
+              elevation={4}
+              sx={{ width: "fit-content" }}
+              className="mx-auto"
+            >
+              <Image
+                width={40}
+                height={40}
+                src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+                alt="alt"
+              />
+            </Paper>
+          ),
+          col3: (
+            <div className="w-100">{`${val.firstName} ${val.lastName}`}</div>
+          ),
+          col4: val.supplierStoreName,
+          col5: val.signupFreeOrderCount,
+        });
+      });
+      setRows([...tableRows]);
+    }
+  };
+
+  useEffect(() => {
+    getTableRows();
+  }, []);
+
   return (
     <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar">
       <Box className="w-100">
@@ -76,7 +119,13 @@ const ReferredSupplier = () => {
                   Share Your Referral Code: You Get Next 50 Order Free Of
                   Commission Once Your Referee Register With Your Referal Code
                 </Typography>
-                <ShareIcon className="cursor-pointer mx-2" />
+                <ShareIcon
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralCode);
+                    toastify("Referral ID Copied To The Clip Board", "success");
+                  }}
+                  className="cursor-pointer mx-2"
+                />
               </Box>
             </Box>
             <Grid className="my-3" container>

@@ -125,7 +125,7 @@ const NewAddress = ({
   };
   const handleSaveClick = () => {
     const errorData = handleError();
-    console.log(errorData);
+    // console.log(errorData);
     setError(errorData);
   };
   return (

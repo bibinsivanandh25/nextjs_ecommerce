@@ -89,23 +89,24 @@ const TransactionFailed = ({ setShowTransactionFailed }) => {
       col1: 1,
       col2: "15/10/2021",
       col3: "#7346583",
-      col4: "Zero Commission",
-      col5: 450,
-      col6: "#7346583",
-      col7: "450",
-      col8: 122,
-      col9: "Successful",
-      col10: "Invalid Banking details",
-      col11: "Action",
+      col4: "0.550gm/0.620gm",
+      col5: "Forward",
+      col6: "air",
+      col7: 132,
+      col8: "Delivery",
+      col9: "--",
+      col10: "Successful",
+      col11: "Invalid Account no",
+      col12: "Actions",
     },
   ];
 
   const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") {
+    if (ele === "Resend") {
       setOpenAddNoteModal(true);
     }
   };
-  const options = ["Notify", "Add Note"];
+  const options = ["Notify", "Resend"];
 
   const getTableRows = () => {
     const anArray = [];
@@ -122,7 +123,8 @@ const TransactionFailed = ({ setShowTransactionFailed }) => {
         col8: val.col8,
         col9: val.col9,
         col10: val.col10,
-        col11: (
+        col11: val.col11,
+        col12: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
               type="view"
@@ -131,8 +133,8 @@ const TransactionFailed = ({ setShowTransactionFailed }) => {
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                console.log("Index", index);
-                console.log("ele ", typeof ele);
+                // console.log("Index", index);
+                // console.log("ele ", typeof ele);
                 onClickOfMenuItem(ele, index);
               }}
               options={options}
@@ -168,7 +170,7 @@ const TransactionFailed = ({ setShowTransactionFailed }) => {
               columns={tableColums}
               tableRows={tableRows}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               showSearchFilter={false}
               showSearchbar={false}
               showCheckbox={false}

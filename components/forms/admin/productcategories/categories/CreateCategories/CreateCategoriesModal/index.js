@@ -128,9 +128,9 @@ const CreateCategoriesModal = ({
   };
 
   const handleSaveBtnClick = () => {
-    const [theError, errObj] = handleError();
+    const [errObj] = handleError();
     setError(errObj);
-    console.log(theError);
+    // console.log(theError);
   };
 
   return (

@@ -118,8 +118,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -140,8 +140,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -162,8 +162,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -184,8 +184,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -206,8 +206,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -228,8 +228,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -250,8 +250,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -272,8 +272,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -294,8 +294,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -316,8 +316,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -338,8 +338,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -360,8 +360,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -382,8 +382,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -404,8 +404,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -426,8 +426,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -448,8 +448,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -470,8 +470,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -492,8 +492,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>
@@ -514,8 +514,8 @@ const OrderSummary = () => {
           <MenuOption
             options={["Notify", "Add Comment"]}
             IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              console.log(ele, "ele");
+            getSelectedItem={() => {
+              // console.log(ele, "ele");
             }}
           />
         </div>

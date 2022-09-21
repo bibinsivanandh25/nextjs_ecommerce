@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
-import CreateQuiz from "./CreateQuiz";
+import CreateQuiz from "./createquiz";
 import ScratchCardForm from "./createScratchCard";
 import SpinWheelForm from "./createSpinWheel";
 import ProductModal from "./ProductModal";
@@ -177,10 +177,9 @@ const GenericForm = ({ setShowGenericForm = () => {}, pageName = "" }) => {
     return flag;
   };
   const handleSubmit = () => {
-    console.log(validate());
-    if (formRef.current) {
-      console.log(formRef.current.handleSendFormData());
-    }
+    validate();
+    // if (formRef.current) {
+    // }
   };
 
   return (

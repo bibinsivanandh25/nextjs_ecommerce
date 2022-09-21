@@ -1,11 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const RegistrationForm = ({
@@ -16,8 +16,8 @@ const RegistrationForm = ({
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
   const getMainCategories = async () => {
-    const { data, err } = await axios.get(
-      `${process.env.DOMAIN}products/main-category/drop-down-list`
+    const { data } = await serviceUtil.get(
+      `products/main-category/drop-down-list`
     );
     if (data) {
       const result = [];
@@ -29,14 +29,11 @@ const RegistrationForm = ({
         });
       });
       setMainCategories([...result]);
-    } else if (err) {
-      console.log(err);
     }
   };
   useEffect(() => {
     getMainCategories();
   }, []);
-  console.log(formValues);
 
   return (
     <div className="w-70p  d-flex justify-content-center">
@@ -52,17 +49,22 @@ const RegistrationForm = ({
               onInputChange={(e) => {
                 setFormValues((prev) => ({
                   ...prev,
-                  referralCode: e.target.value,
+                  referralCode: e.target.value.replace(/\s\s+/g, " "),
                 }));
               }}
               inputlabelshrink
-              helperText="Register with referral code & get extra 50 orders free from commission"
+
               // error={errorObj.firstName !== ""}
             />
+            <Typography className="h-5 text-primary ps-2">
+              Register with referral code & get extra 50 orders free from
+              commission
+            </Typography>
           </Grid>
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter First Name"
             value={formValues.firstName}
             label="First Name"
@@ -71,7 +73,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                firstName: e.target.value,
+                firstName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
@@ -81,6 +83,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter Last Name"
             value={formValues.lastName}
             label="Last Name"
@@ -89,7 +92,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                lastName: e.target.value,
+                lastName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
@@ -99,6 +102,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Business Name"
             value={formValues.businessName}
             label="Business Name"
@@ -107,7 +111,7 @@ const RegistrationForm = ({
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
-                businessName: e.target.value,
+                businessName: e.target.value.replace(/\s\s+/g, " "),
               }));
             }}
             inputlabelshrink
@@ -117,6 +121,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your E-mail ID"
             value={formValues.mail}
             label="E-mail ID"
@@ -135,6 +140,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your Mobile Number"
             value={formValues.mobile}
             label="Mobile Number"
@@ -158,12 +164,15 @@ const RegistrationForm = ({
               { label: "Mysore", value: "Mysore", id: 3 },
             ]}
             label="Choose City"
+            required
+            placeholder="Choose City"
             onDropdownSelect={(value) => {
               setFormValues((prev) => ({
                 ...prev,
                 city: value,
               }));
             }}
+            inputlabelshrink
             value={formValues.city}
             size="small"
             helperText={errorObj.city}
@@ -184,6 +193,7 @@ const RegistrationForm = ({
             }}
           /> */}
           <MultiSelectComponent
+            required
             list={[...mainCategories]}
             label="Select Main Category"
             onSelectionChange={(e, val) => {
@@ -195,10 +205,13 @@ const RegistrationForm = ({
             value={formValues.mainCat}
             size="small"
             helperText={errorObj.mainCat}
+            error={errorObj.mainCat.length}
+            placeholder="Select Main Category"
           />
         </Grid>
         <Grid item md={6} sm={12}>
           <InputBox
+            required
             placeholder="Enter your GSTIN"
             value={formValues.gstin}
             label="GSTIN"
@@ -277,11 +290,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Amazon"
-                isChecked={formValues.site === "Amazon"}
+                isChecked={formValues.site.includes("Amazon")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Amazon",
+                    site: prev.site.includes("Amazon")
+                      ? prev.site.filter((item) => item !== "Amazon")
+                      : [...prev.site, "Amazon"],
                   }));
                 }}
                 size="medium"
@@ -290,11 +305,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Flipkart"
-                isChecked={formValues.site === "Flipkart"}
+                isChecked={formValues.site.includes("Flipkart")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Flipkart",
+                    site: prev.site.includes("Flipkart")
+                      ? prev.site.filter((item) => item !== "Flipkart")
+                      : [...prev.site, "Flipkart"],
                   }));
                 }}
                 size="medium"
@@ -303,11 +320,13 @@ const RegistrationForm = ({
             <Grid item md={12}>
               <CheckBoxComponent
                 label="Others"
-                isChecked={formValues.site === "Others"}
+                isChecked={formValues.site.includes("Others")}
                 checkBoxClick={() => {
                   setFormValues((prev) => ({
                     ...prev,
-                    site: "Others",
+                    site: prev.site.includes("Others")
+                      ? prev.site.filter((item) => item !== "Others")
+                      : [...prev.site, "Others"],
                   }));
                 }}
                 size="medium"
@@ -336,9 +355,9 @@ const RegistrationForm = ({
                   }));
                 }}
                 variant="standard"
-                InputProps={{
-                  style: { fontSize: "12px" },
-                }}
+                // InputProps={{
+                //   style: { fontSize: "14px" },
+                // }}
                 inputlabelshrink
                 helperText={errorObj.siteLink}
                 error={errorObj.siteLink !== ""}

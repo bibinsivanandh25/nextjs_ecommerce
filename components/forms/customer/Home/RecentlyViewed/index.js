@@ -1,11 +1,11 @@
 import { Box, Grid, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import SimilarProducts from "../../searchedproduct/SimilarProduct";
+import serviceUtil from "services/utils";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 import ProductCard from "../PopularDepartments/ProductCard";
 
@@ -52,13 +52,13 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
   };
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   useEffect(() => {

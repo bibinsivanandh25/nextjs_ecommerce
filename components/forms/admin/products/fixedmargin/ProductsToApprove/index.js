@@ -4,15 +4,15 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
-import ViewProducts from "./ViewProducts";
 import MenuOption from "@/atoms/MenuOptions";
-import AcceptRejectModal from "./AcceptRejectModal";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import ViewProducts from "./ViewProducts";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
-import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import AcceptRejectModal from "./AcceptRejectmodal";
 
 const ProductsToApprove = () => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -192,7 +192,7 @@ const ProductsToApprove = () => {
       setTableRows([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -213,7 +213,7 @@ const ProductsToApprove = () => {
                 <TableComponent
                   columns={columns}
                   tHeadBgColor="bg-light-gray"
-                  showPagination={false}
+                  // showPagination={false}
                   tableRows={tableRows}
                   // showSearchbar={false}
                   showDateFilterBtn

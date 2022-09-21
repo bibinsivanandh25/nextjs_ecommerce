@@ -1,9 +1,31 @@
 import { Grid, Typography } from "@mui/material";
-import ImageCard from "components/atoms/ImageCard";
 import ModalComponent from "components/atoms/ModalComponent";
-import { assetsJson } from "public/assets";
+import Image from "next/image";
 
-const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
+const ViewModal = ({
+  showViewModal = false,
+  setShowViewModal = () => {},
+  dataForViewModal,
+  tabType = "tab1",
+  handleOpenReplyModal,
+  handleMenuSelecteItemsForAnswers,
+}) => {
+  const handleSaveBtnClick = () => {
+    if (tabType === "tab1")
+      handleOpenReplyModal(
+        dataForViewModal.customerQId,
+        dataForViewModal.varId
+      );
+    else if (tabType === "tab2")
+      handleMenuSelecteItemsForAnswers(
+        "Edit",
+        dataForViewModal.answer,
+        dataForViewModal.customerQId,
+        dataForViewModal.varId
+      );
+    setShowViewModal(false);
+  };
+
   return (
     <ModalComponent
       open={showViewModal}
@@ -13,8 +35,14 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
       footerClassName="justify-content-start  border-top flex-row-reverse"
       ClearBtnText="Cancel"
       saveBtnClassName="mx-2"
-      saveBtnText="Reply"
+      saveBtnText={tabType === "tab1" ? "Reply" : "Update"}
       onCloseIconClick={() => setShowViewModal(false)}
+      onClearBtnClick={() => {
+        setShowViewModal(false);
+      }}
+      onSaveBtnClick={() => {
+        handleSaveBtnClick();
+      }}
     >
       <Grid className="mb-4">
         <Grid
@@ -28,7 +56,9 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
             <Typography className="h-5">Customer Id :</Typography>
           </Grid>
           <Grid item sm={7}>
-            <Typography className="fw-bold h-5">#23450462 SMK Tex</Typography>
+            <Typography className="fw-bold h-5">
+              {dataForViewModal.customerQId}
+            </Typography>
           </Grid>
         </Grid>
         <Grid
@@ -41,47 +71,14 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
           <Grid item sm={3} textAlign="end">
             <Typography className="h-5">Product Image :</Typography>
           </Grid>
-          <Grid item sm={7} container spacing={0}>
-            <Grid item sm={2}>
-              <ImageCard
-                showClose={false}
-                height={50}
-                width={50}
-                imgSrc={assetsJson["Printed Dress"]}
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <ImageCard
-                showClose={false}
-                height={50}
-                width={50}
-                imgSrc={assetsJson["Printed Dress"]}
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <ImageCard
-                showClose={false}
-                height={50}
-                width={50}
-                imgSrc={assetsJson["Printed Dress"]}
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <ImageCard
-                showClose={false}
-                height={50}
-                width={50}
-                imgSrc={assetsJson["Printed Dress"]}
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <ImageCard
-                showClose={false}
-                height={50}
-                width={50}
-                imgSrc={assetsJson["Printed Dress"]}
-              />
-            </Grid>
+          <Grid item sm={7} container columnSpacing={2}>
+            {dataForViewModal.productImages.map((val) => {
+              return (
+                <Grid item sm={2}>
+                  <Image height={50} width={50} src={val} layout="fixed" />
+                </Grid>
+              );
+            })}
           </Grid>
         </Grid>
         <Grid
@@ -95,7 +92,7 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
             <Typography className="h-5">Question :</Typography>
           </Grid>
           <Grid item sm={7}>
-            <Typography className="h-5">Lorem ipsum deolem dummy</Typography>
+            <Typography className="h-5">{dataForViewModal.question}</Typography>
           </Grid>
         </Grid>
         <Grid
@@ -109,9 +106,27 @@ const ViewModal = ({ showViewModal = false, setShowViewModal = () => {} }) => {
             <Typography className="h-5">Date & Time :</Typography>
           </Grid>
           <Grid item sm={7}>
-            <Typography className="h-5">{Date()}</Typography>
+            <Typography className="h-5">
+              {dataForViewModal.dateAndTime}
+            </Typography>
           </Grid>
         </Grid>
+        {dataForViewModal.answer && (
+          <Grid
+            className="mt-1"
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item sm={3} textAlign="end">
+              <Typography className="h-5">Answer : </Typography>
+            </Grid>
+            <Grid item sm={7}>
+              <Typography className="h-5">{dataForViewModal.answer}</Typography>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     </ModalComponent>
   );

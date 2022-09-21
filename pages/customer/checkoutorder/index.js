@@ -77,8 +77,8 @@ const CheckOutOrder = () => {
       .then((data) => {
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   useEffect(() => {

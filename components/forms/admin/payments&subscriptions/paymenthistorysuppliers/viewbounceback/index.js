@@ -126,8 +126,8 @@ const ViewBounceBack = ({ setshowViewBounceBack }) => {
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                console.log("Index", index);
-                console.log("ele ", typeof ele);
+                // console.log("Index", index);
+                // console.log("ele ", typeof ele);
                 onClickOfMenuItem(ele, index);
               }}
               options={options}
@@ -163,7 +163,7 @@ const ViewBounceBack = ({ setshowViewBounceBack }) => {
               columns={tableColums}
               tableRows={tableRows}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               showSearchFilter={false}
               showSearchbar={false}
               showCheckbox={false}

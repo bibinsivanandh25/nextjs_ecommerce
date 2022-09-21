@@ -64,8 +64,11 @@
   max-height: 100vh;
 }
 
-.mxh-95vh {
+.mxh-90vh {
   max-height: 90vh !important;
+}
+.mnh-90vh {
+  min-height: 90vh !important;
 }
 
 .mnh-80vh {
@@ -357,4 +360,7 @@ height: 19% !important;
 
 .mnh-85vh {
   min-height: 85vh;
+}
+.h-90vh {
+  height: 90vh;
 }

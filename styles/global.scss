@@ -1,11 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+                
 
 .overflow-y-scroll {
   overflow-y: auto;
 }
 
 p,div,span{
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  // font-family: 'Poppins', sans-serif;
+  // font-family: 'Montserrat', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .overflow-x-scroll {
@@ -84,6 +89,12 @@ p,div,span{
 .mxh-80vh {
   max-height: 80vh;
 }
+.mxh-70vh {
+  max-height: 70vh;
+}
+.mxw-70vw {
+  max-width: 70vw;
+}
 
 .zIndex-1 {
   z-index: 1;
@@ -110,7 +121,7 @@ p,div,span{
   align-items: center;
   width: 100% !important;
   height: 100% !important;
-  z-index: 1101;
+  z-index: 1401;
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
@@ -304,11 +315,23 @@ opacity: 0.8;
   height: auto;
   border: 1px solid #d9d9d9;
 }
-.textArea::placeholder{
-  color: rgba(0, 0, 0, 0.4);
-}
+
 textarea::placeholder {
-  color: #A2A2A2;
-  font-size: 18px;
-  font-family: inherit;  
+  color: #a2a2a2;
+  font-weight: 400;
+  font-size: 16px;
+  // font-family: inherit;  
+}
+
+.zIndex-100 {
+  z-index: 100 !important;
+}
+div, p, span {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }

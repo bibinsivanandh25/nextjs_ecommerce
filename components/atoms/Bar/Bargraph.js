@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-return */
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import { useEffect, useRef, useState } from "react";
 import ChartDataLabels from "chartjs-plugin-datalabels";
@@ -34,20 +35,22 @@ const Bargraph = ({
   showXaxisTicks = true,
   showGridY = true,
   borderRadius = 0,
+  label = "Dataset",
 }) => {
   const [datasets, setDatasets] = useState([]);
   const chartRef = useRef();
   const onClick = (event) => {
     const element = getElementAtEvent(chartRef.current, event);
     if (!element.length) return;
-    const { datasetIndex, index } = element[0];
-    console.log(datasets[datasetIndex].data[index]);
-    console.log(labels[index]);
+    // const { datasetIndex, index } = element[0];
+    // console.log(datasets[datasetIndex].data[index]);
+    // console.log(labels[index]);
   };
 
   useEffect(() => {
     const temp = [];
     temp.push({
+      label,
       barThickness: 15,
       borderRadius,
       // label: "amount",
@@ -57,7 +60,7 @@ const Bargraph = ({
       borderSkipped: false,
     });
     setDatasets([...temp]);
-  }, []);
+  }, [data]);
 
   const options = {
     indexAxis: barDirection,
@@ -124,15 +127,17 @@ const Bargraph = ({
         height,
       }}
     >
-      <Bar
-        onClick={onClick}
-        ref={chartRef}
-        data={{
-          labels,
-          datasets,
-        }}
-        options={options}
-      />
+      {data && (
+        <Bar
+          onClick={onClick}
+          ref={chartRef}
+          data={{
+            labels,
+            datasets,
+          }}
+          options={options}
+        />
+      )}
     </div>
   );
 };

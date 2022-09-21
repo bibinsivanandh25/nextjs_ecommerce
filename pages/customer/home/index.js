@@ -9,6 +9,7 @@ import {
   getTopProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import HotDealsOfTheDay from "@/forms/customer/Home/HotDealsOfTheDay";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
@@ -17,8 +18,8 @@ import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
-import Articles from "./Articles";
 import HomeComponent from "@/forms/customer/homecomponent";
+import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
@@ -75,12 +76,16 @@ const Home = () => {
   const [products, setProducts] = useState([]);
 
   const route = useRouter();
+  const storeDetails = useSelector((state) => ({
+    supplierId: state.customer.supplierId,
+    storeCode: state.customer.storeCode,
+  }));
 
   useEffect(() => {
-    if (!Object.keys(route.query).length) {
+    if (storeDetails.storeCode === "" || storeDetails.supplierId === "") {
       route.push("/auth/customer");
     }
-  }, [route]);
+  }, [storeDetails]);
 
   const getCategories = async () => {
     const { data, err } = await getMainCategories();
@@ -95,31 +100,29 @@ const Home = () => {
         setCategories([...results]);
       });
     } else if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
   const getBanners = async () => {
-    const { data, err } = await getBannersBySupplierId(
-      route?.query?.supplierId
-    );
+    const { data, err } = await getBannersBySupplierId(storeDetails.supplierId);
     if (data) {
       const temp = [];
       data?.forEach((ele) => {
         temp.push({
-          src: ele.bannerImageUrl,
+          src: ele.bannerImageUrlForWeb,
           navigateUrl: ele.navigationUrl,
         });
       });
       setBannerImages([...temp]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
   const getProducts = async () => {
-    const { data, err } = await getTopProducts(route?.query?.supplierId);
+    const { data, err } = await getTopProducts(storeDetails.supplierId);
     if (data) {
       const result = [];
       data.forEach((variations) => {
@@ -137,7 +140,7 @@ const Home = () => {
       setProducts([...result]);
     }
     if (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
   useEffect(() => {
@@ -236,11 +239,18 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CarousalComponent list={[...bannerImages]} interval={4000} />
+          {bannerImages.length > 0 ? (
+            <CarousalComponent
+              list={[...bannerImages]}
+              interval={2000}
+              autoPlay
+              stopOnHover={false}
+            />
+          ) : null}
           <Box className="py-2">
             <HomeComponent
-              onCategoryClick={(ele) => {
-                console.log(ele, "AS");
+              onCategoryClick={() => {
+                // console.log(ele, "AS");
               }}
               categories={[...categories]}
               products={[...products]}
@@ -251,8 +261,6 @@ const Home = () => {
                   route.push({
                     pathname: `/customer/productdetails`,
                     query: {
-                      supplierId: route.query.supplierId,
-                      storeCode: route.query.storeCode,
                       id: data.id,
                     },
                   });

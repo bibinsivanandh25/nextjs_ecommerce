@@ -17,6 +17,7 @@ import { Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
+import { format } from "date-fns";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
@@ -179,7 +180,7 @@ const EnhancedTableHead = (props) => {
                   ];
                 });
               }}
-              className={`fw-600 p-2 ${getStickyClass(
+              className={`fw-600 p-2 fw-500 ${getStickyClass(
                 column.position,
                 index
               )} ${tHeadBgColor !== "" ? tHeadBgColor : "bg-white"}`}
@@ -252,35 +253,46 @@ export default function TableComponent({
   // onCustomSearchButtonClick = () => {},
   disableCustomButton = false,
   showCellBorders = true,
-  tHeadBgColor = "",
+  tHeadBgColor = "bg-light-gray",
   showDateFilter = false,
-  dateFilterColName = [],
   customDropDownPlaceholder = "",
   searchBarPlaceHolderText = "Search",
   paginationType = "default",
   draggableHeader = false,
   stickyCheckBox = false,
   showDateFilterBtn = false,
+  showDateFilterSearch = true,
   dateFilterBtnName = "Add",
   dateFilterBtnClick = () => {},
   stickyHeader = true,
   // eslint-disable-next-line no-unused-vars
   dateFilterBtnIcon = "",
+  handlePageEnd = () => {},
+  filterList = [],
+  handleRowsPerPageChange = () => {},
+  tabChange = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
-  const [searchFilterList, setSearchFilterList] = useState([
-    { label: "All", id: "0", value: "All" },
-  ]);
+  const [searchFilterList, setSearchFilterList] = useState([]);
+  const [filteredDates, setFilteredDates] = useState({
+    fromDate: "",
+    toDate: "",
+  });
   const [searchFilter, setSearchFilter] = useState({
     label: "All",
     id: "0",
     value: "All",
   });
-  const [dateValue, setDateValue] = useState({ from: "", to: "" });
+  useEffect(() => {
+    setPage(0);
+  }, [tabChange]);
+  useEffect(() => {
+    if (filterList.length) setSearchFilterList(filterList);
+  }, [filterList]);
 
   useEffect(() => {
     if (draggableHeader) {
@@ -296,62 +308,49 @@ export default function TableComponent({
   }, [draggableHeader]);
 
   useEffect(() => {
-    setRows(tableRows);
+    if (tableRows.length) {
+      setRows(tableRows);
+    } else {
+      setRows([]);
+    }
   }, [tableRows]);
 
-  useEffect(() => {
-    if (searchText === "") setRows(tableRows);
-  }, [searchText, tableRows]);
-
-  useEffect(() => {
-    const temp = columns.filter((item) => {
-      if (!item.hasOwnProperty("isFilter"))
-        return { label: item.label, id: item.id, value: item.label };
-    });
-    setSearchFilterList(() => {
-      return [{ label: "All", id: "0", value: "All" }, ...temp];
-    });
-  }, [columns]);
-
-  const requestSearch = (searchval) => {
-    const filteredData =
-      searchFilter.label === "All" || searchFilter.label === ""
-        ? rows.filter((value) => {
-            let flag = false;
-            const dataarray = Object.values(value);
-            dataarray.splice(0, 1);
-            let index;
-            dataarray.forEach((ele) => {
-              index =
-                typeof ele === "string" &&
-                ele.toLowerCase().indexOf(searchval.toLowerCase()) > -1;
-              if (index) {
-                flag = true;
-              }
-            });
-            return flag;
-          })
-        : rows.filter((value) => {
-            if (
-              typeof value[`${searchFilter.id}`] === "string" &&
-              value[`${searchFilter.id}`]
-                .toLowerCase()
-                .indexOf(searchval.toLowerCase()) > -1
-            )
-              return true;
-            return false;
-          });
-
-    setRows(filteredData);
-  };
-
   const handleChangePage = (event, newPage) => {
+    const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
+    if (newPage === numberOfPage - 1) {
+      handlePageEnd(searchText, searchFilter?.value, undefined, {
+        fromDate: filteredDates.fromDate
+          ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
+          : "",
+        toDate: filteredDates.toDate
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          : "",
+      });
+    }
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    handleRowsPerPageChange(searchText, searchFilter?.value, 0, {
+      fromDate: `${format(
+        new Date(filteredDates.fromDate),
+        "MM-dd-yyyy"
+      )} 00:00:00`,
+      toDate: `${format(
+        new Date(filteredDates.toDate),
+        "MM-dd-yyyy"
+      )} 00:00:00`,
+    });
+    handlePageEnd(searchText, searchFilter?.value, 0, {
+      fromDate: filteredDates.fromDate
+        ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
+      toDate: filteredDates.toDate
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
+    });
   };
 
   const handleSelectAllClick = (event, checked) => {
@@ -386,30 +385,19 @@ export default function TableComponent({
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const handleSearch = () => {
-    if (searchText !== "") requestSearch(searchText);
-  };
-
-  useEffect(() => {
-    if (dateValue.from && dateValue.to) {
-      const startDate = new Date(dateValue.from);
-      const endDate = new Date(dateValue.to);
-      const resultProductData = tableRows.filter(function (a) {
-        for (const i of dateFilterColName) {
-          const date = new Date(a[i]);
-          return date >= startDate && date <= endDate;
-        }
-      });
-      setRows(resultProductData);
-    } else {
-      setRows(tableRows);
-    }
-  }, [dateValue, tableRows, dateFilterColName]);
+  // const getDates = (date, type) => {
+  //   const temp = filteredDates;
+  //   setFilteredDates((pre) => ({
+  //     ...pre,
+  //     [`${type}`]: date,
+  //   }));
+  //   temp[`${type}`] = date;
+  // };
 
   const getDateFilter = () => {
     return (
       <Grid container alignItems="center">
-        <Grid item container md={1} justifyContent="start">
+        <Grid item container md={1.5} justifyContent="start">
           {table_heading && (
             <Grid item md={12}>
               <Typography
@@ -429,7 +417,7 @@ export default function TableComponent({
           justifyContent="end"
           alignItems="center"
           item
-          md={11}
+          md={10.5}
           spacing={2}
         >
           <Grid
@@ -438,7 +426,7 @@ export default function TableComponent({
             container
             display="flex"
             alignItems="center"
-            justifyContent="end"
+            justifyContent={showDateFilterSearch ? "center" : "end"}
           >
             <Grid
               item
@@ -448,7 +436,7 @@ export default function TableComponent({
               <span className="fs-12">From date:</span>
               <input
                 type="date"
-                value={dateValue.from}
+                value={filteredDates.fromDate}
                 className={styles.dateinput}
                 style={{
                   border: "none",
@@ -457,10 +445,32 @@ export default function TableComponent({
                   flexDirection: "row-reverse",
                 }}
                 onChange={(e) => {
-                  setDateValue((prev) => ({
-                    ...prev,
-                    from: e.target.value,
+                  setFilteredDates((pre) => ({
+                    ...pre,
+                    fromDate: e.target.value,
                   }));
+                  if (
+                    (filteredDates.toDate &&
+                      (e.target.value || filteredDates.fromDate)) ||
+                    (filteredDates.toDate === "" &&
+                      e.target.value === "" &&
+                      filteredDates.fromDate === "")
+                  ) {
+                    handlePageEnd(searchText, searchFilter?.value, 0, {
+                      toDate: filteredDates.toDate
+                        ? `${format(
+                            new Date(filteredDates.toDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
+                      fromDate: e.target.value
+                        ? `${format(
+                            new Date(e.target.value),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
+                    });
+                  }
                 }}
                 // max={dateValue.to}
               />
@@ -473,7 +483,7 @@ export default function TableComponent({
               <span className="fs-12">To date:</span>
               <input
                 type="date"
-                value={dateValue.to}
+                value={filteredDates.toDate}
                 className={styles.dateinput}
                 style={{
                   border: "none",
@@ -482,45 +492,80 @@ export default function TableComponent({
                   flexDirection: "row-reverse",
                 }}
                 onChange={(e) => {
-                  setDateValue((prev) => ({
-                    ...prev,
-                    to: e.target.value,
+                  setFilteredDates((pre) => ({
+                    ...pre,
+                    toDate: e.target.value,
                   }));
+                  if (
+                    (filteredDates.fromDate &&
+                      (e.target.value || filteredDates.toDate)) ||
+                    (filteredDates.fromDate === "" &&
+                      e.target.value === "" &&
+                      filteredDates.toDate === "")
+                  ) {
+                    handlePageEnd(searchText, searchFilter?.value, 0, {
+                      fromDate: `${format(
+                        new Date(filteredDates.fromDate),
+                        "MM-dd-yyyy"
+                      )} 00:00:00`,
+                      toDate: `${format(
+                        new Date(e.target.value),
+                        "MM-dd-yyyy"
+                      )} 00:00:00`,
+                    });
+                  }
                 }}
                 // min={dateValue.from}
               />
             </Grid>
-            <Grid
-              item
-              // xl={5}
-              md={4}
-              container
-              alignItems="center"
-              spacing={1}
-              justifyContent="space-around"
-            >
-              <Grid item sm={10}>
-                <InputBox
-                  value={searchText}
-                  label="Search"
-                  className="w-100"
-                  fullWidth
-                  size="small"
-                  onInputChange={(e) => {
-                    setsearchText(e.target.value);
-                  }}
-                />
+            {showDateFilterSearch ? (
+              <Grid
+                item
+                // xl={5}
+                md={4}
+                container
+                alignItems="center"
+                spacing={1}
+                justifyContent="space-around"
+              >
+                <Grid item sm={10}>
+                  <InputBox
+                    value={searchText}
+                    label="Search"
+                    className="w-100"
+                    fullWidth
+                    size="small"
+                    onInputChange={(e) => {
+                      setsearchText(e.target.value);
+                    }}
+                  />
+                </Grid>
+                <Grid item sm={2}>
+                  <div
+                    style={{ width: "35px", height: "38px" }}
+                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2 cursor-pointer"
+                    onClick={() => {
+                      handlePageEnd(searchText, searchFilter?.value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                      });
+                    }}
+                  >
+                    <SearchOutlinedIcon style={{ color: "white" }} />
+                  </div>
+                </Grid>
               </Grid>
-              <Grid item sm={2}>
-                <div
-                  style={{ width: "35px", height: "38px" }}
-                  className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
-                  onClick={handleSearch}
-                >
-                  <SearchOutlinedIcon style={{ color: "white" }} />
-                </div>
-              </Grid>
-            </Grid>
+            ) : null}
           </Grid>
           {showDateFilterBtn && (
             <Grid item sm={2} justifyContent="center" display="flex">
@@ -588,12 +633,8 @@ export default function TableComponent({
                 // label="Search Filter"
                 value={searchFilter}
                 onDropdownSelect={(value) => {
+                  // setSearchFilter(value);
                   setSearchFilter(value);
-                  // setSearchFilter(
-                  //   value === null
-                  //     ? { label: "All", id: 0, value: "All" }
-                  //     : { ...value }
-                  // );
                 }}
                 placeholder={customDropDownPlaceholder}
               />
@@ -632,8 +673,31 @@ export default function TableComponent({
                 <Grid item xs={2} display="flex" justifyContent="end">
                   <div
                     style={{ width: "40px", height: "38px" }}
-                    className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded"
-                    onClick={handleSearch}
+                    className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
+                      searchText === "" && Object.keys(searchFilter)?.length
+                        ? "bg-gray"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      // if (searchText !== "") {
+                      if (
+                        searchText !== "" &&
+                        Object.keys(searchFilter)?.length
+                      ) {
+                        setPage(0);
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
+                          fromDate: `${format(
+                            new Date(filteredDates.fromDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`,
+                          toDate: `${format(
+                            new Date(filteredDates.toDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`,
+                        });
+                      }
+                      // }
+                    }}
                   >
                     <SearchOutlinedIcon style={{ color: "white" }} />
                   </div>
@@ -658,9 +722,9 @@ export default function TableComponent({
                     // className="bg-orange"
                     // sx={{ textTransform: "none" }}
                     // fullWidth
-                    muiProps="p-2"
+                    muiProps="p-2 color-white"
                     disabled={disableCustomButton}
-                    bgColor={disableCustomButton ? "bg-secondary" : "bg-orange"}
+                    bgColor={disableCustomButton ? "bg-gray" : "bg-orange"}
                     onBtnClick={onCustomButtonClick}
                     label={customButtonLabel}
                   />
@@ -681,7 +745,7 @@ export default function TableComponent({
     if (position === "sticky" && index === columns.length - 1)
       return classes.lastrow;
   };
-
+  // return <div>table component</div>;
   return (
     <div>
       <Grid
@@ -795,7 +859,7 @@ export default function TableComponent({
             <Grid>
               <TablePagination
                 className="justify-content-start d-flex"
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 20]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
@@ -846,7 +910,7 @@ export default function TableComponent({
 //     col1: "India",
 //     col2: "IN",
 //     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => console.log(e)}>
+//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
 //         121212
 //       </div>
 //     ),

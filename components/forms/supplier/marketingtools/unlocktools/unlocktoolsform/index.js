@@ -1,7 +1,13 @@
 import { Button, Typography } from "@mui/material";
-import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { purchaseMarketingTool } from "services/supplier/marketingtools/unlocktools/single";
+import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
+import toastify from "services/utils/toastUtils";
+import { useRouter } from "next/router";
+import { updateUnlockedTools } from "features/userSlice";
+import { getmarketingToolStatus } from "services/supplier";
 
 const UnlockToolsForm = ({
   heading = "",
@@ -11,9 +17,12 @@ const UnlockToolsForm = ({
   setTableData = () => {},
 }) => {
   const [tableRows, setTableRows] = useState([]);
+
+  const route = useRouter();
+
   const handleRadio = (row, radioId) => {
     const res = tableData.map((i) => {
-      if (i.id === row) {
+      if (i[radioId].id === row) {
         const result = {};
         Object.entries(i).forEach(([key, value]) => {
           if (key === radioId) {
@@ -30,6 +39,30 @@ const UnlockToolsForm = ({
       return i;
     });
     setTableData(res);
+  };
+
+  const supplierId = useSelector((state) => state?.user?.supplierId);
+  const dispatch = useDispatch();
+
+  const handleBuyNow = async (row) => {
+    const price = Object.values(row).filter((value) => value.isChecked);
+    const payload = {
+      purchasedByType: "SUPPLIER",
+      purchasedById: supplierId,
+      // subscriptionAmount: price[0].label,
+      subscriptionType: "INDIVIDUAL_PRICING",
+      subscriptionTypeId: price[0].id,
+    };
+    const { data, err } = await purchaseMarketingTool(payload);
+    if (data) {
+      toastify(data.message, "success");
+      getmarketingToolStatus(supplierId).then((res) => {
+        if (res.data) dispatch(updateUnlockedTools(res.data.unlockedTools));
+      });
+      route.push("/supplier/marketingtools/subscriptionhistory");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   const mapRowsToTable = (data) => {
@@ -50,44 +83,40 @@ const UnlockToolsForm = ({
       result.push({
         col1: <span className="fw-600">{row.heading}</span>,
         col2: getRadioComponent(
-          row.id,
+          row.col2.id,
           row.col2.label,
           row.col2.isChecked,
           "col2"
         ),
         col3: getRadioComponent(
-          row.id,
+          row.col3.id,
           row.col3.label,
           row.col3.isChecked,
           "col3"
         ),
         col4: getRadioComponent(
-          row.id,
+          row.col4.id,
           row.col4.label,
           row.col4.isChecked,
           "col4"
         ),
         col5: getRadioComponent(
-          row.id,
+          row.col5.id,
           row.col5.label,
           row.col5.isChecked,
           "col5"
         ),
         col6: getRadioComponent(
-          row.id,
+          row.col6.id,
           row.col6.label,
           row.col6.isChecked,
           "col6"
         ),
-        col7: (
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={!row.isRadioSelected}
-            sx={{ textTransform: "none" }}
-          >
-            Add to Cart
-          </Button>
+        col7: getRadioComponent(
+          row.col7.id,
+          row.col7.label,
+          row.col7.isChecked,
+          "col7"
         ),
         col8: (
           <Button
@@ -95,6 +124,9 @@ const UnlockToolsForm = ({
             className="bg-orange"
             size="small"
             disabled={!row.isRadioSelected}
+            onClick={() => {
+              handleBuyNow(row);
+            }}
             sx={{ textTransform: "none" }}
           >
             Buy Now

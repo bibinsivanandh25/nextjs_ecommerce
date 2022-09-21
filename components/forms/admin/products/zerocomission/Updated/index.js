@@ -5,10 +5,10 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
+import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import EditProductModalForUpdated from "./EditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import AddEditProductModal from "./AddEditProductModal";
-import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 
 const Updated = ({
   rowsDataObjectsForUpdated,
@@ -77,7 +77,7 @@ const Updated = ({
   ];
 
   const onClickOfMenuItem = (ele, index) => {
-    console.log("Element ", ele);
+    // console.log("Element ", ele);
     if (ele === "Edit") {
       setModalId(index);
       setOpenEditModalForUpdated(true);
@@ -134,8 +134,8 @@ const Updated = ({
   //           />
   //           <MenuOption
   //             getSelectedItem={(ele) => {
-  //               console.log("Index", index);
-  //               console.log("ele ", typeof ele);
+  //               // console.log("Index", index);
+  //               // console.log("ele ", typeof ele);
   //               onClickOfMenuItem(ele, index);
   //             }}
   //             options={options}
@@ -164,7 +164,7 @@ const Updated = ({
               <TableComponent
                 columns={tableColumnsForProductsToUpdated}
                 tHeadBgColor="bg-light-gray"
-                showPagination={false}
+                // showPagination={false}
                 tableRows={tableRows}
                 // showSearchbar={false}
                 showDateFilterBtn

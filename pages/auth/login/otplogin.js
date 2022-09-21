@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import axios from "axios";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
@@ -13,6 +12,10 @@ import validationRegex from "services/utils/regexUtils";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import serviceUtil from "services/utils";
+import { getSupplierDetailsById } from "services/supplier";
+import { storeUserInfo } from "features/userSlice";
+import { store } from "store";
 // import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
@@ -29,23 +32,37 @@ const OtpLogIn = () => {
   }, []);
 
   const route = useRouter();
+  const storedatatoRedux = async (id) => {
+    const { data, err } = await getSupplierDetailsById(id);
+
+    if (!err) {
+      const supplierDetails = {
+        emailId: data.emailId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profileImageUrl: data.profileImageUrl,
+        supplierId: data.supplierId,
+        storeCode: data.supplierStoreInfo.supplierStoreCode,
+        isAddressSaved: data.userAddressDetails.length,
+      };
+      store.dispatch(storeUserInfo(supplierDetails));
+    }
+  };
 
   const handleSubmit = async () => {
     const formdata = new FormData();
     formdata.append("userName", user);
     formdata.append("userType", "SUPPLIER");
     formdata.append("otp", otp);
-    const { data } = await axios
-      .post(
-        "http://10.10.31.116:8765/api/v1/users/registration/verify-login-otp",
-        formdata,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      )
+    const data = await serviceUtil
+      .post(`users/registration/verify-login-otp`, formdata, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
       .catch((err) => {
-        console.log(err.response);
+        toastify(err?.response?.data?.message, "error");
       });
-    if (data) {
-      const { token } = data;
+    if (data?.data) {
+      const { token } = data.data;
       const decoded = JSON.parse(atob(token.split(".")[1].toString()));
       const userData = decoded.sub.split(",");
       const res = await signIn("credentials", {
@@ -60,6 +77,7 @@ const OtpLogIn = () => {
         toastify("Invalid credentials", "error");
         return null;
       }
+      await storedatatoRedux(userData[0]);
       route.push(`/supplier/dashboard`);
     }
   };
@@ -89,12 +107,10 @@ const OtpLogIn = () => {
       const formdata = new FormData();
       formdata.append("userName", user);
       formdata.append("userType", "SUPPLIER");
-      await axios
-        .post(
-          `${process.env.DOMAIN}users/registration/forgot-password/send-otp`,
-          formdata,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        )
+      await serviceUtil
+        .post(`users/registration/forgot-password/send-otp`, formdata, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((data) => {
           if (data) {
             setSubmitted(true);
@@ -112,14 +128,17 @@ const OtpLogIn = () => {
         <div style={{ width: "400px" }}>
           {submited ? (
             <>
-              <OtpForm otp={otp} setotp={setotp} />
+              <OtpForm otp={otp} setotp={setotp} handleEnter={handleSubmit} />
               <div className="w-100 d-flex flex-column align-items-center">
                 <ButtonComponent
                   label="Login"
                   onBtnClick={handleSubmit}
                   muiProps="w-30p "
                 />
-                <span className="color-orange fs-12 mt-2 cursor-pointer">
+                <span
+                  className="color-orange fs-12 mt-2 cursor-pointer"
+                  onClick={sendOTPclick}
+                >
                   Resend OTP
                 </span>
                 <span

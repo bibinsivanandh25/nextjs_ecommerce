@@ -26,6 +26,7 @@ export const LineChart = ({
   showYAxis = true,
   lineColor = "#C100C1",
   showYGrid = true,
+  label = "First dataset",
 }) => {
   const options = {
     plugins: {
@@ -65,7 +66,7 @@ export const LineChart = ({
     labels,
     datasets: [
       {
-        label: "First dataset",
+        label,
         data: [...data],
         pointBorderWidth: 2,
         pointRadius: 5,

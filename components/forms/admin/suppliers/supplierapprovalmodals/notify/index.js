@@ -127,7 +127,7 @@ const NotificationModal = ({
             <Grid container>
               <Grid item sm={4}>
                 <RadiobuttonComponent
-                  label="Only attachement"
+                  label="Only attachment"
                   isChecked={selectRadio.attachement}
                   onRadioChange={() => {
                     setSelectRadio({
@@ -171,7 +171,7 @@ const NotificationModal = ({
               </Grid>
               <Grid item sm={4}>
                 <RadiobuttonComponent
-                  label="Text with attachement"
+                  label="Text with attachment"
                   isChecked={selectRadio.textwithattachement}
                   onRadioChange={() => {
                     setSelectRadio({

@@ -16,20 +16,28 @@ const TextAreaComponent = ({
   error = false,
   helperText = null,
   placeholder = "",
+  id = "",
+  required = false,
+  disabled = false,
 }) => {
   return (
-    <div className={`${widthClassName}`}>
+    <div className={`${widthClassName}`} id={id}>
       <div
-        className={`d-flex flex-row-reverse py-2 px-1 rounded-top ${
+        className={`d-flex flex-row-reverse p-1 rounded-top ${
           styles.fieldset
         } ${error && "error-border"}`}
       >
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label
-          className={`${styles.legend} fs-14 ${error && "error-text"}`}
-          style={{ color: "#6E6E6E", fontFamily: "inherit" }}
+          className={`${styles.legend} fs-12 ${error && "error-text"}`}
+          style={{
+            color: error ? "#dd5e5e" : "#6E6E6E",
+          }}
         >
-          {legend}
+          {legend}{" "}
+          {required && (
+            <span className="color-red fs-16 fw-bolder">* &nbsp;</span>
+          )}
         </label>
         <ButtonComponent
           label={btnLabel}
@@ -49,6 +57,7 @@ const TextAreaComponent = ({
         style={{
           padding: "5px 10px",
         }}
+        disabled={disabled}
       />
       {error && (
         <p className="error" id="textbox-helper-text">

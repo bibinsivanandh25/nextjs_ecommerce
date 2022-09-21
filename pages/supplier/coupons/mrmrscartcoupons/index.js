@@ -8,27 +8,42 @@ import CouponLogo from "public/assets/images/Coupon.png";
 import Image from "next/image";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import { Share } from "@mui/icons-material";
+import toastify from "services/utils/toastUtils";
+import { useUserInfo } from "services/hooks";
+import {
+  getAllCouponsWithFilter,
+  publishCoupons,
+} from "services/supplier/coupons/mrmrsCartcoupons";
 import MrMrsAddNewCoupons from "@/forms/supplier/coupons/mrmrsaddnewcoupons";
 
 const Coupons = () => {
   const selectTypeList = [
     {
-      id: "All",
-      label: "All",
+      id: "ALL",
+      label: "ALL",
+      value: "ALL",
     },
     {
-      id: "Scratch Card",
-      label: "Scratch Card",
+      id: "discountType",
+      label: "Discount Type",
+      value: "DISCOUNT_TYPE",
     },
     {
-      id: "Fixed Product Discount",
-      label: "Fixed Product Discount",
+      id: "status",
+      label: "Status",
+      value: "STATUS",
+    },
+    {
+      id: "couponCode",
+      label: "Coupon Code",
+      value: "STORE_COUPON_CODE",
     },
   ];
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [showPublishModal, setShowPublishModal] = useState(false);
-  const [dropdownFilter, setDropdownFilter] = useState({});
+  const [pageNumber, setpageNumber] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
+
   const [openAddModal, setOpenAddModal] = useState(false);
   const columns = [
     {
@@ -82,7 +97,7 @@ const Coupons = () => {
     if (status.toLowerCase().includes("expire")) {
       return "text-danger";
     }
-    if (status.toLowerCase().includes("not")) {
+    if (status.toLowerCase().includes("draft")) {
       return "text-primary";
     }
     return "";
@@ -92,23 +107,25 @@ const Coupons = () => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row.couponcode,
-        col2: row.discounttype,
-        col3: `${row.amount}%`,
-        col4: row.usagelimit || "-",
-        col5: row.expiredate,
+        col1: row.couponCode,
+        col2: row.discountType,
+        col3: `${row.couponAmount}%`,
+        col4: row.couponUsageLimit || "-",
+        col5: row.couponExpiryDate,
         col6: (
           <div
-            className={`${getClassnames(row.status)} ${
-              row.status.toLowerCase().includes("not") && "cursor-pointer"
+            className={`${getClassnames(row.couponStatus)} ${
+              row.couponStatus?.toLowerCase()?.includes("draft") &&
+              "cursor-pointer"
             }`}
             onClick={() => {
-              if (row.status.toLowerCase().includes("not")) {
+              if (row.couponStatus?.toLowerCase()?.includes("draft")) {
+                setCouponCode(row.couponCode);
                 setShowPublishModal(true);
               }
             }}
           >
-            {row.status}
+            {row.couponStatus}
           </div>
         ),
         col7: (
@@ -121,69 +138,56 @@ const Coupons = () => {
               padding: "2px",
               cursor: "pointer",
             }}
+            onClick={() => {
+              navigator.clipboard.writeText(row.couponCode);
+              toastify("Coupon Code Copied Successfully!", "success");
+            }}
           />
         ),
       });
     });
     return result;
   };
+  const { id } = useUserInfo();
 
-  const filterByType = React.useCallback(() => {
-    if (dropdownFilter && dropdownFilter.id) {
-      switch (dropdownFilter?.id) {
-        case "Fixed Product Discount":
-          setTableRows(
-            tableRows?.filter((row) => row.col2 === "Fixed Product Discount")
-          );
-          break;
-        case "Scratch Card":
-          setTableRows(tableRows?.filter((row) => row.col2 === "Scratch Card"));
-          break;
-        default:
-          setTableRows(mapRowsToTable(tableData));
-      }
+  const getTabledata = async (searchText, filterText) => {
+    const search = searchText || null;
+    const filter =
+      filterText === "All" ? filterText.toUpperCase() : filterText || "ALL";
+    const { data, err } = await getAllCouponsWithFilter(
+      pageNumber,
+      50,
+      id,
+      search,
+      filter
+    );
+    if (data.length) {
+      setTableRows(mapRowsToTable(data));
     } else {
-      setTableRows(mapRowsToTable(tableData));
+      setTableRows([]);
     }
-  }, [dropdownFilter]);
+    if (err) {
+      toastify(err.response.data.message);
+    }
+  };
+  const handlePublish = async () => {
+    const { data, err } = await publishCoupons(id, couponCode);
+    if (data) {
+      toastify(data.message, "success");
+      setShowPublishModal(false);
+      getTabledata();
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
 
   useEffect(() => {
-    filterByType();
-  }, [dropdownFilter]);
-
-  useEffect(() => {
-    const rows = [
-      {
-        couponcode: "#123458",
-        discounttype: "Scratch Card",
-        expiredate: "12-01-2022, 04:45 AM",
-        amount: "4",
-        status: "Expired",
-        usagelimit: null,
-      },
-      {
-        couponcode: "#123456",
-        discounttype: "Scratch Card",
-        expiredate: "12-01-2022, 07:09 AM",
-        amount: "4",
-        status: "Published",
-        usagelimit: null,
-      },
-      {
-        couponcode: "#123459",
-        discounttype: "Fixed Product Discount",
-        expiredate: "12-01-2023, 08:43 PM",
-        amount: "1",
-        status: "Not Published",
-        usagelimit: null,
-      },
-    ];
-    setTableData(rows);
+    getTabledata();
   }, []);
 
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
+  // useEffect(() => {
+  //   setTableRows(mapRowsToTable(tableData));
+  // }, [tableData]);
 
   return (
     <Paper className="mnh-80vh overflow-auto hide-scrollbar">
@@ -216,14 +220,17 @@ const Coupons = () => {
                 columns={columns}
                 tableRows={tableRows}
                 showCheckbox={false}
-                showSearchFilter={false}
-                showCustomDropdown
-                onCustomDropdownChange={(val) => setDropdownFilter(val)}
-                customDropdownValue={dropdownFilter}
-                customDropdownLabel="Select Type"
+                showSearchFilter
+                showCustomDropdown={false}
                 showSearchbar
-                customDropdownList={selectTypeList}
-                showCustomDropdownWithSearch
+                showCustomDropdownWithSearch={false}
+                filterList={[...selectTypeList]}
+                handlePageEnd={(searchText, filterText) => {
+                  getTabledata(searchText, filterText);
+                }}
+                handleRowsPerPageChange={() => {
+                  setpageNumber(0);
+                }}
               />
             </Paper>
           </Grid>
@@ -236,7 +243,7 @@ const Coupons = () => {
               ModalWidth={600}
               headerClassName="border-0"
               onCloseIconClick={() => setShowPublishModal(false)}
-              onSaveBtnClick={() => setShowPublishModal(false)}
+              onSaveBtnClick={() => handlePublish()}
               footerClassName="m-2 align-center"
             >
               <div className="d-flex flex-column justify-content-center align-items-center my-2">
@@ -246,7 +253,10 @@ const Coupons = () => {
           )}
         </Grid>
       ) : (
-        <MrMrsAddNewCoupons setOpenAddModal={setOpenAddModal} />
+        <MrMrsAddNewCoupons
+          setOpenAddModal={setOpenAddModal}
+          getTableData={getTabledata}
+        />
       )}
     </Paper>
   );

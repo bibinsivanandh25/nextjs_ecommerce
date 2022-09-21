@@ -1,20 +1,40 @@
 import { Grid, Typography } from "@mui/material";
+import { AiOutlineDownload } from "react-icons/ai";
 import ModalComponent from "@/atoms/ModalComponent";
 
-const ViewDocument = ({ showModal = false, setShowModal = () => {} }) => {
+const ViewDocument = ({
+  showModal = false,
+  setShowModal = () => {},
+  viewModalData = {},
+}) => {
+  const showFileNames = () => {
+    const data = [];
+    viewModalData?.documentUrl?.forEach((item) => {
+      if (typeof item == "string") {
+        const x = item.split("-");
+        data.push({ url: item, filename: x[x.length - 1] });
+      } else {
+        data.push({ url: "", filename: item.name });
+      }
+    });
+    return data;
+  };
   return (
     <ModalComponent
       open={showModal}
       onCloseIconClick={() => setShowModal(false)}
       ModalTitle="View Document"
+      showFooter={false}
     >
-      <Grid container spacing={2}>
+      <Grid container spacing={2} paddingBottom={2}>
         <Grid container spacing={1} item sm={12}>
           <Grid item sm={3}>
             <Typography className="text-end h-5">Document Name :</Typography>
           </Grid>
           <Grid item sm={9}>
-            <Typography className="h-5">Document </Typography>
+            <Typography className="h-5">
+              {viewModalData.documentName}{" "}
+            </Typography>
           </Grid>
         </Grid>
         <Grid container spacing={1} item sm={12}>
@@ -23,13 +43,7 @@ const ViewDocument = ({ showModal = false, setShowModal = () => {} }) => {
           </Grid>
           <Grid item sm={9}>
             <Typography className="h-5">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.{" "}
+              {viewModalData?.description}
             </Typography>
           </Grid>
         </Grid>
@@ -38,10 +52,20 @@ const ViewDocument = ({ showModal = false, setShowModal = () => {} }) => {
             <Typography className="text-end h-5">Documents :</Typography>
           </Grid>
           <Grid item sm={9} spacing={1}>
-            <Typography className="h-5 ">
-              <Typography className="color-blue h-5">file1.jpg</Typography>
-              <Typography className="color-blue h-5">file2.jpg</Typography>
-            </Typography>
+            {showFileNames().map((item) => (
+              <Typography className="h-5 color-blue" key={item.filename}>
+                {item.filename}
+                <a
+                  href={item.url}
+                  download
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ms-3"
+                >
+                  <AiOutlineDownload className="cursor-pointer" />
+                </a>
+              </Typography>
+            ))}
           </Grid>
         </Grid>
       </Grid>

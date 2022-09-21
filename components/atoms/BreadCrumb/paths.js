@@ -178,6 +178,7 @@ export const paths = [
   { title: "Unlock Tools", id: "unlocktools", navigate: false },
   { title: "Single", id: "single", navigate: true },
   { title: "Combo", id: "combo", navigate: true },
+  { title: "Flags", id: "flags", navigate: true },
   {
     title: "Share Product By Price",
     id: "shareproductbyprice",
@@ -225,4 +226,9 @@ export const paths = [
   { title: "Customer Q&A", id: "customerq&a", navigate: true },
 
   { title: "Rate MrMrsCart", id: "ratemrmrscart", navigate: true },
+  {
+    title: "Help Center",
+    id: "helpcenter",
+    navigate: true,
+  },
 ];

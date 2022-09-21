@@ -1,12 +1,12 @@
 import { Box, Card, Grid, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import SimilarProducts from "../../searchedproduct/SimilarProduct";
+import serviceUtil from "services/utils";
 import DrawerComponent from "@/atoms/DrawerComponent";
-import ProductCard from "./ProductCard";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SimilarProducts from "../../searchedproduct/SimilarProduct";
+import ProductCard from "./ProductCard";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 
 const comparProductData = [
@@ -52,13 +52,13 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   };
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   useEffect(() => {

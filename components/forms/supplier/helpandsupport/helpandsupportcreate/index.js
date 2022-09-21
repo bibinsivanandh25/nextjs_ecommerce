@@ -5,39 +5,48 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  helpandsupportFileUpload,
+  saveHelpandSupport,
+} from "services/supplier/helpandsupport";
+import toastify from "services/utils/toastUtils";
 
-const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
+const HelpandsupportCreate = ({
+  setShowCreateComponent = () => {},
+  selectTab = {},
+  user = {},
+  getAllData = () => {},
+}) => {
   // const inputField = useRef();
-
   const issueTypes = [
     {
-      label: "Order",
-      value: "Order",
+      label: "ORDER RELATED ISSUE",
+      value: "ORDER_RELATED_ISSUE",
     },
     {
-      label: "Return and Refund",
-      value: "Return and Refund",
+      label: "RETURN AND REFUND",
+      value: "RETURN_AND_REFUND",
     },
     {
-      label: "Logistic",
-      value: "Logistic",
+      label: "LOGISTICS RELATED ISSUE",
+      value: "LOGISTICS_RELATED_ISSUE",
     },
     {
-      label: "Cancellation and Refund",
-      value: "Cancellation and Refund",
+      label: "CANCELLATION AND REFUND",
+      value: "CANCELLATION_AND_REFUND",
     },
     {
-      label: "Profile",
-      value: "Profile",
+      label: "PROFILE RELATED ISSUE",
+      value: "PROFILE_RELATED_ISSUE",
     },
     {
-      label: "Payment Settlement",
-      value: "Payment Settlement",
+      label: "PAYMENT SETTLEMENT ISSUE",
+      value: "PAYMENT_SETTLEMENT_ISSUE",
     },
     {
-      label: "Others",
-      value: "Others",
+      label: "OTHERS",
+      value: "OTHERS",
     },
   ];
   // const route = useRouter();
@@ -48,10 +57,12 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
     subject: "",
     content: "",
   });
+  const [contentFile, setContentFile] = useState({});
   const [errorObj, setErrorObj] = useState({
     issueType: "",
     subject: "",
     content: "",
+    OrderID: "",
   });
   const validateFields = () => {
     let flag = false;
@@ -59,6 +70,7 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
       issueType: "",
       subject: "",
       content: "",
+      OrderID: "",
     };
     if (!formValue.issueType?.value?.length) {
       errObj.issueType = validateMessage.field_required;
@@ -80,12 +92,86 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
       errObj.content = validateMessage.alpha_numeric_max_255;
       flag = true;
     }
-    setErrorObj({ ...errObj });
-    if (!flag) {
-      // route.push("/supplier/helpandsupport");
-      setShowCreateComponent(false);
+    if (!formValue.OrderID) {
+      errObj.OrderID = validateMessage.field_required;
+      flag = true;
     }
+
+    setErrorObj({ ...errObj });
+    // if (!flag) {
+    //   // route.push("/supplier/helpandsupport");
+    //   setShowCreateComponent(false);
+    // }
+
     return flag;
+  };
+  const [ticketDetails, setTicketDetails] = useState({
+    id: "",
+    type: "",
+  });
+  useEffect(() => {
+    if (selectTab == "tab1") {
+      setTicketDetails({
+        id: "ADM001",
+        type: "ADMIN",
+      });
+    }
+    if (selectTab === "tab2") {
+      setTicketDetails({
+        id: "1234",
+        type: "CUSTOMER",
+      });
+    }
+  }, [selectTab]);
+  const handleFileUpload = async () => {
+    if (contentFile?.multiPart?.length) {
+      const fileFormData = new FormData();
+      fileFormData.set("data", {});
+      contentFile?.multiPart?.forEach((item) => {
+        fileFormData.append("imageList", item);
+      });
+      fileFormData.append("ticketCreatedByType", ticketDetails.type);
+      const { data, err } = await helpandsupportFileUpload(fileFormData);
+      if (data) {
+        const datas = data;
+        return { datas };
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+    return [];
+  };
+  const handleCreateClick = async () => {
+    if (!validateFields()) {
+      const { datas } = await handleFileUpload();
+
+      const payload = {
+        issueType: formValue.issueType.value,
+        orderId: formValue.OrderID,
+        issueSubject: formValue.subject,
+        userFromType: "SUPPLIER",
+        userFromId: user.supplierId,
+        userToType: "ADMIN",
+        userToId: "ADM001",
+        mediaUrl: datas || [],
+        helpSupportMessagePojos: [
+          {
+            messageFromId: user.supplierId,
+            messageFromType: "SUPPLIER",
+            message: formValue.content,
+          },
+        ],
+      };
+      const { data, err } = await saveHelpandSupport(payload);
+      if (data) {
+        getAllData("", null, 0);
+        setShowCreateComponent(false);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
   };
   return (
     <>
@@ -141,6 +227,8 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
                     OrderID: e.target.value,
                   }));
                 }}
+                error={errorObj.OrderID !== ""}
+                helperText={errorObj.OrderID}
               />
             </Grid>
           </Grid>
@@ -166,21 +254,23 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
           </Grid>
         </div>
         <div className="my-2 ps-5">
-          <div className="">
-            <TextEditor
-              getContent={(text) => {
-                setFormValue((pre) => ({
-                  ...pre,
-                  content: text,
-                }));
-              }}
-            />
-            {errorObj.content && (
-              <p className="error" id="textbox-helper-text">
-                {errorObj.content}
-              </p>
-            )}
-          </div>
+          <Grid container className="">
+            <Grid item lg={12} md={11.5} sm={10}>
+              <TextEditor
+                getContent={(text) => {
+                  setFormValue((pre) => ({
+                    ...pre,
+                    content: text,
+                  }));
+                }}
+              />
+              {errorObj.content && (
+                <p className="error" id="textbox-helper-text">
+                  {errorObj.content}
+                </p>
+              )}
+            </Grid>
+          </Grid>
           <Grid container className="my-3">
             <Grid item xs={6}>
               <span className="me-2 fw-bold">Attach File :</span>
@@ -198,20 +288,23 @@ const HelpandsupportCreate = ({ setShowCreateComponent = () => {} }) => {
             className=""
             hidden
             ref={inputField}
-            onChange={(e) => console.log(e.target.files[0])}
+            onChange={(e) => // console.log(e.target.files[0])}
           /> */}
             <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
               <ButtonComponent
                 label="Create Ticket"
-                onBtnClick={validateFields}
+                onBtnClick={handleCreateClick}
               />
             </Grid>
           </Grid>
         </div>
         <FileUploadModal
-          getUploadedFiles={() => {}}
+          getUploadedFiles={(value) => {
+            setContentFile(value);
+          }}
           showModal={showUploadModal}
           setShowModal={setShowUploadModal}
+          type=""
         />
       </Paper>
     </>

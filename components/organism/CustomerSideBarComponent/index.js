@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 // import MuiDrawer from "@mui/material/Drawer";
 import { useState } from "react";
 import List from "@mui/material/List";
+import { motion, AnimatePresence } from "framer-motion";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -22,6 +23,7 @@ import { customerMenu } from "constants/navConstants";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Paper, Popper } from "@mui/material";
 import Footer from "components/customer/Footer";
+import { useRouter } from "next/router";
 
 // const drawerWidth = 245;
 
@@ -34,6 +36,7 @@ const CustomerSideBarComponent = ({ children }) => {
       setShowBreadCrumb(val);
     },
   };
+  const router = useRouter();
   const mapList = () => {
     const addId = (id, item, path) => {
       return {
@@ -144,7 +147,7 @@ const CustomerSideBarComponent = ({ children }) => {
                       }}
                       className="cursor-pointer"
                       onClick={() => {
-                        console.log(item.path_name);
+                        // console.log(item.path_name);
                         // route.push(`${item.path_name}`);
                         setMenuList((pre) => {
                           const setSelectedToFalse = (data) => {
@@ -212,16 +215,24 @@ const CustomerSideBarComponent = ({ children }) => {
             <BreadCrumb />
           </Box>
         )}
-        <Box
-          sx={{
-            maxHeight: "calc(100vh - 136px)",
-            overflowY: "scroll",
-          }}
-          className="hide-scrollbar "
-        >
-          {updatedChildren}
-          <Footer />
-        </Box>
+        <AnimatePresence initial={false} exitBeforeEnter>
+          <motion.div
+            sx={{
+              maxHeight: "calc(100vh - 136px)",
+              overflowY: "scroll",
+            }}
+            className="hide-scrollbar "
+            animate={{ opacity: 1 }}
+            initial={{ opacity: 0 }}
+            transition={{
+              damping: 30,
+            }}
+            key={router.route}
+          >
+            {updatedChildren}
+            <Footer />
+          </motion.div>
+        </AnimatePresence>
       </Box>
 
       {menuList.length > 1 ? (

@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import toastify from "services/utils/toastUtils";
-import axios from "axios";
-import styles from "./Registration.module.css";
+import serviceUtil from "services/utils";
+import { assetsJson } from "public/assets";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
+import styles from "./Registration.module.css";
 
 const Registration = () => {
   const formObj = {
@@ -19,7 +20,7 @@ const Registration = () => {
     mainCat: [],
     gstin: "",
     stockCount: "",
-    site: "",
+    site: [],
     siteLink: "",
     firstName: "",
     lastName: "",
@@ -40,7 +41,7 @@ const Registration = () => {
       flag = true;
     } else if (formValues.firstName.length > 50) {
       flag = true;
-      errObj.firstName = validateMessage.alpha_numeric_max_50;
+      errObj.firstName = validateMessage.alphabets_50;
     }
     if (formValues.lastName === "") {
       flag = true;
@@ -81,9 +82,9 @@ const Registration = () => {
       flag = true;
       errObj.stockCount = "Please select one option";
     }
-    if (formValues.site === "") {
+    if (formValues.site.length === 0) {
       flag = true;
-      errObj.site = "Please select atleact one option";
+      errObj.site = "Please select one option";
     }
     if (formValues.siteLink.length > 255) {
       flag = true;
@@ -93,7 +94,7 @@ const Registration = () => {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
-    if (formValues.mainCat === null) {
+    if (formValues.mainCat.length === 0) {
       flag = true;
       errObj.mainCat = validateMessage.field_required;
     }
@@ -110,9 +111,9 @@ const Registration = () => {
         gstin: formValues.gstin,
         avgStockCount: formValues.stockCount,
         mainCategories: formValues.mainCat.map((ele) => {
-          return ele.title;
+          return ele.id;
         }),
-        websiteName: formValues.site,
+        websiteName: formValues.site?.join("") ?? "",
         profileImageUrl: null,
         websiteLink: formValues.siteLink,
         city: formValues.city.value,
@@ -121,9 +122,9 @@ const Registration = () => {
         supplierReferralCode: "",
         wished: false,
       };
-      await axios
+      await serviceUtil
         .post(
-          `${process.env.DOMAIN}users/registration/send-otp?mobileNumber=${
+          `users/registration/send-otp?mobileNumber=${
             formValues.mobile
           }&userType=${route.pathname.split("/")[2].toUpperCase()}`
         )
@@ -153,20 +154,25 @@ const Registration = () => {
         <Grid container spacing={2} className="">
           <Grid item sm={12} className="mt-2">
             <div
+              style={{
+                backgroundImage: `url(${assetsJson.login_background})`,
+              }}
               className={`${styles.imgContainer} mx-2 d-flex flex-column justify-content-center align-items-center`}
             >
-              <Typography variant="h3" className="color-orange text-center">
-                Supplier Registration
-              </Typography>
-              <Box className="w-50 mx-auto mt-2">
-                {" "}
-                <Typography className="text-white text-center h-5">
-                  Change Your Ordinary Store To a Virtual Store. Let Customer
-                  Have a Visibility of All Products You Have For Selling.
-                  Register With Us And You Are Free From Commission For Your
-                  First 50 Orders. Happy Selling Grow Your Income.
+              <div className={styles.titleContainer}>
+                <Typography variant="h3" className="color-orange text-center">
+                  Supplier Registration
                 </Typography>
-              </Box>
+                <Box className="w-50 mx-auto mt-2">
+                  {" "}
+                  <Typography className=" text-center h-5">
+                    Change Your Ordinary Store To a Virtual Store. Let Customer
+                    Have a Visibility of All Products You Have For Selling.
+                    Register With Us And You Are Free From Commission For Your
+                    First 50 Orders. Happy Selling Grow Your Income.
+                  </Typography>
+                </Box>
+              </div>
             </div>
           </Grid>
           <Grid item sm={12} className="d-flex justify-content-center ">
@@ -177,24 +183,6 @@ const Registration = () => {
               errorObj={errorObj}
             />
           </Grid>
-          <ModalComponent
-            ModalTitle=""
-            showFooter={false}
-            showHeader={false}
-            showClearBtn={false}
-            showCloseIcon={false}
-            showSaveBtn={false}
-            open={showModal}
-            ModalWidth={350}
-          >
-            <div className="text-center">
-              <div className={styles.modalImgContainer} />
-              <Typography className="my-2 fw-600">
-                A mail has been delivered. A link to create a password will be
-                sent to you once the verification is finished.
-              </Typography>
-            </div>
-          </ModalComponent>
         </Grid>
       ) : (
         <VerifyOTP
@@ -203,6 +191,24 @@ const Registration = () => {
           setShowModal={setShowModal}
         />
       )}
+      <ModalComponent
+        ModalTitle=""
+        showFooter={false}
+        showHeader={false}
+        showClearBtn={false}
+        showCloseIcon={false}
+        showSaveBtn={false}
+        open={showModal}
+        ModalWidth={350}
+      >
+        <div className="text-center">
+          <div className={styles.modalImgContainer} />
+          <Typography className="my-2 fw-600">
+            A mail has been delivered. A link to create a password will be sent
+            to you once the verification is finished.
+          </Typography>
+        </div>
+      </ModalComponent>
     </>
   );
 };

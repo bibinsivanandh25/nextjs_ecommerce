@@ -188,7 +188,7 @@ const Customer = () => {
 
   const handleSubmit = () => {
     if (!validate()) {
-      console.log({ formData });
+      // console.log({ formData });
       setFormData({
         subject: "",
         content: "",

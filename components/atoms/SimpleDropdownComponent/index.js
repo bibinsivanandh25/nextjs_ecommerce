@@ -17,7 +17,9 @@ const SimpleDropdownComponent = ({
   className = "",
   helperText = null,
   required = false,
+  disabled = false,
   removeRadius = false,
+  freeSolo = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -25,7 +27,7 @@ const SimpleDropdownComponent = ({
     components: {
       MuiFormLabel: {
         styleOverrides: {
-          asterisk: { color: "red", fontWeight: 700, fontSize: 22 },
+          asterisk: { color: "#dd5e5e", fontWeight: 700, fontSize: 22 },
         },
       },
     },
@@ -34,6 +36,8 @@ const SimpleDropdownComponent = ({
   return (
     <ThemeProvider theme={theme}>
       <Autocomplete
+        disabled={disabled}
+        freeSolo={freeSolo}
         value={value}
         onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
@@ -44,6 +48,9 @@ const SimpleDropdownComponent = ({
         size={size}
         fullWidth={fullWidth}
         getOptionLabel={(option) => option.label || ""}
+        isOptionEqualToValue={(option, val) =>
+          option?.id === val?.id || option.value === val.value
+        }
         sx={
           !removeRadius
             ? {

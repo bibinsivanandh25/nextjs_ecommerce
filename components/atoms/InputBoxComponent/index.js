@@ -32,6 +32,7 @@ const InputBox = ({
   textInputProps = {},
   showAutoCompleteOff = "on",
   labelColorWhite = null,
+  onEnter = () => {},
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -53,7 +54,7 @@ const InputBox = ({
     components: {
       MuiFormLabel: {
         styleOverrides: {
-          asterisk: { color: "red", fontWeight: 700, fontSize: 22 },
+          asterisk: { color: "#dd5e5e", fontWeight: 700, fontSize: 22 },
         },
       },
     },
@@ -75,6 +76,11 @@ const InputBox = ({
         }}
         inputRef={inputRef}
         onKeyDown={onKeyDown}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            onEnter();
+          }
+        }}
         variant={variant}
         type={type}
         id={id}
@@ -100,8 +106,15 @@ const InputBox = ({
         helperText={helperText}
         error={error}
         autoComplete={showAutoCompleteOff}
+        // inputProps={textInputProps}
         // eslint-disable-next-line react/jsx-no-duplicate-props
-        inputProps={textInputProps}
+        inputProps={{
+          ...textInputProps,
+          autoComplete: "off",
+          form: {
+            autoComplete: "off",
+          },
+        }}
         required={required}
       />
     </ThemeProvider>

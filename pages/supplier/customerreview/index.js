@@ -1,22 +1,48 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+/* eslint-disable no-nested-ternary */
+import { Box, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import logo from "public/assets/logo.jpeg";
 import ModalComponent from "components/atoms/ModalComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import { maxLengthValidator } from "services/validationUtils";
 import { Star } from "@mui/icons-material";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
+import {
+  getAllCustomerReview,
+  reviewReply,
+} from "services/supplier/customerreview";
+import { useSelector } from "react-redux";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
+const selectTypeList = [
+  {
+    id: "ALL",
+    label: "ALL",
+    value: "ALL",
+  },
+  {
+    id: "name",
+    label: "Name",
+    value: "NAME",
+  },
+  {
+    id: "ratings",
+    label: "Ratings",
+    value: "RATINGS",
+  },
+];
 const CustomerReview = () => {
+  const user = useSelector((state) => state.user);
   const [tableRows, setTableRows] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [replyData, setReplyData] = useState({ value: "", id: null });
   const [error, setError] = useState(null);
   const [showReplyModal, setShowReplyModal] = useState({
     show: false,
     id: null,
   });
+  const [selectedData, setSelectedData] = useState({});
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       label: "Image",
@@ -60,109 +86,114 @@ const CustomerReview = () => {
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row) => {
+    data.forEach((row, index) => {
       result.push({
         col1: (
           <div>
-            <Image src={logo} height={50} width={50} alt="" />
-            <Typography fontSize={10} pl={1}>
-              {row.productId}
-            </Typography>
+            {row.profileImageUrl ? (
+              <Image src={row.profileImageUrl} height={50} width={50} alt="" />
+            ) : null}
           </div>
         ),
-        col2: row.skuid,
-        col3: row.name,
-        col4: row.email,
-        col5: row.mobileno,
+        col2: row.skuId,
+        col3: row.customerName,
+        col4: row.emailId,
+        col5: row.mobileNumber,
         col6: (
           <span>
-            {row.ratings}
+            {row.sellerRatings}
             <Star sx={{ color: "gold", zoom: 0.6 }} />
           </span>
         ),
         col7: (
           <div className="mxh-50 overflow-y-scroll overflow-text">
-            {row.questions}
+            {row.customerReview}
           </div>
         ),
         col8: (
-          <div className="mxh-50 overflow-y-scroll overflow-text">
-            {row.supplierreply}
+          <div className="mxh-50 overflow-y-scroll overflow-text ps-2">
+            {row.sellerResponse ? row.sellerResponse : "--"}
           </div>
         ),
         col9: (
-          <Button
-            variant="contained"
+          <ButtonComponent
+            label="Reply"
+            variant="outlined"
             size="small"
             sx={{ fontSize: 8 }}
             className="bg-orange"
-            onClick={() => {
+            onBtnClick={() => {
+              setSelectedData(row);
               setShowReplyModal({
                 show: true,
-                id: row.productId,
+                id: index,
               });
             }}
-          >
-            Reply
-          </Button>
+          />
         ),
       });
     });
     return result;
   };
-
+  const getAllTableData = async (searchText = "", filterText = "", page) => {
+    const payload = {
+      filterType:
+        filterText?.toLocaleLowerCase() == "all"
+          ? null
+          : searchText == ""
+          ? null
+          : filterText,
+      keyword:
+        filterText?.toLocaleLowerCase() == "all" && searchText !== ""
+          ? null
+          : searchText == ""
+          ? null
+          : searchText,
+    };
+    const { data, err } = await getAllCustomerReview(
+      user.supplierId,
+      payload,
+      page
+    );
+    if (data?.length) {
+      if (page == 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+      }
+    }
+    if (err) {
+      setTableRows([]);
+      toastify(err.response.data.message, "error");
+    }
+  };
   useEffect(() => {
-    const rows = [
-      {
-        productId: "#123458",
-        skuid: "123456",
-        email: "tom@gmail.com",
-        name: "Tom",
-        mobileno: "9988293842",
-        ratings: "4.5",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply: "PRODUCT LIVE",
-      },
-      {
-        productId: "#123456",
-        skuid: "123456",
-        email: "jerry@gmail.com",
-        name: "Jerry",
-        mobileno: "9988293840",
-        ratings: "5",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-      {
-        productId: "#123459",
-        skuid: "123423",
-        email: "jessy@gmail.com",
-        name: "Jessy",
-        mobileno: "9988293849",
-        ratings: "3",
-        questions:
-          "lorem It is a long established fact that a reader will be distracted by the ",
-        supplierreply:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
-      },
-    ];
-    setTableData(rows);
+    getAllTableData("", "ALL", 0);
   }, []);
 
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
-
-  const handleSubmit = () => {
-    const errMsg = maxLengthValidator(replyData.value, 255);
+  const handleSubmit = async () => {
+    let errMsg = "";
+    if (replyData.value.length == 0) {
+      errMsg = validateMessage.field_required;
+    } else if (replyData.value.length > 255) {
+      errMsg = validateMessage.alpha_numeric_max_255;
+    }
     setError(errMsg);
-    if (!errMsg) {
-      setShowReplyModal({ show: false, id: null });
-      console.log(replyData);
-      setReplyData({ value: "", id: null });
+    if (errMsg == "") {
+      const payload = {
+        sellerReviewId: selectedData.sellerReviewsId,
+        sellerResponse: replyData.value,
+      };
+      const { data, err } = await reviewReply(payload);
+      if (data) {
+        getAllTableData("", "ALL", 0);
+        setShowReplyModal({ show: false, id: null });
+        setReplyData({ value: "", id: null });
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
     }
   };
 
@@ -191,9 +222,20 @@ const CustomerReview = () => {
             columns={columns}
             tableRows={tableRows}
             showCheckbox={false}
-            showSearchFilter={false}
+            showSearchFilter
             searchBarSizeMd={4}
             tableMaxHeight="none"
+            filterList={[...selectTypeList]}
+            handlePageEnd={(
+              searchText = "",
+              filterText = "ALL",
+              page = pageNumber
+            ) => {
+              getAllTableData(searchText, filterText, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       </Box>

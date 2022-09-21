@@ -46,8 +46,8 @@ const SpinWheel = forwardRef(
       "#EC3F3F",
       "#FF9000",
     ];
-    const onFinished = (winner) => {
-      console.log(winner);
+    const onFinished = () => {
+      // console.log(winner);
     };
 
     return (

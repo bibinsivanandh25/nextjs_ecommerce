@@ -11,6 +11,7 @@ const validateMessage = {
   alpha_numeric_max_50: "Max 50 alpha numeric characters can be entered",
   alpha_numeric_max_60: "Max 60 alpha numeric characters can be entered",
   alpha_numeric_max_65: "Max 65 alpha numeric characters can be entered",
+  alpha_numeric_max_90: "Max 90 alpha numeric characters can be entered",
   alpha_numeric_max_100: "Max 100 alpha numeric characters can be entered",
   alpha_numeric_max_255: "Max 255 alpha numeric characters can be entered",
   alpha_numeric_max_1000: "Max 1000 alpha numeric characters can be entered",
@@ -19,7 +20,7 @@ const validateMessage = {
   password:
     "Minimum 8 and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character @ $ $",
   userId: "Invalid Email / Mobile Number",
-  alphabets: "Only alpha characters are allowed",
-  alphabets_50: "Max 50 alpha characters can be entered",
+  alphabets: "Only alphabets are allowed",
+  alphabets_50: "Max 50 alphabets can be entered",
 };
 export default validateMessage;

@@ -2,16 +2,16 @@
 /* eslint-disable react/self-closing-comp */
 import { Typography, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
+import ButtonComponent from "@/atoms/ButtonComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import CancelOrReturnModal from "../CancelOrReturnModal";
 import ReusableBar from "../reusableorderscomponents/ReusableBar";
 import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 import styles from "./MyOrders.module.css";
-import ButtonComponent from "@/atoms/ButtonComponent";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import CancelOrReturnModal from "../CancelOrReturnModal";
-import ModalComponent from "@/atoms/ModalComponent";
 
 const list = [
   { label: "Last 30 days" },
@@ -277,17 +277,17 @@ const MyOrders = ({
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [modalType, setModalType] = useState("");
   const getProducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
-        // console.log(data.data);
+        // // console.log(data.data);
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
-  console.log(selectedProduct, "sad");
+  // console.log(selectedProduct, "sad");
 
   useEffect(() => {
     getProducts();

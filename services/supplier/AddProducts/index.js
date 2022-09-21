@@ -1,4 +1,3 @@
-import axios from "axios";
 import { getSession } from "next-auth/react";
 import serviceUtil from "services/utils";
 
@@ -38,9 +37,9 @@ const saveProduct = (payload) => {
 };
 
 const saveMedia = async (payload) => {
-  return axios
+  return serviceUtil
     .put(
-      `h${
+      `${
         process.env.DOMAIN
       }products/product-media?supplierId=${await getSession().then((res) => {
         return res.user.id;
@@ -61,9 +60,7 @@ const saveMedia = async (payload) => {
 };
 const getSet = (payload) => {
   return serviceUtil
-    .get(
-      `products/category-set-enabled/drop-down-list?mainCategoryId=${payload}`
-    )
+    .get(`products/category-set/drop-down-list?mainCategoryId=${payload}`)
     .then((res) => {
       const { data } = res;
       return { data };
@@ -84,6 +81,56 @@ const getSubCategory = (payload) => {
     });
 };
 
+const saveMediaFile = async (id, payload) => {
+  return serviceUtil
+    .put(`products/supplier/product-media/${id}`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data: data.data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const getCategorySubCategory = async (id) => {
+  return serviceUtil
+    .get(`products/sub-category/category-set/main-category/dropdown/${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data: data.data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
+  return serviceUtil
+    .post(
+      `products/master-product/duplicate-product?oldSupplierId=${oldSupplierId}&oldVariationId=${oldVariationId}`,
+      payload
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+const updateProduct = (payload) => {
+  return serviceUtil
+    .post(`products/master-product`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -91,4 +138,8 @@ export {
   createAttributes,
   saveProduct,
   saveMedia,
+  saveMediaFile,
+  getCategorySubCategory,
+  saveDuplicateProduct,
+  updateProduct,
 };

@@ -5,10 +5,16 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { CreateSupplierStoreCoupons } from "services/supplier/coupons/supplierstorecoupons";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { useUserInfo } from "services/hooks";
+import toastify from "services/utils/toastUtils";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
-const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
+const SupplierAddCoupons = ({
+  setOpenAddModal = () => {},
+  getTabledata = () => {},
+}) => {
   const tabList = [
     {
       title: "Limits",
@@ -53,16 +59,27 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
     validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
-    validateFields("categoryInclude");
-    validateFields("productsInclude");
+    // validateFields("categoryInclude");
+    // validateFields("productsInclude");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimitPerUser");
-    validateFields("minpurchaseamount");
-    validateFields("subcategory");
-    validateFields("maximumamount");
+    // validateFields("subcategory");
+    if (purchaseCheckbox) {
+      validateFields("minpurchaseamount");
+      validateFields("maximumamount");
+    }
     validateFields("couponAmount");
-
-    setError({ ...errObj });
+    const limitErrors = {
+      limitError: null,
+    };
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
+      limitErrors.limitError =
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+    }
+    setError({ ...errObj, ...limitErrors });
     let valid = true;
     Object.values(errObj).forEach((i) => {
       if (i) {
@@ -71,25 +88,38 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
     });
     return valid;
   };
-
-  const handleDraftClick = () => {
+  const { id } = useUserInfo();
+  const handleSubmit = async (couponStatus) => {
     const isValid = validateForm();
     if (isValid) {
-      console.log(formValues);
-    }
-  };
-
-  const handleSubmitClick = () => {
-    const isValid = validateForm();
-    if (isValid) {
-      console.log(formValues);
+      const payload = {
+        storeCouponCode: formValues.code,
+        minimumOrderValue: parseInt(formValues.minpurchaseamount, 10),
+        expirationDate: formValues.couponExpiryDate,
+        couponUsageLimit: formValues.usageLimitPerCoupon,
+        customerUsageLimit: parseInt(formValues.usageLimitPerUser, 10),
+        couponAmount: parseInt(formValues.couponAmount, 10),
+        couponStatus,
+        discountType: formValues.discountTypeObj.value?.toUpperCase(),
+        maximumDiscountValue: parseInt(formValues.maximumamount, 10),
+        supplierId: id,
+        description: formValues.description,
+      };
+      const { data, err } = await CreateSupplierStoreCoupons(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenAddModal(false);
+        getTabledata();
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
     }
   };
   return (
-    <Box className="p-2">
-      <Box className="fit-contant">
+    <Box className="p-2" sx={{ maxHeight: "80vh" }}>
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -98,13 +128,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
           Back
         </Typography>
       </Box>
-      <Grid
-        container
-        sx={{ height: "100%", minHeight: "80vh" }}
-        onClick={() => {
-          console.log("hellooo");
-        }}
-      >
+      <Grid container onClick={() => {}}>
         <Grid
           item
           sm={4}
@@ -114,10 +138,10 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
           sx={{
             borderRight: "1px solid lightgray",
             height: "100%",
-            minHeight: "80vh",
+            // minHeight: "80vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12}>
               <InputBox
                 label="Code"
@@ -130,7 +154,6 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
                 error={Boolean(error.code)}
                 helperText={error.code}
                 required
-                disabled
               />
             </Grid>
             <Grid item xs={12}>
@@ -154,8 +177,12 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
                 label="Discount Type"
                 inputlabelshrink
                 list={[
-                  { id: "percentage", label: "Percentage" },
-                  { id: "cash", label: "Cash" },
+                  {
+                    id: "percentage",
+                    label: "Percentage",
+                    value: "Percentage",
+                  },
+                  { id: "cash", label: "Cash", value: "Cash" },
                 ]}
                 value={formValues.discountTypeObj}
                 id="discountType"
@@ -304,8 +331,10 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
                         id="usageLimitPerUser"
                         name="usageLimitPerUser"
                         onInputChange={handleInputChange}
-                        error={Boolean(error.usageLimitPerUser)}
-                        helperText={error.usageLimitPerUser}
+                        error={
+                          Boolean(error.usageLimitPerUser) || error.limitError
+                        }
+                        helperText={error.usageLimitPerUse || error.limitError}
                         type="number"
                       />
                       <InfoOutlinedIcon className="ms-1 mt-2" />
@@ -329,7 +358,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
                 size="small"
                 className="bg-orange"
                 sx={{ width: "150px", textTransform: "none" }}
-                onClick={handleDraftClick}
+                onClick={() => handleSubmit("DRAFT")}
               >
                 Draft
               </Button>
@@ -340,7 +369,7 @@ const SupplierAddCoupons = ({ setOpenAddModal = () => {} }) => {
                 size="small"
                 sx={{ width: "150px", textTransform: "none" }}
                 className="bg-orange"
-                onClick={handleSubmitClick}
+                onClick={() => handleSubmit("PUBLISHED")}
               >
                 Submit
               </Button>

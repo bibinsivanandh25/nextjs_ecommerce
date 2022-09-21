@@ -1,10 +1,11 @@
-import React from "react";
-import Head from "next/head";
+import React, { useEffect, useState } from "react";
 // import { useSession } from "next-auth/react";
 // import { useUserInfo } from "services/hooks";
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
 // import { signOut } from "next-auth/react";
+import { useSelector } from "react-redux";
+import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 import HeaderComponent from "../HeaderComponent";
 import SideBarComponent from "../SideBarComponent";
 import CustomerSideBarComponent from "../CustomerSideBarComponent";
@@ -13,23 +14,22 @@ import Header from "../CustomerHeaderComponent";
 const Layout = ({ Component, pageProps }) => {
   // const { data: session } = useSession();
   const route = useRouter();
+  const user = useSelector((state) => state.user);
+  const [showAddressModal, setShowAddressModal] = useState(false);
   // const userInfo = useUserInfo();
   // useEffect(() => {
   //   if (userInfo && !route.pathname.includes(userInfo?.role.toLowerCase())) {
   //     signOut();
   //   }
   // }, [userInfo]);
+  useEffect(() => {
+    if (user.isAddressSaved === 0) {
+      setShowAddressModal(true);
+    }
+  }, []);
   return (
     <>
-      <Head>
-        <title> MrMrsCart </title>
-        <meta name="description" content="MrMrsCart project" />
-        <link rel="icon" href="/assets/logo.jpeg" />
-      </Head>
       <div className="mnh-100vh">
-        <div id="loader" style={{ display: "none" }}>
-          <div className="spinner" />
-        </div>
         <div className="h-100">
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||
@@ -46,9 +46,17 @@ const Layout = ({ Component, pageProps }) => {
           route.pathname.startsWith("/admin") ||
           route.pathname[route.pathname.length - 1] === "/" ? (
             <SideBarComponent>
-              {/* <Box className="w-100 h-100 p-2 pb-1"> */}
               <Component {...pageProps} />
-              {/* </Box> */}
+              {showAddressModal ? (
+                <AddAddressModal
+                  showAddressModal={showAddressModal}
+                  type="add"
+                  setShowAddAddressModal={setShowAddressModal}
+                  showCloseIcon={false}
+                  disableCancel
+                  supplierId={user.supplierId}
+                />
+              ) : null}
             </SideBarComponent>
           ) : (
             <CustomerSideBarComponent>

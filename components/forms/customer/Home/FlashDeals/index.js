@@ -1,21 +1,21 @@
 import { Box, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 import CategoryCards from "@/atoms/CategoryCards";
 
 const FlashDeals = () => {
   const [categories, setCategories] = useState([]);
 
   const getproducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products/categories")
       .then((data) => {
-        console.log(data.data);
+        // console.log(data.data);
         setCategories([...data.data, ...data.data, ...data.data, ...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   const route = useRouter();

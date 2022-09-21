@@ -4,14 +4,23 @@ import validateMessage from "constants/validateMessages";
 import Image from "next/image";
 import BankLogo from "public/assets/images/banklogo.png";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  AddBankDetails,
+  EditBankDetails,
+} from "services/supplier/myaccount/bankdetails";
 
-const AddBankDetails = ({
+const AddBankDetailsModal = ({
   BankDetails,
+  isEdit = false,
   showModal = false,
   setShowModal = () => {},
   setBankDetails = () => {},
+  getAllBankData = () => {},
 }) => {
   const [errorObj, setErrorObj] = useState({});
+
+  const user = useSelector((state) => state.user?.supplierId);
 
   const validateFields = () => {
     let flag = false;
@@ -69,9 +78,41 @@ const AddBankDetails = ({
     setErrorObj({ ...errObj });
     return flag;
   };
+
+  const addBank = async () => {
+    const payload = {
+      bankName: BankDetails["Bank Name"],
+      accountNumber: BankDetails["Account Number"],
+      accountHolderName: BankDetails["Account Holder Name"],
+      ifscCode: BankDetails["IFSC code"],
+      supplierId: user,
+    };
+    const { data } = await AddBankDetails(payload);
+    if (data) {
+      setShowModal(false);
+      getAllBankData();
+    }
+  };
+
+  const editBank = async () => {
+    const payload = {
+      bankId: BankDetails.id,
+      bankName: BankDetails["Bank Name"],
+      accountNumber: BankDetails["Account Number"],
+      accountHolderName: BankDetails["Account Holder Name"],
+      ifscCode: BankDetails["IFSC code"],
+    };
+    // console.log(BankDetails);
+    const { data } = await EditBankDetails(payload);
+    if (data) {
+      setShowModal(false);
+      getAllBankData();
+    }
+  };
+
   return (
     <ModalComponent
-      ModalTitle="Add Bank Details"
+      ModalTitle={isEdit ? "Edit Bank Details" : "Add Bank Details"}
       showClearBtn={false}
       open={showModal}
       onCloseIconClick={() => {
@@ -82,7 +123,11 @@ const AddBankDetails = ({
       onSaveBtnClick={() => {
         const error = validateFields();
         if (!error) {
-          setShowModal(false);
+          if (!isEdit) {
+            addBank();
+          } else {
+            editBank();
+          }
         } else {
           setShowModal(true);
         }
@@ -91,9 +136,12 @@ const AddBankDetails = ({
       <div className="d-flex flex-column justify-content-center align-items-center">
         <Image src={BankLogo} height={75} width={75} />
         <div className="fw-bold">Bank Details</div>
-        <div className="my-2 ">
+        <div className="my-2 w-100">
           <InputBox
+            fullWidth
             required
+            inputlabelshrink
+            placeholder="Bank Name"
             className="w-100"
             helperText={errorObj.bankName}
             error={errorObj.bankName?.length}
@@ -108,9 +156,12 @@ const AddBankDetails = ({
             }}
           />
         </div>
-        <div className="my-2 ">
+        <div className="my-2 w-100 ">
           <InputBox
+            fullWidth
             required
+            inputlabelshrink
+            placeholder="Account Holder Name"
             helperText={errorObj.accountHolderName}
             error={errorObj.accountHolderName?.length}
             className="w-100"
@@ -125,9 +176,12 @@ const AddBankDetails = ({
             }}
           />
         </div>
-        <div className="my-2 ">
+        <div className="my-2 w-100 ">
           <InputBox
+            fullWidth
             required
+            inputlabelshrink
+            placeholder="Bank Account Number"
             type="number"
             className="w-100"
             helperText={errorObj.accountNumber}
@@ -143,8 +197,11 @@ const AddBankDetails = ({
             }}
           />
         </div>
-        <div className="my-2 ">
+        <div className="my-2 w-100 ">
           <InputBox
+            fullWidth
+            inputlabelshrink
+            placeholder="Re-Enter Bank Account Number"
             required
             type="number"
             className="w-100"
@@ -161,8 +218,11 @@ const AddBankDetails = ({
             value={BankDetails?.ReBankAcc ? BankDetails?.ReBankAcc : ""}
           />
         </div>
-        <div className="my-2 ">
+        <div className="my-2 w-100 ">
           <InputBox
+            fullWidth
+            inputlabelshrink
+            placeholder="IFSC code"
             required
             className="w-100"
             size="small"
@@ -182,4 +242,4 @@ const AddBankDetails = ({
     </ModalComponent>
   );
 };
-export default AddBankDetails;
+export default AddBankDetailsModal;

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import DropDownWithAddNewOptions from "@/atoms/DropDownWithAddNewOptions";
+import ButtonComponent from "@/atoms/ButtonComponent";
 import CreateCategoriesModal from "./CreateCategoriesModal";
 import CreateVariationModal from "./CreateVariationModal";
-import ButtonComponent from "@/atoms/ButtonComponent";
 
 const CreateCategories = ({ setShowCreateCategories }) => {
   const [variations, setVariations] = useState([
@@ -61,12 +61,6 @@ const CreateCategories = ({ setShowCreateCategories }) => {
           <Box className="">
             <CustomIcon
               onIconClick={() => {
-                console.log(
-                  "name ",
-                  val.variationName,
-                  " Attributes ",
-                  val.variationAttributes
-                );
                 setVariationId(index);
                 setVariationName(val.variationName);
                 setcurrentVariationName(val.variationName);
@@ -211,6 +205,7 @@ const CreateCategories = ({ setShowCreateCategories }) => {
                       setOpenSetDropDown(false);
                       setOpenSubCategoryDropDown(false);
                     }}
+                    inputLabelShrink={false}
                   />
                 </Box>
               )}

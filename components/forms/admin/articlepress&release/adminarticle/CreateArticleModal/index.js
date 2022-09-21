@@ -3,10 +3,20 @@ import { AddCircle } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
+import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
-import DropdownComponent from "@/atoms/DropdownComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import TextEditor from "@/atoms/TextEditor";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+
+let errObj = {
+  articleTitle: false,
+  externalLink: false,
+  image: false,
+  longDescription: false,
+  shortDescription: false,
+  category: false,
+};
 
 const CreateArticleModal = ({
   openCreateArticleModal,
@@ -15,6 +25,12 @@ const CreateArticleModal = ({
   const [image, setImage] = useState(null);
   const [articleTitle, setArticleTitle] = useState("");
   const [externalLink, setExternalLink] = useState("");
+  const [shortDescription, setShortDescription] = useState(null);
+  const [longDescription, setLongDescription] = useState(null);
+  const [category, setCategory] = useState("");
+  const [error, setError] = useState(errObj);
+
+  const categoryList = [{ label: "Category One" }, { label: "Category Two" }];
 
   const onImgeChange = (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -26,11 +42,58 @@ const CreateArticleModal = ({
     }
   };
 
+  const handleError = () => {
+    errObj = {
+      articleTitle: false,
+      externalLink: false,
+      image: false,
+      longDescription: false,
+      shortDescription: false,
+      categoryList: false,
+    };
+    if (articleTitle === "") {
+      errObj.articleTitle = true;
+    }
+    if (externalLink === "") {
+      errObj.externalLink = true;
+    }
+    if (image === null) {
+      errObj.image = true;
+    }
+    if (longDescription === null) {
+      errObj.longDescription = true;
+    }
+    if (shortDescription === null) {
+      errObj.shortDescription = true;
+    }
+    if (category === "") {
+      errObj.category = true;
+    }
+    return errObj;
+  };
+
   const onClose = () => {
+    errObj = {
+      articleTitle: false,
+      externalLink: false,
+      image: false,
+      longDescription: false,
+      shortDescription: false,
+      category: false,
+    };
+    setError(errObj);
     setOpenCreateArticleModal(false);
     setArticleTitle("");
     setExternalLink("");
+    setCategory("");
+    setShortDescription(null);
+    setLongDescription(null);
     setImage(null);
+  };
+
+  const handleSaveBtnClick = () => {
+    const theErrObj = handleError();
+    setError(theErrObj);
   };
 
   return (
@@ -48,7 +111,7 @@ const CreateArticleModal = ({
           onClose();
         }}
         onSaveBtnClick={() => {
-          // handleSaveBtnClickOfEditModal();
+          handleSaveBtnClick();
         }}
         onClearBtnClick={() => {
           // handleClearAll();
@@ -74,13 +137,13 @@ const CreateArticleModal = ({
                       onChange={onImgeChange}
                     />
                   </Box>
-                  {/* {error.images ? (
-                  <Typography className="fs-12 mt-1 text-danger">
-                    Image Required
-                  </Typography>
-                ) : (
-                  ""
-                )} */}
+                  {error.image ? (
+                    <Typography className="fs-12 mt-1 text-danger">
+                      Image Required
+                    </Typography>
+                  ) : (
+                    ""
+                  )}
                 </Box>
               </label>
             ) : (
@@ -108,19 +171,33 @@ const CreateArticleModal = ({
               onInputChange={(e) => {
                 setArticleTitle(e.target.value);
               }}
+              error={error.articleTitle}
+              helperText={
+                error.articleTitle ? validateMessage.field_required : ""
+              }
             />
             <Box className="mt-3">
-              <DropdownComponent
+              <SimpleDropdownComponent
                 placeholder="eg. Simple Product"
                 label="Category"
                 size="small"
+                list={categoryList}
+                onDropdownSelect={(value) => {
+                  setCategory(value);
+                }}
+                helperText={
+                  error.category ? validateMessage.field_required : ""
+                }
+                inputlabelshrink
               />
             </Box>
             <Box className="mt-3">
-              <DropdownComponent
+              <SimpleDropdownComponent
                 placeholder="eg. Simple Product"
                 label="Applicable For"
                 size="small"
+                className="mb-3"
+                inputlabelshrink
               />
             </Box>
             <InputBox
@@ -131,6 +208,10 @@ const CreateArticleModal = ({
               onInputChange={(e) => {
                 setExternalLink(e.target.value);
               }}
+              error={error.externalLink}
+              helperText={
+                error.externalLink ? validateMessage.field_required : ""
+              }
             />
           </Box>
           <Box className="ms-3">
@@ -141,7 +222,23 @@ const CreateArticleModal = ({
               >
                 Short Description
               </Typography>
-              <TextEditor className="w-100" />
+              <TextEditor
+                getContent={(content) => {
+                  // console.log(content);
+                  setShortDescription(content);
+                }}
+                content={shortDescription}
+                className="w-100"
+              />
+              <Typography className="h-5">
+                {error.shortDescription ? (
+                  <span className="text-danger">
+                    {validateMessage.field_required}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </Typography>
             </Box>
             <Box className="border border-2 p-3 rounded mt-4 position-relative">
               <Typography
@@ -150,7 +247,22 @@ const CreateArticleModal = ({
               >
                 Long Description
               </Typography>
-              <TextEditor className="w-100" />
+              <TextEditor
+                content={longDescription}
+                getContent={(content) => {
+                  setLongDescription(content);
+                }}
+                className="w-100"
+              />
+              <Typography className="h-5">
+                {error.longDescription ? (
+                  <span className="text-danger">
+                    {validateMessage.field_required}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </Typography>
             </Box>
           </Box>
         </Box>

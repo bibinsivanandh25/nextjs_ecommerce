@@ -96,6 +96,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
     ) {
       flag = true;
       errObj.sale_price = validateMessage.decimal_2digits;
+    } else if (pricingFormData.sale_price > pricingFormData.mrp) {
+      flag = true;
+      errObj.sale_price = "Sale price should not be greater than MRP";
     }
     if (pricingFormData.mrp === "") {
       flag = true;
@@ -128,7 +131,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
       flag = true;
       errObj.height = validateMessage.field_required;
     }
-    if (pricingFormData.sale_price_logistics === "") {
+    if (freeDeliveryCheckbox && pricingFormData.sale_price_logistics === "") {
       flag = true;
       errObj.sale_price_logistics = validateMessage.field_required;
     }
@@ -142,6 +145,41 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         return ["pricing", { ...pricingFormData, freeDeliveryCheckbox }];
       },
       validate,
+      clearPage: () => {
+        setPricingFormData({
+          sale_price: "",
+          mrp: "",
+          return_order_accepted: false,
+          cash_on_accepted: false,
+          product_weight: "",
+          length: "",
+          width: "",
+          height: "",
+          delivery_charge: "",
+          sale_price_logistics: "",
+          returnorder: {},
+        });
+        setErrorObj({
+          sale_price: "",
+          mrp: "",
+          return_order_accepted: false,
+          cash_on_accepted: false,
+          product_weight: "",
+          length: "",
+          width: "",
+          height: "",
+          delivery_charge: "",
+          sale_price_logistics: "",
+        });
+        setDefaultZoneData({
+          zoneA: "",
+          zoneB: "",
+          zoneC: "",
+          zoneD: "",
+          zoneE: "",
+        });
+        setFreeDeliveryCheckbox(false);
+      },
     };
   });
 
@@ -151,14 +189,22 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
 
   const handleInputChange = (e) => {
     setPricingFormData((prev) => {
-      return { ...prev, [e.target.id]: e.target.value };
+      return {
+        ...prev,
+        [e.target.id]:
+          e.target.value === "" ? e.target.value : Math.abs(e.target.value),
+      };
     });
   };
   return (
-    <Paper className="w-100 p-3 ps-4 mxh-75vh overflow-y-scroll">
+    <Paper
+      className="w-100 p-3 ps-4  overflow-y-scroll"
+      sx={{ maxHeight: "68vh !important" }}
+    >
       <Grid container className="w-100" spacing={2}>
         <Grid item md={6}>
           <InputBox
+            required
             id="sale_price"
             label="Sale Price"
             onInputChange={handleInputChange}
@@ -172,6 +218,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={6}>
           <InputBox
+            required
             id="mrp"
             label="MRP"
             onInputChange={handleInputChange}
@@ -195,11 +242,12 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="h-5">
+            <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
               Provide Free Delivery & Return To Your Customer
             </Typography>
           </Box>
           <InputBox
+            required
             id="sale_price_logistics"
             label="Sale Price With Logistics Charges"
             placeholder="Sale Price With Logistics Charges"
@@ -228,7 +276,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
               Return Order Accepted
             </Typography>
           </div>
@@ -250,12 +298,15 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
               showIcon
               varient="filled"
             />
-            <Typography className="fs-12 mt-1">Cash on Delivery</Typography>
+            <Typography className="fs-12 mt-1" sx={{ marginLeft: "-20px" }}>
+              Cash on Delivery
+            </Typography>
           </div>
         </Grid>
         {pricingFormData.return_order_accepted && (
           <Grid item xs={12}>
             <SimpleDropdownComponent
+              required
               list={returnOrderData}
               id="returnorder"
               label="Return Period"
@@ -340,6 +391,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid> */}
         <Grid item md={12}>
           <InputBox
+            required
             id="product_weight"
             label="Product Weight(inclusive of package)"
             onInputChange={handleInputChange}
@@ -353,8 +405,9 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="length"
-            label="Length(inclusive of package)"
+            label="Length(inclusive of packages)"
             onInputChange={handleInputChange}
             value={pricingFormData.length}
             inputlabelshrink
@@ -366,6 +419,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="height"
             label="Height(inclusive of package)"
             onInputChange={handleInputChange}
@@ -379,6 +433,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
         </Grid>
         <Grid item md={12}>
           <InputBox
+            required
             id="width"
             label="Width(inclusive of package)"
             onInputChange={handleInputChange}
@@ -410,6 +465,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
           <Grid container spacing={2} className="mt-2">
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_A"
                 label="Zone A"
                 onInputChange={(e) => {
@@ -425,6 +481,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_B"
                 label="Zone B"
                 onInputChange={(e) => {
@@ -440,6 +497,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_c"
                 label="Zone C"
                 onInputChange={(e) => {
@@ -455,6 +513,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_D"
                 label="Zone D"
                 onInputChange={(e) => {
@@ -470,6 +529,7 @@ const PricingForm = forwardRef(({ formData = {} }, ref) => {
             </Grid>{" "}
             <Grid item xs={12}>
               <InputBox
+                required
                 id="Zone_E"
                 label="Zone E"
                 onInputChange={(e) => {

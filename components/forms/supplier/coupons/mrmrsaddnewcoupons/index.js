@@ -4,13 +4,25 @@ import { Grid, Paper, Button, Box, Typography } from "@mui/material";
 import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import toastify from "services/utils/toastUtils";
+import {
+  CreateStoreCoupons,
+  getCategories,
+  getProductsBasedOnSubCategory,
+  getSubCategoryBasedOnMainCategory,
+} from "services/supplier/coupons/mrmrsCartcoupons";
+import { useUserInfo } from "services/hooks";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
-const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
+const MrMrsAddNewCoupons = ({
+  setOpenAddModal = () => {},
+  getTableData = () => {},
+}) => {
   const tabList = [
     {
       title: "Restriction",
@@ -25,6 +37,9 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
   const [formValues, setFormValues] = useState({});
   const [error, setError] = useState({});
   const [purchaseCheckbox, setPurchaseCheckbox] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({
@@ -32,9 +47,26 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
       [name]: value,
     }));
   };
+  const getAllCategories = async () => {
+    const { data } = await getCategories();
+    const finalData = [];
+    if (data) {
+      data.forEach((item) => {
+        finalData.push({
+          id: item.mainCategoryId,
+          value: item.mainCategoryName,
+          label: item.mainCategoryName,
+        });
+      });
+      setCategories([...finalData]);
+    }
+  };
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
   const validateForm = () => {
-    const errObj = { ...error };
+    const errObj = {};
 
     const validateFields = (id, validation, errorMessage) => {
       if (!formValues[id]) {
@@ -56,46 +88,107 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
       /^.{1,255}$/,
       validateMessage.alpha_numeric_max_255
     );
-    validateFields("code");
+    // validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
     validateFields("categoryInclude");
-    validateFields("productsInclude");
+    validateFields("productsIncludeObj");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimittoXTimes");
     validateFields("usageLimitPerUser");
-    validateFields("minpurchaseamount");
+    if (purchaseCheckbox) {
+      validateFields("minpurchaseamount");
+    }
     validateFields("subcategory");
+    // validateFields("new");
 
-    setError({ ...errObj });
+    const limitErrors = {
+      limitError: null,
+    };
+    if (
+      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerUser, 10)
+    ) {
+      limitErrors.limitError =
+        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+    }
+    const finalErrorObj = { ...errObj, ...limitErrors };
+    setError({ ...finalErrorObj });
     let valid = true;
-    Object.values(errObj).forEach((i) => {
+    Object.values(finalErrorObj).forEach((i) => {
       if (i) {
         valid = false;
       }
     });
     return valid;
   };
-
-  const handleDraftClick = () => {
-    const isValid = validateForm();
-    if (isValid) {
-      console.log(formValues);
+  const { id } = useUserInfo();
+  const getSubCategories = async (categoryId) => {
+    const { data } = await getSubCategoryBasedOnMainCategory(categoryId);
+    const finalData = [];
+    if (data) {
+      data.forEach((item) => {
+        finalData.push({
+          id: item.subCategoryId,
+          value: item.subCategoryName,
+          label: item.subCategoryName,
+        });
+      });
     }
+    setSubCategories([...finalData]);
   };
 
-  const handleSubmitClick = () => {
+  const getProducts = async (subCategoryId) => {
+    const { data } = await getProductsBasedOnSubCategory(id, subCategoryId);
+    const finalData = [];
+    if (data) {
+      data.forEach((item) => {
+        finalData.push({
+          id: item.productVariationId,
+          value: item.productTitle,
+          title: item.productTitle,
+        });
+      });
+    }
+    setProducts([...finalData]);
+  };
+
+  const handleSubmitClick = async (couponStatus) => {
+    // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
+    // console.log(isValid, "isValid");
     if (isValid) {
-      console.log(formValues);
+      const payload = {
+        description: formValues.description,
+        discountType: formValues.discountTypeObj?.value,
+        couponAmount: parseInt(formValues.couponAmount, 10),
+        subCategoryIncluded: formValues.subcategoryObj?.value,
+        couponExpiryDate: formValues.couponExpiryDate,
+        categoryIncluded: formValues.categoryIncludeObj?.value,
+        productsIncluded: formValues.productsIncludeObj?.map(
+          (ele) => ele?.value
+        ),
+        usageLimitPerCoupon: formValues.usageLimitPerCoupon,
+        usageLimitPerUser: parseInt(formValues.usageLimitPerUser, 10),
+        usageLimitToXItems: parseInt(formValues.usageLimittoXTimes, 10),
+        couponStatus,
+      };
+      const { data, err } = await CreateStoreCoupons(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenAddModal(false);
+        getTableData();
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
     }
   };
 
   return (
-    <Paper sx={{ height: "100%", minHeight: "80vh" }}>
-      <Box className="fit-content">
+    <Paper sx={{ minHeight: "80vh", py: 1 }}>
+      <Box className="">
         <Typography
-          className="h-5 color-orange cursor-pointer d-flex align-items-center ms-2"
+          className="h-5 fit-content color-orange cursor-pointer d-flex align-items-center ms-2"
           onClick={() => {
             setOpenAddModal(false);
           }}
@@ -104,7 +197,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
           Back
         </Typography>
       </Box>
-      <Grid container sx={{ height: "100%", minHeight: "80vh" }}>
+      <Grid container sx={{ height: "100%" }}>
         <Grid
           item
           xs={4}
@@ -114,24 +207,25 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
           sx={{
             borderRight: "1px solid lightgray",
             height: "100%",
-            minHeight: "80vh",
+            minHeight: "73vh",
           }}
         >
-          <Grid container item xs={10} spacing={2} pt={4}>
-            <Grid item xs={12}>
+          <Grid container item xs={10} rowGap={2} pt={4}>
+            <Grid item xs={12} display="flex">
               <InputBox
+                disabled
                 label="Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
                 id="code"
                 name="code"
-                onInputChange={handleInputChange}
-                error={Boolean(error.code)}
-                helperText={error.code}
-                required
-                disabled
+                // onInputChange={handleInputChange}
+                // error={Boolean(error.code)}
+                // helperText={error.code}
+                // required
               />
+              <InfoOutlinedIcon className="ms-1 mt-2" />
             </Grid>
             <Grid item xs={12}>
               <InputBox
@@ -154,8 +248,12 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                 label="Discount Type"
                 inputlabelshrink
                 list={[
-                  { id: "percentage", label: "Percentage" },
-                  { id: "cash", label: "Cash" },
+                  {
+                    id: "percentage",
+                    label: "Percentage",
+                    value: "PERCENTAGE",
+                  },
+                  { id: "cash", label: "Cash", value: "CASH" },
                 ]}
                 value={formValues.discountTypeObj}
                 id="discountType"
@@ -194,12 +292,14 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                 value={formValues.couponExpiryDate}
                 id="couponExpiryDate"
                 name="couponExpiryDate"
-                onDateChange={(val) =>
+                onDateChange={(val) => {
+                  // console.log(val);
+
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,
-                  }))
-                }
+                  }));
+                }}
                 error={Boolean(error.couponExpiryDate)}
                 helperText={error.couponExpiryDate}
                 required
@@ -255,7 +355,16 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                         ? "bg-light-orange"
                         : "bg-light-gray text-dark"
                     } shadow-none`}
-                    onClick={() => setSelectedTab(tab.id)}
+                    onClick={() => {
+                      setSelectedTab(tab.id);
+                      setFormValues((pre) => ({
+                        ...pre,
+                        usageLimittoXTimes: formValues.productsIncludeObj
+                          ?.length
+                          ? formValues.productsIncludeObj?.length
+                          : "",
+                      }));
+                    }}
                   >
                     {tab.title}
                   </Button>
@@ -274,13 +383,17 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                         value={formValues.categoryIncludeObj}
                         id="categoryInclude"
                         name="categoryInclude"
-                        onDropdownSelect={(val) =>
+                        onDropdownSelect={(val) => {
+                          if (val) {
+                            getSubCategories(val.id);
+                          }
                           setFormValues((prev) => ({
                             ...prev,
                             categoryInclude: val ? val.id : null,
                             categoryIncludeObj: val,
-                          }))
-                        }
+                          }));
+                        }}
+                        list={[...categories]}
                         error={Boolean(error.categoryInclude)}
                         helperText={error.categoryInclude}
                       />
@@ -296,38 +409,49 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                         value={formValues.subcategoryObj}
                         id="subcategory"
                         name="subcategory"
-                        onDropdownSelect={(val) =>
+                        onDropdownSelect={(val) => {
+                          if (val) {
+                            getProducts(val.id);
+                          }
                           setFormValues((prev) => ({
                             ...prev,
                             subcategory: val ? val.id : null,
                             subcategoryObj: val,
-                          }))
-                        }
+                          }));
+                        }}
+                        list={[...subCategories]}
                         error={Boolean(error.subcategory)}
                         helperText={error.subcategory}
                       />
                       <InfoOutlinedIcon className="ms-2 mt-2" />
                     </div>
                   </Grid>
-                  <Grid item xs={12}>
-                    <div className="d-flex h-100">
-                      <SimpleDropdownComponent
-                        label="Products Include"
-                        size="small"
-                        inputlabelshrink
-                        value={formValues.productsIncludeObj}
-                        id="productsInclude"
-                        name="productsInclude"
-                        onDropdownSelect={(val) =>
-                          setFormValues((prev) => ({
-                            ...prev,
-                            productsInclude: val ? val.id : null,
-                            productsIncludeObj: val,
-                          }))
-                        }
-                        error={Boolean(error.productsInclude)}
-                        helperText={error.productsInclude}
-                      />
+                  <Grid item xs={12} className="">
+                    <div className="d-flex">
+                      <div className="w-100">
+                        <MultiSelectComponent
+                          label="Products Include"
+                          size="small"
+                          inputlabelshrink
+                          fullWidth
+                          value={formValues.productsIncludeObj}
+                          id="productsInclude"
+                          name="productsInclude"
+                          onSelectionChange={(e, val) => {
+                            // console.log(val, "ASds");
+
+                            setFormValues((prev) => ({
+                              ...prev,
+                              productsIncludeObj: val,
+                            }));
+                          }}
+                          // onDropdownSelect={(val) =>
+                          // }
+                          list={[...products]}
+                          error={Boolean(error.productsIncludeObj)}
+                          helperText={error.productsIncludeObj}
+                        />
+                      </div>
                       <InfoOutlinedIcon className="ms-2 mt-2" />
                     </div>
                   </Grid>
@@ -351,6 +475,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                   </Grid>
                   <Grid item xs={11}>
                     <InputBox
+                      disabled
                       placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
@@ -373,8 +498,10 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                         id="usageLimitPerUser"
                         name="usageLimitPerUser"
                         onInputChange={handleInputChange}
-                        error={Boolean(error.usageLimitPerUser)}
-                        helperText={error.usageLimitPerUser}
+                        error={Boolean(
+                          error.usageLimitPerUser || error.limitError
+                        )}
+                        helperText={error.usageLimitPerUser || error.limitError}
                         type="number"
                       />
                       <InfoOutlinedIcon className="ms-1 mt-2" />
@@ -398,7 +525,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                 size="small"
                 className="bg-orange"
                 sx={{ width: "150px", textTransform: "none" }}
-                onClick={handleDraftClick}
+                onClick={() => handleSubmitClick("DRAFT")}
               >
                 Draft
               </Button>
@@ -409,7 +536,7 @@ const MrMrsAddNewCoupons = ({ setOpenAddModal = () => {} }) => {
                 size="small"
                 sx={{ width: "150px", textTransform: "none" }}
                 className="bg-orange"
-                onClick={handleSubmitClick}
+                onClick={() => handleSubmitClick("PUBLISHED")}
               >
                 Submit
               </Button>

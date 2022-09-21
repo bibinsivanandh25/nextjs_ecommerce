@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import axios from "axios";
-import ReusableBar from "../reusableorderscomponents/ReusableBar";
-import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
+import serviceUtil from "services/utils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import ReusableBar from "../reusableorderscomponents/ReusableBar";
+import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
 
 const CheckBox = () => {
   const [checked, setChecked] = useState(false);
@@ -24,14 +24,14 @@ const NotYetShipped = () => {
   const [products, setProducts] = useState([]);
 
   const getProducts = async () => {
-    await axios
+    await serviceUtil
       .get("https://fakestoreapi.com/products")
       .then((data) => {
-        // console.log(data.data);
+        // //console.log(data.data);
         setProducts([...data.data]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
 

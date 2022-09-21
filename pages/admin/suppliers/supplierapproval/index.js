@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
@@ -7,7 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { inviteSupplier } from "services/admin/supplier/supplierapproval";
-import axios from "axios";
+import serviceUtil from "services/utils";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -112,8 +112,8 @@ const SupplierApproval = () => {
       supplierId: id,
       status: value,
     };
-    await axios
-      .put(`${process.env.DOMAIN}users/admin/supplier-approval`, payload, {
+    await serviceUtil
+      .put(`users/admin/supplier-approval`, payload, {
         headers: { userId: "ADM01234" },
       })
       .then((res) => {
@@ -138,14 +138,18 @@ const SupplierApproval = () => {
             <span className="h-5" id="gstinnumber">
               {item.gstin}
             </span>
-            <CustomIcon
-              type="filecopy"
-              size="small"
-              className="fs-18"
-              onIconClick={() => {
-                copyText();
-              }}
-            />
+            <Tooltip title="copy" placement="top">
+              <Typography className="text-truncate text-center h-5 fw-bold">
+                <CustomIcon
+                  type="filecopy"
+                  size="small"
+                  className="fs-18"
+                  onIconClick={() => {
+                    copyText();
+                  }}
+                />
+              </Typography>
+            </Tooltip>
           </Box>
         ),
         col5: item.mainCategories.join(", "),
@@ -188,10 +192,8 @@ const SupplierApproval = () => {
     setTableRows(rowDatas);
   };
   const getAllTableData = async () => {
-    await axios
-      .get(
-        `${process.env.DOMAIN}users/admin/supplier/supplier-status/0/5?status=INITIATED`
-      )
+    await serviceUtil
+      .get(`users/admin/supplier/supplier-status/0/5?status=INITIATED`)
       .then((res) => {
         setMasterData(res.data.data);
         getTableRows(res.data.data.supplierRegistrations);
@@ -378,6 +380,7 @@ const SupplierApproval = () => {
           onCloseIconClick={() => {
             setModalUserData("");
             setOpenInviteModal(false);
+            setModalInputError(false);
           }}
           ModalTitle="Invite Supplier"
           ClearBtnText="Close"
@@ -386,7 +389,9 @@ const SupplierApproval = () => {
             handleInviteSupplierClick();
           }}
           onClearBtnClick={() => {
+            setModalUserData("");
             setOpenInviteModal(false);
+            setModalInputError(false);
           }}
           footerClassName="justify-content-end"
         >

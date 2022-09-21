@@ -23,11 +23,11 @@ import {
 } from "services/supplier/AddProducts";
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
-import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -60,7 +60,7 @@ const ProductsLayout = ({
     limit_per_order: "",
     selectb2binvoice: [],
     tradeMarkCheck: false,
-    category: {},
+    category: null,
     brandradio: true,
     genericradio: false,
     b2bdocument: [],
@@ -84,7 +84,7 @@ const ProductsLayout = ({
     tags: "",
     limit_per_order: "",
     selectb2binvoice: "",
-    category: null,
+    category: "",
   });
   const [openModal, setOpenModal] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
@@ -258,7 +258,10 @@ const ProductsLayout = ({
       errObj.selectb2binvoice = validateMessage.field_required;
       flag = true;
     }
-    if (mainFormData.category === null) {
+    if (
+      mainFormData.category === null ||
+      Object.keys(mainFormData.category)?.length === 0
+    ) {
       errObj.category = validateMessage.field_required;
       flag = true;
     }
@@ -269,8 +272,8 @@ const ProductsLayout = ({
     if (mainFormData.short_description.text === "") {
       errObj.short_description.text = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.short_description.text.length > 255) {
-      errObj.short_description.text = validateMessage.alpha_numeric_max_255;
+    } else if (mainFormData.short_description.text.length > 90) {
+      errObj.short_description.text = validateMessage.alpha_numeric_max_90;
       flag = true;
     }
     if (mainFormData.long_description.text === "") {
@@ -287,8 +290,8 @@ const ProductsLayout = ({
     if (mainFormData.limit_per_order === "") {
       errObj.limit_per_order = validateMessage.field_required;
       flag = true;
-    } else if (mainFormData.limit_per_order.length < 1) {
-      errObj.limit_per_order = "Limit per order should atleast be 1";
+    } else if (parseInt(mainFormData.limit_per_order, 10) < 1) {
+      errObj.limit_per_order = "Limit per order should be greater then 0";
       flag = true;
     }
     setErrorObj({ ...errObj });
@@ -333,8 +336,6 @@ const ProductsLayout = ({
 
   const handleCategoryModalClose = () => {
     setShowCategoryModal(false);
-    setSetsData([]);
-    setSubCategoryData([]);
   };
   const handleCategorySubmitClick = () => {
     const errObj = {
@@ -526,7 +527,7 @@ const ProductsLayout = ({
             10
           ),
           rtoAccepted: formData.pricing.return_order_accepted,
-          rtoDays: formData.pricing.returnorder.value,
+          rtoDays: formData.pricing.returnorder?.value,
           codAvailable: formData.pricing.cash_on_accepted,
           deliveryCharge: formData.pricing.delivery_charge,
           packageLength: parseFloat(formData.pricing.length),
@@ -580,7 +581,7 @@ const ProductsLayout = ({
                       handleCloseClick={() => {
                         setImageData((prev) => {
                           const temp = [...prev];
-                          temp.splice(index);
+                          temp.splice(index, 1);
                           return [...temp];
                         });
                       }}
@@ -616,6 +617,7 @@ const ProductsLayout = ({
               <Grid container spacing={2}>
                 <Grid item md={12}>
                   <InputBox
+                    required
                     id="brand"
                     label="Brand"
                     onInputChange={(e) => {
@@ -635,6 +637,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
+                    required
                     legend="Short Description"
                     placeholder="Enter short description"
                     onChange={(e) => {
@@ -664,6 +667,7 @@ const ProductsLayout = ({
                 </Grid>
                 <Grid item md={12}>
                   <TextAreaComponent
+                    required
                     legend="Long Description"
                     value={mainFormData.long_description.text}
                     placeholder="Enter long description"
@@ -696,6 +700,7 @@ const ProductsLayout = ({
                     list={categoryData}
                     id="category"
                     label="Select Category"
+                    required
                     size="small"
                     inputlabelshrink
                     error={errorObj.category !== ""}
@@ -709,6 +714,14 @@ const ProductsLayout = ({
                           setsValue: {},
                           subCategoryValue: {},
                         }));
+                      } else {
+                        setMainFormData((prev) => ({
+                          ...prev,
+                          setsValue: {},
+                          subCategoryValue: {},
+                        }));
+                        setSubCategoryData([]);
+                        setSetsData([]);
                       }
                       setMainFormData((pre) => {
                         return {
@@ -722,14 +735,17 @@ const ProductsLayout = ({
                     value={mainFormData.category}
                     placeholder="Select Category"
                   />
-                  <Typography
-                    className="h-6 mt-1 cursor-pointer color-blue"
-                    onClick={() => {
-                      setShowCategoryModal(true);
-                    }}
-                  >
-                    Edit sub-category <EditIcon className="ms-1 h-5" />
-                  </Typography>
+                  {mainFormData?.category &&
+                  Object.keys(mainFormData?.category).length ? (
+                    <Typography
+                      className="h-6 mt-1 cursor-pointer color-blue"
+                      onClick={() => {
+                        setShowCategoryModal(true);
+                      }}
+                    >
+                      Edit sub-category <EditIcon className="ms-1 h-5" />
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item md={12}>
                   <InputBox
@@ -746,6 +762,7 @@ const ProductsLayout = ({
                     list={tagValues}
                     id="tags"
                     label="Tags"
+                    required
                     size="small"
                     value={mainFormData.tags}
                     error={errorObj.tags !== ""}
@@ -776,6 +793,7 @@ const ProductsLayout = ({
                   <InputBox
                     id="limit_per_order"
                     label="Limits Per Order"
+                    required
                     onInputChange={handleInputChange}
                     value={mainFormData.limit_per_order}
                     inputlabelshrink
@@ -802,8 +820,8 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <Typography className="h-5 color-gray">
-                    Is It a Brand or Generic Product
+                  <Typography className="h-5 fw-bold">
+                    Is It a Brand or Generic Product?
                   </Typography>
                   <RadiobuttonComponent
                     label="Branded"
@@ -826,10 +844,8 @@ const ProductsLayout = ({
                         ...prev,
                         brandradio: false,
                         genericradio: true,
-                      }));
-                      setMainFormData((prev) => ({
-                        ...prev,
                         tradeMarkCheck: false,
+                        b2bdocument: [],
                       }));
                     }}
                   />
@@ -846,6 +862,7 @@ const ProductsLayout = ({
                       setMainFormData((prev) => ({
                         ...prev,
                         tradeMarkCheck: !mainFormData.tradeMarkCheck,
+                        b2bdocument: [],
                       }));
                     }}
                     labelColor="#535353"
@@ -854,7 +871,7 @@ const ProductsLayout = ({
                     showIcon
                     isDisabled={mainFormData?.genericradio}
                   />
-                  <Typography className="h-5">
+                  <Typography className="h-5" sx={{ marginLeft: "-20px" }}>
                     Does This Product Have Trademark Letter From Original Vendor
                   </Typography>
                 </Grid>
@@ -874,7 +891,7 @@ const ProductsLayout = ({
                         }));
                       }}
                     />
-                    <Typography className="h-6 color-gray ms-1">
+                    <Typography className="h-6 ms-1 color-blue">
                       Check The Brands That Need Trademarks Auth To Sell Across
                       India <span className="color-red">*</span>
                     </Typography>
@@ -893,7 +910,7 @@ const ProductsLayout = ({
                         item
                         key={index}
                         md={12}
-                        className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
+                        className={`text-center fw-bold py-1 rounded my-1 fs-14 ${
                           activeTab === index
                             ? "bg-orange color-white"
                             : "bg-light-gray"
@@ -917,6 +934,16 @@ const ProductsLayout = ({
                 variant="outlined"
                 size="small"
                 onBtnClick={() => {
+                  formsRef.current.clearPage();
+                }}
+                muiProps="me-2"
+              />
+              <ButtonComponent
+                label="Clear All"
+                variant="outlined"
+                size="small"
+                onBtnClick={() => {
+                  formsRef.current.clearPage();
                   setFormData({
                     mainform: {
                       commision_mode: null,
@@ -935,7 +962,7 @@ const ProductsLayout = ({
                       limit_per_order: "",
                       selectb2binvoice: [],
                       tradeMarkCheck: false,
-                      category: {},
+                      category: null,
                       brandradio: true,
                       genericradio: false,
                       b2bdocument: [],
@@ -1033,7 +1060,7 @@ const ProductsLayout = ({
                     tags: "",
                     limit_per_order: "",
                     selectb2binvoice: "",
-                    category: null,
+                    category: "",
                   });
                 }}
                 muiProps="me-2"
@@ -1123,6 +1150,7 @@ const ProductsLayout = ({
         ClearBtnText="Cancel"
         onCloseIconClick={() => {
           setOpenModal(false);
+          setTagInputError("");
         }}
         onClearBtnClick={() => {
           setOpenModal(false);
@@ -1174,10 +1202,15 @@ const ProductsLayout = ({
                   size="small"
                   placeholder="Select Sets"
                   label="Select Sets"
+                  required
                   inputlabelshrink
                   value={mainFormData.setsValue}
                   onDropdownSelect={(value) => {
                     handleDropdownChange(value, "setsValue");
+                    if (!value) {
+                      handleDropdownChange({}, "subCategoryValue");
+                      setSubCategoryData([]);
+                    }
                   }}
                   error={modalErrObj.setsValue !== ""}
                   helperText={modalErrObj.setsValue}
@@ -1189,6 +1222,7 @@ const ProductsLayout = ({
                   size="small"
                   placeholder="Select Sub-Category"
                   label="Select Sub-Category"
+                  required
                   inputlabelshrink
                   value={mainFormData.subCategoryValue}
                   onDropdownSelect={(value) => {

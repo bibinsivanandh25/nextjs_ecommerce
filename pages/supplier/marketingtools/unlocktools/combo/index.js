@@ -1,92 +1,132 @@
 import { Paper } from "@mui/material";
-import UnlockToolsForm from "components/forms/supplier/marketingtools/unlocktools/unlocktoolsform";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getToolCampaignByDaysAndStoreType } from "services/supplier/marketingtools/unlocktools/combo";
+import toastify from "services/utils/toastUtils";
+import { purchaseMarketingTool } from "services/supplier/marketingtools/unlocktools/single";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import ButtonComponent from "@/atoms/ButtonComponent";
+import TableComponent from "@/atoms/TableComponent";
 
 const UnlockToolsCombo = () => {
-  const [tableData, setTableData] = useState([]);
+  const [tableRows, setTableRows] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
-      label: "Tools / Subscription Period",
+      align: "center",
+      data_align: "center",
+      label: "Campaign Title",
       id: "col1",
     },
     {
-      label: "7 Days",
+      align: "center",
+      data_align: "center",
+      label: "Tools",
       id: "col2",
     },
     {
-      label: "30 Days",
+      align: "center",
+      data_align: "center",
+      label: "Subscription Period",
       id: "col3",
     },
     {
-      label: "90 Days",
+      align: "center",
+      data_align: "center",
+      label: "Price",
       id: "col4",
     },
     {
-      label: "180 Days",
+      align: "center",
+      data_align: "center",
+      label: "Expiry Date",
       id: "col5",
     },
     {
-      label: "360 Days",
+      align: "center",
+      data_align: "center",
+      label: "Actions",
       id: "col6",
     },
-    {
-      label: "Action",
-      id: "col7",
-    },
-    {
-      label: "",
-      id: "col8",
-    },
   ];
+  const supplierId = useSelector((state) => state?.user?.supplierId);
+  const route = useRouter();
+  const handleBuyNow = async (row) => {
+    const payload = {
+      purchasedByType: "SUPPLIER",
+      purchasedById: supplierId,
+      // subscriptionAmount: row.price,
+      subscriptionType: "TOOL_CAMPAIGN",
+      subscriptionTypeId: row.adminMarketingToolsCampaignId,
+    };
+    const { data, err } = await purchaseMarketingTool(payload);
+    if (data) {
+      toastify(data.message, "success");
+      route.push("/supplier/marketingtools/subscriptionhistory");
+    } else if (err) {
+      toastify(err?.response?.data?.message);
+    }
+  };
+  const mapRowsToTable = (data) => {
+    const result = [];
+    data.forEach((row) => {
+      result.push({
+        col1: row.title,
+        col2: row.adminMarketingTools.map((ele) => {
+          const str = ele.replace("_", " ");
+          return `${str},   `;
+        }),
+        col3: row.days,
+        col4: row.price,
+        col5: row.expiryDuration,
+        col6: (
+          <ButtonComponent
+            label="Buy Now"
+            variant="outlined"
+            size="small"
+            sx={{ fontSize: 8 }}
+            className="bg-orange"
+            onBtnClick={() => {
+              handleBuyNow(row);
+            }}
+          />
+        ),
+      });
+    });
+    return result;
+  };
+  const getAllTableData = async (page) => {
+    const { data } = await getToolCampaignByDaysAndStoreType(page);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        setpageNumber((pre) => pre + 1);
+      }
+    }
+  };
 
-  const rows = [
-    {
-      id: 1,
-      heading: "Spin Wheels & Scratch Card",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 2,
-      heading: "Discount & Todays Deal",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-    {
-      id: 3,
-      heading: "Discounts, Todays Deal, Spin Wheel, Scratch Card & Quiz",
-      col2: { label: "₹10", isChecked: false },
-      col3: { label: "₹10", isChecked: false },
-      col4: { label: "₹10", isChecked: false },
-      col5: { label: "₹10", isChecked: false },
-      col6: { label: "₹10", isChecked: false },
-      col7: { label: "₹10", isChecked: false },
-      isRadioSelected: false,
-    },
-  ];
+  useEffect(() => {
+    getAllTableData(0);
+  }, []);
 
   return (
     <Paper
       sx={{ p: 3 }}
       className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
     >
-      <UnlockToolsForm
-        heading="Marketing tools - Get Subscribed and start Attracting your customers
-        with Discount & Games"
+      <TableComponent
         columns={columns}
-        tableData={tableData}
-        setTableData={setTableData}
-        rows={rows}
+        tableRows={tableRows}
+        showCheckbox={false}
+        showSearchFilter={false}
+        searchBarSizeMd={4}
+        showSearchbar={false}
+        handlePageEnd={(searchText, filterText, page = pageNumber) => {
+          getAllTableData(page);
+        }}
       />
     </Paper>
   );

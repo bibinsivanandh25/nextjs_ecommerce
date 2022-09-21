@@ -101,7 +101,7 @@ const PressRelease = () => {
         col2: (
           <Box className="d-flex align-items-end justify-content-center">
             <Box className="h-30 border d-flex justify-content-center">
-              <Image src={val.col2} width="300" objectFit="cover" height="70" />
+              <Image src={val.col2} width="50" objectFit="cover" height="50" />
             </Box>
           </Box>
         ),
@@ -150,7 +150,7 @@ const PressRelease = () => {
               table_heading="Press Release"
               columns={tableColumns}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
+              // showPagination={false}
               tableRows={tableRows}
               showSearchbar={false}
               showDateFilterBtn

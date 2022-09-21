@@ -1,3 +1,8 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable consistent-return */
+/* eslint-disable no-inner-declarations */
 import {
   Add,
   AirportShuttle,
@@ -6,43 +11,75 @@ import {
   // Shield,
   // SwapHoriz,
 } from "@mui/icons-material";
-import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
+import { Box, Grid, Paper, Rating, Skeleton, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 // import toastify from "services/utils/toastUtils";
-// import ReactImageMagnify from "react-image-magnify";
+import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import CustomIcon from "services/iconUtils";
+import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
-// eslint-disable-next-line no-unused-vars
-const ownersCoupons = [
-  {
-    id: 1,
-    toolName: "Spin Wheel",
-    campaign: "",
-    validity: "",
-  },
-  {
-    id: 1,
-    toolName: "Scratch Card",
-    campaign: "",
-    validity: "",
-  },
-];
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+
+  useEffect(() => {
+    // only execute all the code below in client side
+    if (typeof window !== "undefined") {
+      // Handler to call on window resize
+      function handleResize() {
+        setWindowSize({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      }
+
+      // Add event listener
+      window.addEventListener("resize", handleResize);
+
+      // Call handler right away so state gets updated with initial window size
+      handleResize();
+
+      // Remove event listener on cleanup
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
+}
+// const ownersCoupons = [
+//   {
+//     id: 1,
+//     toolName: "Spin Wheel",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 1,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+// ];
 // const otherSellers = [
 //   {
-//     title: "New (4) From",
+//     title: "New (0) From",
 //     ActualPrice: {
-//       start: "675",
-//       end: "766",
+//       start: "00",
+//       end: "00",
 //     },
 //     delivery: {
-//       start: "675",
-//       end: "766",
+//       start: "00",
+//       end: "00",
 //     },
 //   },
 // ];
@@ -79,8 +116,12 @@ const handPick = true;
 // ];
 
 // const sizeData = ["S", "M", "L", "XL", "XXL"];
-const ProductDetails = () => {
+const ProductDetails = ({ productId }) => {
+  // Windos Size
+  const size = useWindowSize();
+
   const router = useRouter();
+  const [imageSize, setImageSize] = useState({ width: 300, height: 300 });
   const [selectedImage, setSelectedImage] = useState("");
   // Product Details
   const [masterData, setMasterData] = useState([]);
@@ -101,23 +142,43 @@ const ProductDetails = () => {
     normalreturn: false,
     fastreturn: false,
   });
+  const [count, setCount] = useState(1);
+  const [showLongDescription, setShowLongDescription] = useState(false);
+  const storeDetails = useSelector((state) => ({
+    supplierId: state.customer.supplierId,
+    storeCode: state.customer.storeCode,
+  }));
+
+  useEffect(() => {
+    if (size.width > 800) {
+      setImageSize({
+        width: parseInt(size.width, 10) / 4.5,
+        height: parseInt(size.width, 10) / 4,
+      });
+    }
+  }, [size]);
   const getProductDetails = async () => {
     const status = "APPROVED";
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}products/master-product/product-variations?id=${router.query.id}&status=${status}`
+        `products/master-product/product-variations?id=${
+          router.query.id ?? productId
+        }&status=${status}`
       )
       .then((res) => {
         setMasterData(res.data.data);
         res.data?.data?.productVariations.forEach((item) => {
-          if (item.productVariationId === router.query.id) {
+          if (
+            item.productVariationId === router.query.id ||
+            item.productVariationId === productId
+          ) {
             setSelectedMasterData(item);
             setSelectedImage(item.variationMedia[0]);
           }
         });
       })
-      .catch((err) => {
-        console.log(err.response);
+      .catch(() => {
+        // console.log(err.response);
       });
   };
   const [selectedImageId, setSelectedImageId] = useState("1");
@@ -130,9 +191,9 @@ const ProductDetails = () => {
     storeowner: "",
   });
   const getfrequentProduct = async (id) => {
-    const ids = router.query.id ? router.query.id : id;
-    await axios
-      .get(`${process.env.DOMAIN}products/grouped-product/${ids}`)
+    const ids = (router.query.id ? router.query.id : id) ?? productId;
+    await serviceUtil
+      .get(`products/grouped-product/${ids}`)
       .then((res) => {
         let actualCost = 0;
         let fd = 0;
@@ -156,8 +217,8 @@ const ProductDetails = () => {
         });
         setfrequentProduct(res.data.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
         setfrequentProduct([]);
       });
   };
@@ -168,7 +229,7 @@ const ProductDetails = () => {
         setSelectedImage(item.variationMedia[0]);
         getfrequentProduct(item.productVariationId);
         const element = document.getElementById("MainBox");
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView();
         setSelectedImageId("1");
       }
     });
@@ -176,31 +237,28 @@ const ProductDetails = () => {
   // coupons api
   const [couponMasterData, setCouponsMasterData] = useState([]);
   const getCouponsData = async () => {
-    await axios
-      .get(
-        `${process.env.DOMAIN}users/customer/store-coupon?supplierId=${router.query.supplierId}`
-      )
+    await serviceUtil
+      .get(`users/customer/store-coupon?supplierId=${storeDetails.supplierId}`)
       .then((res) => {
         setCouponsMasterData(res.data.data);
       })
       .catch((err) => {
-        const errMsg = err?.response?.data?.message;
-        console.log(errMsg);
-        setCouponsMasterData([]);
+        const error = { err };
+        if (error) setCouponsMasterData([]);
       });
   };
   // minimum cart value
   const [minCartValue, setMinCartValue] = useState("");
   const getMinimumCart = async () => {
-    await axios
+    await serviceUtil
       .get(
-        `${process.env.DOMAIN}users/supplier/supplier-store-configuration?storeCode=${router.query.storeCode}`
+        `users/supplier/supplier-store-configuration?storeCode=${storeDetails.storeCode}`
       )
       .then((res) => {
         setMinCartValue(res.data?.data?.minimumOrderAmount);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
       });
   };
   useEffect(() => {
@@ -212,26 +270,55 @@ const ProductDetails = () => {
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
-  }, []);
+  }, [router.query]);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
     setSelectedImageId(ind);
   };
-
+  const handleMinusClick = () => {
+    setCount((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+  const handlePlusClick = () => {
+    setCount((prev) => (masterData.limitsPerOrder > prev ? prev + 1 : prev));
+  };
+  const renderDiscriptionImage = (data) => {
+    return data?.map((item) => {
+      if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+        return (
+          <Box className="me-2">
+            <Image
+              src={item}
+              height={100}
+              width={100}
+              layout="intrinsic"
+              alt="alt"
+              className="border rounded"
+            />
+          </Box>
+        );
+      }
+    });
+  };
+  const renderDiscriptionFiles = (data) => {
+    return data?.map((item) => {
+      if (!/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
+        return (
+          <Typography className="h-5 color-blue cursor-pointer">
+            {item}
+          </Typography>
+        );
+      }
+    });
+  };
   return masterData ? (
     <Paper id="MainBox">
-      <Box className="d-flex justify-content-end">
-        <Box className="d-flex me-3">
-          <RemoveRedEye className="fs-18 color-gray" />
-          <Typography className="mx-1 h-5 color-gray">2138</Typography>
-        </Box>
-        <Box className="d-flex">
-          <AirportShuttle className="fs-18 color-gray" />
-          <Typography className="mx-1 h-5 color-gray">1238</Typography>
-        </Box>
-      </Box>
       <Grid container spacing={2}>
-        <Grid item md={3.5} sm={6}>
+        <Grid
+          item
+          md={3.5}
+          sm={6}
+          // sx={{ position: "sticky", top: 0, height: "100%" }}
+        >
           <Grid container spacing={1}>
             <Grid
               item
@@ -254,7 +341,7 @@ const ProductDetails = () => {
                     height={50}
                     width={50}
                     src={item}
-                    layout="intrinsic"
+                    layout="responsive"
                     onClick={() => {
                       handleImageClick(item, index + 1);
                     }}
@@ -266,36 +353,40 @@ const ProductDetails = () => {
             </Grid>
             <Grid item md={10} sm={7} className="">
               {selectedImage !== "" && (
-                <Image
-                  height={270}
-                  width={270}
-                  src={selectedImage}
-                  layout="intrinsic"
-                  className="border rounded p-1"
-                />
-                // <ReactImageMagnify
-                //   {...{
-                //     smallImage: {
-                //       alt: "No Images",
-                //       height: 270,
-                //       width: 270,
-                //       // isFluidWidth: true,
-                //       src: selectedImage,
-                //     },
-                //     largeImage: {
-                //       src: selectedImage,
-                //       width: 1200,
-                //       height: 1800,
-                //     },
-                //     enlargedImageContainerDimensions: {
-                //       width: "250%",
-                //       height: "180%",
-                //     },
-                //   }}
-                //   className="bg-white"
-                //   style={{ zIndex: 100 }}
-                //   shouldUsePositiveSpaceLens
+                // <Image
+                //   height="100%"
+                //   width="100%"
+                //   src={selectedImage}
+                //   layout="responsive"
+                //   className="border rounded p-1"
                 // />
+                <ReactImageMagnify
+                  {...{
+                    smallImage: {
+                      alt: "No Images",
+                      height: imageSize.height,
+                      width: imageSize.width,
+                      src: selectedImage,
+                    },
+                    largeImage: {
+                      src: selectedImage,
+                      width: 1200,
+                      height: 1800,
+                    },
+                    enlargedImageContainerDimensions: {
+                      width: "250%",
+                      height: "130%",
+                    },
+                  }}
+                  className="bg-white zIndex-100"
+                  shouldUsePositiveSpaceLens
+                  imageClassName="border rounded p-1 zIndex-100"
+                  // lensStyle={{
+                  //   background: "hsla(0, 0%, 100%, .3)",
+                  //   border: "1px solid #fff",
+                  // }}
+                  enlargedImageClassName="zIndex-100"
+                />
               )}
             </Grid>
           </Grid>
@@ -430,10 +521,20 @@ const ProductDetails = () => {
           </Grid> */}
         </Grid>
         <Grid item md={8.5}>
-          <Box>
+          <Box className="d-flex justify-content-between me-3">
             <Typography className="h-5 color-light-green">
               We Get You To The Product Exact Price - No Indirect Charges
             </Typography>
+            <Box className="d-flex justify-content-end">
+              <Box className="d-flex me-3">
+                <RemoveRedEye className="fs-18 color-gray" />
+                <Typography className="mx-1 h-5 color-gray">2138</Typography>
+              </Box>
+              <Box className="d-flex">
+                <AirportShuttle className="fs-18 color-gray" />
+                <Typography className="mx-1 h-5 color-gray">1238</Typography>
+              </Box>
+            </Box>
           </Box>
           <Grid container>
             <Grid item md={12}>
@@ -453,38 +554,6 @@ const ProductDetails = () => {
           </Box>
           <Grid container spacing={2}>
             <Grid item md={6}>
-              {handPick && (
-                <Box>
-                  <Box>
-                    <RadiobuttonComponent
-                      size="small"
-                      label="Handpick From Store"
-                      isChecked={defaultFormData.handpick}
-                      onRadioChange={() => {
-                        setDefaultFormData((prev) => ({
-                          ...prev,
-                          handpick: true,
-                          ownerDelivery: false,
-                        }));
-                      }}
-                    />
-                  </Box>
-                  <Box>
-                    <RadiobuttonComponent
-                      size="small"
-                      label={`Store Owner Delivery-Mininum Cart Value ${minCartValue}`}
-                      isChecked={defaultFormData.ownerDelivery}
-                      onRadioChange={() => {
-                        setDefaultFormData((prev) => ({
-                          ...prev,
-                          handpick: false,
-                          ownerDelivery: true,
-                        }));
-                      }}
-                    />
-                  </Box>
-                </Box>
-              )}
               <Box>
                 <Typography className="h-4 fw-bold color-orange">
                   Choose Delivery Options
@@ -523,9 +592,12 @@ const ProductDetails = () => {
                       <Typography className="h-5">
                         {selectedMasterData.mrp - selectedMasterData.salePrice}{" "}
                         (
-                        {(selectedMasterData.salePrice /
-                          selectedMasterData.mrp) *
-                          100}
+                        {(
+                          ((selectedMasterData.mrp -
+                            selectedMasterData.salePrice) /
+                            selectedMasterData.mrp) *
+                          100
+                        ).toFixed(2)}
                         % )
                       </Typography>
                       <Typography className="h-5">
@@ -533,26 +605,71 @@ const ProductDetails = () => {
                       </Typography>
                     </Box>
                   </Box>
+                  <Box>
+                    {handPick && (
+                      <Box>
+                        <Box>
+                          <RadiobuttonComponent
+                            size="small"
+                            label="Handpick From Store"
+                            isChecked={defaultFormData.handpick}
+                            onRadioChange={() => {
+                              setDefaultFormData((prev) => ({
+                                ...prev,
+                                handpick: true,
+                                ownerDelivery: false,
+                              }));
+                            }}
+                          />
+                        </Box>
+                        <Box>
+                          <RadiobuttonComponent
+                            size="small"
+                            label={`Store Owner Delivery-Mininum Cart Value ${minCartValue}`}
+                            isChecked={defaultFormData.ownerDelivery}
+                            onRadioChange={() => {
+                              setDefaultFormData((prev) => ({
+                                ...prev,
+                                handpick: false,
+                                ownerDelivery: true,
+                              }));
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
                   <Grid container className="mt-2">
                     <Typography className="h-5">
                       Enter The Pincode To Check If The Product Is Deliverable
                       To Your Location Or Not
                     </Typography>
                     <Grid item xs={10}>
-                      <InputBox
-                        placeholder="Enter Pincode"
-                        InputProps={{
-                          endAdornment: (
-                            <ButtonComponent
-                              variant="contained"
-                              bgColor="bg-gray"
-                              // textColor="color-black"
-                              muiProps="color-black px-0"
-                              label="Check"
-                            />
-                          ),
+                      <div
+                        className="d-flex bg-white rounded justify-content-between"
+                        style={{
+                          border: "1px solid #c0ad9d",
                         }}
-                      />
+                      >
+                        <input
+                          className="p-2 w-100 bg-white"
+                          placeholder="Enter Pincode"
+                          style={{
+                            background: "#fae1cc",
+                            outline: "none",
+                            border: "none",
+                            borderRadius: "5px",
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            m: "0.08rem",
+                          }}
+                          className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
+                        >
+                          <Typography className="h-5">Check</Typography>
+                        </Box>
+                      </div>
                     </Grid>
                   </Grid>
                 </Box>
@@ -636,22 +753,33 @@ const ProductDetails = () => {
                 </Box>
                 <Grid container>
                   <Grid item xs={10}>
-                    <InputBox
-                      placeholder="Enter Coupon Code"
-                      size="small"
-                      InputProps={{
-                        endAdornment: (
-                          <ButtonComponent
-                            variant="contained"
-                            bgColor="bg-gray"
-                            // textColor="color-black"
-                            muiProps="color-black px-0"
-                            label="Apply Coupon"
-                            fullWidth
-                          />
-                        ),
+                    <div
+                      className="d-flex bg-white rounded justify-content-between"
+                      style={{
+                        border: "1px solid #c0ad9d",
                       }}
-                    />
+                    >
+                      <input
+                        className="p-2 w-100 bg-white"
+                        placeholder="Enter Coupon Code"
+                        style={{
+                          background: "#fae1cc",
+                          outline: "none",
+                          border: "none",
+                          borderRadius: "5px",
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          m: "0.08rem",
+                        }}
+                        className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
+                      >
+                        <Typography className="d-flex justify-content-center h-5">
+                          Apply Coupon
+                        </Typography>
+                      </Box>
+                    </div>
                   </Grid>
                 </Grid>
                 {defaultFormData.normalDelivery && (
@@ -685,8 +813,8 @@ const ProductDetails = () => {
                     showIcon
                     varient="filled"
                   />
-                  <Typography className="h-5">
-                    1 Year Extended Warranty For RS.255
+                  <Typography className="h-5" sx={{ marginLeft: "-15px" }}>
+                    0 Year Extended Warranty For RS.00.00
                   </Typography>
                 </Grid>
                 <Grid item md={7} display="flex" alignItems="center">
@@ -696,8 +824,8 @@ const ProductDetails = () => {
                     showIcon
                     varient="filled"
                   />
-                  <Typography className="h-5">
-                    1 Year Extended Warranty For RS.255
+                  <Typography className="h-5" sx={{ marginLeft: "-15px" }}>
+                    0 Year Extended Warranty For RS.00.00
                   </Typography>
                 </Grid>
               </Grid> */}
@@ -777,9 +905,12 @@ const ProductDetails = () => {
                           {selectedMasterData.mrp -
                             selectedMasterData.salePrice}{" "}
                           (
-                          {(selectedMasterData.salePrice /
-                            selectedMasterData.mrp) *
-                            100}
+                          {(
+                            ((selectedMasterData.mrp -
+                              selectedMasterData.salePrice) /
+                              selectedMasterData.mrp) *
+                            100
+                          ).toFixed(2)}
                           % )
                         </Typography>
                         <Typography className="h-5">
@@ -789,21 +920,33 @@ const ProductDetails = () => {
                     </Box>
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
-                        <InputBox
-                          placeholder="Enter Coupon Code"
-                          InputProps={{
-                            endAdornment: (
-                              <ButtonComponent
-                                variant="contained"
-                                bgColor="bg-gray"
-                                // textColor="color-black"
-                                muiProps="color-black w-75"
-                                label="Apply Coupon"
-                                fullWidth
-                              />
-                            ),
+                        <div
+                          className="d-flex bg-white rounded justify-content-between"
+                          style={{
+                            border: "1px solid #c0ad9d",
                           }}
-                        />
+                        >
+                          <input
+                            className="p-2 w-100 bg-white"
+                            placeholder="Enter Coupon Code"
+                            style={{
+                              background: "#fae1cc",
+                              outline: "none",
+                              border: "none",
+                              borderRadius: "5px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              m: "0.08rem",
+                            }}
+                            className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
+                          >
+                            <Typography className="d-flex justify-content-center h-5">
+                              Apply Coupon
+                            </Typography>
+                          </Box>
+                        </div>
                       </Grid>
                     </Grid>
                   </Box>
@@ -874,20 +1017,31 @@ const ProductDetails = () => {
                     </Typography>
                     <Grid container className="mt-2">
                       <Grid item xs={10}>
-                        <InputBox
-                          placeholder="Enter Coupon Code"
-                          InputProps={{
-                            endAdornment: (
-                              <ButtonComponent
-                                variant="contained"
-                                bgColor="bg-gray"
-                                // textColor="color-black"
-                                muiProps="color-black"
-                                label="Check"
-                              />
-                            ),
+                        <div
+                          className="d-flex bg-white rounded justify-content-between"
+                          style={{
+                            border: "1px solid #c0ad9d",
                           }}
-                        />
+                        >
+                          <input
+                            className="p-2 w-100 bg-white"
+                            placeholder="Enter Pincode"
+                            style={{
+                              background: "#fae1cc",
+                              outline: "none",
+                              border: "none",
+                              borderRadius: "5px",
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              m: "0.08rem",
+                            }}
+                            className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
+                          >
+                            <Typography className="h-5">Check</Typography>
+                          </Box>
+                        </div>
                       </Grid>
                     </Grid>
                     {defaultFormData.freeDelivery && (
@@ -910,7 +1064,30 @@ const ProductDetails = () => {
                   </Box>
                 </>
               )}
-              <Box className="my-5 d-flex justify-content-center">
+              <Box className="my-4  w-75 d-flex justify-content-end">
+                <Box
+                  className=" d-flex w-33p justify-content-center align-items-center px-2 py-2 rounded"
+                  style={{ border: "1px solid #292929" }}
+                >
+                  <div className="me-3" onClick={() => handleMinusClick()}>
+                    <CustomIcon
+                      type="removeIcon"
+                      className="border rounded-circle color-black fs-20"
+                      showColorOnHover={false}
+                    />
+                  </div>
+                  <span className="fw-bold">{count}</span>
+                  <div className="ms-3" onClick={() => handlePlusClick()}>
+                    <CustomIcon
+                      type="add"
+                      className="border rounded-circle color-black fs-20"
+                      showColorOnHover={false}
+                    />
+                  </div>
+                </Box>
+              </Box>
+
+              <Box className="mb-3 d-flex justify-content-center">
                 <ButtonComponent
                   label="Add To Cart"
                   variant="outlined"
@@ -918,30 +1095,30 @@ const ProductDetails = () => {
                 />
                 <ButtonComponent label="Buy Now" muiProps="w-25 me-3 py-2" />
               </Box>
-              {/* <Box>
+              <Box>
                 <Typography className="color-light-green h-5 fw-bold">
                   In Stock
                 </Typography>
                 <Typography className="h-5 mt-1">
                   Sold By{" "}
                   <span className="h-5 color-blue">
-                    Appario Retail Private Ltd
+                    Balu Enterprises pvt ltd
                   </span>
                 </Typography>
                 <Typography className="h-5 mt-1">
-                  <span className="color-blue">New (9) From </span>
-                  <span className="color-orange">Rs 1500.00</span>
+                  <span className="color-blue">New (0) From </span>
+                  <span className="color-orange">Rs 00.00</span>
                 </Typography>
-              </Box> */}
+              </Box>
               {/* <Box className="mt-3">
                 <Grid container gap={1}>
-                  {sameProduct.map((item) => (
+                  {sameProduct.map(() => (
                     <Grid
                       item
                       md={3.8}
                       className="border-orange border rounded p-1"
                     >
-                      <Box className="d-flex">
+                      <Box className="d-flex" height={50} width={50}>
                         <Image
                           height={50}
                           width={50}
@@ -982,17 +1159,19 @@ const ProductDetails = () => {
                     handleVariationClick(item.productVariationId);
                   }}
                 >
-                  <Image
-                    height={150}
-                    width={150}
-                    src={item?.variationMedia[0]}
-                    layout="intrinsic"
-                    className={`border rounded cursor-pointer ${
-                      selectedMasterData.productVariationId ===
-                        item.productVariationId && `border-orange`
-                    }`}
-                    alt="alt"
-                  />
+                  <Box display="flex" justifyContent="center">
+                    <Image
+                      height={150}
+                      width={150}
+                      src={item?.variationMedia[0]}
+                      layout="intrinsic"
+                      className={`border rounded cursor-pointer ${
+                        selectedMasterData.productVariationId ===
+                          item.productVariationId && `border-orange`
+                      }`}
+                      alt="alt"
+                    />
+                  </Box>
                   <Typography
                     className={`text-center h-5 cursor-pointer ${
                       selectedMasterData.productVariationId ===
@@ -1010,16 +1189,73 @@ const ProductDetails = () => {
               <Paper elevation={3}>
                 <Box className="p-2">
                   <Typography className="h-4 fw-bold">Description</Typography>
-                  <Typography className="h-5" lineHeight="1.3rem">
-                    {masterData?.shortDescription}
+                  <Typography className="h-5 text-break" lineHeight="1.3rem">
+                    {masterData?.shortDescription}{" "}
+                    <span
+                      className={`h-5 color-blue cursor-pointer ${
+                        showLongDescription && `d-none`
+                      }`}
+                      onClick={() => {
+                        setShowLongDescription(true);
+                      }}
+                    >
+                      See more...
+                    </span>
                   </Typography>
+                  {showLongDescription && (
+                    <>
+                      <Box className="h-5">
+                        <Box className="d-flex">
+                          {renderDiscriptionImage(
+                            masterData?.shortDescriptionFileUrls
+                          )}
+                        </Box>
+                        <Box>
+                          {renderDiscriptionFiles(
+                            masterData?.shortDescriptionFileUrls
+                          )}
+                        </Box>
+                      </Box>
+                      <Box>
+                        {masterData?.longDescription && (
+                          <Typography className="h-5">
+                            {masterData?.longDescription}
+                          </Typography>
+                        )}
+                        <Box className="h-5">
+                          <Box className="d-flex">
+                            {renderDiscriptionImage(
+                              masterData?.longDescriptionFileUrls
+                            )}
+                          </Box>
+                          <Box>
+                            {renderDiscriptionFiles(
+                              masterData?.longDescriptionFileUrls
+                            )}
+                          </Box>
+                        </Box>
+                        <span
+                          className={`h-5 color-blue cursor-pointer ${
+                            !showLongDescription && `d-none`
+                          }`}
+                          onClick={() => {
+                            setShowLongDescription(false);
+                          }}
+                        >
+                          Show Less...
+                        </span>
+                      </Box>
+                    </>
+                  )}
                 </Box>
               </Paper>
             </Grid>
           </Grid>
         </Grid>
-        {frequentProduct.length && (
-          <Grid item md={12} className="mb-2 mx-2">
+      </Grid>
+      <Box>
+        {frequentProduct.length ? (
+          <Grid item md={12} className="my-2 mx-4">
             <Paper elevation={3}>
               <Box className="p-2">
                 <Typography className="h-4 fw-bold">
@@ -1165,9 +1401,56 @@ const ProductDetails = () => {
               </Box>
             </Paper>
           </Grid>
-        )}
-      </Grid>
-      <Grid container className="mt-3 mb-2">
+        ) : null}
+      </Box>
+      <Box className="mt-2" paddingX={3}>
+        <Paper elevation={3} className="" sx={{ height: "180px" }}>
+          <Typography className="h-4 fw-bold ps-2">Similar Products</Typography>
+          <Box className="ms-2 d-flex justify-content-between">
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+          </Box>
+        </Paper>
+      </Box>{" "}
+      <Box className="mt-2" paddingX={3}>
+        <Paper elevation={3} className="" sx={{ height: "180px" }}>
+          <Typography className="h-4 fw-bold ps-2">Recently Viewed</Typography>
+          <Box className="ms-2 d-flex justify-content-between">
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+          </Box>
+        </Paper>
+      </Box>{" "}
+      <Box className="mt-2" paddingX={3}>
+        <Paper elevation={3} className="" sx={{ height: "180px" }}>
+          <Typography className="h-4 fw-bold ps-2">
+            Products Related To This Item
+          </Typography>
+          <Box className="ms-2 d-flex justify-content-between">
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+            <Skeleton variant="rectangular" width={150} height={150} />
+          </Box>
+        </Paper>
+      </Box>
+      <Grid container className="ps-4">
         <Grid item sm={12}>
           <Typography className="h-4 fw-bold my-2">
             Product Information

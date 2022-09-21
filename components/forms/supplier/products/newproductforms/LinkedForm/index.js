@@ -52,6 +52,16 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
         return ["linked", { ...linkedFormData }];
       },
       validate: validateFormvalues,
+      clearPage: () => {
+        setLinkedFormData({
+          upSells: {},
+          crossSells: {},
+        });
+        setErrorObj({
+          upSells: "",
+          crossSells: "",
+        });
+      },
     };
   });
   const upSellsArray = [
@@ -73,6 +83,7 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
       <Grid item xs={12} container spacing={2}>
         <Grid item xs={9}>
           <SimpleDropdownComponent
+            required
             error={errorObj.upSells?.length}
             helperText={errorObj.upSells}
             size="small"
@@ -95,6 +106,7 @@ const LinkedForm = forwardRef(({ formData }, ref) => {
           <SimpleDropdownComponent
             error={errorObj.crossSells?.length}
             helperText={errorObj.crossSells}
+            required
             size="small"
             label="Cross-Sells"
             placeholder="Filter By Product..."

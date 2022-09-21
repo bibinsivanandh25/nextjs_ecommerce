@@ -1,59 +1,89 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid } from "@mui/material";
+import { useSelector } from "react-redux";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import {
+  deleteBankDetails,
+  getAllBankDetails,
+  setPrimaryBank,
+} from "services/supplier/myaccount/bankdetails";
+import toastify from "services/utils/toastUtils";
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
-import AddBankDetails from "./addbankdetails";
+import AddBankDetailsModal from "./addbankdetails";
 
 const BankDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBankDetails, setSelectedBankDetails] = useState([]);
-  const [pickupDetails, setpickupDetails] = useState([
-    {
-      "Bank Name": "ICICI Bank",
-      "Account Holder Name": "Madhusudhan Agrahar1",
-      "Account Number": 1234567890,
-      "IFSC code": "ICIC0000001",
-      isChecked: false,
-    },
-    {
-      "Bank Name": "ICICI Bank",
-      "Account Holder Name": "Madhusudhan Agrahar2",
-      "Account Number": 1234567890,
-      "IFSC code": "ICIC0000001",
-      isChecked: false,
-    },
-    {
-      "Bank Name": "ICICI Bank",
-      "Account Holder Name": "Madhusudhan Agrahar3",
-      "Account Number": 1234567890,
-      "IFSC code": "ICIC0000001",
-      isChecked: false,
-    },
-    {
-      "Bank Name": "ICICI Bank",
-      "Account Holder Name": "Madhusudhan Agrahar4",
-      "Account Number": 1234567890,
-      "IFSC code": "ICIC0000001",
-      isChecked: false,
-    },
-  ]);
+  const [bankDetails, setbankDetails] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const user = useSelector((state) => state.user?.supplierId);
+
+  const getAllBankData = async () => {
+    const { data } = await getAllBankDetails(user);
+    const result = [];
+    if (data) {
+      const temp = JSON.parse(JSON.stringify(data)).filter(
+        (ele) => !ele.primary
+      );
+      temp.unshift(data.find((ele) => ele.primary));
+      temp.forEach((item) => {
+        result.push({
+          "Bank Name": item.bankName,
+          "Account Holder Name": item.accountHolderName,
+          "Account Number": item.accountNumber,
+          "IFSC code": item.ifscCode,
+          isChecked: item.primary,
+          id: item.bankId,
+        });
+      });
+    }
+    setbankDetails([...result]);
+  };
+
+  useEffect(() => {
+    getAllBankData();
+  }, []);
+
   const getBankDetails = (details) => {
     return Object.entries(details).map(([key, value]) => {
       return (
         <div key={value}>
           <div className={`${key === "isChecked" ? "d-none" : ""} fs-12 my-2`}>
-            {key} : {value}
+            {key != "id" ? `${key} : ${value}` : null}
           </div>
         </div>
       );
     });
   };
-  const getPickUpAdress = () => {
-    return pickupDetails.map((ele, index) => {
+
+  const deleteBankData = async (id) => {
+    const { data } = await deleteBankDetails(user, id);
+    if (data) {
+      getAllBankData();
+    }
+  };
+  const updatePrimaryAccount = async (e, id) => {
+    const { data, err } = await setPrimaryBank(user, id);
+    if (data) {
+      setbankDetails((prev) => {
+        const temp = prev.map((item) => {
+          item.isChecked = false;
+          return item;
+        });
+        temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
+        return [...temp];
+      });
+      toastify(data, "success");
+    } else {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const renderBankDetails = () => {
+    return bankDetails.map((ele, index) => {
       return (
         <Grid
           item
@@ -68,15 +98,7 @@ const BankDetails = () => {
                 id={index}
                 isChecked={ele.isChecked}
                 onRadioChange={(e) => {
-                  setpickupDetails((prev) => {
-                    const temp = prev.map((item) => {
-                      item.isChecked = false;
-                      return item;
-                    });
-                    temp[`${e.target.id}`].isChecked =
-                      !temp[`${e.target.id}`].isChecked;
-                    return [...temp];
-                  });
+                  updatePrimaryAccount(e, bankDetails[index].id);
                 }}
               />
             </Grid>
@@ -90,17 +112,18 @@ const BankDetails = () => {
             >
               <Grid className="my-2">
                 <EditIcon
+                  className="cursor-pointer"
                   onClick={() => {
-                    // handleEditClick(index);
-                    setSelectedBankDetails(pickupDetails[index]);
-                    // console.log(pickupDetails[index]);
+                    setSelectedBankDetails(bankDetails[index]);
+                    setIsEdit(true);
                     setShowModal(true);
                   }}
                 />
               </Grid>
               <DeleteIcon
+                className="cursor-pointer"
                 onClick={() => {
-                  console.log(pickupDetails[index]);
+                  deleteBankData(bankDetails[index].id);
                 }}
               />
             </Grid>
@@ -114,22 +137,27 @@ const BankDetails = () => {
     <div className="mnh-70vh mxh-70vh overflow-auto hide-scrollbar bg-white rounded">
       <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
       <Grid container>
-        {getPickUpAdress()}
+        {renderBankDetails()}
         <Grid
           item
           xs={5}
           className="d-flex align-items-center justify-content-center w-100 cursor-pointer border border-1 mx-4 my-3 rounded mnh-130"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setIsEdit(false);
+            setShowModal(true);
+          }}
         >
           <AddCircleIcon className="text-secondary fs-1" />
         </Grid>
         <Grid item xs={2} />
       </Grid>
-      <AddBankDetails
+      <AddBankDetailsModal
         BankDetails={selectedBankDetails}
         showModal={showModal}
         setShowModal={setShowModal}
         setBankDetails={setSelectedBankDetails}
+        isEdit={isEdit}
+        getAllBankData={getAllBankData}
       />
     </div>
     // </Paper>

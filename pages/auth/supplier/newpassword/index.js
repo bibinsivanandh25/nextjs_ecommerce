@@ -1,10 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import axios from "axios";
 import NewPasswordForm from "components/forms/supplier/newpassword";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toastify from "services/utils/toastUtils";
 import atob from "atob";
+import serviceUtil from "services/utils";
+import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
@@ -13,12 +14,16 @@ const Newpassword = () => {
     password: "",
     rePassword: "",
   });
+  const [supplierId, setSupplierId] = useState("");
+  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (router.query.user) {
       try {
         const temp = atob(router.query.user).split(",")[1];
+        const supId = atob(router.query.user).split(",")[2];
+        setSupplierId(supId);
         setFormValues((pre) => ({
           ...pre,
           userId: temp,
@@ -30,8 +35,8 @@ const Newpassword = () => {
   }, [router.query.user]);
 
   const handleSubmit = () => {
-    axios
-      .post(`${process.env.DOMAIN}users/registration/reset-password`, {
+    serviceUtil
+      .post(`users/registration/reset-password`, {
         userName: formValues.userId,
         newPassword: formValues.password,
         reEnterPassword: formValues.rePassword,
@@ -39,17 +44,17 @@ const Newpassword = () => {
       })
       .then((data) => {
         toastify(data.data.message, "success");
-        if (data) {
-          router.push("/auth/login");
-        }
+        setShowAddAddressModal(true);
+        // if (data) {
+        //   router.push("/auth/login");
+        // }
       })
       .catch((err) => {
-        console.log(err);
+        toastify(err.response.data.message, "error");
       });
     // setShowModal(true);
   };
 
-  console.log(router.query);
   return (
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">
@@ -70,6 +75,12 @@ const Newpassword = () => {
           />
         </div>
       </Grid>
+      <AddAddressModal
+        setShowAddAddressModal={setShowAddAddressModal}
+        type="add"
+        showAddressModal={showAddAddressModal}
+        supplierId={supplierId}
+      />
     </Grid>
   );
 };

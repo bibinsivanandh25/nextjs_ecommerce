@@ -48,7 +48,7 @@ const ResellerNotificationCreate = () => {
 
   const handleBtnClick = () => {
     if (validateForm()) {
-      console.log(notificationData);
+      // console.log(notificationData);
     }
   };
 
@@ -159,7 +159,7 @@ const ResellerNotificationCreate = () => {
                   type="file"
                   hidden
                   ref={inputField}
-                  onChange={(e) => console.log(e.target.files[0])}
+                  onChange={() => {}}
                 />
                 <ButtonComponent
                   label="choose file"
