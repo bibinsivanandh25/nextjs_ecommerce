@@ -9,7 +9,7 @@ const getAttributes = (subCategoryId) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const createAttributes = (payload) => {
@@ -20,7 +20,7 @@ const createAttributes = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -32,7 +32,7 @@ const saveProduct = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -66,7 +66,7 @@ const getSet = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const getSubCategory = (payload) => {
@@ -77,7 +77,7 @@ const getSubCategory = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -89,7 +89,7 @@ const saveMediaFile = async (id, payload) => {
       return { data: data.data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const getCategorySubCategory = async (id) => {
@@ -100,7 +100,7 @@ const getCategorySubCategory = async (id) => {
       return { data: data.data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -115,7 +115,7 @@ const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
