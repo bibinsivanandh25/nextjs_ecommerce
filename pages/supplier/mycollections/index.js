@@ -17,7 +17,7 @@ const MyCollections = () => {
   const [openModal, setOpenModal] = useState(false);
   const [defaultFormData, setDefaultFormData] = useState({
     todaysDeals: { label: "" },
-    saleprice: "",
+    startDate: "",
     discount: "",
     endDate: "",
   });
