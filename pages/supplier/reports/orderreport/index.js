@@ -8,6 +8,7 @@ import {
   getOrderReportCardData,
   getSummaryTableData,
 } from "services/supplier/reports/orderreport";
+import { getListYear } from "services/utils/yearlistUtils";
 
 const cardDetails = [
   {
@@ -210,20 +211,7 @@ const OrderReport = () => {
           "Dec",
         ]}
         doughnutData={monthDoughnutChart}
-        detailSelectList={[
-          {
-            value: 2021,
-            label: 2021,
-          },
-          {
-            value: 2022,
-            label: 2022,
-          },
-          {
-            value: 2023,
-            label: 2023,
-          },
-        ]}
+        detailSelectList={getListYear()}
         detailMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
         handleMonthTableYear={(e) => {
           setMonthCurrentYear({
@@ -232,20 +220,6 @@ const OrderReport = () => {
           });
         }}
         monthCurrentYear={monthCurrentYear}
-        summarySelectList={[
-          {
-            value: 2021,
-            label: 2021,
-          },
-          {
-            value: 2022,
-            label: 2022,
-          },
-          {
-            value: 2023,
-            label: 2023,
-          },
-        ]}
         currentYear={currentYear}
         handleMonthOrderYear={(e) => {
           setCurrentYear({
