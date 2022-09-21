@@ -7,6 +7,9 @@ import {
   markOutOfStock,
   deleteSingleProduct,
   getVariation,
+  getFlags,
+  getFlagById,
+  addProductFlag,
 } from "services/supplier/myProducts";
 import { Box, Grid, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
@@ -21,12 +24,13 @@ import Image from "next/image";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { duplicateProduct, updateProduct } from "features/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { format, parse } from "date-fns";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -127,8 +131,25 @@ const MyProducts = () => {
   const [ids, setIds] = useState({
     masterProductId: "",
     variationId: "",
+    flagged: false,
   });
-
+  const { supplierId, storeCode } = useSelector((state) => state.user);
+  const [flagsList, setFlagsList] = useState([]);
+  const flagSchema = {
+    flagTitle: "",
+    imageUrl: "",
+    startDate: "",
+    endDate: "",
+    variationList: [],
+    discount: null,
+    supplierStoreId: "",
+    flagId: "",
+    supplierId: "",
+    userType: "SUPPLIER",
+    purchaseId: null,
+  };
+  const [flagFormData, setFlagFormData] = useState(flagSchema);
+  const [disableFlagField, setdisableFlagField] = useState(false);
   const { id } = useUserInfo();
   const router = useRouter();
 
@@ -204,6 +225,7 @@ const MyProducts = () => {
                     setIds({
                       masterProductId: masterProduct.masterProductId,
                       variationId: variation.productVariationId,
+                      flagged: variation.flagged,
                     });
                     setShowMenu(event.currentTarget);
                   }}
@@ -342,7 +364,7 @@ const MyProducts = () => {
     if (err) {
       toastify(err?.response?.data?.messagea);
     } else {
-      setIds({ masterProductId: "", variationId: "" });
+      setIds({ masterProductId: "", variationId: "", flagged: false });
       dispatch(updateProduct(data[0]));
       router.push("/supplier/products&inventory/addnewproduct");
     }
@@ -352,9 +374,87 @@ const MyProducts = () => {
     if (err) {
       toastify(err?.response?.data?.messagea);
     } else {
-      setIds({ masterProductId: "", variationId: "" });
-      dispatch(duplicateProduct(data[0]));
+      setIds({ masterProductId: "", variationId: "", flagged: false });
+      dispatch(viewProduct(data[0]));
       router.push("/supplier/products&inventory/addnewproduct");
+    }
+  };
+
+  const getflagList = async () => {
+    const { data, err } = await getFlags(supplierId);
+    if (data) {
+      setFlagsList(
+        data.map((item) => ({
+          value: item.id,
+          label: item.name,
+          purchaseId: item.purchaseId,
+          imageUrl: item.imageUrl,
+        }))
+      );
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    if (showAddFlagModal) {
+      getflagList();
+    }
+  }, [showAddFlagModal]);
+
+  const getFlagDetails = async (val) => {
+    const { data, err } = await getFlagById(
+      val.value,
+      val.purchaseId,
+      storeCode
+    );
+    if (data) {
+      if (data.data) {
+        setdisableFlagField(true);
+        setFlagFormData((pre) => ({
+          ...pre,
+          flagId: val.value,
+          flagTitle: val.label,
+          imageUrl: val.imageUrl,
+          supplierId,
+          supplierStoreId: storeCode,
+          purchaseId: val.purchaseId,
+          variationList: [...data.data.variationList, ids.variationId],
+          startDate: data.data.startDate,
+          endDate: data.data.endDate,
+          discount: data.data.discount,
+        }));
+      } else {
+        setdisableFlagField(false);
+        setFlagFormData((pre) => ({
+          ...pre,
+          flagId: val.value,
+          flagTitle: val.label,
+          imageUrl: val.imageUrl,
+          supplierId,
+          supplierStoreId: storeCode,
+          purchaseId: val.purchaseId,
+          variationList: [ids.variationId],
+          startDate: null,
+          endDate: null,
+          discount: "",
+        }));
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const flagSubmit = async () => {
+    const { data, err } = await addProductFlag(flagFormData);
+    if (data) {
+      toastify(data.message, "success");
+      setShowAddFlagModal(false);
+      setFlagFormData({ ...flagSchema });
+      setdisableFlagField(false);
+      setIds({ masterProductId: "", variationId: "", flagged: false });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -412,14 +512,20 @@ const MyProducts = () => {
             </MenuItem>
             <MenuItem
               onClick={() => {
+                if (ids.flagged) return;
                 handleClose();
                 setShowAddFlagModal(true);
+                setFlagFormData((pre) => ({
+                  ...pre,
+                  variationList: [...pre.variationList, ids.variationId],
+                }));
               }}
             >
               <CustomIcon
                 type="flag"
                 muiProps={{ sx: { zoom: 0.8 } }}
                 showColorOnHover={false}
+                className={ids.flagged && "color-orange"}
               />
               <span className="fs-12 ms-2">Add Flag</span>
             </MenuItem>
@@ -427,6 +533,7 @@ const MyProducts = () => {
           <ModalComponent
             onCloseIconClick={() => {
               setShowAddFlagModal(false);
+              setFlagFormData({ ...flagSchema });
             }}
             open={showAddFlagModal}
             ModalTitle="Add Flag"
@@ -435,28 +542,66 @@ const MyProducts = () => {
             titleClassName="h-4"
             ClearBtnText="Cancel"
             onClearBtnClick={() => {
-              showAddFlagModal(false);
+              setShowAddFlagModal(false);
+              setFlagFormData({ ...flagSchema });
             }}
+            onSaveBtnClick={flagSubmit}
           >
             <Grid container spacing={2} className="my-2">
               <Grid item xs={12}>
                 <SimpleDropdownComponent
                   size="small"
                   placeholder="Todays Deal"
-                  // value={defaultFormData?.todaysDeals}
+                  list={flagsList}
+                  onDropdownSelect={(val) => {
+                    getFlagDetails(val);
+                  }}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <InputBox size="small" placeholder="Sale Price" disabled />
-              </Grid>
+              {/* <Grid item xs={6}>
+                <InputBox
+                  size="small"
+                  placeholder="Sale Price"
+                  type="number"
+                  disabled
+                />
+              </Grid> */}
               <Grid item sm={6}>
-                <InputBox size="small" placeholder="Enter discount %" />
+                <InputBox
+                  size="small"
+                  value={flagFormData.discount}
+                  placeholder="Enter discount in %"
+                  onInputChange={(e) => {
+                    setFlagFormData((pre) => ({
+                      ...pre,
+                      discount: e.target.value,
+                    }));
+                  }}
+                  type="number"
+                  disabled={disableFlagField}
+                />
               </Grid>
               <Grid item sm={6}>
                 <DatePickerComponent
                   size="small"
                   label="Start Date"
                   inputlabelshrink
+                  value={
+                    flagFormData.startDate
+                      ? parse(
+                          flagFormData.startDate,
+                          "MM-dd-yyyy HH:mm:ss",
+                          new Date()
+                        )
+                      : null
+                  }
+                  onDateChange={(date) => {
+                    setFlagFormData((pre) => ({
+                      ...pre,
+                      startDate: format(date, "MM-dd-yyyy HH:mm:ss"),
+                    }));
+                  }}
+                  disabled={disableFlagField}
                 />
               </Grid>
               <Grid item sm={6}>
@@ -464,6 +609,22 @@ const MyProducts = () => {
                   size="small"
                   label="End Date"
                   inputlabelshrink
+                  value={
+                    flagFormData.endDate
+                      ? parse(
+                          flagFormData.endDate,
+                          "MM-dd-yyyy HH:mm:ss",
+                          new Date()
+                        )
+                      : null
+                  }
+                  onDateChange={(date) => {
+                    setFlagFormData((pre) => ({
+                      ...pre,
+                      endDate: format(date, "MM-dd-yyyy HH:mm:ss"),
+                    }));
+                  }}
+                  disabled={disableFlagField}
                 />
               </Grid>
             </Grid>

@@ -4,11 +4,13 @@ import { returnOrderData } from "constants/constants";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { useSelector } from "react-redux";
 import { validatePricingForMrMRsCartForm } from "../validation";
 
 const PricingForMrMRsCartForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
+    const { viewFlag } = useSelector((state) => state.product);
 
     const handleInputChange = (e) => {
       setFormData((pre) => ({
@@ -66,6 +68,7 @@ const PricingForMrMRsCartForm = forwardRef(
             }}
             showIcon
             varient="filled"
+            isDisabled={viewFlag}
           />
           <Typography component="span" className="h-5">
             Do You Want To Sell With Us
@@ -79,7 +82,7 @@ const PricingForMrMRsCartForm = forwardRef(
             value={formData?.mrMrsCartFormData?.free_delivery}
             inputlabelshrink
             type="number"
-            disabled={!formData?.mrMrsCartFormData?.sellwithus}
+            disabled={!formData?.mrMrsCartFormData?.sellwithus || viewFlag}
             helperText={errorObj.free_delivery}
             error={errorObj.free_delivery && errorObj.free_delivery !== ""}
           />
@@ -92,7 +95,7 @@ const PricingForMrMRsCartForm = forwardRef(
             value={formData?.mrMrsCartFormData?.paid_delivery}
             inputlabelshrink
             type="number"
-            disabled={!formData?.mrMrsCartFormData?.sellwithus}
+            disabled={!formData?.mrMrsCartFormData?.sellwithus || viewFlag}
             helperText={errorObj.paid_delivery}
             error={errorObj.paid_delivery && errorObj.paid_delivery !== ""}
           />
@@ -121,6 +124,7 @@ const PricingForMrMRsCartForm = forwardRef(
             }}
             showIcon
             varient="filled"
+            isDisabled={viewFlag}
           />
           <Typography component="span" className="h-5">
             Return Order Accepted
@@ -141,6 +145,7 @@ const PricingForMrMRsCartForm = forwardRef(
               }));
             }}
             showIcon
+            isDisabled={viewFlag}
             varient="filled"
           />
           <Typography component="span" className="h-5">
@@ -170,6 +175,7 @@ const PricingForMrMRsCartForm = forwardRef(
               placeholder="Return Period"
               helperText={errorObj.returnorder}
               error={errorObj.returnorder !== ""}
+              isDisabled={viewFlag}
             />
           </Grid>
         )}

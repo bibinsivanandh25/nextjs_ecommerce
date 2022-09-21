@@ -8,6 +8,14 @@ const initialState = {
   supplierId: "",
   storeCode: "",
   isAddressSaved: false,
+  unlockedTools: [
+    "unlocktools",
+    "single",
+    "combo",
+    "subscriptionhistory",
+    "createluckydraw",
+  ],
+  storeName: "",
 };
 
 export const userSlice = createSlice({
@@ -15,14 +23,26 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     storeUserInfo: (state, action) => {
-      return action.payload;
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
     clearUser: () => {
       return initialState;
     },
+    updateUnlockedTools: (state, action) => {
+      return {
+        ...state,
+        unlockedTools: [
+          ...new Set([...state.unlockedTools, ...action.payload]),
+        ],
+      };
+    },
   },
 });
 
-export const { storeUserInfo, clearUser } = userSlice.actions;
+export const { storeUserInfo, clearUser, updateUnlockedTools } =
+  userSlice.actions;
 
 export default userSlice.reducer;

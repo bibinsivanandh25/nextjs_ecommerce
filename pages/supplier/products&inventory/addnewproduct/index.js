@@ -290,7 +290,7 @@ const NewProducts = () => {
       ),
     },
   ]);
-  const { editProduct, productDetails, duplicateFlag } = useSelector(
+  const { editProduct, productDetails, duplicateFlag, viewFlag } = useSelector(
     (state) => state.product
   );
   // const [tagValues, setTagValues] = useState([]);
@@ -367,10 +367,47 @@ const NewProducts = () => {
       categoryDetails.mainCategoryName = data.mainCategoryName;
     }
   };
+  const [b2bList, setb2bList] = useState([]);
+  const [trademarkList, setTradeMarkList] = useState([]);
+  const user = useSelector((state) => state.user);
+
+  const getB2BTradmarkValues = (type) => {
+    serviceUtil
+      .get(
+        `products/supplier/product/trademark-invoice-dropdown?documentType=${type}&supplierId=${user.supplierId}`
+      )
+      .then((res) => {
+        if (type === "B2B_INVOICE") {
+          setb2bList(() => {
+            return res.data.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                title: item.documentName,
+              };
+            });
+          });
+        } else {
+          setTradeMarkList(() => {
+            return res.data.data.map((item) => {
+              return {
+                id: item.trademarkInvoiceId,
+                value: item.trademarkInvoiceId,
+                title: item.documentName,
+              };
+            });
+          });
+        }
+      })
+      .catch(() => {});
+  };
+
   const resetFormData = async () => {
     await getTags();
     await getCategorySubCategoryList();
     await getAttributesList(productDetails.subCategoryId, formData);
+    await getB2BTradmarkValues("B2B_INVOICE");
+    await getB2BTradmarkValues("TRADEMARK_LETTER");
     const temp = JSON.parse(JSON.stringify(schema));
     temp.productImage = [...productDetails.variationData.variationMedia];
     temp.mainForm.commision_mode = productDetails.commissionMode;
@@ -387,22 +424,22 @@ const NewProducts = () => {
         })
       : [];
     temp.mainForm.limit_per_order = productDetails.limitsPerOrder;
-    temp.mainForm.selectb2binvoice = productDetails.bTobInvoiceIdList
-      ? productDetails.bTobInvoiceIdList.map((ele) => ({
-          id: ele,
-          value: ele,
-          title: "",
-        }))
-      : [];
+    if (productDetails?.btobInvoiceList?.length) {
+      b2bList.forEach((eles) => {
+        if (productDetails.btobInvoiceList.includes(eles.id)) {
+          temp.mainForm.selectb2binvoice.push(eles);
+        }
+      });
+    }
     temp.mainForm.tradeMarkCheck =
       !!productDetails.trademarkLetterIdList?.length;
-    temp.mainForm.b2bdocument = productDetails.trademarkLetterIdList
-      ? productDetails.trademarkLetterIdList.map((ele) => ({
-          id: ele,
-          value: ele,
-          title: "",
-        }))
-      : [];
+    if (productDetails?.trademarkLetterIdList?.length) {
+      trademarkList.forEach((eles) => {
+        if (productDetails.trademarkLetterIdList.includes(eles.id)) {
+          temp.mainForm.b2bdocument.push(eles);
+        }
+      });
+    }
     temp.mainForm.brandradio = !productDetails.genericProduct;
     temp.mainForm.genericradio = productDetails.genericProduct;
     temp.mainForm.category = productDetails.subCategoryId
@@ -572,9 +609,8 @@ const NewProducts = () => {
     });
     setFormData(temp);
   };
-
   useEffect(() => {
-    if (editProduct || duplicateFlag) {
+    if (editProduct || duplicateFlag || viewFlag) {
       resetFormData();
     }
   }, [editProduct]);

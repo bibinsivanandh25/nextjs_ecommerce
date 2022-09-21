@@ -10,6 +10,7 @@ import InputBox from "components/atoms/InputBoxComponent";
 import { getCurrentData } from "services/supplier";
 import CustomIcon from "services/iconUtils";
 import { Country } from "country-state-city";
+import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import { validateVariation } from "../validation";
 
@@ -39,6 +40,7 @@ const VariationForm = forwardRef(
       value: item.name,
       id: item.name,
     }));
+    const { editProduct, viewFlag } = useSelector((state) => state.product);
 
     useEffect(() => {
       let tempFormData = {};
@@ -185,6 +187,7 @@ const VariationForm = forwardRef(
                     }
                     onDropdownSelect={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
+                    disabled={editProduct || viewFlag}
                   />
                 )}
                 {ele.type === "date" && (
@@ -195,6 +198,7 @@ const VariationForm = forwardRef(
                     onDateChange={(val) => handleInputChange(val, ele)}
                     helperText={error[ele.id]}
                     error={Boolean(error[ele.id])}
+                    disabled={viewFlag}
                   />
                 )}
               </Grid>
@@ -215,6 +219,7 @@ const VariationForm = forwardRef(
             iconOrintation="end"
             iconName="add"
             iconColorClass="fs-16 color-orange"
+            disabled={editProduct || viewFlag}
           />
         </Grid>
         <Grid item md={12} xs={12} container spacing={1} className="mx-2">
@@ -235,12 +240,12 @@ const VariationForm = forwardRef(
                     });
                   }}
                   label="Label"
+                  disabled={editProduct || viewFlag}
                 />
               </Grid>
               <Grid item md={12} lg={8} className="d-flex align-items-start">
                 <InputBox
                   id={`value${index}`}
-                  isMultiline
                   value={item.value}
                   onInputChange={(e) => {
                     const temp = JSON.parse(JSON.stringify(formData.variation));
@@ -252,6 +257,7 @@ const VariationForm = forwardRef(
                       };
                     });
                   }}
+                  disabled={editProduct || viewFlag}
                 />
                 {formData?.variation?.others.length - 1 ? (
                   <Box
@@ -261,6 +267,7 @@ const VariationForm = forwardRef(
                       temp.variation.others.splice(index, 1);
                       setFormData(temp);
                     }}
+                    disabled={editProduct || viewFlag}
                   >
                     <CustomIcon
                       type="removeIcon"

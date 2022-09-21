@@ -17,6 +17,7 @@ import { Grid } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
+import { format } from "date-fns";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
@@ -317,7 +318,14 @@ export default function TableComponent({
   const handleChangePage = (event, newPage) => {
     const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
     if (newPage === numberOfPage - 1) {
-      handlePageEnd(searchText, searchFilter?.value, undefined, filteredDates);
+      handlePageEnd(searchText, searchFilter?.value, undefined, {
+        fromDate: filteredDates.fromDate
+          ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
+          : "",
+        toDate: filteredDates.toDate
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          : "",
+      });
     }
     setPage(newPage);
   };
@@ -325,8 +333,24 @@ export default function TableComponent({
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-    handleRowsPerPageChange(searchText, searchFilter?.value, 0, filteredDates);
-    handlePageEnd(searchText, searchFilter?.value, 0, filteredDates);
+    handleRowsPerPageChange(searchText, searchFilter?.value, 0, {
+      fromDate: `${format(
+        new Date(filteredDates.fromDate),
+        "MM-dd-yyyy"
+      )} 00:00:00`,
+      toDate: `${format(
+        new Date(filteredDates.toDate),
+        "MM-dd-yyyy"
+      )} 00:00:00`,
+    });
+    handlePageEnd(searchText, searchFilter?.value, 0, {
+      fromDate: filteredDates.fromDate
+        ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
+      toDate: filteredDates.toDate
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
+    });
   };
 
   const handleSelectAllClick = (event, checked) => {
@@ -425,10 +449,28 @@ export default function TableComponent({
                     ...pre,
                     fromDate: e.target.value,
                   }));
-                  handlePageEnd(searchText, searchFilter?.value, undefined, {
-                    toDate: filteredDates.toDate,
-                    fromDate: e.target.value,
-                  });
+                  if (
+                    (filteredDates.toDate &&
+                      (e.target.value || filteredDates.fromDate)) ||
+                    (filteredDates.toDate === "" &&
+                      e.target.value === "" &&
+                      filteredDates.fromDate === "")
+                  ) {
+                    handlePageEnd(searchText, searchFilter?.value, 0, {
+                      toDate: filteredDates.toDate
+                        ? `${format(
+                            new Date(filteredDates.toDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
+                      fromDate: e.target.value
+                        ? `${format(
+                            new Date(e.target.value),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
+                    });
+                  }
                 }}
                 // max={dateValue.to}
               />
@@ -454,10 +496,24 @@ export default function TableComponent({
                     ...pre,
                     toDate: e.target.value,
                   }));
-                  handlePageEnd(searchText, searchFilter?.value, undefined, {
-                    fromDate: filteredDates.fromDate,
-                    toDate: e.target.value,
-                  });
+                  if (
+                    (filteredDates.fromDate &&
+                      (e.target.value || filteredDates.toDate)) ||
+                    (filteredDates.fromDate === "" &&
+                      e.target.value === "" &&
+                      filteredDates.toDate === "")
+                  ) {
+                    handlePageEnd(searchText, searchFilter?.value, 0, {
+                      fromDate: `${format(
+                        new Date(filteredDates.fromDate),
+                        "MM-dd-yyyy"
+                      )} 00:00:00`,
+                      toDate: `${format(
+                        new Date(e.target.value),
+                        "MM-dd-yyyy"
+                      )} 00:00:00`,
+                    });
+                  }
                 }}
                 // min={dateValue.from}
               />
@@ -487,14 +543,22 @@ export default function TableComponent({
                 <Grid item sm={2}>
                   <div
                     style={{ width: "35px", height: "38px" }}
-                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2"
+                    className="bg-orange d-flex justify-content-center align-items-center rounded ms-2 cursor-pointer"
                     onClick={() => {
-                      handlePageEnd(
-                        searchText,
-                        searchFilter?.value,
-                        undefined,
-                        filteredDates
-                      );
+                      handlePageEnd(searchText, searchFilter?.value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                      });
                     }}
                   >
                     <SearchOutlinedIcon style={{ color: "white" }} />
@@ -621,12 +685,16 @@ export default function TableComponent({
                         Object.keys(searchFilter)?.length
                       ) {
                         setPage(0);
-                        handlePageEnd(
-                          searchText,
-                          searchFilter?.value,
-                          0,
-                          filteredDates
-                        );
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
+                          fromDate: `${format(
+                            new Date(filteredDates.fromDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`,
+                          toDate: `${format(
+                            new Date(filteredDates.toDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`,
+                        });
                       }
                       // }
                     }}

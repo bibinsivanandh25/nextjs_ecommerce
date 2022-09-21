@@ -61,10 +61,54 @@ const deleteSingleProduct = (id) => {
     .catch((err) => ({ err }));
 };
 
+const getFlags = (supplierId) => {
+  return serviceUtil
+    .get(`products/supplier-flag/SUPPLIER/${supplierId}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getFlagById = (flagId, purchaseId, supplierStoreId) => {
+  return serviceUtil
+    .get(`products/supplier-flag/${flagId}/${purchaseId}/${supplierStoreId}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const addProductFlag = (payload) => {
+  return serviceUtil
+    .post(`products/supplier-flag`, payload)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const disableProductFlag = (flagId, flag) => {
+  return serviceUtil
+    .put(`products/supplier-flag/${flagId}/${flag}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getSupplierProductCountByStatus,
   getTabledata,
   markOutOfStock,
   deleteSingleProduct,
   getVariation,
+  getFlags,
+  getFlagById,
+  addProductFlag,
+  disableProductFlag,
 };

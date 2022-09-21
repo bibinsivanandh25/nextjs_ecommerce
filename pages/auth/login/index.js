@@ -35,93 +35,6 @@ import { storeUserInfo } from "features/userSlice";
 import axios from "axios";
 import styles from "./Login.module.css";
 
-// const options = ["Supplier", "Reseller", "Customer"];
-
-// const SelectComponent = ({
-//   selectedIndex = 1,
-//   setSelectedIndex = () => {},
-// }) => {
-//   const [anchorEl, setAnchorEl] = useState(false);
-//   const open = anchorEl;
-//   const handleClick = (event) => {
-//     setAnchorEl(event.currentTarget);
-//   };
-//   const handleClose = () => {
-//     setAnchorEl(false);
-//   };
-//   const handleMenuItemClick = (index) => {
-//     setSelectedIndex(index);
-//     setAnchorEl(false);
-//   };
-//   return (
-//     <div style={{ position: "fixed", top: "0", left: "0" }}>
-//       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-//         <IconButton
-//           onClick={handleClick}
-//           size="small"
-//           aria-controls={open ? "user-menu" : undefined}
-//           aria-haspopup="true"
-//           aria-expanded={open ? "true" : undefined}
-//           sx={{ pl: 0, pt: 0 }}
-//         >
-//           <div style={{ background: "white" }}>
-//             <ArrowDropDownIcon />
-//           </div>
-//           <span className="color-white mx-2 fs-16">Choose your profile</span>
-//         </IconButton>
-//       </Box>
-//       <Menu
-//         anchorEl={anchorEl}
-//         id="user-menu"
-//         open={open}
-//         onClose={handleClose}
-//         onClick={handleClose}
-//         PaperProps={{
-//           elevation: 0,
-//           sx: {
-//             overflow: "visible",
-//             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-//             mt: 1.5,
-//             "& .MuiAvatar-root": {
-//               width: 32,
-//               height: 32,
-//               ml: -0.5,
-//               mr: 1,
-//             },
-//             "&:before": {
-//               content: '""',
-//               display: "block",
-//               position: "absolute",
-//               top: 0,
-//               left: 14,
-//               width: 10,
-//               height: 10,
-//               bgcolor: "background.paper",
-//               transform: "translateY(-50%) rotate(45deg)",
-//               zIndex: 0,
-//             },
-//           },
-//         }}
-//         transformOrigin={{ horizontal: "left", vertical: "top" }}
-//         anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-//       >
-//         {options.map((item, index) => {
-//           return (
-//             <MenuItem
-//               key={item}
-//               // disabled={index === 0}
-//               selected={index === selectedIndex}
-//               onClick={() => handleMenuItemClick(index)}
-//             >
-//               {item}
-//             </MenuItem>
-//           );
-//         })}
-//       </Menu>
-//     </div>
-//   );
-// };
-
 const Login = () => {
   // const [selectedIndex, setSelectedIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
@@ -191,41 +104,49 @@ const Login = () => {
   //   }
   // };
 
-  const storedatatoRedux = async (id) => {
-    const { data, err } = await getSupplierDetailsById(id);
-
+  const storedatatoRedux = async (id, role, staffDetails) => {
+    const { data, err } = await getSupplierDetailsById(
+      role === "SUPPLIER" ? id : staffDetails.supplierId
+    );
     if (!err) {
-      const supplierDetails = {
-        emailId: data.emailId,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        profileImageUrl: data.profileImageUrl,
-        supplierId: data.supplierId,
-        storeCode: data.supplierStoreInfo.supplierStoreCode,
-        isAddressSaved: data.userAddressDetails.length,
-      };
+      const supplierDetails =
+        role === "SUPPLIER"
+          ? {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+              storeName: data.supplierStoreInfo.supplierStoreName,
+            }
+          : {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+              staffDetails: {
+                email: staffDetails.emailId,
+                firstName: staffDetails.firstName,
+                lastName: staffDetails.lastName,
+                mobileNumber: staffDetails.mobileNumber,
+                staffId: staffDetails.staffId,
+                staffCapabilityList: staffDetails.staffCapabilityList,
+              },
+              storeName: data.supplierStoreInfo.supplierStoreName,
+            };
       store.dispatch(storeUserInfo(supplierDetails));
     }
   };
 
   const handleSubmit = async () => {
     const flag = validateCredentials();
-    // await axios.post("authenticate", {
-    //   userName: formValues.user,
-    //   password: formValues.password,
-    // });
-
-    // loginCall({
-    //   userName: formValues.user,
-    //   password: formValues.password,
-    //   userType: options[selectedIndex],
-    // });
-    // if (data && !data?.data?.error) {
-    //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
-    // } else if (errRes) {
-    //   toastify("wrong credentials", "error");
-    // }
-
     if (!flag) {
       const payload = {
         userName: formValues.user,
@@ -255,12 +176,15 @@ const Login = () => {
               toastify("Invalid credentials", "error");
               return null;
             }
-            await storedatatoRedux(userData[0]);
+            await storedatatoRedux(
+              userData[0],
+              decoded.roles[0],
+              data.data.staffDetails
+            );
             route.push(`/supplier/dashboard`);
           }
         })
         .catch((err) => {
-          // console.log(err, "err");
           throw err;
         });
     }

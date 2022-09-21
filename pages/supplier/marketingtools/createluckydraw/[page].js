@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -9,7 +10,10 @@ import ViewPage from "components/forms/supplier/marketingtools/createluckydraw/V
 import CustomIcon from "services/iconUtils";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
-import { getUserMarketingTool } from "services/supplier/marketingtools";
+import {
+  getUserMarketingTool,
+  deleteMarketingTool,
+} from "services/supplier/marketingtools";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
@@ -98,12 +102,24 @@ const CreateQuiz = ({ pageName }) => {
   const user = useSelector((state) => state.user);
   const [masterData, setMasterData] = useState({});
   const [row, setRow] = useState([]);
+
+  const deleteTool = async (id) => {
+    const { data, err, message } = await deleteMarketingTool(id);
+    if (data) {
+      toastify(message, "success");
+      const pagename = getPageName();
+      getTableRows(pagename);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   const handleTableRows = (data) => {
     const temp = [];
     if (data) {
-      data?.forEach((item, index) => {
+      data?.forEach((item) => {
         temp.push({
-          id: index + 1,
+          id: item.marketingToolId,
           col1: item.campaignTitle,
           col2: item.marginType,
           col3: item.category,
@@ -116,9 +132,21 @@ const CreateQuiz = ({ pageName }) => {
           col10: item.toolStatus,
           col11: (
             <div className="d-flex justify-content-center">
-              <CustomIcon type="remove" className="fs-16" />
+              <CustomIcon
+                type="remove"
+                className="fs-16"
+                onIconClick={() => {
+                  setshowViewModal({ ...item });
+                }}
+              />
               <CustomIcon type="share" className="fs-16 mx-1" />
-              <CustomIcon type="delete" className="fs-16" />
+              <CustomIcon
+                type="delete"
+                className="fs-16"
+                onIconClick={() => {
+                  deleteTool(item.marketingToolId);
+                }}
+              />
             </div>
           ),
         });
@@ -267,6 +295,7 @@ const CreateQuiz = ({ pageName }) => {
         <GenericForm
           setShowGenericForm={setShowGenericForm}
           pageName={pageName}
+          getTableRows={getTableRows}
         />
       )}
     </Paper>

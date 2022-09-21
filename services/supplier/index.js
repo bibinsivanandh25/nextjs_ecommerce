@@ -22,5 +22,46 @@ const getCurrentData = () => {
       return err;
     });
 };
+const getNavBarItems = () => {
+  return serviceUtil
+    .get(`products/supplier/side-navigation?userType=SUPPLIER`)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const getmarketingToolStatus = (supplierId) => {
+  return serviceUtil
+    .get(`users/marketing-tool/tool-status?supplierId=${supplierId}`)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const urltobaseurl = (url) => {
+  const formData = new FormData();
+  formData.append("data", url);
+  return serviceUtil
+    .post(`products/url-to-baseurl`, formData)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
-export { getSupplierDetailsById, getCurrentData };
+export {
+  getSupplierDetailsById,
+  getCurrentData,
+  getNavBarItems,
+  getmarketingToolStatus,
+  urltobaseurl,
+};

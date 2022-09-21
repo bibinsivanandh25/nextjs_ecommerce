@@ -119,6 +119,18 @@ const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
     });
 };
 
+const updateProduct = (payload) => {
+  return serviceUtil
+    .post(`products/master-product`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
 export {
   getSet,
   getSubCategory,
@@ -129,4 +141,5 @@ export {
   saveMediaFile,
   getCategorySubCategory,
   saveDuplicateProduct,
+  updateProduct,
 };

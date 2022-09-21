@@ -18,7 +18,7 @@ import { validateInventory } from "../validation";
 const InventoryForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
-    const { editProduct } = useSelector((state) => state.product);
+    const { editProduct, viewFlag } = useSelector((state) => state.product);
     useImperativeHandle(ref, () => {
       return {
         validate: () => {
@@ -112,7 +112,7 @@ const InventoryForm = forwardRef(
                 inputlabelshrink
                 fullWidth
                 type="number"
-                disabled={editProduct}
+                disabled={viewFlag}
               />
             </div>
           </Grid>
@@ -136,7 +136,7 @@ const InventoryForm = forwardRef(
                 size="small"
                 showIcon
                 varient="filled"
-                isDisabled={editProduct}
+                isDisabled={viewFlag}
               />
             </div>
           </Grid>
@@ -158,7 +158,7 @@ const InventoryForm = forwardRef(
                 }}
                 placeholder="Select stock status"
                 type="number"
-                disabled={editProduct}
+                disabled={viewFlag}
               />
             </div>
           </Grid>
@@ -182,7 +182,7 @@ const InventoryForm = forwardRef(
                       errorObj.allow_backorders &&
                       errorObj.allow_backorders !== ""
                     }
-                    disabled={editProduct}
+                    disabled={viewFlag}
                   />
                 </div>
                 <div className="mx-2">
@@ -201,11 +201,10 @@ const InventoryForm = forwardRef(
                     inputlabelshrink
                     fullWidth
                     // className="w-90p"
-                    // disabled
+                    disabled={viewFlag}
                     type="number"
                     helperText={errorObj.back_Orders ?? ""}
                     error={errorObj.back_Orders && errorObj.back_Orders !== ""}
-                    disabled={editProduct}
                   />
                 </Grid>
               ) : null}
@@ -226,7 +225,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.shipping_class ?? ""}
               error={errorObj.shipping_class ?? errorObj.shipping_class !== ""}
               placeholder="Select shipping class"
-              disabled={editProduct}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -239,7 +238,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.product_title ?? ""}
               error={errorObj.product_title && errorObj.product_title !== ""}
               placeholder="Enter product title"
-              disabled={editProduct}
+              disabled={editProduct || viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -260,7 +259,7 @@ const InventoryForm = forwardRef(
                 handleDropdownChange(value, "business_processing_days");
               }}
               placeholder="Select processing days"
-              disabled={editProduct}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -283,6 +282,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.seo_title ?? ""}
               error={errorObj.seo_title && errorObj.seo_title !== ""}
               placeholder="Enter SEO title"
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -297,7 +297,7 @@ const InventoryForm = forwardRef(
                 errorObj.meta_description && errorObj.meta_description !== ""
               }
               placeholder="Enter meta description"
-              disabled={editProduct}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -320,7 +320,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.meta_keyword ?? ""}
               error={errorObj.meta_keyword && errorObj.meta_keyword !== ""}
               placeholder="Enter keywords"
-              disabled={editProduct}
+              disabled={viewFlag}
             />
           </Grid>
           <Grid item md={12}>
@@ -333,7 +333,7 @@ const InventoryForm = forwardRef(
               helperText={errorObj.modalname ?? ""}
               error={errorObj.modalname && errorObj.modalname !== ""}
               placeholder="Enter Model Name"
-              disabled={editProduct}
+              disabled={editProduct || viewFlag}
             />
           </Grid>
         </Grid>
