@@ -237,7 +237,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   }, [navOptionsList]);
 
   useEffect(() => {
-    if (menuList.at.length) {
+    if (menuList.length) {
       dispatch(setAllowedPaths(getCapabilityPathList(menuList)));
     }
   }, [menuList]);

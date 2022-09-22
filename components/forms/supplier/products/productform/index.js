@@ -423,13 +423,11 @@ const ProductsLayout = ({
               }),
             ]
           : [...imgdata.long_description]
-        : [
-            ...formData?.mainForm?.long_description?.media?.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ],
+        : formData?.mainForm?.long_description?.media?.filter((item) => {
+            if (item.includes("https://")) {
+              return item;
+            }
+          }) ?? [],
       shortDescription: formData.mainForm.short_description.text,
       shortDescriptionFileUrls: imgdata.short_description
         ? formData.mainForm.short_description.media.length
@@ -442,13 +440,11 @@ const ProductsLayout = ({
               }),
             ]
           : [...imgdata.short_description]
-        : [
-            ...formData.mainForm.short_description.media.filter((item) => {
-              if (item.includes("https://")) {
-                return item;
-              }
-            }),
-          ],
+        : formData?.mainForm?.short_description?.media?.filter((item) => {
+            if (item.includes("https://")) {
+              return item;
+            }
+          }) ?? [],
       subCategoryId: formData.mainForm.subCategoryValue.id,
       subCategoryName: formData.mainForm.subCategoryValue.label,
       commissionMode: formData.mainForm.commision_mode,
@@ -471,8 +467,8 @@ const ProductsLayout = ({
       genericProduct: formData.mainForm.genericradio,
 
       linkedProducts: {
-        upSells: [formData.linked.upSells.value],
-        crossSells: [formData.linked.crossSells.value],
+        upSells: formData.linked.upSells.map((item) => item.id),
+        crossSells: formData.linked.crossSells.map((item) => item.id),
       },
 
       productPolicies: {
@@ -491,15 +487,13 @@ const ProductsLayout = ({
                 ),
               ]
             : [...imgdata?.shippingPolicy]
-          : [
-              ...formData.policy.shippingPolicy.media.binaryStr.filter(
-                (item) => {
-                  if (item.includes("https://")) {
-                    return item;
-                  }
+          : formData?.policy?.shippingPolicy?.media?.binaryStr?.filter(
+              (item) => {
+                if (item.includes("https://")) {
+                  return item;
                 }
-              ),
-            ],
+              }
+            ) ?? [],
         refundPolicy: formData.policy.refundPolicy.text,
         refundPolicyMediaUrls: imgdata?.refundPolicy
           ? formData.policy.refundPolicy.media.binaryStr.length
@@ -514,13 +508,11 @@ const ProductsLayout = ({
                 ),
               ]
             : [...imgdata?.refundPolicy]
-          : [
-              ...formData.policy.refundPolicy.media.binaryStr.filter((item) => {
-                if (item.includes("https://")) {
-                  return item;
-                }
-              }),
-            ],
+          : formData?.policy?.refundPolicy?.media?.binaryStr?.filter((item) => {
+              if (item.includes("https://")) {
+                return item;
+              }
+            }) ?? [],
         cancellationPolicy: formData.policy.cancellationPolicy.text,
         cancellationPolicyMediaUrls: imgdata?.cancellationPolicy
           ? formData.policy.cancellationPolicy.media.binaryStr.length
@@ -535,15 +527,13 @@ const ProductsLayout = ({
                 ),
               ]
             : [...imgdata?.cancellationPolicy]
-          : [
-              ...formData.policy.cancellationPolicy.media.binaryStr.filter(
-                (item) => {
-                  if (item.includes("https://")) {
-                    return item;
-                  }
+          : formData?.policy?.cancellationPolicy?.media?.binaryStr?.filter(
+              (item) => {
+                if (item.includes("https://")) {
+                  return item;
                 }
-              ),
-            ],
+              }
+            ) ?? [],
         warrantyAvailable: formData.policy.warranty,
         warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
           ? parseInt(formData.policy.warrantyperiod.value, 10) * 30

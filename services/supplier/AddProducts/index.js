@@ -144,6 +144,17 @@ const upsellsProduct = (supplierId, mainCatgoryId) => {
       return err;
     });
 };
+const crossSellsProduct = (payload) => {
+  return serviceUtil
+    .post(`products/master-product/cross-sells`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
 export {
   getSet,
@@ -157,4 +168,5 @@ export {
   saveDuplicateProduct,
   updateProduct,
   upsellsProduct,
+  crossSellsProduct,
 };
