@@ -11,7 +11,15 @@ import {
   // Shield,
   // SwapHoriz,
 } from "@mui/icons-material";
-import { Box, Grid, Paper, Rating, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Paper,
+  Rating,
+  Skeleton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 // import toastify from "services/utils/toastUtils";
@@ -405,10 +413,12 @@ const ProductDetails = ({ productId }) => {
                       <span className="color-blue">
                         {item.storeCouponCode}
                       </span>{" "}
-                      <CopyAllSharp
-                        className="fs-16"
-                        sx={{ cursor: "pointer" }}
-                      />
+                      <Tooltip placement="right-start" title="Copy Coupon">
+                        <CopyAllSharp
+                          className="fs-16"
+                          sx={{ cursor: "pointer" }}
+                        />
+                      </Tooltip>
                     </Typography>
                   </Box>
                 ))}
