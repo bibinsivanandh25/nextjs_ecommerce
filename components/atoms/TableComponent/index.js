@@ -309,6 +309,7 @@ export default function TableComponent({
 
   useEffect(() => {
     if (tableRows.length) {
+      setSelected([]);
       setRows(tableRows);
     } else {
       setRows([]);
@@ -504,14 +505,18 @@ export default function TableComponent({
                       filteredDates.toDate === "")
                   ) {
                     handlePageEnd(searchText, searchFilter?.value, 0, {
-                      fromDate: `${format(
-                        new Date(filteredDates.fromDate),
-                        "MM-dd-yyyy"
-                      )} 00:00:00`,
-                      toDate: `${format(
-                        new Date(e.target.value),
-                        "MM-dd-yyyy"
-                      )} 00:00:00`,
+                      fromDate: filteredDates.fromDate
+                        ? `${format(
+                            new Date(filteredDates.fromDate),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
+                      toDate: e.target.value
+                        ? `${format(
+                            new Date(e.target.value),
+                            "MM-dd-yyyy"
+                          )} 00:00:00`
+                        : "",
                     });
                   }
                 }}
@@ -633,8 +638,11 @@ export default function TableComponent({
                 // label="Search Filter"
                 value={searchFilter}
                 onDropdownSelect={(value) => {
-                  // setSearchFilter(value);
-                  setSearchFilter(value);
+                  if (value) {
+                    setSearchFilter(value);
+                  } else {
+                    setSearchFilter([]);
+                  }
                 }}
                 placeholder={customDropDownPlaceholder}
               />
@@ -686,14 +694,18 @@ export default function TableComponent({
                       ) {
                         setPage(0);
                         handlePageEnd(searchText, searchFilter?.value, 0, {
-                          fromDate: `${format(
-                            new Date(filteredDates.fromDate),
-                            "MM-dd-yyyy"
-                          )} 00:00:00`,
-                          toDate: `${format(
-                            new Date(filteredDates.toDate),
-                            "MM-dd-yyyy"
-                          )} 00:00:00`,
+                          fromDate: filteredDates.fromDate
+                            ? `${format(
+                                new Date(filteredDates.fromDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                          toDate: filteredDates.toDate
+                            ? `${format(
+                                new Date(filteredDates.toDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
                         });
                       }
                       // }
