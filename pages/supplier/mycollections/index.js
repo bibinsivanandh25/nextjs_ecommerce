@@ -11,6 +11,7 @@ import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
 import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
 import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -26,8 +27,9 @@ const MyCollections = () => {
   const [productVariationId, setProductVariationId] = useState("");
   const [masterProduct, setmasterProduct] = useState(null);
 
+  const user = useSelector((state) => state.user);
   const getAllTheFlags = async () => {
-    const { data, error } = await getAllProductFlags("SP0822000040");
+    const { data, error } = await getAllProductFlags(user.supplierId);
     if (data) setAllFlags([...data]);
     if (error) toastify(error, "error");
   };
@@ -188,6 +190,7 @@ const MyCollections = () => {
           productVariationId={productVariationId}
           getMycollectionData={getMycollectionData}
           masterProduct={masterProduct}
+          user={user}
         />
       )}
       {showShareModal && (
