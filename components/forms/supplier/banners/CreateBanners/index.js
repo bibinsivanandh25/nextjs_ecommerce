@@ -58,7 +58,6 @@ const CreateBanner = ({
     return new Date(FromDate);
   };
   const validation = () => {
-    console.log(ratio, "ratio");
     const errorObj = {
       url: "",
       displayPage: "",

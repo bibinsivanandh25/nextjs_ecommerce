@@ -14,6 +14,7 @@ import Bargraph from "@/atoms/Bar/Bargraph";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import SelectComponent from "@/atoms/SelectComponent";
 import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
+import { getListYear } from "services/utils/yearlistUtils";
 
 const barGraphLabels = [
   "Jan",
@@ -28,33 +29,6 @@ const barGraphLabels = [
   "Oct",
   "Nov",
   "Dec",
-];
-
-const revenueSelectList = [
-  {
-    value: 2021,
-    label: 2021,
-  },
-  {
-    value: 2022,
-    label: 2022,
-  },
-  {
-    value: 2023,
-    label: 2023,
-  },
-  {
-    value: 2024,
-    label: 2024,
-  },
-  {
-    value: 2025,
-    label: 2025,
-  },
-  {
-    value: 2026,
-    label: 2026,
-  },
 ];
 
 const cardDatas = [
@@ -188,7 +162,6 @@ const Dashboard = () => {
     }
     getMasterCardData();
   }, []);
-  // console.log(currentYear, "currentYear");
   return (
     <div>
       {showAddressModal ? (
@@ -250,7 +223,7 @@ const Dashboard = () => {
                     <SelectComponent
                       value={currentYear.value}
                       disableUnderline
-                      list={revenueSelectList}
+                      list={getListYear()}
                       onChange={(e) => {
                         setCurrentYear({
                           value: e.target.value,
@@ -287,7 +260,7 @@ const Dashboard = () => {
                     <SelectComponent
                       value={referralCurrentYear.value}
                       disableUnderline
-                      list={revenueSelectList}
+                      list={getListYear()}
                       onChange={(e) => {
                         setReferralCurrentYear({
                           value: e.target.value,
@@ -321,7 +294,7 @@ const Dashboard = () => {
                     <SelectComponent
                       value={customerCurrentYear.value}
                       disableUnderline
-                      list={revenueSelectList}
+                      list={getListYear()}
                       onChange={(e) => {
                         setCustomerCurrentYear({
                           value: e.target.value,
