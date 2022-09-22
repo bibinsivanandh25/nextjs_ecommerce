@@ -99,7 +99,11 @@ const PickUpAddress = () => {
                     <Grid item xs={12} className="fs-14 fw-bold my-1 mx-4">
                       <Typography>
                         {" "}
-                        {`${add?.address}, ${add?.location}, ${add?.landmark}, ${add?.cityDistrictTown}, ${add?.state}, ${add?.pinCode}`}
+                        {`${add?.address}, ${add?.location}, ${
+                          add?.landmark ? `${add?.landmark},` : ""
+                        }  ${add?.cityDistrictTown}, ${add?.state}, ${
+                          add?.pinCode
+                        }`}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} className="fs-12 mx-4">

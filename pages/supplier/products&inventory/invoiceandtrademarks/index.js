@@ -185,7 +185,7 @@ const InvoiceAndTradeMarks = () => {
     getAllTableData("", "", 0);
   }, []);
   return (
-    <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar py-2">
+    <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar pt-1">
       <TableComponent
         tableRows={rows}
         columns={[...columns]}
