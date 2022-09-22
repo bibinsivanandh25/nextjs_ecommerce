@@ -45,13 +45,6 @@ const Login = () => {
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
   const route = useRouter();
 
-  // useEffect(() => {
-  //   setFormValues({
-  //     user: "",
-  //     password: "",
-  //   });
-  // }, [selectedIndex]);
-
   const validateCredentials = () => {
     let flag = false;
     const errObj = { user: "", password: "" };
@@ -92,17 +85,6 @@ const Login = () => {
     setErrorObj({ ...errObj });
     return flag;
   };
-
-  // const getBasePath = (role) => {
-  //   switch (role) {
-  //     case "Supplier":
-  //       return "supplier";
-  //     case "Reseller":
-  //       return "reseller";
-  //     default:
-  //       return "customer";
-  //   }
-  // };
 
   const storedatatoRedux = async (id, role, staffDetails) => {
     const { data, err } = await getSupplierDetailsById(

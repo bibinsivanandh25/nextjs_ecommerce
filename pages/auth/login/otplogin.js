@@ -16,7 +16,6 @@ import serviceUtil from "services/utils";
 import { getSupplierDetailsById } from "services/supplier";
 import { storeUserInfo } from "features/userSlice";
 import { store } from "store";
-// import styles from "./Login.module.css";
 
 const OtpLogIn = () => {
   const [otp, setotp] = useState("xxxx");
@@ -32,19 +31,44 @@ const OtpLogIn = () => {
   }, []);
 
   const route = useRouter();
-  const storedatatoRedux = async (id) => {
-    const { data, err } = await getSupplierDetailsById(id);
+  const storedatatoRedux = async (id, role, staffDetails) => {
+    const { data, err } = await getSupplierDetailsById(
+      role === "SUPPLIER" ? id : staffDetails.supplierId
+    );
 
     if (!err) {
-      const supplierDetails = {
-        emailId: data.emailId,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        profileImageUrl: data.profileImageUrl,
-        supplierId: data.supplierId,
-        storeCode: data.supplierStoreInfo.supplierStoreCode,
-        isAddressSaved: data.userAddressDetails.length,
-      };
+      const supplierDetails =
+        role === "SUPPLIER"
+          ? {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+              storeName: data.supplierStoreInfo.supplierStoreName,
+            }
+          : {
+              emailId: data.emailId,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              profileImageUrl: data.profileImageUrl,
+              supplierId: data.supplierId,
+              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              isAddressSaved: data.userAddressDetails.length,
+              role,
+              staffDetails: {
+                email: staffDetails.emailId,
+                firstName: staffDetails.firstName,
+                lastName: staffDetails.lastName,
+                mobileNumber: staffDetails.mobileNumber,
+                staffId: staffDetails.staffId,
+                staffCapabilityList: staffDetails.staffCapabilityList,
+              },
+              storeName: data.supplierStoreInfo.supplierStoreName,
+            };
       store.dispatch(storeUserInfo(supplierDetails));
     }
   };
@@ -77,7 +101,11 @@ const OtpLogIn = () => {
         toastify("Invalid credentials", "error");
         return null;
       }
-      await storedatatoRedux(userData[0]);
+      await storedatatoRedux(
+        userData[0],
+        decoded.roles[0],
+        data.data.staffDetails
+      );
       route.push(`/supplier/dashboard`);
     }
   };
