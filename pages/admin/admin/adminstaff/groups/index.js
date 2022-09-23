@@ -115,6 +115,7 @@ const Users = () => {
             onCustomButtonClick={() => {
               setShowAdminCapabilities(true);
             }}
+            showSearchbar={false}
           />
         ) : (
           <AdminCapabilities

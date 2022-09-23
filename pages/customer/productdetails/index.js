@@ -555,8 +555,8 @@ const ProductDetails = ({ productId }) => {
           </Grid>
           <Box className="d-flex mt-1">
             <Rating value={4} readOnly sx={{ color: "#e56700" }} />
-            <span className="fs-12 mt-1"> 192 Rating | &nbsp;</span>
-            <span className="fs-12 mt-1"> 22 Answered Questions</span>
+            <span className="fs-12 mt-1 fw-bold"> 192 Rating | &nbsp;</span>
+            <span className="fs-12 mt-1 fw-bold"> 22 Answered Questions</span>
             <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
               {" "}
               Want To Sell With Us?
@@ -588,7 +588,7 @@ const ProductDetails = ({ productId }) => {
                       }));
                     }}
                   />
-                  <Typography className="ms-4 h-5">
+                  <Typography className="h-5" marginLeft={3.5}>
                     MRP :{" "}
                     <span className="text-decoration-line-through">
                       {selectedMasterData.mrp}
@@ -898,7 +898,7 @@ const ProductDetails = ({ productId }) => {
                         }));
                       }}
                     />
-                    <Typography className="ms-4 h-5">
+                    <Typography className="h-5" marginLeft={3.5}>
                       MRP :{" "}
                       <span className="text-decoration-line-through">
                         {selectedMasterData.mrp}

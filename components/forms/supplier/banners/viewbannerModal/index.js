@@ -57,55 +57,49 @@ const ViewBannerModal = ({
           <Grid item sm={7}>
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="">Navigation URL </Typography>
+                <Typography className="fw-bold">Navigation URL </Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="fw-bold">
-                  {viewData.navigationUrl}
-                </Typography>
+                <Typography className="">{viewData.navigationUrl}</Typography>
               </Grid>
             </Grid>{" "}
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="">Display Page </Typography>
+                <Typography className="fw-bold">Display Page </Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="fw-bold">
-                  {viewData.displayPage}
-                </Typography>
+                <Typography className="">{viewData.displayPage}</Typography>
               </Grid>
             </Grid>
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="">Button Label </Typography>
+                <Typography className="fw-bold">Button Label </Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="fw-bold">
-                  {viewData.buttonName}
-                </Typography>
+                <Typography className="">{viewData.buttonName}</Typography>
               </Grid>
             </Grid>
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="">From Date</Typography>
+                <Typography className="fw-bold">From Date</Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="fw-bold">
+                <Typography className="">
                   {new Date(viewData.startDateTime).toLocaleString()}
                 </Typography>
               </Grid>
             </Grid>{" "}
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
-                <Typography className="">To Date </Typography>
+                <Typography className="fw-bold">To Date </Typography>
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="fw-bold">
+                <Typography className="">
                   {new Date(viewData.endDateTime).toLocaleString()}
                 </Typography>
               </Grid>
