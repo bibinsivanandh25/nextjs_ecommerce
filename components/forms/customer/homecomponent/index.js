@@ -12,7 +12,7 @@ const HomeComponent = ({
 }) => {
   return (
     <div className="w-100">
-      <Box className="my-2 w-100 overflow-x-scroll">
+      <Box className="my-2 w-100 overflow-x-scroll ">
         <CategoryScrollComponent
           categories={[...categories]}
           onCategoryClick={(ele) => {
@@ -21,7 +21,7 @@ const HomeComponent = ({
         />
       </Box>
       {products.length ? (
-        <Box className="my-2">
+        <Box className="my-2 mx-1 px-2">
           <>
             <Typography className="fw-bold">{productTitle}</Typography>
             <ProductDetailsCard

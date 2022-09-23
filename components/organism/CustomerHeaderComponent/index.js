@@ -380,7 +380,7 @@ const Header = () => {
           }}
           open={showStoreModal}
           ModalTitle="Add New Store"
-          titleClassName="fw-600 fs-16"
+          titleClassName="fw-600 fs-16 color-orange"
           footerClassName="justify-content-end"
           onSaveBtnClick={() => {
             setShowStoreModal(false);
