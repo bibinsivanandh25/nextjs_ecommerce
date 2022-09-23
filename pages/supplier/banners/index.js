@@ -133,7 +133,7 @@ const Banners = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [tableDate, setTableDate] = useState({ fromDate: "", toDate: "" });
 
-  const mapRowsToTable = (data) => {
+  const mapRowsToTable = (data, fromdate, endDate) => {
     const temp = [];
     if (data) {
       data.forEach((item, index) => {
@@ -187,7 +187,7 @@ const Banners = () => {
                 className=" fs-5"
                 title="Delete"
                 onIconClick={() => {
-                  handleDeleteClick(item);
+                  handleDeleteClick(item, fromdate, endDate);
                 }}
               />
             </div>
@@ -203,18 +203,23 @@ const Banners = () => {
       createdById: userInfo.supplierId,
       fromDate: fromdate,
       toDate: endDate,
-      pageNumber,
+      pageNumber: page,
       pageSize: 50,
     };
     const { data, err } = await getAllData(payload);
     if (data?.length) {
       if (page == 0) {
-        setTableRows(mapRowsToTable(data));
+        setTableRows(mapRowsToTable(data, fromdate, endDate));
         setpageNumber((pre) => pre + 1);
       } else {
         setpageNumber((pre) => pre + 1);
-        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        setTableRows((pre) => [
+          ...pre,
+          ...mapRowsToTable(data, fromdate, endDate),
+        ]);
       }
+    } else if (page === 0 && fromdate && endDate) {
+      setTableRows([]);
     }
     if (err) {
       toastify(err.response.data.message, "error");
@@ -227,13 +232,13 @@ const Banners = () => {
     }
   };
 
-  const handleDeleteClick = async (selectdata) => {
+  const handleDeleteClick = async (selectdata, fromdate, endDate) => {
     if (selectdata) {
       const { data, err } = await deleteBanner(selectdata.bannerId);
       if (data?.data) {
         toastify(data.message, "success");
         setpageNumber(0);
-        getAllTableData("", "", 0);
+        getAllTableData(fromdate, endDate, 0);
       } else if (err) {
         toastify(err.response.data.message, "error");
       }
@@ -279,7 +284,7 @@ const Banners = () => {
   }, []);
 
   return (
-    <Paper className="mxh-80vh mnh-80vh overflow-auto hide-scrollbar py-2">
+    <Paper className="mxh-82vh mnh-82vh overflow-auto hide-scrollbar pt-1">
       <TableComponent
         showCheckbox={false}
         tableRows={[...tableRows]}
@@ -296,18 +301,18 @@ const Banners = () => {
         handlePageEnd={(
           searchText = "",
           filterText = "ALL",
-          page,
+          page = pageNumber,
           filteredDates
         ) => {
           getAllTableData(
-            filteredDates?.fromDate
-              ? new Date(filteredDates?.fromDate).toISOString().substring(0, 19)
-              : "",
-            filteredDates?.toDate
-              ? new Date(filteredDates?.toDate).toISOString().substring(0, 19)
-              : "",
+            filteredDates?.fromDate ? filteredDates?.fromDate : "",
+            filteredDates?.toDate ? filteredDates?.toDate : "",
             page
           );
+          setTableDate({
+            fromDate: filteredDates?.fromDate ? filteredDates?.fromDate : "",
+            toDate: filteredDates?.toDate ? filteredDates?.toDate : "",
+          });
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);

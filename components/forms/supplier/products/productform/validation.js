@@ -222,11 +222,11 @@ const validatePricing = (pricingFormData) => {
 const validateLinked = (linkedFormData) => {
   const errObj = {};
   let flag = false;
-  if (!linkedFormData.upSells?.value) {
+  if (!linkedFormData.upSells?.length) {
     errObj.upSells = validateMessage.field_required;
     flag = true;
   }
-  if (!linkedFormData.crossSells?.value) {
+  if (!linkedFormData.crossSells?.length) {
     errObj.crossSells = validateMessage.field_required;
     flag = true;
   }

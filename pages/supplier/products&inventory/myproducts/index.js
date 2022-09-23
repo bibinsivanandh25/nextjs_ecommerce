@@ -25,7 +25,7 @@ import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import { duplicateProduct, updateProduct } from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -49,7 +49,7 @@ const MyProducts = () => {
       label: "Image",
       id: "col1",
       isFilter: false,
-      minWidth: 100,
+      minWidth: 75,
       align: "center",
     },
     {
@@ -57,7 +57,7 @@ const MyProducts = () => {
       data_align: "center",
       label: "Product Type",
       id: "col2",
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       align: "center",
@@ -65,7 +65,7 @@ const MyProducts = () => {
       label: "Product ID",
       isFilter: true,
       id: "col3",
-      minWidth: 150,
+      minWidth: 100,
     },
     {
       align: "center",
@@ -111,19 +111,26 @@ const MyProducts = () => {
       isFilter: false,
       id: "col9",
     },
+    {
+      align: "center",
+      data_align: "center",
+      label: "Status",
+      isFilter: false,
+      id: "col10",
+    },
 
     {
       align: "center",
       data_align: "center",
       label: "Updated Date & Time",
-      id: "col10",
+      id: "col11",
       isFilter: false,
     },
     {
       align: "center",
       data_align: "center",
       label: "Action",
-      id: "col11",
+      id: "col12",
       isFilter: false,
       minWidth: 100,
     },
@@ -158,7 +165,6 @@ const MyProducts = () => {
   };
 
   const deleteSingleRow = async (productId) => {
-    // console.log(productId);
     const { data } = await deleteSingleProduct(productId);
     if (data) {
       toastify(data.message, "success");
@@ -183,8 +189,9 @@ const MyProducts = () => {
           col7: variation.salePrice,
           col8: variation.mrp,
           col9: variation.stockStatus,
-          col10: variation.lastUpdatedAt,
-          col11: (
+          col10: variation.status,
+          col11: variation.lastUpdatedAt,
+          col12: (
             <Grid container className="h-6">
               <Grid item xs={3}>
                 <Link
@@ -375,7 +382,7 @@ const MyProducts = () => {
       toastify(err?.response?.data?.messagea);
     } else {
       setIds({ masterProductId: "", variationId: "", flagged: false });
-      dispatch(viewProduct(data[0]));
+      dispatch(duplicateProduct(data[0]));
       router.push("/supplier/products&inventory/addnewproduct");
     }
   };
@@ -472,7 +479,7 @@ const MyProducts = () => {
             tableRows={tableRows}
             customDropdownLabel="Style Code"
             customButtonLabel="Mark Out Of Stock"
-            showCustomButton
+            showCustomButton={getStatus === "APPROVED"}
             onCustomButtonClick={handleCustomButtonClick}
             // searchBarSizeMd={4}
             disableCustomButton={!selected.length}

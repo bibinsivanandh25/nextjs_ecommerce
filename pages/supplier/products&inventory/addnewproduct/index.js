@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
@@ -6,8 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import serviceUtil from "services/utils";
 import {
+  crossSellsProduct,
   getAttributes,
   getCategorySubCategory,
+  upsellsProduct,
 } from "services/supplier/AddProducts";
 import {
   business_processing_days,
@@ -70,8 +73,8 @@ const NewProducts = () => {
       manageStock: false,
     },
     linked: {
-      upSells: {},
-      crossSells: {},
+      upSells: [],
+      crossSells: [],
     },
     pricing: {
       sale_price: "",
@@ -165,8 +168,8 @@ const NewProducts = () => {
       manageStock: false,
     },
     linked: {
-      upSells: {},
-      crossSells: {},
+      upSells: [],
+      crossSells: [],
     },
     pricing: {
       sale_price: "",
@@ -293,6 +296,7 @@ const NewProducts = () => {
   const { editProduct, productDetails, duplicateFlag, viewFlag } = useSelector(
     (state) => state.product
   );
+  const { supplierId } = useSelector((state) => state.user);
   // const [tagValues, setTagValues] = useState([]);
   // const [attributeList, setAttributeList] = useState([]);
   let attributeList = [];
@@ -338,8 +342,6 @@ const NewProducts = () => {
         };
       }),
     ];
-    // // console.log({ temp1 });
-    // attributeList = [...temp1];
   };
   const tagValues = [];
   const getTags = async () => {
@@ -358,6 +360,45 @@ const NewProducts = () => {
       .catch(() => {});
   };
   const categoryDetails = {};
+  const upsellesProducts = [];
+  const crosssellesProducts = [];
+  const getCrossSellProducts = async () => {
+    let payload = [];
+    upsellesProducts.forEach((item) => {
+      payload.push(item.subCategoryId);
+    });
+    payload = [...new Set(payload)];
+    const { data } = await crossSellsProduct({
+      subCategoryId: payload,
+      supplierId,
+    });
+    if (data) {
+      data.data.forEach((item) => {
+        crosssellesProducts.push({
+          title: item.productTitle,
+          value: item.productVariationId,
+          id: item.productVariationId,
+          subCategoryId: item.subCategoryId,
+        });
+      });
+    }
+  };
+
+  const getProductsList = async (supplierId, categoryid) => {
+    const { data } = await upsellsProduct(supplierId, categoryid);
+    if (data) {
+      data.data.forEach((item) => {
+        upsellesProducts.push({
+          title: item.productTitle,
+          value: item.productVariationId,
+          id: item.productVariationId,
+          subCategoryId: item.subCategoryId,
+        });
+      });
+      await getCrossSellProducts();
+    }
+  };
+
   const getCategorySubCategoryList = async () => {
     const { data } = await getCategorySubCategory(productDetails.subCategoryId);
     if (data) {
@@ -365,6 +406,10 @@ const NewProducts = () => {
       categoryDetails.categorySetName = data.categorySetName;
       categoryDetails.mainCategoryId = data.mainCategoryId;
       categoryDetails.mainCategoryName = data.mainCategoryName;
+      await getProductsList(
+        productDetails.supplierId,
+        categoryDetails.mainCategoryId
+      );
     }
   };
   const [b2bList, setb2bList] = useState([]);
@@ -408,6 +453,7 @@ const NewProducts = () => {
     await getAttributesList(productDetails.subCategoryId, formData);
     await getB2BTradmarkValues("B2B_INVOICE");
     await getB2BTradmarkValues("TRADEMARK_LETTER");
+
     const temp = JSON.parse(JSON.stringify(schema));
     temp.productImage = [...productDetails.variationData.variationMedia];
     temp.mainForm.commision_mode = productDetails.commissionMode;
@@ -493,14 +539,20 @@ const NewProducts = () => {
     temp.inventory.modalname = productDetails.variationData.modelName;
     temp.inventory.manageStock = !!productDetails.variationData.allowBackOrders;
 
-    temp.linked.upSells = {
-      value: productDetails.linkedProducts.upSells[0],
-      label: productDetails.linkedProducts.upSells[0],
-    };
-    temp.linked.crossSells = {
-      value: productDetails.linkedProducts.crossSells[0],
-      label: productDetails.linkedProducts.crossSells[0],
-    };
+    if (productDetails.linkedProducts.upSells.length) {
+      upsellesProducts.forEach((item) => {
+        if (productDetails.linkedProducts.upSells.includes(item.id)) {
+          temp.linked.upSells.push(item);
+        }
+      });
+    }
+    if (productDetails.linkedProducts.crossSells.length) {
+      crosssellesProducts.forEach((item) => {
+        if (productDetails.linkedProducts.crossSells.includes(item.id)) {
+          temp.linked.crossSells.push(item);
+        }
+      });
+    }
 
     temp.pricing.sale_price = productDetails.variationData.salePrice;
     temp.pricing.mrp = productDetails.variationData.mrp;

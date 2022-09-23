@@ -1,38 +1,75 @@
 import { Grid } from "@mui/material";
-import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSelector } from "react-redux";
+import {
+  crossSellsProduct,
+  upsellsProduct,
+} from "services/supplier/AddProducts";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { validateLinked } from "../validation";
 
 const LinkedForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
     const [errorObj, setErrorObj] = useState({});
     const { viewFlag } = useSelector((state) => state.product);
-
-    const handleDropdownChange = (value, key) => {
-      setFormData((pre) => ({
-        ...pre,
-        linked: {
-          ...pre.linked,
-          [key]: value,
-        },
-      }));
+    const [productsList, setProductsList] = useState([]);
+    const { supplierId } = useSelector((state) => state.user);
+    const [crossSellProduct, setCrossSellProduct] = useState([]);
+    const getProductsList = async () => {
+      const { data } = await upsellsProduct(
+        supplierId,
+        formData.mainForm.category.id
+      );
+      if (data) {
+        setProductsList(
+          data.data.map((item) => {
+            return {
+              title: item.productTitle,
+              value: item.productVariationId,
+              id: item.productVariationId,
+              subCategoryId: item.subCategoryId,
+            };
+          })
+        );
+      }
+    };
+    const getCrossSellProducts = async () => {
+      let payload = [];
+      formData?.linked?.upSells.forEach((item) => {
+        payload.push(item.subCategoryId);
+      });
+      payload = [...new Set(payload)];
+      const { data } = await crossSellsProduct({
+        subCategoryId: payload,
+        supplierId,
+      });
+      if (data) {
+        setCrossSellProduct(
+          data.data.map((item) => {
+            return {
+              title: item.productTitle,
+              value: item.productVariationId,
+              id: item.productVariationId,
+              subCategoryId: item.subCategoryId,
+            };
+          })
+        );
+      }
     };
 
-    const upSellsArray = [
-      {
-        value: "upsells",
-        label: "Up Sells",
-      },
-    ];
+    useEffect(() => {
+      if (formData?.mainForm?.category?.value) getProductsList();
+    }, [formData?.mainForm?.category?.value]);
 
-    const crossSellsArray = [
-      {
-        value: "crosssells",
-        label: "Cross Sells",
-      },
-    ];
+    useEffect(() => {
+      if (
+        formData?.linked?.upSells &&
+        Object.keys(formData?.linked?.upSells).length
+      ) {
+        getCrossSellProducts();
+      }
+    }, [formData?.linked?.upSells]);
 
     useImperativeHandle(ref, () => {
       return {
@@ -57,19 +94,23 @@ const LinkedForm = forwardRef(
       <Grid container spacing={2}>
         <Grid item xs={12} container spacing={2}>
           <Grid item xs={9}>
-            <SimpleDropdownComponent
-              size="small"
-              error={errorObj.upSells && errorObj.upSells?.length}
-              helperText={errorObj.upSells ?? ""}
+            <MultiSelectComponent
               label="Up-Sells*"
               placeholder="Filter By Product..."
-              inputlabelshrink
-              list={[...upSellsArray]}
-              onDropdownSelect={(value) => {
-                handleDropdownChange(value, "upSells");
-              }}
+              list={productsList}
+              size="small"
               value={formData?.linked?.upSells}
+              onSelectionChange={(e, val) => {
+                setFormData((pre) => {
+                  const temp = JSON.parse(JSON.stringify(pre));
+                  temp.linked.upSells = val;
+                  temp.linked.crossSells = [];
+                  return temp;
+                });
+              }}
               disabled={viewFlag}
+              error={errorObj.upSells && errorObj.upSells?.length}
+              helperText={errorObj.upSells ?? ""}
             />
           </Grid>
           <Grid item xs={3} className="d-flex align-items-center">
@@ -78,17 +119,20 @@ const LinkedForm = forwardRef(
         </Grid>
         <Grid item xs={12} container spacing={2}>
           <Grid item xs={9}>
-            <SimpleDropdownComponent
-              size="small"
+            <MultiSelectComponent
               error={errorObj.crossSells && errorObj.crossSells?.length}
               helperText={errorObj.crossSells ?? ""}
               label="Cross-Sells*"
               placeholder="Filter By Product..."
-              inputlabelshrink
-              list={[...crossSellsArray]}
+              list={crossSellProduct}
+              size="small"
               value={formData?.linked?.crossSells}
-              onDropdownSelect={(value) => {
-                handleDropdownChange(value, "crossSells");
+              onSelectionChange={(e, val) => {
+                setFormData((pre) => {
+                  const temp = JSON.parse(JSON.stringify(pre));
+                  temp.linked.crossSells = val;
+                  return temp;
+                });
               }}
               disabled={viewFlag}
             />
