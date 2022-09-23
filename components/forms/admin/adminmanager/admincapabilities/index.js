@@ -1,380 +1,345 @@
-import { Box, Grid, Typography } from "@mui/material";
-import React, { useState } from "react";
-import validateMessage from "constants/validateMessages";
-import validationRegex from "services/utils/regexUtils";
-import InputBox from "@/atoms/InputBoxComponent";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import SwitchComponent from "@/atoms/SwitchComponent";
-import ButtonComponent from "@/atoms/ButtonComponent";
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
+/* eslint-disable react/no-array-index-key */
+import { Box, Collapse, Grid, List, Typography } from "@mui/material";
+import ButtonComponent from "components/atoms/ButtonComponent";
+import CheckBoxComponent from "components/atoms/CheckboxComponent";
+import InputBox from "components/atoms/InputBoxComponent";
+import { useEffect, useState } from "react";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import admincapabilities from "constants/admincapability";
 
-let errObj = {
-  userName: false,
-  email: false,
-  firstName: false,
-  lastName: false,
-  mobileNumber: false,
-  invalidEmail: false,
-  invalidMobileNumber: false,
-  invalidFirstName: false,
-  invalidLastName: false,
+const tempObj = {
+  userName: "",
+  firstName: "",
+  last_Name: "",
+  MobileNo: "",
+  email: "",
 };
+const StaffForm = ({ handlebackClick, type = "add" }) => {
+  const [capabilites, setCapabilities] = useState([]);
+  const [formData, setFormData] = useState({ ...tempObj });
+  const [errorObj, setErrorObj] = useState({ ...tempObj });
+  const [checkbox, setCheckbox] = useState(true);
 
-const AdminCapabilities = ({ setShowAdminCapabilities }) => {
-  const [formData, setFormData] = useState({
-    userName: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    mobileNumber: "",
-  });
-
-  const [customCapability, setCustomCapability] = useState(false);
-
-  const [error, setError] = useState(errObj);
-
-  const [productsZeroMargin] = useState([
-    { label: "Add Products", enabled: false },
-    { label: "Manage Products", enabled: false },
-    { label: "Edit live products", enabled: false },
-    { label: "Create Discounts", enabled: false },
-    { label: "Delete Products", enabled: false },
-    { label: "Update Products", enabled: false },
-  ]);
-  const [productsFixedMargin] = useState([
-    { label: "Add Products", enabled: false },
-    { label: "Manage Products", enabled: false },
-    { label: "Edit live products", enabled: false },
-    { label: "Create Discounts", enabled: false },
-    { label: "Delete Products", enabled: false },
-    { label: "Update Products", enabled: false },
-  ]);
-  const [categories] = useState([
-    { label: "Create Categories", enabled: false },
-    { label: "Create Sub-categories", enabled: false },
-    { label: "Create commission", enabled: false },
-  ]);
-  const [orders] = useState([
-    { label: "Create order", enabled: false },
-    { label: "Manage order", enabled: false },
-    { label: "Approve/ reject order", enabled: false },
-  ]);
-
-  const [delivery] = useState([
-    { label: "Delivery dashboard", enabled: false },
-    { label: "Add pincode", enabled: false },
-    { label: "Manage weight / charge", enabled: false },
-    { label: "Manage reseller order", enabled: false },
-  ]);
-
-  const returnProductsZeroMargin = () => {
-    return productsZeroMargin.map((val) => {
-      return (
-        <Box className="d-flex justify-content-evenly align-items-center me-5 pe-3 mt-2">
-          <Typography className="me-4">{val.label}</Typography>
-          <SwitchComponent label="" />
-        </Box>
-      );
+  const orginizeCapabilites = (data) => {
+    const temp = data.map((item) => {
+      return {
+        label: item.capabilityName,
+        isChecked: type === "add" ? true : item.isEnable,
+        expand: false,
+        children:
+          item.childCapabilityNameList && item.childCapabilityNameList.length
+            ? [...orginizeCapabilites(item.childCapabilityNameList)]
+            : [],
+      };
     });
+    return temp;
   };
 
-  const returnProductsFixedMargin = () => {
-    return productsFixedMargin.map((val) => {
-      return (
-        <Box className="d-flex justify-content-evenly align-items-center me-5 pe-3 mt-2">
-          <Typography className="me-4">{val.label}</Typography>
-          <SwitchComponent label="" />
-        </Box>
-      );
-    });
-  };
+  useEffect(() => {
+    setCapabilities(orginizeCapabilites(admincapabilities));
+  }, [admincapabilities]);
+  useEffect(() => {
+    if (capabilites.length) {
+      const flag = capabilites.every((ele) => ele.isChecked);
+      setCheckbox(flag);
+    }
+  }, [capabilites]);
 
-  const returnCategories = () => {
-    return categories.map((val) => {
-      return (
-        <Box className="d-flex justify-content-evenly align-items-center me-5 pe-4 mt-2">
-          <Typography className="me-4">{val.label}</Typography>
-          <SwitchComponent label="" />
-        </Box>
-      );
-    });
-  };
-
-  const handleError = () => {
-    errObj = {
-      userName: false,
-      email: false,
-      firstName: false,
-      lastName: false,
-      mobileNumber: false,
-      invalidEmail: false,
-      invalidMobileNumber: false,
-      invalidFirstName: false,
-      invalidLastName: false,
+  useEffect(() => {
+    return () => {
+      setCheckbox(null);
+      setCapabilities(null);
     };
-    if (formData.userName === "") {
-      errObj.userName = true;
-    }
-    if (formData.firstName === "") {
-      errObj.firstName = true;
-    }
-    if (!validationRegex.name.test(formData.firstName)) {
-      errObj.invalidFirstName = true;
-    }
-    if (formData.lastName === "") {
-      errObj.lastName = true;
-    }
-    if (!validationRegex.name.test(formData.lastName)) {
-      errObj.invalidLastName = true;
-    }
+  }, []);
 
-    if (formData.email === "") {
-      errObj.email = true;
-    }
-
-    if (!validationRegex.email.test(formData.email)) {
-      errObj.invalidEmail = true;
-    }
-
-    if (formData.mobileNumber === "") {
-      errObj.mobileNumber = true;
-    }
-
-    if (!validationRegex.mobile.test(formData.mobileNumber)) {
-      errObj.invalidMobileNumber = true;
-    }
-
-    return errObj;
+  const handleInputChange = (e) => {
+    setFormData((pre) => ({
+      ...pre,
+      [e.target.id]: e.target.value,
+    }));
   };
 
   const handleSubmit = () => {
-    setError(handleError());
+    // console.log({ formData, capabilites });
   };
 
-  const returnOrders = () => {
-    return orders.map((val) => {
-      return (
-        <Box className="d-flex justify-content-evenly align-items-center me-5 pe-4 mt-2">
-          <Typography className="me-4">{val.label}</Typography>
-          <SwitchComponent label="" />
-        </Box>
-      );
+  const expand = (index) => {
+    setCapabilities((pre) => {
+      const temp = JSON.parse(JSON.stringify(pre));
+      temp.forEach((element, ind) => {
+        if (ind === index) {
+          element.expand = !element.expand;
+        }
+      });
+      return temp;
     });
-  };
-
-  const returnDelivery = () => {
-    return delivery.map((val) => {
-      return (
-        <Box className="d-flex justify-content-evenly align-items-center me-5 pe-4 mt-2">
-          <Typography className="me-4">{val.label}</Typography>
-          <SwitchComponent label="" />
-        </Box>
-      );
-    });
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const returnFirstNameError = () => {
-    if (error.firstName) {
-      return validateMessage.field_required;
-    }
-    if (error.invalidFirstName) {
-      return "Invalid first name";
-    }
-    return "";
-  };
-
-  const returnLastNameError = () => {
-    if (error.lastName) {
-      return validateMessage.field_required;
-    }
-    if (error.invalidLastName) {
-      return "Invalid last name";
-    }
-    return "";
-  };
-
-  const returnMobileNumberError = () => {
-    if (error.mobileNumber) {
-      return validateMessage.field_required;
-    }
-    if (error.invalidMobileNumber) {
-      return validateMessage.mobile;
-    }
-    return "";
-  };
-
-  const returnEmailError = () => {
-    if (error.email) {
-      return validateMessage.field_required;
-    }
-    if (error.invalidEmail) {
-      return validateMessage.email;
-    }
-    return "";
-  };
-
-  const handleCancle = () => {
-    errObj = {
-      userName: false,
-      email: false,
-      firstName: false,
-      lastName: false,
-      mobileNumber: false,
-      invalidEmail: false,
-      invalidMobileNumber: false,
-      invalidFirstName: false,
-      invalidLastName: false,
-    };
-    setError({ ...errObj });
-    setFormData({
-      userName: "",
-      email: "",
-      firstName: "",
-      lastName: "",
-      mobileNumber: "",
-    });
-
-    setShowAdminCapabilities(false);
   };
 
   return (
-    <Box>
-      <Grid container columnSpacing={{ xs: 1, lg: 2 }}>
-        <Grid item xs={3} lg={3.4}>
-          <Typography className="fw-bold color-orange">
-            Admin Capabilities
-          </Typography>
-          <InputBox
-            name="userName"
-            label="User Name"
-            inputlabelshrink
-            className="mt-3"
-            onInputChange={handleInputChange}
-            value={formData.userName}
-            error={error.userName}
-            helperText={error.userName ? validateMessage.field_required : ""}
-          />
-          <InputBox
-            name="email"
-            label="Email"
-            inputlabelshrink
-            className="mt-4"
-            onInputChange={handleInputChange}
-            value={formData.email}
-            error={error.email || error.invalidEmail}
-            helperText={returnEmailError()}
-          />
-          <InputBox
-            name="firstName"
-            label="First Name"
-            inputlabelshrink
-            className="mt-4"
-            onInputChange={handleInputChange}
-            value={formData.firstName}
-            error={error.firstName || error.invalidFirstName}
-            helperText={returnFirstNameError()}
-          />
-          <InputBox
-            name="lastName"
-            label="Last Name"
-            inputlabelshrink
-            className="mt-4"
-            onInputChange={handleInputChange}
-            value={formData.lastName}
-            error={error.lastName || error.invalidLastName}
-            helperText={returnLastNameError()}
-          />
-          <InputBox
-            name="mobileNumber"
-            label="Mobile No."
-            inputlabelshrink
-            className="mt-4"
-            onInputChange={handleInputChange}
-            value={formData.mobileNumber}
-            error={error.mobileNumber || error.invalidMobileNumber}
-            helperText={returnMobileNumberError()}
-          />
-          <Box className="d-flex align-items-center">
-            <Typography className="fw-bold h-5">Custom Capability:</Typography>
-            <CheckBoxComponent
-              isChecked={customCapability}
-              label=""
-              className="ms-2"
-              checkBoxClick={() => {
-                setCustomCapability(!customCapability);
-              }}
-            />
-          </Box>
+    <>
+      <Grid container className="mt-3">
+        <Grid
+          container
+          item
+          spacing={2}
+          md={5}
+          lg={3}
+          className=" border-end p-3"
+        >
+          <div className="w-100">
+            <Grid container spacing={2}>
+              <Grid item sm={12}>
+                <InputBox
+                  inputlabelshrink
+                  id="userName"
+                  name="User Name"
+                  value={formData.userName}
+                  label="User Name"
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.firstName}
+                  error={errorObj.firstName !== ""}
+                  placeholder="User Name"
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <InputBox
+                  id="email"
+                  inputlabelshrink
+                  name="E-mail"
+                  value={formData.email}
+                  label="E-mail"
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.email}
+                  error={errorObj.email !== ""}
+                  placeholder="E-mail"
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <InputBox
+                  inputlabelshrink
+                  id="firstName"
+                  name="First Name"
+                  value={formData.firstName}
+                  label="First Name"
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.firstName}
+                  error={errorObj.firstName !== ""}
+                  placeholder="First Name"
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <InputBox
+                  inputlabelshrink
+                  id="last_Name"
+                  name="Last Name"
+                  value={formData.last_Name}
+                  label="Last Name"
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.last_Name}
+                  error={errorObj.last_Name !== ""}
+                  placeholder="Last Name"
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <InputBox
+                  inputlabelshrink
+                  id="MobileNo"
+                  name="Mobile No."
+                  value={formData.MobileNo}
+                  label="Mobile No."
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.MobileNo}
+                  error={errorObj.MobileNo !== ""}
+                  placeholder="Mobile No."
+                />
+              </Grid>
+
+              <Grid item sm={12} className="d-flex">
+                <span className="fs-14 my-2 fw-600 me-3">
+                  Custom Capability :
+                </span>
+                <CheckBoxComponent
+                  label=""
+                  isChecked={checkbox}
+                  checkBoxClick={(_, value) => {
+                    setCheckbox(value);
+                    setCapabilities((pre) => {
+                      const temp = pre.map((item) => {
+                        return {
+                          ...item,
+                          isChecked: value,
+                          children: item.children.length
+                            ? item.children.map((ele) => {
+                                return {
+                                  ...ele,
+                                  isChecked: value,
+                                };
+                              })
+                            : [],
+                        };
+                      });
+                      return temp;
+                    });
+                  }}
+                  size="small"
+                />
+              </Grid>
+            </Grid>
+          </div>
         </Grid>
-        {customCapability ? (
-          <Grid marginLeft={2} item xs={4} lg={3.4}>
-            <Box>
-              <Typography className="fw-bold color-orange">
-                Products (Zero Margin)
-              </Typography>
-              <Box className="d-flex flex-column align-items-end">
-                {returnProductsZeroMargin()}
-              </Box>
-            </Box>
-            <Box className="mt-4">
-              <Typography className="fw-bold color-orange">
-                Products (Fixed Margin)
-              </Typography>
-              <Box className="d-flex flex-column align-items-end">
-                {returnProductsFixedMargin()}
-              </Box>
-            </Box>
-          </Grid>
-        ) : null}
-        {customCapability ? (
-          <Grid item xs={4} lg={3.4}>
-            <Box>
-              <Typography className="fw-bold color-orange">
-                Categories
-              </Typography>
-              <Box className="d-flex flex-column align-items-end">
-                {returnCategories()}
-              </Box>
-            </Box>
-            <Box className="mt-3">
-              <Typography className="fw-bold color-orange">Orders</Typography>
-              <Box className="d-flex flex-column align-items-end">
-                {returnOrders()}
-              </Box>
-            </Box>
-            <Box className="mt-3">
-              <Typography className="fw-bold color-orange">Delivery</Typography>
-              <Box className="d-flex flex-column align-items-end">
-                {returnDelivery()}
-              </Box>
-            </Box>
-          </Grid>
-        ) : null}
+        <Grid
+          container
+          item
+          md={7}
+          lg={9}
+          spacing={2}
+          className=" px-4 pt-0 d-flex w-100 mxh-70vh overflow-y-scroll"
+        >
+          {capabilites.map((item, index) => {
+            return (
+              <Grid item md={6}>
+                <Box
+                  className="d-flex align-items-center justify-content-between"
+                  onClick={() => {
+                    expand(index);
+                  }}
+                >
+                  <div className="d-flex align-items-center">
+                    <CheckBoxComponent
+                      isChecked={item.isChecked}
+                      size="small"
+                      checkBoxClick={(_, val) => {
+                        setCapabilities((pre) => {
+                          const temp = JSON.parse(JSON.stringify(pre));
+                          temp.forEach((element, ind) => {
+                            if (ind === index) {
+                              element.expand = true;
+                              element.isChecked = val;
+                              element.children = element.children.map(
+                                (child) => {
+                                  return { ...child, isChecked: val };
+                                }
+                              );
+                            }
+                          });
+                          return temp;
+                        });
+                      }}
+                    />
+                    <Typography
+                      onClick={() => {
+                        if (type === "view") return;
+                        setCapabilities((pre) => {
+                          const temp = JSON.parse(JSON.stringify(pre));
+                          temp.forEach((element, ind) => {
+                            if (ind === index) {
+                              element.expand = true;
+                              element.isChecked = !element.isChecked;
+                              element.children = element.children.map(
+                                (child) => {
+                                  return {
+                                    ...child,
+                                    isChecked: !child.isChecked,
+                                  };
+                                }
+                              );
+                            }
+                          });
+                          return temp;
+                        });
+                      }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </div>
+                  {item.children.length ? (
+                    item.expand ? (
+                      <div className="me-3">
+                        <ExpandLess />
+                      </div>
+                    ) : (
+                      <div className="me-3">
+                        <ExpandMore />
+                      </div>
+                    )
+                  ) : null}
+                </Box>
+                <Collapse
+                  in={item.expand}
+                  timeout="auto"
+                  unmountOnExit
+                  className="ms-4"
+                >
+                  <List component="div" disablePadding>
+                    {item.children.map((ele, ind) => {
+                      return (
+                        <Box className="d-flex align-items-center">
+                          <CheckBoxComponent
+                            isChecked={ele.isChecked}
+                            size="small"
+                            checkBoxClick={(_, val) => {
+                              const temp = JSON.parse(
+                                JSON.stringify(capabilites)
+                              );
+                              temp[index].children[ind].isChecked = val;
+                              temp[index].isChecked = temp[
+                                index
+                              ].children.every((child) => child.isChecked);
+
+                              setCapabilities(temp);
+                            }}
+                          />
+                          <Typography
+                            onClick={() => {
+                              if (type === "view") return;
+                              const temp = JSON.parse(
+                                JSON.stringify(capabilites)
+                              );
+                              temp[index].children[ind].isChecked =
+                                !temp[index].children[ind].isChecked;
+                              temp[index].isChecked = temp[
+                                index
+                              ].children.every((child) => child.isChecked);
+
+                              setCapabilities(temp);
+                            }}
+                          >
+                            {ele.label}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
+                  </List>
+                </Collapse>
+              </Grid>
+            );
+          })}
+        </Grid>
+        <Grid item sm={12} className="mt-4">
+          <div className="w-100 d-flex flex-row-reverse">
+            <ButtonComponent
+              label="Approve"
+              onBtnClick={handleSubmit}
+              muiProps="ms-3"
+            />
+            <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
+          </div>
+        </Grid>
       </Grid>
-      <Box sx={{ top: "87%", left: "84%" }} className="position-absolute">
-        <Box>
-          <ButtonComponent
-            label="Cancel"
-            variant="outlined"
-            borderColor="border-none bg-ligth-gray color-gray"
-            onBtnClick={() => {
-              handleCancle();
-            }}
-          />
-          <ButtonComponent
-            onBtnClick={() => {
-              handleSubmit();
-            }}
-            label="Submit"
-            muiProps="ms-2"
-          />
-        </Box>
-      </Box>
-    </Box>
+    </>
   );
 };
-
-export default AdminCapabilities;
+export default StaffForm;

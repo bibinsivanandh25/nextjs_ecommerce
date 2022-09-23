@@ -14,7 +14,7 @@ const SideBarComponent = ({ children }) => {
   const route = useRouter();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { allowedPath } = useSelector((state) => state.user);
+  const { allowedPath, role } = useSelector((state) => state.user);
 
   return (
     <Box
@@ -45,7 +45,7 @@ const SideBarComponent = ({ children }) => {
         }}
         className=" p-3 pt-2 w-100 body-bg"
       >
-        {!allowedPath.includes(route.pathname) ? (
+        {role === "STAFF" && !allowedPath.includes(route.pathname) ? (
           <div
             style={{
               maxHeight: route.pathname.startsWith("/admin")
