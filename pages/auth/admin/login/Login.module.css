@@ -1,0 +1,21 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background: white;
+  background-position: center;
+  background-size: cover;
+}
+
+.profitLink {
+  font-size: 12px;
+  color: #1eaab3 !important;
+  text-decoration: underline;
+}
+
+.inputAutoFillColor:-webkit-autofill,
+.inputAutoFillColor:-webkit-autofill:hover,
+.inputAutoFillColor:-webkit-autofill:focus,
+.inputAutoFillColor:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: #000 !important;
+}

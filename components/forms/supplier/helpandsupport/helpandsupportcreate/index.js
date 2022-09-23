@@ -255,7 +255,7 @@ const HelpandsupportCreate = ({
         </div>
         <div className="my-2 ps-5">
           <Grid container className="">
-            <Grid item lg={12} md={11.5} sm={10}>
+            <Grid item lg={10} md={11.5} sm={10}>
               <TextEditor
                 getContent={(text) => {
                   setFormValue((pre) => ({

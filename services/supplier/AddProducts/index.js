@@ -9,7 +9,7 @@ const getAttributes = (subCategoryId) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const createAttributes = (payload) => {
@@ -20,7 +20,7 @@ const createAttributes = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -32,7 +32,7 @@ const saveProduct = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -66,7 +66,7 @@ const getSet = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const getSubCategory = (payload) => {
@@ -77,7 +77,7 @@ const getSubCategory = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -89,7 +89,7 @@ const saveMediaFile = async (id, payload) => {
       return { data: data.data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const getCategorySubCategory = async (id) => {
@@ -100,7 +100,7 @@ const getCategorySubCategory = async (id) => {
       return { data: data.data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -115,13 +115,38 @@ const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
 const updateProduct = (payload) => {
   return serviceUtil
     .post(`products/master-product`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+
+const upsellsProduct = (supplierId, mainCatgoryId) => {
+  return serviceUtil
+    .get(
+      `products/master-product/upsells-product?supplierId=${supplierId}&mainCatgoryId=${mainCatgoryId}`
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const crossSellsProduct = (payload) => {
+  return serviceUtil
+    .post(`products/master-product/cross-sells`, payload)
     .then((res) => {
       const { data } = res;
       return { data };
@@ -142,4 +167,6 @@ export {
   getCategorySubCategory,
   saveDuplicateProduct,
   updateProduct,
+  upsellsProduct,
+  crossSellsProduct,
 };
