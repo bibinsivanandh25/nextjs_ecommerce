@@ -2,7 +2,7 @@ import serviceUtil from "services/utils";
 
 const getAllTableDatas = () => {
   return serviceUtil
-    .get(`users/admin/supplier/supplier-status/0/5?status=INITIATED`)
+    .get(`users/admin/supplier/supplier-status/0/50?status=INITIATED`)
     .then((res) => {
       const { data } = res && res;
       return { data };

@@ -196,13 +196,13 @@ const SupplierApproval = () => {
   };
   const getAllTableData = async () => {
     const { data, err } = await getAllTableDatas();
-    console.log(data);
-    if (data.data?.supplierRegistrations?.length) {
+    if (data.data) {
       setMasterData(data.data);
-      getTableRows(data.data.supplierRegistrations);
-    } else {
-      setMasterData({});
-      getTableRows([]);
+      if (data.data?.supplierRegistrations?.length) {
+        getTableRows(data.data.supplierRegistrations);
+      } else {
+        getTableRows([]);
+      }
     }
     if (err) {
       setTableRows([]);
