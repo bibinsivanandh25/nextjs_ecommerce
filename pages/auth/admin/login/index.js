@@ -120,7 +120,6 @@ const Login = () => {
             //   decoded.roles[0],
             //   data.data.staffDetails
             // );
-            console.log("ro;e", data.data.designation, data.data);
             store.dispatch(
               storeUserInfo({
                 emailId: data.data.adminRegistrationPojo.emailId,
@@ -216,7 +215,16 @@ const Login = () => {
                 />
               </Grid>
               <Grid item md={12} className="w-100 d-flex flex-row-reverse">
-                <Link href="/auth/forgotpassword" passHref>
+                <Link
+                  href={{
+                    pathname: `/auth/forgotpassword`,
+                    query: {
+                      role: "ADMIN",
+                    },
+                  }}
+                  as="/auth/forgotpassword"
+                  passHref
+                >
                   <span className="color-orange fs-12 cursor-pointer fw-bold">
                     Forgot password?
                   </span>

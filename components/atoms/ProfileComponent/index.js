@@ -81,13 +81,18 @@ const ProfileComponent = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={() => router.push("/supplier/myaccount")}>
-          My account
-        </MenuItem>
+        {user.role === "SUPPLIER" && (
+          <MenuItem onClick={() => router.push("/supplier/myaccount")}>
+            My account
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
             window.localStorage.setItem("moduleType", null);
-            signOut({ callbackUrl: "/auth/login" });
+            signOut({
+              callbackUrl:
+                user.role === "SUPPLIER" ? "/auth/login" : "/auth/admin/login",
+            });
             dispatch(clearUser());
             dispatch(clearProduct());
           }}
