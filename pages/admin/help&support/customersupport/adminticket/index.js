@@ -1,9 +1,14 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import { getAllTicketsBasedOnUserType } from "services/admin/help&support";
+import {
+  getAllFilterDataByUserType,
+  getAllTicketsBasedOnUserType,
+} from "services/admin/help&support";
 import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 
 const SupplierSupport = () => {
@@ -11,6 +16,7 @@ const SupplierSupport = () => {
   const [showCreateTicketComponent, setShowCreateTicketComponent] =
     useState(false);
   const [pageNumber, setpageNumber] = useState(0);
+  const [filterData, setFilterData] = useState([]);
 
   const options = ["Reply", "Delete", "Close"];
 
@@ -89,6 +95,24 @@ const SupplierSupport = () => {
     },
   ];
 
+  const getFilterValue = async () => {
+    const { data } = await getAllFilterDataByUserType("CUSTOMER");
+    const result = [];
+    if (data) {
+      data.forEach((ele) => {
+        result.push({
+          name: ele.filterName,
+          value: ele.filterValue,
+        });
+      });
+    }
+    setFilterData([...result]);
+  };
+
+  useEffect(() => {
+    getFilterValue();
+  }, []);
+
   const onClickOfMenuItem = () => {};
 
   const mapRowsToTable = (data) => {
@@ -133,13 +157,19 @@ const SupplierSupport = () => {
     }
     return result;
   };
-  const getTabledata = async (page) => {
+  const getTabledata = async (page, filters = []) => {
     const payload = {
       ticketId: [],
       ticketStatus: [],
       issueType: [],
       userType: "CUSTOMER",
     };
+    filters.forEach((ele) => {
+      Object.entries(ele).forEach(([key, value]) => {
+        payload[key] = value;
+      });
+    });
+
     const { data } = await getAllTicketsBasedOnUserType(page, payload);
     if (data) {
       if (page === 0) {
@@ -158,6 +188,41 @@ const SupplierSupport = () => {
     getTabledata(0);
   }, []);
 
+  const getFilteredValues = (val) => {
+    if (val.length) {
+      const result = [];
+      val.forEach((item) => {
+        if (item.name === "status") {
+          result.push({
+            ticketStatus: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "issue type") {
+          result.push({
+            issueType: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "ticket id") {
+          result.push({
+            ticketId: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+      });
+      getTabledata(0, result);
+    }
+  };
   return (
     <Box>
       <Box>
@@ -170,19 +235,22 @@ const SupplierSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
                 table_heading="Supplier Support"
-                // showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="Create Ticket"
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCustomButton
+                customButtonLabel="Create Ticket"
+                showFilterButton
+                filterData={filterData}
+                showDateFilterSearch={false}
                 dateFilterBtnClick={() => {
                   setShowCreateTicketComponent(true);
                 }}
                 handlePageEnd={(searchText, filterText, page = pageNumber) => {
                   getTabledata(page);
                 }}
+                getFilteredValues={(val) => getFilteredValues(val)}
               />
             </Box>
           </Paper>

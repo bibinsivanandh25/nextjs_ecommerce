@@ -13,4 +13,14 @@ const getAllTicketsBasedOnUserType = (pageNumber, reqObj) => {
     })
     .catch((err) => ({ err }));
 };
-export { getAllTicketsBasedOnUserType };
+
+const getAllFilterDataByUserType = (userType) => {
+  return serviceUtil
+    .get(`/help-and-support/admin/ticket-filter?userType=${userType}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export { getAllTicketsBasedOnUserType, getAllFilterDataByUserType };

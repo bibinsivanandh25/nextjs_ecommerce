@@ -161,7 +161,7 @@ const Dashboard = () => {
       setShowAddressModal(true);
     }
     getMasterCardData();
-  }, []);
+  }, [user]);
   return (
     <div>
       {showAddressModal ? (
