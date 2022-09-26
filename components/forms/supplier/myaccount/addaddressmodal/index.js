@@ -13,6 +13,7 @@ import {
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
+import toastify from "services/utils/toastUtils";
 
 const AddAddressModal = (props) => {
   const {
@@ -194,11 +195,13 @@ const AddAddressModal = (props) => {
           ...temp,
           supplierId: user ?? supplierId,
         };
-        const { data } = await addNewAddress(payload);
+        const { data, err } = await addNewAddress(payload);
         if (data) {
           getAllAddress();
           getUpdateUserDetails();
           setShowAddAddressModal(false);
+        } else if (err) {
+          toastify(err?.response?.data?.message, "error");
         }
       } else if (type === "edit") {
         const payload = {
