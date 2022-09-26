@@ -30,6 +30,7 @@ const AddFlag = ({
   allFlags = [],
   getMycollectionData = () => {},
   masterProduct = [],
+  user,
 }) => {
   const [allFlagsLabel, setAllFlagsLabel] = useState([]);
   const [dataForSingleDeal, setDataForSingleDeal] = useState("noData");
@@ -50,7 +51,7 @@ const AddFlag = ({
   const getSingleOptionFlag = async (value) => {
     const { data, error } = await getDataOfSingleFlagSelected(
       value?.id,
-      "SUPS10STRE5DA",
+      user.storeCode,
       value?.purchaseId
     );
 
@@ -150,9 +151,9 @@ const AddFlag = ({
           dataForSingleDeal === null
             ? defaultFormData.discount
             : dataForSingleDeal.discount,
-        supplierStoreId: "SUPS10STRE5DA",
+        supplierStoreId: user.storeCode,
         flagId: defaultFormData.todaysDeals.id,
-        supplierId: "SP0822000040",
+        supplierId: user.supplierId,
         userType: "SUPPLIER",
         purchaseId: defaultFormData.todaysDeals.purchaseId,
       };

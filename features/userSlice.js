@@ -8,14 +8,9 @@ const initialState = {
   supplierId: "",
   storeCode: "",
   isAddressSaved: false,
-  unlockedTools: [
-    "unlocktools",
-    "single",
-    "combo",
-    "subscriptionhistory",
-    "createluckydraw",
-  ],
+  unlockedTools: [],
   storeName: "",
+  allowedPath: [],
 };
 
 export const userSlice = createSlice({
@@ -39,10 +34,20 @@ export const userSlice = createSlice({
         ],
       };
     },
+    setAllowedPaths: (state, action) => {
+      return {
+        ...state,
+        allowedPath: [...action.payload],
+      };
+    },
   },
 });
 
-export const { storeUserInfo, clearUser, updateUnlockedTools } =
-  userSlice.actions;
+export const {
+  storeUserInfo,
+  clearUser,
+  updateUnlockedTools,
+  setAllowedPaths,
+} = userSlice.actions;
 
 export default userSlice.reducer;
