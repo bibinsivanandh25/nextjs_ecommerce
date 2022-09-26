@@ -682,7 +682,9 @@ export default function TableComponent({
                   <div
                     style={{ width: "40px", height: "38px" }}
                     className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
-                      searchText === "" && Object.keys(searchFilter)?.length
+                      searchText === "" &&
+                      searchFilter &&
+                      Object.keys(searchFilter)?.length
                         ? "bg-gray"
                         : ""
                     }`}
