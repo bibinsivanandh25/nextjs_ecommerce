@@ -91,7 +91,7 @@ function MyApp({ Component, pageProps, router }) {
   return (
     <>
       <Head>
-        <title> MrMrsCart </title>
+        <title> Multestore </title>
       </Head>
       <Provider store={store}>
         <div id="loader" style={{ display: "none" }}>

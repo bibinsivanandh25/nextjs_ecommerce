@@ -335,14 +335,12 @@ export default function TableComponent({
     setRowsPerPage(+event.target.value);
     setPage(0);
     handleRowsPerPageChange(searchText, searchFilter?.value, 0, {
-      fromDate: `${format(
-        new Date(filteredDates.fromDate),
-        "MM-dd-yyyy"
-      )} 00:00:00`,
-      toDate: `${format(
-        new Date(filteredDates.toDate),
-        "MM-dd-yyyy"
-      )} 00:00:00`,
+      fromDate: filteredDates.fromDate
+        ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
+      toDate: filteredDates.toDate
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        : "",
     });
     handlePageEnd(searchText, searchFilter?.value, 0, {
       fromDate: filteredDates.fromDate

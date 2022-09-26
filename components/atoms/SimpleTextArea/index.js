@@ -8,6 +8,8 @@ const TextArea = ({
   error = false,
   helperText = "",
   value = "",
+  disabled = false,
+  draggable = true,
 }) => {
   return (
     <>
@@ -19,6 +21,8 @@ const TextArea = ({
           !error ? styles.border : styles.errorborder
         } `}
         onChange={onInputChange}
+        disabled={disabled}
+        draggable={draggable}
       />
       {error && (
         <FormHelperText error={error} className="ps-3">
