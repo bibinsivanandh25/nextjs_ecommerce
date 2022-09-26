@@ -307,12 +307,27 @@ const InventoryForm = forwardRef(
               value={formData?.inventory?.meta_keyword}
               inputlabelshrink
               handleChange={(_, val) => {
+                console.log(val);
                 setFormData((pre) => {
                   return {
                     ...pre,
                     inventory: {
                       ...pre.inventory,
                       meta_keyword: val,
+                    },
+                  };
+                });
+              }}
+              onPaste={(e) => {
+                setFormData((pre) => {
+                  return {
+                    ...pre,
+                    inventory: {
+                      ...pre.inventory,
+                      meta_keyword: [
+                        ...pre.inventory.meta_keyword,
+                        e.clipboardData.getData("text"),
+                      ],
                     },
                   };
                 });
