@@ -6,7 +6,10 @@ import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
-import { inviteSupplier } from "services/admin/supplier/supplierapproval";
+import {
+  getAllTableDatas,
+  inviteSupplier,
+} from "services/admin/supplier/supplierapproval";
 import serviceUtil from "services/utils";
 import TableComponent from "@/atoms/TableComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -90,7 +93,7 @@ const tableColumn = [
 ];
 
 const SupplierApproval = () => {
-  const [masterData, setMasterData] = useState([]);
+  const [masterData, setMasterData] = useState({});
   const [tableRows, setTableRows] = useState([]);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState([]);
@@ -192,16 +195,19 @@ const SupplierApproval = () => {
     setTableRows(rowDatas);
   };
   const getAllTableData = async () => {
-    await serviceUtil
-      .get(`users/admin/supplier/supplier-status/0/5?status=INITIATED`)
-      .then((res) => {
-        setMasterData(res.data.data);
-        getTableRows(res.data.data.supplierRegistrations);
-      })
-      .catch((err) => {
-        toastify(err?.response?.data?.message, "error");
-        setTableRows([]);
-      });
+    const { data, err } = await getAllTableDatas();
+    console.log(data);
+    if (data.data?.supplierRegistrations?.length) {
+      setMasterData(data.data);
+      getTableRows(data.data.supplierRegistrations);
+    } else {
+      setMasterData({});
+      getTableRows([]);
+    }
+    if (err) {
+      setTableRows([]);
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   useEffect(() => {

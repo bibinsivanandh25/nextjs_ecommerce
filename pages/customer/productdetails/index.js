@@ -11,7 +11,15 @@ import {
   // Shield,
   // SwapHoriz,
 } from "@mui/icons-material";
-import { Box, Grid, Paper, Rating, Skeleton, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Paper,
+  Rating,
+  Skeleton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 // import toastify from "services/utils/toastUtils";
@@ -405,10 +413,12 @@ const ProductDetails = ({ productId }) => {
                       <span className="color-blue">
                         {item.storeCouponCode}
                       </span>{" "}
-                      <CopyAllSharp
-                        className="fs-16"
-                        sx={{ cursor: "pointer" }}
-                      />
+                      <Tooltip placement="right-start" title="Copy Coupon">
+                        <CopyAllSharp
+                          className="fs-16"
+                          sx={{ cursor: "pointer" }}
+                        />
+                      </Tooltip>
                     </Typography>
                   </Box>
                 ))}
@@ -545,8 +555,8 @@ const ProductDetails = ({ productId }) => {
           </Grid>
           <Box className="d-flex mt-1">
             <Rating value={4} readOnly sx={{ color: "#e56700" }} />
-            <span className="fs-12 mt-1"> 192 Rating | &nbsp;</span>
-            <span className="fs-12 mt-1"> 22 Answered Questions</span>
+            <span className="fs-12 mt-1 fw-bold"> 192 Rating | &nbsp;</span>
+            <span className="fs-12 mt-1 fw-bold"> 22 Answered Questions</span>
             <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
               {" "}
               Want To Sell With Us?
@@ -578,7 +588,7 @@ const ProductDetails = ({ productId }) => {
                       }));
                     }}
                   />
-                  <Typography className="ms-4 h-5">
+                  <Typography className="h-5" marginLeft={3.5}>
                     MRP :{" "}
                     <span className="text-decoration-line-through">
                       {selectedMasterData.mrp}
@@ -888,7 +898,7 @@ const ProductDetails = ({ productId }) => {
                         }));
                       }}
                     />
-                    <Typography className="ms-4 h-5">
+                    <Typography className="h-5" marginLeft={3.5}>
                       MRP :{" "}
                       <span className="text-decoration-line-through">
                         {selectedMasterData.mrp}

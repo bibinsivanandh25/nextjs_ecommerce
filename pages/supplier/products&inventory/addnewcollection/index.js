@@ -52,8 +52,8 @@ const NewProducts = () => {
       manageStock: false,
     },
     linked: {
-      upSells: {},
-      crossSells: {},
+      upSells: [],
+      crossSells: [],
     },
     pricing: {
       sale_price: "",

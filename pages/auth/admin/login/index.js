@@ -36,7 +36,6 @@ import axios from "axios";
 import styles from "./Login.module.css";
 
 const Login = () => {
-  // const [selectedIndex, setSelectedIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
     user: "",
@@ -179,10 +178,6 @@ const Login = () => {
         backgroundImage: `url(${assetsJson.login_background})`,
       }}
     >
-      {/* <SelectComponent
-        selectedIndex={selectedIndex}
-        setSelectedIndex={setSelectedIndex}
-      /> */}
       <Paper elevation={24}>
         <div className="p-5 " style={{ width: "450px" }}>
           <div className="d-flex justify-content-center">
@@ -262,33 +257,12 @@ const Login = () => {
               <Grid item sm={12}>
                 <div className="d-flex flex-column align-items-center justify-content-center w-100">
                   <ButtonComponent
-                    label="Login"
+                    label="Sign In"
                     onBtnClick={handleSubmit}
                     muiProps="w-100px"
                   />
-                  <div>
-                    <span className="fs-11 fw-bold mx-2">
-                      Don&apos;t have an account ?
-                    </span>
-                    <Link href="/auth/supplier/registration" passHref>
-                      <span className="color-orange fw-bold fs-11 cursor-pointer">
-                        Register
-                      </span>
-                    </Link>
-                  </div>
                 </div>
               </Grid>
-              <div
-                className="d-flex justify-content-center w-100"
-                style={{ marginLeft: "20px" }}
-              >
-                <ButtonComponent
-                  label="Know your Profit here"
-                  textColor="primary"
-                  muiProps={styles.profitLink}
-                  variant="undefined"
-                />
-              </div>
             </Grid>
           </div>
         </div>

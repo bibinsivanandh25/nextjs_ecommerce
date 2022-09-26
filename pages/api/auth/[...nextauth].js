@@ -6,29 +6,6 @@ const options = {
   providers: [
     CredentialsProvider({
       authorize(credentials) {
-        // if (credentials.username && credentials.password) {
-        //   const { data, errRes } = await axios
-        //     .post("http://10.10.20.18:8082/api/v1/authenticate", {
-        //       userName: credentials.username,
-        //       password: credentials.password,
-        //       role: credentials.role,
-        //     })
-        //     .then((res) => {
-        //       const data = res && res.data;
-        //       return { data };
-        //     })
-        //     .catch((err) => {
-        //       const errRes = err?.response?.data;
-        //       return { errRes };
-        //     });
-        // if (data) {
-        //   return { id: 20, name: "suhil", email: "suhil@gmail.com" };
-        // } else if (errRes) {
-        //   toastify("wrong credentials", "error");
-        //   return null;
-        // }
-        // }
-
         if (credentials) {
           return {
             id: credentials.id,
