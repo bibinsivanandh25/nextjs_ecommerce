@@ -292,7 +292,11 @@ const UploadDocumentModal = ({
               ref={fileRef}
               type="file"
               onChange={(e) => {
-                if (e.target?.files.length) {
+                if (
+                  e.target?.files.length &&
+                  e.target.files[0].type !== "video/mp4"
+                ) {
+                  const filetype = e.target.files[0].name;
                   const temp = [...documents];
                   temp.push(e.target?.files[0]);
                   setDocument([...temp]);
