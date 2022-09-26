@@ -1,11 +1,22 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
+import {
+  getAllFilterDataByUserType,
+  getAllTicketsBasedOnUserType,
+} from "services/admin/help&support";
+import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 
-const MrMrsCartTickets = () => {
+const SupplierSupport = () => {
   const [tableRows, setTableRows] = useState([]);
+  const [showCreateTicketComponent, setShowCreateTicketComponent] =
+    useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [filterData, setFilterData] = useState([]);
 
   const options = ["Reply", "Delete", "Close"];
 
@@ -25,7 +36,7 @@ const MrMrsCartTickets = () => {
     {
       id: "col3",
       align: "center",
-      label: "Customer ID",
+      label: "Supplier ID/Name",
       data_align: "center",
     },
     {
@@ -67,7 +78,7 @@ const MrMrsCartTickets = () => {
     {
       id: "col10",
       align: "center",
-      label: "Last Update Date and Time (Customers/MrMrsCart)",
+      label: "Last Update Date and Time (Supplier/MrMrsCart)",
       data_align: "center",
     },
     {
@@ -84,84 +95,173 @@ const MrMrsCartTickets = () => {
     },
   ];
 
-  const onClickOfMenuItem = () => {};
-
-  const rowsDataObjectsForCustomers = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "#938453 -Old",
-      col3: "----------",
-      col4: "----------",
-      col5: "----------",
-      col6: "----------",
-      col7: "----------",
-      col8: "----------",
-      col9: "----------",
-      col10: "----------",
-      col11: "Opened",
-      col12: "Action",
-    },
-  ];
-
-  const theTaleRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForCustomers.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: val.col8,
-        col9: val.col9,
-        col10: val.col10,
-        col11: val.col11,
-        col12: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              //   onIconClick={() => setShowViewProducts(true)}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
+  const getFilterValue = async () => {
+    const { data } = await getAllFilterDataByUserType("CUSTOMER");
+    const result = [];
+    if (data) {
+      data.forEach((ele) => {
+        result.push({
+          name: ele.filterName,
+          value: ele.filterValue,
+        });
       });
-    });
-    setTableRows(anArray);
+    }
+    setFilterData([...result]);
   };
 
   useEffect(() => {
-    theTaleRowsData();
+    getFilterValue();
   }, []);
 
+  const onClickOfMenuItem = () => {};
+
+  const mapRowsToTable = (data) => {
+    const result = [];
+    if (data) {
+      data.forEach((ele, ind) => {
+        result.push({
+          id: ele.ticketId,
+          col1: ind + 1,
+          col2: ele.ticketId,
+          col3: `${ele.userFromId} / ${ele.userFromName}`,
+          col4: ele.issueType.replaceAll("_", " "),
+          col5: ele.orderId,
+          col6: ele.issueSubject,
+          col7: "--",
+          col8: "--",
+          col9: `${ele.createdDate.split("T")[0]} ${
+            ele.createdDate.split("T")[1]
+          }`,
+          col10: `${ele.lastModifiedDate.split("T")[0]} ${
+            ele.lastModifiedDate.split("T")[1]
+          }`,
+          col11: ele.ticketStatus,
+          col12: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                //   onIconClick={() => setShowViewProducts(true)}
+              />
+              <MenuOption
+                getSelectedItem={(item) => {
+                  onClickOfMenuItem(item);
+                }}
+                options={options}
+                IconclassName="fs-18 color-gray"
+              />
+            </Box>
+          ),
+        });
+      });
+    }
+    return result;
+  };
+  const getTabledata = async (page, filters = []) => {
+    const payload = {
+      ticketId: [],
+      ticketStatus: [],
+      issueType: [],
+      userType: "CUSTOMER",
+    };
+    filters.forEach((ele) => {
+      Object.entries(ele).forEach(([key, value]) => {
+        payload[key] = value;
+      });
+    });
+
+    const { data } = await getAllTicketsBasedOnUserType(page, payload);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        setpageNumber((pre) => pre + 1);
+      }
+    } else {
+      setTableRows([]);
+    }
+  };
+
+  useEffect(() => {
+    getTabledata(0);
+  }, []);
+
+  const getFilteredValues = (val) => {
+    if (val.length) {
+      const result = [];
+      val.forEach((item) => {
+        if (item.name === "status") {
+          result.push({
+            ticketStatus: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "issue type") {
+          result.push({
+            issueType: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "ticket id") {
+          result.push({
+            ticketId: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+      });
+      getTabledata(0, result);
+    }
+  };
   return (
     <Box>
       <Box>
-        <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
-          <Box className="px-1 pt-2">
-            <TableComponent
-              columns={tableColumns}
-              tHeadBgColor="bg-light-gray"
-              // showPagination={false}
-              tableRows={tableRows}
-              table_heading="MrMrsCart Tickets"
-            />
-          </Box>
-        </Paper>
+        {!showCreateTicketComponent ? (
+          <Paper
+            sx={{ height: "85vh" }}
+            className="overflow-auto hide-scrollbar"
+          >
+            <Box className="px-1 pt-2">
+              <TableComponent
+                columns={tableColumns}
+                tHeadBgColor="bg-light-gray"
+                tableRows={tableRows}
+                table_heading="Supplier Support"
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCustomButton
+                customButtonLabel="Create Ticket"
+                showFilterButton
+                filterData={filterData}
+                showDateFilterSearch={false}
+                dateFilterBtnClick={() => {
+                  setShowCreateTicketComponent(true);
+                }}
+                handlePageEnd={(searchText, filterText, page = pageNumber) => {
+                  getTabledata(page);
+                }}
+                getFilteredValues={(val) => getFilteredValues(val)}
+              />
+            </Box>
+          </Paper>
+        ) : (
+          <CreateTicket
+            setShowCreateTicketComponent={setShowCreateTicketComponent}
+          />
+        )}
       </Box>
     </Box>
   );
 };
 
-export default MrMrsCartTickets;
+export default SupplierSupport;

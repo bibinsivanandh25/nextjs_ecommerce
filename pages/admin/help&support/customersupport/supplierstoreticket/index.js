@@ -5,34 +5,6 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-///  please check with the screen design while development
-
 const CustomerSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateTicketComponent, setShowCreateTicketComponent] =

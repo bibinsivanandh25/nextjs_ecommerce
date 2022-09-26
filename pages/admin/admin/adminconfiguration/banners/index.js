@@ -126,7 +126,8 @@ const Banners = () => {
         showDateFilter
         showDateFilterBtn
         dateFilterBtnName="Create Banners"
-        showSearchbar
+        showSearchbar={false}
+        showDateFilterSearch={false}
       />
     </Paper>
   );
