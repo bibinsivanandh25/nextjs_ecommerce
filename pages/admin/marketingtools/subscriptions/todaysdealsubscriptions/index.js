@@ -322,7 +322,7 @@ const TodaysDealSubscription = () => {
             column2={[...column1]}
             tableRows={[...tableRowsTodaysDealSubs]}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            showPagination
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}

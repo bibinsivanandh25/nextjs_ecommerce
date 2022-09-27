@@ -30,12 +30,25 @@ const enableOrDisableSubscriptions = async (
   }
 };
 
-// const acceptRejectSingleToolSubscription = async () => {
-//   try {
-//     const { data } = await serviceUtil.put(``);
-//   } catch (error) {
-//     return { error };
-//   }
-// };
+const acceptRejectSingleToolSubscription = async (
+  status,
+  marketingToolId,
+  userId
+) => {
+  try {
+    const { data } = await serviceUtil.put(
+      `users/admin-marketing-tool/approve-reject-campaign?status=${status}&marketingToolId=${marketingToolId}&userId=${userId}`
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
 
-export { getTodaysDealSubsscriptions, enableOrDisableSubscriptions };
+const addANote = () => {};
+
+export {
+  getTodaysDealSubsscriptions,
+  enableOrDisableSubscriptions,
+  acceptRejectSingleToolSubscription,
+};
