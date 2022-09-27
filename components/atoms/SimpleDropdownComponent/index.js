@@ -85,6 +85,14 @@ const SimpleDropdownComponent = ({
             placeholder={placeholder}
           />
         )}
+        renderOption={(props, option) => {
+          const { title } = option;
+          return (
+            <span {...props} style={{ backgroundColor: "#fff" }}>
+              {title || option.label}
+            </span>
+          );
+        }}
       />
     </ThemeProvider>
   );

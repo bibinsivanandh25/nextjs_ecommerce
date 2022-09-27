@@ -1283,7 +1283,7 @@ const ProductsLayout = ({
                         item
                         key={index}
                         md={12}
-                        className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
+                        className={`text-center py-1 rounded my-1 fs-14 ${
                           activeTab === index
                             ? "bg-orange color-white"
                             : "bg-light-gray"

@@ -69,17 +69,16 @@ const Login = () => {
     } else if (
       !(formValues.password.length >= 8 && formValues.password.length <= 16)
     ) {
-      errObj.password =
-        "should contain atleast 8 characters and at most 16 characters";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.upperCase.test(formValues.password)) {
-      errObj.password = "should contain atleast one uppercase alphabet ";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.lowerCase.test(formValues.password)) {
-      errObj.password = "should contain atleast one lowercase alphabet ";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.specialChar.test(formValues.password)) {
-      errObj.password = "should includes '@#$'";
+      errObj.password = validateMessage.password;
       flag = true;
     }
     setErrorObj({ ...errObj });

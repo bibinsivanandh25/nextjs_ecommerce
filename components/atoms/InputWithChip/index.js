@@ -21,6 +21,7 @@ const InputFieldWithChip = ({
   helperText = "",
   error = false,
   handleChange = () => {},
+  onPaste = () => {},
   value = [],
   required,
   disabled = false,
@@ -85,6 +86,7 @@ const InputFieldWithChip = ({
               //   }
               // }}
               required={required}
+              onPaste={onPaste}
             />
           )}
           onBlur={(e) => {
