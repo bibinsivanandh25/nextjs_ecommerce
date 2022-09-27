@@ -56,7 +56,7 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
         saveBtnText="Submit"
         ClearBtnText="Cancel"
         saveBtnClassName="ms-2"
-        ModalTitle="Create Discount"
+        ModalTitle="Add Note"
         titleClassName="fw-bold fs-14 color-orange"
         onClearBtnClick={() => {
           setAddANote("");
