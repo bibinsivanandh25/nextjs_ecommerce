@@ -12,6 +12,7 @@ import {
   getTodaysDealSubsscriptions,
 } from "services/admin/marketingtools/subscriptions/todaysdealsubscriptions";
 import toastify from "services/utils/toastUtils";
+import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -19,6 +20,7 @@ const TodaysDealSubscription = () => {
   const [tableRowsTodaysDealSubs, setTableRowsTodaysDealSubs] = useState([]);
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const column1 = [
     {
@@ -149,6 +151,10 @@ const TodaysDealSubscription = () => {
     if (ele === "Add Note") {
       setOpenAddNoteModal(true);
     }
+    if (ele === "Notify") {
+      console.log("hi");
+      setShowNotificationModal(true);
+    }
   };
 
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
@@ -226,6 +232,7 @@ const TodaysDealSubscription = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
+                  console.log("Hey");
                   onClickOfMenuItem(ele);
                 }}
                 options={[
@@ -340,6 +347,11 @@ const TodaysDealSubscription = () => {
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <CreateNotification
+        showNotificationModal={showNotificationModal}
+        setShowNotificationModal={setShowNotificationModal}
+        type="add"
       />
     </>
   );
