@@ -3,7 +3,7 @@ import serviceUtil from "services/utils";
 const getTodaysDealSubsscriptions = async (payload) => {
   try {
     const { data } = await serviceUtil.post(
-      "users/admin-marketing-tool/tool-subscription/0/50",
+      `users/admin-marketing-tool/tool-subscription/0/50`,
       payload
     );
     console.log("API data", data);
@@ -45,7 +45,7 @@ const acceptRejectSingleToolSubscription = async (
   }
 };
 
-const addANote = () => {};
+// const addANote = () => {};
 
 export {
   getTodaysDealSubsscriptions,
