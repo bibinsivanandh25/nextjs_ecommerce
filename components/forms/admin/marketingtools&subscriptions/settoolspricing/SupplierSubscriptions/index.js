@@ -637,14 +637,18 @@ const SupplierSubscriptions = () => {
           />
         </Paper>
       </Box>
-      <AddDaysCounterModal
-        openAddDaysCounterModal={openAddDaysCounterModal}
-        setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
-      />
-      <CreateDiscountModal
-        openCreateDiscountModal={openCreateDiscountModal}
-        setOpenCreateDiscountModal={setOpenCreateDiscountModal}
-      />
+      {openAddDaysCounterModal ? (
+        <AddDaysCounterModal
+          openAddDaysCounterModal={openAddDaysCounterModal}
+          setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+        />
+      ) : null}
+      {openCreateDiscountModal ? (
+        <CreateDiscountModal
+          openCreateDiscountModal={openCreateDiscountModal}
+          setOpenCreateDiscountModal={setOpenCreateDiscountModal}
+        />
+      ) : null}
     </>
   );
 };

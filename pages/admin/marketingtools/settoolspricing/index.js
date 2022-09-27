@@ -10,9 +10,9 @@ const SetToolsPricing = () => {
       <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
         <Box className="d-flex align-items-center ms-4 mb-3">
           <Typography
-            className={`rounded-pill p-2 ms-4 cursor-pointer ${
+            className={`rounded-pill p-2 ms-4 h-5  cursor-pointer ${
               form === "ResellerSubscriptions"
-                ? "bg-orange color-white"
+                ? "bg-orange color-white fw-bold"
                 : "bg-gray"
             }`}
             onClick={() => {
@@ -22,9 +22,9 @@ const SetToolsPricing = () => {
             Reseller Subscriptions
           </Typography>
           <Typography
-            className={`rounded-pill p-2 ms-2 cursor-pointer ${
+            className={`rounded-pill p-2 ms-2 h-5  cursor-pointer ${
               form === "SupplierSubscriptions"
-                ? "bg-orange color-white"
+                ? "bg-orange color-white fw-bold"
                 : "bg-gray"
             }`}
             onClick={() => {

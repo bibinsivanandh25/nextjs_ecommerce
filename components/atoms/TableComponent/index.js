@@ -255,13 +255,20 @@ const FilterMenu = ({
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
+    const temp = JSON.parse(JSON.stringify(filterData));
+    temp.forEach((ele) => {
+      const some = ele.value.some((item) => item.isSelected);
+      if (some) ele.isExpand = true;
+      else ele.isExpand = false;
+    });
+    setTableFilterList(temp);
     setAnchorEl(null);
   };
 
   const renderMenuList = (data) => {
     return data?.map((ele, ind) => {
       return (
-        <div className="px-2 d-flex justify-content-between  mnw-300">
+        <div className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar">
           <div>
             <CheckBoxComponent
               label={ele.name}
@@ -287,7 +294,7 @@ const FilterMenu = ({
                   return (
                     <div className="ms-5">
                       <CheckBoxComponent
-                        label={child.item}
+                        label={child.item.replaceAll("_", " ")}
                         isChecked={child.isSelected}
                         checkBoxClick={() => {
                           const fData = JSON.parse(JSON.stringify(data));
@@ -356,6 +363,11 @@ const FilterMenu = ({
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        sx={{
+          maxHeight: "80vh",
+          overflow: "scroll",
+        }}
+        className="hide-scrollbar"
       >
         {renderMenuList(filterData)}
         <div className="d-flex justify-content-end mx-3">
@@ -364,7 +376,13 @@ const FilterMenu = ({
             muiProps="p-0"
             onBtnClick={() => {
               getFilteredValues(filterData);
-              setTableFilterList(filterData);
+              const temp = JSON.parse(JSON.stringify(filterData));
+              temp.forEach((ele) => {
+                const some = ele.value.some((item) => item.isSelected);
+                if (some) ele.isExpand = true;
+                else ele.isExpand = false;
+              });
+              setTableFilterList(temp);
               handleClose();
               setPage(0);
             }}
