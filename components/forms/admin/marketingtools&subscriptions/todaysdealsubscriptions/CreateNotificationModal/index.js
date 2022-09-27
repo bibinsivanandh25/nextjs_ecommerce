@@ -2,7 +2,6 @@ import { Box, FormHelperText, Typography } from "@mui/material";
 import { useRef, useState, useEffect } from "react";
 import { CloseOutlined } from "@mui/icons-material";
 import ModalComponent from "@/atoms/ModalComponent";
-import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -17,10 +16,8 @@ import validateMessage from "constants/validateMessages";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import toastify from "services/utils/toastUtils";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import styles from "./createnotication.module.css";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
 
 const CreateNotification = ({
   showNotificationModal = false,
