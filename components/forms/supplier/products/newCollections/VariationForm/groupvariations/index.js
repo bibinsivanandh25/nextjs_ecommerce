@@ -691,9 +691,21 @@ const GroupVariationForm = ({
                                     <div className="m-2">
                                       <ImageCard
                                         imgSrc={ele ?? ""}
-                                        showClose={false}
                                         height="65"
                                         width="65"
+                                        handleCloseClick={() => {
+                                          setVariationData((pre) => {
+                                            const copy = JSON.parse(
+                                              JSON.stringify({ ...pre })
+                                            );
+                                            copy[item].images.splice(
+                                              ind,
+                                              1,
+                                              ""
+                                            );
+                                            return copy;
+                                          });
+                                        }}
                                         handleImageUpload={async (e) => {
                                           if (e.target.files.length) {
                                             if (
@@ -1101,7 +1113,7 @@ const GroupVariationForm = ({
                                       {variationData[item].variation?.[ele] !==
                                         null && (
                                         <Typography
-                                          className="h-6 mt-1 cursor-pointer color-blue"
+                                          className="h-6 mt-1 cursor-pointer color-blue d-inline"
                                           onClick={() => {
                                             if (
                                               variationData[item].variation?.[
