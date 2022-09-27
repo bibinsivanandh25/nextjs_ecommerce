@@ -32,28 +32,31 @@ const ViewDocument = ({
             <Typography className="text-end h-5">Document Name :</Typography>
           </Grid>
           <Grid item sm={9}>
-            <Typography className="h-5">
+            <Typography className="fs-14 fw-600">
               {viewModalData.documentName}{" "}
             </Typography>
           </Grid>
         </Grid>
         <Grid container spacing={1} item sm={12}>
           <Grid item sm={3}>
-            <Typography className="text-end h-5">Description :</Typography>
+            <Typography className="text-end fs-14 ">Description :</Typography>
           </Grid>
           <Grid item sm={9}>
-            <Typography className="h-5">
+            <Typography className="fs-14 fw-600">
               {viewModalData?.description}
             </Typography>
           </Grid>
         </Grid>
         <Grid container spacing={1} item sm={12}>
           <Grid item sm={3}>
-            <Typography className="text-end h-5">Documents :</Typography>
+            <Typography className="text-end fs-14 ">Documents :</Typography>
           </Grid>
           <Grid item sm={9} spacing={1}>
             {showFileNames().map((item) => (
-              <Typography className="h-5 color-blue" key={item.filename}>
+              <Typography
+                className="fs-14 fw-600 color-blue"
+                key={item.filename}
+              >
                 {item.filename}
                 <a
                   href={item.url}

@@ -846,7 +846,7 @@ const ProductsLayout = ({
 
         otherInformation: { ...otherObj },
         expiryDate: format(other.expireDate, "MM-dd-yyyy HH:mm:ss"),
-        countryOfOrigin: other.country,
+        countryOfOrigin: other.country.id,
         zoneChargeInfo: {},
         productType: "VARIABLE_PRODUCT",
         supplierId: userInfo.id,
