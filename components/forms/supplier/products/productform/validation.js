@@ -186,7 +186,9 @@ const validatePricing = (pricingFormData) => {
   ) {
     flag = true;
     errObj.sale_price = validateMessage.decimal_2digits;
-  } else if (pricingFormData.sale_price > pricingFormData.mrp) {
+  } else if (
+    parseInt(pricingFormData.sale_price, 10) > parseInt(pricingFormData.mrp, 10)
+  ) {
     flag = true;
     errObj.sale_price = "Sale price should not be greater than MRP";
   }

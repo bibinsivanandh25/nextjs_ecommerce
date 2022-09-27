@@ -13,6 +13,7 @@ import {
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
+import toastify from "services/utils/toastUtils";
 
 const AddAddressModal = (props) => {
   const {
@@ -65,8 +66,8 @@ const AddAddressModal = (props) => {
       id: "pinCode",
       value: null,
       required: true,
-      validation: /^([a-zA-Z0-9_-]){1,6}$/,
-      errorMessage: validateMessage.alpha_numeric_6,
+      validation: /^([a-zA-Z0-9_-]){6}$/,
+      errorMessage: "Invalid Pincode",
     },
     {
       label: "Location",
@@ -194,11 +195,13 @@ const AddAddressModal = (props) => {
           ...temp,
           supplierId: user ?? supplierId,
         };
-        const { data } = await addNewAddress(payload);
+        const { data, err } = await addNewAddress(payload);
         if (data) {
           getAllAddress();
           getUpdateUserDetails();
           setShowAddAddressModal(false);
+        } else if (err) {
+          toastify(err?.response?.data?.message, "error");
         }
       } else if (type === "edit") {
         const payload = {
