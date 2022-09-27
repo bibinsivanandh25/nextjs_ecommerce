@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import toastify from "services/utils/toastUtils";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import styles from "./createnotication.module.css";
 
 const CreateNotification = ({
