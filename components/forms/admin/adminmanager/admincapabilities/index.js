@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
-import { Box, Collapse, Grid, List, Typography } from "@mui/material";
+import { Box, Collapse, Grid, List, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -22,7 +22,7 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
   const [capabilites, setCapabilities] = useState([]);
   const [formData, setFormData] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({ ...tempObj });
-  const [checkbox, setCheckbox] = useState(true);
+  const [checkbox, setCheckbox] = useState(false);
 
   const orginizeCapabilites = (data) => {
     const temp = data.map((item) => {
@@ -42,12 +42,12 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
   useEffect(() => {
     setCapabilities(orginizeCapabilites(admincapabilities));
   }, [admincapabilities]);
-  useEffect(() => {
-    if (capabilites.length) {
-      const flag = capabilites.every((ele) => ele.isChecked);
-      setCheckbox(flag);
-    }
-  }, [capabilites]);
+  // useEffect(() => {
+  //   if (capabilites.length) {
+  //     const flag = capabilites.every((ele) => ele.isChecked);
+  //     setCheckbox(flag);
+  //   }
+  // }, [capabilites]);
 
   useEffect(() => {
     return () => {
@@ -80,8 +80,8 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
   };
 
   return (
-    <>
-      <Grid container className="mt-3">
+    <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar d-flex flex-column justify-content-between">
+      <div className=" d-flex">
         <Grid
           container
           item
@@ -181,12 +181,12 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                       const temp = pre.map((item) => {
                         return {
                           ...item,
-                          isChecked: value,
+                          isChecked: !value,
                           children: item.children.length
                             ? item.children.map((ele) => {
                                 return {
                                   ...ele,
-                                  isChecked: value,
+                                  isChecked: !value,
                                 };
                               })
                             : [],
@@ -203,11 +203,8 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
         </Grid>
         <Grid
           container
-          item
-          md={7}
-          lg={9}
           spacing={2}
-          className=" px-4 pt-0 d-flex w-100 mxh-70vh overflow-y-scroll"
+          className=" px-4 pt-0 d-flex w-100 mxh-75vh overflow-y-scroll"
         >
           {capabilites.map((item, index) => {
             return (
@@ -223,6 +220,7 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                       isChecked={item.isChecked}
                       size="small"
                       checkBoxClick={(_, val) => {
+                        if (!checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -243,6 +241,7 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                     <Typography
                       onClick={() => {
                         if (type === "view") return;
+                        if (!checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -292,6 +291,7 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                             isChecked={ele.isChecked}
                             size="small"
                             checkBoxClick={(_, val) => {
+                              if (!checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
                               );
@@ -306,6 +306,7 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                           <Typography
                             onClick={() => {
                               if (type === "view") return;
+                              if (!checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
                               );
@@ -329,18 +330,18 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
             );
           })}
         </Grid>
-        <Grid item sm={12} className="mt-4">
-          <div className="w-100 d-flex flex-row-reverse">
-            <ButtonComponent
-              label="Approve"
-              onBtnClick={handleSubmit}
-              muiProps="ms-3"
-            />
-            <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
-          </div>
-        </Grid>
-      </Grid>
-    </>
+      </div>
+      <div className="">
+        <div className="w-100 d-flex flex-row-reverse">
+          <ButtonComponent
+            label="Approve"
+            onBtnClick={handleSubmit}
+            muiProps="ms-3"
+          />
+          <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
+        </div>
+      </div>
+    </Paper>
   );
 };
 export default StaffForm;
