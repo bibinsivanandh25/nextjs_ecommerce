@@ -39,7 +39,7 @@ const BreadCrumb = () => {
               <span>
                 <CustomIcon type="arrowforward" className="fs-12 mx-2" />
               </span>
-              {item.navigate ? (
+              {paths.find((i) => i.id === item)?.navigate ? (
                 <Link href={`${completePath}`} passHref>
                   <span
                     className={`${
@@ -53,7 +53,7 @@ const BreadCrumb = () => {
                 <span
                   className={`${
                     path.length === index + 1 ? "color-orange" : ""
-                  } fs-14 mx-2 cursor-pointer`}
+                  } fs-14 mx-2`}
                 >
                   {paths.find((i) => i.id === item)?.title}
                 </span>

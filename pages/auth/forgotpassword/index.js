@@ -28,7 +28,10 @@ const OtpLogIn = () => {
     const { data, errRes } = await verifyOtp(formData);
     if (data) {
       router.push({
-        pathname: "/auth/supplier/newpassword",
+        pathname:
+          router.query.role === "SUPPLIER"
+            ? "/auth/supplier/newpassword"
+            : "/auth/admin/newpassword",
         query: { user: btoa(`,${user}`) },
       });
     } else if (errRes) {
@@ -60,7 +63,7 @@ const OtpLogIn = () => {
     if (!validateForm()) {
       const formData = new FormData();
       formData.append("userName", user);
-      formData.append("userType", "SUPPLIER");
+      formData.append("userType", router.query.role);
       const { data, errRes } = await getOtp(formData);
       if (data) {
         setSubmitted(true);

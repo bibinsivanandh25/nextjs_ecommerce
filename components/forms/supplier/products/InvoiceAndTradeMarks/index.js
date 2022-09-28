@@ -294,7 +294,13 @@ const UploadDocumentModal = ({
               onChange={(e) => {
                 if (
                   e.target?.files.length &&
-                  e.target.files[0].type !== "video/mp4"
+                  e.target.files[0].type.includes("video")
+                ) {
+                  toastify("Video files are not accepted", "error");
+                }
+                if (
+                  e.target?.files.length &&
+                  !e.target.files[0].type.includes("video")
                 ) {
                   const temp = [...documents];
                   temp.push(e.target?.files[0]);

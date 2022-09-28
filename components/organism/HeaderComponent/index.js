@@ -46,7 +46,7 @@ const HeaderComponent = () => {
               <ProfileComponent className="cursor-pointer" />
             </>
           )}
-          {router.pathname.startsWith("/reseller") && (
+          {router.pathname.startsWith("/admin") && (
             <>
               <ConfirmationNumberOutlinedIcon
                 className="cursor-pointer"

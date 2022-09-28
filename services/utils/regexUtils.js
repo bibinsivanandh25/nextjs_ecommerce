@@ -1,6 +1,7 @@
+/* eslint-disable no-useless-escape */
 const validationRegex = {
   mobile: /^([+]d{2})?\d{10}$/,
-  email: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
+  email: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+(\.\w{2,3})$/,
   password:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
   upperCase: /^.*[A-Z].*$/,
