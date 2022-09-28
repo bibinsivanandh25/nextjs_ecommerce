@@ -1,15 +1,25 @@
+/* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableWithSpan";
 import ViewModal from "@/forms/admin/marketingtools&subscriptions/notification/ViewModal";
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/notification/AddNoteModal";
+import toastify from "services/utils/toastUtils";
+import {
+  enableOrDisableSubscriptions,
+  getSubscriptions,
+} from "services/admin/marketingtools/subscriptions";
 
-const PriceTargetedSubscription = () => {
+const NotificationSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
+  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
+    useState([]);
+
+  const [rowsForNotificationSubs, setRowsForNotificationSubs] = useState([]);
 
   const column1 = [
     {
@@ -82,7 +92,7 @@ const PriceTargetedSubscription = () => {
   const column2 = [
     {
       id: "col3",
-      label: "--",
+      label: "7 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -91,7 +101,7 @@ const PriceTargetedSubscription = () => {
     },
     {
       id: "col4",
-      label: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
+      label: "30 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -100,7 +110,7 @@ const PriceTargetedSubscription = () => {
     },
     {
       id: "col5",
-      label: "--",
+      label: "90 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -109,7 +119,7 @@ const PriceTargetedSubscription = () => {
     },
     {
       id: "col6",
-      label: "--",
+      label: "180 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -118,7 +128,7 @@ const PriceTargetedSubscription = () => {
     },
     {
       id: "col7",
-      label: "--",
+      label: "270 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -127,7 +137,7 @@ const PriceTargetedSubscription = () => {
     },
     {
       id: "col8",
-      label: "--",
+      label: "360 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -142,47 +152,165 @@ const PriceTargetedSubscription = () => {
     }
   };
 
-  const rows = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "#827342",
-      col3: "--",
-      col4: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
-      col5: "--",
-      col6: "--",
-      col7: "--",
-      col8: "--",
-      col9: "sdasdasd",
-      col10: "Active",
-      col11: 25,
-      col12: (
-        <Box className="d-flex justify-content-evenly align-items-center">
-          <CustomIcon
-            type="view"
-            className="fs-18"
-            onIconClick={() => setOpenViewModal(true)}
-          />
-          <MenuOption
-            getSelectedItem={(ele) => {
-              onClickOfMenuItem(ele);
-            }}
-            options={[
-              "Notify",
-              "Add Note",
-              <Box className="d-flex align-items-center">
-                <Typography>Disable</Typography>
-                <Box className="ms-4">
-                  <SwitchComponent label="" />
-                </Box>
-              </Box>,
-            ]}
-            IconclassName="fs-18 color-gray"
-          />
-        </Box>
-      ),
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     col1: "01",
+  //     col2: "#827342",
+  //     col3: "--",
+  //     col4: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
+  //     col5: "--",
+  //     col6: "--",
+  //     col7: "--",
+  //     col8: "--",
+  //     col9: "sdasdasd",
+  //     col10: "Active",
+  //     col11: 25,
+  //     col12: (
+  //       <Box className="d-flex justify-content-evenly align-items-center">
+  //         <CustomIcon
+  //           type="view"
+  //           className="fs-18"
+  //           onIconClick={() => setOpenViewModal(true)}
+  //         />
+  //         <MenuOption
+  //           getSelectedItem={(ele) => {
+  //             onClickOfMenuItem(ele);
+  //           }}
+  //           options={[
+  //             "Notify",
+  //             "Add Note",
+  //             <Box className="d-flex align-items-center">
+  //               <Typography>Disable</Typography>
+  //               <Box className="ms-4">
+  //                 <SwitchComponent label="" />
+  //               </Box>
+  //             </Box>,
+  //           ]}
+  //           IconclassName="fs-18 color-gray"
+  //         />
+  //       </Box>
+  //     ),
+  //   },
+  // ];
+
+  const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
+    const { error } = await enableOrDisableSubscriptions(
+      purchaseId,
+      status,
+      marketingTool
+    );
+    if (!error) {
+      toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
+      getNotificationsSubscription();
+    } else {
+      toastify(`Unable to change the status`, "error");
+    }
+  };
+
+  async function getNotificationsSubscription() {
+    const { data, error } = await getSubscriptions({
+      marketingTool: "NOTIFICATIONS",
+      toolStatus: "ACTIVE",
+      userType: "SUPPLIER",
+    });
+    if (data) {
+      console.log(data);
+      const mappedArray = data.map((val, index) => {
+        const dateOne = new Date(val.activatedAt);
+        const dateTwo = new Date(val.expirationDate);
+        const timeDifference = dateTwo.getTime() - dateOne.getTime();
+        const divisor = 1000 * 60 * 60 * 24;
+        const numberOfDays = timeDifference / divisor;
+        return {
+          id: val.purchaseId,
+          col1: index >= 9 ? index + 1 : `0${index + 1}`,
+          col2: val.purchasedById,
+          col3:
+            numberOfDays === 7
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col4:
+            numberOfDays === 30
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col5:
+            numberOfDays === 90
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col6:
+            numberOfDays === 180
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col7:
+            numberOfDays === 270
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col8:
+            numberOfDays === 360
+              ? `${val.activatedAt}-${val.expirationDate}`
+              : "--",
+          col9: val.toolStatus,
+          col10: val.subscriptionAmount,
+          col11: val.comments ? val.comments : "0",
+          col12: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                onIconClick={() => {
+                  console.log(
+                    "val.userMarketingTools ",
+                    val.userMarketingTools
+                  );
+                  setDataOfSingleSupplierOrReseller(val.userMarketingTools);
+                  setOpenViewModal(true);
+                }}
+              />
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  console.log("Hey");
+                  onClickOfMenuItem(ele);
+                }}
+                options={[
+                  "Notify",
+                  "Add Note",
+                  <Box className="d-flex align-items-center">
+                    <Typography>
+                      {val.disabled ? "Disabled" : "Enabled"}
+                    </Typography>
+                    <Box className="ms-4">
+                      <SwitchComponent
+                        defaultChecked={!val.disabled}
+                        label=""
+                        ontoggle={() => {
+                          handleEnableOrDisable(
+                            val.purchaseId,
+                            !val.disabled,
+                            "TODAYS_DEAL"
+                          );
+                        }}
+                      />
+                    </Box>
+                  </Box>,
+                ]}
+                IconclassName="fs-18 color-gray"
+              />
+            </Box>
+          ),
+        };
+      });
+
+      setRowsForNotificationSubs(mappedArray);
+    }
+    if (error) {
+      console.log("error hey", error);
+    }
+  }
+
+  useEffect(() => {
+    getNotificationsSubscription();
+  }, []);
 
   return (
     <>
@@ -192,7 +320,7 @@ const PriceTargetedSubscription = () => {
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
-            tableRows={[...rows]}
+            tableRows={[...rowsForNotificationSubs]}
             tHeadBgColor="bg-light-gray"
             showPagination={false}
             showSearchFilter={false}
@@ -207,6 +335,7 @@ const PriceTargetedSubscription = () => {
       <ViewModal
         openViewModal={openViewModal}
         setOpenViewModal={setOpenViewModal}
+        dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
       />
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
@@ -216,4 +345,4 @@ const PriceTargetedSubscription = () => {
   );
 };
 
-export default PriceTargetedSubscription;
+export default NotificationSubscription;
