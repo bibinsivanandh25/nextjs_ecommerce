@@ -300,7 +300,7 @@ const MyProducts = () => {
         setpageNumber((pre) => pre + 1);
       } else {
         setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
-        setpageNumber((pre) => pre + 1);
+        // setpageNumber((pre) => pre + 1);
       }
     } else if (err) {
       toastify(err.response.data.message, "error");

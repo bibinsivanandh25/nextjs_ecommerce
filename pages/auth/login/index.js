@@ -251,7 +251,16 @@ const Login = () => {
                       Login with OTP
                     </span>
                   </Link>
-                  <Link href="/auth/forgotpassword" passHref>
+                  <Link
+                    href={{
+                      pathname: `/auth/forgotpassword`,
+                      query: {
+                        role: "SUPPLIER",
+                      },
+                    }}
+                    as="/auth/forgotpassword"
+                    passHref
+                  >
                     <span className="color-orange fs-12 cursor-pointer fw-bold">
                       Forgot password?
                     </span>
