@@ -1,18 +1,11 @@
-import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
-import CheckBoxComponent from "components/atoms/CheckboxComponent";
+import { Grid, IconButton, Tooltip } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
 import InputFieldWithChip from "components/atoms/InputWithChip";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  allowback_orders,
-  business_processing_days,
-  shipping_class,
-  stock_status,
-} from "../../../../../../constants/constants";
+import { stock_status } from "constants/constants";
 import { validateInventory } from "../validation";
 
 const InventoryForm = forwardRef(
@@ -116,7 +109,7 @@ const InventoryForm = forwardRef(
               />
             </div>
           </Grid>
-          <Grid item md={12} className="pt-4">
+          {/* <Grid item md={12} className="pt-4">
             <div className="d-flex align-items-center">
               <Typography className="fw-600 me-3">Manage Stocks?</Typography>
               <CheckBoxComponent
@@ -139,7 +132,7 @@ const InventoryForm = forwardRef(
                 isDisabled={viewFlag}
               />
             </div>
-          </Grid>
+          </Grid> */}
           <Grid item md={12} className="d-flex align-items-center">
             <div className="w-70p">
               <SimpleDropdownComponent
@@ -162,7 +155,7 @@ const InventoryForm = forwardRef(
               />
             </div>
           </Grid>
-          {formData?.inventory?.manageStock ? (
+          {/* {formData?.inventory?.manageStock ? (
             <>
               <Grid item md={12} className="d-flex align-items-center">
                 <div className="w-70p">
@@ -227,7 +220,7 @@ const InventoryForm = forwardRef(
               placeholder="Select shipping class"
               disabled={viewFlag}
             />
-          </Grid>
+          </Grid> */}
           <Grid item md={12}>
             <InputBox
               id="product_title"
@@ -241,7 +234,7 @@ const InventoryForm = forwardRef(
               disabled={editProduct || viewFlag}
             />
           </Grid>
-          <Grid item md={12}>
+          {/* <Grid item md={12}>
             <SimpleDropdownComponent
               inputlabelshrink
               list={[...business_processing_days]}
@@ -261,7 +254,7 @@ const InventoryForm = forwardRef(
               placeholder="Select processing days"
               disabled={viewFlag}
             />
-          </Grid>
+          </Grid> */}
           <Grid item md={12}>
             <InputFieldWithChip
               id="seo_title"
@@ -307,7 +300,6 @@ const InventoryForm = forwardRef(
               value={formData?.inventory?.meta_keyword}
               inputlabelshrink
               handleChange={(_, val) => {
-                console.log(val);
                 setFormData((pre) => {
                   return {
                     ...pre,
