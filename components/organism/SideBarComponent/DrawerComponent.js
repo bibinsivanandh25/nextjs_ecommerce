@@ -100,6 +100,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         return "supplier";
       case "RESELLER":
         return "reseller";
+      case "ADMIN":
+        return "admin";
       default:
         return "customer";
     }
@@ -138,6 +140,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
           setNavOptionsList(res[0].nav);
         })
         .catch(() => {});
+    } else if (user.role === "ADMIN") {
+      setNavOptionsList(user.adminCapabilities);
     }
   };
 

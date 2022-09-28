@@ -148,7 +148,6 @@ const CreateBanner = ({
         errorObj.dateError = "From Date should be Lessthan To Date";
       }
     }
-    console.log(errorObj, "errorObj");
     setError(errorObj);
     return flag;
   };

@@ -85,26 +85,23 @@ const validateInventory = (inventoryFormData) => {
     flag = true;
     errObj.stock_status = validateMessage.field_required;
   }
-  if (inventoryFormData.manageStock) {
-    if (!Object.keys(inventoryFormData?.allow_backorders).length) {
-      flag = true;
-      errObj.allow_backorders = validateMessage.field_required;
-    } else if (
-      inventoryFormData.allow_backorders.label === "Allow" &&
-      inventoryFormData.back_Orders === ""
-    ) {
-      flag = true;
-      errObj.back_Orders = validateMessage.field_required;
-    }
-  }
+  // if (inventoryFormData.manageStock) {
+  //   if (!Object.keys(inventoryFormData.allow_backorders).length) {
+  //     flag = true;
+  //     errObj.allow_backorders = validateMessage.field_required;
+  //   } else if (
+  //     inventoryFormData.allow_backorders.label === "Allow" &&
+  //     inventoryFormData.back_Orders === ""
+  //   ) {
+  //     flag = true;
+  //     errObj.back_Orders = validateMessage.field_required;
+  //   }
+  // }
 
-  if (
-    inventoryFormData.shipping_class &&
-    !Object.keys(inventoryFormData.shipping_class).length
-  ) {
-    flag = true;
-    errObj.shipping_class = validateMessage.field_required;
-  }
+  // if (!Object.keys(inventoryFormData.shipping_class).length) {
+  //   flag = true;
+  //   errObj.shipping_class = validateMessage.field_required;
+  // }
   if (inventoryFormData.product_title === "") {
     flag = true;
     errObj.product_title = validateMessage.field_required;
@@ -113,13 +110,10 @@ const validateInventory = (inventoryFormData) => {
     errObj.product_title = validateMessage.alpha_numeric_max_100;
   }
 
-  if (
-    inventoryFormData.business_processing_days &&
-    !Object.keys(inventoryFormData.business_processing_days).length
-  ) {
-    flag = true;
-    errObj.business_processing_days = validateMessage.field_required;
-  }
+  // if (!Object.keys(inventoryFormData.business_processing_days).length) {
+  //   flag = true;
+  //   errObj.business_processing_days = validateMessage.field_required;
+  // }
 
   if (!inventoryFormData.seo_title.length) {
     flag = true;

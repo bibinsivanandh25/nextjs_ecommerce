@@ -29,7 +29,6 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
-import { getSupplierDetailsById } from "services/supplier";
 import { store } from "store";
 import { storeUserInfo } from "features/userSlice";
 import axios from "axios";
@@ -85,54 +84,13 @@ const Login = () => {
     return flag;
   };
 
-  const storedatatoRedux = async (id, role, staffDetails) => {
-    const { data, err } = await getSupplierDetailsById(
-      role === "SUPPLIER" ? id : staffDetails.supplierId
-    );
-    if (!err) {
-      const supplierDetails =
-        role === "SUPPLIER"
-          ? {
-              emailId: data.emailId,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              profileImageUrl: data.profileImageUrl,
-              supplierId: data.supplierId,
-              storeCode: data.supplierStoreInfo.supplierStoreCode,
-              isAddressSaved: data.userAddressDetails.length,
-              role,
-              storeName: data.supplierStoreInfo.supplierStoreName,
-            }
-          : {
-              emailId: data.emailId,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              profileImageUrl: data.profileImageUrl,
-              supplierId: data.supplierId,
-              storeCode: data.supplierStoreInfo.supplierStoreCode,
-              isAddressSaved: data.userAddressDetails.length,
-              role,
-              staffDetails: {
-                email: staffDetails.emailId,
-                firstName: staffDetails.firstName,
-                lastName: staffDetails.lastName,
-                mobileNumber: staffDetails.mobileNumber,
-                staffId: staffDetails.staffId,
-                staffCapabilityList: staffDetails.staffCapabilityList,
-              },
-              storeName: data.supplierStoreInfo.supplierStoreName,
-            };
-      store.dispatch(storeUserInfo(supplierDetails));
-    }
-  };
-
   const handleSubmit = async () => {
     const flag = validateCredentials();
     if (!flag) {
       const payload = {
         userName: formValues.user,
         password: formValues.password,
-        userType: "SUPPLIER",
+        userType: "ADMIN",
       };
       await axios
         .post(`${process.env.DOMAIN}auth/authenticate`, payload)
@@ -150,19 +108,35 @@ const Login = () => {
               email: userData[1],
               role: decoded.roles[0],
               token,
-              callbackUrl: `/supplier/dashboard`,
+              callbackUrl: `/admin/dashboard`,
               redirect: false,
             });
             if (res?.error) {
               toastify("Invalid credentials", "error");
               return null;
             }
-            await storedatatoRedux(
-              userData[0],
-              decoded.roles[0],
-              data.data.staffDetails
+            // await storedatatoRedux(
+            //   userData[0],
+            //   decoded.roles[0],
+            //   data.data.staffDetails
+            // );
+            store.dispatch(
+              storeUserInfo({
+                emailId: data.data.adminRegistrationPojo.emailId,
+                firstName: data.data.adminRegistrationPojo.firstName,
+                lastName: data.data.adminRegistrationPojo.lastName,
+                profileImageUrl: null,
+                userId: data.data.adminRegistrationPojo.adminRegistrationId,
+                storeCode: null,
+                isAddressSaved: null,
+                role: data.data.adminRegistrationPojo.designation,
+                storeName: null,
+                adminCapabilities:
+                  data.data.adminRegistrationPojo.adminCapabilities
+                    .adminCapabilityList,
+              })
             );
-            route.push(`/supplier/dashboard`);
+            route.push(`/admin/dashboard`);
           }
         })
         .catch((err) => {
@@ -240,19 +214,21 @@ const Login = () => {
                   textInputProps={{ className: styles.inputAutoFillColor }}
                 />
               </Grid>
-              <Grid item md={12} className="w-100">
-                <div className="d-flex justify-content-between">
-                  <Link href="/auth/login/otplogin" passHref>
-                    <span className="color-orange fs-12 cursor-pointer fw-bold">
-                      Login with OTP
-                    </span>
-                  </Link>
-                  <Link href="/auth/forgotpassword" passHref>
-                    <span className="color-orange fs-12 cursor-pointer fw-bold">
-                      Forgot password?
-                    </span>
-                  </Link>
-                </div>
+              <Grid item md={12} className="w-100 d-flex flex-row-reverse">
+                <Link
+                  href={{
+                    pathname: `/auth/forgotpassword`,
+                    query: {
+                      role: "ADMIN",
+                    },
+                  }}
+                  as="/auth/forgotpassword"
+                  passHref
+                >
+                  <span className="color-orange fs-12 cursor-pointer fw-bold">
+                    Forgot password?
+                  </span>
+                </Link>
               </Grid>
               <Grid item sm={12}>
                 <div className="d-flex flex-column align-items-center justify-content-center w-100">
@@ -276,9 +252,9 @@ export async function getServerSideProps(context) {
   const session = await getSession({ req });
   if (session) {
     const { role } = session.user;
-    if (role === "SUPPLIER") {
+    if (role === "ADMIN") {
       return {
-        redirect: { destination: "/supplier/dashboard" },
+        redirect: { destination: "/admin/dashboard" },
       };
     }
     return {
