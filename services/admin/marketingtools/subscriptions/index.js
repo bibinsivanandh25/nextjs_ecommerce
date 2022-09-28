@@ -1,6 +1,6 @@
 import serviceUtil from "services/utils";
 
-const getTodaysDealSubsscriptions = async (payload) => {
+const getSubscriptions = async (payload) => {
   try {
     const { data } = await serviceUtil.post(
       `users/admin-marketing-tool/tool-subscription/0/50`,
@@ -48,7 +48,7 @@ const acceptRejectSingleToolSubscription = async (
 // const addANote = () => {};
 
 export {
-  getTodaysDealSubsscriptions,
+  getSubscriptions,
   enableOrDisableSubscriptions,
   acceptRejectSingleToolSubscription,
 };

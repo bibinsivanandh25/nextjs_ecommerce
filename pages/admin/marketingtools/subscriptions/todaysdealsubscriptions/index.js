@@ -9,7 +9,7 @@ import ViewModal from "@/forms/admin/marketingtools&subscriptions/todaysdealsubs
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/AddNoteModal";
 import {
   enableOrDisableSubscriptions,
-  getTodaysDealSubsscriptions,
+  getSubscriptions,
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
@@ -152,7 +152,6 @@ const TodaysDealSubscription = () => {
       setOpenAddNoteModal(true);
     }
     if (ele === "Notify") {
-      console.log("hi");
       setShowNotificationModal(true);
     }
   };
@@ -172,7 +171,7 @@ const TodaysDealSubscription = () => {
   };
 
   async function getDealSubscription() {
-    const { data, error } = await getTodaysDealSubsscriptions({
+    const { data, error } = await getSubscriptions({
       marketingTool: "TODAYS_DEAL",
       toolStatus: "ACTIVE",
       userType: "SUPPLIER",
