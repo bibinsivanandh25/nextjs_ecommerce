@@ -176,6 +176,9 @@ const ProductPoliciesForm = forwardRef(
                   policy: {
                     ...pre.policy,
                     warranty: !pre.policy.warranty,
+                    warrantyperiod: pre.policy.warranty
+                      ? {}
+                      : pre.policywarrantyperiod,
                   },
                 }));
               }}

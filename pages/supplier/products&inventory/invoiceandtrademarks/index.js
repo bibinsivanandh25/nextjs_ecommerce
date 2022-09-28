@@ -160,7 +160,11 @@ const InvoiceAndTradeMarks = () => {
     }
     return temp;
   };
-  const getAllTableData = async (searchText = "", filterText = "", page) => {
+  const getAllTableData = async (
+    searchText = "",
+    filterText = "",
+    page = 0
+  ) => {
     const { data, err } = await getProductandInventoryData(
       user.supplierId,
       searchText,
