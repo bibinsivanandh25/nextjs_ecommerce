@@ -15,6 +15,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Auth from "components/auth";
 import { useEffect } from "react";
 import ToastComponent from "components/molecule/toastcomponent";
+import ErrorBoundary from "components/molecule/ErrorBoundary";
 import Layout from "../components/organism/Layout";
 import Loading from "../components/organism/Loading";
 import "nprogress/nprogress.css";
@@ -94,21 +95,23 @@ function MyApp({ Component, pageProps, router }) {
         <title> Multestore </title>
       </Head>
       <Provider store={store}>
-        <div id="loader" style={{ display: "none" }}>
-          <div className="spinner" />
-        </div>
-        <PersistGate loading={null} persistor={persistor}>
-          <motion.div
-            animate={{ opacity: 1 }}
-            initial={{ opacity: 0 }}
-            transition={{
-              damping: 20,
-            }}
-            exit={{ opacity: 0 }}
-          >
-            <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
-          </motion.div>
-        </PersistGate>
+        <ErrorBoundary>
+          <div id="loader" style={{ display: "none" }}>
+            <div className="spinner" />
+          </div>
+          <PersistGate loading={null} persistor={persistor}>
+            <motion.div
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
+              transition={{
+                damping: 20,
+              }}
+              exit={{ opacity: 0 }}
+            >
+              <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
+            </motion.div>
+          </PersistGate>
+        </ErrorBoundary>
       </Provider>
     </>
   );
