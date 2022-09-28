@@ -94,7 +94,7 @@ const FlagsSubscription = () => {
   const column2 = [
     {
       id: "col3",
-      label: "--",
+      label: "7 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -103,7 +103,7 @@ const FlagsSubscription = () => {
     },
     {
       id: "col4",
-      label: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
+      label: "30 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -112,7 +112,7 @@ const FlagsSubscription = () => {
     },
     {
       id: "col5",
-      label: "--",
+      label: "90 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -121,7 +121,7 @@ const FlagsSubscription = () => {
     },
     {
       id: "col6",
-      label: "--",
+      label: "180 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -130,7 +130,7 @@ const FlagsSubscription = () => {
     },
     {
       id: "col7",
-      label: "--",
+      label: "270 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
@@ -139,7 +139,7 @@ const FlagsSubscription = () => {
     },
     {
       id: "col8",
-      label: "--",
+      label: "360 Days",
       minWidth: 150,
       align: "center",
       data_align: "center",
