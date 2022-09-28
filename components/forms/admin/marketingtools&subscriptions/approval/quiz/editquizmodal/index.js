@@ -12,7 +12,7 @@ const EditQuizModal = ({
   title = "",
   viewModlwidth = "1000px",
   footer = false,
-  editorPlaceHolder = "Description...",
+  // editorPlaceHolder = "Description...",
 }) => {
   return (
     <ModalComponent
@@ -36,7 +36,7 @@ const EditQuizModal = ({
                 display: "flex",
                 flexDirection: "row-reverse",
               }}
-              onChange={(e) => {}}
+              onChange={() => {}}
             />
           </Grid>
           <Grid item md={4} display="flex">
@@ -50,7 +50,7 @@ const EditQuizModal = ({
                 display: "flex",
                 flexDirection: "row-reverse",
               }}
-              onChange={(e) => {}}
+              onChange={() => {}}
             />
           </Grid>
         </Grid>
