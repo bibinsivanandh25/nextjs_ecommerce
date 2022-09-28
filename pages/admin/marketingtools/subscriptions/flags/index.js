@@ -263,9 +263,8 @@ const FlagsSubscription = () => {
   }
 
   const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") {
-      setOpenAddNoteModal(true);
-    }
+    if (ele === "Add Note") setOpenAddNoteModal(true);
+    if (ele === "Notify") setShowNotificationModal(true);
   };
 
   useEffect(() => {
