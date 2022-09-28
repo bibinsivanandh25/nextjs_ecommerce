@@ -13,6 +13,7 @@ const CreateTags = ({
   tagName = "",
   setTageName = () => {},
   setpageNumber = () => {},
+  user = {},
 }) => {
   const [error, setError] = useState("");
 
@@ -28,7 +29,7 @@ const CreateTags = ({
     if (flag) {
       const payload = {
         tagName,
-        createdBy: "ABC001",
+        createdBy: user.userId,
         createdByType: "ADMIN",
       };
       const { data, err } = await saveAdminTags(payload);
