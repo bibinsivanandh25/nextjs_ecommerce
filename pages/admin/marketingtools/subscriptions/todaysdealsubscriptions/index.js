@@ -10,7 +10,7 @@ import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/todaysdeals
 import {
   enableOrDisableSubscriptions,
   getTodaysDealSubsscriptions,
-} from "services/admin/marketingtools/subscriptions/todaysdealsubscriptions";
+} from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
 

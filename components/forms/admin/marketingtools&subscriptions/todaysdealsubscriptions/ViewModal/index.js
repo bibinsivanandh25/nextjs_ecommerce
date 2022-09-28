@@ -3,7 +3,7 @@ import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
 import React, { useEffect, useState } from "react";
-import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions/todaysdealsubscriptions";
+import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions";
 
 const ViewModal = ({
   openViewModal,
