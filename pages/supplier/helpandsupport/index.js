@@ -151,8 +151,8 @@ const HelpAndSupport = () => {
                 variant="dot"
                 sx={{
                   "& .MuiBadge-badge": {
-                    color: flag ? "white" : "red",
-                    backgroundColor: flag ? "white" : "red",
+                    color: flag ? "red" : "white",
+                    backgroundColor: flag ? "red" : "white",
                   },
                 }}
               >

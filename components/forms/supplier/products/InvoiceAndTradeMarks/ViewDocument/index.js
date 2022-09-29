@@ -25,6 +25,7 @@ const ViewDocument = ({
       onCloseIconClick={() => setShowModal(false)}
       ModalTitle="View Document"
       showFooter={false}
+      titleClassName="fw-bold color-orange"
     >
       <Grid container spacing={2} paddingBottom={2}>
         <Grid container spacing={1} item sm={12}>
