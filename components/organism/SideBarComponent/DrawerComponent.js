@@ -136,8 +136,10 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       }
       await Promise.all(promiseArr)
         .then((res) => {
+          setNavOptionsList(() => {
+            return [...JSON.parse(JSON.stringify(res[0].nav))];
+          });
           dispatch(updateUnlockedTools(res[1].marketingTools.unlockedTools));
-          setNavOptionsList(res[0].nav);
         })
         .catch(() => {});
     } else if (user.role === "ADMIN") {
