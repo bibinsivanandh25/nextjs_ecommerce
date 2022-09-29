@@ -12,12 +12,15 @@ import {
   enableOrDisableSubscriptions,
   getSubscriptions,
 } from "services/admin/marketingtools/subscriptions";
+import CreateNotification from "@/forms/admin/marketingtools&subscriptions/notification/CreateNotificationModal";
 
 const NotificationSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
+
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [rowsForNotificationSubs, setRowsForNotificationSubs] = useState([]);
 
@@ -147,9 +150,9 @@ const NotificationSubscription = () => {
   ];
 
   const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") {
-      setOpenAddNoteModal(true);
-    }
+    if (ele === "Add Note") setOpenAddNoteModal(true);
+
+    if (ele === "Notify") setShowNotificationModal(true);
   };
 
   // const rows = [
@@ -341,6 +344,11 @@ const NotificationSubscription = () => {
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <CreateNotification
+        showNotificationModal={showNotificationModal}
+        setShowNotificationModal={setShowNotificationModal}
+        type="add"
       />
     </>
   );
