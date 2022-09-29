@@ -59,7 +59,7 @@ const Coupons = () => {
       data_align: "center",
     },
     {
-      label: "Amount in %",
+      label: "Coupon Amount",
       id: "col3",
       align: "center",
       data_align: "center",
@@ -107,10 +107,14 @@ const Coupons = () => {
     const result = [];
     data.forEach((row) => {
       result.push({
+        couponId: row.couponId,
         col1: row.couponCode,
         col2: row.discountType,
-        col3: `${row.couponAmount}%`,
-        col4: row.couponUsageLimit || "-",
+        col3:
+          row.discountType === "PERCENTAGE" && row.minimumPurchaseAmount
+            ? `${(row.couponAmount * 100) / row.minimumPurchaseAmount} %`
+            : `${row.couponAmount} Rs.`,
+        col4: row.usageLimitPerCoupon || "-",
         col5: row.couponExpiryDate,
         col6: (
           <div
@@ -120,7 +124,7 @@ const Coupons = () => {
             }`}
             onClick={() => {
               if (row.couponStatus?.toLowerCase()?.includes("draft")) {
-                setCouponCode(row.couponCode);
+                setCouponCode(row.couponId);
                 setShowPublishModal(true);
               }
             }}
@@ -161,7 +165,7 @@ const Coupons = () => {
       search,
       filter
     );
-    if (data.length) {
+    if (data && data.length) {
       setTableRows(mapRowsToTable(data));
     } else {
       setTableRows([]);

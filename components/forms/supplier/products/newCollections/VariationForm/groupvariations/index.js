@@ -1,9 +1,4 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-shadow */
-/* eslint-disable radix */
-/* eslint-disable no-unused-vars */
 import { Grid, Paper, Typography, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
@@ -12,25 +7,15 @@ import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
-import DatePickerComponent from "components/atoms/DatePickerComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import { getBase64 } from "services/utils/functionUtils";
 import InputFieldWithChip from "components/atoms/InputWithChip";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
-import { saveProduct, saveMediaFile } from "services/supplier/AddProducts";
-import { useUserInfo } from "services/hooks";
-import { useRouter } from "next/router";
-import { getCurrentData } from "services/supplier";
 import { useDispatch, useSelector } from "react-redux";
-import { clearProduct, storeproductInfo } from "features/productsSlice";
-import {
-  allowback_orders,
-  business_processing_days,
-  shipping_class,
-  stock_status,
-} from "../../../../../../../constants/constants";
+import { storeproductInfo } from "features/productsSlice";
+import { stock_status } from "../../../../../../../constants/constants";
 import styles from "./InvoiceCardComponent.module.css";
 
 const returnOrderData = [
@@ -113,8 +98,6 @@ const GroupVariationForm = ({
   const [optionsValue, setoptionsValue] = useState({});
   const [emptyObj, setEmptyObj] = useState({});
   const [errorObj, setErrorObj] = useState({});
-  const userInfo = useUserInfo();
-  const router = useRouter();
   const dispatch = useDispatch();
   const { formData } = useSelector((state) => state.product);
 
@@ -122,7 +105,6 @@ const GroupVariationForm = ({
     if (formData?.productImage.length && !Object.keys(variationData).length) {
       const temp = {};
       const dropDownVal = {};
-      const tempImg = {};
       formData?.productImage.forEach((item, ind) => {
         temp[`variation${ind + 1}`] = {
           ...JSON.parse(JSON.stringify(tempObj)),
@@ -167,7 +149,7 @@ const GroupVariationForm = ({
   const validate = () => {
     const errObj = JSON.parse(JSON.stringify({ ...emptyObj }));
     let flag = false;
-    Object.keys(errObj).forEach((item, index) => {
+    Object.keys(errObj).forEach((item) => {
       delete errObj[item].expand;
       delete errObj[item].images;
       delete errObj[item].manageStock;
@@ -177,8 +159,8 @@ const GroupVariationForm = ({
         });
       });
     });
-    Object.keys(emptyObj).forEach((item, index) => {
-      Object.keys(variationData[item]).forEach((ele, ind) => {
+    Object.keys(emptyObj).forEach((item) => {
+      Object.keys(variationData[item]).forEach((ele) => {
         if (ele !== "images") {
           if (ele === "inventory") {
             const tempInventory = JSON.parse(
@@ -191,33 +173,33 @@ const GroupVariationForm = ({
             } else {
               errObj[item].inventory.stock_status = "";
             }
-            if (variationData[item].manageStock) {
-              if (tempInventory.stock_qty === "") {
-                flag = true;
-                errObj[item].inventory.stock_qty =
-                  validateMessage.field_required;
-              } else if (parseInt(tempInventory.stock_qty) < 1) {
-                flag = true;
-                errObj[item].inventory.stock_qty =
-                  "Stock Qty must be greater then or equal to 1";
-              } else {
-                errObj[item].inventory.stock_qty = "";
-              }
-              if (!Object.keys(tempInventory.allow_backorders).length) {
-                flag = true;
-                errObj[item].inventory.allow_backorders =
-                  validateMessage.field_required;
-              } else {
-                errObj[item].inventory.allow_backorders = "";
-              }
-            }
-            if (!Object.keys(tempInventory.business_processing_days).length) {
-              flag = true;
-              errObj[item].inventory.business_processing_days =
-                validateMessage.field_required;
-            } else {
-              errObj[item].inventory.business_processing_days = "";
-            }
+            // if (variationData[item].manageStock) {
+            //   if (tempInventory.stock_qty === "") {
+            //     flag = true;
+            //     errObj[item].inventory.stock_qty =
+            //       validateMessage.field_required;
+            //   } else if (parseInt(tempInventory.stock_qty, 10) < 1) {
+            //     flag = true;
+            //     errObj[item].inventory.stock_qty =
+            //       "Stock Qty must be greater then or equal to 1";
+            //   } else {
+            //     errObj[item].inventory.stock_qty = "";
+            //   }
+            //   if (!Object.keys(tempInventory.allow_backorders).length) {
+            //     flag = true;
+            //     errObj[item].inventory.allow_backorders =
+            //       validateMessage.field_required;
+            //   } else {
+            //     errObj[item].inventory.allow_backorders = "";
+            //   }
+            // }
+            // if (!Object.keys(tempInventory.business_processing_days).length) {
+            //   flag = true;
+            //   errObj[item].inventory.business_processing_days =
+            //     validateMessage.field_required;
+            // } else {
+            //   errObj[item].inventory.business_processing_days = "";
+            // }
 
             if (tempInventory.modalname === "") {
               flag = true;
@@ -315,8 +297,8 @@ const GroupVariationForm = ({
               errObj[item].pricing.product_weight =
                 validateMessage.field_required;
             } else if (
-              parseInt(tempPricing.product_weight) > 100000 ||
-              parseInt(tempPricing.product_weight) < 100
+              parseInt(tempPricing.product_weight, 10) > 100000 ||
+              parseInt(tempPricing.product_weight, 10) < 100
             ) {
               flag = true;
               errObj[item].pricing.product_weight =
@@ -390,195 +372,6 @@ const GroupVariationForm = ({
     return flag;
   };
 
-  const createPayload = async (imgdata) => {
-    const { mainFormData, attribute, policy, linked } = JSON.parse(
-      JSON.stringify(formData)
-    );
-    const getvariationProperty = (ele) => {
-      const temp = ["countryOfOrigin", "others", "expiryDate"];
-      const variationProperty = [];
-      Object.keys(variationData[ele].variation).forEach((item) => {
-        if (!temp.includes(item)) {
-          variationProperty.push({
-            variationId: item,
-            optionId: variationData[ele].variation[item].id,
-            variationType: formData.attribute[item][0]?.variationType,
-          });
-        }
-      });
-      return variationProperty;
-    };
-    const getVariationsPayload = () => {
-      const temp = [];
-      Object.keys(variationData).forEach((ele) => {
-        const { inventory, mmcartPricing, pricing } = JSON.parse(
-          JSON.stringify(variationData[ele])
-        );
-        temp.push({
-          productTitle: inventory.product_title,
-          shippingClass: inventory.shipping_class.value,
-          businessProcessingDays: inventory.business_processing_days.value,
-          seoTitle: inventory.seo_title,
-          metaDescription: inventory.meta_description,
-          metaKeywords: inventory.meta_keyword.join(),
-          isStoreFDR: pricing.fd_rot,
-          salePriceWithLogistics: parseInt(pricing.sale_price_logistics, 10),
-          rtoAccepted: pricing.return_order_accepted,
-          rtoDays: pricing?.returnorder?.value ?? null,
-          codAvailable: pricing.cash_on_delivary,
-          deliveryCharge: pricing.delivery_charge,
-          packageLength: parseFloat(pricing.length),
-          packageWidth: parseFloat(pricing.width),
-          packageHeight: parseFloat(pricing.height),
-          weightInclusivePackage: parseFloat(pricing.product_weight),
-          salePrice: parseInt(pricing.sale_price, 10),
-          mrp: parseInt(pricing.mrp, 10),
-          stockQty: parseInt(inventory.stockqty, 10),
-          modelName: inventory.modalname,
-          sellWithMrMrsCart: mmcartPricing.sellwithus,
-          mrmrscartSalePriceWithFDR: mmcartPricing.free_delivery,
-          mrmrscartSalePriceWithOutFDR: mmcartPricing.paid_delivery,
-          mrmrscartRtoAccepted: mmcartPricing.rto,
-          mrmrscartRtoDays: mmcartPricing.returnorder.id,
-          mrmrscartCodAvailable: mmcartPricing.cod,
-          stockStatus: inventory.stock_status.label,
-          allowBackOrders: inventory?.allow_backorders?.label ?? "",
-          backOrders: parseInt(inventory.back_Orders, 10) || 0,
-          variationMedia: imgdata[ele],
-          variationProperty: getvariationProperty(ele),
-        });
-      });
-      return temp;
-    };
-    const payload = {
-      brand: formData.mainForm.brand,
-      longDescription: formData.mainForm.long_description.text,
-      longDescriptionFileUrls: imgdata.long_description,
-      shortDescription: formData.mainForm.short_description.text,
-      shortDescriptionFileUrls: imgdata.short_description,
-      subCategoryId: formData.mainForm.subCategoryValue.id,
-      subCategoryName: formData.mainForm.subCategoryValue.label,
-      commissionMode: formData.mainForm.commision_mode,
-      tags: formData.mainForm.tags.length
-        ? formData.mainForm.tags.map((item) => {
-            return item.id;
-          })
-        : [],
-      limitsPerOrder: parseInt(formData.mainForm.limit_per_order, 10),
-      trademarkLetterIdList: formData.mainForm.b2bdocument.length
-        ? formData.mainForm.b2bdocument.map((item) => {
-            return item.id;
-          })
-        : [],
-      bTobInvoiceIdList: formData.mainForm.selectb2binvoice.length
-        ? formData.mainForm.selectb2binvoice.map((item) => {
-            return item.id;
-          })
-        : [],
-      isGenericProduct: formData.mainForm.genericradio,
-
-      linkedProducts: {
-        upSells: formData.linked.upSells.value,
-        crossSells: formData.linked.crossSells.value,
-      },
-
-      productPolicies: {
-        policyTabLabel: formData.policy.policyTabLabel,
-        shippingPolicy: formData.policy.shippingPolicy.text,
-        shippingPolicyMediaUrls: imgdata?.shippingPolicy ?? [],
-        refundPolicy: formData.policy.refundPolicy.text,
-        refundPolicyMediaUrls: imgdata?.refundPolicy ?? [],
-        cancellationPolicy: formData.policy.cancellationPolicy.text,
-        cancellationPolicyMediaUrls: imgdata?.cancellationPolicy ?? [],
-        warrantyAvailable: formData.policy.warranty,
-        warrantyPeriod: Object.keys(formData.policy.warrantyperiod).length
-          ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
-          : null,
-      },
-
-      productVariations: getVariationsPayload(),
-
-      otherInformationObject: {},
-      zoneChargeInfo: {},
-      productType: "VARIABLE_PRODUCT",
-      supplierId: userInfo.id,
-    };
-    const { data, err } = await saveProduct(payload);
-    if (err) {
-      toastify(err.response.data.message, "error");
-    } else if (data) {
-      toastify(data.message, "success");
-      router.replace({
-        pathname: "/supplier/products&inventory/myproducts",
-        query: {
-          active: "2",
-        },
-      });
-    }
-  };
-
-  const saveimg = (type, imgList) => {
-    return saveMediaFile(userInfo.id, imgList).then((res) => {
-      if (!res.error) {
-        return { [`${type}`]: res.data };
-      }
-      return null;
-    });
-  };
-
-  const uploadImages = async () => {
-    const promiseAll = [];
-    if (formData.mainForm.short_description?.media?.length) {
-      promiseAll.push(
-        saveimg("short_description", formData.mainForm.short_description.media)
-      );
-    }
-    if (formData.mainForm.long_description?.media?.length) {
-      promiseAll.push(
-        saveimg("long_description", formData.mainForm.long_description.media)
-      );
-    }
-    if (formData.policy.cancellationPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "cancellationPolicy",
-          formData.policy.cancellationPolicy.media.binaryStr
-        )
-      );
-    }
-    if (formData.policy.refundPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg("refundPolicy", formData.policy.refundPolicy.media.binaryStr)
-      );
-    }
-    if (formData.policy.shippingPolicy?.media?.binaryStr?.length) {
-      promiseAll.push(
-        saveimg(
-          "shippingPolicy",
-          formData.policy.shippingPolicy.media.binaryStr
-        )
-      );
-    }
-    const prodImages = {};
-    Object.keys(variationData).forEach((item) => {
-      prodImages[item] = [];
-      variationData[item].images.forEach((ele) => {
-        if (ele) {
-          prodImages[item].push(ele);
-        }
-      });
-    });
-    Object.keys(prodImages).forEach((item) => {
-      promiseAll.push(saveimg(item, prodImages[item]));
-    });
-    const imgdata = await Promise.all(promiseAll);
-    const imgData = {};
-    imgdata.forEach((ele) => {
-      imgData[`${Object.keys(ele)[0]}`] = ele[`${Object.keys(ele)[0]}`];
-    });
-    return imgData;
-  };
-
   const handleSubmitClick = async () => {
     const flag = validate();
     if (!flag) {
@@ -590,23 +383,21 @@ const GroupVariationForm = ({
           variationData: { ...JSON.parse(JSON.stringify(variationData)) },
         })
       );
-      // createPayload(await uploadImages());
-      // setShowGroupVariant(false);
       handleSubmit();
     }
   };
-  // console.log("variationData", variationData);
+
   return (
     <div className="d-flex flex-column w-100">
       <div className="p-3  d-flex flex-column flex-grow-1">
-        <div
+        <Box
           className="h-5 color-orange cursor-pointer"
           onClick={() => {
             setShowGroupVariant(false);
           }}
         >
           {"<"}Back
-        </div>
+        </Box>
         {/* hide-scrollbar h-92 */}
         <div
           style={{ maxWidth: "87vw" }}
@@ -691,9 +482,22 @@ const GroupVariationForm = ({
                                     <div className="m-2">
                                       <ImageCard
                                         imgSrc={ele ?? ""}
-                                        showClose={false}
                                         height="65"
                                         width="65"
+                                        showClose={ele !== ""}
+                                        handleCloseClick={() => {
+                                          setVariationData((pre) => {
+                                            const copy = JSON.parse(
+                                              JSON.stringify({ ...pre })
+                                            );
+                                            copy[item].images.splice(
+                                              ind,
+                                              1,
+                                              ""
+                                            );
+                                            return copy;
+                                          });
+                                        }}
                                         handleImageUpload={async (e) => {
                                           if (e.target.files.length) {
                                             if (
@@ -772,7 +576,7 @@ const GroupVariationForm = ({
                                   className="w-70p"
                                 />
                               </Grid>
-                              <Grid item md={12} className="pt-4">
+                              {/* <Grid item md={12} className="pt-4">
                                 <div className="d-flex align-items-center">
                                   <Typography className="h-4 fw-600 me-3">
                                     Manage Stocks?
@@ -794,7 +598,7 @@ const GroupVariationForm = ({
                                     varient="filled"
                                   />
                                 </div>
-                              </Grid>
+                              </Grid> */}
                               <Grid item md={12}>
                                 <SimpleDropdownComponent
                                   inputlabelshrink
@@ -826,7 +630,7 @@ const GroupVariationForm = ({
                                   }
                                 />
                               </Grid>
-                              {variationData[item].manageStock ? (
+                              {/* {variationData[item].manageStock ? (
                                 <>
                                   <Grid item md={12}>
                                     <SimpleDropdownComponent
@@ -915,7 +719,7 @@ const GroupVariationForm = ({
                                       null
                                   }
                                 />
-                              </Grid>
+                              </Grid> */}
                               <Grid item md={12}>
                                 <InputBox
                                   id="product_title"
@@ -938,7 +742,7 @@ const GroupVariationForm = ({
                                   }
                                 />
                               </Grid>
-                              <Grid item md={12}>
+                              {/* <Grid item md={12}>
                                 <SimpleDropdownComponent
                                   inputlabelshrink
                                   placeholder="Select Business Processing Days"
@@ -970,7 +774,7 @@ const GroupVariationForm = ({
                                       .business_processing_days !== null
                                   }
                                 />
-                              </Grid>
+                              </Grid> */}
                               <Grid item md={12}>
                                 <InputFieldWithChip
                                   id="seo_title"
@@ -1024,7 +828,6 @@ const GroupVariationForm = ({
                                 <InputFieldWithChip
                                   id="meta_keyword"
                                   label="Meta Keywords*"
-                                  onInputChange={(e) => {}}
                                   handleChange={(_, val) => {
                                     setVariationData((pre) => {
                                       const temp = JSON.parse(
@@ -1055,10 +858,10 @@ const GroupVariationForm = ({
                           </div>
                           <div className="w-100 mt-3 pb-3">
                             <Grid container className="w-100" spacing={2}>
-                              {Object.keys(optionsValue).map((ele, index) => {
+                              {Object.keys(optionsValue).map((ele, ind) => {
                                 return (
                                   // eslint-disable-next-line react/no-array-index-key
-                                  <Grid item md={12} container key={index}>
+                                  <Grid item md={12} container key={ind}>
                                     <Grid
                                       item
                                       md={4}
@@ -1101,7 +904,7 @@ const GroupVariationForm = ({
                                       {variationData[item].variation?.[ele] !==
                                         null && (
                                         <Typography
-                                          className="h-6 mt-1 cursor-pointer color-blue"
+                                          className="h-6 mt-1 cursor-pointer color-blue d-inline"
                                           onClick={() => {
                                             if (
                                               variationData[item].variation?.[

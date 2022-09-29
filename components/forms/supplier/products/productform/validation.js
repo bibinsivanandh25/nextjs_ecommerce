@@ -6,7 +6,7 @@ import toastify from "services/utils/toastUtils";
 const validateMainForm = (mainFormData) => {
   const errObj = {};
   let flag = false;
-  if (!Object.keys(mainFormData.category).length) {
+  if (mainFormData.category && !Object.keys(mainFormData.category).length) {
     errObj.category = validateMessage.field_required;
     flag = true;
   }
@@ -41,11 +41,14 @@ const validateMainForm = (mainFormData) => {
     errObj.limit_per_order = "Limit per order should be greater then 0";
     flag = true;
   }
-  if (!Object.keys(mainFormData.subCategoryValue).length) {
+  if (
+    mainFormData.subCategoryValue &&
+    !Object.keys(mainFormData.subCategoryValue).length
+  ) {
     flag = true;
     toastify("Please Select Sub-Category", "error");
   }
-  if (!Object.keys(mainFormData.setsValue).length) {
+  if (mainFormData.setsValue && !Object.keys(mainFormData.setsValue).length) {
     flag = true;
     toastify("Please Select Set", "error");
   }
@@ -60,6 +63,12 @@ const validateProductImg = (productImage) => {
   return false;
 };
 const validateInventory = (inventoryFormData) => {
+  console.log("Status ", inventoryFormData.stock_status);
+  console.log(
+    "inventoryFormData.shipping_class ",
+    inventoryFormData.shipping_class
+  );
+
   const errObj = {};
   let flag = false;
   if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
@@ -69,27 +78,30 @@ const validateInventory = (inventoryFormData) => {
     flag = true;
     errObj.stockqty = "Stock Qty must be greater then or equal to 1";
   }
-  if (!Object.keys(inventoryFormData.stock_status).length) {
+  if (
+    inventoryFormData.stock_status &&
+    !Object.keys(inventoryFormData.stock_status).length
+  ) {
     flag = true;
     errObj.stock_status = validateMessage.field_required;
   }
-  if (inventoryFormData.manageStock) {
-    if (!Object.keys(inventoryFormData.allow_backorders).length) {
-      flag = true;
-      errObj.allow_backorders = validateMessage.field_required;
-    } else if (
-      inventoryFormData.allow_backorders.label === "Allow" &&
-      inventoryFormData.back_Orders === ""
-    ) {
-      flag = true;
-      errObj.back_Orders = validateMessage.field_required;
-    }
-  }
+  // if (inventoryFormData.manageStock) {
+  //   if (!Object.keys(inventoryFormData.allow_backorders).length) {
+  //     flag = true;
+  //     errObj.allow_backorders = validateMessage.field_required;
+  //   } else if (
+  //     inventoryFormData.allow_backorders.label === "Allow" &&
+  //     inventoryFormData.back_Orders === ""
+  //   ) {
+  //     flag = true;
+  //     errObj.back_Orders = validateMessage.field_required;
+  //   }
+  // }
 
-  if (!Object.keys(inventoryFormData.shipping_class).length) {
-    flag = true;
-    errObj.shipping_class = validateMessage.field_required;
-  }
+  // if (!Object.keys(inventoryFormData.shipping_class).length) {
+  //   flag = true;
+  //   errObj.shipping_class = validateMessage.field_required;
+  // }
   if (inventoryFormData.product_title === "") {
     flag = true;
     errObj.product_title = validateMessage.field_required;
@@ -98,10 +110,10 @@ const validateInventory = (inventoryFormData) => {
     errObj.product_title = validateMessage.alpha_numeric_max_100;
   }
 
-  if (!Object.keys(inventoryFormData.business_processing_days).length) {
-    flag = true;
-    errObj.business_processing_days = validateMessage.field_required;
-  }
+  // if (!Object.keys(inventoryFormData.business_processing_days).length) {
+  //   flag = true;
+  //   errObj.business_processing_days = validateMessage.field_required;
+  // }
 
   if (!inventoryFormData.seo_title.length) {
     flag = true;

@@ -41,6 +41,7 @@ const HelpAndSupportNotification = ({
       onCloseIconClick={() => setShowModal({ show: false, id: null })}
       minHeightClassName="mnh-300 mxh-300"
       ModalWidth={800}
+      titleClassName="fw-bold color-orange"
     >
       <Grid container my={2}>
         <Grid xs={12} item className="fs-15 fw-500">

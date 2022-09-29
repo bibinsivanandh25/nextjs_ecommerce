@@ -1,8 +1,6 @@
 import MenuOption from "@/atoms/MenuOptions";
-import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
-import React from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -115,9 +113,7 @@ const Todaysdeal = () => {
               type="filecopy"
               size="small"
               className="fs-18"
-              onIconClick={() => {
-                copyText();
-              }}
+              onIconClick={() => {}}
             />
           </Tooltip>
         </Box>

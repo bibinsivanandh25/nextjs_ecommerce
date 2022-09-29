@@ -18,12 +18,11 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useDispatch, useSelector } from "react-redux";
-
 import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
+import adminNav from "constants/adminNav";
 import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
@@ -102,6 +101,10 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         return "reseller";
       case "ADMIN":
         return "admin";
+      case "ADMIN_MANAGER":
+        return "admin";
+      case "ADMIN_USER":
+        return "admin";
       default:
         return "customer";
     }
@@ -136,12 +139,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       }
       await Promise.all(promiseArr)
         .then((res) => {
+          setNavOptionsList(() => {
+            return [...JSON.parse(JSON.stringify(res[0].nav))];
+          });
           dispatch(updateUnlockedTools(res[1].marketingTools.unlockedTools));
-          setNavOptionsList(res[0].nav);
         })
         .catch(() => {});
-    } else if (user.role === "ADMIN") {
-      setNavOptionsList(user.adminCapabilities);
+    } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
+      setNavOptionsList(adminNav);
+      if (user.role !== "ADMIN") {
+        setstaffCapabilityList(getCapability([...user.adminCapabilities]));
+      }
     }
   };
 
@@ -168,7 +176,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   };
 
   const mapList = (role) => {
-    const marketingToolsList = user.unlockedTools;
+    const marketingToolsList = [
+      ...user.unlockedTools,
+      "unlocktools",
+      "single",
+      "combo",
+      "createluckydraw",
+    ];
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
         return {

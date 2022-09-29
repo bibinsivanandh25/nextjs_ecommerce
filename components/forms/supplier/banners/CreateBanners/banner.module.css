@@ -8,13 +8,13 @@
     user-select: none;
   }
 
-  .dateinput::-webkit-datetime-edit-day-field:focus,
+  /* .dateinput::-webkit-datetime-edit-day-field:focus,
   .dateinput::-webkit-datetime-edit-month-field:focus,
   .dateinput::-webkit-datetime-edit-year-field:focus {
     background-color: white;
     color: black;
     outline: none;
-  }
+  } */
   .timepicker::-webkit-calendar-picker-indicator {
     opacity: 1;
     display: block;
