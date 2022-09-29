@@ -340,6 +340,7 @@ const QuizSubscriptions = () => {
         openViewModal={openViewModal}
         setOpenViewModal={setOpenViewModal}
         dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
+        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
       />
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
