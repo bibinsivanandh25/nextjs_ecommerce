@@ -9,9 +9,11 @@ const ViewModal = ({
   openViewModal,
   setOpenViewModal,
   dataOfSingleSupplierOrReseller = [],
+  setDataOfSingleSupplierOrReseller,
 }) => {
   const [rows, setRows] = useState([]);
   const handleCloseIconClick = () => {
+    setDataOfSingleSupplierOrReseller([]);
     setOpenViewModal(false);
   };
 
