@@ -123,10 +123,7 @@ const CreateBanner = ({
     if (Object?.keys(webimage)?.length == 0 || webimage.length == 0) {
       flag = false;
       errorObj.webimage = validateMessage.field_required;
-    } else if (
-      Number(ratio.webHeight) >= 250 &&
-      Number(ratio.webWidth) >= 970
-    ) {
+    } else if (Number(ratio.webHeight) > 250 && Number(ratio.webWidth) > 970) {
       flag = false;
       errorObj.webimage = "Required Image Ratio for Web 970*250";
     }
@@ -183,12 +180,12 @@ const CreateBanner = ({
       const webformdata = new FormData();
       webformdata.append("data", {});
       webformdata.append("media", formData.webimage?.multipart);
-      webformdata.append("userId", userInfo.id);
+      webformdata.append("userId", userInfo.supplierId);
       const webImages = await bannnerMedia(webformdata);
       const mobileFormdata = new FormData();
       mobileFormdata.append("data", {});
       mobileFormdata.append("media", formData.mobileimage?.multipart);
-      mobileFormdata.append("userId", userInfo.id);
+      mobileFormdata.append("userId", userInfo.supplierId);
       const mobileImages = await bannnerMedia(mobileFormdata);
       const startDateTime = new Date(
         addDateTime(formData.starttime, formData.startdate)
@@ -228,14 +225,14 @@ const CreateBanner = ({
         const webformdata = new FormData();
         webformdata.append("data", {});
         webformdata.append("media", formData.webimage?.multipart);
-        webformdata.append("userId", userInfo.id);
+        webformdata.append("userId", userInfo.supplierId);
         webImages = await bannnerMedia(webformdata);
       }
       if (formData.mobileimage?.multipart) {
         const mobileFormdata = new FormData();
         mobileFormdata.append("data", {});
         mobileFormdata.append("media", formData.mobileimage?.multipart);
-        mobileFormdata.append("userId", userInfo.id);
+        mobileFormdata.append("userId", userInfo.supplierId);
         mobileImages = await bannnerMedia(mobileFormdata);
       }
 
@@ -297,7 +294,7 @@ const CreateBanner = ({
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <div>
+          <Grid item sm={6}>
             <Typography className="h-5 color-secondary">
               Image For Mobile
             </Typography>
@@ -344,8 +341,8 @@ const CreateBanner = ({
                 {error.mobileimage}
               </Typography>
             ) : null}
-          </div>
-          <div>
+          </Grid>
+          <Grid item sm={6}>
             <Typography className="h-5 color-secondary">
               Image For Web
             </Typography>
@@ -392,7 +389,7 @@ const CreateBanner = ({
                 {error.webimage}
               </Typography>
             ) : null}
-          </div>
+          </Grid>
         </Grid>
         <Grid item sm={7} container spacing={2} alignSelf="center">
           <Grid item sm={12}>
@@ -414,6 +411,7 @@ const CreateBanner = ({
               value={formData.displayPage}
               size="small"
               label="Display Page"
+              fontSize="1rem"
               list={displayName}
               required
               onDropdownSelect={(value) => {
@@ -430,6 +428,7 @@ const CreateBanner = ({
               value={formData.buttonlable}
               size="small"
               label="Button Lable"
+              fontSize="1rem"
               list={buttonLabel}
               required
               onDropdownSelect={(value) => {
@@ -441,10 +440,12 @@ const CreateBanner = ({
           </Grid>
           <Grid container className="mx-3 my-2" alignSelf="center">
             <Grid container item md={6} alignItems="center">
-              <Grid item sm={4}>
-                <span className="fs-12">From date:</span>
+              <Grid item sm={3}>
+                <span className="fs-12  d-flex justify-content-end">
+                  From date:
+                </span>
               </Grid>
-              <Grid item sm={8}>
+              <Grid item sm={8} marginLeft={1.1}>
                 <input
                   type="date"
                   value={formData.startdate}
@@ -454,6 +455,7 @@ const CreateBanner = ({
                     outline: "none",
                     display: "flex",
                     flexDirection: "row-reverse",
+                    color: formData.startdate ? "black" : "gray",
                   }}
                   onChange={(e) => {
                     setFormData((prev) => ({
@@ -465,11 +467,13 @@ const CreateBanner = ({
                 />
               </Grid>
             </Grid>{" "}
-            <Grid container item md={6}>
-              <Grid item sm={4}>
-                <span className="fs-12">To date:</span>
+            <Grid container item md={6} alignItems="center">
+              <Grid item sm={3}>
+                <span className="fs-12 d-flex justify-content-end">
+                  To date:
+                </span>
               </Grid>
-              <Grid item sm={8}>
+              <Grid item sm={8} marginLeft={0.9}>
                 <input
                   type="date"
                   value={formData.enddate}
@@ -479,6 +483,7 @@ const CreateBanner = ({
                     outline: "none",
                     display: "flex",
                     flexDirection: "row-reverse",
+                    color: formData.enddate ? "black" : "gray",
                   }}
                   onChange={(e) => {
                     setFormData((prev) => ({
@@ -509,8 +514,10 @@ const CreateBanner = ({
           </Grid>
           <Grid container className="mx-3">
             <Grid container item md={6} alignItems="center">
-              <Grid item sm={4}>
-                <span className="fs-12">Start Time:</span>
+              <Grid item sm={3.2}>
+                <span className="fs-12 d-flex justify-content-end">
+                  Start Time:
+                </span>
               </Grid>
               <Grid item sm={8}>
                 <input
@@ -533,9 +540,11 @@ const CreateBanner = ({
                 />
               </Grid>
             </Grid>
-            <Grid container item md={6}>
-              <Grid item sm={4}>
-                <span className="fs-12">End date:</span>
+            <Grid container item md={6} alignItems="center">
+              <Grid item sm={3}>
+                <span className="fs-12 d-flex justify-content-end">
+                  End Time:
+                </span>
               </Grid>
               <Grid item sm={8}>
                 <input
@@ -559,7 +568,7 @@ const CreateBanner = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid container className="mb-2" sx={{ marginTop: "-6px" }}>
+          <Grid container className="mb-2 mt-1" sx={{ marginTop: "-6px" }}>
             <Grid item sm={6}>
               {error.starttime ? (
                 <Typography className="h-5 ms-5 text-center color-error">

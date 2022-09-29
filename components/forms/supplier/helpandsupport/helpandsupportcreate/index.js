@@ -255,7 +255,7 @@ const HelpandsupportCreate = ({
         </div>
         <div className="my-2 ps-5">
           <Grid container className="">
-            <Grid item lg={10} md={11.5} sm={10}>
+            <Grid item md={11.8} sm={10}>
               <TextEditor
                 getContent={(text) => {
                   setFormValue((pre) => ({
@@ -283,14 +283,7 @@ const HelpandsupportCreate = ({
                 }}
               />
             </Grid>
-            {/* <input
-            type="file"
-            className=""
-            hidden
-            ref={inputField}
-            onChange={(e) => // console.log(e.target.files[0])}
-          /> */}
-            <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
+            <Grid item xs={5.2} display="flex" justifyContent="end">
               <ButtonComponent
                 label="Create Ticket"
                 onBtnClick={handleCreateClick}

@@ -269,7 +269,7 @@ const CreateShareProductByPrice = ({
         mainCategoryId: selectedCategorys.mainCategoryId,
         subCategoryId: selectedCategorys.subCategoryId,
         productCatalogueUrl: null,
-        customerType: "EXSISTING_CUSTOMER",
+        customerType: "EXISTING_CUSTOMER",
         userType: "SUPPLIER",
         userTypeId: user.supplierId,
         marketingToolThemeId: null,

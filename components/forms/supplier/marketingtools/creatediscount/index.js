@@ -313,7 +313,7 @@ const CreateDiscount = ({
         mainCategoryId: selectedCategorys.mainCategoryId,
         subCategoryId: selectedCategorys.subCategoryId,
         productCatalogueUrl: null,
-        customerType: "EXSISTING_CUSTOMER",
+        customerType: "EXISTING_CUSTOMER",
         userType: "SUPPLIER",
         userTypeId: user.supplierId,
         marketingToolThemeId: null,
@@ -411,7 +411,7 @@ const CreateDiscount = ({
                       setFormValues((prev) => {
                         return {
                           ...prev,
-                          marginType: val[0].marginType,
+                          marginType: val[0]?.marginType,
                         };
                       });
                       setCategoriesList((prev) => {
