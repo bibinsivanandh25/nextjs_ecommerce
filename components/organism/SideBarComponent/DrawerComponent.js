@@ -170,7 +170,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   };
 
   const mapList = (role) => {
-    const marketingToolsList = user.unlockedTools;
+    const marketingToolsList = [...user.unlockedTools, "unlocktools"];
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
         return {
