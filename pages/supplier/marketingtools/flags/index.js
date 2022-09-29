@@ -150,6 +150,7 @@ const Flags = () => {
                 control={
                   <Stack direction="row" spacing={1} alignItems="center">
                     <AntSwitch
+                      disabled={item.supplierFlagId == null}
                       inputProps={{ "aria-label": "ant design" }}
                       checked={
                         item.status === null
