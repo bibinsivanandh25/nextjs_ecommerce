@@ -19,12 +19,15 @@ const changePrimaryAddress = (supplierId, addressId) => {
     .catch((err) => ({ err }));
 };
 
-const addNewAddress = (payload) => {
+const addNewAddress = (payload, supplierId) => {
   return serviceUtil
-    .post(`/users/supplier-address`, payload)
+    .post(`/users/supplier-address`, payload, {
+      headers: {
+        userId: supplierId,
+      },
+    })
     .then((res) => {
-      const { data } = res;
-      return data;
+      return res;
     })
     .catch((err) => ({ err }));
 };

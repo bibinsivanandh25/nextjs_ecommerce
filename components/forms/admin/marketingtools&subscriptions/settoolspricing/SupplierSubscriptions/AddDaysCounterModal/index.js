@@ -28,6 +28,82 @@ const AddDaysCounterModal = ({
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(errObj);
 
+  const daysList = [
+    {
+      id: 1,
+      label: "7 Days",
+      value: "7 Days",
+    },
+    {
+      id: 2,
+      label: "30 Days",
+      value: "30Days",
+    },
+    {
+      id: 3,
+      label: "90 Days",
+      value: "90 Days",
+    },
+    {
+      id: 4,
+      label: "180 Days",
+      value: "180 Days",
+    },
+    {
+      id: 5,
+      label: "270 Days",
+      value: "270 Days",
+    },
+    {
+      id: 6,
+      label: "360 Days",
+      value: "360 Days",
+    },
+  ];
+
+  const toolsList = [
+    {
+      id: 1,
+      label: "DISCOUNT COUPON",
+      value: "DISCOUNT_COUPON",
+    },
+    {
+      id: 2,
+      label: "TODAYS DEAL",
+      value: "TODAYS_DEAL",
+    },
+    {
+      id: 3,
+      label: "SPIN WHEEL",
+      value: "SPIN_WHEEL",
+    },
+    {
+      id: 4,
+      label: "SCRATCH CARD",
+      value: "SCRATCH_CARD",
+    },
+    {
+      id: 5,
+      label: "QUIZ",
+      value: "QUIZ",
+    },
+    {
+      id: 6,
+      label: "PRICE TARGETED",
+      value: "PRICE_TARGETED",
+    },
+    {
+      id: 7,
+      label: "NOTIFICATIONS",
+      value: "NOTIFICATIONS",
+    },
+    {
+      id: 7,
+      label: "FLAGS",
+      value: "FLAGS",
+    },
+  ];
+
   const handleCloseIconClick = () => {
     errObj = {
       days: false,
@@ -176,7 +252,7 @@ const AddDaysCounterModal = ({
               label="Days"
               inputlabelshrink
               size="small"
-              list={[{ label: "Day 1" }, { label: "Day 2" }]}
+              list={daysList}
               onDropdownSelect={(value) => {
                 // console.log(value);
                 setDays(value);
@@ -190,7 +266,7 @@ const AddDaysCounterModal = ({
               label="Tools"
               inputlabelshrink
               size="small"
-              list={[{ label: "tool1" }, { label: "tool2" }]}
+              list={[...toolsList]}
               onDropdownSelect={(value) => {
                 setTools(value);
               }}

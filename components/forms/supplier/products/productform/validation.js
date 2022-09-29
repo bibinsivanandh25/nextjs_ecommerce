@@ -6,7 +6,7 @@ import toastify from "services/utils/toastUtils";
 const validateMainForm = (mainFormData) => {
   const errObj = {};
   let flag = false;
-  if (!Object.keys(mainFormData.category).length) {
+  if (mainFormData.category && !Object.keys(mainFormData.category).length) {
     errObj.category = validateMessage.field_required;
     flag = true;
   }
@@ -41,11 +41,14 @@ const validateMainForm = (mainFormData) => {
     errObj.limit_per_order = "Limit per order should be greater then 0";
     flag = true;
   }
-  if (!Object.keys(mainFormData.subCategoryValue).length) {
+  if (
+    mainFormData.subCategoryValue &&
+    !Object.keys(mainFormData.subCategoryValue).length
+  ) {
     flag = true;
     toastify("Please Select Sub-Category", "error");
   }
-  if (!Object.keys(mainFormData.setsValue).length) {
+  if (mainFormData.setsValue && !Object.keys(mainFormData.setsValue).length) {
     flag = true;
     toastify("Please Select Set", "error");
   }
@@ -60,6 +63,12 @@ const validateProductImg = (productImage) => {
   return false;
 };
 const validateInventory = (inventoryFormData) => {
+  console.log("Status ", inventoryFormData.stock_status);
+  console.log(
+    "inventoryFormData.shipping_class ",
+    inventoryFormData.shipping_class
+  );
+
   const errObj = {};
   let flag = false;
   if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
@@ -69,7 +78,10 @@ const validateInventory = (inventoryFormData) => {
     flag = true;
     errObj.stockqty = "Stock Qty must be greater then or equal to 1";
   }
-  if (!Object.keys(inventoryFormData.stock_status).length) {
+  if (
+    inventoryFormData.stock_status &&
+    !Object.keys(inventoryFormData.stock_status).length
+  ) {
     flag = true;
     errObj.stock_status = validateMessage.field_required;
   }
