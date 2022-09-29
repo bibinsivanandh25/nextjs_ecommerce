@@ -175,6 +175,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       "unlocktools",
       "single",
       "combo",
+      "createluckydraw",
     ];
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
