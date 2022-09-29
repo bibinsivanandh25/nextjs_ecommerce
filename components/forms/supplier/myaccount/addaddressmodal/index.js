@@ -13,6 +13,7 @@ import {
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
+import toastify from "services/utils/toastUtils";
 
 const AddAddressModal = (props) => {
   const {
@@ -187,28 +188,37 @@ const AddAddressModal = (props) => {
   const handleSave = async () => {
     const isValid = validateForm();
     if (isValid) {
+      console.log(type);
       if (type === "add") {
         const temp = JSON.parse(JSON.stringify(formValues));
         delete temp.addressId;
         const payload = {
           ...temp,
-          supplierId: user ?? supplierId,
+          supplierId: user.length ? user : supplierId,
         };
-        const { data } = await addNewAddress(payload);
+        const { data, err } = await addNewAddress(payload, supplierId);
         if (data) {
+          toastify(data.message, "success");
           getAllAddress();
           getUpdateUserDetails();
           setShowAddAddressModal(false);
         }
+        if (err) {
+          toastify(err?.response?.data?.message);
+        }
       } else if (type === "edit") {
         const payload = {
           ...formValues,
-          supplierId: user,
+          supplierId: user.length ? user : supplierId,
         };
-        const { data } = await updateAddress(payload);
+        const { data, err } = await updateAddress(payload);
         if (data) {
           getAllAddress();
+          toastify(data.message, "success");
           setShowAddAddressModal(false);
+        }
+        if (err) {
+          toastify(err?.response?.data?.message);
         }
       }
     }
