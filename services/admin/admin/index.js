@@ -18,5 +18,82 @@ const saveAdminUser = (payLoad) => {
     })
     .catch((err) => ({ err }));
 };
+const getAdminUsers = (page, payLoad, designation) => {
+  return serviceUtil
+    .post(
+      `users/admin/admin-users/${page}/50?designation=${designation}`,
+      payLoad
+    )
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const disableAdmin = (status, userId) => {
+  return serviceUtil
+    .put(`users/admin/admin-users/${userId}?status=${status}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const getAdminManagerById = (userId) => {
+  return serviceUtil
+    .get(`users/admin/admin-manager/${userId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const updatedAdminManager = (payload) => {
+  return serviceUtil
+    .put(`users/admin/admin-manager`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 
-export { saveAdminManager, saveAdminUser };
+const deleteAdminManager = (userId) => {
+  return serviceUtil
+    .deleteById(`users/admin/admin-manager/${userId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const deleteAdminUser = (userId) => {
+  return serviceUtil
+    .deleteById(`users/admin/admin-users?adminRegistrationId=${userId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const getAdminUser = (userId) => {
+  return serviceUtil
+    .get(`users/admin/admin-users/${userId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
+export {
+  saveAdminManager,
+  saveAdminUser,
+  getAdminUsers,
+  disableAdmin,
+  getAdminManagerById,
+  updatedAdminManager,
+  deleteAdminManager,
+  deleteAdminUser,
+  getAdminUser,
+};
