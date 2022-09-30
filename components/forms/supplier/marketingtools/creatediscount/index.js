@@ -380,6 +380,7 @@ const CreateDiscount = ({
             helperText={error.categories}
             showAutoCompleteOff="off"
             value={getSelectedCategoriesLabels()}
+            placeholder="Select Category"
           />
           {showListGroup ? (
             <Grid
@@ -403,24 +404,41 @@ const CreateDiscount = ({
                     title="Category"
                     data={categories}
                     onSelectionChange={(val) => {
-                      setSubCategories([]);
-                      setSelectedCategory((pre) => ({
-                        ...pre,
-                        mainCategoryId: val[0]?.id,
-                      }));
-                      setFormValues((prev) => {
-                        return {
-                          ...prev,
-                          marginType: val[0]?.marginType,
-                        };
-                      });
-                      setCategoriesList((prev) => {
-                        return {
-                          ...prev,
-                          category: val,
-                        };
-                      });
-                      getSets(val[0]);
+                      if (val?.length) {
+                        setSubCategories([]);
+                        setSelectedCategory((pre) => ({
+                          ...pre,
+                          mainCategoryId: val[0]?.id,
+                          subCategoryId: "",
+                        }));
+                        setFormValues((prev) => {
+                          return {
+                            ...prev,
+                            marginType: val[0]?.marginType,
+                          };
+                        });
+                        setCategoriesList((prev) => {
+                          return {
+                            ...prev,
+                            category: val,
+                            subCategory: [],
+                            set: [],
+                          };
+                        });
+                        getSets(val[0]);
+                      } else {
+                        setCategoriesList((prev) => {
+                          return {
+                            ...prev,
+                            category: [],
+                            subCategory: [],
+                            set: [],
+                          };
+                        });
+                        setProducts([]);
+                        setSets([]);
+                        setSubCategories([]);
+                      }
                     }}
                   />
                 </Grid>
@@ -433,8 +451,11 @@ const CreateDiscount = ({
                     title="Set"
                     data={[...sets]}
                     onSelectionChange={(val) => {
-                      if (val) {
+                      if (val?.length) {
                         getSubCategories(val[0]);
+                      } else {
+                        setSubCategories([]);
+                        setProducts([]);
                       }
                       setCategoriesList((prev) => {
                         return {
