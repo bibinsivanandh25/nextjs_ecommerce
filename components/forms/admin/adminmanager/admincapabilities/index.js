@@ -10,15 +10,26 @@ import { useEffect, useState } from "react";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import admincapabilities from "constants/admincapability";
+import DatePickerComponent from "@/atoms/DatePickerComponent";
+import validationRegex from "services/utils/regexUtils";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
+import { format } from "date-fns";
+import { saveAdminManager, saveAdminUser } from "services/admin/admin";
+import { FaLaptopHouse } from "react-icons/fa";
 
 const tempObj = {
-  userName: "",
   firstName: "",
   last_Name: "",
   MobileNo: "",
   email: "",
+  dob: null,
 };
-const StaffForm = ({ handlebackClick, type = "add" }) => {
+const StaffForm = ({
+  type = "add",
+  adminType = "",
+  setShowAdminCapabilities = () => {},
+}) => {
   const [capabilites, setCapabilities] = useState([]);
   const [formData, setFormData] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({ ...tempObj });
@@ -42,12 +53,6 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
   useEffect(() => {
     setCapabilities(orginizeCapabilites(admincapabilities));
   }, [admincapabilities]);
-  // useEffect(() => {
-  //   if (capabilites.length) {
-  //     const flag = capabilites.every((ele) => ele.isChecked);
-  //     setCheckbox(flag);
-  //   }
-  // }, [capabilites]);
 
   useEffect(() => {
     return () => {
@@ -63,8 +68,100 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
     }));
   };
 
-  const handleSubmit = () => {
-    // console.log({ formData, capabilites });
+  const validate = () => {
+    let flag = false;
+    const errObj = { ...tempObj };
+    if (formData.firstName.trim() === "") {
+      errObj.firstName = validateMessage.field_required;
+      flag = true;
+    } else if (!validationRegex.name.test(formData.firstName.trim())) {
+      errObj.firstName = validateMessage.alphabets;
+      flag = true;
+    }
+    if (formData.last_Name.trim() === "") {
+      errObj.last_Name = validateMessage.field_required;
+      flag = true;
+    } else if (!validationRegex.name.test(formData.last_Name.trim())) {
+      errObj.last_Name = validateMessage.alphabets;
+      flag = true;
+    }
+    if (!formData.MobileNo) {
+      flag = true;
+      errObj.MobileNo = validateMessage.field_required;
+    } else if (!validationRegex.mobile.test(formData.MobileNo)) {
+      flag = true;
+      errObj.MobileNo = validateMessage.mobile;
+    }
+    if (!formData.email) {
+      flag = true;
+      errObj.email = validateMessage.field_required;
+    } else if (!validationRegex.email.test(formData.email)) {
+      flag = true;
+      errObj.email = validateMessage.email;
+    }
+
+    if (
+      !capabilites.some((ele) => {
+        if (!ele.children.length) {
+          return ele.isChecked;
+        }
+        const temp = ele.children.map((item) => item.isChecked);
+        return temp.some((items) => items);
+      })
+    ) {
+      flag = true;
+      toastify("Select atleast one capability", "error");
+    }
+
+    setErrorObj(errObj);
+    return flag;
+  };
+
+  const createPayload = () => {
+    return {
+      firstName: formData.firstName,
+      lastName: formData.last_Name,
+      mobileNumber: formData.MobileNo,
+      emailId: formData.email,
+      dob: formData.dob ? format(formData.dob, "MM-dd-yyyy") : null,
+      designation: adminType,
+      adminCapabilities: {
+        adminCapabilityList: [
+          ...capabilites.map((item) => {
+            return item.children.length
+              ? {
+                  capabilityName: item.label,
+                  isEnable: item.isChecked,
+                  childCapabilityNameList: item.children.map((child) => {
+                    return {
+                      capabilityName: child.label,
+                      isEnable: child.isChecked,
+                    };
+                  }),
+                }
+              : {
+                  capabilityName: item.label,
+                  isEnable: item.isChecked,
+                };
+          }),
+        ],
+      },
+    };
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) {
+      const payload = createPayload();
+      const saveAdmin =
+        adminType === "ADMIN_MANAGER" ? saveAdminManager : saveAdminUser;
+      const { data, message, err } = await saveAdmin(payload);
+      if (data) {
+        toastify(message, "success");
+        setShowAdminCapabilities(false);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
   const expand = (index) => {
@@ -92,36 +189,6 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
         >
           <div className="w-100">
             <Grid container spacing={2}>
-              <Grid item sm={12}>
-                <InputBox
-                  inputlabelshrink
-                  id="userName"
-                  name="User Name"
-                  value={formData.userName}
-                  label="User Name"
-                  className=""
-                  size="small"
-                  onInputChange={handleInputChange}
-                  helperText={errorObj.firstName}
-                  error={errorObj.firstName !== ""}
-                  placeholder="User Name"
-                />
-              </Grid>
-              <Grid item sm={12}>
-                <InputBox
-                  id="email"
-                  inputlabelshrink
-                  name="E-mail"
-                  value={formData.email}
-                  label="E-mail"
-                  className=""
-                  size="small"
-                  onInputChange={handleInputChange}
-                  helperText={errorObj.email}
-                  error={errorObj.email !== ""}
-                  placeholder="E-mail"
-                />
-              </Grid>
               <Grid item sm={12}>
                 <InputBox
                   inputlabelshrink
@@ -154,6 +221,22 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
               </Grid>
               <Grid item sm={12}>
                 <InputBox
+                  id="email"
+                  inputlabelshrink
+                  name="E-mail"
+                  value={formData.email}
+                  label="E-mail"
+                  className=""
+                  size="small"
+                  onInputChange={handleInputChange}
+                  helperText={errorObj.email}
+                  error={errorObj.email !== ""}
+                  placeholder="E-mail"
+                />
+              </Grid>
+
+              <Grid item sm={12}>
+                <InputBox
                   inputlabelshrink
                   id="MobileNo"
                   name="Mobile No."
@@ -165,6 +248,20 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
                   helperText={errorObj.MobileNo}
                   error={errorObj.MobileNo !== ""}
                   placeholder="Mobile No."
+                />
+              </Grid>
+              <Grid item sm={12}>
+                <DatePickerComponent
+                  label="DOB"
+                  size="small"
+                  value={formData.dob}
+                  onDateChange={(value) => {
+                    setFormData((pre) => ({
+                      ...pre,
+                      dob: value,
+                    }));
+                  }}
+                  disableFuture
                 />
               </Grid>
 
@@ -338,7 +435,12 @@ const StaffForm = ({ handlebackClick, type = "add" }) => {
             onBtnClick={handleSubmit}
             muiProps="ms-3"
           />
-          <ButtonComponent onBtnClick={handlebackClick} label="Cancel" />
+          <ButtonComponent
+            onBtnClick={() => {
+              setShowAdminCapabilities(false);
+            }}
+            label="Cancel"
+          />
         </div>
       </div>
     </Paper>
