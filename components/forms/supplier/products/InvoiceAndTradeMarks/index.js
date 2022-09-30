@@ -68,7 +68,7 @@ const UploadDocumentModal = ({
     }
     if (documents.length === 0) {
       flag = false;
-      errorObj.files = validateMessage.field_required;
+      errorObj.files = "No Document is Choosen";
     }
     setError(errorObj);
     return flag;
@@ -88,7 +88,7 @@ const UploadDocumentModal = ({
       return data;
     }
     if (err) {
-      toastify(err.response.data.message, "err");
+      toastify(err.response.data.message, "error");
     }
     return null;
   };
@@ -116,7 +116,7 @@ const UploadDocumentModal = ({
         return datas;
       }
       if (err) {
-        toastify(err.response.data.message, "err");
+        toastify(err.response.data.message, "error");
       }
     }
 
@@ -138,7 +138,7 @@ const UploadDocumentModal = ({
           getAllTableData("", "", 0);
           handleCloseClick();
         } else if (err) {
-          toastify(err.response.data.message, "err");
+          toastify(err.response.data.message, "error");
         }
       }
     }
@@ -158,7 +158,7 @@ const UploadDocumentModal = ({
         getAllTableData("", "", 0);
         handleCloseClick();
       } else if (err) {
-        toastify(err.response.data.message, "err");
+        toastify(err.response.data.message, "error");
       }
     }
   };
@@ -294,12 +294,14 @@ const UploadDocumentModal = ({
               onChange={(e) => {
                 if (
                   e.target?.files.length &&
-                  e.target.files[0].type !== "video/mp4"
+                  (e.target.files[0].type.includes("pdf") ||
+                    e.target.files[0].type.includes("image"))
                 ) {
-                  const filetype = e.target.files[0].name;
                   const temp = [...documents];
                   temp.push(e.target?.files[0]);
                   setDocument([...temp]);
+                } else {
+                  toastify("Only PDF's and Images are accepted", "error");
                 }
               }}
             />

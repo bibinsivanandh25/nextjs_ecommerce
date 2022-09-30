@@ -845,8 +845,10 @@ const ProductsLayout = ({
         productVariations: getVariationsPayload(),
 
         otherInformation: { ...otherObj },
-        expiryDate: format(other.expireDate, "MM-dd-yyyy HH:mm:ss"),
-        countryOfOrigin: other.country,
+        expiryDate: other.expireDate
+          ? format(other.expireDate, "MM-dd-yyyy HH:mm:ss")
+          : null,
+        countryOfOrigin: other.country.id,
         zoneChargeInfo: {},
         productType: "VARIABLE_PRODUCT",
         supplierId: userInfo.id,
@@ -1283,7 +1285,7 @@ const ProductsLayout = ({
                         item
                         key={index}
                         md={12}
-                        className={`cursor-pointer text-center py-1 rounded my-1 fs-14 ${
+                        className={`text-center py-1 rounded my-1 fs-14 ${
                           activeTab === index
                             ? "bg-orange color-white"
                             : "bg-light-gray"

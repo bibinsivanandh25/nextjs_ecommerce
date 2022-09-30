@@ -66,8 +66,8 @@ const AddAddressModal = (props) => {
       id: "pinCode",
       value: null,
       required: true,
-      validation: /^([a-zA-Z0-9_-]){1,6}$/,
-      errorMessage: validateMessage.alpha_numeric_6,
+      validation: /^([a-zA-Z0-9_-]){6}$/,
+      errorMessage: "Invalid Pincode",
     },
     {
       label: "Location",
@@ -188,7 +188,6 @@ const AddAddressModal = (props) => {
   const handleSave = async () => {
     const isValid = validateForm();
     if (isValid) {
-      console.log(type);
       if (type === "add") {
         const temp = JSON.parse(JSON.stringify(formValues));
         delete temp.addressId;

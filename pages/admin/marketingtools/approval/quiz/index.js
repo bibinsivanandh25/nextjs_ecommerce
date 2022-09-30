@@ -1,8 +1,7 @@
+/* eslint-disable no-unused-vars */
 import MenuOption from "@/atoms/MenuOptions";
-import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
-import { Box, Paper, Tooltip, Typography } from "@mui/material";
-import React from "react";
+import { Box, Paper, Typography } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";

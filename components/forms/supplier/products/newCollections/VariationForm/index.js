@@ -250,7 +250,9 @@ const VariationForm = forwardRef(
             showSaveBtn={false}
             open={showModal}
             showHeader
-            onCloseIconClick={() => {}}
+            onCloseIconClick={() => {
+              setShowModal(false);
+            }}
             headerClassName="border-0"
             minHeightClassName="mnh-100 p-4  d-flex justify-content-center"
           >
@@ -330,7 +332,7 @@ const VariationForm = forwardRef(
                 <Typography className="fs-16 fw-500 color-orange">
                   Image Guidelines
                 </Typography>
-                <div className="mxh-50vh overflow-y-scroll hide-scrollbar">
+                <div className="mxh-50vh hide-scrollbar">
                   <ImageGuidelines />
                 </div>
               </div>

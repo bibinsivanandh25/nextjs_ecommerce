@@ -108,8 +108,8 @@ const AdminManger = () => {
 
   return (
     <Box>
-      <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
-        {!showAdminCapabilities ? (
+      {!showAdminCapabilities ? (
+        <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
@@ -123,12 +123,12 @@ const AdminManger = () => {
               setShowAdminCapabilities(true);
             }}
           />
-        ) : (
-          <AdminCapabilities
-            setShowAdminCapabilities={setShowAdminCapabilities}
-          />
-        )}
-      </Paper>
+        </Paper>
+      ) : (
+        <AdminCapabilities
+          setShowAdminCapabilities={setShowAdminCapabilities}
+        />
+      )}
     </Box>
   );
 };

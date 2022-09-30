@@ -3,7 +3,7 @@
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
 import { Grid, Paper, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import {
   helpandsupportFileUpload,
@@ -18,12 +18,12 @@ const HelpandsupportView = ({
   user = {},
   getAllData = () => {},
   selectTab = {},
+  acceptedTypes = ["png", "JPG", "pdf"],
 }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState([]);
-
   const getContent = (label, value, className) => {
     return (
       <p className="mx-3 my-2">
@@ -32,7 +32,15 @@ const HelpandsupportView = ({
       </p>
     );
   };
-
+  useEffect(() => {
+    const result = [];
+    selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
+      (item) => {
+        result.push(item.mediaUrl);
+      }
+    );
+    setSelectedFile(result);
+  }, []);
   const getClassName = () => {
     if (selectedData.ticketStatus.toLowerCase() === "open")
       return "text-success";
@@ -59,9 +67,16 @@ const HelpandsupportView = ({
   const handleFileUpload = async () => {
     if (selectedFile.length) {
       const fileFormData = new FormData();
+      const oldUrl = [];
+      const newDoc = [];
       fileFormData.set("data", {});
       selectedFile.forEach((item) => {
-        fileFormData.append("imageList", item);
+        if (typeof item !== "string") {
+          newDoc.push(item);
+          fileFormData.append("imageList", item);
+        } else if (typeof item == "string") {
+          oldUrl.push(item);
+        }
       });
       fileFormData.append(
         "ticketCreatedByType",
@@ -71,13 +86,18 @@ const HelpandsupportView = ({
         "ticketCreatedById",
         selectTab == "tab1" ? "ADM001" : ""
       );
-      const { data, err } = await helpandsupportFileUpload(fileFormData);
-      if (data) {
-        const datas = data;
+      if (newDoc.length) {
+        const { data, err } = await helpandsupportFileUpload(fileFormData);
+        if (data) {
+          const datas = [...data, ...oldUrl];
+          return { datas };
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
+      } else {
+        const datas = [...oldUrl];
         return { datas };
-      }
-      if (err) {
-        toastify(err?.response?.data?.message, "error");
       }
     }
     return [];
@@ -109,6 +129,18 @@ const HelpandsupportView = ({
         toastify(err.response.data.message, "error");
       }
     }
+  };
+  const showFileNames = () => {
+    const data = [];
+    selectedFile.forEach((item) => {
+      if (typeof item == "string") {
+        const x = item.split("-");
+        data.push({ url: item, filename: x[x.length - 1] });
+      } else {
+        data.push({ url: "", filename: item.name });
+      }
+    });
+    return data;
   };
   const handleFileDelete = (index) => {
     const temp = [...selectedFile];
@@ -174,9 +206,16 @@ const HelpandsupportView = ({
                 type="file"
                 hidden
                 ref={inputField}
-                onChange={(e) =>
-                  setSelectedFile((prev) => [...prev, e.target.files[0]])
-                }
+                onChange={(e) => {
+                  if (
+                    e.target?.files.length &&
+                    acceptedTypes.includes(e.target.files[0].type.split("/")[1])
+                  ) {
+                    setSelectedFile((prev) => [...prev, e.target.files[0]]);
+                  } else {
+                    toastify("This files Type are not accepted", "error");
+                  }
+                }}
               />
               <ButtonComponent
                 label="Choose File"
@@ -194,18 +233,17 @@ const HelpandsupportView = ({
             />
           </Grid>
         </Grid>
-        {selectedFile &&
-          selectedFile.map((item, index) => (
-            <Typography className="h-5 ms-5">
-              {item.name}
-              <Close
-                onClick={() => {
-                  handleFileDelete(index);
-                }}
-                className="h-5 color-orange cursor-pointer ms-1"
-              />
-            </Typography>
-          ))}
+        {showFileNames().map((item, index) => (
+          <Typography className="h-5 ms-5">
+            {item.filename}
+            <Close
+              onClick={() => {
+                handleFileDelete(index);
+              }}
+              className="h-5 color-orange cursor-pointer ms-1"
+            />
+          </Typography>
+        ))}
       </div>
     </Paper>
   );
