@@ -127,6 +127,7 @@ const AdminManger = () => {
       ) : (
         <AdminCapabilities
           setShowAdminCapabilities={setShowAdminCapabilities}
+          adminType="ADMIN_MANAGER"
         />
       )}
     </Box>
