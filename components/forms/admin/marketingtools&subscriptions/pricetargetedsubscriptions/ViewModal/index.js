@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
+// import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions";
 
 const column1 = [
   {
@@ -172,7 +173,7 @@ const ViewModal = ({
         <TableComponent
           columns={[...column2]}
           column2={[...column1]}
-          tableRows={rows}
+          tableRows={[...rows]}
           tHeadBgColor="bg-light-gray"
           showSearchFilter={false}
           showSearchbar={false}

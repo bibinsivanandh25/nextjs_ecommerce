@@ -6,6 +6,13 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { format } from "date-fns";
+import toastify from "services/utils/toastUtils";
+import {
+  createToolCampaignReseller,
+  getToolCampaignDropDownReseller,
+} from "services/admin/marketingtools/settoolpricing/resellerSubscription";
 
 let errObj = {
   days: false,
@@ -18,17 +25,51 @@ let errObj = {
   endDateSmaller: false,
 };
 
+const daysList = [
+  {
+    id: 1,
+    label: "7 Days",
+    value: "7 Days",
+  },
+  {
+    id: 2,
+    label: "30 Days",
+    value: "30Days",
+  },
+  {
+    id: 3,
+    label: "90 Days",
+    value: "90 Days",
+  },
+  {
+    id: 4,
+    label: "180 Days",
+    value: "180 Days",
+  },
+  {
+    id: 5,
+    label: "270 Days",
+    value: "270 Days",
+  },
+  {
+    id: 6,
+    label: "360 Days",
+    value: "360 Days",
+  },
+];
+
 const CreateDiscountModal = ({
   openCreateDiscountModal,
   setOpenCreateDiscountModal,
 }) => {
   const [days, setDays] = useState({ label: "" });
-  const [tools, setTools] = useState({ label: "" });
+  const [tools, setTools] = useState([]);
   const [price, setPrice] = useState("");
   const [title, setTitle] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(errObj);
+  const [toolsList, setToolsList] = useState([]);
 
   const handleCloseIconClick = () => {
     errObj = {
@@ -71,6 +112,9 @@ const CreateDiscountModal = ({
       errObj.price = true;
     }
     if (title === "") {
+      errObj.title = true;
+    }
+    if (title.length > 30) {
       errObj.title = true;
     }
     if (startDate === null) {
@@ -116,19 +160,15 @@ const CreateDiscountModal = ({
         setError({ ...errObj });
         setEndDate(date);
       } else if (startDate.getTime() > date.getTime()) {
-        // console.log("Hi");
         errObj.endDateSmaller = true;
         setError({ ...errObj });
         setEndDate(date);
       } else {
-        // console.log(2);
-        // console.log("Hi");
         errObj.endDateSmaller = false;
         setError({ ...errObj });
         setEndDate(date);
       }
     } else {
-      // console.log(3);
       setEndDate(date);
     }
   };
@@ -151,10 +191,48 @@ const CreateDiscountModal = ({
     setStartDate(null);
     setEndDate(null);
   };
+  const getTools = async (val) => {
+    const formData = new FormData();
+    formData.append("days", val.value);
+    formData.append("storeType", "RESELLER");
+    const { data } = await getToolCampaignDropDownReseller(formData);
+    if (data) {
+      const result = [];
+      data.forEach((ele) => {
+        result.push({
+          id: ele.adminMarketingToolId,
+          title: ele.adminMarketingToolName.replaceAll("_", " "),
+          value: ele.adminMarketingToolName,
+        });
+      });
+      setToolsList([...result]);
+    }
+  };
 
-  const handleSaveBtnClick = () => {
+  const handleSaveBtnClick = async () => {
     const theError = handleError();
     setError(theError);
+    const flag = Object.values(theError).some((e) => e);
+    if (!flag) {
+      const payload = {
+        title,
+        days: days.value,
+        price: Number(price),
+        startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+        endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
+        storeType: "RESELLER",
+        adminMarketingToolIds: tools.map((ele) => ele.id),
+      };
+
+      const { data, err } = await createToolCampaignReseller(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenCreateDiscountModal(false);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
   return (
@@ -184,9 +262,11 @@ const CreateDiscountModal = ({
               label="Days"
               inputlabelshrink
               size="small"
-              list={[{ label: "Day 1" }, { label: "Day 2" }]}
+              list={daysList}
               onDropdownSelect={(value) => {
-                // console.log(value);
+                if (value) {
+                  getTools(value);
+                }
                 setDays(value);
               }}
               value={days}
@@ -194,12 +274,12 @@ const CreateDiscountModal = ({
             />
           </Grid>
           <Grid item xs={6}>
-            <SimpleDropdownComponent
+            <MultiSelectComponent
               label="Tools"
               inputlabelshrink
               size="small"
-              list={[{ label: "tool1" }, { label: "tool2" }]}
-              onDropdownSelect={(value) => {
+              list={toolsList}
+              onSelectionChange={(e, value) => {
                 setTools(value);
               }}
               value={tools}
@@ -227,7 +307,13 @@ const CreateDiscountModal = ({
               }}
               inputlabelshrink
               error={error.price}
-              helperText={error.price ? validateMessage.field_required : ""}
+              helperText={
+                error.price
+                  ? price.length === 0
+                    ? validateMessage.field_required
+                    : "Maximum 30 characters are allowed"
+                  : ""
+              }
             />
           </Grid>
           <Grid item xs={6}>

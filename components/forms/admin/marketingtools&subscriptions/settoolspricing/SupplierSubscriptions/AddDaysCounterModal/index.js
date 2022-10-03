@@ -6,6 +6,9 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { addIndividualPricing } from "services/admin/marketingtools/settoolpricing/supplierSubscription";
+import { format } from "date-fns";
+import toastify from "services/utils/toastUtils";
 
 let errObj = {
   days: false,
@@ -32,32 +35,32 @@ const AddDaysCounterModal = ({
     {
       id: 1,
       label: "7 Days",
-      value: "7 Days",
+      value: "7 days",
     },
     {
       id: 2,
       label: "30 Days",
-      value: "30Days",
+      value: "30 days",
     },
     {
       id: 3,
       label: "90 Days",
-      value: "90 Days",
+      value: "90 days",
     },
     {
       id: 4,
       label: "180 Days",
-      value: "180 Days",
+      value: "180 days",
     },
     {
       id: 5,
       label: "270 Days",
-      value: "270 Days",
+      value: "270 days",
     },
     {
       id: 6,
       label: "360 Days",
-      value: "360 Days",
+      value: "360 days",
     },
   ];
 
@@ -220,9 +223,28 @@ const AddDaysCounterModal = ({
     setEndDate(null);
   };
 
-  const handleSaveBtnClick = () => {
+  const handleSaveBtnClick = async () => {
     const theError = handleError();
     setError(theError);
+    const flag = Object.values(theError).some((ele) => ele);
+    if (!flag) {
+      const payload = {
+        adminMarketingToolName: tools.value,
+        price: Number(price),
+        days: days.value,
+        startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+        endDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+        storeType: "SUPPLIER",
+      };
+      const { data, err } = await addIndividualPricing(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenAddDaysCounterModal(false);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
   return (
@@ -281,6 +303,7 @@ const AddDaysCounterModal = ({
               onInputChange={(e) => {
                 setPrice(e.target.value);
               }}
+              type="number"
               inputlabelshrink
               error={error.price}
               helperText={error.price ? validateMessage.field_required : ""}

@@ -3,15 +3,29 @@ import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
 import React, { useEffect, useState } from "react";
+import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions";
 
 const ViewModal = ({
   openViewModal,
   setOpenViewModal,
   dataOfSingleSupplierOrReseller = [],
+  setDataOfSingleSupplierOrReseller,
 }) => {
   const [rows, setRows] = useState([]);
   const handleCloseIconClick = () => {
+    setDataOfSingleSupplierOrReseller([]);
     setOpenViewModal(false);
+  };
+
+  const approveRejectSubscription = async (status, marketingToolId, userId) => {
+    const { data, error } = await acceptRejectSingleToolSubscription(
+      status,
+      marketingToolId,
+      userId
+    );
+
+    console.log(data, "---data");
+    console.log(error, "---error");
   };
 
   const setRowsOfTable = () => {
@@ -47,8 +61,26 @@ const ViewModal = ({
         col9: (
           <Box className="d-flex align-items-center">
             <CustomIcon type="edit" />
-            <CustomIcon type="close" />
-            <CustomIcon type="doneIcon" />
+            <CustomIcon
+              type="close"
+              onIconClick={() => {
+                approveRejectSubscription(
+                  "REJECTED",
+                  val.marketingToolId,
+                  val.userTypeId
+                );
+              }}
+            />
+            <CustomIcon
+              type="doneIcon"
+              onIconClick={() => {
+                approveRejectSubscription(
+                  "APPROVED",
+                  val.marketingToolId,
+                  val.userTypeId
+                );
+              }}
+            />
             <CustomIcon type="delete" />
           </Box>
         ),

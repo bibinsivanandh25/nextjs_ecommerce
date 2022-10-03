@@ -9,9 +9,10 @@ import ViewModal from "@/forms/admin/marketingtools&subscriptions/todaysdealsubs
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/AddNoteModal";
 import {
   enableOrDisableSubscriptions,
-  getTodaysDealSubsscriptions,
-} from "services/admin/marketingtools/subscriptions/todaysdealsubscriptions";
+  getSubscriptions,
+} from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
+import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -19,6 +20,7 @@ const TodaysDealSubscription = () => {
   const [tableRowsTodaysDealSubs, setTableRowsTodaysDealSubs] = useState([]);
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const column1 = [
     {
@@ -149,6 +151,9 @@ const TodaysDealSubscription = () => {
     if (ele === "Add Note") {
       setOpenAddNoteModal(true);
     }
+    if (ele === "Notify") {
+      setShowNotificationModal(true);
+    }
   };
 
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
@@ -166,7 +171,7 @@ const TodaysDealSubscription = () => {
   };
 
   async function getDealSubscription() {
-    const { data, error } = await getTodaysDealSubsscriptions({
+    const { data, error } = await getSubscriptions({
       marketingTool: "TODAYS_DEAL",
       toolStatus: "ACTIVE",
       userType: "SUPPLIER",
@@ -226,6 +231,7 @@ const TodaysDealSubscription = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
+                  console.log("Hey");
                   onClickOfMenuItem(ele);
                 }}
                 options={[
@@ -322,7 +328,7 @@ const TodaysDealSubscription = () => {
             column2={[...column1]}
             tableRows={[...tableRowsTodaysDealSubs]}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            showPagination
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
@@ -336,10 +342,16 @@ const TodaysDealSubscription = () => {
         openViewModal={openViewModal}
         setOpenViewModal={setOpenViewModal}
         dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
+        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
       />
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <CreateNotification
+        showNotificationModal={showNotificationModal}
+        setShowNotificationModal={setShowNotificationModal}
+        type="add"
       />
     </>
   );
