@@ -22,7 +22,7 @@ const TodaysDealSubscription = () => {
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [dropdownValue, setDropdownValue] = useState([{ title: "All", id: 0 }]);
+  const [dropdownValue, setDropdownValue] = useState([]);
 
   const column1 = [
     {
@@ -266,7 +266,7 @@ const TodaysDealSubscription = () => {
       });
 
       setTableRowsTodaysDealSubs(mappedArray);
-      toastify("Marketing Tools Found Successfully", "success");
+      toastify(message, "success");
     }
   }
 
