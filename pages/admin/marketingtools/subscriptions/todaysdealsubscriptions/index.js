@@ -13,6 +13,7 @@ import {
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -21,6 +22,7 @@ const TodaysDealSubscription = () => {
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [dropdownValue, setDropdownValue] = useState([{ title: "All", id: 0 }]);
 
   const column1 = [
     {
@@ -170,14 +172,19 @@ const TodaysDealSubscription = () => {
     }
   };
 
-  async function getDealSubscription() {
-    const { data, error } = await getSubscriptions({
+  async function getDealSubscription(type = []) {
+    const { data, error, message } = await getSubscriptions({
       marketingTool: "TODAYS_DEAL",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
+      userType: type,
     });
-    if (data) {
-      console.log(data);
+    if (error) {
+      if (message) {
+        setTableRowsTodaysDealSubs([]);
+        toastify(message, "error");
+      } else if (error?.message) {
+        toastify(error?.message, "error");
+      }
+    } else if (data && !error) {
       const mappedArray = data.map((val, index) => {
         const dateOne = new Date(val.activatedAt);
         const dateTwo = new Date(val.expirationDate);
@@ -221,17 +228,12 @@ const TodaysDealSubscription = () => {
                 type="view"
                 className="fs-18"
                 onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
                   setDataOfSingleSupplierOrReseller(val.userMarketingTools);
                   setOpenViewModal(true);
                 }}
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  console.log("Hey");
                   onClickOfMenuItem(ele);
                 }}
                 options={[
@@ -264,9 +266,7 @@ const TodaysDealSubscription = () => {
       });
 
       setTableRowsTodaysDealSubs(mappedArray);
-    }
-    if (error) {
-      console.log("error hey", error);
+      toastify("Marketing Tools Found Successfully", "success");
     }
   }
 
@@ -274,7 +274,15 @@ const TodaysDealSubscription = () => {
     getDealSubscription();
   }, []);
 
-  // const rows = [
+  const handleDropDownSelection = () => {
+    const payload = dropdownValue.map((value) => value.title);
+    getDealSubscription(payload);
+  };
+
+  useEffect(() => {
+    handleDropDownSelection();
+  }, [dropdownValue]);
+
   //   {
   //     id: 1,
   //     col1: "01",
@@ -320,9 +328,25 @@ const TodaysDealSubscription = () => {
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Todays Deal Subscription
-          </Typography>
+          <Box className="d-flex align-items-center justify-content-between">
+            <Typography className="fw-bold color-orange">
+              Todays Deal Subscription
+            </Typography>
+            <Box className="w-25 me-2">
+              <MultiSelectComponent
+                list={[
+                  { title: "Supplier", id: 1 },
+                  { title: "Reseller", id: 2 },
+                ]}
+                label="Select Subscriber"
+                onSelectionChange={(_e, val) => {
+                  setDropdownValue(val);
+                }}
+                value={dropdownValue}
+                inputlabelshrink={false}
+              />
+            </Box>
+          </Box>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
