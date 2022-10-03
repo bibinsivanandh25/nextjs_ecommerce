@@ -24,7 +24,7 @@ const updateSupplierProfile = (payload) => {
   return serviceUtil
     .put(`/users/supplier-profile`, payload)
     .then((res) => {
-      return res?.data;
+      return res;
     })
     .catch((err) => ({ err }));
 };
