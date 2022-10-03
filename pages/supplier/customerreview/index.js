@@ -163,6 +163,8 @@ const CustomerReview = () => {
         setpageNumber((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
       }
+    } else if (page == 0 && data?.length == 0) {
+      setTableRows([]);
     }
     if (err) {
       setTableRows([]);
