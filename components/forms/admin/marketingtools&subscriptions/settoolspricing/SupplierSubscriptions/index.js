@@ -1,9 +1,19 @@
+/* eslint-disable no-use-before-define */
+import {
+  enableDisableMarketingTools,
+  getAllIndividualPricingByUserType,
+  getSubscrptionType,
+  updateMarketingToolPrice,
+} from "services/admin/marketingtools/settoolpricing";
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
+import toastify from "services/utils/toastUtils";
 import SwitchComponent from "@/atoms/SwitchComponent";
+import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import InputBox from "@/atoms/InputBoxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
 
@@ -12,53 +22,242 @@ const SupplierSubscriptions = () => {
     useState([]);
   const [supplierSubscriptionsTableTwo, setSupplierSubscriptionsTableTwo] =
     useState([]);
+  const [showEditPriceModal, setShowEditPriceModal] = useState(false);
 
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
     []
   );
   const [toolsCampaignTableRows, setToolsCampaignTableRows] = useState([]);
+  const [priceDetails, setPriceDetails] = useState({
+    price: "",
+    id: "",
+  });
 
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
+  const [
+    tableColumsForSupplierSubscriptionsTableOne,
+    settableColumsForSupplierSubscriptionsTableOne,
+  ] = useState([]);
+  const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
 
-  const tableColumsForSupplierSubscriptionsTableOne = [
-    {
-      id: "col1",
+  const gettableColumsForSupplierSubscriptionsTableOne = async () => {
+    const { data } = await getSubscrptionType("SUPPLIER");
+    if (data) {
+      const result = [];
+      const rows = {};
+      const rows2 = {};
+      data.forEach((ele, ind) => {
+        let count = Object.keys(rows2).length;
+        result.push({
+          id: `col${ind + 1}`,
+          align: "center",
+          label: ele.adminMarketingToolName.replaceAll("_", " "),
+          data_align: "center",
+        });
+
+        rows[`col${ind + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.totalCount}
+          </Typography>
+        );
+
+        rows2[`col${count + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.activeCount}
+          </Typography>
+        );
+        count += 1;
+        rows2[`col${count + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.inActiveCount}
+          </Typography>
+        );
+      });
+
+      const temp = [];
+      const temp1 = [];
+      temp1.push(rows2);
+      temp.push(rows);
+      setSupplierSubscriptionsTableTwo([...temp1]);
+      setSupplierSubscriptionsTableOne([...temp]);
+      settableColumsForSupplierSubscriptionsTableOne([...result]);
+    }
+  };
+  const mapIndivisualPricingRows = (data) => {
+    const result = [
+      {
+        id: "col1",
+        align: "center",
+        label: "Tools / Days",
+        data_align: "center",
+        position: "sticky",
+        minWidth: 200,
+      },
+    ];
+    data.forEach((item, ind) => {
+      result.push({
+        id: `col${ind + 2}`,
+        align: "center",
+        label: item.toolName.replaceAll("_", " "),
+        data_align: "center",
+        position: "",
+        minWidth: 200,
+      });
+    });
+    result.push({
+      id: "col10",
       align: "center",
-      label: "Discount Coupon",
+      label: "Actions",
       data_align: "center",
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Today's Deal",
-      data_align: "center",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Spin Wheel",
-      data_align: "center",
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Scratch Card",
-      data_align: "center",
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Quiz",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Price Targeted",
-      data_align: "center",
-    },
-  ];
+      // minWidth: 200,
+      position: "sticky",
+    });
+    setIndividualPricingColumns([...result]);
+  };
+  const enableDisableMarketingTool = async (ids, status = false) => {
+    const payload = {
+      toolIdList: [...ids],
+      disabled: !status,
+    };
+    const { data, err } = await enableDisableMarketingTools(payload);
+    if (data?.message) {
+      toastify(data.message, "success");
+      getIndividualPricing();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      getIndividualPricing();
+    }
+  };
+
+  const getIndividualPricing = async () => {
+    const { data } = await getAllIndividualPricingByUserType("SUPPLIER");
+    if (data) {
+      mapIndivisualPricingRows(data);
+      // days.forEach((val) => {
+      //   data.forEach((item, index) => {
+      //     item.adminMarketingTools.forEach((value) => {
+      //       res.push({
+      //         col1: val,
+      //       });
+      //       if (value.days.toLocaleLowerCase() === val.toLocaleLowerCase()) {
+      //         res.push({
+      //           [`col${index + 2}`]: (
+      //             <Box className="d-flex align-items-center justify-content-evenly">
+      //               <Typography className="h-5">{value.price}</Typography>
+      //               <CustomIcon type="edit" />
+      //               <CustomIcon type="calendar" />
+      //               <Box className="ms-2">
+      //                 <SwitchComponent label="" />
+      //               </Box>
+      //             </Box>
+      //           ),
+      //         });
+      //         res.push({
+      //           col10: (
+      //             <div className="d-flex justify-content-center align-items-center">
+      //               <CustomIcon type="view" title="view" className="mx-4" />
+      //               <SwitchComponent label="" />
+      //             </div>
+      //           ),
+      //         });
+      //       }
+      //     });
+      //   });
+      //   newres.push(Object.assign({}, ...res));
+      // });
+
+      const days = [
+        "7 days",
+        "30 days",
+        "90 days",
+        "180 days",
+        "270 days",
+        "360 days",
+      ];
+      const finalResult = [];
+      days.forEach((day, ind) => {
+        const result = [];
+        data.forEach((ele) => {
+          const temp2 = ele.adminMarketingTools.find((item) => {
+            return item.days.toLocaleLowerCase() === day.toLocaleLowerCase();
+          });
+          if (temp2) result.push(temp2);
+          else
+            result.push({
+              price: "--",
+            });
+        });
+        const result2 = {};
+        const toolIds = [];
+        const status = [];
+        result2.col1 = day;
+        result.forEach((ele, index) => {
+          if (ele) {
+            toolIds.push(ele.adminMarketingToolId);
+            status.push(ele.disabled);
+          }
+          result2[`col${index + 2}`] =
+            ele.price !== "--" ? (
+              <Box className="d-flex align-items-center justify-content-evenly">
+                <Typography className="h-5">{ele.price}</Typography>
+                <CustomIcon
+                  type="edit"
+                  className="h-4"
+                  title="Edit Price"
+                  onIconClick={() => {
+                    setShowEditPriceModal(true);
+                    setPriceDetails({
+                      price: ele.price,
+                      id: ele.adminMarketingToolId,
+                    });
+                  }}
+                />
+                <CustomIcon type="calendar" className="h-4" />
+                <Box className="ms-2">
+                  <SwitchComponent
+                    label=""
+                    defaultChecked={!ele.disabled}
+                    ontoggle={() => {
+                      enableDisableMarketingTool(
+                        [ele.adminMarketingToolId],
+                        ele.disabled
+                      );
+                    }}
+                  />
+                </Box>
+              </Box>
+            ) : (
+              ele.price
+            );
+        });
+
+        result2.col10 = (
+          <div className="d-flex justify-content-center align-items-center">
+            <CustomIcon type="view" title="view" className="mx-4" />
+            <SwitchComponent
+              label=""
+              defaultChecked={status.every((ele) => !ele)}
+              ontoggle={() => {
+                enableDisableMarketingTool(
+                  [...toolIds],
+                  status.every((ele) => ele)
+                );
+              }}
+            />
+          </div>
+        );
+        finalResult[ind] = result2;
+      });
+      setIndividualPricingTableRows(finalResult);
+    }
+  };
+
+  useEffect(() => {
+    gettableColumsForSupplierSubscriptionsTableOne();
+    getIndividualPricing();
+  }, []);
 
   const tableColumsForSupplierSubscriptionsTableTwo = [
     {
@@ -121,59 +320,41 @@ const SupplierSubscriptions = () => {
       label: "Inactive",
       data_align: "center",
     },
-  ];
-
-  const tableColumsForIndividualPricing = [
     {
-      id: "col1",
+      id: "col11",
       align: "center",
-      label: "Tools / Days",
+      label: "Active",
       data_align: "center",
-      position: "sticky",
-      minWidth: 200,
     },
     {
-      id: "col2",
+      id: "col12",
       align: "center",
-      label: "Discount Coupon",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col3",
+      id: "col13",
       align: "center",
-      label: "Today's Deal",
+      label: "Active",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col4",
+      id: "col14",
       align: "center",
-      label: "Spin Wheel",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col5",
+      id: "col15",
       align: "center",
-      label: "Scratch Card",
+      label: "Active",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col6",
+      id: "col16",
       align: "center",
-      label: "Lucky Draw",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-      minWidth: 200,
-      position: "sticky",
     },
   ];
 
@@ -281,45 +462,6 @@ const SupplierSubscriptions = () => {
     },
   ];
 
-  const rowsForSupplierSubscriptionsTableOne = [
-    {
-      id: 1,
-      col1: 467,
-      col2: 865,
-      col3: 438,
-      col4: 252,
-      col5: 252,
-      col6: 567,
-    },
-  ];
-  const rowsForSupplierSubscriptionsTableTwo = [
-    {
-      id: 1,
-      col1: 467,
-      col2: 865,
-      col3: 438,
-      col4: 252,
-      col5: 252,
-      col6: 567,
-      col7: 666,
-      col8: 333,
-      col9: 444,
-      col10: 111,
-    },
-  ];
-
-  const rowsForIndividualPricing = [
-    {
-      id: 1,
-      col1: "7 day's",
-      col2: "10",
-      col3: "10",
-      col4: "10",
-      col5: "10",
-      col6: "10",
-    },
-  ];
-
   const rowsForToolsCampaign = [
     {
       id: 1,
@@ -339,181 +481,6 @@ const SupplierSubscriptions = () => {
       col14: "Actions",
     },
   ];
-
-  const getTableRowsForResellerTableOne = () => {
-    const result = [];
-    rowsForSupplierSubscriptionsTableOne.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col1}
-          </Typography>
-        ),
-        col2: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col2}
-          </Typography>
-        ),
-        col3: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col3}
-          </Typography>
-        ),
-        col4: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col4}
-          </Typography>
-        ),
-        col5: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col5}
-          </Typography>
-        ),
-        col6: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col6}
-          </Typography>
-        ),
-      });
-    });
-
-    setSupplierSubscriptionsTableOne(result);
-  };
-
-  const getTableRowsForResellerTableTwo = () => {
-    const result = [];
-    rowsForSupplierSubscriptionsTableTwo.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col1}
-          </Typography>
-        ),
-        col2: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col2}
-          </Typography>
-        ),
-        col3: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col3}
-          </Typography>
-        ),
-        col4: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col4}
-          </Typography>
-        ),
-        col5: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col5}
-          </Typography>
-        ),
-        col6: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col6}
-          </Typography>
-        ),
-        col7: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col7}
-          </Typography>
-        ),
-        col8: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col8}
-          </Typography>
-        ),
-        col9: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col9}
-          </Typography>
-        ),
-        col10: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col10}
-          </Typography>
-        ),
-      });
-    });
-
-    setSupplierSubscriptionsTableTwo(result);
-  };
-
-  const getTableRowsForIndividualPricing = () => {
-    const result = [];
-    rowsForIndividualPricing.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: val.col1,
-
-        col2: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col2}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col3: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col3}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col4: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col4}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col5: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col5}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col6: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col6}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col7: (
-          <Box className="d-flex align-items-center justify-content-center">
-            <CustomIcon type="view" className="ms-4" />
-            <Box className="ms-4">
-              <Box className="ms-2">
-                <SwitchComponent label="" />
-              </Box>
-            </Box>
-          </Box>
-        ),
-      });
-    });
-
-    setIndividualPricingTableRows(result);
-  };
 
   const ReturnCheckBox = () => {
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
@@ -565,11 +532,24 @@ const SupplierSubscriptions = () => {
   };
 
   useEffect(() => {
-    getTableRowsForResellerTableOne();
-    getTableRowsForResellerTableTwo();
-    getTableRowsForIndividualPricing();
     getTableRowsForToolsCampaign();
   }, []);
+
+  const handleEditPrice = async () => {
+    const payload = {
+      toolId: priceDetails.id,
+      price: priceDetails.price,
+    };
+    const { data, err } = await updateMarketingToolPrice(payload);
+    if (data) {
+      getIndividualPricing();
+      setShowEditPriceModal(false);
+      toastify(data?.message);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message);
+    }
+  };
 
   return (
     <>
@@ -602,7 +582,7 @@ const SupplierSubscriptions = () => {
             Individual Pricing
           </Typography>
           <TableComponent
-            columns={[...tableColumsForIndividualPricing]}
+            columns={[...individualPricingColumns]}
             tableRows={individualPricingTableRows}
             tHeadBgColor="bg-light-gray"
             showPagination={false}
@@ -637,6 +617,33 @@ const SupplierSubscriptions = () => {
           />
         </Paper>
       </Box>
+      {showEditPriceModal ? (
+        <ModalComponent
+          open={showEditPriceModal}
+          onCloseIconClick={() => setShowEditPriceModal(false)}
+          ModalTitle="Edit Price"
+          footerClassName="d-flex justify-content-end"
+          onSaveBtnClick={() => {
+            handleEditPrice();
+          }}
+        >
+          <Box className="mx-5 my-3">
+            <InputBox
+              placeholder="Edit Price"
+              variant="standard"
+              inputlabelshrink
+              size="small"
+              value={priceDetails.price}
+              onInputChange={(e) => {
+                setPriceDetails((pre) => ({
+                  ...pre,
+                  price: e.target.value,
+                }));
+              }}
+            />
+          </Box>
+        </ModalComponent>
+      ) : null}
       {openAddDaysCounterModal ? (
         <AddDaysCounterModal
           openAddDaysCounterModal={openAddDaysCounterModal}

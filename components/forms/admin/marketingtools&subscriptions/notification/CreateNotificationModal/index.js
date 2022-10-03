@@ -145,6 +145,7 @@ const CreateNotification = ({
     getTitleSuggestions();
   }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const validateForm = () => {
     const errObj = {
       customerList: null,
@@ -244,6 +245,7 @@ const CreateNotification = ({
     }
   };
   const formdata = new FormData();
+  // eslint-disable-next-line no-unused-vars
   const getMediaURL = async () => {
     files.forEach((ele) => {
       formdata.append("file", ele);
@@ -256,15 +258,15 @@ const CreateNotification = ({
     }
   };
 
-  const handleSubmit = () => {
-    const flag = validateForm();
-    if (!flag) {
-      if (type === "add") {
-        if (!showAttachment && showText) sendNotification([]);
-        else getMediaURL();
-      } else sendNotification([]);
-    }
-  };
+  // const handleSubmit = () => {
+  //   const flag = validateForm();
+  //   if (!flag) {
+  //     if (type === "add") {
+  //       if (!showAttachment && showText) sendNotification([]);
+  //       else getMediaURL();
+  //     } else sendNotification([]);
+  //   }
+  // };
 
   const getFileNames = () => {
     if (type === "add") {

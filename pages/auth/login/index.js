@@ -137,7 +137,7 @@ const Login = () => {
       await axios
         .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
-          const errRes = err.response.data?.message;
+          const errRes = err?.response?.data?.message;
           toastify(errRes, "error");
         })
         .then(async (data) => {
