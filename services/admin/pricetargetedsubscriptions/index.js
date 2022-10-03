@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const adminPriceTargetedSubscription = (payload) => {
+const adminPriceTargetedSubscription = (payload, page) => {
   return serviceUtil
-    .post(`users/admin-marketing-tool/tool-subscription/0/50`, payload)
+    .post(`users/admin-marketing-tool/tool-subscription/${page}/50`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
