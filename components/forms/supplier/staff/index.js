@@ -25,6 +25,7 @@ const tempObj = {
   last_Name: "",
   MobileNo: "",
   email: "",
+  supplierId: "",
 };
 const StaffForm = ({
   handlebackClick,
@@ -137,6 +138,7 @@ const StaffForm = ({
   const supplierId = useSelector((state) => state.user.supplierId);
 
   const createPayload = () => {
+    console.log("supplierId---", supplierId);
     return {
       firstName: formData.firstName,
       lastName: formData.last_Name,

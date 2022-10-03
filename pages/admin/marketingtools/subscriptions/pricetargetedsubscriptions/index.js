@@ -12,6 +12,7 @@ import {
   adminPriceTargetedSubscriptionDisable,
 } from "services/admin/pricetargetedsubscriptions";
 import toastify from "services/utils/toastUtils";
+import CreateNotification from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
 
 const column1 = [
   {
@@ -142,11 +143,11 @@ const PriceTargetedSubscription = () => {
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rows, setRows] = useState([]);
   const [viewData, setViewData] = useState({});
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") {
-      setOpenAddNoteModal(true);
-    }
+    if (ele === "Add Note") setOpenAddNoteModal(true);
+    if (ele === "Notify") setShowNotificationModal(true);
   };
   const getTableData = async () => {
     const payload = {
@@ -275,6 +276,11 @@ const PriceTargetedSubscription = () => {
       <AddNoteModal
         openAddNoteModal={openAddNoteModal}
         setOpenAddNoteModal={setOpenAddNoteModal}
+      />
+      <CreateNotification
+        showNotificationModal={showNotificationModal}
+        setShowNotificationModal={setShowNotificationModal}
+        type="add"
       />
     </>
   );
