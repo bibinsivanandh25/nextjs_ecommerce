@@ -846,6 +846,22 @@ export default function TableComponent({
                 value={searchFilter}
                 onDropdownSelect={(value) => {
                   if (value) {
+                    if (!showSearchbar) {
+                      handlePageEnd("", value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                      });
+                    }
                     setSearchFilter(value);
                   } else {
                     setSearchFilter([]);

@@ -89,6 +89,7 @@ const Login = () => {
     const { data, err } = await getSupplierDetailsById(
       role === "SUPPLIER" ? id : staffDetails.supplierId
     );
+
     if (!err) {
       const supplierDetails =
         role === "SUPPLIER"
