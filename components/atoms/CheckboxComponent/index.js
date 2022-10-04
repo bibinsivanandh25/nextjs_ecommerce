@@ -79,6 +79,7 @@ const CheckBoxComponent = ({
             disabled={isDisabled}
             indeterminate={indeterminate}
             onChange={(e) => {
+              e.stopPropagation();
               checkBoxClick(e.target.id, e.target.checked);
             }}
             size={size}
