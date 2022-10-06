@@ -290,8 +290,6 @@ const TodaysDealSubscription = () => {
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
-    console.log(data, " ... data");
-
     if (error) {
       if (message) toastify(message, "error");
       if (error?.response?.data?.message)
