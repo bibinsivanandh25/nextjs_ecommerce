@@ -13,6 +13,7 @@ import {
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/scratchcardsubscriptions/CreateNotificationModal";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const ScratchCardSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -22,6 +23,15 @@ const ScratchCardSubscriptions = () => {
 
   const [rowsOfScratchCardSubs, setRowsOfScratchCardSubs] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [purchaseIde, setPurchaseIde] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const [dropdownValue, setDropdownValue] = useState([]);
+  const [typeId, setTypeId] = useState("");
+  const [adminComments, setAdminComments] = useState({
+    comment: "",
+    commentAttachment: "",
+  });
 
   const column1 = [
     {
@@ -148,136 +158,176 @@ const ScratchCardSubscriptions = () => {
     },
   ];
 
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") setOpenAddNoteModal(true);
+  const returnTableData = (data) => {
+    const mappedArray = data.map((val, index) => {
+      const dateOne = new Date(val.activatedAt);
+      const dateTwo = new Date(val.expirationDate);
+      const timeDifference = dateTwo.getTime() - dateOne.getTime();
+      const divisor = 1000 * 60 * 60 * 24;
+      const numberOfDays = timeDifference / divisor;
+      return {
+        id: val.purchaseId,
+        col1: index >= 9 ? index + 1 : `0${index + 1}`,
+        col2: val.purchasedById,
+        col3:
+          numberOfDays === 7
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col4:
+          numberOfDays === 30
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col5:
+          numberOfDays === 90
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col6:
+          numberOfDays === 180
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col7:
+          numberOfDays === 270
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col8:
+          numberOfDays === 360
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col9: val.toolStatus,
+        col10: val.subscriptionAmount,
+        col11: val.comments ? val.comments : "0",
+        col12: (
+          <Box className="d-flex justify-content-evenly align-items-center">
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => {
+                setPurchaseIde(val.purchaseId);
+                // handleViewClick(val.purchaseId, 0);
+                setOpenViewModal(true);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(
+                  ele,
+                  val.purchaseId,
+                  val.comments,
+                  val.commentsAttachment
+                );
+              }}
+              options={[
+                "Notify",
+                "Add Note",
+                <Box className="d-flex align-items-center">
+                  <Typography>
+                    {val.disabled ? "Disabled" : "Enabled"}
+                  </Typography>
+                  <Box className="ms-4">
+                    <SwitchComponent
+                      defaultChecked={!val.disabled}
+                      label=""
+                      ontoggle={() => {
+                        handleEnableOrDisable(
+                          val.purchaseId,
+                          !val.disabled,
+                          "TODAYS_DEAL"
+                        );
+                      }}
+                    />
+                  </Box>
+                </Box>,
+              ]}
+              IconclassName="fs-18 color-gray"
+            />
+          </Box>
+        ),
+      };
+    });
+    return mappedArray;
+  };
 
-    if (ele === "Notify") setShowNotificationModal(true);
+  const onClickOfMenuItem = (ele, theTypeId, comments, attachment) => {
+    if (ele === "Add Note") {
+      setTypeId(theTypeId);
+      setAdminComments({
+        comment: comments,
+        commentAttachment: attachment,
+      });
+      setOpenAddNoteModal(true);
+    }
+    if (ele === "Notify") {
+      setShowNotificationModal(true);
+    }
   };
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
-    const { error } = await enableOrDisableSubscriptions(
+    const { error, message } = await enableOrDisableSubscriptions(
       purchaseId,
       status,
       marketingTool
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getScratchCardSubscription();
-    } else {
-      toastify(`Unable to change the status`, "error");
+      getScratchCardSubscription(0);
+    } else if (message) toastify(message, "error");
+    else if (error?.response?.data?.message)
+      toastify(error?.response?.data?.message, "error");
+  };
+
+  const getScratchCardSubscription = async (page) => {
+    const selectedListData = dropdownValue.map((value) => value.title);
+    const payload = {
+      marketingTool: "SCRATCH_CARD",
+      userType: selectedListData,
+    };
+    const { data, error, message } = await getSubscriptions(payload, page);
+
+    if (error) {
+      if (message) toastify(message, "error");
+      if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+      if (page === 0) {
+        setRowsOfScratchCardSubs([]);
+      }
+    } else if (data) {
+      if (page === 0) {
+        setRowsOfScratchCardSubs(returnTableData(data));
+        setPageNumber((pre) => pre + 1);
+      } else {
+        setRowsOfScratchCardSubs((pre) => [...pre, ...returnTableData(data)]);
+        setPageNumber((pre) => pre + 1);
+      }
     }
   };
 
-  async function getScratchCardSubscription() {
-    const { data, error } = await getSubscriptions({
-      marketingTool: "SCRATCH_CARD",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
-    });
-    if (data) {
-      console.log(data);
-      const mappedArray = data.map((val, index) => {
-        const dateOne = new Date(val.activatedAt);
-        const dateTwo = new Date(val.expirationDate);
-        const timeDifference = dateTwo.getTime() - dateOne.getTime();
-        const divisor = 1000 * 60 * 60 * 24;
-        const numberOfDays = timeDifference / divisor;
-        return {
-          id: val.purchaseId,
-          col1: index >= 9 ? index + 1 : `0${index + 1}`,
-          col2: val.purchasedById,
-          col3:
-            numberOfDays === 7
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col4:
-            numberOfDays === 30
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col5:
-            numberOfDays === 90
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col6:
-            numberOfDays === 180
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col7:
-            numberOfDays === 270
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col8:
-            numberOfDays === 360
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col9: val.toolStatus,
-          col10: val.subscriptionAmount,
-          col11: val.comments ? val.comments : "0",
-          col12: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
-                  setDataOfSingleSupplierOrReseller(val.userMarketingTools);
-                  setOpenViewModal(true);
-                }}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  console.log("Hey");
-                  onClickOfMenuItem(ele);
-                }}
-                options={[
-                  "Notify",
-                  "Add Note",
-                  <Box className="d-flex align-items-center">
-                    <Typography>
-                      {val.disabled ? "Disabled" : "Enabled"}
-                    </Typography>
-                    <Box className="ms-4">
-                      <SwitchComponent
-                        defaultChecked={!val.disabled}
-                        label=""
-                        ontoggle={() => {
-                          handleEnableOrDisable(
-                            val.purchaseId,
-                            !val.disabled,
-                            "TODAYS_DEAL"
-                          );
-                        }}
-                      />
-                    </Box>
-                  </Box>,
-                ]}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        };
-      });
-
-      setRowsOfScratchCardSubs(mappedArray);
-    }
-    if (error) {
-      console.log("error hey", error);
-    }
-  }
-
   useEffect(() => {
-    getScratchCardSubscription();
-  }, []);
+    getScratchCardSubscription(0);
+    setPageNumber(0);
+  }, [dropdownValue]);
 
   return (
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Spin Wheel Subscription
-          </Typography>
+          <Box className="d-flex align-items-center justify-content-between">
+            <Typography className="fw-bold color-orange">
+              Scratch Card Subscriptions
+            </Typography>
+            <Box className="w-25 me-2">
+              <MultiSelectComponent
+                list={[
+                  { title: "Supplier", id: 1 },
+                  { title: "Reseller", id: 2 },
+                ]}
+                label="Select Subscriber"
+                onSelectionChange={(_e, val) => {
+                  setDropdownValue(val);
+                }}
+                value={dropdownValue}
+                inputlabelshrink={false}
+              />
+            </Box>
+          </Box>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
@@ -287,27 +337,37 @@ const ScratchCardSubscriptions = () => {
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
-            onCustomButtonClick={() => {
-              // setOpenAddDaysCounterModal(true);
+            handlePageEnd={(page = pageNumber) => {
+              getScratchCardSubscription(page);
             }}
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
-      <CreateNotification
-        showNotificationModal={showNotificationModal}
-        setShowNotificationModal={setShowNotificationModal}
-        type="add"
-      />
+      {openViewModal && (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
+          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
+          purchaseIde={purchaseIde}
+        />
+      )}
+      {openAddNoteModal && (
+        <AddNoteModal
+          openAddNoteModal={openAddNoteModal}
+          setOpenAddNoteModal={setOpenAddNoteModal}
+          adminComments={adminComments}
+          typeId={typeId}
+          getScratchCardSubscription={getScratchCardSubscription}
+        />
+      )}
+      {showNotificationModal && (
+        <CreateNotification
+          showNotificationModal={showNotificationModal}
+          setShowNotificationModal={setShowNotificationModal}
+          type="add"
+        />
+      )}
     </>
   );
 };
