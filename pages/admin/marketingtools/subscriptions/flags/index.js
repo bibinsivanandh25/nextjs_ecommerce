@@ -221,7 +221,7 @@ const FlagsSubscription = () => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} to ${
+                  `${val.activatedAt ? val.activatedAt : "--"} - ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
