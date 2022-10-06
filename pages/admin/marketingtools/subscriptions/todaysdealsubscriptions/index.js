@@ -28,6 +28,8 @@ const TodaysDealSubscription = () => {
   const [typeId, setTypeId] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [purchaseIde, setPurchaseIde] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
+  const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
   const [adminComments, setAdminComments] = useState({
     comment: "",
     commentAttachment: "",
@@ -231,7 +233,10 @@ const TodaysDealSubscription = () => {
               className="fs-18"
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
-                // handleViewClick(val.purchaseId, 0);
+                setSubscriptionStatus(val.toolStatus);
+                setSubscriptionPeriod(
+                  `${val.activatedAt}-${val.expirationDate}`
+                );
                 setOpenViewModal(true);
               }}
             />
@@ -282,6 +287,8 @@ const TodaysDealSubscription = () => {
       userType: selectedListData,
     };
     const { data, error, message } = await getSubscriptions(payload, page);
+
+    console.log(data, " ... data");
 
     if (error) {
       if (message) toastify(message, "error");
@@ -395,6 +402,8 @@ const TodaysDealSubscription = () => {
           dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
           setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
+          subscriptionStatus={subscriptionStatus}
+          subscriptionPeriod={subscriptionPeriod}
         />
       )}
       {openAddNoteModal && (
