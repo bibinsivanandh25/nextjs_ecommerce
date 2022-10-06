@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import {
   enableDisableMarketingTools,
+  enableDisableToolCampaign,
   getAllIndividualPricingByUserType,
   getSubscrptionType,
   getToolsCampaignWithFilter,
@@ -43,6 +44,32 @@ const ResellerSubscriptions = () => {
   const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+
+  const filterData = [
+    {
+      name: "STATUS",
+      value: [
+        "ACTIVE",
+        "REJECTED",
+        "EXPIRED",
+        "PENDING",
+        "DISABLED",
+        "YET_TO_START",
+        "APPROVED",
+      ],
+    },
+    {
+      name: "DAYS",
+      value: [
+        "7 days",
+        "30 days",
+        "90 days",
+        "180 days",
+        "270 days",
+        "360 days",
+      ],
+    },
+  ];
 
   const tableColumsFormarketingtoolsStatus = [
     {
@@ -155,15 +182,15 @@ const ResellerSubscriptions = () => {
     {
       id: "col2",
       align: "center",
-      label: "DISCOUNT COUPON",
+      label: "Tools / Days",
       data_align: "center",
-      position: "",
-      minWidth: 100,
+      position: "sticky",
+      minWidth: 75,
     },
     {
       id: "col3",
       align: "center",
-      label: "TODAYS DEAL",
+      label: "DISCOUNT COUPON",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -171,7 +198,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col4",
       align: "center",
-      label: "SPIN WHEEL",
+      label: "TODAYS DEAL",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -179,7 +206,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col5",
       align: "center",
-      label: "SCRATCH CARD",
+      label: "SPIN WHEEL",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -187,7 +214,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col6",
       align: "center",
-      label: "PRICE TARGETED",
+      label: "SCRATCH CARD",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -195,7 +222,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col7",
       align: "center",
-      label: "NOTIFICATIONS",
+      label: "PRICE TARGETED",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -203,7 +230,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col8",
       align: "center",
-      label: "FLAGS",
+      label: "NOTIFICATIONS",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -211,7 +238,7 @@ const ResellerSubscriptions = () => {
     {
       id: "col9",
       align: "center",
-      label: "QUIZ",
+      label: "FLAGS",
       data_align: "center",
       position: "",
       minWidth: 100,
@@ -219,40 +246,55 @@ const ResellerSubscriptions = () => {
     {
       id: "col10",
       align: "center",
+      label: "QUIZ",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col11",
+      align: "center",
       label: "Price",
       data_align: "center",
       minWidth: 75,
     },
     {
-      id: "col11",
+      id: "col12",
       align: "center",
       label: "Title",
       data_align: "center",
       minWidth: 100,
     },
     {
-      id: "col12",
+      id: "col13",
       align: "center",
-      label: "Campaign Period Start & End Date with Time",
+      label: "Campaign Period Start Date with Time",
       data_align: "center",
       minWidth: 150,
     },
     {
-      id: "col13",
+      id: "col14",
+      align: "center",
+      label: "Campaign Period End Date with Time",
+      data_align: "center",
+      minWidth: 150,
+    },
+    {
+      id: "col15",
       align: "center",
       label: "Status",
       data_align: "center",
       minWidth: 75,
     },
     {
-      id: "col14",
+      id: "col16",
       align: "center",
       label: "Created Date & Time",
       data_align: "center",
       minWidth: 150,
     },
     {
-      id: "col15",
+      id: "col17",
       align: "center",
       label: "Actions",
       data_align: "center",
@@ -335,7 +377,20 @@ const ResellerSubscriptions = () => {
     });
     setIndividualPricingColumns([...result]);
   };
-
+  const enabledisablecampaign = async (id, status) => {
+    const payload = {
+      adminToolCampaignId: id,
+      status,
+    };
+    const { data, err } = await enableDisableToolCampaign(payload);
+    if (data) {
+      toastify(data.message, "success");
+      getToolCampaignTableData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const enableDisableMarketingTool = async (ids, status = false) => {
     const payload = {
       toolIdList: [...ids],
@@ -491,7 +546,8 @@ const ResellerSubscriptions = () => {
     data.forEach((ele, ind) => {
       result.push({
         col1: ind + 1,
-        col2: (
+        col2: ele.days,
+        col3: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               id="DISCOUNT_COUPON"
@@ -503,7 +559,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col3: (
+        col4: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isDisabled
@@ -515,7 +571,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col4: (
+        col5: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign(
@@ -527,7 +583,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col5: (
+        col6: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign(
@@ -539,7 +595,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col6: (
+        col7: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign(
@@ -551,7 +607,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col7: (
+        col8: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign(
@@ -563,7 +619,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col8: (
+        col9: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign("FLAGS", ele.adminMarketingTools)}
@@ -572,7 +628,7 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col9: (
+        col10: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent
               isChecked={checkToolCampaign("QUIZ", ele.adminMarketingTools)}
@@ -581,19 +637,29 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col10: ele.price,
-        col11: ele.title,
-        col12: ele.startDateTime,
-        col13: ele.status,
-        col14: ele.createdDate,
-        col15: (
+        col11: ele.price,
+        col12: ele.title,
+        col13: ele.startDateTime,
+        col14: ele.endDateTime,
+        col15: ele.status,
+        col16: ele.createdDate,
+        col17: (
           <Box className="d-flex align-items-center justify-content-between">
             <CustomIcon className="h-4" type="edit" />
             <CustomIcon type="message" className="ms-1 h-4" />
             <CustomIcon type="calendar" className="ms-1 h-4" />
             <CustomIcon type="notification" className="ms-1 h-4" />
             <Box className="ms-3" sx={{ marginRight: "-10px" }}>
-              <SwitchComponent label="" />
+              <SwitchComponent
+                label=""
+                defaultChecked={!ele.disabled}
+                ontoggle={() => {
+                  enabledisablecampaign(
+                    ele.adminMarketingToolsCampaignId,
+                    !ele.disabled
+                  );
+                }}
+              />
             </Box>
             <CustomIcon type="view" className="h-4" />
           </Box>
@@ -713,6 +779,7 @@ const ResellerSubscriptions = () => {
                 showCheckbox={false}
                 showDateFilter
                 showDateFilterBtn
+                filterData={filterData}
                 showDateFilterSearch={false}
                 dateFilterBtnName="Create Discounts"
                 dateFilterBtnClick={() => {
