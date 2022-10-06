@@ -254,7 +254,7 @@ const ViewModal = ({
             Subscription status:{subscriptionStatus}
           </Typography>
           <Typography className="fw-bold h-5">
-            Subscription period {subscriptionPeriod}
+            Subscription period: {subscriptionPeriod}
           </Typography>
         </Box>
         <TableComponent
