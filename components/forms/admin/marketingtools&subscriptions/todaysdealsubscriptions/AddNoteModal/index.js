@@ -21,7 +21,7 @@ const AddNoteModal = ({
   setOpenAddNoteModal,
   typeId,
   adminComments = { comment: "", commentAttachment: "" },
-  // getDealSubscription,
+  getDealSubscription,
 }) => {
   const [addANote, setAddANote] = useState(adminComments.comment);
   const [fileInput, setFileInput] = useState(null);
@@ -52,6 +52,16 @@ const AddNoteModal = ({
 
   const adminIde = useSelector((state) => state.user.userId);
 
+  const handleCloseIconClick = () => {
+    errObj = {
+      addANote: false,
+    };
+    setAddANote("");
+    setFileInput("");
+    setOpenAddNoteModal(false);
+    setErrorFe(errObj);
+  };
+
   const addNote = async (payload) => {
     const { data, error, message } = await addANoteApi(payload);
     if (error) {
@@ -62,6 +72,8 @@ const AddNoteModal = ({
       }
     } else if (data) {
       toastify(message, "success");
+      handleCloseIconClick();
+      getDealSubscription(0);
     }
   };
 
@@ -102,16 +114,6 @@ const AddNoteModal = ({
       // await getDealSubscription(0);
     }
     setErrorFe(err);
-  };
-
-  const handleCloseIconClick = () => {
-    errObj = {
-      addANote: false,
-    };
-    setAddANote("");
-    setFileInput("");
-    setOpenAddNoteModal(false);
-    setErrorFe(errObj);
   };
 
   const onInputChange = (event) => {

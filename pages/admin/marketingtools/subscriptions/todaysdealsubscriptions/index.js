@@ -275,7 +275,7 @@ const TodaysDealSubscription = () => {
     return mappedArray;
   };
 
-  async function getDealSubscription(page) {
+  const getDealSubscription = async (page) => {
     const selectedListData = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "TODAYS_DEAL",
@@ -299,7 +299,7 @@ const TodaysDealSubscription = () => {
         setPageNumber((pre) => pre + 1);
       }
     }
-  }
+  };
 
   useEffect(() => {
     getDealSubscription(0);
@@ -394,9 +394,7 @@ const TodaysDealSubscription = () => {
           setOpenViewModal={setOpenViewModal}
           dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
           setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
-          // viewModalPageNumber={viewModalPageNumber}
           purchaseIde={purchaseIde}
-          // handleViewClick={handleViewClick}
         />
       )}
       {openAddNoteModal && (
@@ -405,9 +403,7 @@ const TodaysDealSubscription = () => {
           setOpenAddNoteModal={setOpenAddNoteModal}
           typeId={typeId}
           adminComments={adminComments}
-          // getDealSubscription={getDealSubscription}
-          // pageNumber={pageNumber}
-          // setPageNumber={setPageNumber}
+          getDealSubscription={getDealSubscription}
         />
       )}
       {showNotificationModal && (
