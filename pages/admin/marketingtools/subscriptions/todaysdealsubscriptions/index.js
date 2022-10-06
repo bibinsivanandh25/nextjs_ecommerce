@@ -235,7 +235,9 @@ const TodaysDealSubscription = () => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
                 setSubscriptionPeriod(
-                  `${val.activatedAt}-${val.expirationDate}`
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
+                    val.expirationDate ? val.expirationDate : "--"
+                  }`
                 );
                 setOpenViewModal(true);
               }}
@@ -312,47 +314,6 @@ const TodaysDealSubscription = () => {
     getDealSubscription(0);
     setPageNumber(0);
   }, [dropdownValue]);
-
-  //   {
-  //     id: 1,
-  //     col1: "01",
-  //     col2: "#827342",
-  //     col3: "--",
-  //     col4: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
-  //     col5: "--",
-  //     col6: "--",
-  //     col7: "--",
-  //     col8: "--",
-  //     col9: "sdasdasd",
-  //     col10: "Active",
-  //     col11: 25,
-  //     col12: (
-  //       <Box className="d-flex justify-content-evenly align-items-center">
-  //         <CustomIcon
-  //           type="view"
-  //           className="fs-18"
-  //           onIconClick={() => setOpenViewModal(true)}
-  //         />
-  //         <MenuOption
-  //           getSelectedItem={(ele) => {
-  //             onClickOfMenuItem(ele);
-  //           }}
-  //           options={[
-  //             "Notify",
-  //             "Add Note",
-  //             <Box className="d-flex align-items-center">
-  //               <Typography>Disable</Typography>
-  //               <Box className="ms-4">
-  //                 <SwitchComponent label="" />
-  //               </Box>
-  //             </Box>,
-  //           ]}
-  //           IconclassName="fs-18 color-gray"
-  //         />
-  //       </Box>
-  //     ),
-  //   },
-  // ];
 
   return (
     <>
