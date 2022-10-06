@@ -10,9 +10,11 @@ import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/todaysdeals
 import {
   enableOrDisableSubscriptions,
   getSubscriptions,
+  viewAllSubsOfSingleUser,
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -21,6 +23,8 @@ const TodaysDealSubscription = () => {
   const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
     useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [dropdownValue, setDropdownValue] = useState([]);
+  const [subsTypeId, setSubsTypeId] = useState("");
 
   const column1 = [
     {
@@ -147,12 +151,25 @@ const TodaysDealSubscription = () => {
     },
   ];
 
-  const onClickOfMenuItem = (ele) => {
+  const onClickOfMenuItem = (ele, typeId) => {
     if (ele === "Add Note") {
+      setSubsTypeId(typeId);
       setOpenAddNoteModal(true);
     }
     if (ele === "Notify") {
       setShowNotificationModal(true);
+    }
+  };
+
+  const handleViewClick = async (purchaseId) => {
+    const { data, error, message } = await viewAllSubsOfSingleUser(purchaseId);
+    if (error) {
+      if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+      else if (message) toastify(message, "error");
+    } else if (data) {
+      setDataOfSingleSupplierOrReseller(data);
+      setOpenViewModal(true);
     }
   };
 
@@ -170,14 +187,20 @@ const TodaysDealSubscription = () => {
     }
   };
 
-  async function getDealSubscription() {
-    const { data, error } = await getSubscriptions({
+  async function getDealSubscription(type = []) {
+    const { data, error, message } = await getSubscriptions({
       marketingTool: "TODAYS_DEAL",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
+      userType: type,
     });
-    if (data) {
-      console.log(data);
+    if (error) {
+      if (message) {
+        setTableRowsTodaysDealSubs([]);
+        toastify(message, "error");
+      } else if (error?.response?.data?.message) {
+        toastify(error?.response?.data?.message, "error");
+      }
+    } else if (data && !error) {
+      console.log(data, " -- data ");
       const mappedArray = data.map((val, index) => {
         const dateOne = new Date(val.activatedAt);
         const dateTwo = new Date(val.expirationDate);
@@ -221,18 +244,13 @@ const TodaysDealSubscription = () => {
                 type="view"
                 className="fs-18"
                 onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
-                  setDataOfSingleSupplierOrReseller(val.userMarketingTools);
-                  setOpenViewModal(true);
+                  handleViewClick(val.purchaseId);
+                  // setOpenViewModal(true);
                 }}
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  console.log("Hey");
-                  onClickOfMenuItem(ele);
+                  onClickOfMenuItem(ele, val.subscriptionTypeId);
                 }}
                 options={[
                   "Notify",
@@ -265,16 +283,17 @@ const TodaysDealSubscription = () => {
 
       setTableRowsTodaysDealSubs(mappedArray);
     }
-    if (error) {
-      console.log("error hey", error);
-    }
   }
 
-  useEffect(() => {
-    getDealSubscription();
-  }, []);
+  const handleDropDownSelection = () => {
+    const payload = dropdownValue.map((value) => value.title);
+    getDealSubscription(payload);
+  };
 
-  // const rows = [
+  useEffect(() => {
+    handleDropDownSelection();
+  }, [dropdownValue]);
+
   //   {
   //     id: 1,
   //     col1: "01",
@@ -320,9 +339,25 @@ const TodaysDealSubscription = () => {
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Todays Deal Subscription
-          </Typography>
+          <Box className="d-flex align-items-center justify-content-between">
+            <Typography className="fw-bold color-orange">
+              Todays Deal Subscription
+            </Typography>
+            <Box className="w-25 me-2">
+              <MultiSelectComponent
+                list={[
+                  { title: "Supplier", id: 1 },
+                  { title: "Reseller", id: 2 },
+                ]}
+                label="Select Subscriber"
+                onSelectionChange={(_e, val) => {
+                  setDropdownValue(val);
+                }}
+                value={dropdownValue}
+                inputlabelshrink={false}
+              />
+            </Box>
+          </Box>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
@@ -338,21 +373,28 @@ const TodaysDealSubscription = () => {
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
-      <CreateNotification
-        showNotificationModal={showNotificationModal}
-        setShowNotificationModal={setShowNotificationModal}
-        type="add"
-      />
+      {openViewModal && (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
+          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
+        />
+      )}
+      {openAddNoteModal && (
+        <AddNoteModal
+          openAddNoteModal={openAddNoteModal}
+          setOpenAddNoteModal={setOpenAddNoteModal}
+          subsTypeId={subsTypeId}
+        />
+      )}
+      {showNotificationModal && (
+        <CreateNotification
+          showNotificationModal={showNotificationModal}
+          setShowNotificationModal={setShowNotificationModal}
+          type="add"
+        />
+      )}
     </>
   );
 };

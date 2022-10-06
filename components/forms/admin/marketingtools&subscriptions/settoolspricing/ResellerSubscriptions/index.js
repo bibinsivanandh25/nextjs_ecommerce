@@ -22,6 +22,7 @@ const resellerSubscriptions = () => {
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
     []
   );
+  // eslint-disable-next-line no-unused-vars
   const [toolsCampaignTableRows, setToolsCampaignTableRows] = useState([]);
 
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);

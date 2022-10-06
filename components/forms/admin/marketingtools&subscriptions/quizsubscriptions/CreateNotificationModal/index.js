@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, FormHelperText, Typography } from "@mui/material";
 import { useRef, useState, useEffect } from "react";
 import { CloseOutlined } from "@mui/icons-material";
