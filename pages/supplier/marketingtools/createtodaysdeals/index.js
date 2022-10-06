@@ -138,17 +138,19 @@ const CreateTodaysDeals = () => {
           col11: (
             <div className="d-flex justify-content-center">
               <CustomIcon
+                title="View"
                 type="remove"
                 className="fs-16"
                 onIconClick={() => handleViewClick(item)}
               />
-              <CustomIcon type="share" className="fs-16 mx-1" />
+              <CustomIcon type="share" className="fs-16 mx-1" title="Share" />
               <CustomIcon
                 type="delete"
                 className="fs-16"
                 onIconClick={() => {
                   handleDeleteClick(item);
                 }}
+                title="Delete"
               />
             </div>
           ),

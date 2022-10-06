@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { FormGroup, FormControlLabel, Switch, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
 
 // eslint-disable-next-line no-unused-vars
 const AntSwitch = styled(Switch)(({ theme }) => ({
@@ -50,19 +49,21 @@ const SwitchComponent = ({
   size = "small",
   styledSwitch = true,
 }) => {
-  const [checked, setChecked] = useState(false);
-  useEffect(() => {
-    setChecked(defaultChecked);
-  }, [defaultChecked]);
+  // const [checked, setChecked] = useState(false);
+  // useEffect(() => {
+  //   console.log(defaultChecked, checked, "reached");
+  //   setChecked(defaultChecked);
+  // }, [defaultChecked]);
+
   return !styledSwitch ? (
     <FormGroup>
       <FormControlLabel
         control={
           <Switch
-            checked={checked}
+            checked={defaultChecked}
             onChange={() => {
-              setChecked(!checked);
-              ontoggle(!checked);
+              // setChecked(!checked);
+              ontoggle(!defaultChecked);
             }}
             size={size}
           />
@@ -77,10 +78,9 @@ const SwitchComponent = ({
           <Stack direction="row" spacing={1} alignItems="center">
             <AntSwitch
               inputProps={{ "aria-label": "ant design" }}
-              checked={checked}
+              checked={defaultChecked}
               onChange={() => {
-                setChecked(!checked);
-                ontoggle(!checked);
+                ontoggle(!defaultChecked);
               }}
             />
           </Stack>

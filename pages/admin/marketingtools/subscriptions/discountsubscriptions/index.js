@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
@@ -12,6 +12,8 @@ import {
   adminDiscountSubscriptionDisable,
 } from "services/admin/discountsubscription";
 import toastify from "services/utils/toastUtils";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useSelector } from "react-redux";
 // import { useSelector } from "react-redux";
 
 const column1 = [
@@ -138,21 +140,35 @@ const column2 = [
     // data_style: { paddingLeft: "7%" },
   },
 ];
+const listData = [
+  {
+    id: "1",
+    value: "SUPPLIER",
+    title: "SUPPLIER",
+  },
+  {
+    id: "2",
+    value: "RESELLER",
+    title: "RESELLER",
+  },
+];
 const DiscountSubscriptions = () => {
-  // const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rows, setRows] = useState([]);
   const [viewData, setViewData] = useState({});
+  const [selectedList, setSelectedList] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
 
   const onClickOfMenuItem = (ele) => {
     if (ele === "Add Note") {
       setOpenAddNoteModal(true);
     }
   };
-  const handleViewClick = (data) => {
-    if (data) {
-      setViewData(data);
+  const handleViewClick = async (value) => {
+    if (value) {
+      setViewData(value);
       setOpenViewModal(true);
     }
   };
@@ -161,7 +177,7 @@ const DiscountSubscriptions = () => {
     if (data) {
       data.forEach((item, index) => {
         result.push({
-          id: "col1",
+          id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
           col3: item.days == 7 ? item.activatedAt - item.expirationDate : "--",
@@ -222,38 +238,69 @@ const DiscountSubscriptions = () => {
     );
     if (data) {
       toastify(data.message, "success");
-      getTableData();
+      getTableData(pageNumber);
     }
     if (err) {
       toastify(err.response.data.message, "error");
     }
   };
-  const getTableData = async () => {
+  const getTableData = async (page) => {
+    const selectedListData = [];
+    selectedList.forEach((item) => {
+      if (item.value) {
+        selectedListData.push(item.value);
+      }
+    });
     const payload = {
       marketingTool: "DISCOUNT_COUPON",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
+      userType: selectedListData,
     };
-    const { data, err } = await adminDiscountSubscription(payload);
+    const { data, err } = await adminDiscountSubscription(payload, page);
     if (data) {
       setRows(getTableRows(data));
     }
+    if (data) {
+      if (page == 0) {
+        setRows(getTableRows(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getTableRows(data)]);
+      }
+    }
     if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
       setRows([]);
     }
   };
 
   useEffect(() => {
-    getTableData();
-  }, []);
+    getTableData(0);
+    setpageNumber(0);
+  }, [selectedList]);
   return (
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Discount Subscriptions
-          </Typography>
+          <Grid container>
+            <Grid item xs={8.5}>
+              <Typography className="fw-bold color-orange">
+                Discount Subscriptions
+              </Typography>
+            </Grid>
+            <Grid item xs={3.5}>
+              <MultiSelectComponent
+                label="FILTER"
+                placeholder=""
+                list={listData}
+                onSelectionChange={(e, value) => {
+                  setSelectedList(value);
+                  setpageNumber(0);
+                }}
+                value={selectedList}
+              />
+            </Grid>
+          </Grid>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
@@ -262,22 +309,30 @@ const DiscountSubscriptions = () => {
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
-            onCustomButtonClick={() => {
-              // setOpenAddDaysCounterModal(true);
-            }}
             stickyHeader
+            handlePageEnd={(page = pageNumber) => {
+              getTableRows(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        viewData={viewData}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
+      {openViewModal ? (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          viewData={viewData}
+          user={user}
+        />
+      ) : null}
+      {openAddNoteModal ? (
+        <AddNoteModal
+          openAddNoteModal={openAddNoteModal}
+          setOpenAddNoteModal={setOpenAddNoteModal}
+        />
+      ) : null}
     </>
   );
 };

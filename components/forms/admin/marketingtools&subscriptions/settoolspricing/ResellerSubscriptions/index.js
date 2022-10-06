@@ -1,16 +1,22 @@
+/* eslint-disable no-use-before-define */
+import {
+  enableDisableMarketingTools,
+  getAllIndividualPricingByUserType,
+  getSubscrptionType,
+} from "services/admin/marketingtools/settoolpricing";
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
+import toastify from "services/utils/toastUtils";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
-import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
 
-const ResellerSubscriptions = () => {
-  const [resellerSubscriptionsTableOne, setResellerSubscriptionsTableOne] =
+const resellerSubscriptions = () => {
+  const [resellerSubscriptionsTableOne, setresellerSubscriptionsTableOne] =
     useState([]);
-  const [resellerSubscriptionsTableTwo, setResellerSubscriptionsTableTwo] =
+  const [resellerSubscriptionsTableTwo, setresellerSubscriptionsTableTwo] =
     useState([]);
 
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
@@ -20,47 +26,221 @@ const ResellerSubscriptions = () => {
 
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
+  const [
+    tableColumsForresellerSubscriptionsTableOne,
+    settableColumsForresellerSubscriptionsTableOne,
+  ] = useState([]);
+  const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
 
-  const tableColumsForResellerSubscriptionsTableOne = [
-    {
-      id: "col1",
-      align: "center",
-      label: "Discount Coupon",
-      data_align: "center",
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Today's Deal",
-      data_align: "center",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Spin Wheel",
-      data_align: "center",
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Scratch Card",
-      data_align: "center",
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Quiz",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Price Targeted",
-      data_align: "center",
-    },
-  ];
+  const gettableColumsForresellerSubscriptionsTableOne = async () => {
+    const { data } = await getSubscrptionType("RESELLER");
+    if (data) {
+      const result = [];
+      const rows = {};
+      const rows2 = {};
+      data.forEach((ele, ind) => {
+        let count = Object.keys(rows2).length;
+        result.push({
+          id: `col${ind + 1}`,
+          align: "center",
+          label: ele.adminMarketingToolName.replaceAll("_", " "),
+          data_align: "center",
+        });
 
-  const tableColumsForResellerSubscriptionsTableTwo = [
+        rows[`col${ind + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.totalCount}
+          </Typography>
+        );
+
+        rows2[`col${count + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.activeCount}
+          </Typography>
+        );
+        count += 1;
+        rows2[`col${count + 1}`] = (
+          <Typography className="h-5 text-decoration-underline cursor-pointer">
+            {ele.inActiveCount}
+          </Typography>
+        );
+      });
+
+      const temp = [];
+      const temp1 = [];
+      temp1.push(rows2);
+      temp.push(rows);
+      setresellerSubscriptionsTableTwo([...temp1]);
+      setresellerSubscriptionsTableOne([...temp]);
+      settableColumsForresellerSubscriptionsTableOne([...result]);
+    }
+  };
+
+  const mapIndivisualPricingColumns = (data) => {
+    const result = [
+      {
+        id: "col1",
+        align: "center",
+        label: "Tools / Days",
+        data_align: "center",
+        position: "sticky",
+        minWidth: 200,
+      },
+    ];
+    data.forEach((item, ind) => {
+      result.push({
+        id: `col${ind + 2}`,
+        align: "center",
+        label: item.toolName.replaceAll("_", " "),
+        data_align: "center",
+        position: "",
+        minWidth: 200,
+      });
+    });
+    result.push({
+      id: "col10",
+      align: "center",
+      label: "Actions",
+      data_align: "center",
+      // minWidth: 200,
+      position: "sticky",
+    });
+    setIndividualPricingColumns([...result]);
+  };
+
+  const enableDisableMarketingTool = async (ids, status) => {
+    const payload = {
+      toolIdList: ids.filter((ele) => ele),
+      disabled: !status,
+    };
+    console.log(payload);
+    const { data, err } = await enableDisableMarketingTools(payload);
+    if (data?.message) {
+      toastify(data.message, "success");
+      getIndividualPricing();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const getIndividualPricing = async () => {
+    const { data } = await getAllIndividualPricingByUserType("RESELLER");
+    if (data) {
+      mapIndivisualPricingColumns(data);
+      // days.forEach((val) => {
+      //   data.forEach((item, index) => {
+      //     item.adminMarketingTools.forEach((value) => {
+      //       res.push({
+      //         col1: val,
+      //       });
+      //       if (value.days.toLocaleLowerCase() === val.toLocaleLowerCase()) {
+      //         res.push({
+      //           [`col${index + 2}`]: (
+      //             <Box className="d-flex align-items-center justify-content-evenly">
+      //               <Typography className="h-5">{value.price}</Typography>
+      //               <CustomIcon type="edit" />
+      //               <CustomIcon type="calendar" />
+      //               <Box className="ms-2">
+      //                 <SwitchComponent label="" />
+      //               </Box>
+      //             </Box>
+      //           ),
+      //         });
+      //         res.push({
+      //           col10: (
+      //             <div className="d-flex justify-content-center align-items-center">
+      //               <CustomIcon type="view" title="view" className="mx-4" />
+      //               <SwitchComponent label="" />
+      //             </div>
+      //           ),
+      //         });
+      //       }
+      //     });
+      //   });
+      //   newres.push(Object.assign({}, ...res));
+      // });
+
+      const days = [
+        "7 days",
+        "30 days",
+        "90 days",
+        "180 days",
+        "270 days",
+        "360 days",
+      ];
+      const finalResult = [];
+      days.forEach((day, ind) => {
+        const result = [];
+        data.forEach((ele) => {
+          const temp2 = ele.adminMarketingTools.find((item) => {
+            return item.days.toLocaleLowerCase() === day.toLocaleLowerCase();
+          });
+          if (temp2) result.push(temp2);
+          else
+            result.push({
+              price: "--",
+            });
+        });
+        const result2 = {};
+        const toolIds = [];
+        const status = [];
+        result2.col1 = day;
+        result.forEach((ele, index) => {
+          toolIds.push(ele.adminMarketingToolId);
+          if (ele.adminMarketingToolId) status.push(ele.disabled);
+
+          result2[`col${index + 2}`] =
+            ele.price !== "--" ? (
+              <Box className="d-flex align-items-center justify-content-evenly">
+                <Typography className="h-5">{ele.price}</Typography>
+                <CustomIcon type="edit" className="h-4" />
+                <CustomIcon type="calendar" className="h-4" />
+                <Box className="ms-2">
+                  <SwitchComponent
+                    label=""
+                    defaultChecked={ele.disabled}
+                    ontoggle={() => {
+                      enableDisableMarketingTool(
+                        [ele.adminMarketingToolId],
+                        ele.disabled
+                      );
+                    }}
+                  />
+                </Box>
+              </Box>
+            ) : (
+              ele.price
+            );
+        });
+
+        result2.col10 = (
+          <div className="d-flex justify-content-center align-items-center">
+            <CustomIcon type="view" title="view" className="mx-4" />
+            <SwitchComponent
+              label=""
+              defaultChecked={status.every((ele) => ele)}
+              ontoggle={() => {
+                enableDisableMarketingTool(
+                  [...toolIds],
+                  status.every((ele) => ele)
+                );
+              }}
+            />
+          </div>
+        );
+        finalResult[ind] = result2;
+      });
+
+      setIndividualPricingTableRows(finalResult);
+    }
+  };
+  useEffect(() => {
+    gettableColumsForresellerSubscriptionsTableOne();
+    getIndividualPricing();
+  }, []);
+
+  const tableColumsForresellerSubscriptionsTableTwo = [
     {
       id: "col1",
       align: "center",
@@ -121,59 +301,41 @@ const ResellerSubscriptions = () => {
       label: "Inactive",
       data_align: "center",
     },
-  ];
-
-  const tableColumsForIndividualPricing = [
     {
-      id: "col1",
+      id: "col11",
       align: "center",
-      label: "Tools / Days",
+      label: "Active",
       data_align: "center",
-      position: "sticky",
-      minWidth: 200,
     },
     {
-      id: "col2",
+      id: "col12",
       align: "center",
-      label: "Discount Coupon",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col3",
+      id: "col13",
       align: "center",
-      label: "Today's Deal",
+      label: "Active",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col4",
+      id: "col14",
       align: "center",
-      label: "Spin Wheel",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col5",
+      id: "col15",
       align: "center",
-      label: "Scratch Card",
+      label: "Active",
       data_align: "center",
-      minWidth: 200,
     },
     {
-      id: "col6",
+      id: "col16",
       align: "center",
-      label: "Lucky Draw",
+      label: "Inactive",
       data_align: "center",
-      minWidth: 200,
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-      minWidth: 200,
-      position: "sticky",
     },
   ];
 
@@ -281,296 +443,6 @@ const ResellerSubscriptions = () => {
     },
   ];
 
-  const rowsForResellerSubscriptionsTableOne = [
-    {
-      id: 1,
-      col1: 467,
-      col2: 865,
-      col3: 438,
-      col4: 252,
-      col5: 252,
-      col6: 567,
-    },
-  ];
-  const rowsForResellerSubscriptionsTableTwo = [
-    {
-      id: 1,
-      col1: 467,
-      col2: 865,
-      col3: 438,
-      col4: 252,
-      col5: 252,
-      col6: 567,
-      col7: 666,
-      col8: 333,
-      col9: 444,
-      col10: 111,
-    },
-  ];
-
-  const rowsForIndividualPricing = [
-    {
-      id: 1,
-      col1: "7 day's",
-      col2: "10",
-      col3: "10",
-      col4: "10",
-      col5: "10",
-      col6: "10",
-    },
-  ];
-
-  const rowsForToolsCampaign = [
-    {
-      id: 1,
-      col1: "1",
-      col2: "7 Day's",
-      col3: "Checkbox",
-      col4: "Checkbox",
-      col5: "Checkbox",
-      col6: "Checkbox",
-      col7: "Checkbox",
-      col8: 5000,
-      col9: 20,
-      col10: "Diwali offer to boost your sales. Avail the tool in combined",
-      col11: "11/12/2022-10.12-15/12/2022-10.12",
-      col12: "Yet to Start",
-      col13: "10/12/2022-15.30",
-      col14: "Actions",
-    },
-  ];
-
-  const getTableRowsForResellerTableOne = () => {
-    const result = [];
-    rowsForResellerSubscriptionsTableOne.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col1}
-          </Typography>
-        ),
-        col2: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col2}
-          </Typography>
-        ),
-        col3: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col3}
-          </Typography>
-        ),
-        col4: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col4}
-          </Typography>
-        ),
-        col5: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col5}
-          </Typography>
-        ),
-        col6: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col6}
-          </Typography>
-        ),
-      });
-    });
-
-    setResellerSubscriptionsTableOne(result);
-  };
-
-  const getTableRowsForResellerTableTwo = () => {
-    const result = [];
-    rowsForResellerSubscriptionsTableTwo.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col1}
-          </Typography>
-        ),
-        col2: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col2}
-          </Typography>
-        ),
-        col3: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col3}
-          </Typography>
-        ),
-        col4: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col4}
-          </Typography>
-        ),
-        col5: (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {val.col5}
-          </Typography>
-        ),
-        col6: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col6}
-          </Typography>
-        ),
-        col7: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col7}
-          </Typography>
-        ),
-        col8: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col8}
-          </Typography>
-        ),
-        col9: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col9}
-          </Typography>
-        ),
-        col10: (
-          <Typography className=" h-5 text-decoration-underline cursor-pointer">
-            {val.col10}
-          </Typography>
-        ),
-      });
-    });
-
-    setResellerSubscriptionsTableTwo(result);
-  };
-
-  const getTableRowsForIndividualPricing = () => {
-    const result = [];
-    rowsForIndividualPricing.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: val.col1,
-
-        col2: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col2}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col3: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col3}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col4: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col4}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col5: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col5}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col6: (
-          <Box className="d-flex align-items-center justify-content-evenly">
-            <Typography className="h-5">{val.col6}</Typography>
-            <CustomIcon type="edit" />
-            <CustomIcon type="calendar" />
-            <Box className="ms-2">
-              <SwitchComponent label="" />
-            </Box>
-          </Box>
-        ),
-        col7: (
-          <Box className="d-flex align-items-center justify-content-center">
-            <CustomIcon type="view" className="ms-4" />
-            <Box className="ms-4">
-              <Box className="ms-2">
-                <SwitchComponent label="" />
-              </Box>
-            </Box>
-          </Box>
-        ),
-      });
-    });
-
-    setIndividualPricingTableRows(result);
-  };
-
-  const ReturnCheckBox = () => {
-    const [checkBoxChecked, setCheckBoxChecked] = useState(false);
-    return (
-      <CheckBoxComponent
-        isChecked={checkBoxChecked}
-        checkBoxClick={() => {
-          setCheckBoxChecked(!checkBoxChecked);
-        }}
-      />
-    );
-  };
-
-  const getTableRowsForToolsCampaign = () => {
-    const result = [];
-    rowsForToolsCampaign.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: val.col1,
-
-        col2: val.col2,
-        col3: <ReturnCheckBox />,
-        col4: <ReturnCheckBox />,
-        col5: <ReturnCheckBox />,
-        col6: <ReturnCheckBox />,
-        col7: <ReturnCheckBox />,
-        col8: <Typography className="h-5">{val.col8}/-</Typography>,
-        col9: val.col9,
-        col10: val.col10,
-        col11: val.col11,
-        col12: val.col12,
-        col13: val.col13,
-        col14: (
-          <Box className="d-flex align-items-center justify-content-between">
-            <CustomIcon type="edit" />
-            <CustomIcon type="message" className="ms-1" />
-            <CustomIcon type="calendar" className="ms-1" />
-            <CustomIcon type="notification" className="ms-1" />
-            <Box className="ms-3" sx={{ marginRight: "-10px" }}>
-              <SwitchComponent label="" />
-            </Box>
-            <CustomIcon type="view" />
-          </Box>
-        ),
-      });
-    });
-
-    setToolsCampaignTableRows(result);
-  };
-
-  useEffect(() => {
-    getTableRowsForResellerTableOne();
-    getTableRowsForResellerTableTwo();
-    getTableRowsForIndividualPricing();
-    getTableRowsForToolsCampaign();
-  }, []);
-
   return (
     <>
       <Box>
@@ -579,7 +451,7 @@ const ResellerSubscriptions = () => {
             Reseller Subscriptions
           </Typography>
           <TableComponent
-            columns={[...tableColumsForResellerSubscriptionsTableOne]}
+            columns={[...tableColumsForresellerSubscriptionsTableOne]}
             tableRows={resellerSubscriptionsTableOne}
             tHeadBgColor="bg-light-gray"
             showPagination={false}
@@ -588,7 +460,7 @@ const ResellerSubscriptions = () => {
             showCheckbox={false}
           />
           <TableComponent
-            columns={[...tableColumsForResellerSubscriptionsTableTwo]}
+            columns={[...tableColumsForresellerSubscriptionsTableTwo]}
             tableRows={resellerSubscriptionsTableTwo}
             tHeadBgColor="bg-light-gray"
             showPagination={false}
@@ -602,7 +474,7 @@ const ResellerSubscriptions = () => {
             Individual Pricing
           </Typography>
           <TableComponent
-            columns={[...tableColumsForIndividualPricing]}
+            columns={[...individualPricingColumns]}
             tableRows={individualPricingTableRows}
             tHeadBgColor="bg-light-gray"
             showPagination={false}
@@ -637,16 +509,20 @@ const ResellerSubscriptions = () => {
           />
         </Paper>
       </Box>
-      <AddDaysCounterModal
-        openAddDaysCounterModal={openAddDaysCounterModal}
-        setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
-      />
-      <CreateDiscountModal
-        openCreateDiscountModal={openCreateDiscountModal}
-        setOpenCreateDiscountModal={setOpenCreateDiscountModal}
-      />
+      {openAddDaysCounterModal ? (
+        <AddDaysCounterModal
+          openAddDaysCounterModal={openAddDaysCounterModal}
+          setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+        />
+      ) : null}
+      {openCreateDiscountModal ? (
+        <CreateDiscountModal
+          openCreateDiscountModal={openCreateDiscountModal}
+          setOpenCreateDiscountModal={setOpenCreateDiscountModal}
+        />
+      ) : null}
     </>
   );
 };
 
-export default ResellerSubscriptions;
+export default resellerSubscriptions;
