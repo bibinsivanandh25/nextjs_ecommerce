@@ -199,6 +199,7 @@ const Users = () => {
           type={modalData.type === "" ? "add" : modalData.type}
           adminData={modalData.data}
           setModalData={setModalData}
+          gettableData={getUsers}
         />
       )}
     </Box>

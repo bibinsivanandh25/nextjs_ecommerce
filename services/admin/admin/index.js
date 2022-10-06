@@ -57,6 +57,15 @@ const updatedAdminManager = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const updatedAdminUser = (payload) => {
+  return serviceUtil
+    .put(`users/admin/admin-users`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 
 const deleteAdminManager = (userId) => {
   return serviceUtil
@@ -86,6 +95,28 @@ const getAdminUser = (userId) => {
     .catch((err) => ({ err }));
 };
 
+const getAdminByDesignation = (designation) => {
+  return serviceUtil
+    .get(`users/admin/group/admin-info?designation=${designation}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getAdminGroups = () => {};
+const saveAdminGroup = (payload) => {
+  return serviceUtil
+    .post(`users/admin/group`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const getGroupDetails = () => {};
+
 export {
   saveAdminManager,
   saveAdminUser,
@@ -96,4 +127,9 @@ export {
   deleteAdminManager,
   deleteAdminUser,
   getAdminUser,
+  getAdminByDesignation,
+  getAdminGroups,
+  saveAdminGroup,
+  getGroupDetails,
+  updatedAdminUser,
 };

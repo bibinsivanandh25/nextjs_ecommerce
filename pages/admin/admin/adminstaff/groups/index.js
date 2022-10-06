@@ -14,50 +14,33 @@ const Users = () => {
       label: "Group Name",
       data_align: "center",
     },
+
     {
       id: "col2",
       align: "center",
-      label: "Description",
+      label: "Created By",
       data_align: "center",
     },
     {
       id: "col3",
       align: "center",
-      label: "Created Manger ID",
+      label: "Created Date & Time",
       data_align: "center",
     },
     {
       id: "col4",
       align: "center",
-      label: "User ID",
+      label: "Last Updated Date & Time",
       data_align: "center",
     },
     {
       id: "col5",
       align: "center",
-      label: "Admin ID",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Created Date & Time",
-      data_align: "center",
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Last Updated Date & Time",
-      data_align: "center",
-    },
-    {
-      id: "col8",
-      align: "center",
       label: "Status",
       data_align: "center",
     },
     {
-      id: "col9",
+      id: "col6",
       align: "center",
       label: "Action",
       data_align: "center",
@@ -101,12 +84,12 @@ const Users = () => {
 
   return (
     <Box>
-      <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
-        {!showAdminCapabilities ? (
+      {!showAdminCapabilities ? (
+        <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            showCheckbox={false}
             tableRows={rows}
             showCustomButton
             customButtonLabel="Create Group"
@@ -117,12 +100,12 @@ const Users = () => {
             }}
             showSearchbar={false}
           />
-        ) : (
-          <AdminCapabilities
-            setShowAdminCapabilities={setShowAdminCapabilities}
-          />
-        )}
-      </Paper>
+        </Paper>
+      ) : (
+        <AdminCapabilities
+          setShowAdminCapabilities={setShowAdminCapabilities}
+        />
+      )}
     </Box>
   );
 };
