@@ -167,7 +167,7 @@ const QuizSubscriptions = () => {
   };
 
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
-    const { error } = await enableOrDisableSubscriptions(
+    const { error, message } = await enableOrDisableSubscriptions(
       purchaseId,
       status,
       marketingTool
@@ -175,9 +175,9 @@ const QuizSubscriptions = () => {
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
       getQuizSubscription(0);
-    } else {
-      toastify(`Unable to change the status`, "error");
-    }
+    } else if (message) toastify(message, "error");
+    else if (error?.response?.data?.message)
+      toastify(error?.response?.data?.message, "error");
   };
 
   const returnTableData = (data) => {

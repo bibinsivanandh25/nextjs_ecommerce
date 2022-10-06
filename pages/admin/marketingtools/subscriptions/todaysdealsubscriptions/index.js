@@ -173,17 +173,17 @@ const TodaysDealSubscription = () => {
   };
 
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
-    const { error } = await enableOrDisableSubscriptions(
+    const { error, message } = await enableOrDisableSubscriptions(
       purchaseId,
       status,
       marketingTool
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getDealSubscription(0);
-    } else {
-      toastify(`Unable to change the status`, "error");
-    }
+      getSubscriptions(0);
+    } else if (message) toastify(message, "error");
+    else if (error?.response?.data?.message)
+      toastify(error?.response?.data?.message, "error");
   };
 
   const returnTableData = (data) => {
