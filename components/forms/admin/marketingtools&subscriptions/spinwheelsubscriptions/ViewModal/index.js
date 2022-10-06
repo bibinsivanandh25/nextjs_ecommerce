@@ -11,7 +11,13 @@ import {
 import toastify from "services/utils/toastUtils";
 import React, { useState, useEffect } from "react";
 
-const ViewModal = ({ openViewModal, setOpenViewModal, purchaseIde }) => {
+const ViewModal = ({
+  openViewModal,
+  setOpenViewModal,
+  purchaseIde,
+  subscriptionStatus,
+  subscriptionPeriod,
+}) => {
   const [rows, setRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const handleCloseIconClick = () => {
@@ -243,13 +249,12 @@ const ViewModal = ({ openViewModal, setOpenViewModal, purchaseIde }) => {
           handleCloseIconClick();
         }}
       >
-        <Box className="d-flex">
-          <Typography className="fw-bold">
-            Subscription status:Active
+        <Box className="d-flex justify-content-between">
+          <Typography className="fw-bold h-5">
+            Subscription status:{subscriptionStatus}
           </Typography>
-          <Typography className="fw-bold">
-            Subscription period (8/30days) - 01/01/2022 : 11.44 to 30/01/2022 :
-            11.11
+          <Typography className="fw-bold h-5">
+            Subscription period {subscriptionPeriod}
           </Typography>
         </Box>
         <TableComponent
