@@ -28,6 +28,8 @@ const FlagsSubscription = () => {
 
   const [dropdownValue, setDropdownValue] = useState([]);
   const [typeId, setTypeId] = useState("");
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
+  const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
   const [adminComments, setAdminComments] = useState({
     comment: "",
     commentAttachment: "",
@@ -217,7 +219,12 @@ const FlagsSubscription = () => {
               className="fs-18"
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
-                // handleViewClick(val.purchaseId, 0);
+                setSubscriptionStatus(val.toolStatus);
+                setSubscriptionPeriod(
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
+                    val.expirationDate ? val.expirationDate : "--"
+                  }`
+                );
                 setOpenViewModal(true);
               }}
             />
@@ -349,6 +356,8 @@ const FlagsSubscription = () => {
           dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
           setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
+          subscriptionStatus={subscriptionStatus}
+          subscriptionPeriod={subscriptionPeriod}
         />
       )}
       {openAddNoteModal && (
