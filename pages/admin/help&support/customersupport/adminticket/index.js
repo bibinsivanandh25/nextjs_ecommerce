@@ -244,7 +244,10 @@ const SupplierSupport = () => {
                 showFilterButton
                 filterData={filterData}
                 showDateFilterSearch={false}
-                dateFilterBtnClick={() => {
+                // dateFilterBtnClick={() => {
+                //   setShowCreateTicketComponent(true);
+                // }}
+                onCustomButtonClick={() => {
                   setShowCreateTicketComponent(true);
                 }}
                 handlePageEnd={(searchText, filterText, page = pageNumber) => {
@@ -257,6 +260,7 @@ const SupplierSupport = () => {
         ) : (
           <CreateTicket
             setShowCreateTicketComponent={setShowCreateTicketComponent}
+            getTabledata={getTabledata}
           />
         )}
       </Box>

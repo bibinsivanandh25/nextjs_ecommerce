@@ -5,39 +5,81 @@ import InputBox from "components/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TextEditor from "components/atoms/TextEditor";
 import validateMessage from "constants/validateMessages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  getMediaUrl,
+  getSuplierList,
+  helpandSupportTicket,
+} from "services/admin/help&support";
+import toastify from "services/utils/toastUtils";
 
-const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
+const CreateTicket = ({
+  setShowCreateTicketComponent = () => {},
+  getTabledata = () => {},
+}) => {
+  const [mediaConverted, setMediaConverted] = useState([]);
+
+  const [suplierList, setSupplierList] = useState([]);
   // const inputField = useRef();
+  const suplierListData = async () => {
+    const { data } = await getSuplierList();
+    if (data) {
+      const result = [];
+      data.forEach((ele) => {
+        result.push({
+          id: ele.id,
+          label: ele.name,
+          value: ele.value,
+        });
+        setSupplierList([...result]);
+      });
+    }
+  };
+  useEffect(() => {
+    suplierListData();
+  }, []);
 
   const issueTypes = [
     {
-      label: "Order",
-      value: "Order",
+      id: "ORDER_RELATED_ISSUE",
+      label: "Order Related Issue",
+      value: "ORDER_RELATED_ISSUE",
     },
     {
+      id: "RETURN_AND_REFUND",
       label: "Return and Refund",
-      value: "Return and Refund",
+      value: "RETURN_AND_REFUND",
     },
     {
-      label: "Logistic",
-      value: "Logistic",
+      id: "LOGISTICS_RELATED_ISSUE",
+      label: "Logistic Related Issue",
+      value: "LOGISTICS_RELATED_ISSUE",
     },
     {
+      id: "CANCELLATION_AND_REFUND",
       label: "Cancellation and Refund",
-      value: "Cancellation and Refund",
+      value: "CANCELLATION_AND_REFUND",
     },
     {
-      label: "Profile",
-      value: "Profile",
+      id: "PROFILE_RELATED_ISSUE",
+      lable: "Profile Related Issue",
+      value: "PROFILE_RELATED_ISSUE",
     },
     {
+      id: "PAYMENT_SETTLEMENT_ISSUE",
       label: "Payment Settlement",
-      value: "Payment Settlement",
+      value: "PAYMENT_SETTLEMENT_ISSUE",
     },
     {
+      id: "ACCOUNT_MANAGEMENT_ISSUE",
+      label: "Account Management Issue",
+      value: "ACCOUNT_MANAGEMENT_ISSUE",
+    },
+    {
+      id: "OTHERS",
       label: "Others",
-      value: "Others",
+      value: "OTHERS",
     },
   ];
   // const route = useRouter();
@@ -47,12 +89,25 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
     OrderID: "",
     subject: "",
     content: "",
+    imageUrl: [],
+    userToId: "",
   });
   const [errorObj, setErrorObj] = useState({
     issueType: "",
     subject: "",
     content: "",
   });
+
+  const [orderIdDisplay, setorderIdDisplay] = useState(false);
+
+  useEffect(() => {
+    if (formValue.issueType.value == "Order") {
+      setorderIdDisplay(true);
+    } else {
+      setorderIdDisplay(false);
+    }
+  }, [formValue.issueType]);
+
   const validateFields = () => {
     let flag = false;
     const errObj = {
@@ -87,6 +142,60 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
     }
     return flag;
   };
+
+  const { userId, role } = useSelector((state) => state?.user);
+  console.log(userId, role);
+
+  const createPayload = () => {
+    return {
+      issueType: formValue.issueType.label,
+      orderId: formValue.OrderID,
+      issueSubject: formValue.subject,
+      userFromType: role,
+      userFromId: userId,
+      userToType: "SUPPLIER",
+      userToId: formValue.userToId.id,
+      mediaUrl: mediaConverted.map((ele) => ele),
+      helpSupportMessagePojos: [
+        {
+          messageFromId: userId,
+          messageFromType: role,
+          message: formValue.content,
+        },
+      ],
+    };
+  };
+
+  const handleSubmit = async () => {
+    if (!validateFields()) {
+      const payload = createPayload();
+      const { data, err } = await helpandSupportTicket(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setShowCreateTicketComponent(false);
+        getTabledata(0);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        setShowCreateTicketComponent(true);
+      }
+    }
+  };
+
+  const mediaUrlToBase64 = async (file) => {
+    const formData = new FormData();
+    // formData.append("ticketCreatedById", userId);
+    formData.append("ticketCreatedByType", "ADMIN");
+    file.forEach((ele) => {
+      formData.append("imageList", ele);
+    });
+
+    const { data } = await getMediaUrl(formData);
+    if (data) {
+      setMediaConverted([...data]);
+    }
+  };
+
   return (
     <>
       <Paper className="w-100 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
@@ -117,7 +226,6 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
                 error={errorObj.issueType.length}
                 list={[...issueTypes]}
                 onDropdownSelect={(value) => {
-                  // setSelectedIssue({ ...value });
                   setFormValue((pre) => ({
                     ...pre,
                     issueType: { ...value },
@@ -126,24 +234,32 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
               />
             </Grid>
           </Grid>
-          <Grid container className="d-flex align-items-center my-3">
-            <Grid item xs={2} className="fw-bold">
-              Order Id :
-            </Grid>
-            <Grid item xs={8}>
-              <InputBox
-                className="w-100"
-                size="small"
-                value={formValue.OrderID}
-                onInputChange={(e) => {
-                  setFormValue((pre) => ({
-                    ...pre,
-                    OrderID: e.target.value,
-                  }));
-                }}
-              />
-            </Grid>
-          </Grid>
+
+          {orderIdDisplay ? (
+            <>
+              <Grid container className="d-flex align-items-center my-3">
+                <Grid item xs={2} className="fw-bold">
+                  Order Id :
+                </Grid>
+                <Grid item xs={8}>
+                  <InputBox
+                    className="w-100"
+                    size="small"
+                    value={formValue.OrderID}
+                    onInputChange={(e) => {
+                      setFormValue((pre) => ({
+                        ...pre,
+                        OrderID: e.target.value,
+                      }));
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            <div className="my-3" />
+          )}
+
           <Grid container className="d-flex align-items-center">
             <Grid item xs={2} className="fw-bold">
               Subject :
@@ -159,6 +275,24 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
                   setFormValue((pre) => ({
                     ...pre,
                     subject: e.target.value,
+                  }));
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Grid container className="d-flex align-items-center my-3">
+            <Grid item xs={2} className="fw-bold">
+              To :
+            </Grid>
+            <Grid item xs={8}>
+              <SimpleDropdownComponent
+                size="small"
+                value={formValue.userToId}
+                list={suplierList}
+                onDropdownSelect={(value) => {
+                  setFormValue((pre) => ({
+                    ...pre,
+                    userToId: value,
                   }));
                 }}
               />
@@ -203,15 +337,23 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
             <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
               <ButtonComponent
                 label="Create Ticket"
-                onBtnClick={validateFields}
+                onBtnClick={handleSubmit}
               />
             </Grid>
           </Grid>
         </div>
         <FileUploadModal
-          getUploadedFiles={() => {}}
+          getUploadedFiles={(value) => {
+            setFormValue({
+              ...formValue,
+              imageUrl: value.multiPart,
+            });
+            mediaUrlToBase64(value.multiPart);
+          }}
+          type="file"
           showModal={showUploadModal}
           setShowModal={setShowUploadModal}
+          acceptedTypes={["png", "jpg", "pdf", "jpeg"]}
         />
       </Paper>
     </>

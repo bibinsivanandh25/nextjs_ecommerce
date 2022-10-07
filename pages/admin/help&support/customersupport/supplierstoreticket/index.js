@@ -4,11 +4,17 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
+import {
+  getAllFilterDataByUserType,
+  getAllTicketsBasedOnUserType,
+} from "services/admin/help&support";
 
 const CustomerSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateTicketComponent, setShowCreateTicketComponent] =
     useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [filterData, setFilterData] = useState([]);
 
   const options = ["Reply", "Delete", "Close"];
 
@@ -87,42 +93,47 @@ const CustomerSupport = () => {
     },
   ];
 
+  const getFilterValue = async () => {
+    const { data } = await getAllFilterDataByUserType("CUSTOMER");
+    const result = [];
+    if (data) {
+      data.forEach((ele) => {
+        result.push({
+          name: ele.filterName,
+          value: ele.filterValue,
+        });
+      });
+    }
+    setFilterData([...result]);
+  };
+
+  useEffect(() => {
+    getFilterValue();
+  }, []);
+
   const onClickOfMenuItem = () => {};
 
-  const rowsDataObjectsForCustomers = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "#938453 -Old",
-      col3: "----------",
-      col4: "----------",
-      col5: "----------",
-      col6: "----------",
-      col7: "----------",
-      col8: "----------",
-      col9: "----------",
-      col10: "----------",
-      col11: "Opened",
-      col12: "Action",
-    },
-  ];
-
-  const theTaleRowsData = () => {
+  const theTaleRowsData = (data) => {
+    console.log(data);
     const anArray = [];
-    rowsDataObjectsForCustomers.forEach((val, index) => {
+    data.forEach((val, index) => {
       anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: val.col8,
-        col9: val.col9,
-        col10: val.col10,
-        col11: val.col11,
+        id: val.ticketId,
+        col1: index + 1,
+        col2: val.ticketId,
+        col3: `${val.userFromId} / ${val.userFromName}`,
+        col4: val.issueType.replaceAll("_", " "),
+        col5: val.orderId,
+        col6: val.issueSubject,
+        col7: "--",
+        col8: "--",
+        col9: `${val.createdDate.split("T")[0]} ${
+          val.createdDate.split("T")[1]
+        }`,
+        col10: `${val.lastModifiedDate.split("T")[0]} ${
+          val.lastModifiedDate.split("T")[1]
+        }`,
+        col11: val.ticketStatus,
         col12: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
@@ -143,11 +154,79 @@ const CustomerSupport = () => {
     });
     setTableRows(anArray);
   };
+  const getTabledata = async (page, filters = []) => {
+    const payload = {
+      ticketId: [],
+      ticketStatus: [],
+      issueType: [],
+      userType: "CUSTOMER_STORE",
+    };
+    filters.forEach((ele) => {
+      Object.entries(ele).forEach(([key, value]) => {
+        payload[key] = value;
+      });
+    });
+
+    const { data } = await getAllTicketsBasedOnUserType(page, payload);
+    if (data) {
+      if (page === 0) {
+        setTableRows(theTaleRowsData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => [...pre, ...theTaleRowsData(data)]);
+        setpageNumber((pre) => pre + 1);
+      }
+    } else {
+      setTableRows([]);
+    }
+  };
 
   useEffect(() => {
-    theTaleRowsData();
+    getTabledata(0);
   }, []);
 
+  // useEffect(() => {
+  //   theTaleRowsData();
+  // }, []);
+
+  const getFilteredValues = (val) => {
+    if (val.length) {
+      const result = [];
+      val.forEach((item) => {
+        if (item.name === "status") {
+          result.push({
+            ticketStatus: item.value
+              // eslint-disable-next-line array-callback-return
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "issue type") {
+          result.push({
+            issueType: item.value
+              // eslint-disable-next-line array-callback-return
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "ticket id") {
+          result.push({
+            ticketId: item.value
+              // eslint-disable-next-line array-callback-return
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+      });
+      getTabledata(0, result);
+    }
+  };
   return (
     <Box>
       <Box>
@@ -170,6 +249,11 @@ const CustomerSupport = () => {
                 dateFilterBtnClick={() => {
                   setShowCreateTicketComponent(true);
                 }}
+                filterData={filterData}
+                handlePageEnd={(searchText, filterText, page = pageNumber) => {
+                  getTabledata(page);
+                }}
+                getFilteredValues={(val) => getFilteredValues(val)}
               />
             </Box>
           </Paper>
