@@ -13,7 +13,7 @@ const getMarketingToolsBasedonMarketinType = (pageNumber, tool) => {
 
 const approveRejectMarketingToolCampaign = (payload) => {
   return serviceUtil
-    .put(`admin-marketing-tool/approve-reject-campaign`, payload)
+    .put(`users/admin-marketing-tool/approve-reject-campaign`, payload)
     .then((res) => res)
     .catch((err) => ({ err }));
 };
