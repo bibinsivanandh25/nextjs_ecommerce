@@ -1,8 +1,10 @@
 /* eslint-disable no-use-before-define */
 import {
   enableDisableMarketingTools,
+  enableDisableToolCampaign,
   getAllIndividualPricingByUserType,
   getSubscrptionType,
+  getToolsCampaignWithFilter,
   updateMarketingToolPrice,
 } from "services/admin/marketingtools/settoolpricing";
 import { Box, Paper, Typography } from "@mui/material";
@@ -16,6 +18,7 @@ import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
+import ViewIndividualPricing from "../ViewIndividualPricing";
 
 const SupplierSubscriptions = () => {
   const [supplierSubscriptionsTableOne, setSupplierSubscriptionsTableOne] =
@@ -39,7 +42,268 @@ const SupplierSubscriptions = () => {
     tableColumsForSupplierSubscriptionsTableOne,
     settableColumsForSupplierSubscriptionsTableOne,
   ] = useState([]);
+  const [toolIDs, setToolIDs] = useState([]);
+  const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const filterData = [
+    {
+      name: "STATUS",
+      value: [
+        "ACTIVE",
+        "REJECTED",
+        "EXPIRED",
+        "PENDING",
+        "DISABLED",
+        "YET_TO_START",
+        "APPROVED",
+      ],
+    },
+    {
+      name: "DAYS",
+      value: [
+        "7 days",
+        "30 days",
+        "90 days",
+        "180 days",
+        "270 days",
+        "360 days",
+      ],
+    },
+  ];
+
+  const tableColumsForSupplierSubscriptionsTableTwo = [
+    {
+      id: "col1",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col2",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col3",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col4",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col5",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col6",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col7",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col8",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col9",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col10",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col11",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col12",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col13",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col14",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+    {
+      id: "col15",
+      align: "center",
+      label: "Active",
+      data_align: "center",
+    },
+    {
+      id: "col16",
+      align: "center",
+      label: "Inactive",
+      data_align: "center",
+    },
+  ];
+
+  const tableColumsForToolsCampaign = [
+    {
+      id: "col1",
+      align: "center",
+      label: "S.No.",
+      data_align: "center",
+      position: "sticky",
+      minWidth: 75,
+    },
+    {
+      id: "col2",
+      align: "center",
+      label: "Tools / Days",
+      data_align: "center",
+      position: "sticky",
+      minWidth: 75,
+    },
+    {
+      id: "col3",
+      align: "center",
+      label: "DISCOUNT COUPON",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col4",
+      align: "center",
+      label: "TODAYS DEAL",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col5",
+      align: "center",
+      label: "SPIN WHEEL",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col6",
+      align: "center",
+      label: "SCRATCH CARD",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col7",
+      align: "center",
+      label: "PRICE TARGETED",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col8",
+      align: "center",
+      label: "NOTIFICATIONS",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col9",
+      align: "center",
+      label: "FLAGS",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col10",
+      align: "center",
+      label: "QUIZ",
+      data_align: "center",
+      position: "",
+      minWidth: 100,
+    },
+    {
+      id: "col11",
+      align: "center",
+      label: "Price",
+      data_align: "center",
+      minWidth: 75,
+    },
+    {
+      id: "col12",
+      align: "center",
+      label: "Title",
+      data_align: "center",
+      minWidth: 100,
+    },
+    {
+      id: "col13",
+      align: "center",
+      label: "Campaign Period Start Date with Time",
+      data_align: "center",
+      minWidth: 150,
+    },
+    {
+      id: "col14",
+      align: "center",
+      label: "Campaign Period End Date with Time",
+      data_align: "center",
+      minWidth: 150,
+    },
+    {
+      id: "col15",
+      align: "center",
+      label: "Status",
+      data_align: "center",
+      minWidth: 75,
+    },
+    {
+      id: "col16",
+      align: "center",
+      label: "Created Date & Time",
+      data_align: "center",
+      minWidth: 150,
+    },
+    {
+      id: "col17",
+      align: "center",
+      label: "Actions",
+      data_align: "center",
+      minWidth: 100,
+      position: "sticky",
+    },
+  ];
 
   const gettableColumsForSupplierSubscriptionsTableOne = async () => {
     const { data } = await getSubscrptionType("SUPPLIER");
@@ -115,6 +379,7 @@ const SupplierSubscriptions = () => {
     });
     setIndividualPricingColumns([...result]);
   };
+
   const enableDisableMarketingTool = async (ids, status = false) => {
     const payload = {
       toolIdList: [...ids],
@@ -235,7 +500,15 @@ const SupplierSubscriptions = () => {
 
         result2.col10 = (
           <div className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" title="view" className="mx-4" />
+            <CustomIcon
+              type="view"
+              title="view"
+              className="mx-4"
+              onIconClick={() => {
+                setToolIDs(toolIds);
+                setShowIndividualPricing(true);
+              }}
+            />
             <SwitchComponent
               label=""
               defaultChecked={status.every((ele) => !ele)}
@@ -254,408 +527,345 @@ const SupplierSubscriptions = () => {
     }
   };
 
-  useEffect(() => {
-    gettableColumsForSupplierSubscriptionsTableOne();
-    getIndividualPricing();
-  }, []);
-
-  const tableColumsForSupplierSubscriptionsTableTwo = [
-    {
-      id: "col1",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col11",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col12",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col13",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col14",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-    {
-      id: "col15",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-    },
-    {
-      id: "col16",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-    },
-  ];
-
-  const tableColumsForToolsCampaign = [
-    {
-      id: "col1",
-      align: "center",
-      label: "S.No.",
-      data_align: "center",
-      position: "sticky",
-      minWidth: 150,
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Tools / Days",
-      data_align: "center",
-      minWidth: 150,
-      position: "sticky",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Discount Coupon",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Today's Deal",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Spin Wheel",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Scratch Card",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Lucky Draw",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Price Targeted",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Price",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Title",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col11",
-      align: "center",
-      label: "Campaign Period Start & End Date with Time",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col12",
-      align: "center",
-      label: "Status",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col13",
-      align: "center",
-      label: "Created Date & Time",
-      data_align: "center",
-      minWidth: 150,
-    },
-    {
-      id: "col14",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-      minWidth: 200,
-      position: "sticky",
-    },
-  ];
-
-  const rowsForToolsCampaign = [
-    {
-      id: 1,
-      col1: "1",
-      col2: "7 Day's",
-      col3: "Checkbox",
-      col4: "Checkbox",
-      col5: "Checkbox",
-      col6: "Checkbox",
-      col7: "Checkbox",
-      col8: 5000,
-      col9: 20,
-      col10: "Diwali offer to boost your sales. Avail the tool in combined",
-      col11: "11/12/2022-10.12-15/12/2022-10.12",
-      col12: "Yet to Start",
-      col13: "10/12/2022-15.30",
-      col14: "Actions",
-    },
-  ];
-
-  const ReturnCheckBox = () => {
-    const [checkBoxChecked, setCheckBoxChecked] = useState(false);
-    return (
-      <CheckBoxComponent
-        isChecked={checkBoxChecked}
-        checkBoxClick={() => {
-          setCheckBoxChecked(!checkBoxChecked);
-        }}
-      />
-    );
+  const checkToolCampaign = (tool, data) => {
+    return data.map((ele) => ele.adminMarketingToolName).includes(tool);
   };
-
-  const getTableRowsForToolsCampaign = () => {
+  const mapTableCampaignTableRows = (data) => {
     const result = [];
-    rowsForToolsCampaign.forEach((val, index) => {
+    data.forEach((ele, ind) => {
       result.push({
-        id: index + 1,
-        col1: val.col1,
-
-        col2: val.col2,
-        col3: <ReturnCheckBox />,
-        col4: <ReturnCheckBox />,
-        col5: <ReturnCheckBox />,
-        col6: <ReturnCheckBox />,
-        col7: <ReturnCheckBox />,
-        col8: <Typography className="h-5">{val.col8}/-</Typography>,
-        col9: val.col9,
-        col10: val.col10,
-        col11: val.col11,
-        col12: val.col12,
-        col13: val.col13,
-        col14: (
+        col1: ind + 1,
+        col2: ele.days,
+        col3: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              id="DISCOUNT_COUPON"
+              isDisabled
+              isChecked={checkToolCampaign(
+                "DISCOUNT_COUPON",
+                ele.adminMarketingTools
+              )}
+            />
+          </div>
+        ),
+        col4: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isDisabled
+              id="TODAYS_DEAL"
+              isChecked={checkToolCampaign(
+                "TODAYS_DEAL",
+                ele.adminMarketingTools
+              )}
+            />
+          </div>
+        ),
+        col5: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign(
+                "SPIN_WHEEL",
+                ele.adminMarketingTools
+              )}
+              isDisabled
+              id="SPIN_WHEEL"
+            />
+          </div>
+        ),
+        col6: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign(
+                "SCRATCH_CARD",
+                ele.adminMarketingTools
+              )}
+              id="SCRATCH_CARD"
+              isDisabled
+            />
+          </div>
+        ),
+        col7: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign(
+                "PRICE_TARGETED",
+                ele.adminMarketingTools
+              )}
+              isDisabled
+              id="PRICE_TARGETED"
+            />
+          </div>
+        ),
+        col8: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign(
+                "NOTIFICATIONS",
+                ele.adminMarketingTools
+              )}
+              isDisabled
+              id="NOTIFICATIONS"
+            />
+          </div>
+        ),
+        col9: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign("FLAGS", ele.adminMarketingTools)}
+              isDisabled
+              id="FLAGS"
+            />
+          </div>
+        ),
+        col10: (
+          <div className="d-flex justify-content-center">
+            <CheckBoxComponent
+              isChecked={checkToolCampaign("QUIZ", ele.adminMarketingTools)}
+              isDisabled
+              id="QUIZ"
+            />
+          </div>
+        ),
+        col11: ele.price,
+        col12: ele.title,
+        col13: ele.startDateTime,
+        col14: ele.endDateTime,
+        col15: ele.status,
+        col16: ele.createdDate,
+        col17: (
           <Box className="d-flex align-items-center justify-content-between">
-            <CustomIcon type="edit" />
-            <CustomIcon type="message" className="ms-1" />
-            <CustomIcon type="calendar" className="ms-1" />
-            <CustomIcon type="notification" className="ms-1" />
+            <CustomIcon className="h-4" type="edit" />
+            <CustomIcon type="message" className="ms-1 h-4" />
+            <CustomIcon type="calendar" className="ms-1 h-4" />
+            <CustomIcon type="notification" className="ms-1 h-4" />
             <Box className="ms-3" sx={{ marginRight: "-10px" }}>
-              <SwitchComponent label="" />
+              <SwitchComponent
+                label=""
+                defaultChecked={!ele.disabled}
+                ontoggle={() => {
+                  enabledisablecampaign(
+                    ele.adminMarketingToolsCampaignId,
+                    !ele.disabled
+                  );
+                }}
+              />
             </Box>
-            <CustomIcon type="view" />
+            <CustomIcon type="view" className="h-4" />
           </Box>
         ),
       });
     });
+    return result;
+  };
 
-    setToolsCampaignTableRows(result);
+  const enabledisablecampaign = async (id, status) => {
+    const payload = {
+      adminToolCampaignId: id,
+      status,
+    };
+    const { data, err } = await enableDisableToolCampaign(payload);
+    if (data) {
+      toastify(data.message, "success");
+      getToolCampaignTableData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const getToolCampaignTableData = async (page, date, filter) => {
+    const payload = {
+      daysList: filter?.DAYS ?? [],
+      statusList: filter?.STATUS ?? [],
+      storeType: "SUPPLIER",
+      fromDate: date?.fromDate ?? "",
+      toDate: date?.toDate ?? "",
+      pageNumber: page,
+      pageSize: 50,
+    };
+    const { data, err } = await getToolsCampaignWithFilter(payload);
+    if (data) {
+      if (page === 0) {
+        setToolsCampaignTableRows(mapTableCampaignTableRows(data));
+        setPageNumber((pre) => pre + 1);
+      } else {
+        setToolsCampaignTableRows([
+          ...toolsCampaignTableRows,
+          ...mapTableCampaignTableRows(data),
+        ]);
+        setPageNumber((pre) => pre + 1);
+      }
+    }
+    if (err) {
+      setToolsCampaignTableRows([]);
+    }
+  };
+
+  const filterTableData = (data) => {
+    const result = {};
+    data.forEach((ele) => {
+      result[ele.name] = ele.value
+        .map((item) => {
+          if (item.isSelected) {
+            return item.item;
+          }
+          return null;
+        })
+        .filter((val) => val);
+    });
+    getToolCampaignTableData(0, undefined, result);
   };
 
   useEffect(() => {
-    getTableRowsForToolsCampaign();
+    gettableColumsForSupplierSubscriptionsTableOne();
+    getIndividualPricing();
+    getToolCampaignTableData(0);
   }, []);
 
   const handleEditPrice = async () => {
     const payload = {
       toolId: priceDetails.id,
-      price: priceDetails.price,
+      price: Number(priceDetails.price),
     };
     const { data, err } = await updateMarketingToolPrice(payload);
     if (data) {
       getIndividualPricing();
       setShowEditPriceModal(false);
-      toastify(data?.message);
+      toastify(data?.message, "success");
     }
     if (err) {
-      toastify(err?.response?.data?.message);
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
   return (
     <>
-      <Box>
-        <Paper className="p-2">
-          <Typography className="color-orange fw-bold">
-            Supplier Subscriptions
-          </Typography>
-          <TableComponent
-            columns={[...tableColumsForSupplierSubscriptionsTableOne]}
-            tableRows={supplierSubscriptionsTableOne}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            showSearchFilter={false}
-            showSearchbar={false}
-            showCheckbox={false}
-          />
-          <TableComponent
-            columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
-            tableRows={supplierSubscriptionsTableTwo}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            showSearchFilter={false}
-            showSearchbar={false}
-            showCheckbox={false}
-          />
-        </Paper>
-        <Paper className="p-2 mt-4">
-          <Typography className="color-orange fw-bold">
-            Individual Pricing
-          </Typography>
-          <TableComponent
-            columns={[...individualPricingColumns]}
-            tableRows={individualPricingTableRows}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            showSearchFilter={false}
-            showSearchbar={false}
-            showCheckbox={false}
-            showCustomButton
-            customButtonLabel="Add Day's Counter"
-            onCustomButtonClick={() => {
-              setOpenAddDaysCounterModal(true);
-            }}
-          />
-        </Paper>
-        <Paper className="p-2 mt-4">
-          <Typography className="color-orange fw-bold">
-            Tools Campaign
-          </Typography>
-          <TableComponent
-            columns={[...tableColumsForToolsCampaign]}
-            tableRows={toolsCampaignTableRows}
-            tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            showSearchFilter={false}
-            showSearchbar={false}
-            showCheckbox={false}
-            showDateFilter
-            showDateFilterBtn
-            dateFilterBtnName="Create Discounts"
-            dateFilterBtnClick={() => {
-              setOpenCreateDiscountModal(true);
-            }}
-          />
-        </Paper>
-      </Box>
-      {showEditPriceModal ? (
-        <ModalComponent
-          open={showEditPriceModal}
-          onCloseIconClick={() => setShowEditPriceModal(false)}
-          ModalTitle="Edit Price"
-          footerClassName="d-flex justify-content-end"
-          onSaveBtnClick={() => {
-            handleEditPrice();
-          }}
-        >
-          <Box className="mx-5 my-3">
-            <InputBox
-              placeholder="Edit Price"
-              variant="standard"
-              inputlabelshrink
-              size="small"
-              value={priceDetails.price}
-              onInputChange={(e) => {
-                setPriceDetails((pre) => ({
-                  ...pre,
-                  price: e.target.value,
-                }));
-              }}
-            />
+      {!showIndividualPricing ? (
+        <div>
+          <Box>
+            <Paper className="p-2">
+              <Typography className="color-orange fw-bold">
+                Supplier Subscriptions
+              </Typography>
+              <TableComponent
+                columns={[...tableColumsForSupplierSubscriptionsTableOne]}
+                tableRows={supplierSubscriptionsTableOne}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+              />
+              <TableComponent
+                columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
+                tableRows={supplierSubscriptionsTableTwo}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+              />
+            </Paper>
+            <Paper className="p-2 mt-4">
+              <Typography className="color-orange fw-bold">
+                Individual Pricing
+              </Typography>
+              <TableComponent
+                columns={[...individualPricingColumns]}
+                tableRows={individualPricingTableRows}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+                showCustomButton
+                customButtonLabel="Add Day's Counter"
+                onCustomButtonClick={() => {
+                  setOpenAddDaysCounterModal(true);
+                }}
+              />
+            </Paper>
+            <Paper className="p-2 mt-4">
+              <Typography className="color-orange fw-bold">
+                Tools Campaign
+              </Typography>
+              <TableComponent
+                columns={[...tableColumsForToolsCampaign]}
+                tableRows={toolsCampaignTableRows}
+                tHeadBgColor="bg-light-gray"
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+                showDateFilter
+                showDateFilterBtn
+                filterData={filterData}
+                showFilterButton
+                showDateFilterSearch={false}
+                dateFilterBtnName="Create Discounts"
+                dateFilterBtnClick={() => {
+                  setOpenCreateDiscountModal(true);
+                }}
+                getFilteredValues={(values) => {
+                  filterTableData(values);
+                }}
+                handlePageEnd={(
+                  searchText,
+                  searchFilter,
+                  page = pageNumber,
+                  datefilter
+                ) => {
+                  getToolCampaignTableData(page, datefilter);
+                }}
+              />
+            </Paper>
           </Box>
-        </ModalComponent>
-      ) : null}
-      {openAddDaysCounterModal ? (
-        <AddDaysCounterModal
-          openAddDaysCounterModal={openAddDaysCounterModal}
-          setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+          {showEditPriceModal ? (
+            <ModalComponent
+              open={showEditPriceModal}
+              onCloseIconClick={() => setShowEditPriceModal(false)}
+              ModalTitle="Edit Price"
+              footerClassName="d-flex justify-content-end"
+              onSaveBtnClick={() => {
+                handleEditPrice();
+              }}
+            >
+              <Box className="mx-5 my-3">
+                <InputBox
+                  placeholder="Edit Price"
+                  variant="standard"
+                  inputlabelshrink
+                  size="small"
+                  type="number"
+                  value={priceDetails.price}
+                  onInputChange={(e) => {
+                    setPriceDetails((pre) => ({
+                      ...pre,
+                      price: e.target.value,
+                    }));
+                  }}
+                />
+              </Box>
+            </ModalComponent>
+          ) : null}
+          {openAddDaysCounterModal ? (
+            <AddDaysCounterModal
+              openAddDaysCounterModal={openAddDaysCounterModal}
+              setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+            />
+          ) : null}
+          {openCreateDiscountModal ? (
+            <CreateDiscountModal
+              openCreateDiscountModal={openCreateDiscountModal}
+              setOpenCreateDiscountModal={setOpenCreateDiscountModal}
+            />
+          ) : null}
+        </div>
+      ) : (
+        <ViewIndividualPricing
+          toolIDs={[...toolIDs]}
+          setShowIndividualPricing={setShowIndividualPricing}
         />
-      ) : null}
-      {openCreateDiscountModal ? (
-        <CreateDiscountModal
-          openCreateDiscountModal={openCreateDiscountModal}
-          setOpenCreateDiscountModal={setOpenCreateDiscountModal}
-        />
-      ) : null}
+      )}
     </>
   );
 };
