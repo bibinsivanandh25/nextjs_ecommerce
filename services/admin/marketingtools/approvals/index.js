@@ -17,6 +17,21 @@ const approveRejectMarketingToolCampaign = (payload) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
+
+const getMarketingToolDetailsByToolId = (
+  marketingToolId,
+  marketingToolType
+) => {
+  return serviceUtil
+    .get(
+      `/users/admin-marketing-tool?marketingToolId=${marketingToolId}&marketingToolType=${marketingToolType}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 // payload (formData) = {
 //   status: "APPROVED / REJECTED",
 //   marketingToolId: 4,
@@ -25,4 +40,5 @@ const approveRejectMarketingToolCampaign = (payload) => {
 export {
   getMarketingToolsBasedonMarketinType,
   approveRejectMarketingToolCampaign,
+  getMarketingToolDetailsByToolId,
 };
