@@ -213,8 +213,8 @@ const CreateShareProductByPrice = ({
       errObj.priceEnd = null;
     }
     if (formValues.inputValue >= formValues.priceEnd) {
-      errObj.inputValue = "Start price cannot be greater than end price";
-      errObj.priceEnd = "End price cannot be less than start price";
+      errObj.inputValue = "Invalid start price";
+      errObj.priceEnd = "Invalid end price";
     } else {
       errObj.inputValue = null;
       errObj.priceEnd = null;
