@@ -1,17 +1,18 @@
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ViewMarketingtools from "@/forms/admin/marketingtools&subscriptions/approval/viewmarketingtools";
 import EditMarketingTools from "@/forms/admin/marketingtools&subscriptions/approval/editmarketingtools";
+import { getMarketingToolsBasedonMarketinType } from "services/admin/marketingtools/approvals";
 
 const tableColumn = [
   {
     id: "col1",
-    label: "SI NO.",
+    label: "Sl NO.",
     minWidth: 50,
     align: "center",
     data_align: "center",
@@ -28,7 +29,7 @@ const tableColumn = [
   {
     id: "col3",
     label: "Tool",
-    minWidth: 100,
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -36,7 +37,7 @@ const tableColumn = [
   {
     id: "col4",
     label: "Title",
-    minWidth: 100,
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -50,16 +51,8 @@ const tableColumn = [
     data_classname: "",
   },
   {
-    id: "col5",
-    label: "Customer Type",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
     id: "col6",
-    label: "Start Date & Time",
+    label: "Customer Type",
     minWidth: 150,
     align: "center",
     data_align: "center",
@@ -67,75 +60,105 @@ const tableColumn = [
   },
   {
     id: "col7",
-    label: "End Date & Time",
-    minWidth: 100,
+    label: "Start Date & Time",
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
   },
   {
     id: "col8",
-    label: "Created Date & Time",
-    minWidth: 100,
+    label: "End Date & Time",
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
   },
   {
     id: "col9",
+    label: "Created Date & Time",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col10",
     label: "Actions",
-    minWidth: 100,
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
   },
 ];
-const Pricetargeted = () => {
+const PriceTargeted = () => {
   const [viewModalOpen, setViewModalopen] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const rows = [
-    {
-      id: "col1",
-      col1: "1",
-      col2: (
-        <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
-          VLR Transport
-        </Typography>
-      ),
-      col3: "--",
-      col4: (
-        <Box className="d-flex justify-content-around ">
-          <span className="h-5" id="gstinnumber">
-            MRK3556235F3
-          </span>
-        </Box>
-      ),
-      col5: "--",
-      col6: "--",
-      col7: "--",
-      col8: "--",
-      col9: (
-        <Box>
-          <DoneIcon className="border rounded bg-green color-white fs-18 me-1 cursor-pointer" />
-          <ClearIcon className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2" />
-          <CustomIcon
-            type="view"
-            className="fs-18 mx-2"
-            onIconClick={() => setViewModalopen(true)}
-          />
-          <MenuOption
-            options={["Edit", "Delete"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              if (ele === "Edit") {
-                setOpenEditModal(true);
-              }
+  const [tableRows, setTableRows] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const mapTableRows = (data) => {
+    const result = [];
+    data.forEach((item, ind) => {
+      result.push({
+        col1: ind + 1,
+        col2: item.userTypeId,
+        col3: item.toolType.replaceAll("_", " "),
+        col4: item.campaignTitle,
+        col5: (
+          <div
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: item.description,
             }}
           />
-        </Box>
-      ),
-    },
-  ];
+        ),
+        col6: item.customerType.replaceAll("_", " "),
+        col7: item.startDateTime,
+        col8: item.endDateTime,
+        col9: item.createdDate,
+        col10: (
+          <Box className="d-flex justify-content-center align-items-center">
+            <DoneIcon className="border rounded bg-green color-white fs-18 me-1 cursor-pointer" />
+            <ClearIcon className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2" />
+            <CustomIcon
+              type="view"
+              className="fs-18 mx-2"
+              onIconClick={() => setViewModalopen(true)}
+            />
+            <MenuOption
+              options={["Edit", "Delete"]}
+              IconclassName="fs-5 cursor-pointer"
+              getSelectedItem={(ele) => {
+                if (ele === "Edit") {
+                  setOpenEditModal(true);
+                }
+              }}
+            />
+          </Box>
+        ),
+      });
+    });
+
+    return result;
+  };
+  const getTableData = async (page = pageNumber) => {
+    const { data } = await getMarketingToolsBasedonMarketinType(
+      page,
+      "PRICE_TARGETED"
+    );
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapTableRows(data));
+      } else {
+        setPageNumber(pageNumber + 1);
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+      }
+    }
+  };
+  useEffect(() => {
+    getTableData(0);
+  }, []);
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -147,10 +170,13 @@ const Pricetargeted = () => {
           showDateFilter={false}
           showSearchFilter={false}
           showSearchbar={false}
-          tableRows={[...rows]}
+          tableRows={[...tableRows]}
           tHeadBgColor="bg-tableGray"
           table_heading="Price Targeted"
           showCheckbox={false}
+          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
+            getTableData(page);
+          }}
         />
       </Box>
       <ViewMarketingtools
@@ -162,10 +188,10 @@ const Pricetargeted = () => {
         modalOpen={openEditModal}
         modalClose={setOpenEditModal}
         title="Edit Price Targeted"
-        editorPlaceHolder="Description for the Price Targeted Products..."
+        editorPlaceHolder="Description for the Discount Products..."
       />
     </Paper>
   );
 };
 
-export default Pricetargeted;
+export default PriceTargeted;
