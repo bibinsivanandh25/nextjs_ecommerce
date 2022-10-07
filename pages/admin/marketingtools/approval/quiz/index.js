@@ -5,8 +5,9 @@ import { Box, Paper, Typography } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditQuizModal from "@/forms/admin/marketingtools&subscriptions/approval/quiz/editquizmodal";
+import { getMarketingToolsBasedonMarketinType } from "services/admin/marketingtools/approvals";
 
 const tableColumn = [
   {
@@ -41,24 +42,24 @@ const tableColumn = [
     data_align: "center",
     data_classname: "",
   },
+  // {
+  //   id: "col5",
+  //   label: "Quiz Question",
+  //   minWidth: 150,
+  //   align: "center",
+  //   data_align: "center",
+  //   data_classname: "",
+  // },
+  // {
+  //   id: "col5",
+  //   label: "Options",
+  //   minWidth: 100,
+  //   align: "center",
+  //   data_align: "center",
+  //   data_classname: "",
+  // },
   {
     id: "col5",
-    label: "Quiz Question",
-    minWidth: 150,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col5",
-    label: "Options",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col6",
     label: "Start Date & Time",
     minWidth: 150,
     align: "center",
@@ -66,15 +67,15 @@ const tableColumn = [
     data_classname: "",
   },
   {
-    id: "col7",
+    id: "col6",
     label: "End Date & Time",
-    minWidth: 100,
+    minWidth: 150,
     align: "center",
     data_align: "center",
     data_classname: "",
   },
   {
-    id: "col8",
+    id: "col7",
     label: "Actions",
     minWidth: 100,
     align: "center",
@@ -83,50 +84,70 @@ const tableColumn = [
   },
 ];
 const Quiz = () => {
-  const [viewModalOpen, setViewModalopen] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const rows = [
-    {
-      id: "col1",
-      col1: "1",
-      col2: (
-        <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
-          VLR Transport
-        </Typography>
-      ),
-      col3: "--",
-      col4: (
-        <Box className="d-flex justify-content-around ">
-          <span className="h-5" id="gstinnumber">
-            MRK3556235F3
-          </span>
-        </Box>
-      ),
-      col5: "--",
-      col6: "--",
-      col7: "--",
-      col8: (
-        <Box>
-          <DoneIcon className="border rounded bg-green color-white fs-18 me-1 cursor-pointer" />
-          <ClearIcon className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2" />
-          <CustomIcon
-            type="view"
-            className="fs-18 mx-2"
-            onIconClick={() => setViewModalopen(true)}
-          />
-          <MenuOption
-            options={["Edit", "Delete"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              if (ele === "Edit") {
-                setOpenEditModal(true);
-              }
+  const [tableRows, setTableRows] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const rows = [];
+  const mapTableRows = (data) => {
+    console.log(data);
+    const result = [];
+    data.forEach((item, ind) => {
+      result.push({
+        id: item.marketingToolId,
+        col1: ind + 1,
+        col2: (
+          <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
+            {item.userTypeId}
+          </Typography>
+        ),
+        col3: item.campaignTitle,
+        col4: (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: item.description,
             }}
           />
-        </Box>
-      ),
-    },
-  ];
+        ),
+        // col5: item.marketingToolQuestionAnswerList.map((val) => val.question),
+        col5: item.startDateTime,
+        col6: item.endDateTime,
+        col7: (
+          <Box className="d-flex justify-content-center">
+            <DoneIcon className="border rounded bg-green color-white fs-18 me-1 cursor-pointer" />
+            <ClearIcon className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2" />
+            <CustomIcon type="view" className="fs-18 mx-2" />
+            <MenuOption
+              options={["Edit", "Delete"]}
+              IconclassName="fs-5 cursor-pointer"
+              getSelectedItem={(ele) => {
+                if (ele === "Edit") {
+                  setOpenEditModal(true);
+                }
+              }}
+            />
+          </Box>
+        ),
+      });
+    });
+
+    return result;
+  };
+
+  const getTableData = async (page = pageNumber) => {
+    const { data } = await getMarketingToolsBasedonMarketinType(page, "QUIZ");
+    // console.log(data);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapTableRows(data));
+      } else {
+        setPageNumber(pageNumber + 1);
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+      }
+    }
+  };
+  useEffect(() => {
+    getTableData(0);
+  }, []);
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -138,10 +159,13 @@ const Quiz = () => {
           showDateFilter={false}
           showSearchFilter={false}
           showSearchbar={false}
-          tableRows={[...rows]}
+          tableRows={[...tableRows]}
           tHeadBgColor="bg-tableGray"
           table_heading="Quiz"
           showCheckbox={false}
+          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
+            getTableData(page);
+          }}
         />
       </Box>
       <EditQuizModal
