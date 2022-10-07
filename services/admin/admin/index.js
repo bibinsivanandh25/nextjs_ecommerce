@@ -157,6 +157,15 @@ const updateAdminGroup = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const deleteAdminGroup = (groupId) => {
+  return serviceUtil
+    .deleteById(`users/admin/group?groupId=${groupId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 
 export {
   saveAdminManager,
@@ -175,4 +184,5 @@ export {
   updatedAdminUser,
   disableAdminGroup,
   updateAdminGroup,
+  deleteAdminGroup,
 };

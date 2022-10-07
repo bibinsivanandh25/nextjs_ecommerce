@@ -30,6 +30,7 @@ const tempObj = {
 
 const AdminCapabilities = ({
   setShowAdminCapabilities = () => {},
+  gettableData = () => {},
   type = "add",
   groupData = {},
 }) => {
@@ -120,11 +121,12 @@ const AdminCapabilities = ({
   const updateGroup = async (flag) => {
     const payload = createPayload();
     payload.adminGroupId = groupData.adminGroupId;
-    payload.isAdminRemoved = flag;
+    payload.adminRemoved = flag;
     const { data, message, err } = await updateAdminGroup(payload);
     if (data) {
       setShowModal("");
       setShowAdminCapabilities(false);
+      gettableData();
       toastify(message, "success");
     } else if (err) {
       if (err?.response?.data?.error) {
@@ -142,6 +144,7 @@ const AdminCapabilities = ({
         if (data) {
           setShowAdminCapabilities(false);
           toastify(message, "success");
+          gettableData();
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }
@@ -266,13 +269,13 @@ const AdminCapabilities = ({
           {"<"}Back
         </Typography>
       </div>
-      <div className=" d-flex mt-2">
+      <div className=" d-flex">
         <Grid
           container
           item
           spacing={2}
           md={5}
-          lg={3}
+          lg={type === "View" ? 6 : 3}
           className=" border-end p-3"
         >
           <div className="w-100">
@@ -392,22 +395,37 @@ const AdminCapabilities = ({
             ) : (
               <Grid container spacing={2}>
                 <Grid item md={12}>
-                  First Name: {groupData.firstName}
+                  Group Name: {groupData.groupName}
                 </Grid>
                 <Grid item md={12}>
-                  Last Name: {groupData.lastName}
+                  Description: {groupData.description}
                 </Grid>
                 <Grid item md={12}>
-                  E-mail: {groupData.emailId}
+                  Group Members:
+                  <div className="mxh-100 overflow-y-scroll hide-scrollbar">
+                    {groupData.adminRegistration.map((item) => {
+                      return (
+                        <div key={item.adminRegistrationId}>
+                          <Typography>
+                            {item.adminRegistrationId} / {item.firstName}{" "}
+                            {item.lastName}
+                          </Typography>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </Grid>
                 <Grid item md={12}>
-                  Mobile No.: {groupData.mobileNumber}
+                  Created By: {groupData.createdBy}/{groupData.createdByType}
                 </Grid>
                 <Grid item md={12}>
-                  DOB: {groupData.dob}
+                  Created Date: {groupData.createdDate}
                 </Grid>
                 <Grid item md={12}>
-                  Status: {groupData.status}
+                  Last Modified Date: {groupData.lastModifiedDate}
+                </Grid>
+                <Grid item md={12}>
+                  Last Modified By: {groupData.lastModifiedBy}
                 </Grid>
                 <Grid item md={12}>
                   Created By: {groupData.createdBy}
@@ -452,12 +470,13 @@ const AdminCapabilities = ({
                           return temp;
                         });
                       }}
+                      isDisabled={type === "View"}
                     />
                     <Typography
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        if (type === "view") return;
+                        if (type === "View") return;
                         if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
@@ -507,7 +526,7 @@ const AdminCapabilities = ({
                           <Box
                             className="d-flex align-items-center justify-content-between"
                             onClick={() => {
-                              if (type === "view") return;
+                              // if (type === "View") return;
                               if (type === "add" && !checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
@@ -546,10 +565,11 @@ const AdminCapabilities = ({
 
                                   setCapabilities(temp);
                                 }}
+                                isDisabled={type === "View"}
                               />
                               <Typography
                                 onClick={() => {
-                                  if (type === "view") return;
+                                  if (type === "View") return;
                                   if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
@@ -590,6 +610,7 @@ const AdminCapabilities = ({
                                   return (
                                     <Box className="d-flex align-items-center">
                                       <CheckBoxComponent
+                                        isDisabled={type === "View"}
                                         isChecked={eles.isChecked}
                                         size="small"
                                         checkBoxClick={(_, val) => {

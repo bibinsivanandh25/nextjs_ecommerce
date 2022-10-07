@@ -6,6 +6,7 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import AdminCapabilities from "@/forms/admin/groups/AdminCapabilities";
 import {
+  deleteAdminGroup,
   disableAdminGroup,
   getAdminGroups,
   getGroupDetails,
@@ -68,7 +69,15 @@ const Users = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const deleteGroup = () => {};
+  const deleteGroup = async (id) => {
+    const { data, message, err } = await deleteAdminGroup(id);
+    if (data || message) {
+      toastify(message, "success");
+      await gettableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const onClickOfMenuItem = (type, id) => {
     if (["View", "Edit"].includes(type)) {
@@ -158,6 +167,7 @@ const Users = () => {
           setShowAdminCapabilities={setShowAdminCapabilities}
           type={modalData.type}
           groupData={modalData.data}
+          gettableData={gettableData}
         />
       )}
     </Box>
