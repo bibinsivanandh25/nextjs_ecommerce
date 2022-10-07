@@ -19,6 +19,7 @@ const column1 = [
     align: "center",
     data_align: "center",
     data_classname: "",
+    minWidth: 50,
     rowSpan: 2,
   },
 
@@ -28,6 +29,7 @@ const column1 = [
     align: "center",
     data_align: "center",
     data_classname: "",
+    minWidth: 150,
     rowSpan: 2,
   },
   {
@@ -35,12 +37,14 @@ const column1 = [
     label: "Description",
     align: "center",
     data_align: "center",
+    minWidth: 150,
     data_classname: "",
     rowSpan: 2,
   },
   {
     label: "Campaign Period Start & End date with Time",
     align: "center",
+    minWidth: 350,
     data_align: "center",
     data_classname: "",
     colSpan: 2,
@@ -231,27 +235,42 @@ const ViewModal = ({
           <Typography className="fw-bold h-5">
             Subscription status:{viewData.toolStatus}
           </Typography>
-          <Typography className="fw-bold h-5">
-            Subscription period - {viewData.activatedAt} to{" "}
-            {viewData.expirationDate}
-          </Typography>
+          {viewData.activatedAt ? (
+            <Typography className="fw-bold h-5">
+              Subscription period - {viewData.activatedAt} to{" "}
+              {viewData.expirationDate}
+            </Typography>
+          ) : null}
         </Box>
-        <TableComponent
-          columns={[...column2]}
-          column2={[...column1]}
-          tableRows={rows}
-          tHeadBgColor="bg-light-gray"
-          showSearchFilter={false}
-          showSearchbar={false}
-          showCheckbox={false}
-          handlePageEnd={(page = viewPageNumber) => {
-            getTableData(page);
-          }}
-          handleRowsPerPageChange={() => {
-            setViewPageNumber(0);
-          }}
-          stickyHeader
-        />
+        <Box>
+          {rows.length ? (
+            <TableComponent
+              columns={[...column2]}
+              column2={[...column1]}
+              tableRows={rows}
+              tHeadBgColor="bg-light-gray"
+              showSearchFilter={false}
+              showSearchbar={false}
+              showCheckbox={false}
+              handlePageEnd={(page = viewPageNumber) => {
+                getTableData(page);
+              }}
+              handleRowsPerPageChange={() => {
+                setViewPageNumber(0);
+              }}
+              stickyHeader
+            />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              className="mnh-300"
+            >
+              <Typography className="fw-bold h-4">No Data Available</Typography>
+            </Box>
+          )}
+        </Box>
       </ModalComponent>
     </Box>
   );
