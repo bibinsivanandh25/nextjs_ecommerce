@@ -10,4 +10,22 @@ const getMarketingToolsBasedonMarketinType = (pageNumber, tool) => {
     })
     .catch((err) => ({ err }));
 };
-export { getMarketingToolsBasedonMarketinType };
+
+const approveRejectMarketingToolCampaign = (payload) => {
+  return serviceUtil
+    .put(
+      `admin-marketing-tool/approve-reject-campaign?status=APPROVED&marketingToolId=4&userId=SP0722000006`,
+      payload
+    )
+    .then((res) => res)
+    .catch((err) => ({ err }));
+};
+// payload (formData) = {
+//   status: "APPROVED / REJECTED",
+//   marketingToolId: 4,
+//   userId: "",
+// };
+export {
+  getMarketingToolsBasedonMarketinType,
+  approveRejectMarketingToolCampaign,
+};
