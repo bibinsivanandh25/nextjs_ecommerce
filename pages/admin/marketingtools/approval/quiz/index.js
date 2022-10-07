@@ -7,7 +7,12 @@ import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useEffect, useState } from "react";
 import EditQuizModal from "@/forms/admin/marketingtools&subscriptions/approval/quiz/editquizmodal";
-import { getMarketingToolsBasedonMarketinType } from "services/admin/marketingtools/approvals";
+import {
+  approveRejectMarketingToolCampaign,
+  getMarketingToolsBasedonMarketinType,
+} from "services/admin/marketingtools/approvals";
+import ViewMarketingtools from "@/forms/admin/marketingtools&subscriptions/approval/viewmarketingtools";
+import toastify from "services/utils/toastUtils";
 
 const tableColumn = [
   {
@@ -87,9 +92,21 @@ const Quiz = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-  const rows = [];
+
+  const acceptRejectTool = async (status, toolId, userId) => {
+    const formdata = new FormData();
+    formdata.append("status", status);
+    formdata.append("marketingToolId", toolId);
+    formdata.append("userId", userId);
+    const { data, err } = await approveRejectMarketingToolCampaign(formdata);
+    if (data) {
+      toastify(data?.message, "success");
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const mapTableRows = (data) => {
-    console.log(data);
     const result = [];
     data.forEach((item, ind) => {
       result.push({
@@ -113,8 +130,26 @@ const Quiz = () => {
         col6: item.endDateTime,
         col7: (
           <Box className="d-flex justify-content-center">
-            <DoneIcon className="border rounded bg-green color-white fs-18 me-1 cursor-pointer" />
-            <ClearIcon className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2" />
+            <DoneIcon
+              className="border rounded bg-green color-white fs-18 me-1 cursor-pointer"
+              onClick={() => {
+                acceptRejectTool(
+                  "APPROVED",
+                  item.marketingToolId,
+                  item.userTypeId
+                );
+              }}
+            />
+            <ClearIcon
+              className="border rounded bg-red color-white fs-18 me-1 cursor-pointer mx-2"
+              onClick={() => {
+                acceptRejectTool(
+                  "REJECTED",
+                  item.marketingToolId,
+                  item.userTypeId
+                );
+              }}
+            />
             <CustomIcon type="view" className="fs-18 mx-2" />
             <MenuOption
               options={["Edit", "Delete"]}
@@ -135,7 +170,6 @@ const Quiz = () => {
 
   const getTableData = async (page = pageNumber) => {
     const { data } = await getMarketingToolsBasedonMarketinType(page, "QUIZ");
-    // console.log(data);
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
