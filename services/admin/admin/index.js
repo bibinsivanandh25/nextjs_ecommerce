@@ -105,7 +105,22 @@ const getAdminByDesignation = (designation) => {
     .catch((err) => ({ err }));
 };
 
-const getAdminGroups = () => {};
+const getAdminGroups = (
+  page = 0,
+  pageSize = 50,
+  payload = {
+    fromDate: null,
+    toDate: null,
+  }
+) => {
+  return serviceUtil
+    .post(`users/admin/group/group-status/${page}/${pageSize}`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 const saveAdminGroup = (payload) => {
   return serviceUtil
     .post(`users/admin/group`, payload)
@@ -115,7 +130,33 @@ const saveAdminGroup = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-const getGroupDetails = () => {};
+const getGroupDetails = (id) => {
+  return serviceUtil
+    .get(`users/admin/group?groupId=${id}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const disableAdminGroup = (groupId, status) => {
+  return serviceUtil
+    .put(`users/admin/group/group-status?groupId=${groupId}&status=${status}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const updateAdminGroup = (payload) => {
+  return serviceUtil
+    .put(`users/admin/group`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 
 export {
   saveAdminManager,
@@ -132,4 +173,6 @@ export {
   saveAdminGroup,
   getGroupDetails,
   updatedAdminUser,
+  disableAdminGroup,
+  updateAdminGroup,
 };

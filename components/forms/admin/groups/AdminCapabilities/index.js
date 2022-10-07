@@ -14,7 +14,13 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
-import { getAdminByDesignation, saveAdminGroup } from "services/admin/admin";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import {
+  getAdminByDesignation,
+  saveAdminGroup,
+  updateAdminGroup,
+} from "services/admin/admin";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const tempObj = {
   groupName: "",
@@ -25,12 +31,13 @@ const tempObj = {
 const AdminCapabilities = ({
   setShowAdminCapabilities = () => {},
   type = "add",
-  adminData = {},
+  groupData = {},
 }) => {
   const [formData, setFormData] = useState({ ...tempObj });
   const [error, setError] = useState({ ...tempObj });
   const [groupType, setGroupType] = useState("MANAGER");
   const [checkbox, setCheckbox] = useState(false);
+  const [showModal, setShowModal] = useState("");
   const [capabilites, setCapabilities] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const { role } = useSelector((state) => state.user);
@@ -100,7 +107,7 @@ const AdminCapabilities = ({
       groupName: formData.groupName,
       description: formData.description,
       adminId: formData.membersList.map((item) => {
-        return item.value;
+        return item.id;
       }),
       groupType: `ADMIN_${groupType}`,
       createdByType: role,
@@ -110,14 +117,36 @@ const AdminCapabilities = ({
     };
   };
 
+  const updateGroup = async (flag) => {
+    const payload = createPayload();
+    payload.adminGroupId = groupData.adminGroupId;
+    payload.isAdminRemoved = flag;
+    const { data, message, err } = await updateAdminGroup(payload);
+    if (data) {
+      setShowModal("");
+      setShowAdminCapabilities(false);
+      toastify(message, "success");
+    } else if (err) {
+      if (err?.response?.data?.error) {
+        toastify(err?.response?.data?.message, "error");
+      } else {
+        setShowModal(err?.response?.data?.message);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     if (!validate()) {
-      const { data, message, err } = await saveAdminGroup(createPayload());
-      if (data) {
-        setShowAdminCapabilities(false);
-        toastify(message, "success");
-      } else if (err) {
-        toastify(err?.response?.data?.message, "error");
+      if (type === "add") {
+        const { data, message, err } = await saveAdminGroup(createPayload());
+        if (data) {
+          setShowAdminCapabilities(false);
+          toastify(message, "success");
+        } else if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
+      } else {
+        await updateGroup(false);
       }
     }
   };
@@ -153,11 +182,35 @@ const AdminCapabilities = ({
   useEffect(() => {
     if (type === "add") {
       setCapabilities(orginizeCapabilites(admincapabilities));
+    } else if (["View", "Edit"].includes(type)) {
+      setCapabilities(
+        orginizeCapabilites(
+          groupData.adminRegistration[0].adminCapabilities.adminCapabilityList
+            .adminCapabilitylist
+        )
+      );
+      if (type === "Edit") {
+        const temp = {
+          groupName: groupData.groupName,
+          description: groupData.description,
+          membersList: groupData.adminRegistration.map((item) => ({
+            id: item.adminRegistrationId,
+            label: item.adminRegistrationId,
+            title: item.adminRegistrationId,
+          })),
+        };
+        setUsersList((pre) => [
+          ...pre,
+          ...JSON.parse(JSON.stringify(temp.membersList)),
+        ]);
+        setGroupType(
+          groupData.adminRegistration[0].adminRoles[0].adminRoleTitle.split(
+            "_"
+          )[1]
+        );
+        setFormData(temp);
+      }
     }
-    // else if (["View", "Edit"].includes(type)) {
-    //   if (type === "Edit") {
-    //   }
-    // }
   }, [admincapabilities, type]);
 
   useEffect(() => {
@@ -171,9 +224,21 @@ const AdminCapabilities = ({
       data.adminId.forEach((item) => {
         temp.push({ title: item, label: item, id: item });
       });
-      setUsersList(
-        data.adminId.map((item) => ({ title: item, label: item, id: item }))
-      );
+      const temp1 = data.adminId.map((item) => ({
+        title: item,
+        label: item,
+        id: item,
+      }));
+      if (type !== "add") {
+        temp1.push(
+          ...groupData.adminRegistration.map((item) => ({
+            id: item.adminRegistrationId,
+            label: item.adminRegistrationId,
+            title: item.adminRegistrationId,
+          }))
+        );
+      }
+      setUsersList(temp1);
     } else if (err) {
       setUsersList([]);
     }
@@ -182,12 +247,12 @@ const AdminCapabilities = ({
   useEffect(() => {
     if (groupType) {
       getAdminList();
-      setFormData((pre) => ({
-        ...pre,
-        membersList: [],
-      }));
     }
   }, [groupType]);
+
+  const confirmSubmit = () => {
+    updateGroup(true);
+  };
 
   return (
     <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar d-flex flex-column justify-content-between">
@@ -234,6 +299,10 @@ const AdminCapabilities = ({
                         label="Managers"
                         isChecked={groupType === "MANAGER"}
                         onRadioChange={() => {
+                          setFormData((pre) => ({
+                            ...pre,
+                            membersList: [],
+                          }));
                           setGroupType("MANAGER");
                         }}
                         size="small"
@@ -242,6 +311,10 @@ const AdminCapabilities = ({
                         label="Users"
                         isChecked={groupType !== "MANAGER"}
                         onRadioChange={() => {
+                          setFormData((pre) => ({
+                            ...pre,
+                            membersList: [],
+                          }));
                           setGroupType("USER");
                         }}
                         size="small"
@@ -319,25 +392,25 @@ const AdminCapabilities = ({
             ) : (
               <Grid container spacing={2}>
                 <Grid item md={12}>
-                  First Name: {adminData.firstName}
+                  First Name: {groupData.firstName}
                 </Grid>
                 <Grid item md={12}>
-                  Last Name: {adminData.lastName}
+                  Last Name: {groupData.lastName}
                 </Grid>
                 <Grid item md={12}>
-                  E-mail: {adminData.emailId}
+                  E-mail: {groupData.emailId}
                 </Grid>
                 <Grid item md={12}>
-                  Mobile No.: {adminData.mobileNumber}
+                  Mobile No.: {groupData.mobileNumber}
                 </Grid>
                 <Grid item md={12}>
-                  DOB: {adminData.dob}
+                  DOB: {groupData.dob}
                 </Grid>
                 <Grid item md={12}>
-                  Status: {adminData.status}
+                  Status: {groupData.status}
                 </Grid>
                 <Grid item md={12}>
-                  Created By: {adminData.createdBy}
+                  Created By: {groupData.createdBy}
                 </Grid>
               </Grid>
             )}
@@ -576,6 +649,26 @@ const AdminCapabilities = ({
             />
           </div>
         </div>
+      )}
+      {showModal !== "" && (
+        <ModalComponent
+          open
+          showHeader={false}
+          saveBtnText="Confirm"
+          ClearBtnText="Cancel"
+          onSaveBtnClick={confirmSubmit}
+          onClearBtnClick={() => {
+            setShowModal("");
+          }}
+          showCloseIcon={false}
+          footerClassName=" justify-content-end"
+          minHeightClassName="mnh-200"
+        >
+          <div className="d-flex flex-column mt-3 justify-content-center align-items-center">
+            <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
+            <Typography className="mt-2 fw-500">{showModal}</Typography>
+          </div>
+        </ModalComponent>
       )}
     </Paper>
   );
