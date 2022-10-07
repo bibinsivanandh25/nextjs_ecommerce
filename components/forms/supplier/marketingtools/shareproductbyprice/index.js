@@ -212,6 +212,13 @@ const CreateShareProductByPrice = ({
     } else {
       errObj.priceEnd = null;
     }
+    if (formValues.inputValue >= formValues.priceEnd) {
+      errObj.inputValue = "Start price cannot be greater than end price";
+      errObj.priceEnd = "End price cannot be less than start price";
+    } else {
+      errObj.inputValue = null;
+      errObj.priceEnd = null;
+    }
     if (!categoriesList.category.length) {
       errObj.categories = validateMessage.field_required;
     } else if (!categoriesList.set.length) {
