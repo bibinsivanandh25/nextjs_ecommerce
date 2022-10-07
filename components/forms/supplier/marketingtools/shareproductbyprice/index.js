@@ -473,7 +473,7 @@ const CreateShareProductByPrice = ({
         <Grid item sm={1.5}>
           <InputBox
             size="small"
-            label="Margin type"
+            placeholder="Margin type"
             value={formValues.marginType}
             disabled
             error={Boolean(error.marginType)}
