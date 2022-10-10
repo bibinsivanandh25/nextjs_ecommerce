@@ -191,6 +191,8 @@ export default function TableComponent({
   showButton = false,
   buttonLabel = "button",
   onBtnClick = () => {},
+  handlePageEnd = () => {},
+  handleRowsPerPageChange = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -274,12 +276,19 @@ export default function TableComponent({
   // };
 
   const handleChangePage = (event, newPage) => {
+    const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
+    if (newPage === numberOfPage - 1) {
+      handlePageEnd(undefined);
+    }
+
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
+    handlePageEnd(0);
     setRowsPerPage(+event.target.value);
     setPage(0);
+    handleRowsPerPageChange(0);
   };
 
   const handleSelectAllClick = (event, checked) => {

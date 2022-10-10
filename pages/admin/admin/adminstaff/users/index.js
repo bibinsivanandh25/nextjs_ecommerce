@@ -1,141 +1,280 @@
-import { Box, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+/* eslint-disable no-use-before-define */
+import { Box, Paper } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import AdminCapabilities from "@/forms/admin/users/AdminCapabilities";
+import AdminCapabilities from "@/forms/admin/adminmanager/admincapabilities";
+import {
+  deleteAdminUser,
+  disableAdmin,
+  getAdminUser,
+  getAdminUsers,
+  getFilters,
+} from "services/admin/admin";
+import toastify from "services/utils/toastUtils";
 
 const Users = () => {
   const [showAdminCapabilities, setShowAdminCapabilities] = useState(false);
+  const [tableRows, setTableRows] = useState([]);
+  const [modalData, setModalData] = useState({ type: "", data: null });
   const columns = [
     {
       id: "col1",
       align: "center",
-      label: "S.No.",
+      label: "Admin ID",
       data_align: "center",
     },
     {
       id: "col2",
       align: "center",
-      label: "User ID",
+      label: "First Name",
       data_align: "center",
     },
     {
       id: "col3",
       align: "center",
-      label: "First Name",
+      label: "Designation",
       data_align: "center",
     },
     {
       id: "col4",
       align: "center",
-      label: "Designation",
+      label: "Email",
       data_align: "center",
     },
     {
       id: "col5",
       align: "center",
-      label: "Email",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
       label: "Mobile",
       data_align: "center",
     },
+
     {
       id: "col7",
-      align: "center",
-      label: "Menu's Managed",
-      data_align: "center",
-    },
-    {
-      id: "col8",
       align: "center",
       label: "Created By",
       data_align: "center",
     },
     {
-      id: "col9",
+      id: "col8",
       align: "center",
       label: "Created Date & Time",
       data_align: "center",
     },
     {
-      id: "col10",
+      id: "col9",
       align: "center",
       label: "Status",
       data_align: "center",
     },
     {
-      id: "col11",
-      align: "center",
-      label: "Action",
+      id: "col10",
+      align: "Action",
+      label: "Sale Price/MRP",
       data_align: "center",
     },
   ];
+  const [pageNumber, setpageNumber] = useState(0);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    createdBy: [],
+    status: [],
+  });
 
-  const onClickOfMenuItem = () => {
-    // console.log(ele);
+  const getUserById = async (type, id) => {
+    const { data, err } = await getAdminUser(id);
+    if (data) {
+      setModalData({ type, data });
+      setShowAdminCapabilities(true);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
-  const rows = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "#8273423",
-      col3: "------",
-      col4: "--",
-      col5r: "--",
-      col6: "--",
-      col7: "--",
-      col8: "--",
-      col9: "--",
-      col10: "Active",
-      col11: (
-        <Box className="d-flex align-items-center justify-content-around">
-          <Box className="d-flex flex-column align-items-center">
-            <Box className="ms-4">
-              <SwitchComponent label="" />
-            </Box>
-            <Typography className="h-5">Disable</Typography>
+  const onClickOfMenuItem = (type, id) => {
+    if (["View", "Edit"].includes(type)) {
+      getUserById(type, id);
+    } else if (type === "Delete") {
+      deleteUser(id);
+    }
+  };
+  const deleteUser = async (userId) => {
+    const { data, message, err } = await deleteAdminUser(userId);
+    if (data) {
+      toastify(message, "success");
+      await getUsers();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const disableUsers = async (userId, status) => {
+    const { data, message, err } = await disableAdmin(status, userId);
+    if (data) {
+      toastify(message, "success");
+      await getUsers();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const mapData = (data) => {
+    return data.map((item) => {
+      return {
+        id: 1,
+        col1: item.adminRegistrationId,
+        col2: item.firstName,
+        col3: item.designation.replace("_", " "),
+        col4: item.emailId,
+        col5: item.mobileNumber,
+        col7: item.createdBy,
+        col8: item.createdDate,
+        col9: item.status,
+        col10: (
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                disableUsers(
+                  item.adminRegistrationId,
+                  item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                );
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, item.adminRegistrationId);
+              }}
+              options={["View", "Edit", "Delete"]}
+              IconclassName="color-gray"
+            />
           </Box>
-          <MenuOption
-            getSelectedItem={(ele) => {
-              onClickOfMenuItem(ele);
-            }}
-            options={["view", "Edit", "Delete"]}
-            IconclassName="color-gray"
-          />
-        </Box>
-      ),
-    },
-  ];
+        ),
+      };
+    });
+  };
+
+  const getUsers = async (
+    page = pageNumber,
+    payload = {
+      status: selectedFilters.status,
+      createdBy: selectedFilters.createdBy,
+      keyword: null,
+    }
+  ) => {
+    const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const getFilterData = async () => {
+    const { data } = await getFilters();
+    if (data) {
+      const temp = [
+        {
+          name: "Created By",
+          value: [],
+        },
+        {
+          name: "Status",
+          value: [],
+        },
+      ];
+      data.createdBy.forEach((item) => {
+        temp[0].value.push(`${item.id} - ${item.name}`);
+      });
+      temp[1].value = [...data.status];
+      setFilters(temp);
+    }
+  };
+
+  useEffect(() => {
+    getFilterData();
+    getUsers();
+  }, []);
 
   return (
     <Box>
-      <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
-        {!showAdminCapabilities ? (
+      {!showAdminCapabilities ? (
+        <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            tableRows={rows}
+            tableRows={tableRows}
             showCustomButton
-            customButtonLabel="Create User"
-            table_heading="Users"
+            customButtonLabel="Create Admin"
+            table_heading="Admin User"
             showSearchFilter={false}
             onCustomButtonClick={() => {
               setShowAdminCapabilities(true);
             }}
+            showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: selectedFilters.status,
+                createdBy: selectedFilters.createdBy,
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
+            showFilterButton
+            filterData={filters}
+            getFilteredValues={async (val, text = "") => {
+              const temp = {
+                createdBy: [],
+                status: [],
+              };
+              val[0].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.createdBy.push(ele.item.split("-")[0]);
+                }
+              });
+              val[1].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.status.push(ele.item);
+                }
+              });
+              setpageNumber(0);
+              setSelectedFilters(temp);
+              await getUsers(0, {
+                status: temp.status,
+                createdBy: temp.createdBy,
+                keyword: text,
+              });
+            }}
           />
-        ) : (
-          <AdminCapabilities
-            setShowAdminCapabilities={setShowAdminCapabilities}
-          />
-        )}
-      </Paper>
+        </Paper>
+      ) : (
+        <AdminCapabilities
+          setShowAdminCapabilities={setShowAdminCapabilities}
+          adminType="ADMIN_USER"
+          type={modalData.type === "" ? "add" : modalData.type}
+          adminData={modalData.data}
+          setModalData={setModalData}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: selectedFilters.status,
+              createdBy: selectedFilters.createdBy,
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
+        />
+      )}
     </Box>
   );
 };

@@ -24,6 +24,7 @@ const BankDetails = () => {
 
   const getAllBankData = async () => {
     const { data } = await getAllBankDetails(user);
+    console.log(data, "Dara");
     const result = [];
     if (data) {
       const temp = JSON.parse(JSON.stringify(data)).filter(
@@ -41,10 +42,12 @@ const BankDetails = () => {
         });
       });
     }
+    console.log(result);
     setbankDetails([...result]);
   };
 
   useEffect(() => {
+    console.log("reached");
     getAllBankData();
   }, []);
 
@@ -61,9 +64,13 @@ const BankDetails = () => {
   };
 
   const deleteBankData = async (id) => {
-    const { data } = await deleteBankDetails(user, id);
+    const { data, err } = await deleteBankDetails(user, id);
     if (data) {
+      console.log(data);
       getAllBankData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message);
     }
   };
   const updatePrimaryAccount = async (e, id) => {
