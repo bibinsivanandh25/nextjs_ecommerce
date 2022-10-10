@@ -264,7 +264,7 @@ const AdminCapabilities = ({
           onClick={() => {
             setShowAdminCapabilities(false);
           }}
-          className="mb-2 h-5 ms-3 cursor-pointer color-orange py-1 d-inline"
+          className="mb-2 p-1 h-5 ms-3 cursor-pointer color-orange py-1 d-inline"
         >
           {"<"}Back
         </Typography>
@@ -393,20 +393,28 @@ const AdminCapabilities = ({
                 </Grid>
               </Grid>
             ) : (
-              <Grid container spacing={2}>
-                <Grid item md={12}>
-                  Group Name: {groupData.groupName}
+              <Grid container spacing={2} className="h-5 fw-bold">
+                <Grid item md={3}>
+                  Group Name:
                 </Grid>
-                <Grid item md={12}>
-                  Description: {groupData.description}
+                <Grid item md={9}>
+                  {groupData.groupName}
                 </Grid>
-                <Grid item md={12}>
+                <Grid item md={3}>
+                  Description:
+                </Grid>
+                <Grid item md={9}>
+                  {groupData.description}
+                </Grid>
+                <Grid item md={3}>
                   Group Members:
+                </Grid>
+                <Grid item md={9}>
                   <div className="mxh-100 overflow-y-scroll hide-scrollbar">
                     {groupData.adminRegistration.map((item) => {
                       return (
                         <div key={item.adminRegistrationId}>
-                          <Typography>
+                          <Typography className="fw-bold h-5">
                             {item.adminRegistrationId} / {item.firstName}{" "}
                             {item.lastName}
                           </Typography>
@@ -415,20 +423,35 @@ const AdminCapabilities = ({
                     })}
                   </div>
                 </Grid>
-                <Grid item md={12}>
-                  Created By: {groupData.createdBy}/{groupData.createdByType}
+                <Grid item md={3}>
+                  Created By:{" "}
                 </Grid>
-                <Grid item md={12}>
-                  Created Date: {groupData.createdDate}
+                <Grid item md={9}>
+                  {groupData.createdBy}/{groupData.createdByType}
                 </Grid>
-                <Grid item md={12}>
-                  Last Modified Date: {groupData.lastModifiedDate}
+                <Grid item md={3}>
+                  Created Date:{" "}
                 </Grid>
-                <Grid item md={12}>
-                  Last Modified By: {groupData.lastModifiedBy}
+                <Grid item md={9}>
+                  {groupData.createdDate}
                 </Grid>
-                <Grid item md={12}>
-                  Created By: {groupData.createdBy}
+                <Grid item md={3}>
+                  Last Modified Date:
+                </Grid>
+                <Grid item md={9}>
+                  {groupData.lastModifiedDate}
+                </Grid>
+                <Grid item md={3}>
+                  Last Modified By:
+                </Grid>
+                <Grid item md={9}>
+                  {groupData.lastModifiedBy}
+                </Grid>
+                <Grid item md={3}>
+                  Created By:
+                </Grid>
+                <Grid item md={9}>
+                  : {groupData.createdBy}
                 </Grid>
               </Grid>
             )}

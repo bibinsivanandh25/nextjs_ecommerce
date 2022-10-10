@@ -896,6 +896,22 @@ export default function TableComponent({
                     fullWidth
                     size="small"
                     onInputChange={(e) => {
+                      if (e.target.value === "") {
+                        handlePageEnd("", searchFilter?.value, 0, {
+                          fromDate: filteredDates.fromDate
+                            ? `${format(
+                                new Date(filteredDates.fromDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                          toDate: filteredDates.toDate
+                            ? `${format(
+                                new Date(filteredDates.toDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                        });
+                      }
                       setsearchText(e.target.value);
                     }}
                     showAutoCompleteOff={false}
@@ -1112,50 +1128,3 @@ export default function TableComponent({
     </div>
   );
 }
-
-// Sample prop data
-// const columns = [
-//   {
-//     id: "col1", //  id value in column should be presented in row as key
-//     label: "Generated for",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col2",
-//     label: "Generated Date & Time",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col3",
-//     label: "Status",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//     // data_style: { paddingLeft: "7%" },
-//   },
-// ];
-// let rows = [
-//   {
-//     id: "1",
-//     col1: "India",
-//     col2: "IN",
-//     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
-//         121212
-//       </div>
-//     ),
-//   },
-//   {
-//     id: "2",
-//     col1: "China",
-//     col2: "CN",
-//     col3: "dkjfvnkjdfv",
-//   },
-// ];

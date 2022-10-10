@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
@@ -125,22 +125,17 @@ const Users = () => {
         col8: item.createdDate,
         col9: item.status,
         col10: (
-          <Box className="d-flex align-items-center justify-content-around">
-            <Box className="d-flex flex-column align-items-center">
-              <Box className="ms-4">
-                <SwitchComponent
-                  label=""
-                  defaultChecked={item.status === "APPROVED"}
-                  ontoggle={() => {
-                    disableUsers(
-                      item.adminRegistrationId,
-                      item.status === "APPROVED" ? "DISABLED" : "APPROVED"
-                    );
-                  }}
-                />
-              </Box>
-              <Typography className="h-5">Disable</Typography>
-            </Box>
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                disableUsers(
+                  item.adminRegistrationId,
+                  item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                );
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, item.adminRegistrationId);
