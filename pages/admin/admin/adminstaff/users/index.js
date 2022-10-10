@@ -10,6 +10,7 @@ import {
   disableAdmin,
   getAdminUser,
   getAdminUsers,
+  getFilters,
 } from "services/admin/admin";
 import toastify from "services/utils/toastUtils";
 
@@ -75,6 +76,11 @@ const Users = () => {
     },
   ];
   const [pageNumber, setpageNumber] = useState(0);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    createdBy: [],
+    status: [],
+  });
 
   const getUserById = async (type, id) => {
     const { data, err } = await getAdminUser(id);
@@ -153,8 +159,8 @@ const Users = () => {
   const getUsers = async (
     page = pageNumber,
     payload = {
-      status: [],
-      createdBy: [],
+      status: selectedFilters.status,
+      createdBy: selectedFilters.createdBy,
       keyword: null,
     }
   ) => {
@@ -173,7 +179,29 @@ const Users = () => {
     }
   };
 
+  const getFilterData = async () => {
+    const { data } = await getFilters();
+    if (data) {
+      const temp = [
+        {
+          name: "Created By",
+          value: [],
+        },
+        {
+          name: "Status",
+          value: [],
+        },
+      ];
+      data.createdBy.forEach((item) => {
+        temp[0].value.push(`${item.id} - ${item.name}`);
+      });
+      temp[1].value = [...data.status];
+      setFilters(temp);
+    }
+  };
+
   useEffect(() => {
+    getFilterData();
     getUsers();
   }, []);
 
@@ -195,13 +223,38 @@ const Users = () => {
             showCheckbox={false}
             handlePageEnd={async (text, _, page = pageNumber) => {
               await getUsers(page, {
-                status: [],
-                createdBy: [],
+                status: selectedFilters.status,
+                createdBy: selectedFilters.createdBy,
                 keyword: text,
               });
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);
+            }}
+            showFilterButton
+            filterData={filters}
+            getFilteredValues={async (val, text = "") => {
+              const temp = {
+                createdBy: [],
+                status: [],
+              };
+              val[0].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.createdBy.push(ele.item.split("-")[0]);
+                }
+              });
+              val[1].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.status.push(ele.item);
+                }
+              });
+              setpageNumber(0);
+              setSelectedFilters(temp);
+              await getUsers(0, {
+                status: temp.status,
+                createdBy: temp.createdBy,
+                keyword: text,
+              });
             }}
           />
         </Paper>
@@ -214,8 +267,8 @@ const Users = () => {
           setModalData={setModalData}
           gettableData={async () => {
             await getUsers(0, {
-              status: [],
-              createdBy: [],
+              status: selectedFilters.status,
+              createdBy: selectedFilters.createdBy,
               keyword: "",
             });
             setpageNumber(0);

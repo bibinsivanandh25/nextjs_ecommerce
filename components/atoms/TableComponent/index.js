@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -342,12 +343,23 @@ const FilterMenu = ({
       );
     });
   };
+  const getFiltersCount = () => {
+    let count = 0;
+    filterData.forEach((item) => {
+      if (item.isSelected) {
+        count++;
+      } else if (item.value.some((ele) => ele.isSelected)) {
+        count++;
+      }
+    });
+    return count > 0 ? `(${count})` : "";
+  };
 
   return (
     <Grid container item sm={12}>
       <Grid item sm={12} display="flex" justifyContent="end">
         <ButtonComponent
-          label="Filter"
+          label={`Filter ${getFiltersCount()}`}
           showIcon
           iconName="filter"
           iconColorClass="color-orange"
@@ -617,7 +629,8 @@ export default function TableComponent({
                 <FilterMenu
                   filterList={[...tableFilterList]}
                   getFilteredValues={(val) => {
-                    getFilteredValues(val);
+                    setPage(0);
+                    getFilteredValues(val, searchText);
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
@@ -817,7 +830,7 @@ export default function TableComponent({
               <FilterMenu
                 filterList={[...tableFilterList]}
                 getFilteredValues={(val) => {
-                  getFilteredValues(val);
+                  getFilteredValues(val, searchText);
                 }}
                 setPage={setPage}
                 setTableFilterList={setTableFilterList}

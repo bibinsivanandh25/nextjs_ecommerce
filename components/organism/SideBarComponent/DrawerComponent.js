@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
@@ -89,7 +90,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   //   const marketingToolsList = user.unlockedTools;
   const dispatch = useDispatch();
   const [navOptionsList, setNavOptionsList] = useState([]);
-  const [staffCapabilityList, setstaffCapabilityList] = useState([]);
+  const [staffCapabilityList, setstaffCapabilityList] = useState(null);
 
   const getBasePath = (role) => {
     switch (role) {
@@ -116,7 +117,30 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       if (item?.childCapabilityNameList?.length) {
         temp.push(...getCapability(item.childCapabilityNameList));
       } else if (item.isEnable) {
-        temp.push(item.capabilityType);
+        if (item.capabilityType) {
+          temp.push(item.capabilityType);
+        } else {
+          temp.push(item.capabilityName);
+        }
+      }
+    });
+    return temp;
+  };
+
+  const getAdminCapability = (data) => {
+    const temp = {};
+    data.forEach((item) => {
+      if (item?.childCapabilityNameList?.length) {
+        temp[`${item.capabilityName.toLowerCase().trim()}`] = {
+          child: {
+            ...getAdminCapability(item.childCapabilityNameList),
+          },
+          isEnable: item.isEnable,
+        };
+      } else {
+        temp[`${item.capabilityName.toLowerCase().trim()}`] = {
+          isEnable: item.isEnable,
+        };
       }
     });
     return temp;
@@ -148,7 +172,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
     } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
       setNavOptionsList(adminNav);
       if (user.role !== "ADMIN") {
-        setstaffCapabilityList(getCapability([...user.adminCapabilities]));
+        setstaffCapabilityList(getAdminCapability([...user.adminCapabilities]));
       }
     }
   };
@@ -218,10 +242,49 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         ],
       };
     };
+    const mapAdminList = (id, item, path, capabiliteArr) => {
+      if (!item?.child?.length) {
+        return {
+          ...item,
+          id,
+          selected: false,
+          pathName: `${path}/${item.pathName}`,
+          disabled: !capabiliteArr.isEnable,
+          locked: false,
+        };
+      }
+      return {
+        ...item,
+        id,
+        selected: false,
+        pathName: `${path}/${item.pathName}`,
+        disabled: !capabiliteArr.isEnable,
+        locked: false,
+        child: [
+          ...item.child.map((ele, index) => {
+            return mapAdminList(
+              `${id}_${index}`,
+              ele,
+              `${path}/${item.pathName}`,
+              capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+            );
+          }),
+        ],
+      };
+    };
     const list = [...navOptionsList].map((item, index) => {
-      return addId(index, item, `/${getBasePath(role)}`);
+      return role.includes("ADMIN")
+        ? role === "ADMIN"
+          ? addId(index, item, `/${getBasePath(role)}`)
+          : mapAdminList(
+              index,
+              item,
+              `/${getBasePath(role)}`,
+              staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+            )
+        : addId(index, item, `/${getBasePath(role)}`);
     });
-    return JSON.parse(JSON.stringify(getInitialSelection([...list])));
+    return JSON.parse(JSON.stringify([...list]));
   };
   const getCapabilityPathList = (data) => {
     const temp = [];

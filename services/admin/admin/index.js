@@ -160,6 +160,16 @@ const deleteAdminGroup = (groupId) => {
     .catch((err) => ({ err }));
 };
 
+const getFilters = () => {
+  return serviceUtil
+    .get(`users/admin/admin-filter`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   saveAdminManager,
   saveAdminUser,
@@ -178,4 +188,5 @@ export {
   disableAdminGroup,
   updateAdminGroup,
   deleteAdminGroup,
+  getFilters,
 };

@@ -25,6 +25,7 @@ import {
 } from "services/admin/admin";
 import { FaLaptopHouse } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const tempObj = {
   firstName: "",
@@ -46,11 +47,16 @@ const StaffForm = ({
   const [errorObj, setErrorObj] = useState({ ...tempObj });
   const [checkbox, setCheckbox] = useState(false);
   const { role } = useSelector((state) => state.user);
+  const router = useRouter();
 
   const orginizeCapabilites = (data) => {
     const temp = [];
     data.forEach((item) => {
-      if (role === "ADMIN_MANAGER" && item.capabilityName === "User") return;
+      if (adminType === "ADMIN_MANAGER" && item.capabilityName === "Manager") {
+        return;
+      }
+      if (adminType === "ADMIN_USER" && item.capabilityName === "Admin Staff")
+        return;
       temp.push({
         label: item.capabilityName,
         isChecked: type === "add" ? true : item.isEnable,
@@ -179,8 +185,29 @@ const StaffForm = ({
       temp.adminCapabilities = {
         adminCapabilityList: capabiliteObj(capabilites),
       };
+      temp.adminCapabilities.adminCapabilityList[7].childCapabilityNameList[1].childCapabilityNameList.push(
+        { capabilityName: "Manager", isEnable: false }
+      );
     } else {
       temp.adminCapabilityList = capabiliteObj(capabilites);
+      temp.adminCapabilityList[7].childCapabilityNameList.push({
+        capabilityName: "Admin Staff",
+        isEnable: false,
+        childCapabilityNameList: [
+          {
+            capabilityName: "Manager",
+            isEnable: false,
+          },
+          {
+            capabilityName: "User",
+            isEnable: false,
+          },
+          {
+            capabilityName: "Groups",
+            isEnable: false,
+          },
+        ],
+      });
       if (type === "Edit") {
         temp.status = adminData.status;
       }
@@ -191,6 +218,7 @@ const StaffForm = ({
   const handleSubmit = async () => {
     if (!validate()) {
       const payload = createPayload();
+      console.log({ payload });
       const saveAdmin =
         adminType === "ADMIN_MANAGER"
           ? type === "add"
