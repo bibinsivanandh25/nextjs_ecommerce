@@ -105,14 +105,7 @@ const getAdminByDesignation = (designation) => {
     .catch((err) => ({ err }));
 };
 
-const getAdminGroups = (
-  page = 0,
-  pageSize = 50,
-  payload = {
-    fromDate: null,
-    toDate: null,
-  }
-) => {
+const getAdminGroups = (page = 0, pageSize = 50, payload) => {
   return serviceUtil
     .post(`users/admin/group/group-status/${page}/${pageSize}`, payload)
     .then((res) => {

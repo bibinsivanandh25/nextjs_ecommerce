@@ -56,6 +56,7 @@ const Users = () => {
     },
   ];
   const [modalData, setModalData] = useState({ type: "", data: null });
+  const [pageNumber, setpageNumber] = useState(0);
 
   const getGroupData = async (id, type) => {
     const { data, err } = await getGroupDetails(id);
@@ -97,37 +98,55 @@ const Users = () => {
     }
   };
 
-  const gettableData = async () => {
-    const { data, err } = await getAdminGroups();
+  const mapData = (data) => {
+    const temp = data.map((item) => {
+      return {
+        col1: item.groupName,
+        col2: item.createdBy,
+        col3: item.createdDate,
+        col4: item.lastModifiedDate,
+        col5: item.disabled ? "DISABLED" : "ACTIVE",
+        col6: (
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={!item.disabled}
+              ontoggle={() => {
+                disableUsers(item.adminGroupId, !item.disabled);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, item.adminGroupId);
+              }}
+              options={["View", "Edit", "Delete"]}
+              IconclassName="color-gray"
+            />
+          </Box>
+        ),
+      };
+    });
+    return temp;
+  };
+
+  const gettableData = async (
+    page = pageNumber,
+    payload = {
+      fromDate: null,
+      toDate: null,
+    }
+  ) => {
+    const { data, err } = await getAdminGroups(page, 50, payload);
     if (data) {
-      const temp = data.map((item) => {
-        return {
-          col1: item.groupName,
-          col2: item.createdBy,
-          col3: item.createdDate,
-          col4: item.lastModifiedDate,
-          col5: item.disabled ? "DISABLED" : "ACTIVE",
-          col6: (
-            <Box className="d-flex align-items-center justify-content-center">
-              <SwitchComponent
-                label=""
-                defaultChecked={!item.disabled}
-                ontoggle={() => {
-                  disableUsers(item.adminGroupId, !item.disabled);
-                }}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele, item.adminGroupId);
-                }}
-                options={["View", "Edit", "Delete"]}
-                IconclassName="color-gray"
-              />
-            </Box>
-          ),
-        };
-      });
-      setRows(temp);
+      if (page === 0) {
+        setRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+        setpageNumber((pre) => pre + 1);
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -155,6 +174,26 @@ const Users = () => {
               setShowAdminCapabilities(true);
             }}
             showSearchbar={false}
+            showDateFilter
+            handlePageEnd={async (
+              searchText,
+              searchFilter,
+              page = pageNumber,
+              dateObj
+            ) => {
+              if (dateObj.fromDate === "" || dateObj.toDate === "") {
+                await gettableData(0);
+                setpageNumber(0);
+              } else if (
+                new Date(dateObj.fromDate) < new Date(dateObj.toDate)
+              ) {
+                await gettableData(page, dateObj);
+                setpageNumber(0);
+              } else {
+                toastify("Invalid date", "error");
+              }
+            }}
+            showDateFilterSearch={false}
           />
         </Paper>
       ) : (

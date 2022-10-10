@@ -74,6 +74,7 @@ const Users = () => {
       data_align: "center",
     },
   ];
+  const [pageNumber, setpageNumber] = useState(0);
 
   const getUserById = async (type, id) => {
     const { data, err } = await getAdminUser(id);
@@ -150,7 +151,7 @@ const Users = () => {
   };
 
   const getUsers = async (
-    page = 0,
+    page = pageNumber,
     payload = {
       status: [],
       createdBy: [],
@@ -159,7 +160,14 @@ const Users = () => {
   ) => {
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
     if (data) {
-      setTableRows(mapData(data));
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -185,6 +193,16 @@ const Users = () => {
               setShowAdminCapabilities(true);
             }}
             showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: [],
+                createdBy: [],
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       ) : (
@@ -194,7 +212,14 @@ const Users = () => {
           type={modalData.type === "" ? "add" : modalData.type}
           adminData={modalData.data}
           setModalData={setModalData}
-          gettableData={getUsers}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: [],
+              createdBy: [],
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
         />
       )}
     </Box>
