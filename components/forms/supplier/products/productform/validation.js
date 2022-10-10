@@ -306,7 +306,7 @@ const validateVariation = (dropdowns, currentData) => {
     ) {
       errObj[el.id] = el.errorMessage;
     } else if (el.type === "date" && el.value && el.value < currentData) {
-      errObj[el.id] = "Past date is not allowed";
+      errObj[el.id] = "Invalid date";
     } else {
       errObj[el.id] = null;
     }
