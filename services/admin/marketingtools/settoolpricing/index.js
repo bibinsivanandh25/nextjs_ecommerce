@@ -59,6 +59,12 @@ const getToolsCampaignWithFilter = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const enableDisableToolCampaign = (payload) => {
+  return serviceUtil
+    .put("users/admin-marketing-tool-campaign-status", payload)
+    .then((res) => res)
+    .catch((err) => ({ err }));
+};
 export {
   getSubscrptionType,
   getAllIndividualPricingByUserType,
@@ -66,4 +72,5 @@ export {
   enableDisableMarketingTools,
   getPriceChangeHistory,
   getToolsCampaignWithFilter,
+  enableDisableToolCampaign,
 };

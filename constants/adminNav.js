@@ -541,14 +541,14 @@ const adminNav = [
       {
         title: "Approval",
         logo: "",
-        pathName: "",
+        pathName: "approval",
         navigate: false,
         disabled: false,
         child: [
           {
             title: "Discount",
             logo: "",
-            pathName: "discount",
+            pathName: "discounts",
             navigate: true,
             disabled: false,
             child: [],

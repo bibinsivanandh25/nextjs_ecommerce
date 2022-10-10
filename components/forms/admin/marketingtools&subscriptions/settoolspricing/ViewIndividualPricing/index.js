@@ -114,10 +114,11 @@ const ViewIndividualPricing = ({
     return result;
   };
 
-  const getTableRows = async (page) => {
+  const getTableRows = async (page, toolName) => {
     const payload = {
       toolId: toolIDs,
       type: "INDIVIDUAL_PRICING",
+      toolName,
     };
     const { data } = await getPriceChangeHistory(page, payload);
     if (data) {
@@ -132,7 +133,7 @@ const ViewIndividualPricing = ({
   };
 
   useEffect(() => {
-    getTableRows(0);
+    getTableRows(0, null);
   }, []);
   return (
     <div>
@@ -153,7 +154,7 @@ const ViewIndividualPricing = ({
           showSearchFilter
           showSearchbar={false}
           handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-            getTableRows(page);
+            getTableRows(page, searchFilter.value ?? null);
           }}
         />
       </div>

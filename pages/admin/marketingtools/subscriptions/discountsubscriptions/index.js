@@ -14,6 +14,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { useSelector } from "react-redux";
+import NotifyModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/notifymodal";
 // import { useSelector } from "react-redux";
 
 const column1 = [
@@ -160,10 +161,17 @@ const DiscountSubscriptions = () => {
   const [viewData, setViewData] = useState({});
   const [selectedList, setSelectedList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
+  const [selectedData, setSelectedData] = useState({});
+  const [openNotifyModal, setOpenNotifyModal] = useState(false);
 
-  const onClickOfMenuItem = (ele) => {
+  const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
+      setSelectedData(item);
       setOpenAddNoteModal(true);
+    }
+    if (ele === "Notify") {
+      setSelectedData(item);
+      setOpenNotifyModal(true);
     }
   };
   const handleViewClick = async (value) => {
@@ -201,7 +209,7 @@ const DiscountSubscriptions = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele);
+                  onClickOfMenuItem(ele, item);
                 }}
                 options={[
                   "Notify",
@@ -331,6 +339,15 @@ const DiscountSubscriptions = () => {
         <AddNoteModal
           openAddNoteModal={openAddNoteModal}
           setOpenAddNoteModal={setOpenAddNoteModal}
+          selectedData={selectedData}
+          getTableData={getTableData}
+        />
+      ) : null}
+      {openNotifyModal ? (
+        <NotifyModal
+          open={openNotifyModal}
+          closeModal={setOpenNotifyModal}
+          selectedData={selectedData}
         />
       ) : null}
     </>
