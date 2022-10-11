@@ -161,9 +161,13 @@ const PriceTargetedSubscription = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [selectedList, setSelectedList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
+  const [selectedData, setSelectedData] = useState({});
 
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") setOpenAddNoteModal(true);
+  const onClickOfMenuItem = (ele, item) => {
+    if (ele === "Add Note") {
+      setOpenAddNoteModal(true);
+      setSelectedData(item);
+    }
     if (ele === "Notify") setShowNotificationModal(true);
   };
   const getTableData = async (page) => {
@@ -228,7 +232,7 @@ const PriceTargetedSubscription = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele);
+                  onClickOfMenuItem(ele, item);
                 }}
                 options={[
                   "Notify",
@@ -328,6 +332,8 @@ const PriceTargetedSubscription = () => {
         <AddNoteModal
           openAddNoteModal={openAddNoteModal}
           setOpenAddNoteModal={setOpenAddNoteModal}
+          selectedData={selectedData}
+          getTableData={getTableData}
         />
       ) : null}
       {showNotificationModal ? (

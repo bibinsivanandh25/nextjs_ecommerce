@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";

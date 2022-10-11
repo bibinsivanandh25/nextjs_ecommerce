@@ -458,7 +458,7 @@ const adminNav = [
     disabled: false,
     child: [
       {
-        title: "Set Tool Pricing ",
+        title: "Set Tool Pricing",
         logo: "",
         pathName: "settoolspricing",
         navigate: true,
@@ -539,16 +539,16 @@ const adminNav = [
         ],
       },
       {
-        title: "Approval",
+        title: "Approvals",
         logo: "",
-        pathName: "",
+        pathName: "approval",
         navigate: false,
         disabled: false,
         child: [
           {
             title: "Discount",
             logo: "",
-            pathName: "discount",
+            pathName: "discounts",
             navigate: true,
             disabled: false,
             child: [],
@@ -613,7 +613,7 @@ const adminNav = [
         child: [],
       },
       {
-        title: "Orders Payment History",
+        title: "Order's Payment History",
         logo: "",
         pathName: "orderspaymenthistory",
         navigate: false,
@@ -753,7 +753,7 @@ const adminNav = [
             ],
           },
           {
-            title: "Marketing Tools Subscriptions",
+            title: "Marketing Tools Subscriptions(Payment Histroy)",
             logo: "",
             pathName: "marketingtoolsubscription",
             navigate: false,

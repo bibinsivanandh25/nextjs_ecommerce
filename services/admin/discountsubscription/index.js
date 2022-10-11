@@ -52,10 +52,34 @@ const deleteDisCountSubscription = (id) => {
     })
     .catch((err) => ({ err }));
 };
+const mediaDisCountSubscription = (payload) => {
+  return serviceUtil
+    .put(`products/media/admin/marketing-tool/comment`, payload, {
+      header: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const addNoteDisCountSubscription = (payload) => {
+  return serviceUtil
+    .put(`users/marketing-tool/comment`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   adminDiscountSubscription,
   adminDiscountSubscriptionDisable,
   getViewDiscountData,
   discountApproved,
   deleteDisCountSubscription,
+  mediaDisCountSubscription,
+  addNoteDisCountSubscription,
 };
