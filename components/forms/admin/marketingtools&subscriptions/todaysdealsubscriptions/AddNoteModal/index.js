@@ -41,21 +41,18 @@ const AddNoteModal = ({
   const addNote = async (payload) => {
     const { data, error, message } = await addANoteApi(payload);
     if (error) {
-      console.log(error, "--- error");
       if (message) {
         toastify(message, "error");
       } else if (error?.response?.data?.message) {
         toastify(error?.response?.data?.message, "error");
       }
     } else if (data) {
-      console.log(data);
       toastify(message, "success");
     }
   };
 
   const handleSubmit = async () => {
     const [theError, err] = handleError();
-    // console.log(theError);
     if (!theError) {
       if (fileInput) {
         const formData = new FormData();
@@ -71,7 +68,6 @@ const AddNoteModal = ({
             toastify(error.response.data.message, "error");
           }
         } else if (data) {
-          console.log("data ", data);
           const payload = {
             type: "PURCHASE_HISTORY",
             typeId: subsTypeId,

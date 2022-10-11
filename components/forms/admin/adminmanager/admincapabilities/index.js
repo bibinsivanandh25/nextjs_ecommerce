@@ -218,7 +218,6 @@ const StaffForm = ({
   const handleSubmit = async () => {
     if (!validate()) {
       const payload = createPayload();
-      console.log({ payload });
       const saveAdmin =
         adminType === "ADMIN_MANAGER"
           ? type === "add"

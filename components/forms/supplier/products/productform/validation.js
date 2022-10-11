@@ -63,12 +63,6 @@ const validateProductImg = (productImage) => {
   return false;
 };
 const validateInventory = (inventoryFormData) => {
-  console.log("Status ", inventoryFormData.stock_status);
-  console.log(
-    "inventoryFormData.shipping_class ",
-    inventoryFormData.shipping_class
-  );
-
   const errObj = {};
   let flag = false;
   if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {

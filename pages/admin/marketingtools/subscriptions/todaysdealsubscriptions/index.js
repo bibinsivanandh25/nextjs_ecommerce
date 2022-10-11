@@ -200,7 +200,6 @@ const TodaysDealSubscription = () => {
         toastify(error?.response?.data?.message, "error");
       }
     } else if (data && !error) {
-      console.log(data, " -- data ");
       const mappedArray = data.map((val, index) => {
         const dateOne = new Date(val.activatedAt);
         const dateTwo = new Date(val.expirationDate);

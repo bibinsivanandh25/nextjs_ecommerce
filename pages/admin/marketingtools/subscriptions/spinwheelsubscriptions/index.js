@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -176,7 +177,6 @@ const SpinWheelSubscriptions = () => {
       userType: "SUPPLIER",
     });
     if (data) {
-      console.log(data);
       const mappedArray = data.map((val, index) => {
         const dateOne = new Date(val.activatedAt);
         const dateTwo = new Date(val.expirationDate);
@@ -220,17 +220,12 @@ const SpinWheelSubscriptions = () => {
                 type="view"
                 className="fs-18"
                 onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
                   setDataOfSingleSupplierOrReseller(val.userMarketingTools);
                   setOpenViewModal(true);
                 }}
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  console.log("Hey");
                   onClickOfMenuItem(ele);
                 }}
                 options={[
@@ -263,9 +258,6 @@ const SpinWheelSubscriptions = () => {
       });
 
       setRowsForSpinWheelSubs(mappedArray);
-    }
-    if (error) {
-      console.log("error hey", error);
     }
   }
 
