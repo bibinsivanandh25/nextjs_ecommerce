@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   Box,
   Collapse,
@@ -9,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
 
@@ -110,9 +111,31 @@ const ChildCollapes = ({ list = {}, open = false }) => {
   );
 };
 
-const CollapseList = ({ list = {}, open = false }) => {
+const CollapseList = ({
+  list = {},
+  open = false,
+  setToFalse = () => {},
+  // id = null,
+}) => {
   const [expand, setExpand] = useState(false);
   const router = useRouter();
+  const [menuList, setMenuList] = useState({ ...list });
+
+  useEffect(() => {
+    setMenuList(list);
+  }, [list]);
+
+  // const setSelectedToFalse = (data) => {
+  //   data.forEach((element) => {
+  //     if (element?.child?.length) {
+  //       element.child = setSelectedToFalse(
+  //         JSON.parse(JSON.stringify([...element.child]))
+  //       );
+  //     }
+  //     element.selected = false;
+  //   });
+  //   return data;
+  // };
 
   return (
     <>
@@ -122,12 +145,15 @@ const CollapseList = ({ list = {}, open = false }) => {
           justifyContent: open ? "initial" : "center",
           px: open ? 1.5 : 2.5,
         }}
-        className="cursor-pointer"
+        className={`${
+          router.pathname.includes(menuList.pathName) ? "color-orange" : ""
+        } cursor-pointer`}
         onClick={() => {
-          setExpand(!expand);
-          if (list.navigate) {
-            router.push(`${list.pathName}`);
+          if (menuList.navigate) {
+            router.push(`${menuList.pathName}`);
           }
+          setToFalse();
+          setExpand(!expand);
         }}
       >
         <ListItemIcon
@@ -136,9 +162,11 @@ const CollapseList = ({ list = {}, open = false }) => {
             mr: open ? 1 : "auto",
             justifyContent: "center",
           }}
-          className="cursor-pointer"
+          className={`${
+            router.pathname.includes(menuList.pathName) ? "color-orange" : ""
+          } cursor-pointer`}
         >
-          <Tooltip title={!open ? list.title : ""} placement="right">
+          <Tooltip title={!open ? menuList.title : ""} placement="right">
             <InboxIcon />
           </Tooltip>
         </ListItemIcon>
@@ -146,13 +174,17 @@ const CollapseList = ({ list = {}, open = false }) => {
           className="cursor-pointer"
           primary={
             <Typography
-              className="cursor-pointer"
+              className={`${
+                router.pathname.includes(menuList.pathName)
+                  ? "color-orange"
+                  : ""
+              } cursor-pointer`}
               variant="text"
               fontWeight={600}
               fontSize={13}
-              color={list.selected && "#e56700"}
+              // color={menuList.selected && "#e56700"}
             >
-              {list.title}
+              {menuList.title}
             </Typography>
           }
           sx={{ opacity: open ? 1 : 0 }}
@@ -160,7 +192,7 @@ const CollapseList = ({ list = {}, open = false }) => {
       </ListItemButton>
       <Collapse in={expand} timeout="auto" unmountOnExit className="ms-4">
         <List component="div" disablePadding>
-          {list.child.map((item) => {
+          {menuList.child.map((item) => {
             return item?.child?.length ? (
               <ChildCollapes list={item} open={open} />
             ) : (

@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
@@ -10,6 +10,7 @@ import {
   disableAdmin,
   getAdminUser,
   getAdminUsers,
+  getFilters,
 } from "services/admin/admin";
 import toastify from "services/utils/toastUtils";
 
@@ -74,6 +75,12 @@ const Users = () => {
       data_align: "center",
     },
   ];
+  const [pageNumber, setpageNumber] = useState(0);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    createdBy: [],
+    status: [],
+  });
 
   const getUserById = async (type, id) => {
     const { data, err } = await getAdminUser(id);
@@ -125,22 +132,17 @@ const Users = () => {
         col8: item.createdDate,
         col9: item.status,
         col10: (
-          <Box className="d-flex align-items-center justify-content-around">
-            <Box className="d-flex flex-column align-items-center">
-              <Box className="ms-4">
-                <SwitchComponent
-                  label=""
-                  defaultChecked={item.status === "APPROVED"}
-                  ontoggle={() => {
-                    disableUsers(
-                      item.adminRegistrationId,
-                      item.status === "APPROVED" ? "DISABLED" : "APPROVED"
-                    );
-                  }}
-                />
-              </Box>
-              <Typography className="h-5">Disable</Typography>
-            </Box>
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                disableUsers(
+                  item.adminRegistrationId,
+                  item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                );
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, item.adminRegistrationId);
@@ -155,22 +157,51 @@ const Users = () => {
   };
 
   const getUsers = async (
-    page = 0,
+    page = pageNumber,
     payload = {
-      status: [],
-      createdBy: [],
+      status: selectedFilters.status,
+      createdBy: selectedFilters.createdBy,
       keyword: null,
     }
   ) => {
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
     if (data) {
-      setTableRows(mapData(data));
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
 
+  const getFilterData = async () => {
+    const { data } = await getFilters();
+    if (data) {
+      const temp = [
+        {
+          name: "Created By",
+          value: [],
+        },
+        {
+          name: "Status",
+          value: [],
+        },
+      ];
+      data.createdBy.forEach((item) => {
+        temp[0].value.push(`${item.id} - ${item.name}`);
+      });
+      temp[1].value = [...data.status];
+      setFilters(temp);
+    }
+  };
+
   useEffect(() => {
+    getFilterData();
     getUsers();
   }, []);
 
@@ -190,6 +221,41 @@ const Users = () => {
               setShowAdminCapabilities(true);
             }}
             showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: selectedFilters.status,
+                createdBy: selectedFilters.createdBy,
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
+            showFilterButton
+            filterData={filters}
+            getFilteredValues={async (val, text = "") => {
+              const temp = {
+                createdBy: [],
+                status: [],
+              };
+              val[0].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.createdBy.push(ele.item.split("-")[0]);
+                }
+              });
+              val[1].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.status.push(ele.item);
+                }
+              });
+              setpageNumber(0);
+              setSelectedFilters(temp);
+              await getUsers(0, {
+                status: temp.status,
+                createdBy: temp.createdBy,
+                keyword: text,
+              });
+            }}
           />
         </Paper>
       ) : (
@@ -199,6 +265,14 @@ const Users = () => {
           type={modalData.type === "" ? "add" : modalData.type}
           adminData={modalData.data}
           setModalData={setModalData}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: selectedFilters.status,
+              createdBy: selectedFilters.createdBy,
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
         />
       )}
     </Box>

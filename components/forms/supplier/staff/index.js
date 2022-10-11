@@ -138,7 +138,6 @@ const StaffForm = ({
   const supplierId = useSelector((state) => state.user.supplierId);
 
   const createPayload = () => {
-    console.log("supplierId---", supplierId);
     return {
       firstName: formData.firstName,
       lastName: formData.last_Name,

@@ -115,6 +115,7 @@ const ViewModal = ({
   const handleCloseIconClick = () => {
     setOpenViewModal(false);
   };
+
   const handleAcceptClick = async (value, id) => {
     const { data, err } = await discountApproved(value, id, user?.userId);
     if (data) {

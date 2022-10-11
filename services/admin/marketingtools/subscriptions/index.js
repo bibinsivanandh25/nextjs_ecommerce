@@ -45,10 +45,46 @@ const acceptRejectSingleToolSubscription = async (
   }
 };
 
-// const addANote = () => {};
+const viewAllSubsOfSingleUser = async (purchaseId) => {
+  try {
+    const { data } = await serviceUtil.get(
+      `users/admin-marketing-tool/tool-subscription/campaign/0/50?purchaseId=${purchaseId}`
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
+
+const convertFileToLink = async (formData) => {
+  try {
+    const { data } = await serviceUtil.put(
+      `products/media/admin/marketing-tool/comment`,
+      formData
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
+
+const addANoteApi = async (payload) => {
+  try {
+    const { data } = await serviceUtil.put(
+      "users/marketing-tool/comment",
+      payload
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
 
 export {
   getSubscriptions,
   enableOrDisableSubscriptions,
   acceptRejectSingleToolSubscription,
+  viewAllSubsOfSingleUser,
+  convertFileToLink,
+  addANoteApi,
 };

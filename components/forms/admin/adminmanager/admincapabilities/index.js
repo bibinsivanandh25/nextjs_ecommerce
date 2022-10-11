@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
@@ -19,8 +21,11 @@ import {
   saveAdminManager,
   saveAdminUser,
   updatedAdminManager,
+  updatedAdminUser,
 } from "services/admin/admin";
 import { FaLaptopHouse } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const tempObj = {
   firstName: "",
@@ -34,16 +39,25 @@ const StaffForm = ({
   adminType = "",
   setShowAdminCapabilities = () => {},
   setModalData = () => {},
+  gettableData = () => {},
   adminData = null,
 }) => {
   const [capabilites, setCapabilities] = useState([]);
   const [formData, setFormData] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({ ...tempObj });
   const [checkbox, setCheckbox] = useState(false);
+  const { role } = useSelector((state) => state.user);
+  const router = useRouter();
 
   const orginizeCapabilites = (data) => {
-    const temp = data.map((item) => {
-      return {
+    const temp = [];
+    data.forEach((item) => {
+      if (adminType === "ADMIN_MANAGER" && item.capabilityName === "Manager") {
+        return;
+      }
+      if (adminType === "ADMIN_USER" && item.capabilityName === "Admin Staff")
+        return;
+      temp.push({
         label: item.capabilityName,
         isChecked: type === "add" ? true : item.isEnable,
         expand: false,
@@ -51,7 +65,7 @@ const StaffForm = ({
           item.childCapabilityNameList && item.childCapabilityNameList.length
             ? [...orginizeCapabilites(item.childCapabilityNameList)]
             : [],
-      };
+      });
     });
     return temp;
   };
@@ -71,11 +85,6 @@ const StaffForm = ({
           email: adminData.emailId,
           dob: parse(adminData.dob, "MM-dd-yyyy", new Date()),
         });
-        // setCheckbox(
-        //   !adminData.adminCapabilities.adminCapabilityList.every(
-        //     (item) => item.isEnable
-        //   )
-        // );
       }
     }
   }, [admincapabilities, type, adminData]);
@@ -176,8 +185,29 @@ const StaffForm = ({
       temp.adminCapabilities = {
         adminCapabilityList: capabiliteObj(capabilites),
       };
+      temp.adminCapabilities.adminCapabilityList[7].childCapabilityNameList[1].childCapabilityNameList.push(
+        { capabilityName: "Manager", isEnable: false }
+      );
     } else {
       temp.adminCapabilityList = capabiliteObj(capabilites);
+      temp.adminCapabilityList[7].childCapabilityNameList.push({
+        capabilityName: "Admin Staff",
+        isEnable: false,
+        childCapabilityNameList: [
+          {
+            capabilityName: "Manager",
+            isEnable: false,
+          },
+          {
+            capabilityName: "User",
+            isEnable: false,
+          },
+          {
+            capabilityName: "Groups",
+            isEnable: false,
+          },
+        ],
+      });
       if (type === "Edit") {
         temp.status = adminData.status;
       }
@@ -195,11 +225,12 @@ const StaffForm = ({
             : updatedAdminManager
           : type === "add"
           ? saveAdminUser
-          : updatedAdminManager;
+          : updatedAdminUser;
       const { data, message, err } = await saveAdmin(payload);
       if (data) {
         toastify(message, "success");
         setShowAdminCapabilities(false);
+        gettableData();
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }

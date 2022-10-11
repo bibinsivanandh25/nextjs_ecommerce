@@ -299,8 +299,6 @@ const MrMrsAddNewCoupons = ({
                 id="couponExpiryDate"
                 name="couponExpiryDate"
                 onDateChange={(val) => {
-                  // console.log(val);
-
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,

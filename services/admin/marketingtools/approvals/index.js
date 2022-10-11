@@ -13,8 +13,23 @@ const getMarketingToolsBasedonMarketinType = (pageNumber, tool) => {
 
 const approveRejectMarketingToolCampaign = (payload) => {
   return serviceUtil
-    .put(`admin-marketing-tool/approve-reject-campaign`, payload)
+    .put(`users/admin-marketing-tool/approve-reject-campaign`, payload)
     .then((res) => res)
+    .catch((err) => ({ err }));
+};
+
+const getMarketingToolDetailsByToolId = (
+  marketingToolId,
+  marketingToolType
+) => {
+  return serviceUtil
+    .get(
+      `/users/admin-marketing-tool?marketingToolId=${marketingToolId}&marketingToolType=${marketingToolType}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
     .catch((err) => ({ err }));
 };
 // payload (formData) = {
@@ -25,4 +40,5 @@ const approveRejectMarketingToolCampaign = (payload) => {
 export {
   getMarketingToolsBasedonMarketinType,
   approveRejectMarketingToolCampaign,
+  getMarketingToolDetailsByToolId,
 };
