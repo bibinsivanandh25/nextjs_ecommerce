@@ -162,7 +162,9 @@ const CollapseList = ({
             mr: open ? 1 : "auto",
             justifyContent: "center",
           }}
-          className="cursor-pointer"
+          className={`${
+            router.pathname.includes(menuList.pathName) ? "color-orange" : ""
+          } cursor-pointer`}
         >
           <Tooltip title={!open ? menuList.title : ""} placement="right">
             <InboxIcon />
@@ -172,11 +174,15 @@ const CollapseList = ({
           className="cursor-pointer"
           primary={
             <Typography
-              className="cursor-pointer"
+              className={`${
+                router.pathname.includes(menuList.pathName)
+                  ? "color-orange"
+                  : ""
+              } cursor-pointer`}
               variant="text"
               fontWeight={600}
               fontSize={13}
-              color={menuList.selected && "#e56700"}
+              // color={menuList.selected && "#e56700"}
             >
               {menuList.title}
             </Typography>

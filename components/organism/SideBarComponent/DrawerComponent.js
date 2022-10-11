@@ -414,9 +414,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           minWidth: 0,
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
-                          color: item.selected && "#e56700",
+                          // color: item.selected && "#e56700",
                         }}
-                        className="cursor-pointer"
+                        className={`${
+                          route.pathname.includes(item.pathName)
+                            ? "color-orange"
+                            : ""
+                        } cursor-pointer`}
                       >
                         <Tooltip
                           title={!open ? item.title : ""}
@@ -429,11 +433,15 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                         className="cursor-pointer"
                         primary={
                           <Typography
-                            className="cursor-pointer"
+                            className={`${
+                              route.pathname.includes(item.pathName)
+                                ? "color-orange"
+                                : ""
+                            } cursor-pointer`}
                             variant="text"
                             fontWeight={600}
                             fontSize={13}
-                            color={item.selected && "#e56700"}
+                            // color={item.selected && "#e56700"}
                           >
                             {item.title}
                           </Typography>
