@@ -5,7 +5,6 @@ import TableComponent from "@/atoms/TableWithSpan";
 import CustomIcon from "services/iconUtils";
 import {
   acceptRejectSingleToolSubscription,
-  deleteSingleSubs,
   viewAllSubsOfSingleUser,
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
@@ -129,18 +128,6 @@ const ViewModal = ({
     }
   };
 
-  const handleDeleteSingleSubs = async (id) => {
-    const { data, error, message } = await deleteSingleSubs(id);
-    if (error) {
-      if (message) toastify(message, "error");
-      if (error?.response?.data?.message)
-        toastify(error?.response?.data?.message, "error");
-    } else if (data) {
-      toastify(message, "success");
-      getSubscriptionsRows(purchaseIde, 0);
-    }
-  };
-
   const returnRowsOfSingleSubs = (data) => {
     const mappedArray = data.map((val, index) => {
       return {
@@ -158,13 +145,11 @@ const ViewModal = ({
         col4: (
           <Box className="d-flex justify-content-around">
             <Typography className="h-5">{val.startDateTime}</Typography>
-            <CustomIcon type="edit" className="ms-2" />
           </Box>
         ),
         col5: (
           <Box className="d-flex justify-content-around">
             <Typography className="h-5">{val.endDateTime}</Typography>
-            <CustomIcon type="edit" className="ms-2" />
           </Box>
         ),
         col6: val.createdDate,
@@ -172,7 +157,6 @@ const ViewModal = ({
         col8: val.toolStatus,
         col9: (
           <Box className="d-flex align-items-center">
-            <CustomIcon type="edit" />
             <CustomIcon
               type="close"
               onIconClick={() => {
@@ -191,12 +175,6 @@ const ViewModal = ({
                   val.marketingToolId,
                   val.userTypeId
                 );
-              }}
-            />
-            <CustomIcon
-              type="delete"
-              onIconClick={() => {
-                handleDeleteSingleSubs(val.marketingToolId);
               }}
             />
           </Box>
