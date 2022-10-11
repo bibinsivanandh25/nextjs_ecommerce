@@ -284,7 +284,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
             )
         : addId(index, item, `/${getBasePath(role)}`);
     });
-    return JSON.parse(JSON.stringify([...list]));
+    return JSON.parse(JSON.stringify(getInitialSelection([...list])));
+    // return JSON.parse(JSON.stringify([...list]));
   };
   const getCapabilityPathList = (data) => {
     const temp = [];
@@ -322,6 +323,18 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       dispatch(setAllowedPaths(getCapabilityPathList(menuList)));
     }
   }, [menuList]);
+
+  const setSelectedToFalse = (data) => {
+    data.forEach((element) => {
+      if (element?.child?.length) {
+        element.child = setSelectedToFalse(
+          JSON.parse(JSON.stringify([...element.child]))
+        );
+      }
+      element.selected = false;
+    });
+    return data;
+  };
 
   return (
     <CustomDrawer
@@ -388,17 +401,6 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           route.push(`${item.pathName}`);
                         }
                         setMenuList((pre) => {
-                          const setSelectedToFalse = (data) => {
-                            data.forEach((element) => {
-                              if (element?.child?.length) {
-                                element.child = setSelectedToFalse(
-                                  JSON.parse(JSON.stringify([...element.child]))
-                                );
-                              }
-                              element.selected = false;
-                            });
-                            return data;
-                          };
                           const temp = setSelectedToFalse(
                             JSON.parse(JSON.stringify([...pre]))
                           );
@@ -440,7 +442,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                       />
                     </ListItemButton>
                   ) : (
-                    <CollapseList list={item} open={open} />
+                    <CollapseList
+                      list={item}
+                      open={open}
+                      setToFalse={() => {
+                        setMenuList((pre) => {
+                          const temp = setSelectedToFalse(pre);
+                          return temp;
+                        });
+                      }}
+                      // id={index}
+                    />
                   )}
                 </ListItem>
               );
