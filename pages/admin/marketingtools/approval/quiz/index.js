@@ -11,7 +11,6 @@ import {
   approveRejectMarketingToolCampaign,
   getMarketingToolsBasedonMarketinType,
 } from "services/admin/marketingtools/approvals";
-import ViewMarketingtools from "@/forms/admin/marketingtools&subscriptions/approval/viewmarketingtools";
 import toastify from "services/utils/toastUtils";
 
 const tableColumn = [
@@ -90,8 +89,10 @@ const tableColumn = [
 ];
 const Quiz = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [views, setViews] = useState("");
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [marketingToolId, setMarketingToolId] = useState("");
 
   const acceptRejectTool = async (status, toolId, userId) => {
     const formdata = new FormData();
@@ -150,16 +151,25 @@ const Quiz = () => {
                 );
               }}
             />
-            <CustomIcon type="view" className="fs-18 mx-2" />
-            <MenuOption
+            <CustomIcon
+              type="view"
+              className="fs-18 mx-2"
+              onIconClick={() => {
+                setOpenEditModal(true);
+                setViews("view");
+                setMarketingToolId(item.marketingToolId);
+              }}
+            />
+            {/* <MenuOption
               options={["Edit", "Delete"]}
               IconclassName="fs-5 cursor-pointer"
               getSelectedItem={(ele) => {
                 if (ele === "Edit") {
                   setOpenEditModal(true);
+                  setViews("Edit");
                 }
               }}
-            />
+            /> */}
           </Box>
         ),
       });
@@ -170,6 +180,7 @@ const Quiz = () => {
 
   const getTableData = async (page = pageNumber) => {
     const { data } = await getMarketingToolsBasedonMarketinType(page, "QUIZ");
+
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
@@ -202,12 +213,17 @@ const Quiz = () => {
           }}
         />
       </Box>
-      <EditQuizModal
-        modalOpen={openEditModal}
-        modalClose={setOpenEditModal}
-        title="Edit Quiz"
-        editorPlaceHolder="Description for the Scratch Card Products..."
-      />
+
+      {openEditModal ? (
+        <EditQuizModal
+          modalOpen={openEditModal}
+          modalClose={setOpenEditModal}
+          title={views === "Edit" ? "Edit Quiz" : "View"}
+          editorPlaceHolder="Description for the Scratch Card Products..."
+          marketingToolId={marketingToolId}
+          views={views}
+        />
+      ) : null}
     </Paper>
   );
 };
