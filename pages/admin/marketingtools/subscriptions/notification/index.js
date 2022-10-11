@@ -262,9 +262,6 @@ const NotificationSubscription = () => {
     };
     const { data, err } = await adminDiscountSubscription(payload, page);
     if (data) {
-      setRows(getTableRows(data));
-    }
-    if (data) {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber((pre) => pre + 1);
