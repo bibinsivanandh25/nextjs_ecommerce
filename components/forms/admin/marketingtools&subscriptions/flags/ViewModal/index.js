@@ -156,7 +156,7 @@ const ViewModal = ({
         col7: val.customerType,
         col8: val.toolStatus,
         col9: (
-          <Box className="d-flex align-items-center">
+          <Box className="d-flex justify-content-center align-items-center">
             <CustomIcon
               type="close"
               onIconClick={() => {
@@ -177,12 +177,6 @@ const ViewModal = ({
                 );
               }}
             />
-            {/* <CustomIcon
-              type="delete"
-              onIconClick={() => {
-                handleDeleteSingleSubs(val.marketingToolId);
-              }}
-            /> */}
           </Box>
         ),
       };
