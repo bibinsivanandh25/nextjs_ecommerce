@@ -5,7 +5,6 @@ import { store } from "store";
 
 const baseURL = `${process.env.DOMAIN}`;
 // axios.defaults.baseURL = baseURL;
-const { role, userId: id, supplierId } = store.getState()?.user;
 const axiosInstance = axios.create({
   baseURL,
 });
@@ -15,6 +14,7 @@ const setHeaders = (commmonHeaders) => {
 };
 // const user = useUserInfo();
 axiosInstance.interceptors.request.use(async (config) => {
+  const { role, userId: id, supplierId } = store.getState()?.user;
   config.headers = {
     "Access-Control-Allow-Origin": "*",
     ...config.headers,
