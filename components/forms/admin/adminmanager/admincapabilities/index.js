@@ -75,7 +75,9 @@ const StaffForm = ({
       setCapabilities(orginizeCapabilites(admincapabilities));
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
-        orginizeCapabilites(adminData.adminCapabilities.adminCapabilityList)
+        orginizeCapabilites(
+          adminData.adminCapabilities.adminCapabilityList.adminCapabilitylist
+        )
       );
       if (type === "Edit") {
         setFormData({
@@ -317,6 +319,7 @@ const StaffForm = ({
                     helperText={errorObj.email}
                     error={errorObj.email !== ""}
                     placeholder="E-mail"
+                    disabled={type === "Edit"}
                   />
                 </Grid>
 
@@ -350,36 +353,38 @@ const StaffForm = ({
                   />
                 </Grid>
 
-                <Grid item sm={12} className="d-flex">
-                  <span className="fs-14 my-2 fw-600 me-3">
-                    Custom Capability :
-                  </span>
-                  <CheckBoxComponent
-                    label=""
-                    isChecked={checkbox}
-                    checkBoxClick={(_, value) => {
-                      setCheckbox(value);
-                      setCapabilities((pre) => {
-                        const temp = pre.map((item) => {
-                          return {
-                            ...item,
-                            isChecked: !value,
-                            children: item.children.length
-                              ? item.children.map((ele) => {
-                                  return {
-                                    ...ele,
-                                    isChecked: !value,
-                                  };
-                                })
-                              : [],
-                          };
+                {type !== "Edit" && (
+                  <Grid item sm={12} className="d-flex">
+                    <span className="fs-14 my-2 fw-600 me-3">
+                      Custom Capability :
+                    </span>
+                    <CheckBoxComponent
+                      label=""
+                      isChecked={checkbox}
+                      checkBoxClick={(_, value) => {
+                        setCheckbox(value);
+                        setCapabilities((pre) => {
+                          const temp = pre.map((item) => {
+                            return {
+                              ...item,
+                              isChecked: !value,
+                              children: item.children.length
+                                ? item.children.map((ele) => {
+                                    return {
+                                      ...ele,
+                                      isChecked: !value,
+                                    };
+                                  })
+                                : [],
+                            };
+                          });
+                          return temp;
                         });
-                        return temp;
-                      });
-                    }}
-                    size="small"
-                  />
-                </Grid>
+                      }}
+                      size="small"
+                    />
+                  </Grid>
+                )}
               </Grid>
             ) : (
               <Grid container spacing={2}>
