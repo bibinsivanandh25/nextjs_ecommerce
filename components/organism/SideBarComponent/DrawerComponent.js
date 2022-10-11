@@ -284,7 +284,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
             )
         : addId(index, item, `/${getBasePath(role)}`);
     });
-    return JSON.parse(JSON.stringify([...list]));
+    return JSON.parse(JSON.stringify(getInitialSelection([...list])));
+    // return JSON.parse(JSON.stringify([...list]));
   };
   const getCapabilityPathList = (data) => {
     const temp = [];
@@ -322,6 +323,18 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       dispatch(setAllowedPaths(getCapabilityPathList(menuList)));
     }
   }, [menuList]);
+
+  const setSelectedToFalse = (data) => {
+    data.forEach((element) => {
+      if (element?.child?.length) {
+        element.child = setSelectedToFalse(
+          JSON.parse(JSON.stringify([...element.child]))
+        );
+      }
+      element.selected = false;
+    });
+    return data;
+  };
 
   return (
     <CustomDrawer
@@ -388,17 +401,6 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           route.push(`${item.pathName}`);
                         }
                         setMenuList((pre) => {
-                          const setSelectedToFalse = (data) => {
-                            data.forEach((element) => {
-                              if (element?.child?.length) {
-                                element.child = setSelectedToFalse(
-                                  JSON.parse(JSON.stringify([...element.child]))
-                                );
-                              }
-                              element.selected = false;
-                            });
-                            return data;
-                          };
                           const temp = setSelectedToFalse(
                             JSON.parse(JSON.stringify([...pre]))
                           );
@@ -412,9 +414,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           minWidth: 0,
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
-                          color: item.selected && "#e56700",
+                          // color: item.selected && "#e56700",
                         }}
-                        className="cursor-pointer"
+                        className={`${
+                          route.pathname.includes(item.pathName)
+                            ? "color-orange"
+                            : ""
+                        } cursor-pointer`}
                       >
                         <Tooltip
                           title={!open ? item.title : ""}
@@ -427,11 +433,15 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                         className="cursor-pointer"
                         primary={
                           <Typography
-                            className="cursor-pointer"
+                            className={`${
+                              route.pathname.includes(item.pathName)
+                                ? "color-orange"
+                                : ""
+                            } cursor-pointer`}
                             variant="text"
                             fontWeight={600}
                             fontSize={13}
-                            color={item.selected && "#e56700"}
+                            // color={item.selected && "#e56700"}
                           >
                             {item.title}
                           </Typography>
@@ -440,7 +450,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                       />
                     </ListItemButton>
                   ) : (
-                    <CollapseList list={item} open={open} />
+                    <CollapseList
+                      list={item}
+                      open={open}
+                      setToFalse={() => {
+                        setMenuList((pre) => {
+                          const temp = setSelectedToFalse(pre);
+                          return temp;
+                        });
+                      }}
+                      // id={index}
+                    />
                   )}
                 </ListItem>
               );
