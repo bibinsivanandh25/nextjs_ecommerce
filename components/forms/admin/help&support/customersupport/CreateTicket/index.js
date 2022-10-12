@@ -98,7 +98,7 @@ const CreateTicket = ({
   });
   const [orderIdDisplay, setorderIdDisplay] = useState(false);
   useEffect(() => {
-    if (formValue.issueType.value == "Order") {
+    if (formValue.issueType.value == "ORDER_RELATED_ISSUE") {
       setorderIdDisplay(true);
     } else {
       setorderIdDisplay(false);
@@ -336,9 +336,6 @@ const CreateTicket = ({
           </Grid>
         </div>
         <FileUploadModal
-          // getUploadedFiles={() => {}}
-          // showModal={showUploadModal}
-          // setShowModal={setShowUploadModal}
           getUploadedFiles={(value) => {
             setFormValue({
               ...formValue,

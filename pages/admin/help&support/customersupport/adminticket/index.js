@@ -223,6 +223,7 @@ const SupplierSupport = () => {
       getTabledata(0, result);
     }
   };
+
   return (
     <Box>
       <Box>
@@ -236,7 +237,7 @@ const SupplierSupport = () => {
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
                 tableRows={tableRows}
-                table_heading="Supplier Support"
+                table_heading="Customer Support"
                 showSearchFilter={false}
                 showSearchbar={false}
                 showCustomButton

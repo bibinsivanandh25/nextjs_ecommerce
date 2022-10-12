@@ -114,7 +114,6 @@ const CustomerSupport = () => {
   const onClickOfMenuItem = () => {};
 
   const theTaleRowsData = (data) => {
-    console.log(data);
     const anArray = [];
     data.forEach((val, index) => {
       anArray.push({
@@ -152,7 +151,8 @@ const CustomerSupport = () => {
         ),
       });
     });
-    setTableRows(anArray);
+
+    return anArray;
   };
   const getTabledata = async (page, filters = []) => {
     const payload = {
@@ -227,41 +227,43 @@ const CustomerSupport = () => {
       getTabledata(0, result);
     }
   };
+
   return (
     <Box>
       <Box>
-        {!showCreateTicketComponent ? (
-          <Paper
-            sx={{ height: "78vh" }}
-            className="overflow-auto hide-scrollbar"
-          >
-            <Box className="px-1 pt-2">
-              <TableComponent
-                columns={tableColumns}
-                tHeadBgColor="bg-light-gray"
-                // showPagination={false}
-                tableRows={tableRows}
-                table_heading="Customer Support"
-                // showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="Create Ticket"
-                dateFilterBtnClick={() => {
-                  setShowCreateTicketComponent(true);
-                }}
-                filterData={filterData}
-                handlePageEnd={(searchText, filterText, page = pageNumber) => {
-                  getTabledata(page);
-                }}
-                getFilteredValues={(val) => getFilteredValues(val)}
-              />
-            </Box>
-          </Paper>
-        ) : (
+        {/* {!showCreateTicketComponent ? ( */}
+        <Paper sx={{ height: "78vh" }} className="overflow-auto hide-scrollbar">
+          <Box className="px-1 pt-2">
+            <TableComponent
+              columns={tableColumns}
+              tHeadBgColor="bg-light-gray"
+              tableRows={tableRows}
+              table_heading="Supplier Store"
+              showSearchFilter={false}
+              showSearchbar={false}
+              // customButtonLabel="Create Ticket"
+              showFilterButton
+              showCustomButton={false}
+              filterData={filterData}
+              showDateFilterSearch={false}
+              // dateFilterBtnClick={() => {
+              //   setShowCreateTicketComponent(true);
+              // }}
+              onCustomButtonClick={() => {
+                setShowCreateTicketComponent(true);
+              }}
+              handlePageEnd={(searchText, filterText, page = pageNumber) => {
+                getTabledata(page);
+              }}
+              getFilteredValues={(val) => getFilteredValues(val)}
+            />
+          </Box>
+        </Paper>
+        {/* : (
           <CreateTicket
             setShowCreateTicketComponent={setShowCreateTicketComponent}
           />
-        )}
+        )} */}
       </Box>
     </Box>
   );
