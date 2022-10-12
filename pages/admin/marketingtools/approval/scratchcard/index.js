@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Paper, Typography } from "@mui/material";
@@ -30,14 +31,14 @@ const tableColumn = [
     data_align: "center",
     data_classname: "",
   },
-  {
-    id: "col3",
-    label: "Tool",
-    minWidth: 150,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
+  // {
+  //   id: "col3",
+  //   label: "Tool",
+  //   minWidth: 150,
+  //   align: "center",
+  //   data_align: "center",
+  //   data_classname: "",
+  // },
   {
     id: "col4",
     label: "Title",
@@ -95,11 +96,12 @@ const tableColumn = [
     data_classname: "",
   },
 ];
-const ScratchCard = () => {
+const PriceTargeted = () => {
   const [viewModalOpen, setViewModalopen] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [marketingToolId, setMarketingToolId] = useState("");
 
   const acceptRejectTool = async (status, toolId, userId) => {
     const formdata = new FormData();
@@ -109,6 +111,7 @@ const ScratchCard = () => {
     const { data, err } = await approveRejectMarketingToolCampaign(formdata);
     if (data) {
       toastify(data?.message, "success");
+      getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -125,7 +128,7 @@ const ScratchCard = () => {
             {item.userTypeId}
           </Typography>
         ),
-        col3: item.toolType.replaceAll("_", " "),
+        // col3: item.toolType.replaceAll("_", " "),
         col4: item.campaignTitle,
         col5: (
           <div
@@ -164,7 +167,10 @@ const ScratchCard = () => {
             <CustomIcon
               type="view"
               className="fs-18 mx-2"
-              onIconClick={() => setViewModalopen(true)}
+              onIconClick={() => {
+                setViewModalopen(true);
+                setMarketingToolId(item.marketingToolId);
+              }}
             />
             <MenuOption
               options={["Edit", "Delete"]}
@@ -172,6 +178,7 @@ const ScratchCard = () => {
               getSelectedItem={(ele) => {
                 if (ele === "Edit") {
                   setOpenEditModal(true);
+                  setMarketingToolId(item.marketingToolId);
                 }
               }}
             />
@@ -212,7 +219,7 @@ const ScratchCard = () => {
           showSearchbar={false}
           tableRows={[...tableRows]}
           tHeadBgColor="bg-tableGray"
-          table_heading="Scratch Card"
+          table_heading="Price Targeted"
           showCheckbox={false}
           handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
             getTableData(page);
@@ -222,16 +229,18 @@ const ScratchCard = () => {
       <ViewMarketingtools
         modalOpen={viewModalOpen}
         modalClose={setViewModalopen}
-        title="View Scratch Card"
+        title="View Price Targeted"
+        marketingToolId={marketingToolId}
+        marketingToolType="SCRATCH_CARD"
       />
       <EditMarketingTools
         modalOpen={openEditModal}
         modalClose={setOpenEditModal}
-        title="Edit Scratch Card"
+        title="Edit Price Targeted"
         editorPlaceHolder="Description for the Discount Products..."
       />
     </Paper>
   );
 };
 
-export default ScratchCard;
+export default PriceTargeted;

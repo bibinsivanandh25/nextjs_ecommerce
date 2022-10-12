@@ -490,6 +490,7 @@ const MyProducts = () => {
             handleRowsPerPageChange={() => {
               setpageNumber(0);
             }}
+            tabChange={value}
           />
           <Menu
             id="basic-menu"
