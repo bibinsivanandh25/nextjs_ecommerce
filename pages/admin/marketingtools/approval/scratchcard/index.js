@@ -189,11 +189,20 @@ const PriceTargeted = () => {
 
     return result;
   };
-  const getTableData = async (page = pageNumber) => {
-    const { data } = await getMarketingToolsBasedonMarketinType(
-      page,
-      "SCRATCH_CARD"
-    );
+  const getTableData = async (
+    page = pageNumber,
+    dateFilter = {
+      fromDate: "",
+      toDate: "",
+    }
+  ) => {
+    const payload = {
+      dateFrom: dateFilter.fromDate,
+      dateTo: dateFilter.toDate,
+      status: "PENDING",
+      marketingToolType: "SCRATCH_CARD",
+    };
+    const { data } = await getMarketingToolsBasedonMarketinType(page, payload);
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
@@ -221,8 +230,13 @@ const PriceTargeted = () => {
           tHeadBgColor="bg-tableGray"
           table_heading="Price Targeted"
           showCheckbox={false}
-          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-            getTableData(page);
+          handlePageEnd={(
+            searchText,
+            searchFilter,
+            page = pageNumber,
+            dateFilter
+          ) => {
+            getTableData(page, dateFilter);
           }}
         />
       </Box>

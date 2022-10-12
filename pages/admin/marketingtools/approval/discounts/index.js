@@ -180,11 +180,20 @@ const Discounts = () => {
 
     return result;
   };
-  const getTableData = async (page = pageNumber) => {
-    const { data } = await getMarketingToolsBasedonMarketinType(
-      page,
-      "DISCOUNT_COUPON"
-    );
+  const getTableData = async (
+    page = pageNumber,
+    dateFilter = {
+      fromDate: "",
+      toDate: "",
+    }
+  ) => {
+    const payload = {
+      dateFrom: dateFilter.fromDate,
+      dateTo: dateFilter.toDate,
+      status: "PENDING",
+      marketingToolType: "DISCOUNT_COUPON",
+    };
+    const { data } = await getMarketingToolsBasedonMarketinType(page, payload);
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
@@ -205,15 +214,20 @@ const Discounts = () => {
       <Box className="mt-2">
         <TableComponent
           columns={[...tableColumn]}
-          showDateFilter={false}
+          showDateFilter
           showSearchFilter={false}
           showSearchbar={false}
           tableRows={[...tableRows]}
           tHeadBgColor="bg-tableGray"
           table_heading="Discount Coupons"
           showCheckbox={false}
-          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-            getTableData(page);
+          handlePageEnd={(
+            searchText,
+            searchFilter,
+            page = pageNumber,
+            dateFilter
+          ) => {
+            getTableData(page, dateFilter);
           }}
         />
       </Box>

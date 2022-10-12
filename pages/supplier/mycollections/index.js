@@ -38,25 +38,16 @@ const MyCollections = () => {
   const { id } = useUserInfo();
 
   const filterList = [
+    { label: "All", id: 0, value: "ALL" },
     {
       id: 1,
-      label: "",
-      value: "",
+      label: "Brand",
+      value: "BRAND",
     },
     {
       id: 2,
-      label: "",
-      value: "",
-    },
-    {
-      id: 3,
-      label: "",
-      value: "",
-    },
-    {
-      id: 1,
-      label: "",
-      value: "",
+      label: "Category",
+      value: "CATEGORY",
     },
   ];
 
@@ -120,7 +111,13 @@ const MyCollections = () => {
   ) => {
     const { data } = await getCollections(id, page, searchText, filterText);
     if (data) {
-      setTableRows(mapTableData(data));
+      if (page === 0) {
+        setTableRows(mapTableData(data));
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableData(data)]);
+        setPageNumber(pageNumber + 1);
+      }
     }
   };
   useEffect(() => {
