@@ -336,6 +336,7 @@ const StaffForm = ({
                     helperText={errorObj.MobileNo}
                     error={errorObj.MobileNo !== ""}
                     placeholder="Mobile No."
+                    disabled={type === "Edit"}
                   />
                 </Grid>
                 <Grid item sm={12}>
