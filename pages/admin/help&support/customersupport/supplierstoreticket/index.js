@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -34,7 +35,13 @@ const CustomerSupport = () => {
     {
       id: "col3",
       align: "center",
-      label: "Customer ID",
+      label: "User From ID / Name",
+      data_align: "center",
+    },
+    {
+      id: "col4",
+      align: "center",
+      label: "User To ID",
       data_align: "center",
     },
     {
@@ -114,7 +121,6 @@ const CustomerSupport = () => {
   const onClickOfMenuItem = () => {};
 
   const theTaleRowsData = (data) => {
-    console.log(data);
     const anArray = [];
     data.forEach((val, index) => {
       anArray.push({
@@ -122,19 +128,20 @@ const CustomerSupport = () => {
         col1: index + 1,
         col2: val.ticketId,
         col3: `${val.userFromId} / ${val.userFromName}`,
-        col4: val.issueType.replaceAll("_", " "),
-        col5: val.orderId,
-        col6: val.issueSubject,
-        col7: "--",
+        col4: val.userToId,
+        col5: val.issueType.replaceAll("_", " "),
+        col6: val.orderId,
+        col7: val.issueSubject,
         col8: "--",
-        col9: `${val.createdDate.split("T")[0]} ${
+        col9: "--",
+        col10: `${val.createdDate.split("T")[0]} ${
           val.createdDate.split("T")[1]
         }`,
-        col10: `${val.lastModifiedDate.split("T")[0]} ${
+        col11: `${val.lastModifiedDate.split("T")[0]} ${
           val.lastModifiedDate.split("T")[1]
         }`,
-        col11: val.ticketStatus,
-        col12: (
+        col12: val.ticketStatus,
+        col13: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
               type="view"
