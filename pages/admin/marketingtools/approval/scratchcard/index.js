@@ -224,6 +224,7 @@ const PriceTargeted = () => {
         <TableComponent
           columns={[...tableColumn]}
           showDateFilter={false}
+          showDateFilterSearch={false}
           showSearchFilter={false}
           showSearchbar={false}
           tableRows={[...tableRows]}

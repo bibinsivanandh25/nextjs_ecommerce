@@ -227,6 +227,7 @@ const PriceTargeted = () => {
           showSearchFilter={false}
           showSearchbar={false}
           tableRows={[...tableRows]}
+          showDateFilterSearch={false}
           tHeadBgColor="bg-tableGray"
           table_heading="Price Targeted"
           showCheckbox={false}
