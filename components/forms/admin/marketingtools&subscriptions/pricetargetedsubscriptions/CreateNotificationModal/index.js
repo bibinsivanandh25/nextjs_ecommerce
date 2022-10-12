@@ -256,6 +256,7 @@ const CreateNotification = ({
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleSubmit = () => {
     const flag = validateForm();
     if (!flag) {

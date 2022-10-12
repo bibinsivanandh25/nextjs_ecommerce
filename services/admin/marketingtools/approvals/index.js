@@ -17,7 +17,6 @@ const approveRejectMarketingToolCampaign = (payload) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
-
 const getMarketingToolDetailsByToolId = (
   marketingToolId,
   marketingToolType

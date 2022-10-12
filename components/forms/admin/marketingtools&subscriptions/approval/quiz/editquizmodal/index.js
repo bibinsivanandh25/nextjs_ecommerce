@@ -4,9 +4,13 @@ import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import TextEditor from "@/atoms/TextEditor";
 import { Box, Grid, Typography } from "@mui/material";
-import React from "react";
+import { format, parseISO } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { getMarketingToolDetailsByToolId } from "services/admin/marketingtools/approvals";
 
 const EditQuizModal = ({
+  views,
+  marketingToolId,
   modalOpen,
   modalClose = () => {},
   title = "",
@@ -14,12 +18,83 @@ const EditQuizModal = ({
   footer = false,
   // editorPlaceHolder = "Description...",
 }) => {
+  const [viewdetails, setViewDetailes] = useState({
+    marketingToolProductList: [],
+    marketingToolQuestionAnswerList: [],
+  });
+  const getViewData = async () => {
+    const { data } = await getMarketingToolDetailsByToolId(
+      marketingToolId,
+      "QUIZ"
+    );
+    if (data) {
+      setViewDetailes({ ...data });
+    }
+  };
+
+  useEffect(() => {
+    getViewData();
+  }, []);
+
+  const renderQuestrions = () => {
+    return viewdetails.marketingToolQuestionAnswerList.map(
+      (question, index) => {
+        return (
+          <Grid
+            item
+            md={6}
+            lg={4}
+            xl={4}
+            container
+            spacing={2}
+            key={question.questionId}
+          >
+            <Grid item md={12}>
+              Question {index + 1}:
+              <InputBox
+                label=""
+                disabled={views === "view"}
+                placeholder="Enter your question"
+                textInputProps={{
+                  style: { padding: 5 },
+                }}
+                value={question.question}
+                fullWidth
+              />
+            </Grid>
+            {question.questionOptions.map((answer, index) => {
+              return (
+                <Grid item md={12} className="d-flex mt-2" key={index}>
+                  <RadiobuttonComponent
+                    label=""
+                    size="small"
+                    disabled={views === "view"}
+                    isChecked={answer == question.answer ? "checked" : ""}
+                  />
+                  <InputBox
+                    label=""
+                    value={answer}
+                    disabled={views === "view"}
+                    placeholder="Enter the option 1"
+                    textInputProps={{
+                      style: { padding: 5 },
+                    }}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        );
+      }
+    );
+  };
+
   return (
     <ModalComponent
       open={modalOpen}
       onCloseIconClick={() => modalClose(false)}
       ModalTitle={title}
-      ModalWidth={viewModlwidth}
+      ModalWidth="75%"
       showFooter={footer}
       titleClassName="fw-bold color-orange"
     >
@@ -28,8 +103,16 @@ const EditQuizModal = ({
           <Grid item md={4} display="flex">
             <Typography>Start Date :</Typography>
             <input
+              disabled={views === "view"}
               type="date"
-              // value={format(new Date(formData.start_date), "yyyy-MM-dd")}
+              value={
+                viewdetails?.startDateTime?.split(" ")[0]
+                  ? format(
+                      new Date(viewdetails?.startDateTime?.split(" ")[0]),
+                      "yyyy-MM-dd"
+                    )
+                  : null
+              }
               style={{
                 border: "none",
                 outline: "none",
@@ -42,8 +125,17 @@ const EditQuizModal = ({
           <Grid item md={4} display="flex">
             <Typography>End Date :</Typography>
             <input
+              disabled={views === "view"}
               type="date"
               // value={format(new Date(formData.start_date), "yyyy-MM-dd")}
+              value={
+                viewdetails?.startDateTime?.split(" ")[0]
+                  ? format(
+                      new Date(viewdetails?.endDateTime?.split(" ")[0]),
+                      "yyyy-MM-dd"
+                    )
+                  : null
+              }
               style={{
                 border: "none",
                 outline: "none",
@@ -55,13 +147,21 @@ const EditQuizModal = ({
           </Grid>
         </Grid>
         <Grid container className="my-2">
-          <Typography>Whome you want to create the quiz</Typography>
+          <Typography>Whom you want to create the quiz</Typography>
           <Grid container>
             <Grid item md={3}>
-              <RadiobuttonComponent label="New Customer" disabled />
+              <RadiobuttonComponent
+                label="New Customer"
+                disabled={views === "view"}
+                isChecked={viewdetails?.customerType === "NEW_CUSTOMER"}
+              />
             </Grid>
             <Grid item md={3}>
-              <RadiobuttonComponent label="Existing Customer" disabled />
+              <RadiobuttonComponent
+                label="Existing Customer"
+                disabled={views === "view"}
+                isChecked={viewdetails?.customerType === "EXISTING_CUSTOMER"}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -70,131 +170,136 @@ const EditQuizModal = ({
         </Typography>
         <Grid container spacing={2}>
           <Grid item md={3} sm={6}>
-            <InputBox disabled label="Category" inputlabelshrink />
+            <InputBox
+              disabled={views === "view"}
+              label="Category"
+              inputlabelshrink
+              value={viewdetails?.category}
+            />
+          </Grid>
+          {views !== "view" ? (
+            <Grid item md={3} sm={6}>
+              <InputBox disabled label="Set" inputlabelshrink />
+            </Grid>
+          ) : null}
+          <Grid item md={3} sm={6}>
+            <InputBox
+              disabled={views === "view"}
+              label="Sub Category"
+              inputlabelshrink
+              value={viewdetails?.subCategory}
+            />
           </Grid>
           <Grid item md={3} sm={6}>
-            <InputBox disabled label="Set" inputlabelshrink />
+            <InputBox
+              disabled={views === "view"}
+              label="Commision Mode"
+              inputlabelshrink
+              value={
+                viewdetails?.marketingToolProductList.length > 0
+                  ? viewdetails.marketingToolProductList[0].commissionMode
+                  : ""
+              }
+            />
           </Grid>
           <Grid item md={3} sm={6}>
-            <InputBox disabled label="Sub Category" inputlabelshrink />
-          </Grid>
-          <Grid item md={3} sm={6}>
-            <InputBox disabled label="Commision Mode" inputlabelshrink />
+            <InputBox
+              disabled={views === "view"}
+              label="Discount Value"
+              inputlabelshrink
+              value={viewdetails?.totalDiscountValue}
+            />
           </Grid>
         </Grid>
         <Grid container spacing={2} className="my-2">
-          <Grid item md={6} sm={6}>
-            <InputBox
-              disabled
-              label="Enter Highest Discount Value"
-              inputlabelshrink
-            />
-          </Grid>
-          <Grid item md={3} sm={6}>
-            <ButtonComponent label="Choose Product" />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
           <Grid item md={3} sm={6}>
             <InputBox
-              disabled
+              disabled={views === "view"}
               placeholder="Enter the usage limit /coupon"
+              label="Enter the usage limit /coupon"
               inputlabelshrink
+              value={viewdetails?.couponUsageLimit}
             />
           </Grid>
           <Grid item md={3} sm={6}>
             <InputBox
-              disabled
+              label="Enter the usage limit / Customer"
+              disabled={views === "view"}
               placeholder="Enter the usage limit / Customer"
               inputlabelshrink
+              value={viewdetails?.customerUsageLimit}
             />
           </Grid>
         </Grid>
         <Grid container className="my-2">
-          <Typography>Whome you want to create the quiz</Typography>
+          <Typography>Whom you want to create the quiz</Typography>
           <Grid container>
             <Grid item md={3}>
-              <RadiobuttonComponent label="Random Split" disabled />
+              <RadiobuttonComponent
+                label="Random Split"
+                disabled={views === "view"}
+                isChecked={viewdetails?.splitType === "RANDOM"}
+              />
             </Grid>
             <Grid item md={3}>
-              <RadiobuttonComponent label="Equal Split" disabled />
+              <RadiobuttonComponent
+                label="Equal Split"
+                disabled={views === "view"}
+                isChecked={viewdetails?.splitType === "EQUAL"}
+              />
             </Grid>
           </Grid>
         </Grid>
         <Grid container className="my-2">
-          <TextEditor className="w-90p" />
+          <div
+            disabled={views === "view"}
+            className="border rounded-3 pb-5 pt-3 w-95p px-4 "
+            style={{
+              background: "#fafafa",
+            }}
+            dangerouslySetInnerHTML={{
+              __html: viewdetails?.description,
+            }}
+          />
         </Grid>
         <Grid container>
           <Grid item md={4} sm={6}>
             <InputBox
               placeholder="Enter Quiz / campaign Name"
               inputlabelshrink
+              value={viewdetails?.campaignTitle}
+              disabled={views === "view"}
             />
           </Grid>
         </Grid>
         <Grid container>
           <Grid item md={3}>
-            <RadiobuttonComponent label="3 Questions" disabled />
+            <RadiobuttonComponent
+              label="3 Questions"
+              disabled={views === "view"}
+              // marketingToolQuestionAnswerList
+
+              isChecked={
+                viewdetails?.marketingToolQuestionAnswerList.length === 3
+              }
+            />
           </Grid>
           <Grid item md={3}>
-            <RadiobuttonComponent label="5 Questions" disabled />
+            <RadiobuttonComponent
+              label="5 Questions"
+              disabled={views === "view"}
+              isChecked={
+                viewdetails?.marketingToolQuestionAnswerList.length === 5
+              }
+            />
           </Grid>
         </Grid>
-        <Grid container className="w-100 mt-4" spacing={4}>
-          <Grid item md={4} lg={3} xl={2} container spacing={2}>
-            <Grid item md={12}>
-              Question 1:
-              <InputBox
-                label=""
-                placeholder="Enter the question"
-                textInputProps={{
-                  style: { padding: 5 },
-                }}
-                fullWidth
-              />
-            </Grid>
-            <Grid item md={12} className="d-flex mt-2">
-              <RadiobuttonComponent label="" size="small" disabled />
-              <InputBox
-                label=""
-                placeholder="Enter the option 1"
-                textInputProps={{
-                  style: { padding: 5 },
-                }}
-              />
-            </Grid>
-            <Grid item md={12} className="d-flex mt-2">
-              <RadiobuttonComponent label="" size="small" disabled />
-              <InputBox
-                label=""
-                textInputProps={{
-                  style: { padding: 5 },
-                }}
-                placeholder="Enter the option 2"
-              />
-            </Grid>
-            <Grid item md={12} className="d-flex mt-2">
-              <RadiobuttonComponent label="" size="small" disabled />
-              <InputBox
-                label=""
-                textInputProps={{
-                  style: { padding: 5 },
-                }}
-                placeholder="Enter the option 3"
-              />
-            </Grid>
-            <Grid item md={12} className="d-flex mt-2">
-              <RadiobuttonComponent label="" size="small" disabled />
-              <InputBox
-                label=""
-                textInputProps={{
-                  style: { padding: 5 },
-                }}
-                placeholder="Enter the option 4"
-              />
-            </Grid>
+        {/* questions  */}
+        <Box className="d-flex">
+          <Grid container className="w-100 mt-4 " spacing={2}>
+            {renderQuestrions()}
           </Grid>
-        </Grid>
+        </Box>
       </Box>
     </ModalComponent>
   );
