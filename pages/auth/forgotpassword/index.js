@@ -86,7 +86,10 @@ const OtpLogIn = () => {
                   onBtnClick={handleSubmit}
                   muiProps="w-30p "
                 />
-                <span className="color-orange fs-12 mt-2 cursor-pointer">
+                <span
+                  className="color-orange fs-12 mt-2 cursor-pointer"
+                  onClick={sendOTPclick}
+                >
                   Resend OTP
                 </span>
               </div>

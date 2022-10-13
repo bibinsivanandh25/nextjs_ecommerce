@@ -76,7 +76,10 @@ const StaffForm = ({
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
         orginizeCapabilites(
-          adminData.adminCapabilities.adminCapabilityList.adminCapabilitylist
+          adminData.adminCapabilities?.adminCapabilityList
+            ?.adminCapabilitylist ??
+            adminData.adminCapabilities?.adminCapabilityList ??
+            admincapabilities
         )
       );
       if (type === "Edit") {
@@ -351,6 +354,7 @@ const StaffForm = ({
                       }));
                     }}
                     disableFuture
+                    inputlabelshrink
                   />
                 </Grid>
 

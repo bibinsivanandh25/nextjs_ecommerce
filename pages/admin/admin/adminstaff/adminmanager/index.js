@@ -184,6 +184,7 @@ const AdminManger = () => {
         <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
+            headerClassName="color-orange"
             tHeadBgColor="bg-light-gray"
             tableRows={tableRows}
             showCustomButton

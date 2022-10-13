@@ -1,47 +1,47 @@
 const admincapabilities = [
   {
     capabilityName: "Dashboard",
-    isEnable: true,
+    isEnable: false,
   },
   {
     capabilityName: "Products",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Fixed Commission",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Zero Commission",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Products Categories",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Categories",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Sets",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Sub-Categories",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Variations",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Variation Approval",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
@@ -49,183 +49,183 @@ const admincapabilities = [
   },
   {
     capabilityName: "Orders",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Fixed Commission Products",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Zero Commission Products",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Orders Summary",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Delivery Management",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Delivery Status",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Servicable Pin Codes",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Delivery Charge",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Delivery Partner",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Customers",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Active Customer",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Disabled Customer",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Customer Q&A",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Reseller",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Active",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Draft & Queries",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Deactivated",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Supplier",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Supplier Approval",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Active",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Rejected",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Updated",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Disabled",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Queries",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Admin",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Admin Configuration",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Supplier Store Settings",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Transactional, E-mail, SMS & Push Notification",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Registration Configuration",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Notifications Suggestions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Banners",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Flags",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Tags",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
       {
         capabilityName: "Admin Staff",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Manager",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "User",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Groups",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
@@ -233,91 +233,91 @@ const admincapabilities = [
   },
   {
     capabilityName: "Admin Store",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "No Commission Store",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Commissioned Store",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Marketing Tools",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Set Tool Pricing",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Subscriptions",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Discount Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Todays Deal Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Spin Wheel Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Scratch Card Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Quiz Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Price Targeted Subscriptions",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Notifications",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Flags",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
       {
         capabilityName: "Approvals",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Discount",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Todays Deal",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Spin Wheel",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Scratch Card",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Quiz",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Price Targeted",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
@@ -325,97 +325,97 @@ const admincapabilities = [
   },
   {
     capabilityName: "Payments & Subscription",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Order's Payment History",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Supplier",
-            isEnable: true,
+            isEnable: false,
             childCapabilityNameList: [
               {
                 capabilityName: "Supplier Payment",
-                isEnable: true,
+                isEnable: false,
               },
               {
                 capabilityName: "Penalty Charges",
-                isEnable: true,
+                isEnable: false,
               },
             ],
           },
           {
             capabilityName: "Reseller",
-            isEnable: true,
+            isEnable: false,
             childCapabilityNameList: [
               {
                 capabilityName: "Reseller Payment",
-                isEnable: true,
+                isEnable: false,
               },
               {
                 capabilityName: "Reseller Subscriptions",
-                isEnable: true,
+                isEnable: false,
               },
             ],
           },
           {
             capabilityName: "Customer",
-            isEnable: true,
+            isEnable: false,
             childCapabilityNameList: [
               {
                 capabilityName: "Customer Payment",
-                isEnable: true,
+                isEnable: false,
               },
               {
                 capabilityName: "Refund History",
-                isEnable: true,
+                isEnable: false,
               },
             ],
           },
           {
             capabilityName: "Logistics",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "COD order payments-logistics",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
       {
         capabilityName: "Payments",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Initiate Payment",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Multestore Payment History",
-            isEnable: true,
+            isEnable: false,
             childCapabilityNameList: [
               {
                 capabilityName: "Transaction Summary Outward",
-                isEnable: true,
+                isEnable: false,
               },
               {
                 capabilityName: "Transaction Summary Inward",
-                isEnable: true,
+                isEnable: false,
               },
             ],
           },
           {
             capabilityName: "Marketing Tools Subscriptions(Payment Histroy)",
-            isEnable: true,
+            isEnable: false,
             childCapabilityNameList: [
               {
                 capabilityName: "Tools subscription",
-                isEnable: true,
+                isEnable: false,
               },
             ],
           },
@@ -425,69 +425,69 @@ const admincapabilities = [
   },
   {
     capabilityName: "Media",
-    isEnable: true,
+    isEnable: false,
   },
   {
     capabilityName: "Notifications",
-    isEnable: true,
+    isEnable: false,
   },
   {
     capabilityName: "Articles & Press Release",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Admin Articles",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Press Release",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Help & Support",
-    isEnable: true,
+    isEnable: false,
     childCapabilityNameList: [
       {
         capabilityName: "Dashboard",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Supplier Support",
-        isEnable: true,
+        isEnable: false,
       },
       {
         capabilityName: "Customer Support",
-        isEnable: true,
+        isEnable: false,
         childCapabilityNameList: [
           {
             capabilityName: "Admin Tickets",
-            isEnable: true,
+            isEnable: false,
           },
           {
             capabilityName: "Supplier Store Tickets",
-            isEnable: true,
+            isEnable: false,
           },
         ],
       },
       {
         capabilityName: "Reseller Support",
-        isEnable: true,
+        isEnable: false,
       },
     ],
   },
   {
     capabilityName: "Reviews",
-    isEnable: true,
+    isEnable: false,
   },
   {
     capabilityName: "Chats",
-    isEnable: true,
+    isEnable: false,
   },
   {
     capabilityName: "Log Activity",
-    isEnable: true,
+    isEnable: false,
   },
 ];
 export default admincapabilities;

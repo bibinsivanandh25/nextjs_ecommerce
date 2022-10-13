@@ -408,6 +408,7 @@ export default function TableComponent({
   showPagination = true,
   showCheckbox = true,
   table_heading = "",
+  headerClassName = "",
   tableRows = [],
   columns = [],
   setColumns = () => {},
@@ -601,7 +602,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className="fw-bold"
+                className={`fw-bold ${headerClassName}`}
               >
                 {table_heading}
               </Typography>
@@ -809,7 +810,7 @@ export default function TableComponent({
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
               id="tableTitle"
               component="div"
-              className="fw-bold"
+              className={`fw-bold ${headerClassName}`}
             >
               {table_heading}
             </Typography>
