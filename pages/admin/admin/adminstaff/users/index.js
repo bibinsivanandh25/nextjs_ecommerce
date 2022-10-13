@@ -34,7 +34,7 @@ const Users = () => {
     {
       id: "col3",
       align: "center",
-      label: "Designation",
+      label: "Last Name",
       data_align: "center",
     },
     {
@@ -125,7 +125,7 @@ const Users = () => {
         id: 1,
         col1: item.adminRegistrationId,
         col2: item.firstName,
-        col3: item.designation.replace("_", " "),
+        col3: item.lastName,
         col4: item.emailId,
         col5: item.mobileNumber,
         col7: item.createdBy,
