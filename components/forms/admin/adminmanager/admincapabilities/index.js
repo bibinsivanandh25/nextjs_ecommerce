@@ -139,7 +139,10 @@ const StaffForm = ({
       flag = true;
       errObj.email = validateMessage.email;
     }
-
+    if (!formData.dob) {
+      flag = true;
+      errObj.dob = validateMessage.field_required;
+    }
     if (
       !capabilites.some((ele) => {
         if (!ele.children.length) {
@@ -355,6 +358,8 @@ const StaffForm = ({
                     }}
                     disableFuture
                     inputlabelshrink
+                    helperText={errorObj.dob}
+                    error={!!errorObj.dob}
                   />
                 </Grid>
 

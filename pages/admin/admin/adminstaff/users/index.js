@@ -70,8 +70,8 @@ const Users = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
@@ -212,6 +212,7 @@ const Users = () => {
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
+            headerClassName="color-orange"
             tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
@@ -240,7 +241,7 @@ const Users = () => {
               };
               val[0].value.forEach((ele) => {
                 if (ele.isSelected) {
-                  temp.createdBy.push(ele.item.split("-")[0]);
+                  temp.createdBy.push(ele.item.split("-")[0].trim());
                 }
               });
               val[1].value.forEach((ele) => {

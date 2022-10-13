@@ -126,7 +126,10 @@ const AdminCapabilities = ({
     if (data) {
       setShowModal("");
       setShowAdminCapabilities(false);
-      gettableData();
+      gettableData(0, {
+        fromDate: null,
+        toDate: null,
+      });
       toastify(message, "success");
     } else if (err) {
       if (err?.response?.data?.error) {

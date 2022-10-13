@@ -68,8 +68,8 @@ const AdminManger = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
@@ -189,7 +189,7 @@ const AdminManger = () => {
             tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
-            table_heading="Admin Manger"
+            table_heading="Admin Manager"
             showSearchFilter={false}
             onCustomButtonClick={() => {
               setShowAdminCapabilities(true);
