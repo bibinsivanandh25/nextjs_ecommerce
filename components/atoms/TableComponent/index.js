@@ -522,7 +522,7 @@ export default function TableComponent({
           ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
           : "",
         toDate: filteredDates.toDate
-          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
           : "",
       });
     }
@@ -537,7 +537,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
     handlePageEnd(searchText, searchFilter?.value, 0, {
@@ -545,7 +545,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
   };
@@ -671,7 +671,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(filteredDates.toDate),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                       fromDate: e.target.value
                         ? `${format(
@@ -724,7 +724,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(e.target.value),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                     });
                   }
@@ -770,7 +770,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }}
@@ -872,7 +872,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }
@@ -922,7 +922,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }
@@ -959,7 +959,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }
