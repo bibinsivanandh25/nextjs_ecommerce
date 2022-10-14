@@ -454,7 +454,7 @@ export default function TableComponent({
   getFilteredValues = () => {},
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");

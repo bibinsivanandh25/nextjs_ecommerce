@@ -113,7 +113,7 @@ const Users = () => {
     const { data, message, err } = await disableAdmin(status, userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -173,6 +173,9 @@ const Users = () => {
         setTableRows((pre) => {
           return [...pre, ...mapData(data)];
         });
+        if (data.length) {
+          setpageNumber((pre) => pre + 1);
+        }
       }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
