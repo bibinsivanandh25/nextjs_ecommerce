@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -103,7 +104,7 @@ const Users = () => {
     const { data, message, err } = await deleteAdminUser(userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -164,6 +165,7 @@ const Users = () => {
       keyword: null,
     }
   ) => {
+    payload.createdBy = payload.createdBy.map((item) => item.trim());
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
     if (data) {
       if (page === 0) {

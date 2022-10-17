@@ -147,7 +147,7 @@ const AdminCapabilities = ({
         if (data) {
           setShowAdminCapabilities(false);
           toastify(message, "success");
-          gettableData();
+          gettableData(0);
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }
@@ -191,8 +191,8 @@ const AdminCapabilities = ({
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
         orginizeCapabilites(
-          groupData.adminRegistration[0].adminCapabilities.adminCapabilityList
-            .adminCapabilitylist
+          groupData.adminRegistration[0]?.adminCapabilities?.adminCapabilityList
+            ?.adminCapabilitylist ?? admincapabilities
         )
       );
       if (type === "Edit") {
