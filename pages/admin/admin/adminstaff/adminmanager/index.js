@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
@@ -33,7 +33,7 @@ const AdminManger = () => {
     {
       id: "col3",
       align: "center",
-      label: "Designation",
+      label: "Last Name",
       data_align: "center",
     },
     {
@@ -68,12 +68,13 @@ const AdminManger = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
   const [modalData, setModalData] = useState({ type: "", data: null });
+  const [pageNumber, setpageNumber] = useState(0);
 
   const getUserById = async (type, id) => {
     const { data, err } = await getAdminManagerById(id);
@@ -119,29 +120,24 @@ const AdminManger = () => {
         id: 1,
         col1: item.adminRegistrationId,
         col2: item.firstName,
-        col3: item.designation.replace("_", " "),
+        col3: item.lastName,
         col4: item.emailId,
         col5: item.mobileNumber,
         col7: item.createdBy,
         col8: item.createdDate,
         col9: item.status,
         col10: (
-          <Box className="d-flex align-items-center justify-content-around">
-            <Box className="d-flex flex-column align-items-center">
-              <Box className="ms-4">
-                <SwitchComponent
-                  label=""
-                  defaultChecked={item.status === "APPROVED"}
-                  ontoggle={() => {
-                    disableUsers(
-                      item.adminRegistrationId,
-                      item.status === "APPROVED" ? "DISABLED" : "APPROVED"
-                    );
-                  }}
-                />
-              </Box>
-              <Typography className="h-5">Disable</Typography>
-            </Box>
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                disableUsers(
+                  item.adminRegistrationId,
+                  item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                );
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, item.adminRegistrationId);
@@ -156,16 +152,23 @@ const AdminManger = () => {
   };
 
   const getUsers = async (
-    page = 0,
+    page = pageNumber,
     payload = {
       status: [],
       createdBy: [],
-      keyword: null,
+      keyword: "",
     }
   ) => {
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_MANAGER");
     if (data) {
-      setTableRows(mapData(data));
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -181,16 +184,27 @@ const AdminManger = () => {
         <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
+            headerClassName="color-orange"
             tHeadBgColor="bg-light-gray"
             tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
-            table_heading="Admin Manger"
+            table_heading="Admin Manager"
             showSearchFilter={false}
             onCustomButtonClick={() => {
               setShowAdminCapabilities(true);
             }}
             showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: [],
+                createdBy: [],
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
         </Paper>
       ) : (
@@ -200,6 +214,14 @@ const AdminManger = () => {
           type={modalData.type === "" ? "add" : modalData.type}
           adminData={modalData.data}
           setModalData={setModalData}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: [],
+              createdBy: [],
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
         />
       )}
     </Box>

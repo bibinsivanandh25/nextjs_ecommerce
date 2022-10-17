@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -342,12 +343,23 @@ const FilterMenu = ({
       );
     });
   };
+  const getFiltersCount = () => {
+    let count = 0;
+    filterData.forEach((item) => {
+      if (item.isSelected) {
+        count++;
+      } else if (item.value.some((ele) => ele.isSelected)) {
+        count++;
+      }
+    });
+    return count > 0 ? `(${count})` : "";
+  };
 
   return (
     <Grid container item sm={12}>
       <Grid item sm={12} display="flex" justifyContent="end">
         <ButtonComponent
-          label="Filter"
+          label={`Filter ${getFiltersCount()}`}
           showIcon
           iconName="filter"
           iconColorClass="color-orange"
@@ -396,6 +408,7 @@ export default function TableComponent({
   showPagination = true,
   showCheckbox = true,
   table_heading = "",
+  headerClassName = "",
   tableRows = [],
   columns = [],
   setColumns = () => {},
@@ -441,7 +454,7 @@ export default function TableComponent({
   getFilteredValues = () => {},
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -509,7 +522,7 @@ export default function TableComponent({
           ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
           : "",
         toDate: filteredDates.toDate
-          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
           : "",
       });
     }
@@ -524,7 +537,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
     handlePageEnd(searchText, searchFilter?.value, 0, {
@@ -532,7 +545,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
   };
@@ -589,7 +602,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className="fw-bold"
+                className={`fw-bold ${headerClassName}`}
               >
                 {table_heading}
               </Typography>
@@ -617,7 +630,8 @@ export default function TableComponent({
                 <FilterMenu
                   filterList={[...tableFilterList]}
                   getFilteredValues={(val) => {
-                    getFilteredValues(val);
+                    setPage(0);
+                    getFilteredValues(val, searchText);
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
@@ -657,7 +671,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(filteredDates.toDate),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                       fromDate: e.target.value
                         ? `${format(
@@ -710,7 +724,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(e.target.value),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                     });
                   }
@@ -756,7 +770,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }}
@@ -796,7 +810,7 @@ export default function TableComponent({
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
               id="tableTitle"
               component="div"
-              className="fw-bold"
+              className={`fw-bold ${headerClassName}`}
             >
               {table_heading}
             </Typography>
@@ -817,7 +831,7 @@ export default function TableComponent({
               <FilterMenu
                 filterList={[...tableFilterList]}
                 getFilteredValues={(val) => {
-                  getFilteredValues(val);
+                  getFilteredValues(val, searchText);
                 }}
                 setPage={setPage}
                 setTableFilterList={setTableFilterList}
@@ -858,7 +872,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }
@@ -896,6 +910,22 @@ export default function TableComponent({
                     fullWidth
                     size="small"
                     onInputChange={(e) => {
+                      if (e.target.value === "") {
+                        handlePageEnd("", searchFilter?.value, 0, {
+                          fromDate: filteredDates.fromDate
+                            ? `${format(
+                                new Date(filteredDates.fromDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                          toDate: filteredDates.toDate
+                            ? `${format(
+                                new Date(filteredDates.toDate),
+                                "MM-dd-yyyy"
+                              )} 23:59:59`
+                            : "",
+                        });
+                      }
                       setsearchText(e.target.value);
                     }}
                     showAutoCompleteOff={false}
@@ -929,7 +959,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }
@@ -1112,50 +1142,3 @@ export default function TableComponent({
     </div>
   );
 }
-
-// Sample prop data
-// const columns = [
-//   {
-//     id: "col1", //  id value in column should be presented in row as key
-//     label: "Generated for",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col2",
-//     label: "Generated Date & Time",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col3",
-//     label: "Status",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//     // data_style: { paddingLeft: "7%" },
-//   },
-// ];
-// let rows = [
-//   {
-//     id: "1",
-//     col1: "India",
-//     col2: "IN",
-//     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
-//         121212
-//       </div>
-//     ),
-//   },
-//   {
-//     id: "2",
-//     col1: "China",
-//     col2: "CN",
-//     col3: "dkjfvnkjdfv",
-//   },
-// ];

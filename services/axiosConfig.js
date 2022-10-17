@@ -5,6 +5,7 @@ import { store } from "store";
 
 const baseURL = `${process.env.DOMAIN}`;
 // axios.defaults.baseURL = baseURL;
+
 const axiosInstance = axios.create({
   baseURL,
 });
@@ -14,12 +15,23 @@ const setHeaders = (commmonHeaders) => {
 };
 // const user = useUserInfo();
 axiosInstance.interceptors.request.use(async (config) => {
-  const { role, userId: id, supplierId } = store.getState()?.user;
-  config.headers = {
-    "Access-Control-Allow-Origin": "*",
-    ...config.headers,
-    userId: ["SUPPLIER", "STAFF"].includes(role) ? supplierId : id,
-  };
+  let tempHeader = {};
+  const user = store.getState()?.user;
+  const { role, supplierId } = user;
+  if (["SUPPLIER", "STAFF"].includes(role)) {
+    tempHeader = {
+      "Access-Control-Allow-Origin": "*",
+      ...config.headers,
+      userId: supplierId,
+    };
+  } else {
+    tempHeader = {
+      "Access-Control-Allow-Origin": "*",
+      ...config.headers,
+      userId: user.userId,
+    };
+  }
+  config.headers = tempHeader;
 
   return config;
 });
