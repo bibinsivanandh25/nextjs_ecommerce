@@ -275,8 +275,15 @@ const FilterMenu = ({
               label={ele.name}
               isChecked={ele.isSelected}
               checkBoxClick={() => {
+                const setExpand = (filters) => {
+                  if (filters?.value?.filter((e) => e.isSelected).length == 0)
+                    return true;
+                  if (filters?.value?.every((e) => e.isSelected)) return false;
+                  if (filters?.value?.some((e) => e.isSelected)) return true;
+                  return !filters.isExpand;
+                };
                 const temp = JSON.parse(JSON.stringify(data));
-                temp[ind].isExpand = !temp[ind].isExpand;
+                temp[ind].isExpand = setExpand(temp[ind]);
                 temp[ind].isSelected = !temp[ind].isSelected;
                 temp[ind].value.forEach((item) => {
                   item.isSelected = temp[ind].isSelected;
