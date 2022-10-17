@@ -25,7 +25,11 @@ import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { duplicateProduct, updateProduct } from "features/productsSlice";
+import {
+  duplicateProduct,
+  updateProduct,
+  viewProduct,
+} from "features/productsSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -165,12 +169,27 @@ const MyProducts = () => {
   };
 
   const deleteSingleRow = async (productId) => {
-    const { data } = await deleteSingleProduct(productId);
-    if (data) {
-      toastify(data.message, "success");
-      getTabList();
+    if (value !== 0) {
+      // *******doubt is it possible to delete active products
+      const { data } = await deleteSingleProduct(productId);
+      if (data) {
+        toastify(data.message, "success");
+        getTabList();
+      }
+      getTableData("", "", 0);
     }
-    getTableData("", "", 0);
+  };
+
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(viewProduct(data[0]));
+      window.open("/supplier/products&inventory/addnewproduct");
+    }
   };
 
   const mapRowsToTable = (data) => {
@@ -192,27 +211,49 @@ const MyProducts = () => {
           col10: variation.status,
           col11: variation.lastUpdatedAt,
           col12: (
-            <Grid container className="h-6">
+            <Grid container className="h-6" justifyContent="center">
               <Grid item xs={3}>
-                <Link
-                  href={`/supplier/products&inventory/myproducts/viewModal?productVariationId=${variation.productVariationId}`}
-                >
-                  <a target="_blank">
-                    <CustomIcon className="fs-6" title="View" type="view" />
-                  </a>
-                </Link>
+                {value === 0 ? (
+                  <Link
+                    href={`/supplier/products&inventory/myproducts/viewModal?productVariationId=${variation.productVariationId}`}
+                  >
+                    <a target="_blank">
+                      <CustomIcon className="fs-6" title="View" type="view" />
+                    </a>
+                  </Link>
+                ) : (
+                  <CustomIcon
+                    className="fs-6"
+                    title="View"
+                    type="view"
+                    onIconClick={() => {
+                      viewClick(
+                        masterProduct.masterProductId,
+                        variation.productVariationId
+                      );
+                    }}
+                  />
+                )}
               </Grid>
-              <Grid item xs={3}>
-                <CustomIcon
-                  className="fs-6"
-                  title="share"
-                  type="share"
-                  onIconClick={() => {
-                    navigator.clipboard.writeText(variation.productVariationId);
-                    toastify("Product ID Copied To The Clip Board", "success");
-                  }}
-                />
-              </Grid>
+              {value === 0 ? (
+                <Grid item xs={3}>
+                  <CustomIcon
+                    className="fs-6"
+                    title="share"
+                    type="share"
+                    onIconClick={() => {
+                      navigator.clipboard.writeText(
+                        variation.productVariationId
+                      );
+                      toastify(
+                        "Product ID Copied To The Clip Board",
+                        "success"
+                      );
+                    }}
+                  />
+                </Grid>
+              ) : null}
+              {/* {value !== 0 ? ( */}
               <Grid item xs={3}>
                 <CustomIcon
                   onIconClick={() => {
@@ -223,6 +264,7 @@ const MyProducts = () => {
                   type="delete"
                 />
               </Grid>
+              {/* ) : null} */}
               <Grid item xs={3}>
                 <CustomIcon
                   className="fs-6"
@@ -344,25 +386,28 @@ const MyProducts = () => {
       getTabList();
       setpageNumber(0);
       setsearch("");
+      setSelected([]);
     }
   }, [value]);
 
   const handleCustomButtonClick = async () => {
-    const payload = [];
-    tableRows.forEach((ele) => {
-      if (selected.includes(ele.col3))
-        payload.push({
-          productVariationId: ele.col3,
-          skuId: ele.col5,
-        });
-    });
-    const { data, message, err } = await markOutOfStock(payload);
-    if (data) {
-      toastify(message, "success");
-      getTabList();
-      getTableData("", "", 0);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+    if (value === 0) {
+      const payload = [];
+      tableRows.forEach((ele) => {
+        if (selected.includes(ele.col3))
+          payload.push({
+            productVariationId: ele.col3,
+            skuId: ele.col5,
+          });
+      });
+      const { data, message, err } = await markOutOfStock(payload);
+      if (data) {
+        toastify(message, "success");
+        getTabList();
+        getTableData("", "", 0);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
 
@@ -478,8 +523,12 @@ const MyProducts = () => {
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"
-            customButtonLabel="Mark Out Of Stock"
-            showCustomButton={getStatus === "APPROVED"}
+            customButtonLabel={
+              value === 0 ? "Mark Out Of Stock" : "Mark In Stock"
+            }
+            showCustomButton={
+              getStatus() === "APPROVED" || getStatus() === "OUTOFSTOCK"
+            }
             onCustomButtonClick={handleCustomButtonClick}
             // searchBarSizeMd={4}
             disableCustomButton={!selected.length}
@@ -501,42 +550,48 @@ const MyProducts = () => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuItem onClick={editClick}>
-              <CustomIcon
-                type="edit"
-                className="text-secondary"
-                muiProps={{ sx: { zoom: 0.8 } }}
-                showColorOnHover={false}
-              />
-              <span className="fs-12 ms-2">Edit</span>
-            </MenuItem>
-            <MenuItem onClick={duplicateClick}>
-              <CustomIcon
-                type="filecopy"
-                muiProps={{ sx: { zoom: 0.8 } }}
-                showColorOnHover={false}
-              />
-              <span className="fs-12 ms-2">Duplicate</span>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                if (ids.flagged) return;
-                handleClose();
-                setShowAddFlagModal(true);
-                setFlagFormData((pre) => ({
-                  ...pre,
-                  variationList: [...pre.variationList, ids.variationId],
-                }));
-              }}
-            >
-              <CustomIcon
-                type="flag"
-                muiProps={{ sx: { zoom: 0.8 } }}
-                showColorOnHover={false}
-                className={ids.flagged && "color-orange"}
-              />
-              <span className="fs-12 ms-2">Add Flag</span>
-            </MenuItem>
+            {value !== 4 ? (
+              <MenuItem onClick={editClick}>
+                <CustomIcon
+                  type="edit"
+                  className="text-secondary"
+                  muiProps={{ sx: { zoom: 0.8 } }}
+                  showColorOnHover={false}
+                />
+                <span className="fs-12 ms-2">Edit</span>
+              </MenuItem>
+            ) : null}
+            {value !== 3 && value !== 4 ? (
+              <MenuItem onClick={duplicateClick}>
+                <CustomIcon
+                  type="filecopy"
+                  muiProps={{ sx: { zoom: 0.8 } }}
+                  showColorOnHover={false}
+                />
+                <span className="fs-12 ms-2">Duplicate</span>
+              </MenuItem>
+            ) : null}
+            {value === 0 ? (
+              <MenuItem
+                onClick={() => {
+                  if (ids.flagged) return;
+                  handleClose();
+                  setShowAddFlagModal(true);
+                  setFlagFormData((pre) => ({
+                    ...pre,
+                    variationList: [...pre.variationList, ids.variationId],
+                  }));
+                }}
+              >
+                <CustomIcon
+                  type="flag"
+                  muiProps={{ sx: { zoom: 0.8 } }}
+                  showColorOnHover={false}
+                  className={ids.flagged && "color-orange"}
+                />
+                <span className="fs-12 ms-2">Add Flag</span>
+              </MenuItem>
+            ) : null}
           </Menu>
           <ModalComponent
             onCloseIconClick={() => {
