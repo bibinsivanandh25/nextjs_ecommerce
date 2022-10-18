@@ -7,7 +7,7 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import UpdateViewModal from "@/forms/admin/suppliers/updated/viewmodal";
 import UpdateRaiseQuery from "@/forms/admin/suppliers/updated/raisequery";
-import { getAll } from "services/admin/supplier/updated";
+import { accept, getAll } from "services/admin/supplier/updated";
 import toastify from "services/utils/toastUtils";
 
 const tableColumn = [
@@ -150,9 +150,21 @@ const Updated = () => {
   //   },
   // ];
 
+  const acceptChanges = async (id) => {
+    const { data, error, message } = await accept(id);
+    if (data) {
+      if (message) toastify(message, "success");
+    } else if (error) {
+      if (message) toastify(message, "error");
+      else if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+    }
+  };
+
   const getTableRows = async () => {
     const { data, error, message } = await getAll();
     if (data) {
+      console.log("data ", data);
       const tempRows = data.map((val, index) => {
         return {
           id: val.changeHistoryId,
@@ -165,7 +177,12 @@ const Updated = () => {
           col7: val.updatedAt,
           col8: (
             <Box>
-              <DoneIcon className="border cursor-pointer rounded bg-green color-white fs-18 me-1" />
+              <DoneIcon
+                className="border cursor-pointer rounded bg-green color-white fs-18 me-1"
+                onClick={() => {
+                  acceptChanges(val.changeHistoryId);
+                }}
+              />
               <ClearIcon className="border cursor-pointer rounded bg-red color-white fs-18 me-1" />
               <CustomIcon
                 type="view"

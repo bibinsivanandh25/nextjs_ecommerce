@@ -11,4 +11,26 @@ const getAll = async () => {
   }
 };
 
-export { getAll };
+const accept = async (changeHistoryId) => {
+  try {
+    const { data } = await serviceUtil.put(
+      `notification/supplier-changes-history-approved/${changeHistoryId}`
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
+
+const reject = async (changeHistoryId) => {
+  try {
+    const { data } = await serviceUtil.put(
+      `notification/supplier-changes-history/${changeHistoryId}`
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
+
+export { getAll, accept, reject };
