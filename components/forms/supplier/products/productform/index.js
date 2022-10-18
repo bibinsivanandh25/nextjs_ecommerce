@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
@@ -38,6 +40,8 @@ import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import TextEditor from "@/atoms/TextEditor";
+import { GrClose } from "react-icons/gr";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
 
@@ -84,6 +88,8 @@ const ProductsLayout = ({
   const { masterProductId } = useSelector(
     (state) => state.product.productDetails
   );
+  const [longDescModal, setLongDescModal] = useState(false);
+  const [shortDescModal, setShortDescModal] = useState(false);
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -1025,7 +1031,8 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <TextAreaComponent
+                  {/* <TextAreaComponent
+                    showExpandIcon
                     legend="Short Description*"
                     placeholder="Enter short description"
                     id="short_description"
@@ -1059,10 +1066,162 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj?.short_description?.text ?? ""}
                     disabled={viewFlag}
-                  />
+                  /> */}
+                  <div className="w-100 d-flex justify-content-between">
+                    <Typography>Short Description*</Typography>
+                    <ButtonComponent
+                      size="small"
+                      label="Add Description"
+                      onBtnClick={() => {
+                        setShortDescModal(true);
+                      }}
+                      variant="outlined"
+                    />
+
+                    {shortDescModal && (
+                      <div
+                        className=""
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          height: "100vh",
+                          width: "100vw",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          background: "rgba(0,0,0,0.3)",
+                          zIndex: "1100",
+                        }}
+                      >
+                        <div className="w-50vw h-50vh bg-light rounded ps-4">
+                          <div className="d-flex flex-row-reverse">
+                            <GrClose
+                              className="me-2 mt-2"
+                              onClick={() => {
+                                setShortDescModal(false);
+                              }}
+                            />
+                          </div>
+                          <div className="">
+                            <TextEditor
+                              EditorHeight="200"
+                              content={
+                                formData?.mainForm?.short_description?.text
+                              }
+                              placeholder=""
+                              getContent={(e) => {
+                                setFormData((prev) => {
+                                  return {
+                                    ...prev,
+                                    mainForm: {
+                                      ...prev.mainForm,
+                                      short_description: {
+                                        ...prev.mainForm.short_description
+                                          .media,
+                                        text: e,
+                                      },
+                                    },
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="d-flex flex-row-reverse mt-2 me-4">
+                            <ButtonComponent
+                              label="Add Media"
+                              onBtnClick={() => {
+                                setShowFileUploadModal("short_description");
+                              }}
+                              variant="outlined"
+                              size="small"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {errorObj?.short_description?.text && (
+                    <Typography className="color-red fs-12">
+                      {errorObj?.short_description?.text}
+                    </Typography>
+                  )}
                 </Grid>
                 <Grid item md={12}>
-                  <TextAreaComponent
+                  <div className="w-100 d-flex justify-content-between">
+                    <Typography>Long Description*</Typography>
+                    <ButtonComponent
+                      label="Add Description"
+                      onBtnClick={() => {
+                        setLongDescModal(true);
+                      }}
+                      size="small"
+                      variant="outlined"
+                    />
+                    {longDescModal && (
+                      <div
+                        className=""
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          height: "100vh",
+                          width: "100vw",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          background: "rgba(0,0,0,0.3)",
+                          zIndex: "1100",
+                        }}
+                      >
+                        <div className="w-50vw h-50vh bg-light rounded ps-4">
+                          <div className="d-flex flex-row-reverse">
+                            <GrClose
+                              className="me-2 mt-2"
+                              onClick={() => {
+                                setLongDescModal(false);
+                              }}
+                            />
+                          </div>
+                          <div className="">
+                            <TextEditor
+                              EditorHeight="200"
+                              content={
+                                formData?.mainForm?.long_description?.text
+                              }
+                              placeholder=""
+                              getContent={(e) => {
+                                setFormData((prev) => {
+                                  return {
+                                    ...prev,
+                                    mainForm: {
+                                      ...prev.mainForm,
+                                      long_description: {
+                                        ...prev.mainForm.long_description.media,
+                                        text: e,
+                                      },
+                                    },
+                                  };
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="d-flex flex-row-reverse mt-2 me-4">
+                            <ButtonComponent
+                              label="Add Media"
+                              onBtnClick={() => {
+                                setShowFileUploadModal("long_description");
+                              }}
+                              variant="outlined"
+                              size="small"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* <TextAreaComponent
+                    showExpandIcon
                     id="long_description"
                     legend="Long Description*"
                     value={formData?.mainForm?.long_description?.text}
@@ -1096,7 +1255,7 @@ const ProductsLayout = ({
                     }
                     helperText={errorObj?.long_description?.text}
                     disabled={viewFlag}
-                  />
+                  /> */}
                 </Grid>
 
                 <Grid item md={12}>
