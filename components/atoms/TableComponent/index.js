@@ -237,6 +237,7 @@ const FilterMenu = ({
   getFilteredValues = () => {},
   setPage = () => {},
   setTableFilterList = () => {},
+  allowOutSideClickClose,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filterData, setFilterData] = useState([]);
@@ -385,7 +386,7 @@ const FilterMenu = ({
         }}
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={allowOutSideClickClose && handleClose}
         sx={{
           maxHeight: "80vh",
           overflow: "scroll",
@@ -463,6 +464,7 @@ export default function TableComponent({
   tabChange = "",
   filterData = [],
   getFilteredValues = () => {},
+  allowOutSideClickClose = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -646,6 +648,7 @@ export default function TableComponent({
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
+                  allowOutSideClickClose={allowOutSideClickClose}
                 />
               </Grid>
             )}

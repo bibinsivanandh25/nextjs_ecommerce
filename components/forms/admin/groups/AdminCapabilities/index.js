@@ -147,7 +147,7 @@ const AdminCapabilities = ({
         if (data) {
           setShowAdminCapabilities(false);
           toastify(message, "success");
-          gettableData();
+          gettableData(0);
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }
@@ -191,8 +191,8 @@ const AdminCapabilities = ({
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
         orginizeCapabilites(
-          groupData.adminRegistration[0].adminCapabilities.adminCapabilityList
-            .adminCapabilitylist
+          groupData.adminRegistration[0]?.adminCapabilities?.adminCapabilityList
+            ?.adminCapabilitylist ?? admincapabilities
         )
       );
       if (type === "Edit") {
@@ -262,7 +262,7 @@ const AdminCapabilities = ({
 
   return (
     <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar d-flex flex-column justify-content-between">
-      <div>
+      <div className="mb-3">
         <Typography
           onClick={() => {
             setShowAdminCapabilities(false);
@@ -408,6 +408,14 @@ const AdminCapabilities = ({
                 </Grid>
                 <Grid item md={9}>
                   {groupData.description}
+                </Grid>
+                <Grid item md={3}>
+                  Group Type:
+                </Grid>
+                <Grid item md={9}>
+                  {groupData.adminRegistration[0]?.designation
+                    .split("_")
+                    .join(" ")}
                 </Grid>
                 <Grid item md={3}>
                   Group Members:
