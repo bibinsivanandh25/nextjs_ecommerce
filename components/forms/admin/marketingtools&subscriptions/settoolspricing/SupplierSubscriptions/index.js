@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import {
   enableDisableMarketingTools,
@@ -12,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import toastify from "services/utils/toastUtils";
+import TabsCard from "components/molecule/TabsCard";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -19,12 +21,15 @@ import InputBox from "@/atoms/InputBoxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
 import ViewIndividualPricing from "../ViewIndividualPricing";
+import CreateNotification from "../CreateNotification";
 
 const SupplierSubscriptions = () => {
   const [supplierSubscriptionsTableOne, setSupplierSubscriptionsTableOne] =
     useState([]);
   const [supplierSubscriptionsTableTwo, setSupplierSubscriptionsTableTwo] =
     useState([]);
+  const [showCreateNotificationModal, setShowCreateNotificationModal] =
+    useState(false);
   const [showEditPriceModal, setShowEditPriceModal] = useState(false);
 
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
@@ -42,6 +47,11 @@ const SupplierSubscriptions = () => {
     tableColumsForSupplierSubscriptionsTableOne,
     settableColumsForSupplierSubscriptionsTableOne,
   ] = useState([]);
+  const [tabList, setTabList] = useState([
+    { label: "Active", isSelected: true },
+    { label: "Scheduled", isSelected: false },
+    { label: "Expired", isSelected: false },
+  ]);
   const [toolIDs, setToolIDs] = useState([]);
   const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
@@ -466,7 +476,7 @@ const SupplierSubscriptions = () => {
           result2[`col${index + 2}`] =
             ele.price !== "--" ? (
               <Box className="d-flex align-items-center justify-content-evenly">
-                <Typography className="h-5">{ele.price}</Typography>
+                <Typography className="h-5">₹{ele.price}</Typography>
                 <CustomIcon
                   type="edit"
                   className="h-4"
@@ -479,7 +489,27 @@ const SupplierSubscriptions = () => {
                     });
                   }}
                 />
-                <CustomIcon type="calendar" className="h-4" />
+                <CustomIcon
+                  type="calendar"
+                  className="h-4"
+                  title={
+                    <>
+                      <Typography className="text-center h-5">
+                        {`${ele.startDateTime} to ${ele.endDateTime}`}
+                      </Typography>
+                      <Typography className="text-center h-5">
+                        Status : {ele.status}
+                      </Typography>
+                    </>
+                  }
+                />
+                <CustomIcon
+                  type="notification"
+                  className="h-4"
+                  onIconClick={() => {
+                    setShowCreateNotificationModal(true);
+                  }}
+                />
                 <Box className="ms-2">
                   <SwitchComponent
                     label=""
@@ -635,8 +665,11 @@ const SupplierSubscriptions = () => {
         col17: (
           <Box className="d-flex align-items-center justify-content-between">
             <CustomIcon className="h-4" type="edit" />
-            <CustomIcon type="message" className="ms-1 h-4" />
-            <CustomIcon type="calendar" className="ms-1 h-4" />
+            <CustomIcon
+              type="calendar"
+              className="ms-1 h-4"
+              title={`${ele.startDateTime} to ${ele.endDateTime}`}
+            />
             <CustomIcon type="notification" className="ms-1 h-4" />
             <Box className="ms-3" sx={{ marginRight: "-10px" }}>
               <SwitchComponent
@@ -789,34 +822,49 @@ const SupplierSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Tools Campaign
               </Typography>
-              <TableComponent
-                columns={[...tableColumsForToolsCampaign]}
-                tableRows={toolsCampaignTableRows}
-                tHeadBgColor="bg-light-gray"
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-                showDateFilter
-                showDateFilterBtn
-                filterData={filterData}
-                showFilterButton
-                showDateFilterSearch={false}
-                dateFilterBtnName="Create Discounts"
-                dateFilterBtnClick={() => {
-                  setOpenCreateDiscountModal(true);
+              <TabsCard
+                tabList={tabList}
+                onSelect={(index) => {
+                  const temp = JSON.parse(JSON.stringify(tabList));
+                  temp.forEach((ele, ind) => {
+                    if (ind === index) {
+                      ele.isSelected = true;
+                    } else {
+                      ele.isSelected = false;
+                    }
+                  });
+                  setTabList(temp);
                 }}
-                getFilteredValues={(values) => {
-                  filterTableData(values);
-                }}
-                handlePageEnd={(
-                  searchText,
-                  searchFilter,
-                  page = pageNumber,
-                  datefilter
-                ) => {
-                  getToolCampaignTableData(page, datefilter);
-                }}
-              />
+              >
+                <TableComponent
+                  columns={[...tableColumsForToolsCampaign]}
+                  tableRows={toolsCampaignTableRows}
+                  tHeadBgColor="bg-light-gray"
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  showCheckbox={false}
+                  showDateFilter
+                  showDateFilterBtn
+                  filterData={filterData}
+                  showFilterButton
+                  showDateFilterSearch={false}
+                  dateFilterBtnName="Create Discounts"
+                  dateFilterBtnClick={() => {
+                    setOpenCreateDiscountModal(true);
+                  }}
+                  getFilteredValues={(values) => {
+                    filterTableData(values);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    datefilter
+                  ) => {
+                    getToolCampaignTableData(page, datefilter);
+                  }}
+                />
+              </TabsCard>
             </Paper>
           </Box>
           {showEditPriceModal ? (
@@ -846,6 +894,13 @@ const SupplierSubscriptions = () => {
                 />
               </Box>
             </ModalComponent>
+          ) : null}
+          {showCreateNotificationModal ? (
+            <CreateNotification
+              showNotificationModal={showCreateNotificationModal}
+              setShowNotificationModal={setShowCreateNotificationModal}
+              type="add"
+            />
           ) : null}
           {openAddDaysCounterModal ? (
             <AddDaysCounterModal
