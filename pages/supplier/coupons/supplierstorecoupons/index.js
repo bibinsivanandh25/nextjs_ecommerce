@@ -58,7 +58,7 @@ const SupplierStoreCoupons = () => {
       data_align: "center",
     },
     {
-      label: "Amount in %",
+      label: "Amount ",
       id: "col3",
       align: "center",
       data_align: "center",
@@ -119,7 +119,10 @@ const SupplierStoreCoupons = () => {
       result.push({
         col1: row.storeCouponCode,
         col2: row.discountType,
-        col3: `${row.couponAmount}%`,
+        col3:
+          row.discountType === "PERCENTAGE" && row.minimumOrderValue
+            ? `${(row.couponAmount * 100) / row.minimumOrderValue} %`
+            : `${row.couponAmount} Rs.`,
         col4: row.couponUsageLimit,
         col5: row.minimumOrderValue,
         col6: row.maximumDiscountValue,
@@ -151,7 +154,7 @@ const SupplierStoreCoupons = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              navigator.clipboard.writeText(row.storeCouponCode);
+              navigator.clipboard.writeText(row?.storeCouponCode);
               toastify("Coupon Code Copied Successfully!", "success");
             }}
           />
@@ -174,7 +177,7 @@ const SupplierStoreCoupons = () => {
       search,
       filter
     );
-    if (data.length) {
+    if (data?.length) {
       setTableRows(mapRowsToTable(data));
     } else {
       setTableRows([]);

@@ -23,6 +23,7 @@ import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import OtpForm from "@/forms/auth/OtpForm";
+import { City } from "country-state-city";
 
 const formObj = {
   businessName: "",
@@ -65,6 +66,12 @@ const MyProfile = () => {
   const [showVerifyOtp, setShowVerifyOtp] = useState(false);
   const dispatch = useDispatch();
 
+  const cities = City.getCitiesOfCountry("IN");
+  const citiesList = cities.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+    id: ele.name,
+  }));
   const user = useSelector((state) => {
     return state.user;
   });
@@ -199,6 +206,7 @@ const MyProfile = () => {
     };
     const { data, err } = await updateSupplierProfile(payload);
     if (data) {
+      toastify(data.message, "success");
       setShowVerifyOtp(false);
       getSupplierDetails();
     } else if (err) {
@@ -402,10 +410,7 @@ const MyProfile = () => {
               <Grid item md={6} sm={12}>
                 <SimpleDropdownComponent
                   disabled={!showUpdate}
-                  list={[
-                    { label: "Bangalore", value: "Bangalore", id: 1 },
-                    { label: "Mysore", value: "Mysore", id: 3 },
-                  ]}
+                  list={[...citiesList]}
                   label="Choose City"
                   onDropdownSelect={(value) => {
                     setFormValues((prev) => ({

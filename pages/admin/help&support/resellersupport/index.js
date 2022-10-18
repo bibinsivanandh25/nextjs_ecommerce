@@ -1,9 +1,14 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import { getAllTicketsBasedOnUserType } from "services/admin/help&support";
+import {
+  getAllTicketsBasedOnUserType,
+  getAllFilterDataByUserType,
+} from "services/admin/help&support";
 import CreateTicket from "@/forms/admin/help&support/resellersupport/CreateTicket";
 
 const SupplierSupport = () => {
@@ -11,6 +16,7 @@ const SupplierSupport = () => {
   const [showCreateTicketComponent, setShowCreateTicketComponent] =
     useState(false);
   const [pageNumber, setpageNumber] = useState(0);
+  const [filterData, setFilterData] = useState([]);
 
   const options = ["Reply", "Delete", "Close"];
 
@@ -30,64 +36,87 @@ const SupplierSupport = () => {
     {
       id: "col3",
       align: "center",
-      label: "Supplier ID/Name",
+      label: "User From ID/Name",
       data_align: "center",
     },
     {
       id: "col4",
-      align: "center",
+      align: "User To ID",
       label: "Issue Type",
       data_align: "center",
     },
     {
       id: "col5",
       align: "center",
-      label: "Order ID",
+      label: "Issue Type",
       data_align: "center",
     },
     {
       id: "col6",
       align: "center",
-      label: "Subject",
+      label: "Order ID",
       data_align: "center",
     },
     {
       id: "col7",
       align: "center",
-      label: "Comments",
+      label: "Subject",
       data_align: "center",
     },
     {
       id: "col8",
       align: "center",
-      label: "Attachments",
+      label: "Comments",
       data_align: "center",
     },
     {
       id: "col9",
       align: "center",
-      label: "Created Date And Time",
+      label: "Attachments",
       data_align: "center",
     },
     {
       id: "col10",
       align: "center",
-      label: "Last Update Date and Time (Supplier/MrMrsCart)",
+      label: "Created Date And Time",
       data_align: "center",
     },
     {
       id: "col11",
       align: "center",
-      label: "Status",
+      label: "Last Update Date and Time (Supplier/MrMrsCart)",
       data_align: "center",
     },
     {
       id: "col12",
       align: "center",
+      label: "Status",
+      data_align: "center",
+    },
+    {
+      id: "col13",
+      align: "center",
       label: "Action",
       data_align: "center",
     },
   ];
+  const getFilterValue = async () => {
+    const { data } = await getAllFilterDataByUserType("RESELLER");
+    const result = [];
+    if (data) {
+      data.forEach((ele) => {
+        result.push({
+          name: ele.filterName,
+          value: ele.filterValue,
+        });
+      });
+    }
+    setFilterData([...result]);
+  };
+
+  useEffect(() => {
+    getFilterValue();
+  }, []);
 
   const onClickOfMenuItem = () => {};
 
@@ -100,19 +129,20 @@ const SupplierSupport = () => {
           col1: ind + 1,
           col2: ele.ticketId,
           col3: `${ele.userFromId} / ${ele.userFromName}`,
-          col4: ele.issueType.replaceAll("_", " "),
-          col5: ele.orderId,
-          col6: ele.issueSubject,
-          col7: "--",
+          col4: ele.userToId,
+          col5: ele.issueType.replaceAll("_", " "),
+          col6: ele.orderId,
+          col7: ele.issueSubject,
           col8: "--",
-          col9: `${ele.createdDate.split("T")[0]} ${
+          col9: "--",
+          col10: `${ele.createdDate.split("T")[0]} ${
             ele.createdDate.split("T")[1]
           }`,
-          col10: `${ele.lastModifiedDate.split("T")[0]} ${
+          col11: `${ele.lastModifiedDate.split("T")[0]} ${
             ele.lastModifiedDate.split("T")[1]
           }`,
-          col11: ele.ticketStatus,
-          col12: (
+          col12: ele.ticketStatus,
+          col13: (
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon
                 type="view"
@@ -133,13 +163,19 @@ const SupplierSupport = () => {
     }
     return result;
   };
-  const getTabledata = async (page) => {
+  const getTabledata = async (page, filters = []) => {
     const payload = {
       ticketId: [],
       ticketStatus: [],
       issueType: [],
       userType: "RESELLER",
     };
+    filters.forEach((ele) => {
+      Object.entries(ele).forEach(([key, value]) => {
+        payload[key] = value;
+      });
+    });
+
     const { data } = await getAllTicketsBasedOnUserType(page, payload);
     if (data) {
       if (page === 0) {
@@ -157,7 +193,41 @@ const SupplierSupport = () => {
   useEffect(() => {
     getTabledata(0);
   }, []);
-
+  const getFilteredValues = (val) => {
+    if (val.length) {
+      const result = [];
+      val.forEach((item) => {
+        if (item.name === "status") {
+          result.push({
+            ticketStatus: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "issue type") {
+          result.push({
+            issueType: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "ticket id") {
+          result.push({
+            ticketId: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.item;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+      });
+      getTabledata(0, result);
+    }
+  };
   return (
     <Box>
       <Box>
@@ -170,19 +240,22 @@ const SupplierSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
                 table_heading="Supplier Support"
-                // showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="Create Ticket"
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCustomButton
+                customButtonLabel="Create Ticket"
+                showFilterButton
+                filterData={filterData}
+                showDateFilterSearch={false}
                 dateFilterBtnClick={() => {
                   setShowCreateTicketComponent(true);
                 }}
                 handlePageEnd={(searchText, filterText, page = pageNumber) => {
                   getTabledata(page);
                 }}
+                getFilteredValues={(val) => getFilteredValues(val)}
               />
             </Box>
           </Paper>

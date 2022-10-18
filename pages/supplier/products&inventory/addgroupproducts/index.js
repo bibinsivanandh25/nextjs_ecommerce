@@ -2,7 +2,15 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
-import { Card, Box, CardContent, Grid, Paper, Typography } from "@mui/material";
+import {
+  Card,
+  Box,
+  CardContent,
+  Grid,
+  Paper,
+  Typography,
+  Tooltip,
+} from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import MultiSelectComponent from "components/atoms/MultiSelectComponent";
@@ -176,8 +184,8 @@ const AddGroupProducts = () => {
   };
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-y-scroll p-3 pb-2 d-flex flex-column justify-content-between">
-      <Box className="d-flex">
-        <Box className="d-flex flex-column w-30p mnw-200px me-3">
+      <Grid container spacing={2}>
+        <Grid item sm={3}>
           <div className="mb-2">
             <SimpleDropdownComponent
               list={parentProduct}
@@ -213,8 +221,8 @@ const AddGroupProducts = () => {
               error={errorObj.childproduct !== ""}
             />
           </div>
-        </Box>
-        <Box className="d-flex flex-column w-100">
+        </Grid>
+        <Grid item sm={9}>
           {parentDetails?.title?.length ? (
             <Card className="w-100 mb-3" variant="outlined">
               <CardContent className="w-100">
@@ -258,95 +266,116 @@ const AddGroupProducts = () => {
                     <Grid container className="w-100" spacing={2}>
                       {childDetails.map((item, index) => (
                         <Grid item md={6} lg={4} key={index}>
-                          <Card className="" variant="outlined" key={index}>
-                            <CardContent className="w-100 d-flex">
-                              {item.imageUrl ? (
-                                <Image
-                                  src={item.imageUrl}
-                                  height={125}
-                                  width={125}
-                                  fill="intrinsic"
-                                />
-                              ) : null}
-                              <Box className="mx-1">
-                                <Typography
-                                  component="div"
-                                  className="h-4 fw-bold"
+                          <Card variant="outlined" key={index}>
+                            <Grid container>
+                              <CardContent className="w-100 d-flex">
+                                <Grid
+                                  item
+                                  sm={6}
+                                  alignItems="center"
+                                  display="flex"
+                                  justifyContent="center"
                                 >
-                                  {item.title}
-                                </Typography>
-                                {!item.active ? (
-                                  <>
-                                    <Typography component="div" className="h-3">
-                                      ₹ {item.price}
-                                    </Typography>
-                                    <Typography
-                                      component="div"
-                                      className="fs-12 color-orange cursor-pointer"
-                                      onClick={() => {
-                                        setChildDetails((pre) => {
-                                          const temp = [...pre];
-                                          temp.forEach((ele, ind) => {
-                                            if (ind === index) {
-                                              ele.active = true;
-                                            } else {
-                                              ele.active = false;
-                                            }
-                                          });
-                                          return temp;
-                                        });
-                                      }}
-                                    >
-                                      Enter Discount %
-                                    </Typography>
-                                  </>
-                                ) : (
-                                  <>
-                                    <InputBox
-                                      id={item?.id}
-                                      value={item.discountPrice || ""}
-                                      label=""
-                                      className=""
-                                      size="small"
-                                      onInputChange={(e) => {
-                                        setChildDetails((pre) => {
-                                          const temp = [...pre];
-                                          temp.forEach((element, i) => {
-                                            if (i === index) {
-                                              element.discountPrice =
-                                                e.target.value;
-                                            }
-                                          });
-                                          return temp;
-                                        });
-                                      }}
-                                      type="number"
-                                      inputlabelshrink
-                                      variant="standard"
+                                  {item.imageUrl ? (
+                                    <Image
+                                      src={item.imageUrl}
+                                      height={125}
+                                      width={125}
+                                      fill="intrensic"
                                     />
-                                    <Typography
-                                      component="div"
-                                      className="fs-12 color-orange mt-1"
-                                      onClick={() => {
-                                        setChildDetails((prev) => {
-                                          const temp = [...prev];
-                                          temp.forEach((ele) => {
-                                            if (ele.active && price !== "") {
-                                              ele.price = price;
-                                              setPrice("");
-                                            }
-                                            ele.active = false;
-                                          });
-                                          return temp;
-                                        });
-                                      }}
-                                    >
-                                      Save
-                                    </Typography>
-                                  </>
-                                )}
-                              </Box>
-                            </CardContent>
+                                  ) : null}
+                                </Grid>
+                                <Grid item sm={6}>
+                                  <Box className="mx-1">
+                                    <Tooltip placement="top" title={item.title}>
+                                      <Typography
+                                        component="div"
+                                        className="h-5 fw-bold text-truncate"
+                                      >
+                                        {item.title}
+                                      </Typography>
+                                    </Tooltip>
+                                    {!item.active ? (
+                                      <>
+                                        <Typography
+                                          component="div"
+                                          className="h-3"
+                                        >
+                                          ₹ {item.price}
+                                        </Typography>
+                                        <Typography
+                                          component="div"
+                                          className="fs-12 color-orange cursor-pointer"
+                                          onClick={() => {
+                                            setChildDetails((pre) => {
+                                              const temp = [...pre];
+                                              temp.forEach((ele, ind) => {
+                                                if (ind === index) {
+                                                  ele.active = true;
+                                                } else {
+                                                  ele.active = false;
+                                                }
+                                              });
+                                              return temp;
+                                            });
+                                          }}
+                                        >
+                                          Enter Discount %
+                                        </Typography>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <InputBox
+                                          id={item?.id}
+                                          value={item.discountPrice || ""}
+                                          label=""
+                                          size="small"
+                                          onInputChange={(e) => {
+                                            setChildDetails((pre) => {
+                                              const temp = [...pre];
+                                              temp.forEach((element, i) => {
+                                                if (i === index) {
+                                                  element.discountPrice =
+                                                    e.target.value <= 99
+                                                      ? e.target.value
+                                                      : null;
+                                                }
+                                              });
+                                              return temp;
+                                            });
+                                          }}
+                                          type="number"
+                                          inputlabelshrink
+                                          variant="standard"
+                                        />
+                                        <Typography
+                                          component="div"
+                                          className="fs-12 color-orange mt-1"
+                                          onClick={() => {
+                                            setChildDetails((prev) => {
+                                              const temp = [...prev];
+                                              temp.forEach((ele) => {
+                                                if (
+                                                  ele.active &&
+                                                  price !== ""
+                                                ) {
+                                                  ele.price = price;
+                                                  setPrice("");
+                                                }
+                                                ele.active = false;
+                                              });
+                                              return temp;
+                                            });
+                                          }}
+                                        >
+                                          Save
+                                        </Typography>
+                                      </>
+                                    )}
+                                  </Box>
+                                </Grid>
+                              </CardContent>
+                            </Grid>
                           </Card>
                         </Grid>
                       ))}
@@ -356,8 +385,8 @@ const AddGroupProducts = () => {
               </CardContent>
             </Card>
           ) : null}
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
       <Box className="d-flex justify-content-end mt-2">
         <ButtonComponent
           label="Clear"

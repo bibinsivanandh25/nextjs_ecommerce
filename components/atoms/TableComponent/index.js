@@ -1,3 +1,7 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-restricted-syntax */
@@ -9,11 +13,12 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { Grid } from "@mui/material";
+import { Collapse, Grid, Menu } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
@@ -227,10 +232,194 @@ const EnhancedTableHead = (props) => {
   );
 };
 
+const FilterMenu = ({
+  filterList = [],
+  getFilteredValues = () => {},
+  setPage = () => {},
+  setTableFilterList = () => {},
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [filterData, setFilterData] = useState([]);
+  const open = Boolean(anchorEl);
+  useEffect(() => {
+    if (filterList.length) {
+      const temp = [];
+      filterList.forEach((ele) => {
+        temp.push({
+          ele,
+          isExpand: false,
+        });
+      });
+      setFilterData([...filterList]);
+    }
+  }, [filterList]);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    const temp = JSON.parse(JSON.stringify(filterData));
+    temp.forEach((ele) => {
+      const some = ele.value.some((item) => item.isSelected);
+      if (some) ele.isExpand = true;
+      else ele.isExpand = false;
+    });
+    setTableFilterList(temp);
+    setAnchorEl(null);
+  };
+
+  const renderMenuList = (data) => {
+    return data?.map((ele, ind) => {
+      return (
+        <div
+          className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar"
+          key={ind}
+        >
+          <div>
+            <CheckBoxComponent
+              label={ele.name}
+              isChecked={ele.isSelected}
+              checkBoxClick={() => {
+                const setExpand = (filters) => {
+                  if (filters?.value?.filter((e) => e.isSelected).length == 0)
+                    return true;
+                  if (filters?.value?.every((e) => e.isSelected)) return false;
+                  if (filters?.value?.some((e) => e.isSelected)) return true;
+                  return !filters.isExpand;
+                };
+                const temp = JSON.parse(JSON.stringify(data));
+                temp[ind].isExpand = setExpand(temp[ind]);
+                temp[ind].isSelected = !temp[ind].isSelected;
+                temp[ind].value.forEach((item) => {
+                  item.isSelected = temp[ind].isSelected;
+                });
+                setFilterData(temp);
+              }}
+            />
+            {ele.value.length ? (
+              <Collapse
+                in={ele.isExpand}
+                timeout="auto"
+                unmountOnExit
+                className=""
+              >
+                {ele.value.map((child, index) => {
+                  return (
+                    <div className="ms-5">
+                      <CheckBoxComponent
+                        label={child.item.replaceAll("_", " ")}
+                        isChecked={child.isSelected}
+                        checkBoxClick={() => {
+                          const fData = JSON.parse(JSON.stringify(data));
+                          const temp = JSON.parse(JSON.stringify(ele.value));
+                          temp[index].isSelected = !temp[index].isSelected;
+                          fData[ind].value = temp;
+                          const every = fData[ind].value.every(
+                            (i) => i.isSelected
+                          );
+                          if (every) {
+                            fData[ind].isSelected = true;
+                          } else fData[ind].isSelected = false;
+
+                          setFilterData(fData);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </Collapse>
+            ) : null}
+          </div>
+          {ele.value.length ? (
+            ele.isExpand ? (
+              <ExpandLess
+                className="mt-1"
+                onClick={() => {
+                  const temp = JSON.parse(JSON.stringify(filterData));
+                  temp[ind].isExpand = false;
+                  setFilterData(temp);
+                }}
+              />
+            ) : (
+              <ExpandMore
+                className="mt-1"
+                onClick={() => {
+                  const temp = JSON.parse(JSON.stringify(filterData));
+                  temp[ind].isExpand = true;
+                  setFilterData(temp);
+                }}
+              />
+            )
+          ) : null}
+        </div>
+      );
+    });
+  };
+  const getFiltersCount = () => {
+    let count = 0;
+    filterData.forEach((item) => {
+      if (item.isSelected) {
+        count++;
+      } else if (item.value.some((ele) => ele.isSelected)) {
+        count++;
+      }
+    });
+    return count > 0 ? `(${count})` : "";
+  };
+
+  return (
+    <Grid container item sm={12}>
+      <Grid item sm={12} display="flex" justifyContent="end">
+        <ButtonComponent
+          label={`Filter ${getFiltersCount()}`}
+          showIcon
+          iconName="filter"
+          iconColorClass="color-orange"
+          variant="outlined"
+          onBtnClick={handleClick}
+        />
+      </Grid>
+      <Menu
+        id="demo-customized-menu"
+        MenuListProps={{
+          "aria-labelledby": "demo-customized-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        sx={{
+          maxHeight: "80vh",
+          overflow: "scroll",
+        }}
+        className="hide-scrollbar"
+      >
+        {renderMenuList(filterData)}
+        <div className="d-flex justify-content-end mx-3">
+          <ButtonComponent
+            label="Apply"
+            muiProps="p-0"
+            onBtnClick={() => {
+              getFilteredValues(filterData);
+              const temp = JSON.parse(JSON.stringify(filterData));
+              temp.forEach((ele) => {
+                const some = ele.value.some((item) => item.isSelected);
+                if (some) ele.isExpand = true;
+                else ele.isExpand = false;
+              });
+              setTableFilterList(temp);
+              handleClose();
+              setPage(0);
+            }}
+          />
+        </div>
+      </Menu>
+    </Grid>
+  );
+};
 export default function TableComponent({
   showPagination = true,
   showCheckbox = true,
   table_heading = "",
+  headerClassName = "",
   tableRows = [],
   columns = [],
   setColumns = () => {},
@@ -239,6 +428,7 @@ export default function TableComponent({
   showCustomButton = false,
   showCustomDropdown = false,
   customButtonLabel = "",
+  showFilterButton = false,
   customDropdownLabel = "",
   customDropdownList = [],
   customDropdownValue = {},
@@ -271,9 +461,11 @@ export default function TableComponent({
   filterList = [],
   handleRowsPerPageChange = () => {},
   tabChange = "",
+  filterData = [],
+  getFilteredValues = () => {},
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -282,6 +474,7 @@ export default function TableComponent({
     fromDate: "",
     toDate: "",
   });
+  const [tableFilterList, setTableFilterList] = useState([]);
   const [searchFilter, setSearchFilter] = useState({
     label: "All",
     id: "0",
@@ -316,6 +509,22 @@ export default function TableComponent({
     }
   }, [tableRows]);
 
+  useEffect(() => {
+    if (filterData.length) {
+      const result = [];
+      filterData.forEach((ele) => {
+        result.push({
+          ...ele,
+          value: ele.value?.map((item) => {
+            return { item, isSelected: false };
+          }),
+          isSelected: false,
+        });
+      });
+      setTableFilterList([...result]);
+    }
+  }, [filterData]);
+
   const handleChangePage = (event, newPage) => {
     const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
     if (newPage === numberOfPage - 1) {
@@ -324,7 +533,7 @@ export default function TableComponent({
           ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
           : "",
         toDate: filteredDates.toDate
-          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
           : "",
       });
     }
@@ -339,7 +548,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
     handlePageEnd(searchText, searchFilter?.value, 0, {
@@ -347,7 +556,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
   };
@@ -404,7 +613,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className="fw-bold"
+                className={`fw-bold ${headerClassName} color-orange`}
               >
                 {table_heading}
               </Typography>
@@ -427,6 +636,19 @@ export default function TableComponent({
             alignItems="center"
             justifyContent={showDateFilterSearch ? "center" : "end"}
           >
+            {showFilterButton && (
+              <Grid item sm={3}>
+                <FilterMenu
+                  filterList={[...tableFilterList]}
+                  getFilteredValues={(val) => {
+                    setPage(0);
+                    getFilteredValues(val, searchText);
+                  }}
+                  setPage={setPage}
+                  setTableFilterList={setTableFilterList}
+                />
+              </Grid>
+            )}
             <Grid
               item
               md={3.1}
@@ -460,7 +682,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(filteredDates.toDate),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                       fromDate: e.target.value
                         ? `${format(
@@ -513,7 +735,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(e.target.value),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                     });
                   }
@@ -559,7 +781,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }}
@@ -575,7 +797,7 @@ export default function TableComponent({
               <ButtonComponent
                 variant="contained"
                 label={dateFilterBtnName}
-                muiProps="fs-12 ms-1 p-2"
+                muiProps="fs-12 ms-1"
                 onBtnClick={() => {
                   dateFilterBtnClick();
                 }}
@@ -599,7 +821,7 @@ export default function TableComponent({
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
               id="tableTitle"
               component="div"
-              className="fw-bold"
+              className={`fw-bold ${headerClassName}`}
             >
               {table_heading}
             </Typography>
@@ -615,6 +837,18 @@ export default function TableComponent({
           alignItems="center"
           alignSelf="end"
         >
+          {showFilterButton && (
+            <Grid item sm={3}>
+              <FilterMenu
+                filterList={[...tableFilterList]}
+                getFilteredValues={(val) => {
+                  getFilteredValues(val, searchText);
+                }}
+                setPage={setPage}
+                setTableFilterList={setTableFilterList}
+              />
+            </Grid>
+          )}
           {showCustomDropdown && (
             <Grid item sm={4} container>
               <SimpleDropdownComponent
@@ -637,6 +871,22 @@ export default function TableComponent({
                 value={searchFilter}
                 onDropdownSelect={(value) => {
                   if (value) {
+                    if (!showSearchbar) {
+                      handlePageEnd("", value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
+                    }
                     setSearchFilter(value);
                   } else {
                     setSearchFilter([]);
@@ -671,6 +921,22 @@ export default function TableComponent({
                     fullWidth
                     size="small"
                     onInputChange={(e) => {
+                      if (e.target.value === "") {
+                        handlePageEnd("", searchFilter?.value, 0, {
+                          fromDate: filteredDates.fromDate
+                            ? `${format(
+                                new Date(filteredDates.fromDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                          toDate: filteredDates.toDate
+                            ? `${format(
+                                new Date(filteredDates.toDate),
+                                "MM-dd-yyyy"
+                              )} 23:59:59`
+                            : "",
+                        });
+                      }
                       setsearchText(e.target.value);
                     }}
                     showAutoCompleteOff={false}
@@ -680,7 +946,9 @@ export default function TableComponent({
                   <div
                     style={{ width: "40px", height: "38px" }}
                     className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
-                      searchText === "" && Object.keys(searchFilter)?.length
+                      searchText === "" &&
+                      searchFilter &&
+                      Object.keys(searchFilter)?.length
                         ? "bg-gray"
                         : ""
                     }`}
@@ -702,7 +970,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }
@@ -732,7 +1000,7 @@ export default function TableComponent({
                     // className="bg-orange"
                     // sx={{ textTransform: "none" }}
                     // fullWidth
-                    muiProps="p-2 color-white"
+                    muiProps=" color-white"
                     disabled={disableCustomButton}
                     bgColor={disableCustomButton ? "bg-gray" : "bg-orange"}
                     onBtnClick={onCustomButtonClick}
@@ -885,50 +1153,3 @@ export default function TableComponent({
     </div>
   );
 }
-
-// Sample prop data
-// const columns = [
-//   {
-//     id: "col1", //  id value in column should be presented in row as key
-//     label: "Generated for",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col2",
-//     label: "Generated Date & Time",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col3",
-//     label: "Status",
-//     minWidth: 170,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//     // data_style: { paddingLeft: "7%" },
-//   },
-// ];
-// let rows = [
-//   {
-//     id: "1",
-//     col1: "India",
-//     col2: "IN",
-//     col3: (
-//       <div style={{ background: "red" }} onClick={(e) => // console.log(e)}>
-//         121212
-//       </div>
-//     ),
-//   },
-//   {
-//     id: "2",
-//     col1: "China",
-//     col2: "CN",
-//     col3: "dkjfvnkjdfv",
-//   },
-// ];

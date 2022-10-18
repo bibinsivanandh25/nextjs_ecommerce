@@ -6,6 +6,9 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { addIndividualPricing } from "services/admin/marketingtools/settoolpricing/supplierSubscription";
+import { format } from "date-fns";
+import toastify from "services/utils/toastUtils";
 
 let errObj = {
   days: false,
@@ -27,6 +30,82 @@ const AddDaysCounterModal = ({
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [error, setError] = useState(errObj);
+
+  const daysList = [
+    {
+      id: 1,
+      label: "7 Days",
+      value: "7 days",
+    },
+    {
+      id: 2,
+      label: "30 Days",
+      value: "30 days",
+    },
+    {
+      id: 3,
+      label: "90 Days",
+      value: "90 days",
+    },
+    {
+      id: 4,
+      label: "180 Days",
+      value: "180 days",
+    },
+    {
+      id: 5,
+      label: "270 Days",
+      value: "270 days",
+    },
+    {
+      id: 6,
+      label: "360 Days",
+      value: "360 days",
+    },
+  ];
+
+  const toolsList = [
+    {
+      id: 1,
+      label: "DISCOUNT COUPON",
+      value: "DISCOUNT_COUPON",
+    },
+    {
+      id: 2,
+      label: "TODAYS DEAL",
+      value: "TODAYS_DEAL",
+    },
+    {
+      id: 3,
+      label: "SPIN WHEEL",
+      value: "SPIN_WHEEL",
+    },
+    {
+      id: 4,
+      label: "SCRATCH CARD",
+      value: "SCRATCH_CARD",
+    },
+    {
+      id: 5,
+      label: "QUIZ",
+      value: "QUIZ",
+    },
+    {
+      id: 6,
+      label: "PRICE TARGETED",
+      value: "PRICE_TARGETED",
+    },
+    {
+      id: 7,
+      label: "NOTIFICATIONS",
+      value: "NOTIFICATIONS",
+    },
+    {
+      id: 7,
+      label: "FLAGS",
+      value: "FLAGS",
+    },
+  ];
 
   const handleCloseIconClick = () => {
     errObj = {
@@ -144,9 +223,28 @@ const AddDaysCounterModal = ({
     setEndDate(null);
   };
 
-  const handleSaveBtnClick = () => {
+  const handleSaveBtnClick = async () => {
     const theError = handleError();
     setError(theError);
+    const flag = Object.values(theError).some((ele) => ele);
+    if (!flag) {
+      const payload = {
+        adminMarketingToolName: tools.value,
+        price: Number(price),
+        days: days.value,
+        startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+        endDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+        storeType: "SUPPLIER",
+      };
+      const { data, err } = await addIndividualPricing(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setOpenAddDaysCounterModal(false);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
   return (
@@ -176,7 +274,7 @@ const AddDaysCounterModal = ({
               label="Days"
               inputlabelshrink
               size="small"
-              list={[{ label: "Day 1" }, { label: "Day 2" }]}
+              list={daysList}
               onDropdownSelect={(value) => {
                 // console.log(value);
                 setDays(value);
@@ -190,7 +288,7 @@ const AddDaysCounterModal = ({
               label="Tools"
               inputlabelshrink
               size="small"
-              list={[{ label: "tool1" }, { label: "tool2" }]}
+              list={[...toolsList]}
               onDropdownSelect={(value) => {
                 setTools(value);
               }}
@@ -205,6 +303,7 @@ const AddDaysCounterModal = ({
               onInputChange={(e) => {
                 setPrice(e.target.value);
               }}
+              type="number"
               inputlabelshrink
               error={error.price}
               helperText={error.price ? validateMessage.field_required : ""}

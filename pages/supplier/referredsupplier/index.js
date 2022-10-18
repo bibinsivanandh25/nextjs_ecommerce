@@ -80,13 +80,14 @@ const ReferredSupplier = () => {
             <Paper
               elevation={4}
               sx={{ width: "fit-content" }}
-              className="mx-auto"
+              className="mx-auto p-1"
             >
               <Image
-                width={40}
-                height={40}
-                src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
+                width={42}
+                height={42}
+                src={val.profileImageUrl}
                 alt="alt"
+                className="mt-1"
               />
             </Paper>
           ),

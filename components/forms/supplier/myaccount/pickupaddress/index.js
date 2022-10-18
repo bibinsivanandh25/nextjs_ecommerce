@@ -10,6 +10,7 @@ import {
   getAllAddressofSupplier,
 } from "services/supplier/myaccount/pickupaddress";
 import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 
 const PickUpAddress = () => {
   const [addressList, setAddressList] = useState([]);
@@ -42,9 +43,13 @@ const PickUpAddress = () => {
   };
 
   const deletedSelectedAddress = async (id) => {
-    const { data } = await deleteAddress(user, id);
+    const { data, err } = await deleteAddress(user, id);
     if (data) {
+      toastify(data, "success");
       getAllAddress();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 

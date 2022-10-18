@@ -82,6 +82,12 @@ const AttributesForm = forwardRef(
                         },
                       };
                     });
+                    setFormErrorObj((pre) => {
+                      const temp = { ...pre };
+                      if (Object.prototype.hasOwnProperty.call(temp, ele.id))
+                        delete temp[ele.id];
+                      return temp;
+                    });
                   }
                   const arr = JSON.parse(JSON.stringify(attributeList));
                   arr.forEach((ele1) => {

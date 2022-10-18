@@ -50,6 +50,11 @@ export const paths = [
     navigate: true,
   },
   {
+    title: "Invoice And Tradmarks",
+    id: "invoiceandtrademarks",
+    navigate: true,
+  },
+  {
     title: "Add New Products",
     id: "addnewproduct",
     navigate: true,
@@ -173,6 +178,7 @@ export const paths = [
   { title: "My Shared Category", id: "mysharedcategory", navigate: true },
   { title: "News", id: "news", navigate: true },
   { title: "Notification", id: "notifications", navigate: true },
+  { title: "Notification", id: "notification", navigate: true },
   { title: "News & Notification", id: "newsandnotifications", navigate: false },
   { title: "Marketing Tools", id: "marketingtools", navigate: false },
   { title: "Unlock Tools", id: "unlocktools", navigate: false },
@@ -229,6 +235,41 @@ export const paths = [
   {
     title: "Help Center",
     id: "helpcenter",
+    navigate: true,
+  },
+  {
+    title: "MrMrsCart Coupons",
+    id: "mrmrscartcoupons",
+    navigate: true,
+  },
+  {
+    title: "Supplier Store Coupons",
+    id: "supplierstorecoupons",
+    navigate: true,
+  },
+  {
+    title: "Revenue Sales",
+    id: "revenuesales",
+    navigate: true,
+  },
+  {
+    title: "Banners",
+    id: "banners",
+    navigate: true,
+  },
+  {
+    title: "Subscription History",
+    id: "subscriptionhistory",
+    navigate: true,
+  },
+  {
+    title: "My Shared Product",
+    id: "mysharedproduct",
+    navigate: true,
+  },
+  {
+    title: "Referred Supplier",
+    id: "referredsupplier",
     navigate: true,
   },
 ];

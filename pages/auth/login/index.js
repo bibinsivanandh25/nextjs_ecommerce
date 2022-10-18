@@ -69,17 +69,16 @@ const Login = () => {
     } else if (
       !(formValues.password.length >= 8 && formValues.password.length <= 16)
     ) {
-      errObj.password =
-        "should contain atleast 8 characters and at most 16 characters";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.upperCase.test(formValues.password)) {
-      errObj.password = "should contain atleast one uppercase alphabet ";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.lowerCase.test(formValues.password)) {
-      errObj.password = "should contain atleast one lowercase alphabet ";
+      errObj.password = validateMessage.password;
       flag = true;
     } else if (!validationRegex.specialChar.test(formValues.password)) {
-      errObj.password = "should includes '@#$'";
+      errObj.password = validateMessage.password;
       flag = true;
     }
     setErrorObj({ ...errObj });
@@ -90,6 +89,7 @@ const Login = () => {
     const { data, err } = await getSupplierDetailsById(
       role === "SUPPLIER" ? id : staffDetails.supplierId
     );
+
     if (!err) {
       const supplierDetails =
         role === "SUPPLIER"
@@ -138,7 +138,7 @@ const Login = () => {
       await axios
         .post(`${process.env.DOMAIN}auth/authenticate`, payload)
         .catch((err) => {
-          const errRes = err.response.data?.message;
+          const errRes = err?.response?.data?.message;
           toastify(errRes, "error");
         })
         .then(async (data) => {
@@ -252,7 +252,16 @@ const Login = () => {
                       Login with OTP
                     </span>
                   </Link>
-                  <Link href="/auth/forgotpassword" passHref>
+                  <Link
+                    href={{
+                      pathname: `/auth/forgotpassword`,
+                      query: {
+                        role: "SUPPLIER",
+                      },
+                    }}
+                    as="/auth/forgotpassword"
+                    passHref
+                  >
                     <span className="color-orange fs-12 cursor-pointer fw-bold">
                       Forgot password?
                     </span>
@@ -315,7 +324,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       providers: await getProviders(context),
-      csrfToken: await getCsrfToken(context),
+      csrfToken: (await getCsrfToken(context)) || null,
     },
   };
 }

@@ -269,7 +269,7 @@ const CreateShareProductByPrice = ({
         mainCategoryId: selectedCategorys.mainCategoryId,
         subCategoryId: selectedCategorys.subCategoryId,
         productCatalogueUrl: null,
-        customerType: "EXSISTING_CUSTOMER",
+        customerType: "EXISTING_CUSTOMER",
         userType: "SUPPLIER",
         userTypeId: user.supplierId,
         marketingToolThemeId: null,
@@ -356,6 +356,7 @@ const CreateShareProductByPrice = ({
             error={Boolean(error.categories)}
             helperText={error.categories}
             showAutoCompleteOff="off"
+            placeholder="Select Category"
             value={getSelectedCategoriesLabels()}
           />
           {showListGroup ? (
@@ -380,24 +381,41 @@ const CreateShareProductByPrice = ({
                     title="Category"
                     data={categories}
                     onSelectionChange={(val) => {
-                      setSubCategories([]);
-                      setSelectedCategory((pre) => ({
-                        ...pre,
-                        mainCategoryId: val[0]?.id,
-                      }));
-                      setFormValues((prev) => {
-                        return {
-                          ...prev,
-                          marginType: val[0].marginType,
-                        };
-                      });
-                      setCategoriesList((prev) => {
-                        return {
-                          ...prev,
-                          category: val,
-                        };
-                      });
-                      getSets(val[0]);
+                      if (val?.length) {
+                        setSubCategories([]);
+                        setSelectedCategory((pre) => ({
+                          ...pre,
+                          mainCategoryId: val[0]?.id,
+                          subCategoryId: "",
+                        }));
+                        setFormValues((prev) => {
+                          return {
+                            ...prev,
+                            marginType: val[0]?.marginType,
+                          };
+                        });
+                        setCategoriesList((prev) => {
+                          return {
+                            ...prev,
+                            category: val,
+                            subCategory: [],
+                            set: [],
+                          };
+                        });
+                        getSets(val[0]);
+                      } else {
+                        setCategoriesList((prev) => {
+                          return {
+                            ...prev,
+                            category: [],
+                            subCategory: [],
+                            set: [],
+                          };
+                        });
+                        setProducts([]);
+                        setSets([]);
+                        setSubCategories([]);
+                      }
                     }}
                   />
                 </Grid>
@@ -410,8 +428,11 @@ const CreateShareProductByPrice = ({
                     title="Set"
                     data={[...sets]}
                     onSelectionChange={(val) => {
-                      if (val) {
+                      if (val?.length) {
                         getSubCategories(val[0]);
+                      } else {
+                        setProducts([]);
+                        setSubCategories([]);
                       }
                       setCategoriesList((prev) => {
                         return {

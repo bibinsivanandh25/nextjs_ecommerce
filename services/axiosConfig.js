@@ -15,11 +15,24 @@ const setHeaders = (commmonHeaders) => {
 };
 // const user = useUserInfo();
 axiosInstance.interceptors.request.use(async (config) => {
-  config.headers = {
-    "Access-Control-Allow-Origin": "*",
-    ...config.headers,
-    userId: store.getState()?.user?.supplierId,
-  };
+  let tempHeader = {};
+  const user = store.getState()?.user;
+  const { role, supplierId } = user;
+  if (["SUPPLIER", "STAFF"].includes(role)) {
+    tempHeader = {
+      "Access-Control-Allow-Origin": "*",
+      ...config.headers,
+      userId: supplierId,
+    };
+  } else {
+    tempHeader = {
+      "Access-Control-Allow-Origin": "*",
+      ...config.headers,
+      userId: user.userId,
+    };
+  }
+  config.headers = tempHeader;
+
   return config;
 });
 

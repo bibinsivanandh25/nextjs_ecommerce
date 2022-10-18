@@ -172,6 +172,7 @@ const MrMrsAddNewCoupons = ({
         usageLimitPerUser: parseInt(formValues.usageLimitPerUser, 10),
         usageLimitToXItems: parseInt(formValues.usageLimittoXTimes, 10),
         couponStatus,
+        minimumPurchaseAmount: parseInt(formValues.minpurchaseamount, 10),
       };
       const { data, err } = await CreateStoreCoupons(payload);
       if (data) {
@@ -293,8 +294,6 @@ const MrMrsAddNewCoupons = ({
                 id="couponExpiryDate"
                 name="couponExpiryDate"
                 onDateChange={(val) => {
-                  // console.log(val);
-
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,
@@ -305,35 +304,35 @@ const MrMrsAddNewCoupons = ({
                 required
               />
             </Grid>
-            {selectedTab === "restriction" && (
-              <Grid item xs={12}>
-                <Box className="mb-1">
-                  <CheckBoxComponent
-                    label="Minimum purchase Amount"
-                    isChecked={purchaseCheckbox}
-                    checkBoxClick={() => {
-                      setPurchaseCheckbox(!purchaseCheckbox);
-                      setFormValues((prev) => ({
-                        ...prev,
-                        minpurchaseamount: "",
-                      }));
-                    }}
-                  />
-                </Box>
-                <InputBox
+            {/* {selectedTab === "restriction" && ( */}
+            <Grid item xs={12}>
+              <Box className="mb-1">
+                <CheckBoxComponent
                   label="Minimum purchase Amount"
-                  inputlabelshrink
-                  type="number"
-                  value={formValues.minpurchaseamount}
-                  id="minpurchaseamount"
-                  name="minpurchaseamount"
-                  onInputChange={handleInputChange}
-                  error={Boolean(error.minpurchaseamount)}
-                  helperText={error.minpurchaseamount}
-                  disabled={!purchaseCheckbox}
+                  isChecked={purchaseCheckbox}
+                  checkBoxClick={() => {
+                    setPurchaseCheckbox(!purchaseCheckbox);
+                    setFormValues((prev) => ({
+                      ...prev,
+                      minpurchaseamount: "",
+                    }));
+                  }}
                 />
-              </Grid>
-            )}
+              </Box>
+              <InputBox
+                label="Minimum purchase Amount"
+                inputlabelshrink
+                type="number"
+                value={formValues.minpurchaseamount}
+                id="minpurchaseamount"
+                name="minpurchaseamount"
+                onInputChange={handleInputChange}
+                error={Boolean(error.minpurchaseamount)}
+                helperText={error.minpurchaseamount}
+                disabled={!purchaseCheckbox}
+              />
+            </Grid>
+            {/* )} */}
           </Grid>
         </Grid>
         <Grid item xs={8} container>

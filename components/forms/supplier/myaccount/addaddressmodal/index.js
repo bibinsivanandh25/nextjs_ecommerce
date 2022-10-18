@@ -13,6 +13,7 @@ import {
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
+import toastify from "services/utils/toastUtils";
 
 const AddAddressModal = (props) => {
   const {
@@ -65,8 +66,8 @@ const AddAddressModal = (props) => {
       id: "pinCode",
       value: null,
       required: true,
-      validation: /^([a-zA-Z0-9_-]){1,6}$/,
-      errorMessage: validateMessage.alpha_numeric_6,
+      validation: /^([a-zA-Z0-9_-]){6}$/,
+      errorMessage: "Invalid Pincode",
     },
     {
       label: "Location",
@@ -192,23 +193,31 @@ const AddAddressModal = (props) => {
         delete temp.addressId;
         const payload = {
           ...temp,
-          supplierId: user ?? supplierId,
+          supplierId: user.length ? user : supplierId,
         };
-        const { data } = await addNewAddress(payload);
+        const { data, err } = await addNewAddress(payload, supplierId);
         if (data) {
+          toastify(data.message, "success");
           getAllAddress();
           getUpdateUserDetails();
           setShowAddAddressModal(false);
         }
+        if (err) {
+          toastify(err?.response?.data?.message);
+        }
       } else if (type === "edit") {
         const payload = {
           ...formValues,
-          supplierId: user,
+          supplierId: user.length ? user : supplierId,
         };
-        const { data } = await updateAddress(payload);
+        const { data, err } = await updateAddress(payload);
         if (data) {
           getAllAddress();
+          toastify(data.message, "success");
           setShowAddAddressModal(false);
+        }
+        if (err) {
+          toastify(err?.response?.data?.message);
         }
       }
     }
@@ -267,11 +276,11 @@ const AddAddressModal = (props) => {
       onSaveBtnClick={handleSave}
       minHeightClassName="mxh-500"
       ModalWidth="60%"
-      footerClassName="justify-content-end  border-top me-3"
+      footerClassName="justify-content-start flex-row-reverse  border-top mx-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"
       showCloseIcon={showCloseIcon}
-      clearBtnClassName={disableCancel ? "d-none" : ""}
+      clearBtnClassName={disableCancel ? "d-none" : "me-2"}
     >
       <Grid container my={2} spacing={2}>
         {inputFields.map((field) => (

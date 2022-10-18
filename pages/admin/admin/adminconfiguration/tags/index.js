@@ -14,6 +14,7 @@ import {
 } from "services/admin/tags";
 import CreateTags from "@/forms/admin/tags/createtags";
 import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
 
 const tableColumn = [
   {
@@ -105,6 +106,7 @@ const viewTableColumn = [
 ];
 
 const Tags = () => {
+  const user = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [tagName, setTageName] = useState("");
@@ -250,6 +252,7 @@ const Tags = () => {
         tagName={tagName}
         setTageName={setTageName}
         setpageNumber={setpageNumber}
+        user={user}
       />
 
       <ModalComponent

@@ -25,6 +25,7 @@ const tempObj = {
   last_Name: "",
   MobileNo: "",
   email: "",
+  supplierId: "",
 };
 const StaffForm = ({
   handlebackClick,

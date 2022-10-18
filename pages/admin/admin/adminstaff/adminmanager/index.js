@@ -1,12 +1,22 @@
-import { Box, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+/* eslint-disable no-use-before-define */
+import { Box, Paper } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import AdminCapabilities from "@/forms/admin/adminmanager/admincapabilities";
 
+import {
+  deleteAdminManager,
+  disableAdmin,
+  getAdminManagerById,
+  getAdminUsers,
+} from "services/admin/admin";
+import toastify from "services/utils/toastUtils";
+
 const AdminManger = () => {
   const [showAdminCapabilities, setShowAdminCapabilities] = useState(false);
+  const [tableRows, setTableRows] = useState([]);
   const columns = [
     {
       id: "col1",
@@ -23,7 +33,7 @@ const AdminManger = () => {
     {
       id: "col3",
       align: "center",
-      label: "Designation",
+      label: "Last Name",
       data_align: "center",
     },
     {
@@ -36,12 +46,6 @@ const AdminManger = () => {
       id: "col5",
       align: "center",
       label: "Mobile",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Menus Managed",
       data_align: "center",
     },
     {
@@ -64,71 +68,162 @@ const AdminManger = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
+  const [modalData, setModalData] = useState({ type: "", data: null });
+  const [pageNumber, setpageNumber] = useState(0);
 
-  const onClickOfMenuItem = () => {
-    // console.log(ele);
+  const getUserById = async (type, id) => {
+    const { data, err } = await getAdminManagerById(id);
+    if (data) {
+      setModalData({ type, data });
+      setShowAdminCapabilities(true);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
-  const rows = [
-    {
-      id: 1,
-      col1: "Suppliers Menu",
-      col2: "------",
-      col3: "--",
-      col4: "--",
-      col5r: "--",
-      col6: "--",
-      col7: "--",
-      col8: "--",
-      col9: "Active",
-      col10: (
-        <Box className="d-flex align-items-center justify-content-around">
-          <Box className="d-flex flex-column align-items-center">
-            <Box className="ms-4">
-              <SwitchComponent label="" />
-            </Box>
-            <Typography className="h-5">Disable</Typography>
+  const onClickOfMenuItem = (type, id) => {
+    if (["View", "Edit"].includes(type)) {
+      getUserById(type, id);
+    } else if (type === "Delete") {
+      deleteUser(id);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    const { data, message, err } = await deleteAdminManager(userId);
+    if (data) {
+      toastify(message, "success");
+      await getUsers();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const disableUsers = async (userId, status) => {
+    const { data, message, err } = await disableAdmin(status, userId);
+    if (data) {
+      toastify(message, "success");
+      await getUsers();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const mapData = (data) => {
+    return data.map((item) => {
+      return {
+        id: 1,
+        col1: item.adminRegistrationId,
+        col2: item.firstName,
+        col3: item.lastName,
+        col4: item.emailId,
+        col5: item.mobileNumber,
+        col7: item.createdBy,
+        col8: item.createdDate,
+        col9: item.status,
+        col10: (
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                disableUsers(
+                  item.adminRegistrationId,
+                  item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                );
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, item.adminRegistrationId);
+              }}
+              options={["View", "Edit", "Delete"]}
+              IconclassName="color-gray"
+            />
           </Box>
-          <MenuOption
-            getSelectedItem={(ele) => {
-              onClickOfMenuItem(ele);
-            }}
-            options={["view", "Edit", "Delete"]}
-            IconclassName="color-gray"
-          />
-        </Box>
-      ),
-    },
-  ];
+        ),
+      };
+    });
+  };
+
+  const getUsers = async (
+    page = pageNumber,
+    payload = {
+      status: [],
+      createdBy: [],
+      keyword: "",
+    }
+  ) => {
+    const { data, err } = await getAdminUsers(page, payload, "ADMIN_MANAGER");
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <Box>
-      <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
-        {!showAdminCapabilities ? (
+      {!showAdminCapabilities ? (
+        <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar">
           <TableComponent
             columns={columns}
+            headerClassName="color-orange"
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
-            tableRows={rows}
+            tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
-            table_heading="Admin Manger"
+            table_heading="Admin Manager"
             showSearchFilter={false}
             onCustomButtonClick={() => {
               setShowAdminCapabilities(true);
             }}
+            showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: [],
+                createdBy: [],
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
           />
-        ) : (
-          <AdminCapabilities
-            setShowAdminCapabilities={setShowAdminCapabilities}
-          />
-        )}
-      </Paper>
+        </Paper>
+      ) : (
+        <AdminCapabilities
+          setShowAdminCapabilities={setShowAdminCapabilities}
+          adminType="ADMIN_MANAGER"
+          type={modalData.type === "" ? "add" : modalData.type}
+          adminData={modalData.data}
+          setModalData={setModalData}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: [],
+              createdBy: [],
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
+        />
+      )}
     </Box>
   );
 };

@@ -60,7 +60,7 @@ const CreateStoreCoupons = (payload) => {
 const publishCoupons = (supplierId, storeCoupon) => {
   return serviceUtil
     .put(
-      `/users/supplier/product-coupon/publish?supplierId=${supplierId}&couponCode=${storeCoupon}`
+      `/users/supplier/product-coupon/publish?supplierId=${supplierId}&couponId=${storeCoupon}`
     )
     .then((res) => {
       const data = res && res;

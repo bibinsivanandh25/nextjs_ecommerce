@@ -1,0 +1,26 @@
+.dateinput::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    display: block;
+    background-image: url(../../../../../public/assets/calendar.png);
+    width: 30px;
+    height: 30px !important;
+    border-width: thin;
+    user-select: none;
+  }
+
+  .dateinput::-webkit-datetime-edit-day-field:focus,
+  .dateinput::-webkit-datetime-edit-month-field:focus,
+  .dateinput::-webkit-datetime-edit-year-field:focus {
+    background-color: white;
+    color: black;
+    outline: none;
+  }
+  .timepicker::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    display: block;
+    background-image: url(../../../../../public/assets/timer.png);
+    width: 25px;
+    height: 25px !important;
+    border-width: thin;
+    user-select: none;
+  }
