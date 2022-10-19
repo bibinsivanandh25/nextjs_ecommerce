@@ -190,7 +190,7 @@ const SpinWheelSubscriptions = () => {
   };
 
   const returnTableData = (data) => {
-    const mappedArray = data.map((val, index) => {
+    const mappedArray = data?.map((val, index) => {
       const dateOne = new Date(val.activatedAt);
       const dateTwo = new Date(val.expirationDate);
       const timeDifference = dateTwo.getTime() - dateOne.getTime();
@@ -298,10 +298,10 @@ const SpinWheelSubscriptions = () => {
       if (page === 0) {
         setRowsForSpinWheelSubs([]);
       }
-    } else if (data) {
+    } else if (data?.length) {
       if (page === 0) {
         setRowsForSpinWheelSubs(returnTableData(data));
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
       } else {
         setRowsForSpinWheelSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
@@ -311,7 +311,6 @@ const SpinWheelSubscriptions = () => {
 
   useEffect(() => {
     getSpinWheelSubscription(0);
-    setPageNumber(0);
   }, [dropdownValue]);
 
   return (
