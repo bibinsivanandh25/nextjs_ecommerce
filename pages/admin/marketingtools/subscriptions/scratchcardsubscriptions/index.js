@@ -297,10 +297,10 @@ const ScratchCardSubscriptions = () => {
       if (page === 0) {
         setRowsOfScratchCardSubs([]);
       }
-    } else if (data) {
+    } else if (data?.length) {
       if (page === 0) {
         setRowsOfScratchCardSubs(returnTableData(data));
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
       } else {
         setRowsOfScratchCardSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
@@ -310,7 +310,6 @@ const ScratchCardSubscriptions = () => {
 
   useEffect(() => {
     getScratchCardSubscription(0);
-    setPageNumber(0);
   }, [dropdownValue]);
 
   return (
