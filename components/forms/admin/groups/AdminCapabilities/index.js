@@ -235,7 +235,12 @@ const AdminCapabilities = ({
         label: item,
         id: item,
       }));
-      if (type !== "add") {
+      if (
+        type !== "add" &&
+        groupData.adminRegistration[0].adminRoles[0].adminRoleTitle.includes(
+          groupType
+        )
+      ) {
         temp1.push(
           ...groupData.adminRegistration.map((item) => ({
             id: item.adminRegistrationId,
@@ -380,8 +385,20 @@ const AdminCapabilities = ({
                             isChecked: !value,
                             children: item.children.length
                               ? item.children.map((ele) => {
+                                  const elecopy = JSON.parse(
+                                    JSON.stringify(ele)
+                                  );
+                                  if (ele?.children?.length) {
+                                    elecopy.children = ele.children.map((c) => {
+                                      return {
+                                        ...c,
+                                        isChecked: !value,
+                                      };
+                                    });
+                                  }
+
                                   return {
-                                    ...ele,
+                                    ...elecopy,
                                     isChecked: !value,
                                   };
                                 })
@@ -496,7 +513,20 @@ const AdminCapabilities = ({
                               element.isChecked = val;
                               element.children = element.children.map(
                                 (child) => {
-                                  return { ...child, isChecked: val };
+                                  const childCopy = JSON.parse(
+                                    JSON.stringify(child)
+                                  );
+                                  if (child?.children?.length) {
+                                    childCopy.children = child.children.map(
+                                      (c) => {
+                                        return {
+                                          ...c,
+                                          isChecked: val,
+                                        };
+                                      }
+                                    );
+                                  }
+                                  return { ...childCopy, isChecked: val };
                                 }
                               );
                             }
