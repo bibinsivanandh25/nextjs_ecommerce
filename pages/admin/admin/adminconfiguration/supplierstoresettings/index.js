@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import TableComponent from "@/atoms/TableComponent";
 import ViewModal from "@/forms/admin/admin/adminconfiguration/supplierstoresettings/ViewModal";
 import { Box, Paper, Typography } from "@mui/material";
@@ -71,7 +72,7 @@ const SupplierStoreSettings = () => {
   };
 
   const fillTableRows = (data) => {
-    const tempRows = data.map((val, index) => {
+    const tempRows = data?.map((val, index) => {
       return {
         id: val.adminConfigurationId,
         col1: index < 9 ? `0${index + 1}` : index + 1,
@@ -100,11 +101,12 @@ const SupplierStoreSettings = () => {
   };
 
   const getTableData = async (pageNumber) => {
+    console.log(pageNumber, " number ");
     const { data, error, message } = await getAllSupplierStoreSettings(
       pageNumber
     );
     const rowData = fillTableRows(data);
-    if (data) {
+    if (data?.length) {
       if (pageNumber === 0) {
         setPage(1);
         setTableRows([...rowData]);
@@ -146,13 +148,17 @@ const SupplierStoreSettings = () => {
               });
               setOpenViewModal(true);
             }}
-            handlePageEnd={(pageNo = page) => {
+            handlePageEnd={(
+              _searchText = "",
+              _searchFilter = "",
+              pageNo = page
+            ) => {
               getTableData(pageNo);
             }}
           />
         </Paper>
       </Box>
-      (
+
       {openViewModal && (
         <ViewModal
           openViewModal={openViewModal}
@@ -163,7 +169,6 @@ const SupplierStoreSettings = () => {
           configurationId={configurationId}
         />
       )}
-      )
     </>
   );
 };
