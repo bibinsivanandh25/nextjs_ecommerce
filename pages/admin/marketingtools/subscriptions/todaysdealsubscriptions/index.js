@@ -297,10 +297,10 @@ const TodaysDealSubscription = () => {
       if (page === 0) {
         setTableRowsTodaysDealSubs([]);
       }
-    } else if (data) {
+    } else if (data?.length) {
       if (page === 0) {
         setTableRowsTodaysDealSubs(returnTableData(data));
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
       } else {
         setTableRowsTodaysDealSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
@@ -310,7 +310,6 @@ const TodaysDealSubscription = () => {
 
   useEffect(() => {
     getDealSubscription(0);
-    setPageNumber(0);
   }, [dropdownValue]);
 
   return (
