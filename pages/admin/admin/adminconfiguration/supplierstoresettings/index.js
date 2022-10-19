@@ -113,10 +113,8 @@ const SupplierStoreSettings = () => {
         setPage((pre) => pre + 1);
         setTableRows((pre) => [...pre, ...rowData]);
       }
-    } else if (error) {
-      if (message) toastify(message, "error");
-      else if (error?.response?.data?.message)
-        toastify(error?.response?.data?.message, "error");
+    } else if (error?.response?.data?.message) {
+      toastify(error?.response?.data?.message, "error");
     }
   };
 
