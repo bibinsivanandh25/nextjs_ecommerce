@@ -290,10 +290,8 @@ const ScratchCardSubscriptions = () => {
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
-    if (error) {
-      if (message) toastify(message, "error");
-      if (error?.response?.data?.message)
-        toastify(error?.response?.data?.message, "error");
+    if (error?.response?.data?.message) {
+      toastify(error?.response?.data?.message, "error");
       if (page === 0) {
         setRowsOfScratchCardSubs([]);
       }
