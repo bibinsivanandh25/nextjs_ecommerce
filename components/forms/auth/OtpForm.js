@@ -17,7 +17,9 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
+          label=""
           variant="standard"
+          id="1"
           type="number"
           className="w-100"
           inputRef={firstInputRef}
@@ -44,6 +46,8 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
+          label=""
+          id="2"
           variant="standard"
           type="number"
           className="w-100"
@@ -79,7 +83,9 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
+          label=""
           variant="standard"
+          id="3"
           type="number"
           className="w-100"
           inputRef={thirdInputRef}
@@ -115,6 +121,8 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
+          label=""
+          id="4"
           variant="standard"
           type="number"
           className="w-100"

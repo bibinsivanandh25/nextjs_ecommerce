@@ -95,6 +95,7 @@ const InputBox = ({
                 onClick={() => {
                   onIconClick();
                 }}
+                aria-label="icon"
               >
                 {getIcons()}
               </IconButton>
