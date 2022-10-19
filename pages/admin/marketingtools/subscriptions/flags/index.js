@@ -176,7 +176,7 @@ const FlagsSubscription = () => {
   };
 
   const returnTableData = (data) => {
-    const mappedArray = data.map((val, index) => {
+    const mappedArray = data?.map((val, index) => {
       const dateOne = new Date(val.activatedAt);
       const dateTwo = new Date(val.expirationDate);
       const timeDifference = dateTwo.getTime() - dateOne.getTime();
@@ -284,10 +284,10 @@ const FlagsSubscription = () => {
       if (page === 0) {
         setRowsForFlags([]);
       }
-    } else if (data) {
+    } else if (data?.length) {
       if (page === 0) {
         setRowsForFlags(returnTableData(data));
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
       } else {
         setRowsForFlags((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
@@ -311,7 +311,6 @@ const FlagsSubscription = () => {
 
   useEffect(() => {
     getFlagsSubscription(0);
-    setPageNumber(0);
   }, [dropdownValue]);
 
   return (
