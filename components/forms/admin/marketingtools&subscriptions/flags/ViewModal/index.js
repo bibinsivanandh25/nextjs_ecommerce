@@ -186,22 +186,15 @@ const ViewModal = ({
   };
 
   async function getSubscriptionsRows(purchaseId, page) {
-    const { data, error, message } = await viewAllSubsOfSingleUser(
-      purchaseId,
-      page
-    );
-    if (error) {
+    const { data, error } = await viewAllSubsOfSingleUser(purchaseId, page);
+    if (error?.response?.data?.message) {
       if (page === 0) {
         setRows([]);
       }
-      if (error?.response?.data?.message)
-        toastify(error?.response?.data?.message, "error");
-      else if (message) {
-        toastify(message, "error");
-      }
-    } else if (data) {
+      toastify(error?.response?.data?.message, "error");
+    } else if (data?.length) {
       if (page === 0) {
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
         setRows(returnRowsOfSingleSubs(data));
       } else {
         setPageNumber((pre) => pre + 1);
