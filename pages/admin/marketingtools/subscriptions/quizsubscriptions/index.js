@@ -292,10 +292,10 @@ const QuizSubscriptions = () => {
       if (page === 0) {
         setRowsForQuizSubs([]);
       }
-    } else if (data) {
+    } else if (data?.length) {
       if (page === 0) {
         setRowsForQuizSubs(returnTableData(data));
-        setPageNumber((pre) => pre + 1);
+        setPageNumber(1);
       } else {
         setRowsForQuizSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
@@ -305,7 +305,6 @@ const QuizSubscriptions = () => {
 
   useEffect(() => {
     getQuizSubscription(0);
-    setPageNumber(0);
   }, [dropdownValue]);
 
   return (
