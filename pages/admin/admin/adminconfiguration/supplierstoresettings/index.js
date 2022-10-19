@@ -101,7 +101,6 @@ const SupplierStoreSettings = () => {
   };
 
   const getTableData = async (pageNumber) => {
-    console.log(pageNumber, " number ");
     const { data, error, message } = await getAllSupplierStoreSettings(
       pageNumber
     );
