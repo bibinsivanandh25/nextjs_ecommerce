@@ -1,11 +1,21 @@
 import TableComponent from "@/atoms/TableComponent";
 import ViewModal from "@/forms/admin/admin/adminconfiguration/supplierstoresettings/ViewModal";
-import { Box, Paper } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Paper, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { getAllSupplierStoreSettings } from "services/admin/admin/adminconfiguration/supplierstoresetting";
 import CustomIcon from "services/iconUtils";
+import toastify from "services/utils/toastUtils";
 
 const SupplierStoreSettings = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
+  const [tableRows, setTableRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [edit, setEdit] = useState("");
+  const [configurationId, setConfigurationId] = useState(null);
+  const [configurationSettingObject, setConfigurationSettingObject] = useState({
+    configurationName: "",
+    configurationLabel: "",
+  });
   const columns = [
     {
       id: "col1",
@@ -39,15 +49,79 @@ const SupplierStoreSettings = () => {
     },
   ];
 
-  const rows = [
-    {
-      col1: "01",
-      col2: "FREE ORDERS COUNT",
-      col3: 50,
-      col4: "--",
-      col5: <CustomIcon type="edit" />,
-    },
-  ];
+  //   const rows = [
+  //     {
+  //       id: "1",
+  //       col1: "01",
+  //       col2: "FREE ORDERS COUNT",
+  //       col3: 50,
+  //       col4: "--",
+  //       col5: <CustomIcon type="edit" />,
+  //     },
+  //   ];
+
+  const handleEdit = (configName, configValue, configId) => {
+    setEdit("Edit");
+    setConfigurationId(configId);
+    setConfigurationSettingObject({
+      configurationName: configName,
+      configurationLabel: configValue,
+    });
+    setOpenViewModal(true);
+  };
+
+  const fillTableRows = (data) => {
+    const tempRows = data.map((val, index) => {
+      return {
+        id: val.adminConfigurationId,
+        col1: index < 9 ? `0${index + 1}` : index + 1,
+        col2: (
+          <Typography className="text-uppercase h-5">
+            {val.adminConfigurationName}
+          </Typography>
+        ),
+        col3: val.adminConfigurationValue,
+        col4: val.createdDate ? val.createdDate : "--",
+        col5: (
+          <CustomIcon
+            type="edit"
+            onIconClick={() => {
+              handleEdit(
+                val.adminConfigurationName,
+                val.adminConfigurationValue,
+                val.adminConfigurationId
+              );
+            }}
+          />
+        ),
+      };
+    });
+    return tempRows;
+  };
+
+  const getTableData = async (pageNumber) => {
+    const { data, error, message } = await getAllSupplierStoreSettings(
+      pageNumber
+    );
+    const rowData = fillTableRows(data);
+    if (data) {
+      if (pageNumber === 0) {
+        setPage(1);
+        setTableRows([...rowData]);
+      } else {
+        setPage((pre) => pre + 1);
+        setTableRows((pre) => [...pre, ...rowData]);
+      }
+    } else if (error) {
+      if (message) toastify(message, "error");
+      else if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    getTableData(0);
+  }, []);
 
   return (
     <>
@@ -58,21 +132,38 @@ const SupplierStoreSettings = () => {
             table_heading="Admin Configuration"
             tHeadBgColor="bg-light-gray"
             showPagination
-            tableRows={rows}
+            tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create"
             showSearchbar={false}
             showSearchFilter={false}
             onCustomButtonClick={() => {
+              setEdit("");
+              setConfigurationId(null);
+              setConfigurationSettingObject({
+                configurationName: "",
+                configurationLabel: "",
+              });
               setOpenViewModal(true);
+            }}
+            handlePageEnd={(pageNo = page) => {
+              getTableData(pageNo);
             }}
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-      />
+      (
+      {openViewModal && (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          getTableData={getTableData}
+          configurationSettingObject={configurationSettingObject}
+          edit={edit}
+          configurationId={configurationId}
+        />
+      )}
+      )
     </>
   );
 };

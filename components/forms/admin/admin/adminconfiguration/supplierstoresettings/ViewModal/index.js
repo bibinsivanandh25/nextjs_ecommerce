@@ -1,20 +1,39 @@
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import validateMessage from "constants/validateMessages";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  addASetting,
+  updateASetting,
+} from "services/admin/admin/adminconfiguration/supplierstoresetting";
+import toastify from "services/utils/toastUtils";
 
 let errObj = {
   configurationName: "",
   configurationLabel: "",
 };
 
-const ViewModal = ({ openViewModal, setOpenViewModal }) => {
+const ViewModal = ({
+  openViewModal,
+  setOpenViewModal,
+  getTableData,
+  edit,
+  configurationSettingObject = {
+    configurationName: "",
+    configurationLabel: "",
+  },
+  configurationId,
+}) => {
   const [configurationName, setConfigurationName] = useState("");
   const [configurationLabel, setConfigurationLabel] = useState("");
   const [err, setErr] = useState({
     configurationName: "",
     configurationLabel: "",
   });
+  useEffect(() => {
+    setConfigurationName(configurationSettingObject.configurationName);
+    setConfigurationLabel(configurationSettingObject.configurationLabel);
+  }, [configurationSettingObject]);
 
   const handleCloseIconClick = () => {
     errObj = {
@@ -45,10 +64,43 @@ const ViewModal = ({ openViewModal, setOpenViewModal }) => {
     return anError;
   };
 
+  const addUpdateSetting = async () => {
+    if (!edit) {
+      const payload = {
+        adminConfigurationName: configurationName,
+        adminConfigurationValue: configurationLabel,
+      };
+      const { data, error, message } = await addASetting(payload);
+      if (data) {
+        await getTableData(0);
+        toastify(message, "success");
+      } else if (error) {
+        if (message) toastify(message, "error");
+        else if (error?.response?.data?.message)
+          toastify(error?.response?.data?.message, "error");
+      }
+    } else if (configurationId && edit) {
+      const payload = {
+        adminConfigurationId: configurationId,
+        adminConfigurationValue: configurationLabel,
+      };
+      const { data, error, message } = await updateASetting(payload);
+      if (data) {
+        await getTableData(0);
+        toastify(message, "success");
+      } else if (error) {
+        if (message) toastify(message, "error");
+        else if (error?.reponse?.data?.message)
+          toastify(error?.reponse?.data?.message, "error");
+      }
+    }
+  };
+
   const handleSubmit = () => {
     const anError = handleError();
     if (!anError) {
-      console.log("Successful");
+      addUpdateSetting();
+      setOpenViewModal(false);
     }
   };
 
@@ -84,6 +136,7 @@ const ViewModal = ({ openViewModal, setOpenViewModal }) => {
           }}
           error={err.configurationName}
           helperText={err.configurationName}
+          disabled={Boolean(edit)}
         />
         <InputBox
           inputlabelshrink
