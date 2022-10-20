@@ -304,6 +304,10 @@ const TodaysDealSubscription = () => {
         setTableRowsTodaysDealSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
       }
+    } else if (!data?.length) {
+      if (page === 0) {
+        setTableRowsTodaysDealSubs([]);
+      }
     }
   };
 
