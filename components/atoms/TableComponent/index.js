@@ -7,7 +7,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable consistent-return */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -22,10 +22,10 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
 import { format } from "date-fns";
+import { AiOutlineCalendar } from "react-icons/ai";
 import CheckBoxComponent from "../CheckboxComponent";
 import SimpleDropdownComponent from "../SimpleDropdownComponent";
 import InputBox from "../InputBoxComponent";
-import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
 import PaginationComponent from "../AdminPagination";
 
@@ -471,6 +471,9 @@ export default function TableComponent({
     id: "0",
     value: "All",
   });
+  const dateFromRef = useRef(null);
+  const dateToRef = useRef(null);
+
   useEffect(() => {
     setPage(0);
   }, [tabChange]);
@@ -647,16 +650,25 @@ export default function TableComponent({
               className="d-flex align-items-center justify-content-end"
             >
               <span className="fs-12">From date:</span>
+              <span className=" bg-orange mx-1 rounded cursor-pointer">
+                <AiOutlineCalendar
+                  className="m-1 color-white"
+                  onClick={() => {
+                    dateFromRef.current.showPicker();
+                  }}
+                />
+              </span>
+
+              <span>
+                {filteredDates.fromDate !== ""
+                  ? format(new Date(filteredDates.fromDate), "MM-dd-yyyy")
+                  : "mm-dd-yyyy"}
+              </span>
               <input
+                ref={dateFromRef}
                 type="date"
                 value={filteredDates.fromDate}
-                className={styles.dateinput}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                }}
+                className="position-absolute invisible"
                 onChange={(e) => {
                   setFilteredDates((pre) => ({
                     ...pre,
@@ -694,16 +706,24 @@ export default function TableComponent({
               className="d-flex align-items-center justify-content-end"
             >
               <span className="fs-12">To date:</span>
+              <span className=" bg-orange mx-1 rounded cursor-pointer">
+                <AiOutlineCalendar
+                  className="m-1 color-white"
+                  onClick={() => {
+                    dateToRef.current.showPicker();
+                  }}
+                />
+              </span>
+              <span>
+                {filteredDates.toDate !== ""
+                  ? format(new Date(filteredDates.toDate), "MM-dd-yyyy")
+                  : "mm-dd-yyyy"}
+              </span>
               <input
+                ref={dateToRef}
                 type="date"
                 value={filteredDates.toDate}
-                className={styles.dateinput}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                }}
+                className="position-absolute invisible"
                 onChange={(e) => {
                   setFilteredDates((pre) => ({
                     ...pre,
