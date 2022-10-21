@@ -375,7 +375,14 @@ const DashBoard = () => {
           className="mt-3 d-flex justify-content-evenly"
         >
           {cardData.map((item) => (
-            <Grid item lg={2} md={3} sm={6} xs={6} className=" cursor-pointer">
+            <Grid
+              item
+              lg={2.4}
+              md={3}
+              sm={6}
+              xs={6}
+              className=" cursor-pointer"
+            >
               <CardComponent className="" boxColor={item.color}>
                 <Typography className="h-6 pt-1 fw-500 color-gray ps-1">
                   {item.title}

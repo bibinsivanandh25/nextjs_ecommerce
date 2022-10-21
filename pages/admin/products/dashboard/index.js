@@ -134,8 +134,8 @@ const ProductDashboard = () => {
   return (
     <Box>
       <Box
-        className="mb-3 position-fixed bg-white"
-        sx={{ zIndex: 0, top: "80px" }}
+        className="mb-3 position-fixed bg-white w-100"
+        sx={{ zIndex: 0, top: "60px" }}
       >
         <NavTabComponent
           listData={navData}
@@ -145,7 +145,7 @@ const ProductDashboard = () => {
           setToDate={setToDate}
         />
       </Box>
-      <Box className="mxh-75">
+      <Box className="mxh-75 mt-5">
         <Grid container columnSpacing={2} className="mb-3">
           {returnCards()}
         </Grid>

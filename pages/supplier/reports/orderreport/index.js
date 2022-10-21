@@ -256,7 +256,7 @@ const OrderReport = () => {
         Detailcolumns={[
           {
             id: "col1", //  id value in column should be presented in row as key
-            label: "Date",
+            label: "Months",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -296,7 +296,7 @@ const OrderReport = () => {
             data_classname: "",
           },
           {
-            id: "col1",
+            id: "col2",
             label: "Product",
             minWidth: 100,
             align: "center",
