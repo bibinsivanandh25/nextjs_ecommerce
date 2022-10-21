@@ -10,6 +10,7 @@ const nextConfig = {
       "fakestoreapi.com",
       "mrmrscart.s3.ap-south-1.amazonaws.com",
       "dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com",
+      "test-mrmrscart-assets.s3.ap-south-1.amazonaws.com",
     ],
   },
   env: {

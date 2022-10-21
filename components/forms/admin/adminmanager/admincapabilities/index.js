@@ -75,7 +75,12 @@ const StaffForm = ({
       setCapabilities(orginizeCapabilites(admincapabilities));
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
-        orginizeCapabilites(adminData.adminCapabilities.adminCapabilityList)
+        orginizeCapabilites(
+          adminData.adminCapabilities?.adminCapabilityList
+            ?.adminCapabilitylist ??
+            adminData.adminCapabilities?.adminCapabilityList ??
+            admincapabilities
+        )
       );
       if (type === "Edit") {
         setFormData({
@@ -134,7 +139,10 @@ const StaffForm = ({
       flag = true;
       errObj.email = validateMessage.email;
     }
-
+    if (!formData.dob) {
+      flag = true;
+      errObj.dob = validateMessage.field_required;
+    }
     if (
       !capabilites.some((ele) => {
         if (!ele.children.length) {
@@ -317,6 +325,7 @@ const StaffForm = ({
                     helperText={errorObj.email}
                     error={errorObj.email !== ""}
                     placeholder="E-mail"
+                    disabled={type === "Edit"}
                   />
                 </Grid>
 
@@ -333,6 +342,7 @@ const StaffForm = ({
                     helperText={errorObj.MobileNo}
                     error={errorObj.MobileNo !== ""}
                     placeholder="Mobile No."
+                    disabled={type === "Edit"}
                   />
                 </Grid>
                 <Grid item sm={12}>
@@ -347,39 +357,58 @@ const StaffForm = ({
                       }));
                     }}
                     disableFuture
+                    inputlabelshrink
+                    helperText={errorObj.dob}
+                    error={!!errorObj.dob}
                   />
                 </Grid>
 
-                <Grid item sm={12} className="d-flex">
-                  <span className="fs-14 my-2 fw-600 me-3">
-                    Custom Capability :
-                  </span>
-                  <CheckBoxComponent
-                    label=""
-                    isChecked={checkbox}
-                    checkBoxClick={(_, value) => {
-                      setCheckbox(value);
-                      setCapabilities((pre) => {
-                        const temp = pre.map((item) => {
-                          return {
-                            ...item,
-                            isChecked: !value,
-                            children: item.children.length
-                              ? item.children.map((ele) => {
-                                  return {
-                                    ...ele,
-                                    isChecked: !value,
-                                  };
-                                })
-                              : [],
-                          };
+                {type !== "Edit" && (
+                  <Grid item sm={12} className="d-flex">
+                    <span className="fs-14 my-2 fw-600 me-3">
+                      Custom Capability :
+                    </span>
+                    <CheckBoxComponent
+                      label=""
+                      isChecked={checkbox}
+                      checkBoxClick={(_, value) => {
+                        setCheckbox(value);
+                        setCapabilities((pre) => {
+                          const temp = pre.map((item) => {
+                            return {
+                              ...item,
+                              isChecked: !value,
+                              children: item.children.length
+                                ? item.children.map((ele) => {
+                                    const elecopy = JSON.parse(
+                                      JSON.stringify(ele)
+                                    );
+                                    if (ele?.children?.length) {
+                                      elecopy.children = ele.children.map(
+                                        (c) => {
+                                          return {
+                                            ...c,
+                                            isChecked: !value,
+                                          };
+                                        }
+                                      );
+                                    }
+
+                                    return {
+                                      ...elecopy,
+                                      isChecked: !value,
+                                    };
+                                  })
+                                : [],
+                            };
+                          });
+                          return temp;
                         });
-                        return temp;
-                      });
-                    }}
-                    size="small"
-                  />
-                </Grid>
+                      }}
+                      size="small"
+                    />
+                  </Grid>
+                )}
               </Grid>
             ) : (
               <Grid container spacing={2}>
@@ -440,7 +469,20 @@ const StaffForm = ({
                               element.isChecked = val;
                               element.children = element.children.map(
                                 (child) => {
-                                  return { ...child, isChecked: val };
+                                  const childCopy = JSON.parse(
+                                    JSON.stringify(child)
+                                  );
+                                  if (child?.children?.length) {
+                                    childCopy.children = child.children.map(
+                                      (c) => {
+                                        return {
+                                          ...c,
+                                          isChecked: val,
+                                        };
+                                      }
+                                    );
+                                  }
+                                  return { ...childCopy, isChecked: val };
                                 }
                               );
                             }

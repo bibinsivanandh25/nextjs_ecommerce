@@ -236,6 +236,7 @@ const FilterMenu = ({
   getFilteredValues = () => {},
   setPage = () => {},
   setTableFilterList = () => {},
+  allowOutSideClickClose,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filterData, setFilterData] = useState([]);
@@ -374,7 +375,7 @@ const FilterMenu = ({
         }}
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={allowOutSideClickClose && handleClose}
         sx={{
           maxHeight: "80vh",
           overflow: "scroll",
@@ -408,6 +409,7 @@ export default function TableComponent({
   showPagination = true,
   showCheckbox = true,
   table_heading = "",
+  headerClassName = "",
   tableRows = [],
   columns = [],
   setColumns = () => {},
@@ -451,9 +453,10 @@ export default function TableComponent({
   tabChange = "",
   filterData = [],
   getFilteredValues = () => {},
+  allowOutSideClickClose = false,
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [searchText, setsearchText] = useState("");
@@ -521,7 +524,7 @@ export default function TableComponent({
           ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
           : "",
         toDate: filteredDates.toDate
-          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+          ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
           : "",
       });
     }
@@ -536,7 +539,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
     handlePageEnd(searchText, searchFilter?.value, 0, {
@@ -544,7 +547,7 @@ export default function TableComponent({
         ? `${format(new Date(filteredDates.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates.toDate
-        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 00:00:00`
+        ? `${format(new Date(filteredDates.toDate), "MM-dd-yyyy")} 23:59:59`
         : "",
     });
   };
@@ -601,7 +604,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className="fw-bold"
+                className={`fw-bold ${headerClassName}`}
               >
                 {table_heading}
               </Typography>
@@ -634,6 +637,7 @@ export default function TableComponent({
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
+                  allowOutSideClickClose={allowOutSideClickClose}
                 />
               </Grid>
             )}
@@ -670,7 +674,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(filteredDates.toDate),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                       fromDate: e.target.value
                         ? `${format(
@@ -723,7 +727,7 @@ export default function TableComponent({
                         ? `${format(
                             new Date(e.target.value),
                             "MM-dd-yyyy"
-                          )} 00:00:00`
+                          )} 23:59:59`
                         : "",
                     });
                   }
@@ -769,7 +773,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }}
@@ -809,7 +813,7 @@ export default function TableComponent({
               sx={{ flex: "1 1 100%", py: { sm: 1 } }}
               id="tableTitle"
               component="div"
-              className="fw-bold"
+              className={`fw-bold ${headerClassName}`}
             >
               {table_heading}
             </Typography>
@@ -871,7 +875,7 @@ export default function TableComponent({
                           ? `${format(
                               new Date(filteredDates.toDate),
                               "MM-dd-yyyy"
-                            )} 00:00:00`
+                            )} 23:59:59`
                           : "",
                       });
                     }
@@ -921,7 +925,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }
@@ -958,7 +962,7 @@ export default function TableComponent({
                             ? `${format(
                                 new Date(filteredDates.toDate),
                                 "MM-dd-yyyy"
-                              )} 00:00:00`
+                              )} 23:59:59`
                             : "",
                         });
                       }

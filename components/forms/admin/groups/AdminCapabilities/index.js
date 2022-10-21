@@ -126,7 +126,10 @@ const AdminCapabilities = ({
     if (data) {
       setShowModal("");
       setShowAdminCapabilities(false);
-      gettableData();
+      gettableData(0, {
+        fromDate: null,
+        toDate: null,
+      });
       toastify(message, "success");
     } else if (err) {
       if (err?.response?.data?.error) {
@@ -144,7 +147,7 @@ const AdminCapabilities = ({
         if (data) {
           setShowAdminCapabilities(false);
           toastify(message, "success");
-          gettableData();
+          gettableData(0);
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }
@@ -188,8 +191,8 @@ const AdminCapabilities = ({
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
         orginizeCapabilites(
-          groupData.adminRegistration[0].adminCapabilities.adminCapabilityList
-            .adminCapabilitylist
+          groupData.adminRegistration[0]?.adminCapabilities?.adminCapabilityList
+            ?.adminCapabilitylist ?? admincapabilities
         )
       );
       if (type === "Edit") {
@@ -232,7 +235,12 @@ const AdminCapabilities = ({
         label: item,
         id: item,
       }));
-      if (type !== "add") {
+      if (
+        type !== "add" &&
+        groupData.adminRegistration[0].adminRoles[0].adminRoleTitle.includes(
+          groupType
+        )
+      ) {
         temp1.push(
           ...groupData.adminRegistration.map((item) => ({
             id: item.adminRegistrationId,
@@ -259,7 +267,7 @@ const AdminCapabilities = ({
 
   return (
     <Paper className="p-3 mnh-85vh mxh-85vh overflow-auto hide-scrollbar d-flex flex-column justify-content-between">
-      <div>
+      <div className="mb-3">
         <Typography
           onClick={() => {
             setShowAdminCapabilities(false);
@@ -377,8 +385,20 @@ const AdminCapabilities = ({
                             isChecked: !value,
                             children: item.children.length
                               ? item.children.map((ele) => {
+                                  const elecopy = JSON.parse(
+                                    JSON.stringify(ele)
+                                  );
+                                  if (ele?.children?.length) {
+                                    elecopy.children = ele.children.map((c) => {
+                                      return {
+                                        ...c,
+                                        isChecked: !value,
+                                      };
+                                    });
+                                  }
+
                                   return {
-                                    ...ele,
+                                    ...elecopy,
                                     isChecked: !value,
                                   };
                                 })
@@ -405,6 +425,14 @@ const AdminCapabilities = ({
                 </Grid>
                 <Grid item md={9}>
                   {groupData.description}
+                </Grid>
+                <Grid item md={3}>
+                  Group Type:
+                </Grid>
+                <Grid item md={9}>
+                  {groupData.adminRegistration[0]?.designation
+                    .split("_")
+                    .join(" ")}
                 </Grid>
                 <Grid item md={3}>
                   Group Members:
@@ -485,7 +513,20 @@ const AdminCapabilities = ({
                               element.isChecked = val;
                               element.children = element.children.map(
                                 (child) => {
-                                  return { ...child, isChecked: val };
+                                  const childCopy = JSON.parse(
+                                    JSON.stringify(child)
+                                  );
+                                  if (child?.children?.length) {
+                                    childCopy.children = child.children.map(
+                                      (c) => {
+                                        return {
+                                          ...c,
+                                          isChecked: val,
+                                        };
+                                      }
+                                    );
+                                  }
+                                  return { ...childCopy, isChecked: val };
                                 }
                               );
                             }

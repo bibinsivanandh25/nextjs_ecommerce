@@ -166,15 +166,16 @@ const Users = () => {
             showCheckbox={false}
             tableRows={rows}
             showCustomButton
-            customButtonLabel="Create Group"
+            dateFilterBtnName="Create Group"
             table_heading="Groups"
             showSearchFilter={false}
-            onCustomButtonClick={() => {
+            dateFilterBtnClick={() => {
               setModalData((pre) => ({ ...pre, type: "add" }));
               setShowAdminCapabilities(true);
             }}
             showSearchbar={false}
             showDateFilter
+            showDateFilterBtn
             handlePageEnd={async (
               searchText,
               searchFilter,

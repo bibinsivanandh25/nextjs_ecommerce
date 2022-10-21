@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
@@ -86,7 +88,10 @@ const OtpLogIn = () => {
                   onBtnClick={handleSubmit}
                   muiProps="w-30p "
                 />
-                <span className="color-orange fs-12 mt-2 cursor-pointer">
+                <span
+                  className="color-orange fs-12 mt-2 cursor-pointer"
+                  onClick={sendOTPclick}
+                >
                   Resend OTP
                 </span>
               </div>

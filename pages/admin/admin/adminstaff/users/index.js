@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -34,7 +35,7 @@ const Users = () => {
     {
       id: "col3",
       align: "center",
-      label: "Designation",
+      label: "Last Name",
       data_align: "center",
     },
     {
@@ -70,8 +71,8 @@ const Users = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
@@ -103,7 +104,7 @@ const Users = () => {
     const { data, message, err } = await deleteAdminUser(userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -113,7 +114,7 @@ const Users = () => {
     const { data, message, err } = await disableAdmin(status, userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -125,7 +126,7 @@ const Users = () => {
         id: 1,
         col1: item.adminRegistrationId,
         col2: item.firstName,
-        col3: item.designation.replace("_", " "),
+        col3: item.lastName,
         col4: item.emailId,
         col5: item.mobileNumber,
         col7: item.createdBy,
@@ -164,6 +165,7 @@ const Users = () => {
       keyword: null,
     }
   ) => {
+    payload.createdBy = payload.createdBy.map((item) => item.trim());
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
     if (data) {
       if (page === 0) {
@@ -173,6 +175,9 @@ const Users = () => {
         setTableRows((pre) => {
           return [...pre, ...mapData(data)];
         });
+        if (data.length) {
+          setpageNumber((pre) => pre + 1);
+        }
       }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -212,6 +217,7 @@ const Users = () => {
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
+            headerClassName="color-orange"
             tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
@@ -240,7 +246,7 @@ const Users = () => {
               };
               val[0].value.forEach((ele) => {
                 if (ele.isSelected) {
-                  temp.createdBy.push(ele.item.split("-")[0]);
+                  temp.createdBy.push(ele.item.split("-")[0].trim());
                 }
               });
               val[1].value.forEach((ele) => {
