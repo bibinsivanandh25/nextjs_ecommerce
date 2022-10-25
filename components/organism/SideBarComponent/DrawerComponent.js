@@ -171,7 +171,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         .catch(() => {});
     } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
       setNavOptionsList(adminNav);
-      if (user.role !== "ADMIN") {
+      if (user.role !== "ADMIN" && user.adminCapabilities) {
         setstaffCapabilityList(getAdminCapability([...user.adminCapabilities]));
       }
     }
@@ -249,7 +249,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
           id,
           selected: false,
           pathName: `${path}/${item.pathName}`,
-          disabled: !capabiliteArr.isEnable,
+          disabled:
+            user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
           locked: false,
         };
       }
@@ -258,7 +259,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         id,
         selected: false,
         pathName: `${path}/${item.pathName}`,
-        disabled: !capabiliteArr.isEnable,
+        disabled:
+          user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
         locked: false,
         child: [
           ...item.child.map((ele, index) => {
@@ -266,7 +268,9 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               `${id}_${index}`,
               ele,
               `${path}/${item.pathName}`,
-              capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+              user.adminCapabilities === null
+                ? {}
+                : capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
             );
           }),
         ],
@@ -280,7 +284,9 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               index,
               item,
               `/${getBasePath(role)}`,
-              staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+              user.adminCapabilities === null
+                ? {}
+                : staffCapabilityList[`${item.title.toLowerCase().trim()}`]
             )
         : addId(index, item, `/${getBasePath(role)}`);
     });

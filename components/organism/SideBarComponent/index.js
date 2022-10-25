@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
+import FallbackComponent from "@/atoms/FallbackComponent";
 import DrawerComponent from "./DrawerComponent";
 
 const SideBarComponent = ({ children }) => {
@@ -43,19 +44,24 @@ const SideBarComponent = ({ children }) => {
           WebkitTransition: "margin 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
         }}
-        className=" p-3 pt-2 w-100 body-bg"
+        className=" w-100 body-bg"
       >
         {!allowedPath.includes(route.pathname) ? (
           <div
             style={{
               maxHeight: route.pathname.startsWith("/admin")
-                ? "calc(100vh - 95px)"
+                ? "calc(100vh - 60px)"
                 : "calc(100vh - 130px)",
               overflowY: "scroll",
+              // background:
+              //   "url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/401.jpg)",
+              // backgroundPosition: "center",
+              // backgroundSize: "auto",
+              // height: "88vh",
             }}
             className="hide-scrollbar "
           >
-            Unauthorized
+            <FallbackComponent />
           </div>
         ) : (
           <>

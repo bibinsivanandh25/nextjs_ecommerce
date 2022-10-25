@@ -136,6 +136,15 @@ const Login = () => {
                     .adminCapabilityList,
               })
             );
+            if (
+              data.data.adminRegistrationPojo.adminCapabilities
+                .adminCapabilityList === null
+            ) {
+              toastify(
+                "Please contact your administrator since your account has been suspended.",
+                "error"
+              );
+            }
             route.push(`/admin/dashboard`);
           }
         })
