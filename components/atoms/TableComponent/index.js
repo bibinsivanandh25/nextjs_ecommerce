@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
@@ -270,14 +271,24 @@ const FilterMenu = ({
   const renderMenuList = (data) => {
     return data?.map((ele, ind) => {
       return (
-        <div className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar">
+        <div
+          className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar"
+          key={ind}
+        >
           <div>
             <CheckBoxComponent
               label={ele.name}
               isChecked={ele.isSelected}
               checkBoxClick={() => {
+                const setExpand = (filters) => {
+                  if (filters?.value?.filter((e) => e.isSelected).length == 0)
+                    return true;
+                  if (filters?.value?.every((e) => e.isSelected)) return false;
+                  if (filters?.value?.some((e) => e.isSelected)) return true;
+                  return !filters.isExpand;
+                };
                 const temp = JSON.parse(JSON.stringify(data));
-                temp[ind].isExpand = !temp[ind].isExpand;
+                temp[ind].isExpand = setExpand(temp[ind]);
                 temp[ind].isSelected = !temp[ind].isSelected;
                 temp[ind].value.forEach((item) => {
                   item.isSelected = temp[ind].isSelected;
@@ -604,7 +615,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className={`fw-bold ${headerClassName}`}
+                className={`fw-bold ${headerClassName} color-orange`}
               >
                 {table_heading}
               </Typography>

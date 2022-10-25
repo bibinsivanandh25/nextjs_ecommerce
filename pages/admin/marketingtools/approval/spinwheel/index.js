@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Paper, Typography } from "@mui/material";
@@ -30,14 +31,14 @@ const tableColumn = [
     data_align: "center",
     data_classname: "",
   },
-  {
-    id: "col3",
-    label: "Tool",
-    minWidth: 150,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
+  // {
+  //   id: "col3",
+  //   label: "Tool",
+  //   minWidth: 150,
+  //   align: "center",
+  //   data_align: "center",
+  //   data_classname: "",
+  // },
   {
     id: "col4",
     label: "Title",
@@ -95,11 +96,12 @@ const tableColumn = [
     data_classname: "",
   },
 ];
-const SpinWheel = () => {
+const PriceTargeted = () => {
   const [viewModalOpen, setViewModalopen] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [marketingToolId, setMarketingToolId] = useState("");
 
   const acceptRejectTool = async (status, toolId, userId) => {
     const formdata = new FormData();
@@ -109,6 +111,7 @@ const SpinWheel = () => {
     const { data, err } = await approveRejectMarketingToolCampaign(formdata);
     if (data) {
       toastify(data?.message, "success");
+      getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -125,7 +128,7 @@ const SpinWheel = () => {
             {item.userTypeId}
           </Typography>
         ),
-        col3: item.toolType.replaceAll("_", " "),
+        // col3: item.toolType.replaceAll("_", " "),
         col4: item.campaignTitle,
         col5: (
           <div
@@ -164,7 +167,10 @@ const SpinWheel = () => {
             <CustomIcon
               type="view"
               className="fs-18 mx-2"
-              onIconClick={() => setViewModalopen(true)}
+              onIconClick={() => {
+                setViewModalopen(true);
+                setMarketingToolId(item.marketingToolId);
+              }}
             />
             <MenuOption
               options={["Edit", "Delete"]}
@@ -172,6 +178,7 @@ const SpinWheel = () => {
               getSelectedItem={(ele) => {
                 if (ele === "Edit") {
                   setOpenEditModal(true);
+                  setMarketingToolId(item.marketingToolId);
                 }
               }}
             />
@@ -182,11 +189,20 @@ const SpinWheel = () => {
 
     return result;
   };
-  const getTableData = async (page = pageNumber) => {
-    const { data } = await getMarketingToolsBasedonMarketinType(
-      page,
-      "SPIN_WHEEL"
-    );
+  const getTableData = async (
+    page = pageNumber,
+    dateFilter = {
+      fromDate: "",
+      toDate: "",
+    }
+  ) => {
+    const payload = {
+      dateFrom: dateFilter.fromDate,
+      dateTo: dateFilter.toDate,
+      status: "PENDING",
+      marketingToolType: "SPIN_WHEEL",
+    };
+    const { data } = await getMarketingToolsBasedonMarketinType(page, payload);
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
@@ -207,31 +223,39 @@ const SpinWheel = () => {
       <Box className="mt-2">
         <TableComponent
           columns={[...tableColumn]}
-          showDateFilter={false}
+          showDateFilter
           showSearchFilter={false}
           showSearchbar={false}
           tableRows={[...tableRows]}
+          showDateFilterSearch={false}
           tHeadBgColor="bg-tableGray"
-          table_heading="Spin Wheel"
+          table_heading="Price Targeted"
           showCheckbox={false}
-          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-            getTableData(page);
+          handlePageEnd={(
+            searchText,
+            searchFilter,
+            page = pageNumber,
+            dateFilter
+          ) => {
+            getTableData(page, dateFilter);
           }}
         />
       </Box>
       <ViewMarketingtools
         modalOpen={viewModalOpen}
         modalClose={setViewModalopen}
-        title="View Spin Wheel"
+        title="View Price Targeted"
+        marketingToolId={marketingToolId}
+        marketingToolType="SPIN_WHEEL"
       />
       <EditMarketingTools
         modalOpen={openEditModal}
         modalClose={setOpenEditModal}
-        title="Edit Spin Wheel"
+        title="Edit Price Targeted"
         editorPlaceHolder="Description for the Discount Products..."
       />
     </Paper>
   );
 };
 
-export default SpinWheel;
+export default PriceTargeted;

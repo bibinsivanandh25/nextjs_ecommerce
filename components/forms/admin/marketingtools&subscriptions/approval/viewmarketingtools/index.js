@@ -1,73 +1,51 @@
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
-import TextArea from "@/atoms/SimpleTextArea";
 import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import { useState, useEffect } from "react";
+import { getMarketingToolDetailsByToolId } from "services/admin/marketingtools/approvals";
 
-const productlist = [
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 1,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 2,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 3,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 2,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 3,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 2,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 3,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 2,
-  },
-  {
-    productimage:
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661584457066-revolt-164_6wVEHfI-unsplash.jpg",
-    title: "Product1",
-    id: 3,
-  },
-];
 const ViewMarketingtools = ({
   modalOpen,
   modalClose = () => {},
   title = "View",
-  viewModlwidth = "900px",
+  viewModlwidth = "75%",
   footer = false,
+  marketingToolId = "",
+  marketingToolType = "",
 }) => {
+  const [formData, setFormData] = useState({});
+  const [productList, setProductList] = useState([]);
+  const getMarketingToolData = async () => {
+    const { data } = await getMarketingToolDetailsByToolId(
+      marketingToolId,
+      marketingToolType
+    );
+    if (data) {
+      setFormData((pre) => ({
+        ...pre,
+        discount: data?.totalDiscountValue,
+        category: data.category,
+        subCategory: data.subCategory,
+        startDateTime: data.startDateTime,
+        endDateTime: data.endDateTime,
+        description: data.description,
+      }));
+      const result = [];
+      data?.marketingToolProductList?.forEach((item) => {
+        result.push({
+          title: item?.variationData?.productTitle,
+          id: item?.variationData?.productVariationId,
+          url: item?.variationData?.variationMedia[0],
+        });
+      });
+      setProductList([...result]);
+    }
+  };
+
+  useEffect(() => {
+    getMarketingToolData();
+  }, [marketingToolId, marketingToolType]);
   return (
     <ModalComponent
       open={modalOpen}
@@ -80,33 +58,57 @@ const ViewMarketingtools = ({
       <Box className="my-2">
         <Grid container spacing={2}>
           <Grid item md={4}>
-            <InputBox disabled label="Discount" inputlabelshrink />
+            <InputBox
+              disabled
+              label="Discount"
+              inputlabelshrink
+              value={formData?.discount}
+            />
           </Grid>
           <Grid item md={4}>
-            <InputBox disabled label="Category" inputlabelshrink />
+            <InputBox
+              disabled
+              label="Category"
+              inputlabelshrink
+              value={formData?.category}
+            />
           </Grid>
           <Grid item md={4}>
-            <InputBox disabled label="Sub Category" inputlabelshrink />
+            <InputBox
+              disabled
+              label="Sub Category"
+              inputlabelshrink
+              value={formData?.subCategory}
+            />
           </Grid>
         </Grid>
         <Grid container className="mt-2">
-          <Grid item md={5} display="flex">
-            <Typography className="h-5">Start Date:</Typography>
-            <Typography className="h-5">12/09/2022 09:08:00</Typography>
+          <Grid item md={3} display="flex">
+            <Typography className="h-5">Start Date:&nbsp;</Typography>
+            <Typography className="h-5">{formData?.startDateTime}</Typography>
           </Grid>
-          <Grid item md={5} display="flex">
-            <Typography className="h-5">End Date:</Typography>
-            <Typography className="h-5">24/09/2022 09:08:00</Typography>
+          <Grid item md={3} display="flex">
+            <Typography className="h-5">End Date:&nbsp; </Typography>
+            <Typography className="h-5">{formData?.endDateTime}</Typography>
           </Grid>
         </Grid>
         <Grid container className="mt-2">
-          <TextArea disabled />
+          <div
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: formData.description,
+            }}
+            className="border rounded pt-1 pb-5 px-2 w-75"
+            style={{
+              backgroundColor: "#fafafa",
+            }}
+          />
         </Grid>
         <Grid container className="mt-2">
-          {productlist.map((item) => (
+          {productList.map((item) => (
             <Grid item md={2} key={item.id}>
               <Image
-                src={item.productimage}
+                src={item.url}
                 layout="intrinsic"
                 height={100}
                 width={100}

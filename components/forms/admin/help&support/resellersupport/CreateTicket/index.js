@@ -12,32 +12,44 @@ const CreateTicket = ({ setShowCreateTicketComponent = () => {} }) => {
 
   const issueTypes = [
     {
-      label: "Order",
-      value: "Order",
+      id: "ORDER_RELATED_ISSUE",
+      label: "Order Related Issue",
+      value: "ORDER_RELATED_ISSUE",
     },
     {
+      id: "RETURN_AND_REFUND",
       label: "Return and Refund",
-      value: "Return and Refund",
+      value: "RETURN_AND_REFUND",
     },
     {
-      label: "Logistic",
-      value: "Logistic",
+      id: "LOGISTICS_RELATED_ISSUE",
+      label: "Logistic Related Issue",
+      value: "LOGISTICS_RELATED_ISSUE",
     },
     {
+      id: "CANCELLATION_AND_REFUND",
       label: "Cancellation and Refund",
-      value: "Cancellation and Refund",
+      value: "CANCELLATION_AND_REFUND",
     },
     {
-      label: "Profile",
-      value: "Profile",
+      id: "PROFILE_RELATED_ISSUE",
+      lable: "Profile Related Issue",
+      value: "PROFILE_RELATED_ISSUE",
     },
     {
+      id: "PAYMENT_SETTLEMENT_ISSUE",
       label: "Payment Settlement",
-      value: "Payment Settlement",
+      value: "PAYMENT_SETTLEMENT_ISSUE",
     },
     {
+      id: "ACCOUNT_MANAGEMENT_ISSUE",
+      label: "Account Management Issue",
+      value: "ACCOUNT_MANAGEMENT_ISSUE",
+    },
+    {
+      id: "OTHERS",
       label: "Others",
-      value: "Others",
+      value: "OTHERS",
     },
   ];
   // const route = useRouter();

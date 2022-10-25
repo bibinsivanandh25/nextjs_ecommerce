@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import {
   enableDisableMarketingTools,
@@ -16,14 +17,18 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+import TabsCard from "components/molecule/TabsCard";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
 import ViewIndividualPricing from "../ViewIndividualPricing";
+import CreateNotification from "../CreateNotification";
 
 const ResellerSubscriptions = () => {
   const [marketingtoolsCount, setmarketingtoolsCount] = useState([]);
   const [marketingtoolsStatus, setmarketingtoolsStatus] = useState([]);
   const [showEditPriceModal, setShowEditPriceModal] = useState(false);
+  const [showCreateNotificationModal, setShowCreateNotificationModal] =
+    useState(false);
 
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
     []
@@ -45,6 +50,12 @@ const ResellerSubscriptions = () => {
   const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+
+  const [tabList, setTabList] = useState([
+    { label: "Active", isSelected: true },
+    { label: "Scheduled", isSelected: false },
+    { label: "Expired", isSelected: false },
+  ]);
 
   const filterData = [
     {
@@ -478,7 +489,7 @@ const ResellerSubscriptions = () => {
           result2[`col${index + 2}`] =
             ele.price !== "--" ? (
               <Box className="d-flex align-items-center justify-content-evenly">
-                <Typography className="h-5">{ele.price}</Typography>
+                <Typography className="h-5">₹{ele.price}</Typography>
                 <CustomIcon
                   type="edit"
                   className="h-4"
@@ -491,7 +502,27 @@ const ResellerSubscriptions = () => {
                     });
                   }}
                 />
-                <CustomIcon type="calendar" className="h-4" />
+                <CustomIcon
+                  type="calendar"
+                  className="h-4"
+                  title={
+                    <>
+                      <Typography className="text-center h-5">
+                        {`${ele.startDateTime} to ${ele.endDateTime}`}
+                      </Typography>
+                      <Typography className="text-center h-5">
+                        Status : {ele.status}
+                      </Typography>
+                    </>
+                  }
+                />
+                <CustomIcon
+                  type="notification"
+                  className="h-4"
+                  onIconClick={() => {
+                    setShowCreateNotificationModal(true);
+                  }}
+                />
                 <Box className="ms-2">
                   <SwitchComponent
                     label=""
@@ -647,8 +678,12 @@ const ResellerSubscriptions = () => {
         col17: (
           <Box className="d-flex align-items-center justify-content-between">
             <CustomIcon className="h-4" type="edit" />
-            <CustomIcon type="message" className="ms-1 h-4" />
-            <CustomIcon type="calendar" className="ms-1 h-4" />
+            <CustomIcon
+              type="calendar"
+              className="ms-1 h-4"
+              title={`${ele.startDateTime} to ${ele.endDateTime}`}
+            />
+
             <CustomIcon type="notification" className="ms-1 h-4" />
             <Box className="ms-3" sx={{ marginRight: "-10px" }}>
               <SwitchComponent
@@ -771,30 +806,45 @@ const ResellerSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Tools Campaign
               </Typography>
-              <TableComponent
-                columns={[...tableColumsForToolsCampaign]}
-                tableRows={toolsCampaignTableRows}
-                tHeadBgColor="bg-light-gray"
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-                showDateFilter
-                showDateFilterBtn
-                filterData={filterData}
-                showDateFilterSearch={false}
-                dateFilterBtnName="Create Discounts"
-                dateFilterBtnClick={() => {
-                  setOpenCreateDiscountModal(true);
+              <TabsCard
+                tabList={tabList}
+                onSelect={(index) => {
+                  const temp = JSON.parse(JSON.stringify(tabList));
+                  temp.forEach((ele, ind) => {
+                    if (ind === index) {
+                      ele.isSelected = true;
+                    } else {
+                      ele.isSelected = false;
+                    }
+                  });
+                  setTabList(temp);
                 }}
-                handlePageEnd={(
-                  searchText,
-                  searchFilter,
-                  page = pageNumber,
-                  datefilter
-                ) => {
-                  getToolCampaignTableData(page, datefilter);
-                }}
-              />
+              >
+                <TableComponent
+                  columns={[...tableColumsForToolsCampaign]}
+                  tableRows={toolsCampaignTableRows}
+                  tHeadBgColor="bg-light-gray"
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  showCheckbox={false}
+                  showDateFilter
+                  showDateFilterBtn
+                  filterData={filterData}
+                  showDateFilterSearch={false}
+                  dateFilterBtnName="Create Discounts"
+                  dateFilterBtnClick={() => {
+                    setOpenCreateDiscountModal(true);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    datefilter
+                  ) => {
+                    getToolCampaignTableData(page, datefilter);
+                  }}
+                />
+              </TabsCard>
             </Paper>
           </Box>
           {showEditPriceModal ? (
@@ -835,6 +885,13 @@ const ResellerSubscriptions = () => {
             <CreateDiscountModal
               openCreateDiscountModal={openCreateDiscountModal}
               setOpenCreateDiscountModal={setOpenCreateDiscountModal}
+            />
+          ) : null}
+          {showCreateNotificationModal ? (
+            <CreateNotification
+              showNotificationModal={showCreateNotificationModal}
+              setShowNotificationModal={setShowCreateNotificationModal}
+              type="add"
             />
           ) : null}
         </div>

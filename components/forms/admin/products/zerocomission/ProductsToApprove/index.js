@@ -144,28 +144,30 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   className="cursor-pointer"
                 />
               </Box>
-              <Typography className="fs-10">
+              <Typography className="h-5">
                 /{val.variationMedia.length}
               </Typography>
             </Box>
           ) : null,
-          col3: val.productTitle,
-          col4: val.skuId,
+          col3: <Typography className="h-5">{val.productTitle}</Typography>,
+          col4: <Typography className="h-5">{val.skuId}</Typography>,
           col5: (
             <>
-              <Typography>{val.categoryName}</Typography>
-              <Typography>{val.subCategoryName}</Typography>
+              <Typography className="h-5">{val.categoryName}</Typography>
+              <Typography className="h-5">{val.subCategoryName}</Typography>
             </>
           ),
           col6: (
             <>
-              <Typography>{val.weightInclusivePackage}</Typography>
-              <Typography>{val.volume}</Typography>
+              <Typography className="h-5">
+                {val.weightInclusivePackage}
+              </Typography>
+              <Typography className="h-5">{val.volume}</Typography>
             </>
           ),
           col7: val.stockQty,
           col8: (
-            <Typography className="fs-12">
+            <Typography className="h-5">
               &#8377; {val.salePrice}/ &#8377; {val.mrp}
             </Typography>
           ),

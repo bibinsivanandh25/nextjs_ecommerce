@@ -1,9 +1,9 @@
 import serviceUtil from "services/utils";
 
-const getMarketingToolsBasedonMarketinType = (pageNumber, tool) => {
+const getMarketingToolsBasedonMarketinType = (pageNumber, payload) => {
   const pageSize = 50;
   return serviceUtil
-    .get(`/users/admin-marketing-tool/${pageNumber}/${pageSize}/${tool}`)
+    .post(`/users/admin-marketing-tool/${pageNumber}/${pageSize}`, payload)
     .then((res) => {
       const { data } = res?.data;
       return { data };
@@ -17,7 +17,6 @@ const approveRejectMarketingToolCampaign = (payload) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
-
 const getMarketingToolDetailsByToolId = (
   marketingToolId,
   marketingToolType
