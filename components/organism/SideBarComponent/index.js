@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
@@ -16,6 +16,11 @@ const SideBarComponent = ({ children }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { allowedPath } = useSelector((state) => state.user);
+  const [showFallBack, setShowFallBack] = useState(false);
+
+  useEffect(() => {
+    setShowFallBack(!allowedPath.includes(route.pathname));
+  }, [route.pathname]);
 
   return (
     <Box
@@ -44,9 +49,9 @@ const SideBarComponent = ({ children }) => {
           WebkitTransition: "margin 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
         }}
-        className=" w-100 body-bg"
+        className={`${showFallBack ? "" : "p-3 pt-2"} w-100 body-bg`}
       >
-        {!allowedPath.includes(route.pathname) ? (
+        {showFallBack ? (
           <div
             style={{
               maxHeight: route.pathname.startsWith("/admin")
