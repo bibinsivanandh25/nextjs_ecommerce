@@ -363,50 +363,46 @@ const StaffForm = ({
                   />
                 </Grid>
 
-                {type !== "Edit" && (
-                  <Grid item sm={12} className="d-flex">
-                    <span className="fs-14 my-2 fw-600 me-3">Select All :</span>
-                    <CheckBoxComponent
-                      label=""
-                      isChecked={checkbox}
-                      checkBoxClick={(_, value) => {
-                        setCheckbox(value);
-                        setCapabilities((pre) => {
-                          const temp = pre.map((item) => {
-                            return {
-                              ...item,
-                              isChecked: value,
-                              children: item.children.length
-                                ? item.children.map((ele) => {
-                                    const elecopy = JSON.parse(
-                                      JSON.stringify(ele)
-                                    );
-                                    if (ele?.children?.length) {
-                                      elecopy.children = ele.children.map(
-                                        (c) => {
-                                          return {
-                                            ...c,
-                                            isChecked: value,
-                                          };
-                                        }
-                                      );
-                                    }
+                <Grid item sm={12} className="d-flex">
+                  <span className="fs-14 my-2 fw-600 me-3">Select All :</span>
+                  <CheckBoxComponent
+                    label=""
+                    isChecked={checkbox}
+                    checkBoxClick={(_, value) => {
+                      setCheckbox(value);
+                      setCapabilities((pre) => {
+                        const temp = pre.map((item) => {
+                          return {
+                            ...item,
+                            isChecked: value,
+                            children: item.children.length
+                              ? item.children.map((ele) => {
+                                  const elecopy = JSON.parse(
+                                    JSON.stringify(ele)
+                                  );
+                                  if (ele?.children?.length) {
+                                    elecopy.children = ele.children.map((c) => {
+                                      return {
+                                        ...c,
+                                        isChecked: value,
+                                      };
+                                    });
+                                  }
 
-                                    return {
-                                      ...elecopy,
-                                      isChecked: value,
-                                    };
-                                  })
-                                : [],
-                            };
-                          });
-                          return temp;
+                                  return {
+                                    ...elecopy,
+                                    isChecked: value,
+                                  };
+                                })
+                              : [],
+                          };
                         });
-                      }}
-                      size="small"
-                    />
-                  </Grid>
-                )}
+                        return temp;
+                      });
+                    }}
+                    size="small"
+                  />
+                </Grid>
               </Grid>
             ) : (
               <Grid container spacing={2}>
