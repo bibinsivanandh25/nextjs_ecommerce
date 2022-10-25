@@ -74,7 +74,7 @@ const Users = () => {
     const { data, message, err } = await deleteAdminGroup(id);
     if (data || message) {
       toastify(message, "success");
-      await gettableData();
+      await gettableData(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }

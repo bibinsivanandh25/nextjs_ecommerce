@@ -20,7 +20,7 @@ const SideBarComponent = ({ children }) => {
 
   useEffect(() => {
     setShowFallBack(!allowedPath.includes(route.pathname));
-  }, [route.pathname]);
+  }, [route.pathname, allowedPath]);
 
   return (
     <Box
