@@ -307,7 +307,7 @@ const FilterMenu = ({
               >
                 {ele.value.map((child, index) => {
                   return (
-                    <div className="ms-4 d-flex align-items-center justify-content-center">
+                    <div className="ms-4 d-flex align-items-center ">
                       <CheckBoxComponent
                         isChecked={child.isSelected}
                         checkBoxClick={() => {
@@ -327,7 +327,7 @@ const FilterMenu = ({
                         }}
                       />
                       <Typography className="mr-n4 fs-12">
-                        {child.item.replaceAll("_", " ")}
+                        {child?.item?.replaceAll("_", " ")}
                       </Typography>
                     </div>
                   );

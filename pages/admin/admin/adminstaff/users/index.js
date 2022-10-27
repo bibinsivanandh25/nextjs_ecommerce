@@ -239,7 +239,10 @@ const Users = () => {
         },
       ];
       data.createdBy.forEach((item) => {
-        temp[0].value.push(`${item.id} - ${item.name}`);
+        temp[0].value.push({
+          item: `${item.id} - ${item.name}`,
+          isSelected: false,
+        });
       });
       temp[1].value = [...data.status];
       setFilters(temp);
