@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
@@ -17,7 +18,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { Collapse, Grid, Menu } from "@mui/material";
+import { Box, CircularProgress, Collapse, Grid, Menu } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
 import { BsFillPinAngleFill } from "react-icons/bs";
@@ -236,6 +237,7 @@ const FilterMenu = ({
   getFilteredValues = () => {},
   setPage = () => {},
   setTableFilterList = () => {},
+  getFilteredValuesOnCheckBoxClick = false,
   allowOutSideClickClose,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -270,22 +272,33 @@ const FilterMenu = ({
   const renderMenuList = (data) => {
     return data?.map((ele, ind) => {
       return (
-        <div className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar">
+        <div
+          className="px-2 d-flex justify-content-between mnw-300 mxw-300 overflow-auto hide-scrollbar"
+          key={ind}
+        >
           <div>
             <CheckBoxComponent
               label={ele.name}
               isChecked={ele.isSelected}
               checkBoxClick={() => {
+                const setExpand = (filters) => {
+                  if (filters?.value?.filter((e) => e.isSelected).length == 0)
+                    return true;
+                  if (filters?.value?.every((e) => e.isSelected)) return false;
+                  if (filters?.value?.some((e) => e.isSelected)) return true;
+                  return !filters.isExpand;
+                };
                 const temp = JSON.parse(JSON.stringify(data));
-                temp[ind].isExpand = !temp[ind].isExpand;
+                temp[ind].isExpand = setExpand(temp[ind]);
                 temp[ind].isSelected = !temp[ind].isSelected;
                 temp[ind].value.forEach((item) => {
                   item.isSelected = temp[ind].isSelected;
                 });
                 setFilterData(temp);
+                if (getFilteredValuesOnCheckBoxClick) getFilteredValues(temp);
               }}
             />
-            {ele.value.length ? (
+            {ele?.value?.length ? (
               <Collapse
                 in={ele.isExpand}
                 timeout="auto"
@@ -294,7 +307,7 @@ const FilterMenu = ({
               >
                 {ele.value.map((child, index) => {
                   return (
-                    <div className="ms-4 d-flex align-items-center justify-content-center">
+                    <div className="ms-4 d-flex align-items-center ">
                       <CheckBoxComponent
                         isChecked={child.isSelected}
                         checkBoxClick={() => {
@@ -308,12 +321,13 @@ const FilterMenu = ({
                           if (every) {
                             fData[ind].isSelected = true;
                           } else fData[ind].isSelected = false;
-
+                          if (getFilteredValuesOnCheckBoxClick)
+                            getFilteredValues(fData);
                           setFilterData(fData);
                         }}
                       />
                       <Typography className="mr-n4 fs-12">
-                        {child.item.replaceAll("_", " ")}
+                        {child?.item?.replaceAll("_", " ")}
                       </Typography>
                     </div>
                   );
@@ -321,7 +335,7 @@ const FilterMenu = ({
               </Collapse>
             ) : null}
           </div>
-          {ele.value.length ? (
+          {ele?.value?.length ? (
             ele.isExpand ? (
               <ExpandLess
                 className="mt-1"
@@ -351,7 +365,7 @@ const FilterMenu = ({
     filterData.forEach((item) => {
       if (item.isSelected) {
         count++;
-      } else if (item.value.some((ele) => ele.isSelected)) {
+      } else if (item?.value?.some((ele) => ele.isSelected)) {
         count++;
       }
     });
@@ -370,6 +384,7 @@ const FilterMenu = ({
           onBtnClick={handleClick}
         />
       </Grid>
+
       <Menu
         id="demo-customized-menu"
         MenuListProps={{
@@ -385,24 +400,33 @@ const FilterMenu = ({
         className="hide-scrollbar"
       >
         {renderMenuList(filterData)}
-        <div className="d-flex justify-content-end mx-3">
-          <ButtonComponent
-            label="Apply"
-            muiProps="p-0"
-            onBtnClick={() => {
-              getFilteredValues(filterData);
-              const temp = JSON.parse(JSON.stringify(filterData));
-              temp.forEach((ele) => {
-                const some = ele.value.some((item) => item.isSelected);
-                if (some) ele.isExpand = true;
-                else ele.isExpand = false;
-              });
-              setTableFilterList(temp);
-              handleClose();
-              setPage(0);
-            }}
-          />
-        </div>
+        {filterData.length ? (
+          <div className="d-flex justify-content-end mx-3">
+            <ButtonComponent
+              label="Apply"
+              muiProps="p-0"
+              onBtnClick={() => {
+                getFilteredValues(filterData);
+                const temp = JSON.parse(JSON.stringify(filterData));
+                temp.forEach((ele) => {
+                  const some = ele?.value?.some((item) => item.isSelected);
+                  if (some) ele.isExpand = true;
+                  else ele.isExpand = false;
+                });
+                setTableFilterList(temp);
+                handleClose();
+                setPage(0);
+              }}
+            />
+          </div>
+        ) : (
+          <Box
+            sx={{ width: 300, p: 5 }}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <CircularProgress className="color-orange" />
+          </Box>
+        )}
       </Menu>
     </Grid>
   );
@@ -456,6 +480,7 @@ export default function TableComponent({
   filterData = [],
   getFilteredValues = () => {},
   allowOutSideClickClose = false,
+  getFilteredValuesOnCheckBoxClick = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -511,10 +536,8 @@ export default function TableComponent({
       filterData.forEach((ele) => {
         result.push({
           ...ele,
-          value: ele.value?.map((item) => {
-            return { item, isSelected: false };
-          }),
-          isSelected: false,
+          value: ele.value,
+          isSelected: ele.isSelected ?? false,
         });
       });
       setTableFilterList([...result]);
@@ -609,7 +632,7 @@ export default function TableComponent({
                 // variant="h6"
                 id="tableTitle"
                 component="div"
-                className={`fw-bold ${headerClassName}`}
+                className={`fw-bold ${headerClassName} color-orange`}
               >
                 {table_heading}
               </Typography>
@@ -635,6 +658,9 @@ export default function TableComponent({
             {showFilterButton && (
               <Grid item sm={3}>
                 <FilterMenu
+                  getFilteredValuesOnCheckBoxClick={
+                    getFilteredValuesOnCheckBoxClick
+                  }
                   filterList={[...tableFilterList]}
                   getFilteredValues={(val) => {
                     setPage(0);
@@ -854,6 +880,9 @@ export default function TableComponent({
           {showFilterButton && (
             <Grid item sm={3}>
               <FilterMenu
+                getFilteredValuesOnCheckBoxClick={
+                  getFilteredValuesOnCheckBoxClick
+                }
                 filterList={[...tableFilterList]}
                 getFilteredValues={(val) => {
                   getFilteredValues(val, searchText);

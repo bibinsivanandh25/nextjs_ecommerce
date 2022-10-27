@@ -154,7 +154,7 @@ const SupplierStoreCoupons = () => {
               cursor: "pointer",
             }}
             onClick={() => {
-              navigator.clipboard.writeText(row.storeCouponCode);
+              navigator.clipboard.writeText(row?.storeCouponCode);
               toastify("Coupon Code Copied Successfully!", "success");
             }}
           />
@@ -177,7 +177,7 @@ const SupplierStoreCoupons = () => {
       search,
       filter
     );
-    if (data.length) {
+    if (data?.length) {
       setTableRows(mapRowsToTable(data));
     } else {
       setTableRows([]);

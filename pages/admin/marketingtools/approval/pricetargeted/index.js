@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Paper, Typography } from "@mui/material";
@@ -25,14 +26,6 @@ const tableColumn = [
   {
     id: "col2",
     label: "Reseller ID/ Shop Name",
-    minWidth: 150,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col3",
-    label: "Tool",
     minWidth: 150,
     align: "center",
     data_align: "center",
@@ -100,6 +93,8 @@ const PriceTargeted = () => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [marketingToolId, setMarketingToolId] = useState("");
+
   const acceptRejectTool = async (status, toolId, userId) => {
     const formdata = new FormData();
     formdata.append("status", status);
@@ -108,6 +103,7 @@ const PriceTargeted = () => {
     const { data, err } = await approveRejectMarketingToolCampaign(formdata);
     if (data) {
       toastify(data?.message, "success");
+      getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -124,7 +120,7 @@ const PriceTargeted = () => {
             {item.userTypeId}
           </Typography>
         ),
-        col3: item.toolType.replaceAll("_", " "),
+        // col3: item.toolType.replaceAll("_", " "),
         col4: item.campaignTitle,
         col5: (
           <div
@@ -163,7 +159,10 @@ const PriceTargeted = () => {
             <CustomIcon
               type="view"
               className="fs-18 mx-2"
-              onIconClick={() => setViewModalopen(true)}
+              onIconClick={() => {
+                setViewModalopen(true);
+                setMarketingToolId(item.marketingToolId);
+              }}
             />
             <MenuOption
               options={["Edit", "Delete"]}
@@ -171,6 +170,7 @@ const PriceTargeted = () => {
               getSelectedItem={(ele) => {
                 if (ele === "Edit") {
                   setOpenEditModal(true);
+                  setMarketingToolId(item.marketingToolId);
                 }
               }}
             />
@@ -181,11 +181,20 @@ const PriceTargeted = () => {
 
     return result;
   };
-  const getTableData = async (page = pageNumber) => {
-    const { data } = await getMarketingToolsBasedonMarketinType(
-      page,
-      "PRICE_TARGETED"
-    );
+  const getTableData = async (
+    page = pageNumber,
+    dateFilter = {
+      fromDate: "",
+      toDate: "",
+    }
+  ) => {
+    const payload = {
+      dateFrom: dateFilter.fromDate,
+      dateTo: dateFilter.toDate,
+      status: "PENDING",
+      marketingToolType: "PRICE_TARGETED",
+    };
+    const { data } = await getMarketingToolsBasedonMarketinType(page, payload);
     if (data) {
       if (page === 0) {
         setTableRows(mapTableRows(data));
@@ -206,15 +215,21 @@ const PriceTargeted = () => {
       <Box className="mt-2">
         <TableComponent
           columns={[...tableColumn]}
-          showDateFilter={false}
+          showDateFilter
           showSearchFilter={false}
+          showDateFilterSearch={false}
           showSearchbar={false}
           tableRows={[...tableRows]}
           tHeadBgColor="bg-tableGray"
           table_heading="Price Targeted"
           showCheckbox={false}
-          handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-            getTableData(page);
+          handlePageEnd={(
+            searchText,
+            searchFilter,
+            page = pageNumber,
+            dateFilter
+          ) => {
+            getTableData(page, dateFilter);
           }}
         />
       </Box>
@@ -222,6 +237,8 @@ const PriceTargeted = () => {
         modalOpen={viewModalOpen}
         modalClose={setViewModalopen}
         title="View Price Targeted"
+        marketingToolId={marketingToolId}
+        marketingToolType="PRICE_TARGETED"
       />
       <EditMarketingTools
         modalOpen={openEditModal}

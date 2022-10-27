@@ -26,6 +26,7 @@ const MyCollections = () => {
   const [allFlags, setAllFlags] = useState([]);
   const [productVariationId, setProductVariationId] = useState("");
   const [masterProduct, setmasterProduct] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
 
   const user = useSelector((state) => state.user);
   const getAllTheFlags = async () => {
@@ -35,6 +36,20 @@ const MyCollections = () => {
   };
 
   const { id } = useUserInfo();
+
+  const filterList = [
+    { label: "All", id: 0, value: "ALL" },
+    {
+      id: 1,
+      label: "Brand",
+      value: "BRAND",
+    },
+    {
+      id: 2,
+      label: "Category",
+      value: "CATEGORY",
+    },
+  ];
 
   const mapTableData = (data) => {
     const result = [];
@@ -49,11 +64,11 @@ const MyCollections = () => {
             />
           ) : null,
           col2: row.commissionMode,
-          col3: row.productType,
+          // col3: row.productType,
           col4: row.subCategoryName,
           col5: row.masterProductId,
           col6: row.brand,
-          col7: row.createdAt,
+          col7: row.createdAt.split("T").join(" "),
           col8: (
             <>
               <CustomIcon
@@ -89,12 +104,24 @@ const MyCollections = () => {
     return result;
   };
 
-  const getMycollectionData = async () => {
-    const result = await getCollections(id);
-    setTableRows(mapTableData(result));
+  const getMycollectionData = async (
+    page = pageNumber,
+    searchText = null,
+    filterText = "ALL"
+  ) => {
+    const { data } = await getCollections(id, page, searchText, filterText);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapTableData(data));
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableData(data)]);
+        setPageNumber(pageNumber + 1);
+      }
+    }
   };
   useEffect(() => {
-    getMycollectionData();
+    getMycollectionData(0);
   }, []);
 
   const columns = [
@@ -111,12 +138,12 @@ const MyCollections = () => {
       id: "col2",
     },
 
-    {
-      align: "center",
-      data_align: "center",
-      label: "Product Type",
-      id: "col3",
-    },
+    // {
+    //   align: "center",
+    //   data_align: "center",
+    //   label: "Product Type",
+    //   id: "col3",
+    // },
 
     {
       align: "center",
@@ -176,6 +203,10 @@ const MyCollections = () => {
               columns={columns}
               tableRows={tableRows}
               showCheckbox={false}
+              filterList={filterList}
+              handlePageEnd={(searchText, filterValue, page = pageNumber) => {
+                getMycollectionData(page, searchText, filterValue);
+              }}
             />
           </Paper>
         </Grid>
