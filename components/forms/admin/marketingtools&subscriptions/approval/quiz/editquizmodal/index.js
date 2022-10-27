@@ -1,10 +1,11 @@
-import ButtonComponent from "@/atoms/ButtonComponent";
+/* eslint-disable react/no-danger */
+/* eslint-disable no-shadow */
+/* eslint-disable react/no-array-index-key */
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import TextEditor from "@/atoms/TextEditor";
 import { Box, Grid, Typography } from "@mui/material";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { getMarketingToolDetailsByToolId } from "services/admin/marketingtools/approvals";
 
@@ -14,7 +15,6 @@ const EditQuizModal = ({
   modalOpen,
   modalClose = () => {},
   title = "",
-  viewModlwidth = "1000px",
   footer = false,
   // editorPlaceHolder = "Description...",
 }) => {
