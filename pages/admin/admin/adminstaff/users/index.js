@@ -244,7 +244,12 @@ const Users = () => {
           isSelected: false,
         });
       });
-      temp[1].value = [...data.status];
+      temp[1].value = data.status.map((item) => {
+        return {
+          isSelected: false,
+          item,
+        };
+      });
       setFilters(temp);
     }
   };
