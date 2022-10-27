@@ -10,7 +10,7 @@ const initialState = {
   isAddressSaved: false,
   unlockedTools: [],
   storeName: "",
-  allowedPath: [],
+  allowedPath: null,
 };
 
 export const userSlice = createSlice({

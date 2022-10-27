@@ -96,7 +96,17 @@ const AdminManger = () => {
 
   const onClickOfMenuItem = (type, id, grouped) => {
     if (["View", "Edit"].includes(type)) {
-      getUserById(type, id);
+      if (type === "Edit" && grouped) {
+        setshowConfirmModal({
+          message:
+            "The User is already present in a group. Would you really like to update the user?",
+          adminRegistrationId: id,
+          status: "",
+          type: "Edit",
+        });
+      } else {
+        getUserById(type, id);
+      }
     } else if (type === "Delete") {
       if (grouped) {
         setshowConfirmModal({
@@ -260,9 +270,25 @@ const AdminManger = () => {
         saveBtnText="Yes"
         ClearBtnText="No"
         onSaveBtnClick={() => {
-          const api =
-            showConfirmModal.type === "disable" ? disableUsers : deleteUser;
-          api(showConfirmModal.adminRegistrationId, showConfirmModal.status);
+          if (showConfirmModal.type === "Edit") {
+            getUserById(
+              showConfirmModal.type,
+              showConfirmModal.adminRegistrationId
+            );
+          } else if (showConfirmModal.type === "disable") {
+            disableUsers(
+              showConfirmModal.adminRegistrationId,
+              showConfirmModal.status
+            );
+          } else {
+            deleteUser(
+              showConfirmModal.adminRegistrationId,
+              showConfirmModal.status
+            );
+          }
+          // const api =
+          //   showConfirmModal.type === "disable" ? disableUsers : deleteUser;
+          // api(showConfirmModal.adminRegistrationId, showConfirmModal.status);
           setshowConfirmModal({
             message: "",
             adminRegistrationId: "",

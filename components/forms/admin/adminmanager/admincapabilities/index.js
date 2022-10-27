@@ -59,7 +59,7 @@ const StaffForm = ({
         return;
       temp.push({
         label: item.capabilityName,
-        isChecked: type === "add" ? true : item.isEnable,
+        isChecked: type === "add" ? false : item.isEnable,
         expand: false,
         children:
           item.childCapabilityNameList && item.childCapabilityNameList.length
@@ -363,52 +363,46 @@ const StaffForm = ({
                   />
                 </Grid>
 
-                {type !== "Edit" && (
-                  <Grid item sm={12} className="d-flex">
-                    <span className="fs-14 my-2 fw-600 me-3">
-                      Custom Capability :
-                    </span>
-                    <CheckBoxComponent
-                      label=""
-                      isChecked={checkbox}
-                      checkBoxClick={(_, value) => {
-                        setCheckbox(value);
-                        setCapabilities((pre) => {
-                          const temp = pre.map((item) => {
-                            return {
-                              ...item,
-                              isChecked: !value,
-                              children: item.children.length
-                                ? item.children.map((ele) => {
-                                    const elecopy = JSON.parse(
-                                      JSON.stringify(ele)
-                                    );
-                                    if (ele?.children?.length) {
-                                      elecopy.children = ele.children.map(
-                                        (c) => {
-                                          return {
-                                            ...c,
-                                            isChecked: !value,
-                                          };
-                                        }
-                                      );
-                                    }
+                <Grid item sm={12} className="d-flex">
+                  <span className="fs-14 my-2 fw-600 me-3">Select All :</span>
+                  <CheckBoxComponent
+                    label=""
+                    isChecked={checkbox}
+                    checkBoxClick={(_, value) => {
+                      setCheckbox(value);
+                      setCapabilities((pre) => {
+                        const temp = pre.map((item) => {
+                          return {
+                            ...item,
+                            isChecked: value,
+                            children: item.children.length
+                              ? item.children.map((ele) => {
+                                  const elecopy = JSON.parse(
+                                    JSON.stringify(ele)
+                                  );
+                                  if (ele?.children?.length) {
+                                    elecopy.children = ele.children.map((c) => {
+                                      return {
+                                        ...c,
+                                        isChecked: value,
+                                      };
+                                    });
+                                  }
 
-                                    return {
-                                      ...elecopy,
-                                      isChecked: !value,
-                                    };
-                                  })
-                                : [],
-                            };
-                          });
-                          return temp;
+                                  return {
+                                    ...elecopy,
+                                    isChecked: value,
+                                  };
+                                })
+                              : [],
+                          };
                         });
-                      }}
-                      size="small"
-                    />
-                  </Grid>
-                )}
+                        return temp;
+                      });
+                    }}
+                    size="small"
+                  />
+                </Grid>
               </Grid>
             ) : (
               <Grid container spacing={2}>
@@ -460,7 +454,7 @@ const StaffForm = ({
                       isChecked={item.isChecked}
                       size="small"
                       checkBoxClick={(e, val) => {
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -496,7 +490,7 @@ const StaffForm = ({
                         e.stopPropagation();
                         e.preventDefault();
                         if (type === "view") return;
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -546,7 +540,7 @@ const StaffForm = ({
                             className="d-flex align-items-center justify-content-between"
                             onClick={() => {
                               if (type === "view") return;
-                              if (type === "add" && !checkbox) return;
+                              // if (type === "add" && !checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
                               );
@@ -563,7 +557,7 @@ const StaffForm = ({
                                 isChecked={ele.isChecked}
                                 size="small"
                                 checkBoxClick={(_, val) => {
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -588,7 +582,7 @@ const StaffForm = ({
                               <Typography
                                 onClick={() => {
                                   if (type === "view") return;
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -632,8 +626,6 @@ const StaffForm = ({
                                         size="small"
                                         checkBoxClick={(_, val) => {
                                           if (type === "view") return;
-                                          if (type === "add" && !checkbox)
-                                            return;
                                           const temp = JSON.parse(
                                             JSON.stringify(capabilites)
                                           );

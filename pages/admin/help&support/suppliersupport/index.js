@@ -107,7 +107,12 @@ const SupplierSupport = () => {
       data.forEach((ele) => {
         result.push({
           name: ele.filterName,
-          value: ele.filterValue,
+          value: ele.filterValue.map((i) => {
+            return {
+              item: i,
+              isSelected: false,
+            };
+          }),
         });
       });
     }

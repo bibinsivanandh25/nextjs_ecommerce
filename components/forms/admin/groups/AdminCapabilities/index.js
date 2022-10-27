@@ -60,8 +60,8 @@ const AdminCapabilities = ({
     if (formData.description === "") {
       errObj.description = validateMessage.field_required;
       flag = true;
-    } else if (formData.description.length > 255) {
-      errObj.description = validateMessage.alpha_numeric_max_255;
+    } else if (formData.description.length > 90) {
+      errObj.description = validateMessage.alpha_numeric_max_90;
       flag = true;
     }
     if (!formData.membersList.length) {
@@ -174,7 +174,7 @@ const AdminCapabilities = ({
       if (role === "ADMIN_MANAGER" && item.capabilityName === "User") return;
       temp.push({
         label: item.capabilityName,
-        isChecked: type === "add" ? true : item.isEnable,
+        isChecked: type === "add" ? false : item.isEnable,
         expand: false,
         children:
           item.childCapabilityNameList && item.childCapabilityNameList.length
@@ -191,15 +191,18 @@ const AdminCapabilities = ({
     } else if (["View", "Edit"].includes(type)) {
       setCapabilities(
         orginizeCapabilites(
-          groupData.adminRegistration[0]?.adminCapabilities?.adminCapabilityList
-            ?.adminCapabilitylist ?? admincapabilities
+          groupData.adminRegistrations[0]?.adminCapabilities
+            ?.adminCapabilityList?.adminCapabilitylist ??
+            groupData.adminRegistrations[0]?.adminCapabilities
+              ?.adminCapabilityList ??
+            admincapabilities
         )
       );
       if (type === "Edit") {
         const temp = {
           groupName: groupData.groupName,
           description: groupData.description,
-          membersList: groupData.adminRegistration.map((item) => ({
+          membersList: groupData.adminRegistrations.map((item) => ({
             id: item.adminRegistrationId,
             label: item.adminRegistrationId,
             title: item.adminRegistrationId,
@@ -210,7 +213,7 @@ const AdminCapabilities = ({
           ...JSON.parse(JSON.stringify(temp.membersList)),
         ]);
         setGroupType(
-          groupData.adminRegistration[0].adminRoles[0].adminRoleTitle.split(
+          groupData.adminRegistrations[0]?.adminRoles[0]?.adminRoleTitle?.split(
             "_"
           )[1]
         );
@@ -226,23 +229,23 @@ const AdminCapabilities = ({
   const getAdminList = async () => {
     const { data, err } = await getAdminByDesignation(`ADMIN_${groupType}`);
     if (data) {
-      const temp = [];
-      data.adminId.forEach((item) => {
-        temp.push({ title: item, label: item, id: item });
-      });
-      const temp1 = data.adminId.map((item) => ({
-        title: item,
-        label: item,
-        id: item,
+      // const temp = [];
+      // data.adminId.forEach((item) => {
+      //   temp.push({ title: item, label: item, id: item });
+      // });
+      const temp1 = data.map((item) => ({
+        title: item.adminId,
+        label: item.adminId,
+        id: item.adminId,
       }));
       if (
         type !== "add" &&
-        groupData.adminRegistration[0].adminRoles[0].adminRoleTitle.includes(
+        groupData.adminRegistrations[0]?.adminRoles[0]?.adminRoleTitle?.includes(
           groupType
         )
       ) {
         temp1.push(
-          ...groupData.adminRegistration.map((item) => ({
+          ...groupData.adminRegistrations.map((item) => ({
             id: item.adminRegistrationId,
             label: item.adminRegistrationId,
             title: item.adminRegistrationId,
@@ -370,9 +373,7 @@ const AdminCapabilities = ({
                 </Grid>
 
                 <Grid item sm={12} className="d-flex">
-                  <span className="fs-14 my-2 fw-600 me-3">
-                    Custom Capability :
-                  </span>
+                  <span className="fs-14 my-2 fw-600 me-3">Select All:</span>
                   <CheckBoxComponent
                     label=""
                     isChecked={checkbox}
@@ -382,7 +383,7 @@ const AdminCapabilities = ({
                         const temp = pre.map((item) => {
                           return {
                             ...item,
-                            isChecked: !value,
+                            isChecked: value,
                             children: item.children.length
                               ? item.children.map((ele) => {
                                   const elecopy = JSON.parse(
@@ -392,14 +393,14 @@ const AdminCapabilities = ({
                                     elecopy.children = ele.children.map((c) => {
                                       return {
                                         ...c,
-                                        isChecked: !value,
+                                        isChecked: value,
                                       };
                                     });
                                   }
 
                                   return {
                                     ...elecopy,
-                                    isChecked: !value,
+                                    isChecked: value,
                                   };
                                 })
                               : [],
@@ -430,7 +431,7 @@ const AdminCapabilities = ({
                   Group Type:
                 </Grid>
                 <Grid item md={9}>
-                  {groupData.adminRegistration[0]?.designation
+                  {groupData.adminRegistrations[0]?.designation
                     .split("_")
                     .join(" ")}
                 </Grid>
@@ -439,7 +440,7 @@ const AdminCapabilities = ({
                 </Grid>
                 <Grid item md={9}>
                   <div className="mxh-100 overflow-y-scroll hide-scrollbar">
-                    {groupData.adminRegistration.map((item) => {
+                    {groupData.adminRegistrations.map((item) => {
                       return (
                         <div key={item.adminRegistrationId}>
                           <Typography className="fw-bold h-5">
@@ -504,7 +505,7 @@ const AdminCapabilities = ({
                       isChecked={item.isChecked}
                       size="small"
                       checkBoxClick={(e, val) => {
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -541,7 +542,7 @@ const AdminCapabilities = ({
                         e.stopPropagation();
                         e.preventDefault();
                         if (type === "View") return;
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -591,7 +592,7 @@ const AdminCapabilities = ({
                             className="d-flex align-items-center justify-content-between"
                             onClick={() => {
                               // if (type === "View") return;
-                              if (type === "add" && !checkbox) return;
+                              // if (type === "add" && !checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
                               );
@@ -608,7 +609,7 @@ const AdminCapabilities = ({
                                 isChecked={ele.isChecked}
                                 size="small"
                                 checkBoxClick={(_, val) => {
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -634,7 +635,7 @@ const AdminCapabilities = ({
                               <Typography
                                 onClick={() => {
                                   if (type === "View") return;
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -679,8 +680,6 @@ const AdminCapabilities = ({
                                         size="small"
                                         checkBoxClick={(_, val) => {
                                           if (type === "view") return;
-                                          if (type === "add" && !checkbox)
-                                            return;
                                           const temp = JSON.parse(
                                             JSON.stringify(capabilites)
                                           );

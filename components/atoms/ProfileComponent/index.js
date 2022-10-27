@@ -10,8 +10,9 @@ import { signOut } from "next-auth/react";
 import React from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { clearUser } from "features/userSlice";
+import { storeUserInfo } from "features/userSlice";
 import { clearProduct } from "features/productsSlice";
+import { store } from "store";
 
 const ProfileComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState(false);
@@ -94,7 +95,22 @@ const ProfileComponent = () => {
                 ? "/auth/login"
                 : "/auth/admin/login",
             });
-            dispatch(clearUser());
+            const { allowedPath } = store.getState().user;
+
+            dispatch(
+              storeUserInfo({
+                emailId: "",
+                firstName: "",
+                lastName: "",
+                profileImageUrl: "",
+                supplierId: "",
+                storeCode: "",
+                isAddressSaved: false,
+                unlockedTools: [],
+                storeName: "",
+                allowedPath,
+              })
+            );
             dispatch(clearProduct());
           }}
         >

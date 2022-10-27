@@ -377,14 +377,14 @@ const DashBoard = () => {
           {cardData.map((item) => (
             <Grid
               item
-              lg={2.4}
-              md={3}
+              lg={2}
+              md={2.4}
               sm={6}
               xs={6}
               className=" cursor-pointer"
             >
               <CardComponent className="" boxColor={item.color}>
-                <Typography className="h-6 pt-1 fw-500 color-gray ps-1">
+                <Typography className="h-5 pt-1 fw-500 color-gray ps-1">
                   {item.title}
                 </Typography>
                 <Typography className="fw-600 h-2 py-2 d-flex justify-content-center">
