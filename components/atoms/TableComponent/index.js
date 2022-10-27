@@ -238,7 +238,6 @@ const FilterMenu = ({
   setPage = () => {},
   setTableFilterList = () => {},
   getFilteredValuesOnCheckBoxClick = false,
-  allowOutSideClickClose,
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filterData, setFilterData] = useState([]);
@@ -261,9 +260,14 @@ const FilterMenu = ({
   const handleClose = () => {
     const temp = JSON.parse(JSON.stringify(filterData));
     temp.forEach((ele) => {
-      const some = ele.value.some((item) => item.isSelected);
-      if (some) ele.isExpand = true;
-      else ele.isExpand = false;
+      ele.isSelected = false;
+      ele.isExpand = false;
+      ele.value.forEach((e) => {
+        e.isSelected = false;
+      });
+      // const some = ele.value.some((item) => item.isSelected);
+      // if (some) ele.isExpand = true;
+      // else ele.isExpand = false;
     });
     setTableFilterList(temp);
     setAnchorEl(null);
@@ -392,7 +396,7 @@ const FilterMenu = ({
         }}
         anchorEl={anchorEl}
         open={open}
-        onClose={allowOutSideClickClose && handleClose}
+        onClose={handleClose}
         sx={{
           maxHeight: "80vh",
           overflow: "scroll",
@@ -479,7 +483,6 @@ export default function TableComponent({
   tabChange = "",
   filterData = [],
   getFilteredValues = () => {},
-  allowOutSideClickClose = false,
   getFilteredValuesOnCheckBoxClick = false,
 }) {
   const [page, setPage] = useState(0);
@@ -668,7 +671,6 @@ export default function TableComponent({
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
-                  allowOutSideClickClose={allowOutSideClickClose}
                 />
               </Grid>
             )}
