@@ -3,7 +3,7 @@ import { assetsJson } from "public/assets";
 
 export default function Document() {
   return (
-    <Html>
+    <Html lang="en">
       <Head>
         <link
           rel="stylesheet"
