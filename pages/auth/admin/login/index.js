@@ -11,7 +11,7 @@ import {
   getSession,
   signIn,
 } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { assetsJson } from "public/assets";
 import {
@@ -30,8 +30,9 @@ import validateMessage from "constants/validateMessages";
 import { useRouter } from "next/router";
 import validationRegex from "services/utils/regexUtils";
 import { store } from "store";
-import { storeUserInfo } from "features/userSlice";
+import { clearUser, storeUserInfo } from "features/userSlice";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import styles from "./Login.module.css";
 
 const Login = () => {
@@ -42,6 +43,10 @@ const Login = () => {
   });
   const [errorObj, setErrorObj] = useState({ user: "", password: "" });
   const route = useRouter();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(clearUser());
+  }, []);
 
   const validateCredentials = () => {
     let flag = false;
