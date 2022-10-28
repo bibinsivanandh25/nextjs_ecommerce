@@ -295,7 +295,7 @@ const adminNav = [
       {
         title: "Rejected",
         logo: "",
-        pathName: "dashboard",
+        pathName: "rejected",
         navigate: true,
         disabled: false,
         child: [],

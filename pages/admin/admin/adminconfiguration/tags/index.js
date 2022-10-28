@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -60,50 +60,50 @@ const tableColumn = [
     data_align: "center",
   },
 ];
-const viewTableColumn = [
-  {
-    id: "col1",
-    align: "center",
-    label: "S.No.",
-    minWidth: 50,
-    data_align: "center",
-  },
-  {
-    id: "col2",
-    align: "center",
-    label: "Tag Name",
-    minWidth: 150,
-    data_align: "center",
-  },
-  {
-    id: "col3",
-    align: "center",
-    label: "Tag ID",
-    minWidth: 150,
-    data_align: "center",
-  },
-  {
-    id: "col4",
-    align: "center",
-    label: "ID",
-    minWidth: 150,
-    data_align: "center",
-  },
-  {
-    id: "col5",
-    align: "center",
-    label: "Created By",
-    minWidth: 150,
-    data_align: "center",
-  },
-  {
-    id: "col6",
-    align: "center",
-    label: "Last Updated Date & Time",
-    minWidth: 150,
-    data_align: "center",
-  },
-];
+// const viewTableColumn = [
+//   {
+//     id: "col1",
+//     align: "center",
+//     label: "S.No.",
+//     minWidth: 50,
+//     data_align: "center",
+//   },
+//   {
+//     id: "col2",
+//     align: "center",
+//     label: "Tag Name",
+//     minWidth: 150,
+//     data_align: "center",
+//   },
+//   {
+//     id: "col3",
+//     align: "center",
+//     label: "Tag ID",
+//     minWidth: 150,
+//     data_align: "center",
+//   },
+//   {
+//     id: "col4",
+//     align: "center",
+//     label: "ID",
+//     minWidth: 150,
+//     data_align: "center",
+//   },
+//   {
+//     id: "col5",
+//     align: "center",
+//     label: "Created By",
+//     minWidth: 150,
+//     data_align: "center",
+//   },
+//   {
+//     id: "col6",
+//     align: "center",
+//     label: "Last Updated Date & Time",
+//     minWidth: 150,
+//     data_align: "center",
+//   },
+// ];
 
 const Tags = () => {
   const user = useSelector((state) => state.user);
@@ -112,7 +112,8 @@ const Tags = () => {
   const [tagName, setTageName] = useState("");
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
-  const [viewRows, setViewRows] = useState([]);
+  // const [viewRows, setViewRows] = useState([]);
+  const [viewData, setViewData] = useState({});
 
   const getAllTags = async (page) => {
     const { data, err } = await getAdminTags(page);
@@ -139,7 +140,7 @@ const Tags = () => {
     if (data) {
       data.forEach((item, index) => {
         result.push({
-          id: "col1",
+          id: index + 1,
           col1: index + 1,
           col2: item.tagName,
           col3: item.createdByType,
@@ -180,19 +181,20 @@ const Tags = () => {
   };
   const handleViewClick = (item) => {
     if (item) {
+      setViewData(item);
       setViewModalOpen(true);
-      const viewRow = [
-        {
-          id: "col1",
-          col1: 1,
-          col2: item.tagName,
-          col3: item.tagId,
-          col4: item.createdBy,
-          col5: item.createdByType,
-          col6: item.lastUpdatedAt,
-        },
-      ];
-      setViewRows(viewRow);
+      // const viewRow = [
+      //   {
+      //     id: "col1",
+      //     col1: 1,
+      //     col2: item.tagName,
+      //     col3: item.tagId,
+      //     col4: item.createdBy,
+      //     col5: item.createdByType,
+      //     col6: item.lastUpdatedAt,
+      //   },
+      // ];
+      // setViewRows(viewRow);
     }
   };
   const handleAcceptRejectClick = async (item, type) => {
@@ -260,13 +262,12 @@ const Tags = () => {
         onCloseIconClick={() => {
           setViewModalOpen(false);
         }}
-        ModalWidth={1000}
         showFooter={false}
         ModalTitle="View Tags"
         titleClassName="fw-bold color-orange"
       >
-        <Box className="px-2 mnh-75vh overflow-auto hide-scrollbar">
-          <TableComponent
+        <Box className="px-2  overflow-auto hide-scrollbar">
+          {/* <TableComponent
             columns={[...viewTableColumn]}
             showSearchFilter={false}
             showSearchbar={false}
@@ -274,7 +275,66 @@ const Tags = () => {
             tableRows={[...viewRows]}
             showCheckbox={false}
             showPagination={false}
-          />
+          /> */}
+          <Box>
+            <Grid container className="py-2" alignItems="center">
+              <Grid item sm={5} display="flex" justifyContent="end">
+                <Typography className="h-5">Tag Name</Typography>
+              </Grid>
+              <Grid>&nbsp;:&nbsp;</Grid>
+              <Grid item sm={6} display="flex" justifyContent="start">
+                <Typography className="fw-bold h-5">
+                  {viewData?.tagName}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container className="py-2" alignItems="center">
+              <Grid item sm={5} display="flex" justifyContent="end">
+                <Typography className="h-5">Tag Id</Typography>
+              </Grid>
+              <Grid>&nbsp;:&nbsp;</Grid>
+              <Grid item sm={6} display="flex" justifyContent="start">
+                <Typography className="fw-bold h-5">
+                  {viewData?.tagId}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container className="py-2" alignItems="center">
+              <Grid item sm={5} display="flex" justifyContent="end">
+                <Typography className="h-5">Created by ID</Typography>
+              </Grid>
+              <Grid>&nbsp;:&nbsp;</Grid>
+              <Grid item sm={6} display="flex" justifyContent="start">
+                <Typography className="fw-bold h-5">
+                  {viewData?.createdBy}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container className="py-2" alignItems="center">
+              <Grid item sm={5} display="flex" justifyContent="end">
+                <Typography className="h-5">Created By</Typography>
+              </Grid>
+              <Grid>&nbsp;:&nbsp;</Grid>
+              <Grid item sm={6} display="flex" justifyContent="start">
+                <Typography className="fw-bold h-5">
+                  {viewData?.createdByType}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container className="py-2" alignItems="center">
+              <Grid item sm={5} display="flex" justifyContent="end">
+                <Typography className="h-5">
+                  Last Update Date and Time
+                </Typography>
+              </Grid>
+              <Grid>&nbsp;:&nbsp;</Grid>
+              <Grid item sm={6} display="flex" justifyContent="start">
+                <Typography className="fw-bold h-5">
+                  {viewData?.lastUpdatedAt}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
       </ModalComponent>
     </Paper>

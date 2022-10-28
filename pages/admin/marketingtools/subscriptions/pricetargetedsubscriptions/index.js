@@ -12,9 +12,9 @@ import {
   adminPriceTargetedSubscriptionDisable,
 } from "services/admin/pricetargetedsubscriptions";
 import toastify from "services/utils/toastUtils";
-import CreateNotification from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { useSelector } from "react-redux";
+import NotifyModal from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
 
 const column1 = [
   {
@@ -158,17 +158,19 @@ const PriceTargetedSubscription = () => {
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rows, setRows] = useState([]);
   const [viewData, setViewData] = useState({});
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [selectedList, setSelectedList] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState({});
+  const [openNotifyModal, setOpenNotifyModal] = useState(false);
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
       setOpenAddNoteModal(true);
       setSelectedData(item);
     }
-    if (ele === "Notify") setShowNotificationModal(true);
+    if (ele === "Notify") {
+      setOpenNotifyModal(true);
+    }
   };
   const getTableData = async (page) => {
     const selectedListData = [];
@@ -336,11 +338,11 @@ const PriceTargetedSubscription = () => {
           getTableData={getTableData}
         />
       ) : null}
-      {showNotificationModal ? (
-        <CreateNotification
-          showNotificationModal={showNotificationModal}
-          setShowNotificationModal={setShowNotificationModal}
-          type="add"
+      {openNotifyModal ? (
+        <NotifyModal
+          open={openNotifyModal}
+          closeModal={setOpenNotifyModal}
+          selectedData={selectedData}
         />
       ) : null}
     </>

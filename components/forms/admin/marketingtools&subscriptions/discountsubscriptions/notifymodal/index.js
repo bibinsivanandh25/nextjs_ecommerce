@@ -7,6 +7,7 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import TextEditor from "@/atoms/TextEditor";
 import { Box, FormHelperText, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
 
 const NotifyModal = ({ open, closeModal = () => {}, selectedData = {} }) => {
   const fileRef = useRef(null);
@@ -44,7 +45,7 @@ const NotifyModal = ({ open, closeModal = () => {}, selectedData = {} }) => {
       }
       setError(errorObj);
       const flag = errorObj.description === "";
-      return !flag;
+      return flag;
     }
     if (radioSelect === "Only Attachments") {
       const errorObj = {
@@ -55,14 +56,14 @@ const NotifyModal = ({ open, closeModal = () => {}, selectedData = {} }) => {
       }
       setError(errorObj);
       const flag = errorObj.files === "";
-      return !flag;
+      return flag;
     }
     return false;
   };
   const handleSaveClcik = () => {
-    // if (validation()) {
-    //   closeModal(false);
-    // }
+    if (validation()) {
+      closeModal(false);
+    }
   };
   return (
     <ModalComponent
@@ -149,14 +150,23 @@ const NotifyModal = ({ open, closeModal = () => {}, selectedData = {} }) => {
               label="Attach File"
               muiProps="ms-3 "
             />
-
             <input
               type="file"
               ref={fileRef}
               hidden
               onChange={(e) => {
-                if (e.target.files?.length) {
-                  setFiles([...files, e.target.files[0]]);
+                if (
+                  e.target?.files.length &&
+                  (e.target.files[0].type.includes("pdf") ||
+                    e.target.files[0].type.includes("image"))
+                ) {
+                  if (e.target.files[0].size < 2e6) {
+                    setFiles([...files, e.target.files[0]]);
+                  } else {
+                    toastify("File size should be less than 2 MB", "error");
+                  }
+                } else {
+                  toastify("Only PDF's and Images are accepted", "error");
                 }
               }}
             />
