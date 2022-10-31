@@ -1,8 +1,18 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return */
+/* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  getBrands,
+  getMainCategories,
+  getProductTitles,
+  getSubCategories,
+} from "services/admin/products";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
@@ -41,7 +51,14 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     discounts: "",
   });
 
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [subCategoryIds, setSubCategoryIds] = useState([]);
+  const [brands, setBrands] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [products, setProducts] = useState([]);
+
   const [images, setImages] = useState([]);
+  const [filterData, setFilterData] = useState([]);
 
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
@@ -49,6 +66,129 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       setOpenAcceptRejectModal(true);
     }
   };
+
+  const getAllInitialFilters = () => {
+    const subCategoryPayload = [];
+    const productPayload = {
+      categoryIds: [],
+      subCategoryIds: [],
+      brandNames: [],
+      commissionType: "ZERO_COMMISSION",
+      status: "INITIATED",
+    };
+    const BrandsPayload = {
+      categoryIds: [],
+      subCategoryIds: [],
+      commissionType: "ZERO_COMMISSION",
+      status: "APPROVED",
+    };
+
+    const mainCategories = () =>
+      getMainCategories("ZERO_COMMISSION").then((res) => {
+        return { categories: res.data };
+      });
+    const subCategories = () =>
+      getSubCategories("ZERO_COMMISSION", subCategoryPayload).then((res) => {
+        return { subCategories: res.data };
+      });
+    const productTitles = () =>
+      getProductTitles(productPayload).then((res) => {
+        return {
+          Products: res.data,
+        };
+      });
+    const Brands = () =>
+      getBrands(BrandsPayload).then((res) => {
+        return {
+          brands: res.data,
+        };
+      });
+    const promiseArr = [
+      mainCategories(),
+      subCategories(),
+      productTitles(),
+      Brands(),
+    ];
+    Promise.all(promiseArr).then((data) => {
+      const temp = [
+        { name: "categories", value: [] },
+        { name: "Sub Categories", value: [] },
+        { name: "Brands", value: [] },
+        { name: "Products", value: [] },
+      ];
+      if (data) {
+        data.forEach((ele) => {
+          ele.categories?.forEach((item) => {
+            temp[0].value.push({
+              item: item.name,
+              id: item.id,
+              isSelected: false,
+            });
+          });
+          ele.subCategories?.forEach((item) => {
+            temp[1].value.push({
+              item: item.name,
+              id: item.id,
+              isSelected: false,
+            });
+          });
+          ele.brands?.forEach((item) => {
+            temp[2].value.push({
+              item: item.name,
+              isSelected: false,
+            });
+          });
+          ele.Products?.forEach((item) => {
+            temp[3].value.push({
+              item: item.name,
+              isSelected: false,
+            });
+          });
+        });
+      }
+      setFilterData([...temp]);
+    });
+  };
+
+  const getProductTitleData = async () => {
+    const payload = {
+      categoryIds,
+      subCategoryIds,
+      brandNames: brands,
+      commissionType: "ZERO_COMMISSION",
+      status: "INITIATED",
+    };
+    const { data } = await getProductTitles(payload);
+    if (data) {
+      return {
+        Products: data,
+      };
+    }
+  };
+  const getBrandsDropDown = async () => {
+    const payload = {
+      categoryIds,
+      subCategoryIds,
+      commissionType: "ZERO_COMMISSION",
+      status: "APPROVED",
+    };
+    const { data } = await getBrands(payload);
+    return {
+      brands: data,
+    };
+  };
+  const getSubCategoriesData = async () => {
+    const payload = categoryIds;
+    const { data } = await getSubCategories("ZERO_COMMISSION", payload);
+    return {
+      subCategories: data,
+    };
+  };
+
+  useEffect(() => {
+    getTableData();
+    getAllInitialFilters();
+  }, []);
 
   const options = [
     "Edit",
@@ -110,10 +250,10 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       commissionType: "ZERO_COMMISSION",
       status: "INITIATED",
     };
-    const { data, err } = await getAdminProductsByFilter(payLoad);
+    const { data } = await getAdminProductsByFilter(payLoad);
     if (data) {
       const result = [];
-      data.products.forEach((val, index) => {
+      data?.forEach((val, index) => {
         result.push({
           id: index + 1,
           col1: (
@@ -193,14 +333,110 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
 
       setTableRows([...result]);
     }
-    if (err) {
-      // console.log(err);
-    }
+  };
+
+  const getFilteredValue = (value) => {
+    const temp = JSON.parse(JSON.stringify(value));
+    const tempCategoryIds = [];
+    temp[0].value?.forEach((i) => {
+      if (i.isSelected) {
+        tempCategoryIds.push(i.id);
+      }
+    });
+    if (JSON.stringify(categoryIds) != JSON.stringify(tempCategoryIds))
+      setCategoryIds([...tempCategoryIds]);
+    const tempSubCategoryIds = [];
+    temp[1].value?.forEach((i) => {
+      if (i.isSelected) {
+        tempSubCategoryIds.push(i.id);
+      }
+    });
+    if (JSON.stringify(subCategoryIds) != JSON.stringify(tempSubCategoryIds))
+      setSubCategoryIds([...tempSubCategoryIds]);
+    const tempBrands = [];
+    temp[2].value?.forEach((i) => {
+      if (i.isSelected) {
+        tempBrands.push(i.item);
+      }
+    });
+
+    if (JSON.stringify(brands) != JSON.stringify(tempBrands))
+      setBrands([...tempBrands]);
   };
 
   useEffect(() => {
-    getTableData();
-  }, []);
+    setSubCategoryIds([]);
+    setBrands([]);
+    setProducts([]);
+    const promiseArr = [
+      getSubCategoriesData(),
+      getBrandsDropDown(),
+      getProductTitleData(),
+    ];
+    Promise.all(promiseArr).then((data) => {
+      if (data) {
+        const temp = JSON.parse(JSON.stringify(filterData));
+        if (temp.length) {
+          temp[1].value = data[0]?.subCategories?.map((i) => ({
+            item: i.name,
+            id: i.id,
+            isSelected: false,
+          }));
+          temp[2].value = data[1]?.brands?.map((i) => ({
+            item: i.name,
+            isSelected: false,
+          }));
+          temp[3].value = data[2]?.Products?.map((i) => ({
+            item: i.name,
+            id: i.id,
+            isSelected: false,
+          }));
+          setFilterData(temp);
+        }
+      }
+    });
+  }, [categoryIds]);
+
+  useEffect(() => {
+    setBrands([]);
+    setProducts([]);
+    const promiseArr = [getBrandsDropDown(), getProductTitleData()];
+    Promise.all(promiseArr).then((data) => {
+      if (data) {
+        const temp = JSON.parse(JSON.stringify(filterData));
+        if (temp.length) {
+          temp[2].value = data[0]?.brands?.map((i) => ({
+            item: i.name,
+            isSelected: false,
+          }));
+          temp[3].value = data[1]?.Products?.map((i) => ({
+            item: i.name,
+            id: i.id,
+            isSelected: false,
+          }));
+          setFilterData(temp);
+        }
+      }
+    });
+  }, [subCategoryIds]);
+
+  useEffect(() => {
+    setProducts([]);
+    const promiseArr = [getProductTitleData()];
+    Promise.all(promiseArr).then((data) => {
+      if (data) {
+        const temp = JSON.parse(JSON.stringify(filterData));
+        if (temp.length) {
+          temp[3].value = data[0]?.Products?.map((i) => ({
+            item: i.name,
+            id: i.id,
+            isSelected: false,
+          }));
+          setFilterData(temp);
+        }
+      }
+    });
+  }, [brands]);
 
   return (
     <>
@@ -214,13 +450,21 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
               <Box className="px-1 pt-2">
                 <TableComponent
                   columns={columns}
+                  getFilteredValuesOnCheckBoxClick
                   tHeadBgColor="bg-light-gray"
-                  showPagination
                   tableRows={tableRows}
-                  // showSearchbar={false}
                   showDateFilterBtn
                   showDateFilter
+                  showDateFilterSearch={false}
+                  showSearchbar={false}
+                  showSearchFilter={false}
                   dateFilterBtnName="+ New Product"
+                  showFilterButton
+                  filterData={filterData}
+                  getFilteredValues={(value) => {
+                    getFilteredValue(value);
+                    setFilterData(value);
+                  }}
                   dateFilterBtnClick={() => {
                     setProductDetails({
                       vendorIdOrName: "",

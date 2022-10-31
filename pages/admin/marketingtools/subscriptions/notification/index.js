@@ -212,13 +212,13 @@ const NotificationSubscription = () => {
   };
 
   async function getNotificationsSubscription() {
+    // eslint-disable-next-line no-unused-vars
     const { data, error } = await getSubscriptions({
       marketingTool: "NOTIFICATIONS",
       toolStatus: "ACTIVE",
       userType: "SUPPLIER",
     });
     if (data) {
-      console.log(data);
       const mappedArray = data.map((val, index) => {
         const dateOne = new Date(val.activatedAt);
         const dateTwo = new Date(val.expirationDate);
@@ -262,17 +262,12 @@ const NotificationSubscription = () => {
                 type="view"
                 className="fs-18"
                 onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
                   setDataOfSingleSupplierOrReseller(val.userMarketingTools);
                   setOpenViewModal(true);
                 }}
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  console.log("Hey");
                   onClickOfMenuItem(ele);
                 }}
                 options={[
@@ -305,9 +300,6 @@ const NotificationSubscription = () => {
       });
 
       setRowsForNotificationSubs(mappedArray);
-    }
-    if (error) {
-      console.log("error hey", error);
     }
   }
 

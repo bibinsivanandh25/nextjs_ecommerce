@@ -103,7 +103,7 @@ const MrMrsCartProducts = () => {
       toastify(err?.response?.data?.messagea);
     } else {
       dispatch(viewProduct(data[0]));
-      router.push("/supplier/products&inventory/addnewproduct");
+      window.open("/supplier/products&inventory/addnewproduct");
     }
   };
 

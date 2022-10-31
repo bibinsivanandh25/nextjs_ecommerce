@@ -57,6 +57,15 @@ const updatedAdminManager = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const updatedAdminUser = (payload) => {
+  return serviceUtil
+    .put(`users/admin/admin-users`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
 
 const deleteAdminManager = (userId) => {
   return serviceUtil
@@ -86,6 +95,81 @@ const getAdminUser = (userId) => {
     .catch((err) => ({ err }));
 };
 
+const getAdminByDesignation = (designation) => {
+  return serviceUtil
+    .get(`users/admin/group/admin-info?designation=${designation}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getAdminGroups = (page = 0, pageSize = 50, payload) => {
+  return serviceUtil
+    .post(`users/admin/group/group-status/${page}/${pageSize}`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const saveAdminGroup = (payload) => {
+  return serviceUtil
+    .post(`users/admin/group`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const getGroupDetails = (id) => {
+  return serviceUtil
+    .get(`users/admin/group?groupId=${id}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const disableAdminGroup = (groupId, status) => {
+  return serviceUtil
+    .put(`users/admin/group/group-status?groupId=${groupId}&status=${status}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const updateAdminGroup = (payload) => {
+  return serviceUtil
+    .put(`users/admin/group`, payload)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+const deleteAdminGroup = (groupId) => {
+  return serviceUtil
+    .deleteById(`users/admin/group?groupId=${groupId}`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getFilters = () => {
+  return serviceUtil
+    .get(`users/admin/admin-filter`)
+    .then((res) => {
+      const { data, message, err } = res && res.data;
+      return { data, message, err };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   saveAdminManager,
   saveAdminUser,
@@ -96,4 +180,13 @@ export {
   deleteAdminManager,
   deleteAdminUser,
   getAdminUser,
+  getAdminByDesignation,
+  getAdminGroups,
+  saveAdminGroup,
+  getGroupDetails,
+  updatedAdminUser,
+  disableAdminGroup,
+  updateAdminGroup,
+  deleteAdminGroup,
+  getFilters,
 };

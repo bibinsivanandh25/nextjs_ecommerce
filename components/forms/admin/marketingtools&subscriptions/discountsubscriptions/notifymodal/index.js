@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from "react";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
@@ -59,7 +60,6 @@ const NotifyModal = ({ open, closeModal = () => {}, selectedData = {} }) => {
     return false;
   };
   const handleSaveClcik = () => {
-    console.log(validation(), "validation()");
     // if (validation()) {
     //   closeModal(false);
     // }

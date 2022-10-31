@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";

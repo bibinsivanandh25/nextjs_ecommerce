@@ -70,7 +70,6 @@ const ReferredSupplier = () => {
   const getTableRows = async () => {
     const { data } = await getReferredSupplier("SP0822000002");
     const tableRows = [];
-    console.log("data ", data);
     if (data) {
       setReferralCode(data.supplierReferralCode);
       data.list.forEach((val) => {

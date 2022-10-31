@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-undef */
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -10,8 +13,11 @@ import {
   disableAdmin,
   getAdminUser,
   getAdminUsers,
+  getFilters,
 } from "services/admin/admin";
 import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 const Users = () => {
   const [showAdminCapabilities, setShowAdminCapabilities] = useState(false);
@@ -33,7 +39,7 @@ const Users = () => {
     {
       id: "col3",
       align: "center",
-      label: "Designation",
+      label: "Last Name",
       data_align: "center",
     },
     {
@@ -69,11 +75,23 @@ const Users = () => {
     },
     {
       id: "col10",
-      align: "Action",
-      label: "Sale Price/MRP",
+      align: "center",
+      label: "Action",
       data_align: "center",
     },
   ];
+  const [pageNumber, setpageNumber] = useState(0);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    createdBy: [],
+    status: [],
+  });
+  const [showConfirmModal, setshowConfirmModal] = useState({
+    message: "",
+    adminRegistrationId: "",
+    status: "",
+    type: "",
+  });
 
   const getUserById = async (type, id) => {
     const { data, err } = await getAdminUser(id);
@@ -85,18 +103,38 @@ const Users = () => {
     }
   };
 
-  const onClickOfMenuItem = (type, id) => {
+  const onClickOfMenuItem = (type, id, grouped) => {
     if (["View", "Edit"].includes(type)) {
-      getUserById(type, id);
+      if (type === "Edit" && grouped) {
+        setshowConfirmModal({
+          message:
+            "The User is already present in a group. Would you really like to update the user?",
+          adminRegistrationId: id,
+          status: "",
+          type: "Edit",
+        });
+      } else {
+        getUserById(type, id);
+      }
     } else if (type === "Delete") {
-      deleteUser(id);
+      if (grouped) {
+        setshowConfirmModal({
+          message:
+            "The User is already present in a group, and will be removed if deleted. Would you really like to delete?",
+          adminRegistrationId: id,
+          status: "",
+          type: "delete",
+        });
+      } else {
+        deleteUser(id);
+      }
     }
   };
   const deleteUser = async (userId) => {
     const { data, message, err } = await deleteAdminUser(userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -106,7 +144,7 @@ const Users = () => {
     const { data, message, err } = await disableAdmin(status, userId);
     if (data) {
       toastify(message, "success");
-      await getUsers();
+      await getUsers(0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -118,32 +156,38 @@ const Users = () => {
         id: 1,
         col1: item.adminRegistrationId,
         col2: item.firstName,
-        col3: item.designation.replace("_", " "),
+        col3: item.lastName,
         col4: item.emailId,
         col5: item.mobileNumber,
         col7: item.createdBy,
         col8: item.createdDate,
         col9: item.status,
         col10: (
-          <Box className="d-flex align-items-center justify-content-around">
-            <Box className="d-flex flex-column align-items-center">
-              <Box className="ms-4">
-                <SwitchComponent
-                  label=""
-                  defaultChecked={item.status === "APPROVED"}
-                  ontoggle={() => {
-                    disableUsers(
-                      item.adminRegistrationId,
-                      item.status === "APPROVED" ? "DISABLED" : "APPROVED"
-                    );
-                  }}
-                />
-              </Box>
-              <Typography className="h-5">Disable</Typography>
-            </Box>
+          <Box className="d-flex align-items-center justify-content-center">
+            <SwitchComponent
+              label=""
+              defaultChecked={item.status === "APPROVED"}
+              ontoggle={() => {
+                if (item.grouped) {
+                  setshowConfirmModal({
+                    message:
+                      "The User is already present in a group, and will be removed if disabled. Would you really like to disable?",
+                    adminRegistrationId: item.adminRegistrationId,
+                    status:
+                      item.status === "APPROVED" ? "DISABLED" : "APPROVED",
+                    type: "disable",
+                  });
+                } else {
+                  disableUsers(
+                    item.adminRegistrationId,
+                    item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                  );
+                }
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, item.adminRegistrationId);
+                onClickOfMenuItem(ele, item.adminRegistrationId, item.grouped);
               }}
               options={["View", "Edit", "Delete"]}
               IconclassName="color-gray"
@@ -155,22 +199,63 @@ const Users = () => {
   };
 
   const getUsers = async (
-    page = 0,
+    page = pageNumber,
     payload = {
-      status: [],
-      createdBy: [],
+      status: selectedFilters.status,
+      createdBy: selectedFilters.createdBy,
       keyword: null,
     }
   ) => {
+    payload.createdBy = payload.createdBy.map((item) => item.trim());
     const { data, err } = await getAdminUsers(page, payload, "ADMIN_USER");
     if (data) {
-      setTableRows(mapData(data));
+      if (page === 0) {
+        setTableRows(mapData(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => {
+          return [...pre, ...mapData(data)];
+        });
+        if (data.length) {
+          setpageNumber((pre) => pre + 1);
+        }
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
 
+  const getFilterData = async () => {
+    const { data } = await getFilters();
+    if (data) {
+      const temp = [
+        {
+          name: "Created By",
+          value: [],
+        },
+        {
+          name: "Status",
+          value: [],
+        },
+      ];
+      data.createdBy.forEach((item) => {
+        temp[0].value.push({
+          item: `${item.id} - ${item.name}`,
+          isSelected: false,
+        });
+      });
+      temp[1].value = data.status.map((item) => {
+        return {
+          isSelected: false,
+          item,
+        };
+      });
+      setFilters(temp);
+    }
+  };
+
   useEffect(() => {
+    getFilterData();
     getUsers();
   }, []);
 
@@ -181,6 +266,7 @@ const Users = () => {
           <TableComponent
             columns={columns}
             tHeadBgColor="bg-light-gray"
+            headerClassName="color-orange"
             tableRows={tableRows}
             showCustomButton
             customButtonLabel="Create Admin"
@@ -190,7 +276,90 @@ const Users = () => {
               setShowAdminCapabilities(true);
             }}
             showCheckbox={false}
+            handlePageEnd={async (text, _, page = pageNumber) => {
+              await getUsers(page, {
+                status: selectedFilters.status,
+                createdBy: selectedFilters.createdBy,
+                keyword: text,
+              });
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
+            }}
+            showFilterButton
+            filterData={filters}
+            getFilteredValues={async (val, text = "") => {
+              const temp = {
+                createdBy: [],
+                status: [],
+              };
+              val[0].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.createdBy.push(ele.item.split("-")[0].trim());
+                }
+              });
+              val[1].value.forEach((ele) => {
+                if (ele.isSelected) {
+                  temp.status.push(ele.item);
+                }
+              });
+              setpageNumber(0);
+              setSelectedFilters(temp);
+              await getUsers(0, {
+                status: temp.status,
+                createdBy: temp.createdBy,
+                keyword: text,
+              });
+            }}
           />
+          <ModalComponent
+            open={showConfirmModal.message !== ""}
+            saveBtnText="Yes"
+            ClearBtnText="No"
+            onSaveBtnClick={() => {
+              if (showConfirmModal.type === "Edit") {
+                getUserById(
+                  showConfirmModal.type,
+                  showConfirmModal.adminRegistrationId
+                );
+              } else if (showConfirmModal.type === "disable") {
+                disableUsers(
+                  showConfirmModal.adminRegistrationId,
+                  showConfirmModal.status
+                );
+              } else {
+                deleteUser(
+                  showConfirmModal.adminRegistrationId,
+                  showConfirmModal.status
+                );
+              }
+              setshowConfirmModal({
+                message: "",
+                adminRegistrationId: "",
+                status: "",
+                type: "",
+              });
+            }}
+            onClearBtnClick={() => {
+              setshowConfirmModal({
+                message: "",
+                adminRegistrationId: "",
+                status: "",
+                type: "",
+              });
+            }}
+            ModalTitle="Warning"
+            titleClassName="color-orange"
+          >
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <Box>
+                <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
+              </Box>
+              <Typography className="fs-16">
+                {showConfirmModal.message}
+              </Typography>
+            </div>
+          </ModalComponent>
         </Paper>
       ) : (
         <AdminCapabilities
@@ -199,6 +368,14 @@ const Users = () => {
           type={modalData.type === "" ? "add" : modalData.type}
           adminData={modalData.data}
           setModalData={setModalData}
+          gettableData={async () => {
+            await getUsers(0, {
+              status: selectedFilters.status,
+              createdBy: selectedFilters.createdBy,
+              keyword: "",
+            });
+            setpageNumber(0);
+          }}
         />
       )}
     </Box>

@@ -1,17 +1,29 @@
+/* eslint-disable no-shadow */
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
+import { useSelector } from "react-redux";
+import {
+  addANoteApi,
+  convertFileToLink,
+} from "services/admin/marketingtools/subscriptions";
+import toastify from "services/utils/toastUtils";
 
 let errObj = {
   addANote: false,
 };
 
-const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
+const AddNoteModal = ({
+  openAddNoteModal,
+  setOpenAddNoteModal,
+  subsTypeId,
+}) => {
   const [addANote, setAddANote] = useState("");
   const [fileInput, setFileInput] = useState(null);
-  const [error, setError] = useState(errObj);
+  const [errorFe, setErrorFe] = useState(errObj);
+  const [sendFile, setSendFile] = useState("");
   const handleError = () => {
     let theError = false;
     errObj = {
@@ -24,10 +36,67 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
     return [theError, errObj];
   };
 
-  const handleSubmit = () => {
-    const [errObjReturned] = handleError();
-    // console.log(theError);
-    setError(errObjReturned);
+  const adminIde = useSelector((state) => state.user.userId);
+
+  const addNote = async (payload) => {
+    const { data, error, message } = await addANoteApi(payload);
+    if (error) {
+      if (message) {
+        toastify(message, "error");
+      } else if (error?.response?.data?.message) {
+        toastify(error?.response?.data?.message, "error");
+      }
+    } else if (data) {
+      toastify(message, "success");
+    }
+  };
+
+  const handleSubmit = async () => {
+    const [theError, err] = handleError();
+    if (!theError) {
+      if (fileInput) {
+        const formData = new FormData();
+        formData.set("data", {});
+        formData.append("file", sendFile);
+        formData.append("toolCommentType", "purchase_history");
+        formData.append("adminId", adminIde);
+        const { data, error, message } = await convertFileToLink(formData);
+        if (error) {
+          if (message) {
+            toastify(message, "error");
+          } else if (error.response.data.message) {
+            toastify(error.response.data.message, "error");
+          }
+        } else if (data) {
+          const payload = {
+            type: "PURCHASE_HISTORY",
+            typeId: subsTypeId,
+            comments: addANote,
+            commentsAttachment: data,
+          };
+          addNote(payload);
+        }
+      } else {
+        const payload = {
+          type: "PURCHASE_HISTORY",
+          typeId: subsTypeId,
+          comments: addANote,
+          commentsAttachment: "",
+        };
+        addNote(payload);
+      }
+    }
+    setErrorFe(err);
+  };
+
+  const handleCloseIconClick = () => {
+    errObj = {
+      addANote: false,
+    };
+    setAddANote("");
+    setFileInput("");
+    setOpenAddNoteModal(false);
+    setErrorFe(errObj);
   };
 
   const onInputChange = (event) => {
@@ -36,6 +105,7 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
       reader.onload = (e) => {
         const data = e.target.result.split(":")[1];
         setFileInput(data);
+        setSendFile(event.target.files[0]);
         // const theImagesArray = [...imageArray];
         // theImagesArray.push(e.target.result);
         // setImageArray([...theImagesArray]);
@@ -49,8 +119,7 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
       <ModalComponent
         open={openAddNoteModal}
         onCloseIconClick={() => {
-          setAddANote("");
-          setOpenAddNoteModal(false);
+          handleCloseIconClick();
         }}
         footerClassName="d-flex justify-content-start flex-row-reverse border-top"
         saveBtnText="Submit"
@@ -59,7 +128,7 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
         ModalTitle="Add Note"
         titleClassName="fw-bold fs-14 color-orange"
         onClearBtnClick={() => {
-          setAddANote("");
+          handleCloseIconClick();
           setOpenAddNoteModal(false);
         }}
         onSaveBtnClick={() => {
@@ -74,8 +143,10 @@ const AddNoteModal = ({ openAddNoteModal, setOpenAddNoteModal }) => {
               onInputChange={(e) => {
                 setAddANote(e.target.value);
               }}
-              error={error.addANote}
-              helperText={error.addANote ? validateMessage.field_required : ""}
+              error={errorFe.addANote}
+              helperText={
+                errorFe.addANote ? validateMessage.field_required : ""
+              }
             />
           </Box>
           {/* <InputBox

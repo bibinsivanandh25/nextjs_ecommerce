@@ -43,6 +43,7 @@ const ButtonComponent = ({
       endIcon={(showIcon && iconOrintation) === "end" ? getIcon() : <></>}
       fullWidth={fullWidth}
       disabled={disabled}
+      aria-label={label}
     >
       {label}
     </Button>

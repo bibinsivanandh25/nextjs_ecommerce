@@ -1,3 +1,5 @@
+/* eslint-disable react/no-danger */
+/* eslint-disable no-unused-vars */
 import { Box, Typography } from "@mui/material";
 import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -23,13 +25,9 @@ const ViewModal = ({
       marketingToolId,
       userId
     );
-
-    console.log(data, "---data");
-    console.log(error, "---error");
   };
 
   const setRowsOfTable = () => {
-    console.log("data supplier reseller ", dataOfSingleSupplierOrReseller);
     const mappedArray = dataOfSingleSupplierOrReseller.map((val, index) => {
       return {
         id: val.marketingToolId,
