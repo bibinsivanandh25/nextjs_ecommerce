@@ -181,7 +181,12 @@ const Banners = () => {
         result.push({
           id: index + 1,
           col1: item.bannerImageUrlForWeb ? (
-            <Image src={item.bannerImageUrlForWeb} height={50} width={50} />
+            <Image
+              src={item.bannerImageUrlForWeb}
+              height={50}
+              width={50}
+              alt="Image"
+            />
           ) : null,
           col2: item.panelName,
           col3: item.displayPage,

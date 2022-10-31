@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { Box, Grid } from "@mui/material";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
 const NotificationModal = ({
   notifyModalOpen,
@@ -22,12 +22,7 @@ const NotificationModal = ({
     email: false,
     message: false,
   });
-  const [selectRadio, setSelectRadio] = useState({
-    attachement: false,
-    text: false,
-    textcontent: false,
-    textwithattachement: false,
-  });
+  const [selectRadio, setSelectRadio] = useState("Only Attachment");
 
   return (
     <Box>
@@ -81,7 +76,7 @@ const NotificationModal = ({
             </Grid>
           </Grid>
           <Box className="mt-2">
-            <InputBox />
+            <SimpleDropdownComponent size="small" />
           </Box>
           <Box className="border-top border-bottom mt-2">
             <Grid container>
@@ -127,148 +122,56 @@ const NotificationModal = ({
             <Grid container>
               <Grid item sm={4}>
                 <RadiobuttonComponent
-                  label="Only attachment"
-                  isChecked={selectRadio.attachement}
+                  label="Only Attachment"
+                  isChecked={selectRadio == "Only Attachment"}
                   onRadioChange={() => {
-                    setSelectRadio({
-                      attachement: true,
-                      text: false,
-                      textcontent: false,
-                      textwithattachement: false,
-                    });
+                    setSelectRadio("Only Attachment");
                   }}
                 />
               </Grid>
               <Grid item sm={4}>
                 <RadiobuttonComponent
                   label="Only Text"
-                  isChecked={selectRadio.text}
+                  isChecked={selectRadio == "Only Text"}
                   onRadioChange={() => {
-                    setSelectRadio({
-                      attachement: false,
-                      text: true,
-                      textcontent: false,
-                      textwithattachement: false,
-                    });
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item sm={4}>
-                <RadiobuttonComponent
-                  label="Only Text content"
-                  isChecked={selectRadio.textcontent}
-                  onRadioChange={() => {
-                    setSelectRadio({
-                      attachement: false,
-                      text: false,
-                      textcontent: true,
-                      textwithattachement: false,
-                    });
+                    setSelectRadio("Only Text");
                   }}
                 />
               </Grid>
               <Grid item sm={4}>
                 <RadiobuttonComponent
-                  label="Text with attachment"
-                  isChecked={selectRadio.textwithattachement}
+                  label="Text With Attachment"
+                  isChecked={selectRadio == "Text With Attachment"}
                   onRadioChange={() => {
-                    setSelectRadio({
-                      attachement: false,
-                      text: false,
-                      textcontent: false,
-                      textwithattachement: true,
-                    });
+                    setSelectRadio("Text With Attachment");
                   }}
                 />
               </Grid>
             </Grid>
           </Box>
           <Box>
-            <Box>
-              {messageCheckBox.pushnotification &&
-                (selectRadio.text ||
-                  selectRadio.textwithattachement ||
-                  selectRadio.textcontent) && (
-                  <div className="w-100 overflow-auto hide-scrollbar mb-2">
-                    <TextEditor
-                      className="w-100"
-                      placeholder="Type here for push notification"
-                    />
-                  </div>
-                )}
-            </Box>
-            <Box>
-              {messageCheckBox.email &&
-                (selectRadio.text ||
-                  selectRadio.textwithattachement ||
-                  selectRadio.textcontent) && (
-                  <div className="w-100 overflow-auto hide-scrollbar mb-2">
-                    <TextEditor
-                      className="w-100"
-                      placeholder="Type here for Email"
-                    />
-                  </div>
-                )}
-            </Box>
-            <Box>
-              {messageCheckBox.message &&
-                (selectRadio.text ||
-                  selectRadio.textwithattachement ||
-                  selectRadio.textcontent) && (
-                  <div className="w-100 overflow-auto hide-scrollbar mb-2">
-                    <TextEditor
-                      className="w-100"
-                      placeholder="Type here for Message"
-                    />
-                  </div>
-                )}
-            </Box>
-            <Grid container>
-              {messageCheckBox.pushnotification &&
-                (selectRadio.attachement ||
-                  selectRadio.textwithattachement) && (
-                  <Grid item sm={4}>
-                    <label
-                      htmlFor="pushNotify"
-                      className="border-light-orange1 color-orange cursor-pointer fs-14 px-2"
-                    >
-                      Attach File
-                    </label>
-                    <label className="fs-12 ms-1">File Name...</label>
-                    <input type="file" className="d-none" id="pushNotify" />
-                  </Grid>
-                )}
-              {messageCheckBox.email &&
-                (selectRadio.attachement ||
-                  selectRadio.textwithattachement) && (
-                  <Grid item sm={4}>
-                    <label
-                      htmlFor="email"
-                      className="border-light-orange1 color-orange cursor-pointer fs-14 px-2"
-                    >
-                      Attach File
-                    </label>
-                    <label className="fs-12 ms-1">File Name...</label>
-                    <input type="file" className="d-none" id="email" />
-                  </Grid>
-                )}
-              {messageCheckBox.message &&
-                (selectRadio.attachement ||
-                  selectRadio.textwithattachement) && (
-                  <Grid item sm={4}>
-                    <label
-                      htmlFor="message"
-                      className="border-light-orange1 color-orange cursor-pointer fs-14 px-2"
-                    >
-                      Attach File
-                    </label>
-                    <label className="fs-12 ms-1">File Name...</label>
-                    <input type="file" className="d-none" id="message" />
-                  </Grid>
-                )}
-            </Grid>
+            {selectRadio == "Only Text" ||
+            selectRadio == "Text With Attachment" ? (
+              <div className="w-100 overflow-auto hide-scrollbar mb-2">
+                <TextEditor
+                  className="w-100"
+                  placeholder="Type here for push notification"
+                />
+              </div>
+            ) : null}
+            {selectRadio == "Only Attachment" ||
+            selectRadio == "Text With Attachment" ? (
+              <Grid item sm={4}>
+                <label
+                  htmlFor="pushNotify"
+                  className="border-light-orange1 color-orange cursor-pointer fs-14 px-2"
+                >
+                  Attach File
+                </label>
+                <label className="fs-12 ms-1">File Name...</label>
+                <input type="file" className="d-none" id="pushNotify" />
+              </Grid>
+            ) : null}
           </Box>
         </Box>
         <Box className="border-top py-2 bg-white d-flex justify-content-end">

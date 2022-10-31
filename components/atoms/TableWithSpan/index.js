@@ -99,7 +99,6 @@ const EnhancedTableHead = (props) => {
         )}
         {column2.map((ele, index) => {
           minWidthCount += ele.minWidth;
-
           return (
             <TableCell
               style={{
@@ -403,9 +402,9 @@ export default function TableComponent({
   const classes = useStyles();
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";
-    if (position === "sticky" && index !== columns.length - 1)
+    if (position === "sticky" && index !== filteredColumns.length - 1)
       return classes.stickyrow;
-    if (position === "sticky" && index === columns.length - 1)
+    if (position === "sticky" && index === filteredColumns.length - 1)
       return classes.lastrow;
   };
 
@@ -506,12 +505,12 @@ export default function TableComponent({
                               fontSize: 12,
                               left:
                                 column.position === "sticky" &&
-                                index !== columns.length - 1
+                                index !== filteredColumns.length - 1
                                   ? `${minWidthCount - column.minWidth}px`
                                   : "",
                               right:
                                 column.position === "sticky" &&
-                                index === columns.length - 1
+                                index === filteredColumns.length - 1
                                   ? 0
                                   : "",
                             }}

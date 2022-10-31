@@ -192,13 +192,16 @@ const Active = () => {
       {!viewModalOpen ? (
         <Box className="mt-2">
           <TableComponent
-            columns={[...tableColumn]}
-            showDateFilter
             tableRows={[...rows]}
-            tHeadBgColor="bg-tableGray"
-            stickyCheckBox
-            stickyHeader
-            table_heading=" Active Suppliers (58)"
+            table_heading="Active Suppliers (58)"
+            stickyHeader={false}
+            showSearchFilter={false}
+            showDateFilter
+            showFilterButton
+            showDateFilterSearch
+            columns={[...tableColumn]}
+            showCheckbox={false}
+            allowOutSideClickClose
           />
         </Box>
       ) : (

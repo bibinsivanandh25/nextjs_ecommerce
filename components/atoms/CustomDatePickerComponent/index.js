@@ -1,8 +1,9 @@
 import { useState } from "react";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Box } from "@mui/material";
-import DatePicker from "@mui/lab/DatePicker";
+// import DatePicker from "@mui/lab/DatePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const CustomDatePickerComponent = ({
   value = null,
@@ -21,7 +22,7 @@ const CustomDatePickerComponent = ({
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         open={isOpen}
         onOpen={() => setIsOpen(true)}
