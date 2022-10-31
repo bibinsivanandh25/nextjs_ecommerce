@@ -12,10 +12,10 @@ import {
   helpandSupportCloseTicket,
   helpandSupportDeleteTicket,
 } from "services/admin/help&support";
-import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 import { useSelector } from "react-redux";
 import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
 import toastify from "services/utils/toastUtils";
+import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 
 const SupplierSupport = () => {
   const user = useSelector((state) => state.user);
