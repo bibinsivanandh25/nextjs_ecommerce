@@ -154,7 +154,7 @@ const CreateTicket = ({
   };
   // const userId = useSelector((state) => state?.user?.userId);
   const { userId, role } = useSelector((state) => state?.user);
-  console.log(userId, role);
+
   const createPayload = () => {
     return {
       issueType: formValue.issueType.label,

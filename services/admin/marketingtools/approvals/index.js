@@ -19,11 +19,12 @@ const approveRejectMarketingToolCampaign = (payload) => {
 };
 const getMarketingToolDetailsByToolId = (
   marketingToolId,
-  marketingToolType
+  marketingToolType,
+  status
 ) => {
   return serviceUtil
     .get(
-      `/users/admin-marketing-tool?marketingToolId=${marketingToolId}&marketingToolType=${marketingToolType}`
+      `/users/admin-marketing-tool?marketingToolId=${marketingToolId}&marketingToolType=${marketingToolType}&status=${status}`
     )
     .then((res) => {
       const { data } = res?.data;

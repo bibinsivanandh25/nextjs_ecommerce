@@ -13,13 +13,15 @@ const ViewMarketingtools = ({
   footer = false,
   marketingToolId = "",
   marketingToolType = "",
+  status = "",
 }) => {
   const [formData, setFormData] = useState({});
   const [productList, setProductList] = useState([]);
   const getMarketingToolData = async () => {
     const { data } = await getMarketingToolDetailsByToolId(
       marketingToolId,
-      marketingToolType
+      marketingToolType,
+      status
     );
     if (data) {
       setFormData((pre) => ({

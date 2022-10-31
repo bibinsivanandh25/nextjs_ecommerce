@@ -144,7 +144,6 @@ const CreateTicket = ({
   };
 
   const { userId, role } = useSelector((state) => state?.user);
-  console.log(userId, role);
 
   const createPayload = () => {
     return {
