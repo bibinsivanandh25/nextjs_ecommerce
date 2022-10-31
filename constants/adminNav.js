@@ -359,7 +359,7 @@ const adminNav = [
           {
             title: "Notifications Suggestions",
             logo: "",
-            pathName: "notificationsuggestions",
+            pathName: "notificationsuggestion",
             navigate: true,
             disabled: false,
             child: [],
