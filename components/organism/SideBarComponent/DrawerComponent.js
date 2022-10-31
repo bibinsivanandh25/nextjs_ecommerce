@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
@@ -172,7 +173,16 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
     } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
       setNavOptionsList(adminNav);
       if (user.role !== "ADMIN" && user.adminCapabilities) {
-        setstaffCapabilityList(getAdminCapability([...user.adminCapabilities]));
+        setstaffCapabilityList(
+          getAdminCapability(
+            JSON.parse(
+              JSON.stringify(
+                user.adminCapabilities.adminCapabilitylist ??
+                  user.adminCapabilities
+              )
+            )
+          )
+        );
       }
     }
   };
@@ -270,7 +280,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               `${path}/${item.pathName}`,
               user.adminCapabilities === null
                 ? {}
-                : capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+                : capabiliteArr &&
+                  capabiliteArr.child &&
+                  capabiliteArr.child.hasOwnProperty(
+                    `${ele.title.toLowerCase().trim()}`
+                  )
+                ? capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+                : {}
             );
           }),
         ],
@@ -286,7 +302,12 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               `/${getBasePath(role)}`,
               user.adminCapabilities === null
                 ? {}
-                : staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+                : staffCapabilityList &&
+                  staffCapabilityList.hasOwnProperty(
+                    `${item.title.toLowerCase().trim()}`
+                  )
+                ? staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+                : {}
             )
         : addId(index, item, `/${getBasePath(role)}`);
     });
