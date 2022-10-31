@@ -291,13 +291,13 @@ const SupplierSubscriptions = () => {
       data_align: "center",
       minWidth: 150,
     },
-    {
-      id: "col15",
-      align: "center",
-      label: "Status",
-      data_align: "center",
-      minWidth: 75,
-    },
+    // {
+    //   id: "col15",
+    //   align: "center",
+    //   label: "Status",
+    //   data_align: "center",
+    //   minWidth: 75,
+    // },
     {
       id: "col16",
       align: "center",
@@ -564,7 +564,7 @@ const SupplierSubscriptions = () => {
   };
 
   const checkToolCampaign = (tool, data) => {
-    return data.map((ele) => ele.adminMarketingToolName).includes(tool);
+    return data?.map((ele) => ele?.adminMarketingToolName)?.includes(tool);
   };
   const mapTableCampaignTableRows = (data) => {
     const result = [];
@@ -666,7 +666,7 @@ const SupplierSubscriptions = () => {
         col12: ele.title,
         col13: ele.startDateTime,
         col14: ele.endDateTime,
-        col15: ele.status,
+        // col15: ele.status,
         col16: ele.createdDate,
         col17: (
           <Box className="d-flex align-items-center justify-content-between">
@@ -901,6 +901,7 @@ const SupplierSubscriptions = () => {
           ) : null}
           {openCreateDiscountModal ? (
             <CreateDiscountModal
+              getToolCampaignTableData={getToolCampaignTableData}
               openCreateDiscountModal={openCreateDiscountModal}
               setOpenCreateDiscountModal={setOpenCreateDiscountModal}
             />

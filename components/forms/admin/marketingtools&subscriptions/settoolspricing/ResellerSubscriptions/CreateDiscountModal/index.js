@@ -61,6 +61,7 @@ const daysList = [
 const CreateDiscountModal = ({
   openCreateDiscountModal,
   setOpenCreateDiscountModal,
+  getToolCampaignTableData = () => {},
 }) => {
   const [days, setDays] = useState({ label: "" });
   const [tools, setTools] = useState([]);
@@ -228,6 +229,7 @@ const CreateDiscountModal = ({
       if (data) {
         toastify(data.message, "success");
         setOpenCreateDiscountModal(false);
+        getToolCampaignTableData(0);
       }
       if (err) {
         toastify(err?.response?.data?.message, "error");
