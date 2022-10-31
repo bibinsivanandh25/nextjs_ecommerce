@@ -63,12 +63,6 @@ const validateProductImg = (productImage) => {
   return false;
 };
 const validateInventory = (inventoryFormData) => {
-  console.log("Status ", inventoryFormData.stock_status);
-  console.log(
-    "inventoryFormData.shipping_class ",
-    inventoryFormData.shipping_class
-  );
-
   const errObj = {};
   let flag = false;
   if (inventoryFormData.stockqty === "" || !inventoryFormData.stockqty) {
@@ -306,7 +300,7 @@ const validateVariation = (dropdowns, currentData) => {
     ) {
       errObj[el.id] = el.errorMessage;
     } else if (el.type === "date" && el.value && el.value < currentData) {
-      errObj[el.id] = "Past date is not allowed";
+      errObj[el.id] = "Invalid date";
     } else {
       errObj[el.id] = null;
     }

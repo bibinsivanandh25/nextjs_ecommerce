@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
@@ -12,7 +12,9 @@ import {
   adminPriceTargetedSubscriptionDisable,
 } from "services/admin/pricetargetedsubscriptions";
 import toastify from "services/utils/toastUtils";
-import CreateNotification from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useSelector } from "react-redux";
+import NotifyModal from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
 
 const column1 = [
   {
@@ -138,32 +140,65 @@ const column2 = [
     // data_style: { paddingLeft: "7%" },
   },
 ];
+const listData = [
+  {
+    id: "1",
+    value: "SUPPLIER",
+    title: "SUPPLIER",
+  },
+  {
+    id: "2",
+    value: "RESELLER",
+    title: "RESELLER",
+  },
+];
 const PriceTargetedSubscription = () => {
+  const user = useSelector((state) => state.user);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rows, setRows] = useState([]);
   const [viewData, setViewData] = useState({});
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [selectedList, setSelectedList] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [selectedData, setSelectedData] = useState({});
+  const [openNotifyModal, setOpenNotifyModal] = useState(false);
 
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") setOpenAddNoteModal(true);
-    if (ele === "Notify") setShowNotificationModal(true);
+  const onClickOfMenuItem = (ele, item) => {
+    if (ele === "Add Note") {
+      setOpenAddNoteModal(true);
+      setSelectedData(item);
+    }
+    if (ele === "Notify") {
+      setOpenNotifyModal(true);
+    }
   };
-  const getTableData = async () => {
+  const getTableData = async (page) => {
+    const selectedListData = [];
+    selectedList.forEach((item) => {
+      if (item.value) {
+        selectedListData.push(item.value);
+      }
+    });
     const payload = {
       marketingTool: "PRICE_TARGETED",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
+      userType: selectedListData,
     };
-    const { data, err } = await adminPriceTargetedSubscription(payload);
-    if (data) {
-      setRows(getTableRows(data));
+    const { data, err } = await adminPriceTargetedSubscription(payload, page);
+    if (data?.length) {
+      if (page == 0) {
+        setRows(getTableRows(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getTableRows(data)]);
+      }
     }
     if (err) {
       setRows([]);
       toastify(err.response.data.message, "error");
     }
   };
+
   const handleViewClick = (data) => {
     if (data) {
       setViewData(data);
@@ -175,7 +210,7 @@ const PriceTargetedSubscription = () => {
     if (data) {
       data.forEach((item, index) => {
         result.push({
-          id: "col1",
+          id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
           col3: item.days == 7 ? item.activatedAt - item.expirationDate : "--",
@@ -199,7 +234,7 @@ const PriceTargetedSubscription = () => {
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele);
+                  onClickOfMenuItem(ele, item);
                 }}
                 options={[
                   "Notify",
@@ -236,52 +271,80 @@ const PriceTargetedSubscription = () => {
     );
     if (data) {
       toastify(data.message, "success");
-      getTableData();
+      getTableData(pageNumber);
     }
     if (err) {
       toastify(err.response.data.message, "error");
     }
   };
   useEffect(() => {
-    getTableData();
-  }, []);
+    getTableData(0);
+    setpageNumber(0);
+  }, [selectedList]);
 
   return (
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">
-            Price Targeted Subscription
-          </Typography>
+          <Grid container>
+            <Grid item xs={8.5}>
+              <Typography className="fw-bold color-orange">
+                Price Targeted Subscription
+              </Typography>
+            </Grid>
+            <Grid item xs={3.5}>
+              <MultiSelectComponent
+                label="FILTER"
+                placeholder=""
+                list={listData}
+                onSelectionChange={(e, value) => {
+                  setSelectedList(value);
+                }}
+                value={selectedList}
+              />
+            </Grid>
+          </Grid>
+
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
             tableRows={rows}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
-            onCustomButtonClick={() => {
-              // setOpenAddDaysCounterModal(true);
+            handlePageEnd={(page = pageNumber) => {
+              getTableRows(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
             }}
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        viewData={viewData}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
-      <CreateNotification
-        showNotificationModal={showNotificationModal}
-        setShowNotificationModal={setShowNotificationModal}
-        type="add"
-      />
+      {openViewModal ? (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          viewData={viewData}
+          user={user}
+        />
+      ) : null}
+      {openAddNoteModal ? (
+        <AddNoteModal
+          openAddNoteModal={openAddNoteModal}
+          setOpenAddNoteModal={setOpenAddNoteModal}
+          selectedData={selectedData}
+          getTableData={getTableData}
+        />
+      ) : null}
+      {openNotifyModal ? (
+        <NotifyModal
+          open={openNotifyModal}
+          closeModal={setOpenNotifyModal}
+          selectedData={selectedData}
+        />
+      ) : null}
     </>
   );
 };

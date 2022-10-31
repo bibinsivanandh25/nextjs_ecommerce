@@ -46,6 +46,11 @@ const SupplierAddCoupons = ({
         formValues[id].toString() === "Invalid Date"
       ) {
         errObj[id] = "Invalid Date";
+      } else if (
+        id === "couponExpiryDate" &&
+        new Date().getTime() > new Date(formValues[id]).getTime()
+      ) {
+        errObj[id] = "Invalid Date";
       } else {
         errObj[id] = null;
       }
@@ -77,11 +82,11 @@ const SupplierAddCoupons = ({
       parseInt(formValues.usageLimitPerUser, 10)
     ) {
       limitErrors.limitError =
-        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+        "Usage Limit Per Coupon Should Always Greater than Usage Limit PerUser";
     }
     setError({ ...errObj, ...limitErrors });
     let valid = true;
-    Object.values(errObj).forEach((i) => {
+    Object.values({ ...errObj, ...limitErrors }).forEach((i) => {
       if (i) {
         valid = false;
       }

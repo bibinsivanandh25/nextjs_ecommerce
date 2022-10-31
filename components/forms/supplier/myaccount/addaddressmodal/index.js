@@ -276,11 +276,11 @@ const AddAddressModal = (props) => {
       onSaveBtnClick={handleSave}
       minHeightClassName="mxh-500"
       ModalWidth="60%"
-      footerClassName="justify-content-end  border-top me-3"
+      footerClassName="justify-content-start flex-row-reverse  border-top mx-3"
       footerPadding="p-3"
       ClearBtnText="Cancel"
       showCloseIcon={showCloseIcon}
-      clearBtnClassName={disableCancel ? "d-none" : ""}
+      clearBtnClassName={disableCancel ? "d-none" : "me-2"}
     >
       <Grid container my={2} spacing={2}>
         {inputFields.map((field) => (

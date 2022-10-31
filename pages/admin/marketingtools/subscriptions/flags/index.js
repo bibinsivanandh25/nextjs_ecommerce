@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -13,6 +14,7 @@ import {
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/flags/CreateNotificationModal";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 
 const FlagsSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -22,6 +24,17 @@ const FlagsSubscription = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [rowsForFlags, setRowsForFlags] = useState([]);
+  const [purchaseIde, setPurchaseIde] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const [dropdownValue, setDropdownValue] = useState([]);
+  const [typeId, setTypeId] = useState("");
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
+  const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
+  const [adminComments, setAdminComments] = useState({
+    comment: "",
+    commentAttachment: "",
+  });
 
   const column1 = [
     {
@@ -149,175 +162,178 @@ const FlagsSubscription = () => {
   ];
 
   const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
-    const { error } = await enableOrDisableSubscriptions(
+    const { error, message } = await enableOrDisableSubscriptions(
       purchaseId,
       status,
       marketingTool
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getFlagsSubscription();
-    } else {
-      toastify(`Unable to change the status`, "error");
+      getFlagsSubscription(0);
+    } else if (message) toastify(message, "error");
+    else if (error?.response?.data?.message)
+      toastify(error?.response?.data?.message, "error");
+  };
+
+  const returnTableData = (data) => {
+    const mappedArray = data?.map((val, index) => {
+      const dateOne = new Date(val.activatedAt);
+      const dateTwo = new Date(val.expirationDate);
+      const timeDifference = dateTwo.getTime() - dateOne.getTime();
+      const divisor = 1000 * 60 * 60 * 24;
+      const numberOfDays = timeDifference / divisor;
+      return {
+        id: val.purchaseId,
+        col1: index >= 9 ? index + 1 : `0${index + 1}`,
+        col2: val.purchasedById,
+        col3:
+          numberOfDays === 7
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col4:
+          numberOfDays === 30
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col5:
+          numberOfDays === 90
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col6:
+          numberOfDays === 180
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col7:
+          numberOfDays === 270
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col8:
+          numberOfDays === 360
+            ? `${val.activatedAt}-${val.expirationDate}`
+            : "--",
+        col9: val.toolStatus,
+        col10: val.subscriptionAmount,
+        col11: val.comments ? val.comments : "0",
+        col12: (
+          <Box className="d-flex justify-content-evenly align-items-center">
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => {
+                setPurchaseIde(val.purchaseId);
+                setSubscriptionStatus(val.toolStatus);
+                setSubscriptionPeriod(
+                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                    val.expirationDate ? val.expirationDate : "--"
+                  }`
+                );
+                setOpenViewModal(true);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(
+                  ele,
+                  val.purchaseId,
+                  val.comments,
+                  val.commentsAttachment
+                );
+              }}
+              options={[
+                "Notify",
+                "Add Note",
+                <Box className="d-flex align-items-center">
+                  <Typography>
+                    {val.disabled ? "Disabled" : "Enabled"}
+                  </Typography>
+                  <Box className="ms-4">
+                    <SwitchComponent
+                      defaultChecked={!val.disabled}
+                      label=""
+                      ontoggle={() => {
+                        handleEnableOrDisable(
+                          val.purchaseId,
+                          !val.disabled,
+                          "TODAYS_DEAL"
+                        );
+                      }}
+                    />
+                  </Box>
+                </Box>,
+              ]}
+              IconclassName="fs-18 color-gray"
+            />
+          </Box>
+        ),
+      };
+    });
+    return mappedArray;
+  };
+
+  const getFlagsSubscription = async (page) => {
+    const selectedListData = dropdownValue.map((value) => value.title);
+    const payload = {
+      marketingTool: "FLAGS",
+      userType: selectedListData,
+    };
+    const { data, error } = await getSubscriptions(payload, page);
+
+    if (error?.response?.data?.message) {
+      toastify(error?.response?.data?.message, "error");
+      if (page === 0) {
+        setRowsForFlags([]);
+      }
+    } else if (data?.length) {
+      if (page === 0) {
+        setRowsForFlags(returnTableData(data));
+        setPageNumber(1);
+      } else {
+        setRowsForFlags((pre) => [...pre, ...returnTableData(data)]);
+        setPageNumber((pre) => pre + 1);
+      }
+    } else if (!data?.length) {
+      if (page === 0) setRowsForFlags([]);
     }
   };
 
-  async function getFlagsSubscription() {
-    const { data, error } = await getSubscriptions({
-      marketingTool: "FLAGS",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
-    });
-    if (data) {
-      console.log(data);
-      const mappedArray = data.map((val, index) => {
-        const dateOne = new Date(val.activatedAt);
-        const dateTwo = new Date(val.expirationDate);
-        const timeDifference = dateTwo.getTime() - dateOne.getTime();
-        const divisor = 1000 * 60 * 60 * 24;
-        const numberOfDays = timeDifference / divisor;
-        return {
-          id: val.purchaseId,
-          col1: index >= 9 ? index + 1 : `0${index + 1}`,
-          col2: val.purchasedById,
-          col3:
-            numberOfDays === 7
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col4:
-            numberOfDays === 30
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col5:
-            numberOfDays === 90
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col6:
-            numberOfDays === 180
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col7:
-            numberOfDays === 270
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col8:
-            numberOfDays === 360
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col9: val.toolStatus,
-          col10: val.subscriptionAmount,
-          col11: val.comments ? val.comments : "0",
-          col12: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => {
-                  console.log(
-                    "val.userMarketingTools ",
-                    val.userMarketingTools
-                  );
-                  setDataOfSingleSupplierOrReseller(val.userMarketingTools);
-                  setOpenViewModal(true);
-                }}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  console.log("Hey");
-                  onClickOfMenuItem(ele);
-                }}
-                options={[
-                  "Notify",
-                  "Add Note",
-                  <Box className="d-flex align-items-center">
-                    <Typography>
-                      {val.disabled ? "Disabled" : "Enabled"}
-                    </Typography>
-                    <Box className="ms-4">
-                      <SwitchComponent
-                        defaultChecked={!val.disabled}
-                        label=""
-                        ontoggle={() => {
-                          handleEnableOrDisable(
-                            val.purchaseId,
-                            !val.disabled,
-                            "TODAYS_DEAL"
-                          );
-                        }}
-                      />
-                    </Box>
-                  </Box>,
-                ]}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        };
+  const onClickOfMenuItem = (ele, theTypeId, comments, attachment) => {
+    if (ele === "Add Note") {
+      setTypeId(theTypeId);
+      setAdminComments({
+        comment: comments,
+        commentAttachment: attachment,
       });
-
-      setRowsForFlags(mappedArray);
+      setOpenAddNoteModal(true);
     }
-    if (error) {
-      console.log("error hey", error);
+    if (ele === "Notify") {
+      setShowNotificationModal(true);
     }
-  }
-
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") setOpenAddNoteModal(true);
-    if (ele === "Notify") setShowNotificationModal(true);
   };
 
   useEffect(() => {
-    getFlagsSubscription();
-  }, []);
-
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     col1: "01",
-  //     col2: "#827342",
-  //     col3: "--",
-  //     col4: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
-  //     col5: "--",
-  //     col6: "--",
-  //     col7: "--",
-  //     col8: "--",
-  //     col9: "sdasdasd",
-  //     col10: "Active",
-  //     col11: 25,
-  //     col12: (
-  //       <Box className="d-flex justify-content-evenly align-items-center">
-  //         <CustomIcon
-  //           type="view"
-  //           className="fs-18"
-  //           onIconClick={() => setOpenViewModal(true)}
-  //         />
-  //         <MenuOption
-  //           getSelectedItem={(ele) => {
-  //             onClickOfMenuItem(ele);
-  //           }}
-  //           options={[
-  //             "Notify",
-  //             "Add Note",
-  //             <Box className="d-flex align-items-center">
-  //               <Typography>Disable</Typography>
-  //               <Box className="ms-4">
-  //                 <SwitchComponent label="" />
-  //               </Box>
-  //             </Box>,
-  //           ]}
-  //           IconclassName="fs-18 color-gray"
-  //         />
-  //       </Box>
-  //     ),
-  //   },
-  // ];
+    getFlagsSubscription(0);
+  }, [dropdownValue]);
 
   return (
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">Flags</Typography>
+          <Box className="d-flex align-items-center justify-content-between">
+            <Typography className="fw-bold color-orange">Flags</Typography>
+            <Box className="w-25 me-2">
+              <MultiSelectComponent
+                list={[
+                  { title: "Supplier", id: 1 },
+                  { title: "Reseller", id: 2 },
+                ]}
+                label="Select Subscriber"
+                onSelectionChange={(_e, val) => {
+                  setDropdownValue(val);
+                }}
+                value={dropdownValue}
+                inputlabelshrink={false}
+              />
+            </Box>
+          </Box>
           <TableComponent
             columns={[...column2]}
             column2={[...column1]}
@@ -327,27 +343,39 @@ const FlagsSubscription = () => {
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
-            onCustomButtonClick={() => {
-              // setOpenAddDaysCounterModal(true);
+            handlePageEnd={(page = pageNumber) => {
+              getFlagsSubscription(page);
             }}
           />
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
-      <CreateNotification
-        showNotificationModal={showNotificationModal}
-        setShowNotificationModal={setShowNotificationModal}
-        type="add"
-      />
+      {openViewModal && (
+        <ViewModal
+          openViewModal={openViewModal}
+          setOpenViewModal={setOpenViewModal}
+          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
+          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
+          purchaseIde={purchaseIde}
+          subscriptionStatus={subscriptionStatus}
+          subscriptionPeriod={subscriptionPeriod}
+        />
+      )}
+      {openAddNoteModal && (
+        <AddNoteModal
+          openAddNoteModal={openAddNoteModal}
+          setOpenAddNoteModal={setOpenAddNoteModal}
+          typeId={typeId}
+          adminComments={adminComments}
+          getFlagsSubscription={getFlagsSubscription}
+        />
+      )}
+      {showNotificationModal && (
+        <CreateNotification
+          showNotificationModal={showNotificationModal}
+          setShowNotificationModal={setShowNotificationModal}
+          type="add"
+        />
+      )}
     </>
   );
 };

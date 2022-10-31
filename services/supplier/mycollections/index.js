@@ -1,16 +1,16 @@
 import serviceUtil from "services/utils";
 
-const getCollections = async (userId) => {
-  const { data, err } = await serviceUtil.get(
-    `products/master-product-filter?status=APPROVED&pageNumber=0&pageSize=10&keyword=&supplierId=${userId}&filterStatus=ALL`
-  );
-  if (data) {
-    return data.data;
-  }
-  if (err) {
-    // console.log(err.response);
-  }
-  return null;
+const getCollections = async (userId, pageNumber, searchText, filterStatus) => {
+  const pageSize = 50;
+  return serviceUtil
+    .get(
+      `products/master-product/my-collection/${pageNumber}/${pageSize}?supplierId=${userId}&status=APPROVED&filterType=${filterStatus}&keyword=${searchText}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
 };
 
 const getAllProductFlags = async (supplierId) => {
@@ -19,12 +19,12 @@ const getAllProductFlags = async (supplierId) => {
       `products/supplier-flag/SUPPLIER/${supplierId}`
     );
     if (data) {
-      console.log(data.data);
       return data;
     }
   } catch (error) {
     return error;
   }
+  return null;
 };
 
 const getDataOfSingleFlagSelected = async (id, supplierId, purchaseId) => {
@@ -33,12 +33,12 @@ const getDataOfSingleFlagSelected = async (id, supplierId, purchaseId) => {
       `products/supplier-flag/${id}/${purchaseId}/${supplierId}`
     );
     if (data) {
-      console.log(data.data);
       return data;
     }
   } catch (error) {
     return error;
   }
+  return null;
 };
 
 const postAFlag = async (payload) => {
@@ -50,6 +50,7 @@ const postAFlag = async (payload) => {
   } catch (error) {
     return error;
   }
+  return null;
 };
 
 export {

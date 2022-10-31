@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
@@ -89,7 +90,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   //   const marketingToolsList = user.unlockedTools;
   const dispatch = useDispatch();
   const [navOptionsList, setNavOptionsList] = useState([]);
-  const [staffCapabilityList, setstaffCapabilityList] = useState([]);
+  const [staffCapabilityList, setstaffCapabilityList] = useState(null);
 
   const getBasePath = (role) => {
     switch (role) {
@@ -116,7 +117,30 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       if (item?.childCapabilityNameList?.length) {
         temp.push(...getCapability(item.childCapabilityNameList));
       } else if (item.isEnable) {
-        temp.push(item.capabilityType);
+        if (item.capabilityType) {
+          temp.push(item.capabilityType);
+        } else {
+          temp.push(item.capabilityName);
+        }
+      }
+    });
+    return temp;
+  };
+
+  const getAdminCapability = (data) => {
+    const temp = {};
+    data.forEach((item) => {
+      if (item?.childCapabilityNameList?.length) {
+        temp[`${item.capabilityName.toLowerCase().trim()}`] = {
+          child: {
+            ...getAdminCapability(item.childCapabilityNameList),
+          },
+          isEnable: item.isEnable,
+        };
+      } else {
+        temp[`${item.capabilityName.toLowerCase().trim()}`] = {
+          isEnable: item.isEnable,
+        };
       }
     });
     return temp;
@@ -147,8 +171,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         .catch(() => {});
     } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
       setNavOptionsList(adminNav);
-      if (user.role !== "ADMIN") {
-        setstaffCapabilityList(getCapability([...user.adminCapabilities]));
+      if (user.role !== "ADMIN" && user.adminCapabilities) {
+        setstaffCapabilityList(getAdminCapability([...user.adminCapabilities]));
       }
     }
   };
@@ -218,10 +242,56 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         ],
       };
     };
+    const mapAdminList = (id, item, path, capabiliteArr) => {
+      if (!item?.child?.length) {
+        return {
+          ...item,
+          id,
+          selected: false,
+          pathName: `${path}/${item.pathName}`,
+          disabled:
+            user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
+          locked: false,
+        };
+      }
+      return {
+        ...item,
+        id,
+        selected: false,
+        pathName: `${path}/${item.pathName}`,
+        disabled:
+          user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
+        locked: false,
+        child: [
+          ...item.child.map((ele, index) => {
+            return mapAdminList(
+              `${id}_${index}`,
+              ele,
+              `${path}/${item.pathName}`,
+              user.adminCapabilities === null
+                ? {}
+                : capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+            );
+          }),
+        ],
+      };
+    };
     const list = [...navOptionsList].map((item, index) => {
-      return addId(index, item, `/${getBasePath(role)}`);
+      return role.includes("ADMIN")
+        ? role === "ADMIN"
+          ? addId(index, item, `/${getBasePath(role)}`)
+          : mapAdminList(
+              index,
+              item,
+              `/${getBasePath(role)}`,
+              user.adminCapabilities === null
+                ? {}
+                : staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+            )
+        : addId(index, item, `/${getBasePath(role)}`);
     });
     return JSON.parse(JSON.stringify(getInitialSelection([...list])));
+    // return JSON.parse(JSON.stringify([...list]));
   };
   const getCapabilityPathList = (data) => {
     const temp = [];
@@ -259,6 +329,18 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       dispatch(setAllowedPaths(getCapabilityPathList(menuList)));
     }
   }, [menuList]);
+
+  const setSelectedToFalse = (data) => {
+    data.forEach((element) => {
+      if (element?.child?.length) {
+        element.child = setSelectedToFalse(
+          JSON.parse(JSON.stringify([...element.child]))
+        );
+      }
+      element.selected = false;
+    });
+    return data;
+  };
 
   return (
     <CustomDrawer
@@ -325,17 +407,6 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           route.push(`${item.pathName}`);
                         }
                         setMenuList((pre) => {
-                          const setSelectedToFalse = (data) => {
-                            data.forEach((element) => {
-                              if (element?.child?.length) {
-                                element.child = setSelectedToFalse(
-                                  JSON.parse(JSON.stringify([...element.child]))
-                                );
-                              }
-                              element.selected = false;
-                            });
-                            return data;
-                          };
                           const temp = setSelectedToFalse(
                             JSON.parse(JSON.stringify([...pre]))
                           );
@@ -349,9 +420,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           minWidth: 0,
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
-                          color: item.selected && "#e56700",
+                          // color: item.selected && "#e56700",
                         }}
-                        className="cursor-pointer"
+                        className={`${
+                          route.pathname.includes(item.pathName)
+                            ? "color-orange"
+                            : ""
+                        } cursor-pointer`}
                       >
                         <Tooltip
                           title={!open ? item.title : ""}
@@ -364,11 +439,15 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                         className="cursor-pointer"
                         primary={
                           <Typography
-                            className="cursor-pointer"
+                            className={`${
+                              route.pathname.includes(item.pathName)
+                                ? "color-orange"
+                                : ""
+                            } cursor-pointer`}
                             variant="text"
                             fontWeight={600}
                             fontSize={13}
-                            color={item.selected && "#e56700"}
+                            // color={item.selected && "#e56700"}
                           >
                             {item.title}
                           </Typography>
@@ -377,7 +456,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                       />
                     </ListItemButton>
                   ) : (
-                    <CollapseList list={item} open={open} />
+                    <CollapseList
+                      list={item}
+                      open={open}
+                      setToFalse={() => {
+                        setMenuList((pre) => {
+                          const temp = setSelectedToFalse(pre);
+                          return temp;
+                        });
+                      }}
+                      // id={index}
+                    />
                   )}
                 </ListItem>
               );

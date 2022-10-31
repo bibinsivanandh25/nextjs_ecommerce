@@ -369,15 +369,11 @@ const DashBoard = () => {
         />
       </Box>
       <Box className="">
-        <Grid
-          container
-          spacing={1}
-          className="mt-3 d-flex justify-content-evenly"
-        >
+        <Grid container className="mt-3 " spacing={1}>
           {cardData.map((item) => (
-            <Grid item lg={2} md={3} sm={6} xs={6} className=" cursor-pointer">
+            <Grid item md={2.4} className=" cursor-pointer">
               <CardComponent className="" boxColor={item.color}>
-                <Typography className="h-6 pt-1 fw-500 color-gray ps-1">
+                <Typography className="h-5 pt-1 fw-500 color-gray ps-1">
                   {item.title}
                 </Typography>
                 <Typography className="fw-600 h-2 py-2 d-flex justify-content-center">

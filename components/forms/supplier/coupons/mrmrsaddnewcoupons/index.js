@@ -78,6 +78,11 @@ const MrMrsAddNewCoupons = ({
         formValues[id].toString() === "Invalid Date"
       ) {
         errObj[id] = "Invalid Date";
+      } else if (
+        id === "couponExpiryDate" &&
+        new Date().getTime() > new Date(formValues[id]).getTime()
+      ) {
+        errObj[id] = "Invalid Date";
       } else {
         errObj[id] = null;
       }
@@ -294,8 +299,6 @@ const MrMrsAddNewCoupons = ({
                 id="couponExpiryDate"
                 name="couponExpiryDate"
                 onDateChange={(val) => {
-                  // console.log(val);
-
                   setFormValues((prev) => ({
                     ...prev,
                     couponExpiryDate: val,

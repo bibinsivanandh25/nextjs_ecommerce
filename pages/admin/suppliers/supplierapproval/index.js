@@ -92,6 +92,12 @@ const tableColumn = [
   },
 ];
 
+const filterData = [
+  {
+    name: "Category",
+    value: ["Supplier"],
+  },
+];
 const SupplierApproval = () => {
   const [masterData, setMasterData] = useState({});
   const [tableRows, setTableRows] = useState([]);
@@ -104,6 +110,7 @@ const SupplierApproval = () => {
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
+    toastify("GSTIN Number Copied Successfully!", "success");
     // toastify(`Copied GSTIN Number ${copyTexts}`, "success");
   };
   const handleViewClick = (item) => {
@@ -132,7 +139,7 @@ const SupplierApproval = () => {
     const rowDatas = [];
     data?.forEach((item, index) => {
       rowDatas.push({
-        id: "col1",
+        id: index + 1,
         col1: index + 1,
         col2: item.businessName,
         col3: item.emailId ? item.emailId : item.mobileNumber,
@@ -233,22 +240,23 @@ const SupplierApproval = () => {
       className="pt-2 mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
       elevation={3}
     >
-      <Box className="d-flex justify-content-between px-3">
-        <Typography>Supplier approval ({masterData.count})</Typography>
-        <ButtonComponent
-          label="Invite supplier"
-          onBtnClick={() => {
-            setOpenInviteModal(true);
-          }}
-        />
-      </Box>
       <TableComponent
+        table_heading={`Supplier approval (${masterData?.count || 0})`}
+        showFilterButton
+        showDateFilterBtn
         showSearchFilter={false}
-        showSearchbar={false}
+        showSearchbar
         stickyHeader={false}
         columns={[...tableColumn]}
         tableRows={[...tableRows]}
         showCheckbox={false}
+        showCustomButton
+        customButtonLabel="Invite supplier"
+        onCustomButtonClick={() => {
+          setOpenInviteModal(true);
+        }}
+        allowOutSideClickClose
+        filterData={filterData}
       />
       {viewModalOpen && (
         <ModalComponent

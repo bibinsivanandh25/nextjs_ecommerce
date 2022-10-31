@@ -11,7 +11,7 @@ import TextEditor from "components/atoms/TextEditor";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
 import { format } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   getAllMainCategories,
@@ -348,6 +348,18 @@ const CreateDiscount = ({
       }
     }
   }, [defaultDate.startdate, defaultDate.starttime]);
+  const ref = useRef(null);
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setShowListGroup(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
   return (
     <div>
       <div
@@ -381,116 +393,120 @@ const CreateDiscount = ({
             showAutoCompleteOff="off"
             value={getSelectedCategoriesLabels()}
             placeholder="Select Category"
+            inputRef={ref}
           />
           {showListGroup ? (
-            <Grid
-              item
-              container
-              sm={12}
-              className="position-absolute"
-              sx={{
-                width: "98.5%",
-                top: 48,
-                zIndex: 1000,
-              }}
-            >
-              <>
-                <Grid item sm={4}>
-                  <ListGroupComponent
-                    size="small"
-                    showAddIcon={false}
-                    showEditIcon={false}
-                    showTitle
-                    title="Category"
-                    data={categories}
-                    onSelectionChange={(val) => {
-                      if (val?.length) {
-                        setSubCategories([]);
+            <div ref={ref}>
+              <Grid
+                item
+                container
+                sm={12}
+                className="position-absolute"
+                sx={{
+                  width: "98.5%",
+                  top: 48,
+                  left: 10,
+                  zIndex: 1000,
+                }}
+              >
+                <>
+                  <Grid item sm={4}>
+                    <ListGroupComponent
+                      size="small"
+                      showAddIcon={false}
+                      showEditIcon={false}
+                      showTitle
+                      title="Category"
+                      data={categories}
+                      onSelectionChange={(val) => {
+                        if (val?.length) {
+                          setSubCategories([]);
+                          setSelectedCategory((pre) => ({
+                            ...pre,
+                            mainCategoryId: val[0]?.id,
+                            subCategoryId: "",
+                          }));
+                          setFormValues((prev) => {
+                            return {
+                              ...prev,
+                              marginType: val[0]?.marginType,
+                            };
+                          });
+                          setCategoriesList((prev) => {
+                            return {
+                              ...prev,
+                              category: val,
+                              subCategory: [],
+                              set: [],
+                            };
+                          });
+                          getSets(val[0]);
+                        } else {
+                          setCategoriesList((prev) => {
+                            return {
+                              ...prev,
+                              category: [],
+                              subCategory: [],
+                              set: [],
+                            };
+                          });
+                          setProducts([]);
+                          setSets([]);
+                          setSubCategories([]);
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item sm={4}>
+                    <ListGroupComponent
+                      size="small"
+                      showAddIcon={false}
+                      showEditIcon={false}
+                      showTitle
+                      title="Set"
+                      data={[...sets]}
+                      onSelectionChange={(val) => {
+                        if (val?.length) {
+                          getSubCategories(val[0]);
+                        } else {
+                          setSubCategories([]);
+                          setProducts([]);
+                        }
+                        setCategoriesList((prev) => {
+                          return {
+                            ...prev,
+                            set: val,
+                          };
+                        });
+                      }}
+                    />
+                  </Grid>
+                  <Grid item sm={4}>
+                    <ListGroupComponent
+                      size="small"
+                      showAddIcon={false}
+                      showEditIcon={false}
+                      showTitle
+                      title="Sub Category"
+                      data={[...subCategories]}
+                      onSelectionChange={(val) => {
                         setSelectedCategory((pre) => ({
                           ...pre,
-                          mainCategoryId: val[0]?.id,
-                          subCategoryId: "",
+                          subCategoryId: val[0]?.id,
                         }));
-                        setFormValues((prev) => {
-                          return {
-                            ...prev,
-                            marginType: val[0]?.marginType,
-                          };
-                        });
+                        getProducts(val[0]);
                         setCategoriesList((prev) => {
                           return {
                             ...prev,
-                            category: val,
-                            subCategory: [],
-                            set: [],
+                            subCategory: val,
                           };
                         });
-                        getSets(val[0]);
-                      } else {
-                        setCategoriesList((prev) => {
-                          return {
-                            ...prev,
-                            category: [],
-                            subCategory: [],
-                            set: [],
-                          };
-                        });
-                        setProducts([]);
-                        setSets([]);
-                        setSubCategories([]);
-                      }
-                    }}
-                  />
-                </Grid>
-                <Grid item sm={4}>
-                  <ListGroupComponent
-                    size="small"
-                    showAddIcon={false}
-                    showEditIcon={false}
-                    showTitle
-                    title="Set"
-                    data={[...sets]}
-                    onSelectionChange={(val) => {
-                      if (val?.length) {
-                        getSubCategories(val[0]);
-                      } else {
-                        setSubCategories([]);
-                        setProducts([]);
-                      }
-                      setCategoriesList((prev) => {
-                        return {
-                          ...prev,
-                          set: val,
-                        };
-                      });
-                    }}
-                  />
-                </Grid>
-                <Grid item sm={4}>
-                  <ListGroupComponent
-                    size="small"
-                    showAddIcon={false}
-                    showEditIcon={false}
-                    showTitle
-                    title="Sub Category"
-                    data={[...subCategories]}
-                    onSelectionChange={(val) => {
-                      setSelectedCategory((pre) => ({
-                        ...pre,
-                        subCategoryId: val[0]?.id,
-                      }));
-                      getProducts(val[0]);
-                      setCategoriesList((prev) => {
-                        return {
-                          ...prev,
-                          subCategory: val,
-                        };
-                      });
-                    }}
-                  />
-                </Grid>
-              </>
-            </Grid>
+                      }}
+                    />
+                  </Grid>
+                </>
+              </Grid>
+            </div>
           ) : null}
         </Grid>
         <Grid item sm={2}>

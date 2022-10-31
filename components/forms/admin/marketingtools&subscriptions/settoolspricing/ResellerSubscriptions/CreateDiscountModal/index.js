@@ -29,32 +29,32 @@ const daysList = [
   {
     id: 1,
     label: "7 Days",
-    value: "7 Days",
+    value: "7 days",
   },
   {
     id: 2,
     label: "30 Days",
-    value: "30Days",
+    value: "30 days",
   },
   {
     id: 3,
     label: "90 Days",
-    value: "90 Days",
+    value: "90 days",
   },
   {
     id: 4,
     label: "180 Days",
-    value: "180 Days",
+    value: "180 days",
   },
   {
     id: 5,
     label: "270 Days",
-    value: "270 Days",
+    value: "270 days",
   },
   {
     id: 6,
     label: "360 Days",
-    value: "360 Days",
+    value: "360 days",
   },
 ];
 

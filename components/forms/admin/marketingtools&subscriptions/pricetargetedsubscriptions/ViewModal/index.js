@@ -1,9 +1,16 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable react/no-danger */
 import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
+import {
+  // deleteDisCountSubscription,
+  discountApproved,
+  getViewDiscountData,
+} from "services/admin/discountsubscription";
+import toastify from "services/utils/toastUtils";
 // import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions";
 
 const column1 = [
@@ -12,6 +19,7 @@ const column1 = [
     label: "S.No.",
     align: "center",
     data_align: "center",
+    minWidth: 50,
     data_classname: "",
     rowSpan: 2,
   },
@@ -21,6 +29,7 @@ const column1 = [
     label: "Discount Title",
     align: "center",
     data_align: "center",
+    minWidth: 150,
     data_classname: "",
     rowSpan: 2,
   },
@@ -28,6 +37,7 @@ const column1 = [
     id: "col3",
     label: "Description",
     align: "center",
+    minWidth: 150,
     data_align: "center",
     data_classname: "",
     rowSpan: 2,
@@ -35,6 +45,7 @@ const column1 = [
   {
     label: "Campaign Period Start & End date with Time",
     align: "center",
+    minWidth: 350,
     data_align: "center",
     data_classname: "",
     colSpan: 2,
@@ -97,17 +108,19 @@ const ViewModal = ({
   openViewModal,
   setOpenViewModal = () => {},
   viewData = {},
+  user = {},
 }) => {
+  const [viewPageNumber, setViewPageNumber] = useState(0);
   const [rows, setRows] = useState([]);
   const handleCloseIconClick = () => {
     setOpenViewModal(false);
   };
-  const getTableRows = () => {
+  const getTableRows = (data) => {
     const result = [];
-    if (viewData?.userMarketingTools) {
-      viewData?.userMarketingTools.forEach((item, index) => {
+    if (data) {
+      data?.forEach((item, index) => {
         result.push({
-          id: "col1",
+          id: index + 1,
           col1: index + 1,
           col2: item.campaignTitle,
           col3: (
@@ -121,13 +134,11 @@ const ViewModal = ({
           col4: (
             <Box className="d-flex justify-content-around">
               <Typography className="h-5">{item.startDateTime}</Typography>
-              <CustomIcon type="edit" className="ms-2 fs-16" />
             </Box>
           ),
           col5: (
             <Box className="d-flex justify-content-around">
               <Typography className="h-5">{item.endDateTime}</Typography>
-              <CustomIcon type="edit" className="ms-2 fs-16" />
             </Box>
           ),
           col6: item.createdDate,
@@ -135,10 +146,27 @@ const ViewModal = ({
           col8: item.toolStatus,
           col9: (
             <Box className="d-flex align-items-center justify-content-center">
-              <CustomIcon type="edit" className="fs-18 mx-2" />
-              <CustomIcon type="close" className="fs-18" />
-              <CustomIcon type="doneIcon" className="fs-18 mx-2" />
-              <CustomIcon type="delete" className="fs-18" />
+              <CustomIcon
+                type="close"
+                className="fs-18"
+                onIconClick={() => {
+                  handleAcceptClick("REJECTED", item.marketingToolId);
+                }}
+              />
+              <CustomIcon
+                type="doneIcon"
+                className="fs-18 mx-2"
+                onIconClick={() => {
+                  handleAcceptClick("APPROVED", item.marketingToolId);
+                }}
+              />
+              {/* <CustomIcon
+                type="delete"
+                className="fs-18"
+                onIconClick={() => {
+                  handleDeleteClick(item.marketingToolId);
+                }}
+              /> */}
             </Box>
           ),
         });
@@ -146,8 +174,47 @@ const ViewModal = ({
     }
     return result;
   };
+  const handleAcceptClick = async (value, id) => {
+    const { data, err } = await discountApproved(value, id, user?.userId);
+    if (data) {
+      getTableData(viewPageNumber);
+      toastify(data.message, "success");
+    }
+    if (err) {
+      toastify(err.response?.data?.message, "error");
+    }
+  };
+  // const handleDeleteClick = async (id) => {
+  //   const { data, err } = await deleteDisCountSubscription(id);
+  //   if (data) {
+  //     getTableData(viewPageNumber);
+  //     toastify(data.message, "success");
+  //   }
+  //   if (err) {
+  //     toastify(err.response?.data?.message, "error");
+  //   }
+  // };
+  const getTableData = async (page) => {
+    const { data, err } = await getViewDiscountData(viewData.purchaseId, page);
+    if (data?.data?.length) {
+      toastify(data?.message, "success");
+      if (page == 0) {
+        setRows(getTableRows(data.data));
+        setViewPageNumber((pre) => pre + 1);
+      } else {
+        setViewPageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getTableRows(data.data)]);
+      }
+    } else {
+      toastify(data?.message, "error");
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      setRows([]);
+    }
+  };
   useEffect(() => {
-    setRows(getTableRows());
+    getTableData(0);
   }, [viewData]);
   return (
     <Box>
@@ -178,8 +245,11 @@ const ViewModal = ({
           showSearchFilter={false}
           showSearchbar={false}
           showCheckbox={false}
-          onCustomButtonClick={() => {
-            // setOpenAddDaysCounterModal(true);
+          handlePageEnd={(page = viewPageNumber) => {
+            getTableData(page);
+          }}
+          handleRowsPerPageChange={() => {
+            setViewPageNumber(0);
           }}
           stickyHeader
         />

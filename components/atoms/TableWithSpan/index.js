@@ -99,7 +99,6 @@ const EnhancedTableHead = (props) => {
         )}
         {column2.map((ele, index) => {
           minWidthCount += ele.minWidth;
-
           return (
             <TableCell
               style={{
@@ -191,6 +190,8 @@ export default function TableComponent({
   showButton = false,
   buttonLabel = "button",
   onBtnClick = () => {},
+  handlePageEnd = () => {},
+  handleRowsPerPageChange = () => {},
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -274,12 +275,19 @@ export default function TableComponent({
   // };
 
   const handleChangePage = (event, newPage) => {
+    const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
+    if (newPage === numberOfPage - 1) {
+      handlePageEnd(undefined);
+    }
+
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
+    handlePageEnd(0);
     setRowsPerPage(+event.target.value);
     setPage(0);
+    handleRowsPerPageChange(0);
   };
 
   const handleSelectAllClick = (event, checked) => {
@@ -394,9 +402,9 @@ export default function TableComponent({
   const classes = useStyles();
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";
-    if (position === "sticky" && index !== columns.length - 1)
+    if (position === "sticky" && index !== filteredColumns.length - 1)
       return classes.stickyrow;
-    if (position === "sticky" && index === columns.length - 1)
+    if (position === "sticky" && index === filteredColumns.length - 1)
       return classes.lastrow;
   };
 
@@ -497,12 +505,12 @@ export default function TableComponent({
                               fontSize: 12,
                               left:
                                 column.position === "sticky" &&
-                                index !== columns.length - 1
+                                index !== filteredColumns.length - 1
                                   ? `${minWidthCount - column.minWidth}px`
                                   : "",
                               right:
                                 column.position === "sticky" &&
-                                index === columns.length - 1
+                                index === filteredColumns.length - 1
                                   ? 0
                                   : "",
                             }}
