@@ -3,7 +3,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import validateMessage from "constants/validateMessages";
-import { saveAdminTags } from "services/admin/tags";
+import { saveAdminTags, updateAdminTag } from "services/admin/tags";
 import toastify from "services/utils/toastUtils";
 
 const CreateTags = ({
@@ -14,6 +14,8 @@ const CreateTags = ({
   setTageName = () => {},
   setpageNumber = () => {},
   user = {},
+  modalType = "",
+  selectedTagId = "",
 }) => {
   const [error, setError] = useState("");
 
@@ -26,23 +28,47 @@ const CreateTags = ({
       flag = false;
       setError("Max 250 alpha numeric characters can be entered");
     }
-    if (flag) {
-      const payload = {
-        tagName,
-        createdBy: user.userId,
-        createdByType: "ADMIN",
-      };
-      const { data, err } = await saveAdminTags(payload);
-      if (data.data) {
-        toastify(data.message, "success");
-        getAllTags(0);
-        setpageNumber(0);
-        setModalOpen(false);
-        setError("");
-        setTageName("");
+    if (modalType == "add") {
+      if (flag) {
+        const payload = {
+          tagName,
+          createdBy: user.userId,
+          createdByType: "ADMIN",
+        };
+        const { data, err } = await saveAdminTags(payload);
+        if (data.data) {
+          toastify(data.message, "success");
+          getAllTags(0);
+          setpageNumber(0);
+          setModalOpen(false);
+          setError("");
+          setTageName("");
+        }
+        if (err) {
+          toastify(err.response.data.message, "error");
+        }
       }
-      if (err) {
-        toastify(err.response.data.message, "error");
+    }
+    if (modalType == "edit") {
+      if (flag) {
+        const payload = {
+          tagId: selectedTagId,
+          tagName,
+          createdByType: "ADMIN",
+        };
+
+        const { data, err } = await updateAdminTag(payload);
+        if (data.data) {
+          toastify(data.message, "success");
+          getAllTags(0);
+          setpageNumber(0);
+          setModalOpen(false);
+          setError("");
+          setTageName("");
+        }
+        if (err) {
+          toastify(err.response.data.message, "error");
+        }
       }
     }
   };
@@ -58,9 +84,9 @@ const CreateTags = ({
         handleCloseClick();
       }}
       footerClassName="justify-content-end"
-      saveBtnText="Submit"
+      saveBtnText={modalType == "add" ? "Submit" : "Edit"}
       ClearBtnText="Cancel"
-      ModalTitle="Create Tag"
+      ModalTitle={modalType == "add" ? "Create Tag" : "Edit Tag"}
       onSaveBtnClick={() => {
         handleSaveClick();
       }}

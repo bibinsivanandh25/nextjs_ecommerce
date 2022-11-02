@@ -11,7 +11,7 @@ const tableColumn = [
   {
     id: "col1",
     label: "SI NO.",
-    minWidth: 50,
+    minWidth: 40,
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -27,7 +27,7 @@ const tableColumn = [
   {
     id: "col3",
     label: "Status",
-    minWidth: 150,
+    minWidth: 120,
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -131,6 +131,8 @@ const Queries = () => {
               table_heading="Queries"
               columns={[...tableColumn]}
               tableRows={[...rows]}
+              stickyHeader
+              showCheckbox={false}
             />
           </Box>
         ) : (
