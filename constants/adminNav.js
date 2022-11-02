@@ -532,7 +532,7 @@ const adminNav = [
             title: "Flags",
             logo: "",
             pathName: "flags",
-            navigate: false,
+            navigate: true,
             disabled: false,
             child: [],
           },
