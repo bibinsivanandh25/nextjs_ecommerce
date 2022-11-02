@@ -439,7 +439,7 @@ const AdminCapabilities = ({
                   Group Members:
                 </Grid>
                 <Grid item md={9}>
-                  <div className="mxh-100 overflow-y-scroll hide-scrollbar">
+                  <div className="mxh-100 overflow-y-scroll">
                     {groupData.adminRegistrations.map((item) => {
                       return (
                         <div key={item.adminRegistrationId}>
