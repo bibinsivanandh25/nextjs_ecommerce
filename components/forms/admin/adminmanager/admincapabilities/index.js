@@ -405,7 +405,7 @@ const StaffForm = ({
                 </Grid>
               </Grid>
             ) : (
-              <Grid container spacing={2}>
+              <Grid container spacing={2} className="h-5 fw-bold">
                 <Grid item md={12}>
                   First Name: {adminData.firstName}
                 </Grid>
@@ -429,7 +429,10 @@ const StaffForm = ({
                 </Grid>
                 <Grid item md={12}>
                   Created Date:{" "}
-                  {format(new Date(adminData.createdDate), "dd-MM-yyyy")}
+                  {format(
+                    new Date(adminData.createdDate),
+                    "dd-MM-yyyy HH:mm:ss"
+                  )}
                 </Grid>
               </Grid>
             )}

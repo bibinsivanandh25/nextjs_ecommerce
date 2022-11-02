@@ -268,6 +268,7 @@ const CreateDiscountModal = ({
                   getTools(value);
                 }
                 setDays(value);
+                setTools([]);
               }}
               value={days}
               helperText={error.days ? validateMessage.field_required : ""}
@@ -288,6 +289,7 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <InputBox
+              type="number"
               label="Price"
               value={price}
               onInputChange={(e) => {
@@ -306,10 +308,10 @@ const CreateDiscountModal = ({
                 setTitle(e.target.value);
               }}
               inputlabelshrink
-              error={error.price}
+              error={error.title}
               helperText={
-                error.price
-                  ? price.length === 0
+                error.title
+                  ? title.length === 0
                     ? validateMessage.field_required
                     : "Maximum 30 characters are allowed"
                   : ""

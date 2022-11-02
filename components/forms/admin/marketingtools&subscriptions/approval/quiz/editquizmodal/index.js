@@ -1,20 +1,19 @@
-import ButtonComponent from "@/atoms/ButtonComponent";
+/* eslint-disable react/no-danger */
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import TextEditor from "@/atoms/TextEditor";
 import { Box, Grid, Typography } from "@mui/material";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { getMarketingToolDetailsByToolId } from "services/admin/marketingtools/approvals";
 
 const EditQuizModal = ({
+  status = "",
   views,
   marketingToolId,
   modalOpen,
   modalClose = () => {},
   title = "",
-  viewModlwidth = "1000px",
   footer = false,
   // editorPlaceHolder = "Description...",
 }) => {
@@ -25,7 +24,8 @@ const EditQuizModal = ({
   const getViewData = async () => {
     const { data } = await getMarketingToolDetailsByToolId(
       marketingToolId,
-      "QUIZ"
+      "QUIZ",
+      status
     );
     if (data) {
       setViewDetailes({ ...data });
@@ -62,9 +62,10 @@ const EditQuizModal = ({
                 fullWidth
               />
             </Grid>
-            {question.questionOptions.map((answer, index) => {
+            {question.questionOptions.map((answer, ind) => {
               return (
-                <Grid item md={12} className="d-flex mt-2" key={index}>
+                // eslint-disable-next-line react/no-array-index-key
+                <Grid item md={12} className="d-flex mt-2" key={ind}>
                   <RadiobuttonComponent
                     label=""
                     size="small"

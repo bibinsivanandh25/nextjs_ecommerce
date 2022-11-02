@@ -50,6 +50,12 @@ const ResellerSubscriptions = () => {
   const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [modalType, setModalType] = useState("Add");
+  const [editDetials, setEditDetails] = useState({
+    days: "",
+    tools: "",
+  });
+  const [marketingToolId, setMarketingToolId] = useState("");
 
   const [tabList, setTabList] = useState([
     { label: "Active", isSelected: true },
@@ -61,24 +67,24 @@ const ResellerSubscriptions = () => {
     {
       name: "STATUS",
       value: [
-        "ACTIVE",
-        "REJECTED",
-        "EXPIRED",
-        "PENDING",
-        "DISABLED",
-        "YET_TO_START",
-        "APPROVED",
+        { item: "ACTIVE", isSelected: false },
+        { item: "REJECTED", isSelected: false },
+        { item: "EXPIRED", isSelected: false },
+        { item: "PENDING", isSelected: false },
+        { item: "DISABLED", isSelected: false },
+        { item: "YET_TO_START", isSelected: false },
+        { item: "APPROVED", isSelected: false },
       ],
     },
     {
       name: "DAYS",
       value: [
-        "7 days",
-        "30 days",
-        "90 days",
-        "180 days",
-        "270 days",
-        "360 days",
+        { item: "7 days", isSelected: false },
+        { item: "30 days", isSelected: false },
+        { item: "90 days", isSelected: false },
+        { item: "180 days", isSelected: false },
+        { item: "270 days", isSelected: false },
+        { item: "360 days", isSelected: false },
       ],
     },
   ];
@@ -465,113 +471,119 @@ const ResellerSubscriptions = () => {
         "360 days",
       ];
       const finalResult = [];
-      days.forEach((day, ind) => {
-        const result = [];
-        data.forEach((ele) => {
-          const temp2 = ele.adminMarketingTools.find((item) => {
-            return item.days.toLocaleLowerCase() === day.toLocaleLowerCase();
-          });
-          if (temp2) result.push(temp2);
-          else
-            result.push({
-              price: "--",
+      if (data?.length) {
+        days.forEach((day, ind) => {
+          const result = [];
+          data.forEach((ele) => {
+            const temp2 = ele.adminMarketingTools.find((item) => {
+              return item.days.toLocaleLowerCase() === day.toLocaleLowerCase();
             });
-        });
-        const result2 = {};
-        const toolIds = [];
-        const status = [];
-        result2.col1 = day;
-        result.forEach((ele, index) => {
-          if (ele) {
-            toolIds.push(ele.adminMarketingToolId);
-            status.push(ele.disabled);
-          }
-          result2[`col${index + 2}`] =
-            ele.price !== "--" ? (
-              <Box className="d-flex align-items-center justify-content-evenly">
-                <Typography className="h-5">₹{ele.price}</Typography>
-                <CustomIcon
-                  type="edit"
-                  className="h-4"
-                  title="Edit Price"
-                  onIconClick={() => {
-                    setShowEditPriceModal(true);
-                    setPriceDetails({
-                      price: ele.price,
-                      id: ele.adminMarketingToolId,
-                    });
-                  }}
-                />
-                <CustomIcon
-                  type="calendar"
-                  className="h-4"
-                  title={
-                    <>
-                      <Typography className="text-center h-5">
-                        {`${ele.startDateTime} to ${ele.endDateTime}`}
-                      </Typography>
-                      <Typography className="text-center h-5">
-                        Status : {ele.status}
-                      </Typography>
-                    </>
-                  }
-                />
-                <CustomIcon
-                  type="notification"
-                  className="h-4"
-                  onIconClick={() => {
-                    setShowCreateNotificationModal(true);
-                  }}
-                />
-                <Box className="ms-2">
-                  <SwitchComponent
-                    label=""
-                    defaultChecked={!ele.disabled}
-                    ontoggle={() => {
-                      enableDisableMarketingTool(
-                        [ele.adminMarketingToolId],
-                        ele.disabled
-                      );
+            if (temp2) result.push(temp2);
+            else
+              result.push({
+                price: "--",
+              });
+          });
+          const result2 = {};
+          const toolIds = [];
+          const status = [];
+          result2.col1 = day;
+          result.forEach((ele, index) => {
+            if (ele) {
+              toolIds.push(ele.adminMarketingToolId);
+              status.push(ele.disabled);
+            }
+            result2[`col${index + 2}`] =
+              ele.price !== "--" ? (
+                <Box className="d-flex align-items-center justify-content-evenly">
+                  <Typography className="h-5">₹{ele.price}</Typography>
+                  <CustomIcon
+                    type="edit"
+                    className="h-4"
+                    title="Edit"
+                    onIconClick={() => {
+                      setOpenAddDaysCounterModal(true);
+                      setModalType("Edit");
+                      setMarketingToolId(ele.adminMarketingToolId);
+                      setEditDetails({
+                        days: ele.days,
+                        tools: ele.adminMarketingToolName,
+                        price: ele.price,
+                        startDate: ele.startDateTime,
+                        endDate: ele.endDateTime,
+                      });
                     }}
                   />
+                  <CustomIcon
+                    type="calendar"
+                    className="h-4"
+                    title={
+                      <>
+                        <Typography className="text-center h-5">
+                          {`${ele.startDateTime} to ${ele.endDateTime}`}
+                        </Typography>
+                        <Typography className="text-center h-5">
+                          Status : {ele.status}
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <CustomIcon
+                    type="notification"
+                    className="h-4"
+                    onIconClick={() => {
+                      setShowCreateNotificationModal(true);
+                    }}
+                  />
+                  <Box className="ms-2">
+                    <SwitchComponent
+                      label=""
+                      defaultChecked={!ele.disabled}
+                      ontoggle={() => {
+                        enableDisableMarketingTool(
+                          [ele.adminMarketingToolId],
+                          ele.disabled
+                        );
+                      }}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            ) : (
-              ele.price
-            );
-        });
+              ) : (
+                ele.price
+              );
+          });
 
-        result2.col10 = (
-          <div className="d-flex justify-content-center align-items-center">
-            <CustomIcon
-              type="view"
-              title="view"
-              className="mx-4"
-              onIconClick={() => {
-                setToolIDs(toolIds);
-                setShowIndividualPricing(true);
-              }}
-            />
-            <SwitchComponent
-              label=""
-              defaultChecked={status.every((ele) => !ele)}
-              ontoggle={() => {
-                enableDisableMarketingTool(
-                  [...toolIds],
-                  status.every((ele) => ele)
-                );
-              }}
-            />
-          </div>
-        );
-        finalResult[ind] = result2;
-      });
+          result2.col10 = (
+            <div className="d-flex justify-content-center align-items-center">
+              <CustomIcon
+                type="view"
+                title="view"
+                className="mx-4"
+                onIconClick={() => {
+                  setToolIDs(toolIds.filter((i) => i));
+                  setShowIndividualPricing(true);
+                }}
+              />
+              <SwitchComponent
+                label=""
+                defaultChecked={status.every((ele) => !ele)}
+                ontoggle={() => {
+                  enableDisableMarketingTool(
+                    toolIds.filter((i) => i),
+                    status.every((ele) => ele)
+                  );
+                }}
+              />
+            </div>
+          );
+          finalResult[ind] = result2;
+        });
+      }
       setIndividualPricingTableRows(finalResult);
     }
   };
-
   const checkToolCampaign = (tool, data) => {
-    return data.map((ele) => ele.adminMarketingToolName).includes(tool);
+    return data.map((ele) => ele?.adminMarketingToolName)?.includes(tool);
   };
   const mapTableCampaignTableRows = (data) => {
     const result = [];
@@ -704,11 +716,29 @@ const ResellerSubscriptions = () => {
     });
     return result;
   };
+  const getStatus = () => {
+    const temp = JSON.parse(JSON.stringify(tabList));
+    let Status = "";
+    temp.forEach((ele) => {
+      if (ele.isSelected) {
+        if (ele.label === "Active") {
+          Status = "ACTIVE";
+        }
+        if (ele.label === "Scheduled") {
+          Status = "YET_TO_START";
+        }
+        if (ele.label === "Expired") {
+          Status = "EXPIRED";
+        }
+      }
+    });
+    return Status;
+  };
 
   const getToolCampaignTableData = async (page, date) => {
     const payload = {
       daysList: [],
-      statusList: [],
+      status: getStatus(),
       storeType: "RESELLER",
       fromDate: date?.fromDate ?? "",
       toDate: date?.toDate ?? "",
@@ -736,8 +766,11 @@ const ResellerSubscriptions = () => {
   useEffect(() => {
     gettableColumsFormarketingtoolsCount();
     getIndividualPricing();
-    getToolCampaignTableData(0);
   }, []);
+
+  useEffect(() => {
+    getToolCampaignTableData(0);
+  }, [tabList]);
 
   const handleEditPrice = async () => {
     const payload = {
@@ -799,6 +832,7 @@ const ResellerSubscriptions = () => {
                 customButtonLabel="Add Day's Counter"
                 onCustomButtonClick={() => {
                   setOpenAddDaysCounterModal(true);
+                  setModalType("Add");
                 }}
               />
             </Paper>
@@ -820,30 +854,34 @@ const ResellerSubscriptions = () => {
                   setTabList(temp);
                 }}
               >
-                <TableComponent
-                  columns={[...tableColumsForToolsCampaign]}
-                  tableRows={toolsCampaignTableRows}
-                  tHeadBgColor="bg-light-gray"
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  showCheckbox={false}
-                  showDateFilter
-                  showDateFilterBtn
-                  filterData={filterData}
-                  showDateFilterSearch={false}
-                  dateFilterBtnName="Create Discounts"
-                  dateFilterBtnClick={() => {
-                    setOpenCreateDiscountModal(true);
-                  }}
-                  handlePageEnd={(
-                    searchText,
-                    searchFilter,
-                    page = pageNumber,
-                    datefilter
-                  ) => {
-                    getToolCampaignTableData(page, datefilter);
-                  }}
-                />
+                <div className="py-2">
+                  <TableComponent
+                    columns={[...tableColumsForToolsCampaign]}
+                    tableRows={toolsCampaignTableRows}
+                    tHeadBgColor="bg-light-gray"
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                    showDateFilter
+                    showFilterButton
+                    tabChange={tabList}
+                    showDateFilterBtn
+                    filterData={filterData}
+                    showDateFilterSearch={false}
+                    dateFilterBtnName="Create Discounts"
+                    dateFilterBtnClick={() => {
+                      setOpenCreateDiscountModal(true);
+                    }}
+                    handlePageEnd={(
+                      searchText,
+                      searchFilter,
+                      page = pageNumber,
+                      datefilter
+                    ) => {
+                      getToolCampaignTableData(page, datefilter);
+                    }}
+                  />
+                </div>
               </TabsCard>
             </Paper>
           </Box>
@@ -877,8 +915,12 @@ const ResellerSubscriptions = () => {
           ) : null}
           {openAddDaysCounterModal ? (
             <AddDaysCounterModal
+              marketingToolId={marketingToolId}
+              getIndividualPricing={getIndividualPricing}
+              modalType={modalType}
               openAddDaysCounterModal={openAddDaysCounterModal}
               setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+              selectedValues={editDetials}
             />
           ) : null}
           {openCreateDiscountModal ? (
