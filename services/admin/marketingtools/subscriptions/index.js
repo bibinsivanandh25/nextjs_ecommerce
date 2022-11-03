@@ -1,12 +1,11 @@
 import serviceUtil from "services/utils";
 
-const getSubscriptions = async (payload) => {
+const getSubscriptions = async (payload, pageNumber) => {
   try {
     const { data } = await serviceUtil.post(
-      `users/admin-marketing-tool/tool-subscription/0/50`,
+      `users/admin-marketing-tool/tool-subscription/${pageNumber}/50`,
       payload
     );
-    console.log("API data", data);
     return data;
   } catch (error) {
     return { error };
@@ -19,11 +18,9 @@ const enableOrDisableSubscriptions = async (
   marketingTool
 ) => {
   try {
-    console.log(purchaseId, " ", status, " ", marketingTool);
     const { data } = await serviceUtil.put(
       `users/admin-marketing-tool/tool-subscription?purchaseId=${purchaseId}&status=${status}&marketingTool=${marketingTool}`
     );
-    console.log(data);
     return data;
   } catch (error) {
     return { error };
@@ -45,10 +42,10 @@ const acceptRejectSingleToolSubscription = async (
   }
 };
 
-const viewAllSubsOfSingleUser = async (purchaseId) => {
+const viewAllSubsOfSingleUser = async (purchaseId, pageNumber) => {
   try {
     const { data } = await serviceUtil.get(
-      `users/admin-marketing-tool/tool-subscription/campaign/0/50?purchaseId=${purchaseId}`
+      `users/admin-marketing-tool/tool-subscription/campaign/${pageNumber}/50?purchaseId=${purchaseId}`
     );
     return data;
   } catch (error) {
@@ -80,6 +77,17 @@ const addANoteApi = async (payload) => {
   }
 };
 
+const deleteSingleSubs = async (id) => {
+  try {
+    const { data } = await serviceUtil.deleteById(
+      `users/marketing-tool?marketingToolId=${id}`
+    );
+    return data;
+  } catch (error) {
+    return { error };
+  }
+};
+
 export {
   getSubscriptions,
   enableOrDisableSubscriptions,
@@ -87,4 +95,5 @@ export {
   viewAllSubsOfSingleUser,
   convertFileToLink,
   addANoteApi,
+  deleteSingleSubs,
 };

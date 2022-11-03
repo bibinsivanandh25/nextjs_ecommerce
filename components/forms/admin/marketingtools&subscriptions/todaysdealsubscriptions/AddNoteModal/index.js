@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
@@ -10,6 +10,7 @@ import {
   convertFileToLink,
 } from "services/admin/marketingtools/subscriptions";
 import toastify from "services/utils/toastUtils";
+import CustomIcon from "services/iconUtils";
 
 let errObj = {
   addANote: false,
@@ -18,12 +19,16 @@ let errObj = {
 const AddNoteModal = ({
   openAddNoteModal,
   setOpenAddNoteModal,
-  subsTypeId,
+  typeId,
+  adminComments = { comment: "", commentAttachment: "" },
+  getDealSubscription,
 }) => {
-  const [addANote, setAddANote] = useState("");
+  const [addANote, setAddANote] = useState(adminComments.comment);
   const [fileInput, setFileInput] = useState(null);
   const [errorFe, setErrorFe] = useState(errObj);
   const [sendFile, setSendFile] = useState("");
+  const [previousFile, setPreviousFile] = useState("");
+
   const handleError = () => {
     let theError = false;
     errObj = {
@@ -36,7 +41,26 @@ const AddNoteModal = ({
     return [theError, errObj];
   };
 
+  useEffect(() => {
+    if (adminComments.commentAttachment) {
+      const x = adminComments.commentAttachment.split("-");
+      setFileInput(x[x.length - 1]);
+      setSendFile(adminComments.commentAttachment);
+      setPreviousFile(adminComments.commentAttachment);
+    }
+  }, [adminComments]);
+
   const adminIde = useSelector((state) => state.user.userId);
+
+  const handleCloseIconClick = () => {
+    errObj = {
+      addANote: false,
+    };
+    setAddANote("");
+    setFileInput("");
+    setOpenAddNoteModal(false);
+    setErrorFe(errObj);
+  };
 
   const addNote = async (payload) => {
     const { data, error, message } = await addANoteApi(payload);
@@ -48,13 +72,15 @@ const AddNoteModal = ({
       }
     } else if (data) {
       toastify(message, "success");
+      handleCloseIconClick();
+      getDealSubscription(0);
     }
   };
 
   const handleSubmit = async () => {
     const [theError, err] = handleError();
     if (!theError) {
-      if (fileInput) {
+      if (fileInput && previousFile !== sendFile) {
         const formData = new FormData();
         formData.set("data", {});
         formData.append("file", sendFile);
@@ -70,7 +96,7 @@ const AddNoteModal = ({
         } else if (data) {
           const payload = {
             type: "PURCHASE_HISTORY",
-            typeId: subsTypeId,
+            typeId,
             comments: addANote,
             commentsAttachment: data,
           };
@@ -79,39 +105,21 @@ const AddNoteModal = ({
       } else {
         const payload = {
           type: "PURCHASE_HISTORY",
-          typeId: subsTypeId,
+          typeId,
           comments: addANote,
-          commentsAttachment: "",
+          commentsAttachment: sendFile,
         };
         addNote(payload);
       }
+      // await getDealSubscription(0);
     }
     setErrorFe(err);
   };
 
-  const handleCloseIconClick = () => {
-    errObj = {
-      addANote: false,
-    };
-    setAddANote("");
-    setFileInput("");
-    setOpenAddNoteModal(false);
-    setErrorFe(errObj);
-  };
-
   const onInputChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = e.target.result.split(":")[1];
-        setFileInput(data);
-        setSendFile(event.target.files[0]);
-        // const theImagesArray = [...imageArray];
-        // theImagesArray.push(e.target.result);
-        // setImageArray([...theImagesArray]);
-        // setProductDetails({ ...productDetails, images: theImagesArray });
-      };
-      reader.readAsDataURL(event.target.files[0]);
+      setFileInput(event.target.files[0].name);
+      setSendFile(event.target.files[0]);
     }
   };
   return (
@@ -172,15 +180,30 @@ const AddNoteModal = ({
               accept="image/*,.pdf"
               onChange={onInputChange}
             />
-            <Box className="d-flex  align-items-center">
-              <Typography className="bg-orange w-50 h-5 fw-bold text-center color-white py-2 cursor-pointer mb-2 rounded-1">
-                Add Media
-              </Typography>
-              <Typography className="text-truncate h-5 ms-1 fw-bold w-25">
-                {fileInput}
-              </Typography>
-            </Box>
+            <Typography className="bg-orange w-50 h-5 fw-bold text-center color-white py-2 cursor-pointer rounded-1">
+              Add Media
+            </Typography>
           </label>
+          <Box className="">
+            <Box className="mt-2 d-flex align-items-center justify-content-start">
+              <Typography className="h-5 ms-1 text-primary">
+                {fileInput}{" "}
+              </Typography>
+
+              {fileInput && (
+                <Box>
+                  <CustomIcon
+                    type="close"
+                    className="h-4 text-danger"
+                    onIconClick={() => {
+                      setFileInput("");
+                      setSendFile("");
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Box>
       </ModalComponent>
     </Box>

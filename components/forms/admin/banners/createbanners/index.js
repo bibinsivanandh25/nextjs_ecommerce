@@ -47,12 +47,12 @@ const CreateBanner = ({
 }) => {
   const mobile = useRef(null);
   const web = useRef(null);
-  // const [ratio, setRatio] = useState({
-  //   mobileHeight: "",
-  //   mobileWidth: "",
-  //   webHeight: "",
-  //   webWidth: "",
-  // });
+  const [ratio, setRatio] = useState({
+    mobileHeight: "",
+    mobileWidth: "",
+    webHeight: "",
+    webWidth: "",
+  });
   const [error, setError] = useState({
     url: "",
     displayPage: "",
@@ -134,25 +134,23 @@ const CreateBanner = ({
     if (Object?.keys(mobileimage)?.length == 0 || mobileimage.length == 0) {
       flag = false;
       errorObj.mobileimage = validateMessage.field_required;
+    } else if (
+      Number(ratio.mobileHeight) > 100 ||
+      Number(ratio.mobileWidth) > 320
+    ) {
+      flag = false;
+      errorObj.mobileimage = "Required Image Ratio for Mobile 320*100";
     }
-    // else if (
-    //   Number(ratio.mobileHeight) > 100 ||
-    //   Number(ratio.mobileWidth) > 320
-    // ) {
-    //   flag = false;
-    //   errorObj.mobileimage = "Required Image Ratio for Mobile 320*100";
-    // }
     if (Object?.keys(webimage)?.length == 0 || webimage.length == 0) {
       flag = false;
       errorObj.webimage = validateMessage.field_required;
+    } else if (
+      Number(ratio.webHeight) >= 250 &&
+      Number(ratio.webWidth) >= 970
+    ) {
+      flag = false;
+      errorObj.webimage = "Required Image Ratio for Web 970*250";
     }
-    // else if (
-    //   Number(ratio.webHeight) >= 250 &&
-    //   Number(ratio.webWidth) >= 970
-    // ) {
-    //   flag = false;
-    //   errorObj.webimage = "Required Image Ratio for Web 970*250";
-    // }
     let finalFromDate = "";
     let finalToDate = "";
     if (startdate && enddate && endtime && starttime) {
@@ -328,13 +326,13 @@ const CreateBanner = ({
             </Typography>
             <ImageCard
               imageRef={mobile}
-              // onLoad={() => {
-              //   setRatio((pre) => ({
-              //     ...pre,
-              //     mobileWidth: mobile.current.naturalWidth,
-              //     mobileHeight: mobile.current.naturalHeight,
-              //   }));
-              // }}
+              onLoad={() => {
+                setRatio((pre) => ({
+                  ...pre,
+                  mobileWidth: mobile.current.naturalWidth,
+                  mobileHeight: mobile.current.naturalHeight,
+                }));
+              }}
               imgSrc={
                 formData.mobileimage?.binary
                   ? formData.mobileimage?.binary
@@ -376,13 +374,13 @@ const CreateBanner = ({
             </Typography>
             <ImageCard
               imageRef={web}
-              // onLoad={() => {
-              //   setRatio((pre) => ({
-              //     ...pre,
-              //     webWidth: web.current.naturalWidth,
-              //     webHeight: web.current.naturalHeight,
-              //   }));
-              // }}
+              onLoad={() => {
+                setRatio((pre) => ({
+                  ...pre,
+                  webWidth: web.current.naturalWidth,
+                  webHeight: web.current.naturalHeight,
+                }));
+              }}
               imgSrc={
                 formData.webimage?.binary
                   ? formData.webimage?.binary

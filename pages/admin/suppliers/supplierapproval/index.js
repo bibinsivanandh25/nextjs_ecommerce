@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -8,6 +8,7 @@ import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import {
   getAllTableDatas,
+  getCategoryFilterData,
   inviteSupplier,
 } from "services/admin/supplier/supplierapproval";
 import serviceUtil from "services/utils";
@@ -92,12 +93,6 @@ const tableColumn = [
   },
 ];
 
-const filterData = [
-  {
-    name: "Category",
-    value: ["Supplier"],
-  },
-];
 const SupplierApproval = () => {
   const [masterData, setMasterData] = useState({});
   const [tableRows, setTableRows] = useState([]);
@@ -107,11 +102,12 @@ const SupplierApproval = () => {
   const [openInviteModal, setOpenInviteModal] = useState(false);
   const [modalUserData, setModalUserData] = useState("");
   const [modalInputError, setModalInputError] = useState(false);
+  const [filterData, setFilterData] = useState([]);
+  const [selectedFilterData, setSelectedFilterData] = useState([]);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
     toastify("GSTIN Number Copied Successfully!", "success");
-    // toastify(`Copied GSTIN Number ${copyTexts}`, "success");
   };
   const handleViewClick = (item) => {
     setViewModalData(item);
@@ -203,7 +199,7 @@ const SupplierApproval = () => {
   };
   const getAllTableData = async () => {
     const { data, err } = await getAllTableDatas();
-    if (data.data) {
+    if (data?.data) {
       setMasterData(data.data);
       if (data.data?.supplierRegistrations?.length) {
         getTableRows(data.data.supplierRegistrations);
@@ -216,10 +212,37 @@ const SupplierApproval = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
+  const getCategoryFilter = async () => {
+    const { data, err } = await getCategoryFilterData();
+    if (data?.data) {
+      const temp = [{ name: "Category", value: [] }];
+      data.data.forEach((item) => {
+        temp[0].value.push({
+          item: item.name,
+          id: item.id,
+          isSelected: false,
+        });
+      });
+      setFilterData(temp);
+    }
+    if (err) {
+      setFilterData([]);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   useEffect(() => {
-    getAllTableData();
+    getCategoryFilter();
   }, []);
+  useMemo(() => {
+    // const selected = filterData[0]?.value?.filter((item) => item.isSelected);
+    const selected = [];
+    filterData[0]?.value?.forEach((item) => {
+      if (item.isSelected) {
+        selected.push(item.id);
+      }
+    });
+    getAllTableData(selected);
+  }, [selectedFilterData]);
   const handleInviteSupplierClick = async () => {
     if (modalUserData !== "") {
       const { data, err } = await inviteSupplier(modalUserData);
@@ -244,19 +267,24 @@ const SupplierApproval = () => {
         table_heading={`Supplier approval (${masterData?.count || 0})`}
         showFilterButton
         showDateFilterBtn
+        showDateFilter
+        showDateFilterSearch
         showSearchFilter={false}
-        showSearchbar
+        showSearchbar={false}
         stickyHeader={false}
         columns={[...tableColumn]}
         tableRows={[...tableRows]}
         showCheckbox={false}
-        showCustomButton
-        customButtonLabel="Invite supplier"
         onCustomButtonClick={() => {
           setOpenInviteModal(true);
         }}
         allowOutSideClickClose
         filterData={filterData}
+        getFilteredValues={(value) => {
+          setFilterData(value);
+          setSelectedFilterData(value);
+        }}
+        dateFilterBtnName="Invite supplier"
       />
       {viewModalOpen && (
         <ModalComponent

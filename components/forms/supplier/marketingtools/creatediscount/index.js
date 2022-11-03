@@ -57,6 +57,12 @@ const CreateDiscount = ({
     mainCategoryId: "",
     subCategoryId: "",
   });
+
+  const [productError, setProductError] = useState(false);
+  const [Products, setProducts] = useState([]);
+
+  const supplierId = useSelector((state) => state.user.supplierId);
+
   const getCategories = async () => {
     const { data } = await getAllMainCategories();
     if (data) {
@@ -88,7 +94,7 @@ const CreateDiscount = ({
   };
 
   const getSubCategories = async (val) => {
-    const { data } = await getSubCategorybySets(val?.id);
+    const { data, err } = await getSubCategorybySets(val?.id);
     if (data) {
       const finalData = [];
       data.forEach((item) => {
@@ -100,19 +106,17 @@ const CreateDiscount = ({
       });
       setSubCategories([...finalData]);
     }
+    if (err) {
+      setSubCategories([]);
+    }
   };
 
   useEffect(() => {
     getCategories();
   }, []);
 
-  const [productError, setProductError] = useState(false);
-  const [Products, setProducts] = useState([]);
-
-  const supplierId = useSelector((state) => state.user.supplierId);
-
   const getProducts = async (value) => {
-    const { data } = await getProductsBySubCategoryId(supplierId, value?.id);
+    const { data, err } = await getProductsBySubCategoryId(supplierId, value);
     if (data) {
       const result = [];
       data.forEach((product) => {
@@ -126,8 +130,21 @@ const CreateDiscount = ({
         });
       });
       setProducts([...result]);
+    } else {
+      setProducts([]);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      setProducts([]);
     }
   };
+  useEffect(() => {
+    if (categoriesList.subCategory.length) {
+      getProducts(selectedCategorys.subCategoryId);
+    } else {
+      setProducts([]);
+    }
+  }, [categoriesList]);
   const renderProducts = () => {
     return Products.map((ele, ind) => {
       return (
@@ -330,6 +347,8 @@ const CreateDiscount = ({
       if (err) {
         toastify(err.response.data.message, "error");
       }
+    } else if (Products.length == 0) {
+      toastify("Products are Required", "error");
     }
   };
   useEffect(() => {
@@ -476,6 +495,7 @@ const CreateDiscount = ({
                           return {
                             ...prev,
                             set: val,
+                            subCategory: [],
                           };
                         });
                       }}
@@ -494,7 +514,7 @@ const CreateDiscount = ({
                           ...pre,
                           subCategoryId: val[0]?.id,
                         }));
-                        getProducts(val[0]);
+                        // getProducts(val[0]);
                         setCategoriesList((prev) => {
                           return {
                             ...prev,

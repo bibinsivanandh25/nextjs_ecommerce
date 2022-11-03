@@ -16,7 +16,7 @@ const saveBanner = (payload) => {
   return serviceUtil
     .post(`users/banner`, payload)
     .then((res) => {
-      const { data } = res.data;
+      const { data } = res;
       return { data };
     })
     .catch((err) => {
@@ -56,7 +56,7 @@ const updateBanner = (payload) => {
       },
     })
     .then((res) => {
-      const { data } = res.data;
+      const { data } = res;
       return { data };
     })
     .catch((err) => {
