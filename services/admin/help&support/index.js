@@ -92,6 +92,19 @@ const helpandSupportCloseTicket = (id) => {
       return { err };
     });
 };
+
+const helpandSupportGetTicketById = (id) => {
+  // help-and-support/admin/ticket?ticketId=1
+  return serviceUtil
+    .get(`help-and-support/user/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getAllTicketsBasedOnUserType,
   getAllFilterDataByUserType,
@@ -101,4 +114,5 @@ export {
   getMediaUrl,
   helpandSupportCloseTicket,
   helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 };

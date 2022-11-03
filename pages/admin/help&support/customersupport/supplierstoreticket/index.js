@@ -9,6 +9,7 @@ import {
   getAllTicketsBasedOnUserType,
   helpandSupportCloseTicket,
   helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 } from "services/admin/help&support";
 import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
 import { useSelector } from "react-redux";
@@ -103,6 +104,12 @@ const CustomerSupport = () => {
     {
       id: "col12",
       align: "center",
+      label: "Status",
+      data_align: "center",
+    },
+    {
+      id: "col13",
+      align: "center",
       label: "Action",
       data_align: "center",
     },
@@ -158,14 +165,22 @@ const CustomerSupport = () => {
 
   const onClickOfMenuItem = (item, ele) => {
     if (item === "Reply") {
-      setShowModal({
-        show: true,
-        type: "view",
-      });
+      // eslint-disable-next-line no-use-before-define
+      getTicketById(ele.ticketId);
     } else if (item === "Delete") {
       handleDeleteTicket(ele);
     } else {
       handleCloseTicket(ele);
+    }
+  };
+  const getTicketById = async (ticketId) => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+    if (data.data) {
+      setSelectedData(data.data);
+      setShowModal({
+        show: true,
+        type: "view",
+      });
     }
   };
 
@@ -196,7 +211,7 @@ const CustomerSupport = () => {
               type="view"
               className="fs-18"
               onIconClick={() => {
-                setSelectedData(val);
+                getTicketById(val.ticketId);
                 setShowModal({
                   show: true,
                   type: "view",
@@ -206,7 +221,6 @@ const CustomerSupport = () => {
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, val);
-                setSelectedData(val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
