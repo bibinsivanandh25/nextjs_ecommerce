@@ -121,7 +121,9 @@ const SupplierStoreCoupons = () => {
         col2: row.discountType,
         col3:
           row.discountType === "PERCENTAGE" && row.minimumOrderValue
-            ? `${(row.couponAmount * 100) / row.minimumOrderValue} %`
+            ? `${((row.couponAmount * 100) / row.minimumOrderValue).toFixed(
+                2
+              )} %`
             : `${row.couponAmount} Rs.`,
         col4: row.couponUsageLimit,
         col5: row.minimumOrderValue,

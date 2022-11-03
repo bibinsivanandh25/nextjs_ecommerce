@@ -196,7 +196,7 @@ export default function TableComponent({
   handleRowsPerPageChange = () => {},
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [filteredColumns, setfilteredColumns] = useState([]);
@@ -534,7 +534,7 @@ export default function TableComponent({
             <Grid>
               <TablePagination
                 className="justify-content-start d-flex"
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 20]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
