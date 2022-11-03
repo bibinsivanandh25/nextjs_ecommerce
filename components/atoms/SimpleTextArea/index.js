@@ -23,6 +23,9 @@ const TextArea = ({
         onChange={onInputChange}
         disabled={disabled}
         draggable={draggable}
+        style={{
+          resize: "none",
+        }}
       />
       {error && (
         <FormHelperText error={error} className="ps-3">

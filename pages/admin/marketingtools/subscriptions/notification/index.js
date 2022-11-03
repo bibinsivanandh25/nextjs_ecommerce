@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -177,6 +178,13 @@ const NotificationSubscription = () => {
       setOpenViewModal(true);
     }
   };
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
   const getTableRows = (data) => {
     const result = [];
     if (data) {
@@ -185,30 +193,12 @@ const NotificationSubscription = () => {
           id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
-          col3:
-            item.days == "7 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col4:
-            item.days == "30 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col5:
-            item.days == "90 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col6:
-            item.days == "180 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col7:
-            item.days == "270 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col8:
-            item.days == "360 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
+          col3: getSubscriptionDate(item, "7 days"),
+          col4: getSubscriptionDate(item, "30 days"),
+          col5: getSubscriptionDate(item, "90 days"),
+          col6: getSubscriptionDate(item, "180 days"),
+          col7: getSubscriptionDate(item, "270 days"),
+          col8: getSubscriptionDate(item, "360 days"),
           col9: item.toolStatus,
           col10: item.subscriptionAmount,
           col11: item.comments || "--",

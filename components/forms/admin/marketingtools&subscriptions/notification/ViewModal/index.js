@@ -238,22 +238,36 @@ const ViewModal = ({
             {viewData.expirationDate}
           </Typography>
         </Box>
-        <TableComponent
-          columns={[...column2]}
-          column2={[...column1]}
-          tableRows={rows}
-          tHeadBgColor="bg-light-gray"
-          showSearchFilter={false}
-          showSearchbar={false}
-          showCheckbox={false}
-          handlePageEnd={(page = viewPageNumber) => {
-            getTableData(page);
-          }}
-          handleRowsPerPageChange={() => {
-            setViewPageNumber(0);
-          }}
-          stickyHeader
-        />
+
+        <Box>
+          {rows.length ? (
+            <TableComponent
+              columns={[...column2]}
+              column2={[...column1]}
+              tableRows={rows}
+              tHeadBgColor="bg-light-gray"
+              showSearchFilter={false}
+              showSearchbar={false}
+              showCheckbox={false}
+              handlePageEnd={(page = viewPageNumber) => {
+                getTableData(page);
+              }}
+              handleRowsPerPageChange={() => {
+                setViewPageNumber(0);
+              }}
+              stickyHeader
+            />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              className="mnh-300"
+            >
+              <Typography className="fw-bold h-4">No Data Available</Typography>
+            </Box>
+          )}
+        </Box>
       </ModalComponent>
     </Box>
   );
