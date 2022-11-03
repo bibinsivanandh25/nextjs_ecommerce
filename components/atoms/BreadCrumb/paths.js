@@ -50,7 +50,7 @@ export const paths = [
     navigate: true,
   },
   {
-    title: "Invoice And Tradmarks",
+    title: "Invoice And Trademarks",
     id: "invoiceandtrademarks",
     navigate: true,
   },

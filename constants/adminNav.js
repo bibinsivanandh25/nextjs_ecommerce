@@ -1,7 +1,7 @@
 const adminNav = [
   {
     title: "Dashboard",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/001-dashboard.svg",
     pathName: "dashboard",
     navigate: true,
     disabled: false,
@@ -9,7 +9,7 @@ const adminNav = [
   },
   {
     title: "Products",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/001-products.svg",
     pathName: "products",
     navigate: false,
     disabled: false,
@@ -91,7 +91,7 @@ const adminNav = [
   },
   {
     title: "Orders",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/002-orders.svg",
     pathName: "orders",
     navigate: false,
     disabled: false,
@@ -132,7 +132,7 @@ const adminNav = [
   },
   {
     title: "Delivery Management",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/003-delivery-management.svg",
     pathName: "deliverymanagement",
     navigate: false,
     disabled: false,
@@ -181,7 +181,7 @@ const adminNav = [
   },
   {
     title: "Customers",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/007-customer.svg",
     pathName: "customers",
     navigate: false,
     disabled: false,
@@ -222,7 +222,7 @@ const adminNav = [
   },
   {
     title: "Reseller",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/021-reseller.svg",
     pathName: "resellers",
     navigate: false,
     disabled: false,
@@ -263,7 +263,7 @@ const adminNav = [
   },
   {
     title: "Supplier",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/004-supplier.svg",
     pathName: "suppliers",
     navigate: false,
     disabled: false,
@@ -328,7 +328,7 @@ const adminNav = [
   },
   {
     title: "Admin",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/005-admin.svg",
     pathName: "admin",
     navigate: false,
     disabled: false,
@@ -427,7 +427,7 @@ const adminNav = [
   },
   {
     title: "Admin Store",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/003-store.svg",
     pathName: "adminstore",
     navigate: false,
     disabled: false,
@@ -452,7 +452,7 @@ const adminNav = [
   },
   {
     title: "Marketing Tools",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/006-marketing-tools.svg",
     pathName: "marketingtools",
     navigate: false,
     disabled: false,
@@ -599,7 +599,7 @@ const adminNav = [
   },
   {
     title: "Payments & Subscription",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/007-payment-and-subscription.svg",
     pathName: "payment&subscriptions",
     navigate: false,
     disabled: false,
@@ -775,7 +775,7 @@ const adminNav = [
   },
   {
     title: "Media",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/008-media.svg",
     pathName: "media",
     navigate: true,
     disabled: false,
@@ -783,7 +783,7 @@ const adminNav = [
   },
   {
     title: "Notifications",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/016-notification.svg",
     pathName: "notifications",
     navigate: true,
     disabled: false,
@@ -791,7 +791,7 @@ const adminNav = [
   },
   {
     title: "Articles & Press Release",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/009-articles-and-press-release.svg",
     pathName: "articles&pressrelease",
     navigate: false,
     disabled: false,
@@ -816,7 +816,7 @@ const adminNav = [
   },
   {
     title: "Help & Support",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/010-help-and-support.svg",
     pathName: "help&support",
     navigate: false,
     disabled: false,
@@ -874,7 +874,7 @@ const adminNav = [
   },
   {
     title: "Reviews",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/022-positive-review.svg",
     pathName: "reviews",
     navigate: true,
     disabled: false,
@@ -882,7 +882,7 @@ const adminNav = [
   },
   {
     title: "Chats",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/006-chat-bubbles-with-ellipsis.svg",
     pathName: "chats",
     navigate: true,
     disabled: false,
@@ -890,7 +890,7 @@ const adminNav = [
   },
   {
     title: "Log Activity",
-    logo: "",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/011-log-activity.svg",
     pathName: "logactivity",
     navigate: true,
     disabled: false,

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -180,6 +181,9 @@ const DiscountSubscriptions = () => {
       setOpenViewModal(true);
     }
   };
+  // const getSubscriptionDate = (item,dat) => {
+
+  // }
   const getTableRows = (data) => {
     const result = [];
     if (data) {
@@ -188,15 +192,42 @@ const DiscountSubscriptions = () => {
           id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
-          col3: item.days == 7 ? item.activatedAt - item.expirationDate : "--",
-          col4: item.days == 30 ? item.activatedAt - item.expirationDate : "--",
-          col5: item.days == 90 ? item.activatedAt - item.expirationDate : "--",
+          col3:
+            item.days == "7 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "PENDING"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
+          col4:
+            item.days == "30 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "PENDING"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
+          col5:
+            item.days == "90 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "Pending"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
           col6:
-            item.days == 180 ? item.activatedAt - item.expirationDate : "--",
+            item.days == "180 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "Pending"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
           col7:
-            item.days == 270 ? item.activatedAt - item.expirationDate : "--",
+            item.days == "270 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "Pending"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
           col8:
-            item.days == 360 ? item.activatedAt - item.expirationDate : "--",
+            item.days == "360 days"
+              ? item.activatedAt === null || item.expirationDate === null
+                ? "Pending"
+                : `${item.activatedAt} - ${item.expirationDate}`
+              : "--",
           col9: item.toolStatus,
           col10: item.subscriptionAmount,
           col11: item.comments || "--",
