@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
 import {
@@ -6,7 +7,6 @@ import {
   getAllIndividualPricingByUserType,
   getSubscrptionType,
   getToolsCampaignWithFilter,
-  updateMarketingToolPrice,
 } from "services/admin/marketingtools/settoolpricing";
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -15,9 +15,7 @@ import TableComponent from "@/atoms/TableComponent";
 import toastify from "services/utils/toastUtils";
 import TabsCard from "components/molecule/TabsCard";
 import SwitchComponent from "@/atoms/SwitchComponent";
-import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import InputBox from "@/atoms/InputBoxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
 import ViewIndividualPricing from "../ViewIndividualPricing";
@@ -30,16 +28,17 @@ const SupplierSubscriptions = () => {
     useState([]);
   const [showCreateNotificationModal, setShowCreateNotificationModal] =
     useState(false);
-  const [showEditPriceModal, setShowEditPriceModal] = useState(false);
 
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
     []
   );
   const [toolsCampaignTableRows, setToolsCampaignTableRows] = useState([]);
-  const [priceDetails, setPriceDetails] = useState({
-    price: "",
-    id: "",
+  const [editDetials, setEditDetails] = useState({
+    days: "",
+    tools: "",
   });
+
+  const [modalType, setModalType] = useState("Add");
 
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
@@ -56,29 +55,30 @@ const SupplierSubscriptions = () => {
   const [showIndividualPricing, setShowIndividualPricing] = useState(false);
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [marketingToolId, setMarketingToolId] = useState("");
 
   const filterData = [
     {
       name: "STATUS",
       value: [
-        "ACTIVE",
-        "REJECTED",
-        "EXPIRED",
-        "PENDING",
-        "DISABLED",
-        "YET_TO_START",
-        "APPROVED",
+        { item: "ACTIVE", isSelected: false },
+        { item: "REJECTED", isSelected: false },
+        { item: "EXPIRED", isSelected: false },
+        { item: "PENDING", isSelected: false },
+        { item: "DISABLED", isSelected: false },
+        { item: "YET_TO_START", isSelected: false },
+        { item: "APPROVED", isSelected: false },
       ],
     },
     {
       name: "DAYS",
       value: [
-        "7 days",
-        "30 days",
-        "90 days",
-        "180 days",
-        "270 days",
-        "360 days",
+        { item: "7 days", isSelected: false },
+        { item: "30 days", isSelected: false },
+        { item: "90 days", isSelected: false },
+        { item: "180 days", isSelected: false },
+        { item: "270 days", isSelected: false },
+        { item: "360 days", isSelected: false },
       ],
     },
   ];
@@ -405,10 +405,11 @@ const SupplierSubscriptions = () => {
       getIndividualPricing();
     }
   };
+  console.error("error", 5);
 
   const getIndividualPricing = async () => {
     const { data } = await getAllIndividualPricingByUserType("SUPPLIER");
-    if (data) {
+    if (data?.length) {
       mapIndivisualPricingRows(data);
       // days.forEach((val) => {
       //   data.forEach((item, index) => {
@@ -480,12 +481,17 @@ const SupplierSubscriptions = () => {
                 <CustomIcon
                   type="edit"
                   className="h-4"
-                  title="Edit Price"
+                  title="Edit"
                   onIconClick={() => {
-                    setShowEditPriceModal(true);
-                    setPriceDetails({
+                    setOpenAddDaysCounterModal(true);
+                    setModalType("Edit");
+                    setMarketingToolId(ele.adminMarketingToolId);
+                    setEditDetails({
+                      days: ele.days,
+                      tools: ele.adminMarketingToolName,
                       price: ele.price,
-                      id: ele.adminMarketingToolId,
+                      startDate: ele.startDateTime,
+                      endDate: ele.endDateTime,
                     });
                   }}
                 />
@@ -535,7 +541,7 @@ const SupplierSubscriptions = () => {
               title="view"
               className="mx-4"
               onIconClick={() => {
-                setToolIDs(toolIds);
+                setToolIDs(toolIds.filter((i) => i));
                 setShowIndividualPricing(true);
               }}
             />
@@ -544,7 +550,7 @@ const SupplierSubscriptions = () => {
               defaultChecked={status.every((ele) => !ele)}
               ontoggle={() => {
                 enableDisableMarketingTool(
-                  [...toolIds],
+                  toolIds.filter((i) => i),
                   status.every((ele) => ele)
                 );
               }}
@@ -706,10 +712,28 @@ const SupplierSubscriptions = () => {
     }
   };
 
+  const getStatus = () => {
+    const temp = JSON.parse(JSON.stringify(tabList));
+    let Status = "";
+    temp.forEach((ele) => {
+      if (ele.isSelected) {
+        if (ele.label === "Active") {
+          Status = "ACTIVE";
+        }
+        if (ele.label === "Scheduled") {
+          Status = "YET_TO_START";
+        }
+        if (ele.label === "Expired") {
+          Status = "EXPIRED";
+        }
+      }
+    });
+    return Status;
+  };
   const getToolCampaignTableData = async (page, date, filter) => {
     const payload = {
       daysList: filter?.DAYS ?? [],
-      statusList: filter?.STATUS ?? [],
+      status: getStatus(),
       storeType: "SUPPLIER",
       fromDate: date?.fromDate ?? "",
       toDate: date?.toDate ?? "",
@@ -752,25 +776,11 @@ const SupplierSubscriptions = () => {
   useEffect(() => {
     gettableColumsForSupplierSubscriptionsTableOne();
     getIndividualPricing();
-    getToolCampaignTableData(0);
   }, []);
 
-  const handleEditPrice = async () => {
-    const payload = {
-      toolId: priceDetails.id,
-      price: Number(priceDetails.price),
-    };
-    const { data, err } = await updateMarketingToolPrice(payload);
-    if (data) {
-      getIndividualPricing();
-      setShowEditPriceModal(false);
-      toastify(data?.message, "success");
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
-
+  useEffect(() => {
+    getToolCampaignTableData(0);
+  }, [tabList]);
   return (
     <>
       {!showIndividualPricing ? (
@@ -815,6 +825,7 @@ const SupplierSubscriptions = () => {
                 customButtonLabel="Add Day's Counter"
                 onCustomButtonClick={() => {
                   setOpenAddDaysCounterModal(true);
+                  setModalType("Add");
                 }}
               />
             </Paper>
@@ -836,65 +847,41 @@ const SupplierSubscriptions = () => {
                   setTabList(temp);
                 }}
               >
-                <TableComponent
-                  columns={[...tableColumsForToolsCampaign]}
-                  tableRows={toolsCampaignTableRows}
-                  tHeadBgColor="bg-light-gray"
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  showCheckbox={false}
-                  showDateFilter
-                  showDateFilterBtn
-                  filterData={filterData}
-                  showFilterButton
-                  showDateFilterSearch={false}
-                  dateFilterBtnName="Create Discounts"
-                  dateFilterBtnClick={() => {
-                    setOpenCreateDiscountModal(true);
-                  }}
-                  getFilteredValues={(values) => {
-                    filterTableData(values);
-                  }}
-                  handlePageEnd={(
-                    searchText,
-                    searchFilter,
-                    page = pageNumber,
-                    datefilter
-                  ) => {
-                    getToolCampaignTableData(page, datefilter);
-                  }}
-                />
+                <div className="py-2">
+                  <TableComponent
+                    columns={[...tableColumsForToolsCampaign]}
+                    tableRows={toolsCampaignTableRows}
+                    tHeadBgColor="bg-light-gray"
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                    showDateFilter
+                    showDateFilterBtn
+                    tabChange={tabList}
+                    filterData={filterData}
+                    showFilterButton
+                    showDateFilterSearch={false}
+                    dateFilterBtnName="Create Discounts"
+                    dateFilterBtnClick={() => {
+                      setOpenCreateDiscountModal(true);
+                    }}
+                    getFilteredValues={(values) => {
+                      filterTableData(values);
+                    }}
+                    handlePageEnd={(
+                      searchText,
+                      searchFilter,
+                      page = pageNumber,
+                      datefilter
+                    ) => {
+                      getToolCampaignTableData(page, datefilter);
+                    }}
+                  />
+                </div>
               </TabsCard>
             </Paper>
           </Box>
-          {showEditPriceModal ? (
-            <ModalComponent
-              open={showEditPriceModal}
-              onCloseIconClick={() => setShowEditPriceModal(false)}
-              ModalTitle="Edit Price"
-              footerClassName="d-flex justify-content-end"
-              onSaveBtnClick={() => {
-                handleEditPrice();
-              }}
-            >
-              <Box className="mx-5 my-3">
-                <InputBox
-                  placeholder="Edit Price"
-                  variant="standard"
-                  inputlabelshrink
-                  size="small"
-                  type="number"
-                  value={priceDetails.price}
-                  onInputChange={(e) => {
-                    setPriceDetails((pre) => ({
-                      ...pre,
-                      price: e.target.value,
-                    }));
-                  }}
-                />
-              </Box>
-            </ModalComponent>
-          ) : null}
+
           {showCreateNotificationModal ? (
             <CreateNotification
               showNotificationModal={showCreateNotificationModal}
@@ -904,8 +891,12 @@ const SupplierSubscriptions = () => {
           ) : null}
           {openAddDaysCounterModal ? (
             <AddDaysCounterModal
+              marketingToolId={marketingToolId}
+              getIndividualPricing={getIndividualPricing}
+              modalType={modalType}
               openAddDaysCounterModal={openAddDaysCounterModal}
               setOpenAddDaysCounterModal={setOpenAddDaysCounterModal}
+              selectedValues={editDetials}
             />
           ) : null}
           {openCreateDiscountModal ? (

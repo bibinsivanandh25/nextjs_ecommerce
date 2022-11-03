@@ -21,13 +21,6 @@ const columns = [
     position: "sticky",
   },
   {
-    id: "col3",
-    align: "center",
-    label: "Current Rate",
-    data_align: "center",
-    minWidth: 150,
-  },
-  {
     id: "col4",
     align: "center",
     label: "Description",
@@ -51,6 +44,11 @@ const columns = [
 ];
 
 const tableFilters = [
+  {
+    id: 1,
+    label: "ALL",
+    value: "All",
+  },
   {
     id: 1,
     label: "DISCOUNT COUPON",
@@ -105,7 +103,6 @@ const ViewIndividualPricing = ({
       result.push({
         col1: ind + 1,
         col2: ele.toolType.replaceAll("_", " "),
-        col3: ele.currentRate,
         col4: ele.description,
         col5: ele.lastModifiedBy,
         col6: ele.lastModifiedDate,
@@ -118,7 +115,7 @@ const ViewIndividualPricing = ({
     const payload = {
       toolId: toolIDs,
       type: "INDIVIDUAL_PRICING",
-      toolName,
+      toolName: toolName === "All" ? null : toolName,
     };
     const { data } = await getPriceChangeHistory(page, payload);
     if (data) {
@@ -129,7 +126,7 @@ const ViewIndividualPricing = ({
         setTableRows((pre) => [...pre, ...mapTableRows(data)]);
         setPageNumber((pre) => pre + 1);
       }
-    }
+    } else setTableRows([]);
   };
 
   useEffect(() => {
