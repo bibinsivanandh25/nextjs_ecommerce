@@ -145,12 +145,12 @@ const column2 = [
 ];
 const listData = [
   {
-    id: "1",
+    id: "Supplier",
     value: "Supplier",
     title: "Supplier",
   },
   {
-    id: "2",
+    id: "Reseller",
     value: "Reseller",
     title: "Reseller",
   },
@@ -166,6 +166,7 @@ const DiscountSubscriptions = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
+  const [selectedListData, setSelectedListData] = useState([]);
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
@@ -259,16 +260,16 @@ const DiscountSubscriptions = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const getTableData = async (page) => {
-    const selectedListData = [];
+  const getTableData = async (page, userType) => {
+    const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
-        selectedListData.push(item.value);
+        temp.push(item.value);
       }
     });
     const payload = {
       marketingTool: "DISCOUNT_COUPON",
-      userType: selectedListData,
+      userType: userType ?? temp,
     };
     const { data, err } = await adminDiscountSubscription(payload, page);
     if (data) {
@@ -286,17 +287,24 @@ const DiscountSubscriptions = () => {
     }
   };
   useEffect(() => {
-    if (router.query.userType !== undefined) {
-      setSelectedList([
-        { id: "1", value: router.query.userType, title: router.query.userType },
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
       ]);
+      getTableData(0, [router?.query?.userType]);
     }
-  }, [router.query]);
+  }, [router?.query?.userType]);
 
   useEffect(() => {
-    getTableData(0);
-    setpageNumber(0);
-  }, [selectedList]);
+    if (!router?.query?.userType) {
+      getTableData(0);
+    }
+  }, [router?.query?.userType]);
+
   return (
     <>
       <Box>
@@ -313,10 +321,20 @@ const DiscountSubscriptions = () => {
                 placeholder=""
                 list={listData}
                 onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
                   setSelectedList(value);
                   setpageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getTableData(0, [...temp]);
+                  } else {
+                    getTableData(0, []);
+                  }
                 }}
-                value={selectedList}
+                value={selectedList?.length ? selectedList : selectedListData}
               />
             </Grid>
           </Grid>
