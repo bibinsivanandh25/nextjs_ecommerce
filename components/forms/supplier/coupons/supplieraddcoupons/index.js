@@ -56,11 +56,7 @@ const SupplierAddCoupons = ({
       }
     };
 
-    validateFields(
-      "description",
-      /^.{1,255}$/,
-      validateMessage.alpha_numeric_max_255
-    );
+    validateFields("description");
     validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
@@ -72,6 +68,9 @@ const SupplierAddCoupons = ({
     if (purchaseCheckbox) {
       validateFields("minpurchaseamount");
       validateFields("maximumamount");
+    }
+    if (formValues.description.length > 255) {
+      errObj.description = validateMessage.alpha_numeric_max_255;
     }
     validateFields("couponAmount");
     const limitErrors = {
@@ -220,6 +219,7 @@ const SupplierAddCoupons = ({
             </Grid>
             <Grid item xs={12}>
               <DatePickerComponent
+                disablePast
                 label="Coupon Expiry Date"
                 size="small"
                 inputlabelshrink

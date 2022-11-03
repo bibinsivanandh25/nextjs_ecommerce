@@ -315,7 +315,7 @@ const CreateDiscountModal = ({
                 setTitle(e.target.value);
               }}
               inputlabelshrink
-              error={error.price}
+              error={error.title}
               helperText={
                 error.title
                   ? title.length === 0
