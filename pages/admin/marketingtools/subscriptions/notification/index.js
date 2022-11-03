@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -15,6 +16,7 @@ import { useSelector } from "react-redux";
 import ViewModal from "@/forms/admin/marketingtools&subscriptions/notification/ViewModal";
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/notification/AddNoteModal";
 import NotifyModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/notifymodal";
+import { useRouter } from "next/router";
 
 const column1 = [
   {
@@ -142,13 +144,13 @@ const column2 = [
 const listData = [
   {
     id: "1",
-    value: "SUPPLIER",
-    title: "SUPPLIER",
+    value: "Supplier",
+    title: "Supplier",
   },
   {
     id: "2",
-    value: "RESELLER",
-    title: "RESELLER",
+    value: "Reseller",
+    title: "Reseller",
   },
 ];
 const NotificationSubscription = () => {
@@ -161,6 +163,8 @@ const NotificationSubscription = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
+  const router = useRouter();
+
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
       setSelectedData(item);
@@ -177,6 +181,13 @@ const NotificationSubscription = () => {
       setOpenViewModal(true);
     }
   };
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
   const getTableRows = (data) => {
     const result = [];
     if (data) {
@@ -185,30 +196,12 @@ const NotificationSubscription = () => {
           id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
-          col3:
-            item.days == "7 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col4:
-            item.days == "30 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col5:
-            item.days == "90 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col6:
-            item.days == "180 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col7:
-            item.days == "270 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
-          col8:
-            item.days == "360 days"
-              ? `${item.activatedAt} - ${item.expirationDate}`
-              : "--",
+          col3: getSubscriptionDate(item, "7 days"),
+          col4: getSubscriptionDate(item, "30 days"),
+          col5: getSubscriptionDate(item, "90 days"),
+          col6: getSubscriptionDate(item, "180 days"),
+          col7: getSubscriptionDate(item, "270 days"),
+          col8: getSubscriptionDate(item, "360 days"),
           col9: item.toolStatus,
           col10: item.subscriptionAmount,
           col11: item.comments || "--",
@@ -279,7 +272,7 @@ const NotificationSubscription = () => {
     if (data) {
       if (page == 0) {
         setRows(getTableRows(data));
-        setpageNumber((pre) => pre + 1);
+        setpageNumber(1);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
@@ -290,7 +283,13 @@ const NotificationSubscription = () => {
       setRows([]);
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setSelectedList([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getTableData(0);
     setpageNumber(0);
@@ -329,7 +328,7 @@ const NotificationSubscription = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableRows(page);
+              getTableData(page);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);

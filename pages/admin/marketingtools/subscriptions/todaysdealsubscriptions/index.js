@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
@@ -16,6 +17,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -34,6 +36,7 @@ const TodaysDealSubscription = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -187,45 +190,28 @@ const TodaysDealSubscription = () => {
     else if (error?.response?.data?.message)
       toastify(error?.response?.data?.message, "error");
   };
-
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
   const returnTableData = (data) => {
     const mappedArray = data.map((val, index) => {
-      const dateOne = new Date(val.activatedAt);
-      const dateTwo = new Date(val.expirationDate);
-      const timeDifference = dateTwo.getTime() - dateOne.getTime();
-      const divisor = 1000 * 60 * 60 * 24;
-      const numberOfDays = timeDifference / divisor;
       return {
         id: val.purchaseId,
         col1: index >= 9 ? index + 1 : `0${index + 1}`,
         col2: val.purchasedById,
-        col3:
-          numberOfDays === 7
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col4:
-          numberOfDays === 30
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col5:
-          numberOfDays === 90
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col6:
-          numberOfDays === 180
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col7:
-          numberOfDays === 270
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col8:
-          numberOfDays === 360
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
+        col3: getSubscriptionDate(val, "7 days"),
+        col4: getSubscriptionDate(val, "30 days"),
+        col5: getSubscriptionDate(val, "90 days"),
+        col6: getSubscriptionDate(val, "180 days"),
+        col7: getSubscriptionDate(val, "270 days"),
+        col8: getSubscriptionDate(val, "360 days"),
         col9: val.toolStatus,
         col10: val.subscriptionAmount,
-        col11: val.comments ? val.comments : "0",
+        col11: val.comments ? val.comments : "--",
         col12: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
@@ -310,7 +296,13 @@ const TodaysDealSubscription = () => {
       }
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getDealSubscription(0);
   }, [dropdownValue]);
@@ -352,6 +344,9 @@ const TodaysDealSubscription = () => {
             }}
             handlePageEnd={(page = pageNumber) => {
               getDealSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>
