@@ -359,7 +359,7 @@ const adminNav = [
           {
             title: "Notifications Suggestions",
             logo: "",
-            pathName: "notificationsuggestions",
+            pathName: "notificationsuggestion",
             navigate: true,
             disabled: false,
             child: [],
@@ -532,7 +532,7 @@ const adminNav = [
             title: "Flags",
             logo: "",
             pathName: "flags",
-            navigate: false,
+            navigate: true,
             disabled: false,
             child: [],
           },

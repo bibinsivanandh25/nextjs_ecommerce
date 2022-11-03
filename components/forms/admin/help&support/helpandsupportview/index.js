@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-danger */
-/* eslint-disable consistent-return */
+
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
 import { Grid, Paper, Typography } from "@mui/material";
@@ -11,6 +12,8 @@ import {
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
 import { Close } from "@mui/icons-material";
+// import axios from "axios";
+
 // import Image from "next/image";
 // import {
 //   helpandsupportFileUpload,
@@ -27,7 +30,6 @@ const HelpandsupportView1 = ({
   getTabledata,
 }) => {
   const inputField = useRef();
-
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState([]);
@@ -39,6 +41,7 @@ const HelpandsupportView1 = ({
       </p>
     );
   };
+  console.log(selectedData);
   useEffect(() => {
     const result = [];
     selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
@@ -144,6 +147,18 @@ const HelpandsupportView1 = ({
     setSelectedFile([...temp]);
   };
 
+  // const download = async (url) => {
+  //   console.log("url", url);
+  //   const a = document.createElement("a");
+  //   // const file = await new Blob([url]);
+  //   // a.href = URL.createObjectURL(file);
+  //   // // eslint-disable-next-line prefer-destructuring
+  //   // a.setAttribute("download", url.split("/")[7]);
+  //   // a.style.display = "none";
+  //   // document.body.appendChild(a);
+  //   a.click();
+  // };
+
   return (
     <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar">
       <Typography
@@ -161,6 +176,7 @@ const HelpandsupportView1 = ({
       <div className="fs-12 border-bottom px-4 py-1">
         {getContent(
           "Date & Time",
+
           new Date(selectedData.lastModifiedDate).toLocaleString()
         )}
         {getContent("Ticket ID", selectedData.ticketId)}
@@ -252,10 +268,34 @@ const HelpandsupportView1 = ({
             /> */}
           </div>
           <div>
-            <strong>{selectedData.userToName}</strong>
-            <p className="fs-9 mb-3">{selectedData.userToId}</p>
             {selectedData.helpSupportMessages.map((val) => {
-              return <div dangerouslySetInnerHTML={{ __html: val.message }} />;
+              return (
+                <>
+                  <strong>{val.messageFromName}</strong>
+                  <p className="fs-9 mb-2">{val.mobileNumber}</p>
+                  <div
+                    // className="mb-3"
+                    dangerouslySetInnerHTML={{ __html: val.message }}
+                  />
+                  {val.helpSupportMessageMedias.map((media) => {
+                    return (
+                      <div>
+                        <span className=" fw-600 ">Attach File :</span>
+                        <a
+                          // className=" fs-12 mb-3 color-black"
+                          // onClick={() => download(media.mediaUrl)}
+                          // type="button"
+                          // style={{ textDecoration: "none" }}
+                          href={media.mediaUrl}
+                          download
+                        >
+                          {media.mediaUrl.split("/")[7]}
+                        </a>
+                      </div>
+                    );
+                  })}
+                </>
+              );
             })}
           </div>
         </div>
