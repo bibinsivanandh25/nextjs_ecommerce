@@ -18,6 +18,7 @@ const DatePickerComponent = ({
   required = false,
   className = "",
   disabled = false,
+  disablePast = false,
 }) => {
   const theme = createTheme({
     components: {
@@ -33,10 +34,10 @@ const DatePickerComponent = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ThemeProvider theme={theme}>
         <DatePicker
-          label={label}
-          value={value}
+          disablePast={disablePast}
           disableFuture={disableFuture}
-          fullWidth={fullWidth}
+          value={value}
+          label={label}
           onChange={(newData) => onDateChange(new Date(newData))}
           // inputFormat="dd/MM/yyyy"
           renderInput={(params) => (

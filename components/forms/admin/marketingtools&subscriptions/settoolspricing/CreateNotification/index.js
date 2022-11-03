@@ -304,7 +304,6 @@ const CreateNotification = ({
       );
     });
   };
-  console.log(type);
 
   return (
     <ModalComponent

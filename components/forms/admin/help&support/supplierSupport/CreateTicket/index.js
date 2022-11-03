@@ -101,7 +101,7 @@ const CreateTicket = ({
   const [orderIdDisplay, setorderIdDisplay] = useState(false);
 
   useEffect(() => {
-    if (formValue.issueType.value == "Order") {
+    if (formValue.issueType.value == "ORDER_RELATED_ISSUE") {
       setorderIdDisplay(true);
     } else {
       setorderIdDisplay(false);
@@ -144,7 +144,6 @@ const CreateTicket = ({
   };
 
   const { userId, role } = useSelector((state) => state?.user);
-  console.log(userId, role);
 
   const createPayload = () => {
     return {

@@ -21,13 +21,6 @@ const columns = [
     position: "sticky",
   },
   {
-    id: "col3",
-    align: "center",
-    label: "Current Rate",
-    data_align: "center",
-    minWidth: 150,
-  },
-  {
     id: "col4",
     align: "center",
     label: "Description",
@@ -51,6 +44,11 @@ const columns = [
 ];
 
 const tableFilters = [
+  {
+    id: 1,
+    label: "ALL",
+    value: "All",
+  },
   {
     id: 1,
     label: "DISCOUNT COUPON",
@@ -93,8 +91,9 @@ const tableFilters = [
   },
 ];
 const ViewIndividualPricing = ({
-  setShowIndividualPricing = () => {},
+  setShowViewTableType = () => {},
   toolIDs = [],
+  showViewTableType = "",
 }) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [tableRows, setTableRows] = useState([]);
@@ -105,7 +104,6 @@ const ViewIndividualPricing = ({
       result.push({
         col1: ind + 1,
         col2: ele.toolType.replaceAll("_", " "),
-        col3: ele.currentRate,
         col4: ele.description,
         col5: ele.lastModifiedBy,
         col6: ele.lastModifiedDate,
@@ -117,8 +115,8 @@ const ViewIndividualPricing = ({
   const getTableRows = async (page, toolName) => {
     const payload = {
       toolId: toolIDs,
-      type: "INDIVIDUAL_PRICING",
-      toolName,
+      type: showViewTableType,
+      toolName: toolName === "All" ? null : toolName,
     };
     const { data } = await getPriceChangeHistory(page, payload);
     if (data) {
@@ -129,17 +127,17 @@ const ViewIndividualPricing = ({
         setTableRows((pre) => [...pre, ...mapTableRows(data)]);
         setPageNumber((pre) => pre + 1);
       }
-    }
+    } else setTableRows([]);
   };
 
   useEffect(() => {
     getTableRows(0, null);
-  }, []);
+  }, [showViewTableType]);
   return (
     <div>
       <Typography
         onClick={() => {
-          setShowIndividualPricing(false);
+          setShowViewTableType("");
         }}
         className="mb-2  ms-3 h-5  cursor-pointer color-orange py-1"
       >

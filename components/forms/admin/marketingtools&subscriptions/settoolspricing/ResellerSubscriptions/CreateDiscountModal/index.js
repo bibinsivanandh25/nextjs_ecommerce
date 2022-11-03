@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { Box, Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import validateMessage from "constants/validateMessages";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -13,6 +13,7 @@ import {
   createToolCampaignReseller,
   getToolCampaignDropDownReseller,
 } from "services/admin/marketingtools/settoolpricing/resellerSubscription";
+import { updateToolCampaign } from "services/admin/marketingtools/settoolpricing/supplierSubscription";
 
 let errObj = {
   days: false,
@@ -59,8 +60,13 @@ const daysList = [
 ];
 
 const CreateDiscountModal = ({
+  status = "",
+  campaignID = "",
+  toolsCampaignEditData = {},
+  modalType = "Add",
   openCreateDiscountModal,
   setOpenCreateDiscountModal,
+  getToolCampaignTableData = () => {},
 }) => {
   const [days, setDays] = useState({ label: "" });
   const [tools, setTools] = useState([]);
@@ -92,6 +98,27 @@ const CreateDiscountModal = ({
     setOpenCreateDiscountModal(false);
   };
 
+  useEffect(() => {
+    if (modalType === "Edit") {
+      setDays({
+        value: toolsCampaignEditData.days,
+        label: toolsCampaignEditData.days,
+      });
+      setTitle(toolsCampaignEditData.title);
+      setPrice(toolsCampaignEditData.price);
+      setStartDate(new Date(toolsCampaignEditData.startDate.split(" ")[0]));
+      setEndDate(new Date(toolsCampaignEditData.endDate.split(" ")[0]));
+      const temp = [];
+      toolsCampaignEditData?.toolNames.forEach((ele) => {
+        temp.push({
+          title: ele,
+          value: ele,
+        });
+      });
+      setTools(temp);
+    }
+  }, [toolsCampaignEditData, modalType]);
+
   const handleError = () => {
     errObj = {
       days: false,
@@ -100,7 +127,6 @@ const CreateDiscountModal = ({
       startDate: false,
       endDate: false,
       startDateGreater: false,
-      endDateSmaller: false,
     };
     if (days.label === "") {
       errObj.days = true;
@@ -123,54 +149,11 @@ const CreateDiscountModal = ({
     if (endDate === null) {
       errObj.endDate = true;
     }
+    if (new Date(startDate) > new Date(endDate)) {
+      errObj.startDateGreater = true;
+      toastify("fromDate Cannot be Greater Than ToDate", "error");
+    }
     return errObj;
-  };
-
-  const handleStartDate = (date) => {
-    if (endDate) {
-      if (
-        date.getDate() === endDate.getDate() &&
-        date.getMonth() === endDate.getMonth() &&
-        date.getYear() === endDate.getYear()
-      ) {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      } else if (endDate.getTime() < date.getTime()) {
-        errObj.startDateGreater = true;
-        setError({ ...errObj });
-      } else {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      }
-    } else {
-      setStartDate(date);
-    }
-  };
-
-  const handleEndDate = (date) => {
-    if (startDate) {
-      if (
-        date.getDate() === startDate.getDate() &&
-        date.getMonth() === startDate.getMonth() &&
-        date.getYear() === startDate.getYear()
-      ) {
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else if (startDate.getTime() > date.getTime()) {
-        errObj.endDateSmaller = true;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else {
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      }
-    } else {
-      setEndDate(date);
-    }
   };
 
   const handleClearAll = () => {
@@ -211,26 +194,48 @@ const CreateDiscountModal = ({
 
   const handleSaveBtnClick = async () => {
     const theError = handleError();
+    console.log(theError);
     setError(theError);
     const flag = Object.values(theError).some((e) => e);
     if (!flag) {
-      const payload = {
-        title,
-        days: days.value,
-        price: Number(price),
-        startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
-        endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
-        storeType: "RESELLER",
-        adminMarketingToolIds: tools.map((ele) => ele.id),
-      };
+      if (modalType === "Add") {
+        const payload = {
+          title,
+          days: days.value,
+          price: Number(price),
+          startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+          endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
+          storeType: "RESELLER",
+          adminMarketingToolIds: tools.map((ele) => ele.id),
+        };
 
-      const { data, err } = await createToolCampaignReseller(payload);
-      if (data) {
-        toastify(data.message, "success");
-        setOpenCreateDiscountModal(false);
-      }
-      if (err) {
-        toastify(err?.response?.data?.message, "error");
+        const { data, err } = await createToolCampaignReseller(payload);
+        if (data) {
+          toastify(data.message, "success");
+          setOpenCreateDiscountModal(false);
+          getToolCampaignTableData(0);
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
+      } else {
+        const payload = {
+          adminMarketingToolsCampaignId: campaignID,
+          title,
+          price,
+          startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+          endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
+          storeType: "RESELLER",
+        };
+        const { data, err } = await updateToolCampaign(payload);
+        if (data) {
+          toastify(data.message, "success");
+          setOpenCreateDiscountModal(false);
+          getToolCampaignTableData(0);
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
       }
     }
   };
@@ -259,6 +264,7 @@ const CreateDiscountModal = ({
         <Grid container spacing={2} className="mt-1">
           <Grid item xs={6}>
             <SimpleDropdownComponent
+              disabled={modalType === "Edit"}
               label="Days"
               inputlabelshrink
               size="small"
@@ -268,6 +274,7 @@ const CreateDiscountModal = ({
                   getTools(value);
                 }
                 setDays(value);
+                setTools([]);
               }}
               value={days}
               helperText={error.days ? validateMessage.field_required : ""}
@@ -275,6 +282,7 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <MultiSelectComponent
+              disabled={modalType === "Edit"}
               label="Tools"
               inputlabelshrink
               size="small"
@@ -288,6 +296,8 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <InputBox
+              disabled={status === "ACTIVE" && modalType === "Edit"}
+              type="number"
               label="Price"
               value={price}
               onInputChange={(e) => {
@@ -306,10 +316,10 @@ const CreateDiscountModal = ({
                 setTitle(e.target.value);
               }}
               inputlabelshrink
-              error={error.price}
+              error={error.title}
               helperText={
-                error.price
-                  ? price.length === 0
+                error.title
+                  ? title.length === 0
                     ? validateMessage.field_required
                     : "Maximum 30 characters are allowed"
                   : ""
@@ -318,12 +328,14 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
+              disabled={status === "ACTIVE" && modalType === "Edit"}
               label="Start Date"
               inputlabelshrink
               size="small"
               value={startDate}
               onDateChange={(date) => {
-                handleStartDate(date);
+                setStartDate(date);
               }}
               error={error.startDate || error.startDateGreater}
               helperText={
@@ -337,21 +349,14 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
               label="End Date"
               inputlabelshrink
               size="small"
               value={endDate}
               onDateChange={(date) => {
-                handleEndDate(date);
+                setEndDate(date);
               }}
-              error={error.endDate || error.endDateSmaller}
-              helperText={
-                error.endDate
-                  ? validateMessage.field_required
-                  : error.endDateSmaller
-                  ? "Invalid end date"
-                  : ""
-              }
             />
           </Grid>
         </Grid>

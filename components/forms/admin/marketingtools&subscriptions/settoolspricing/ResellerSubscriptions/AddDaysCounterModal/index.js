@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { Box, Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import validateMessage from "constants/validateMessages";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -9,6 +9,7 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format } from "date-fns";
 import toastify from "services/utils/toastUtils";
 import { addIndividualPricing } from "services/admin/marketingtools/settoolpricing/resellerSubscription";
+import { updateMarketingToolPrice } from "services/admin/marketingtools/settoolpricing";
 
 let errObj = {
   days: false,
@@ -23,6 +24,16 @@ let errObj = {
 const AddDaysCounterModal = ({
   openAddDaysCounterModal,
   setOpenAddDaysCounterModal,
+  getIndividualPricing = () => {},
+  modalType = "Add",
+  selectedValues = {
+    days: "",
+    tools: "",
+    price: "",
+    startDate: "",
+    endDate: "",
+  },
+  marketingToolId = "",
 }) => {
   const [days, setDays] = useState({ label: "" });
   const [tools, setTools] = useState({ label: "" });
@@ -63,6 +74,22 @@ const AddDaysCounterModal = ({
       value: "360 days",
     },
   ];
+
+  useEffect(() => {
+    if (modalType === "Edit") {
+      setDays({
+        label: selectedValues.days,
+        value: selectedValues.days,
+      });
+      setTools({
+        label: selectedValues.tools,
+        value: selectedValues.tools,
+      });
+      setPrice(selectedValues.price);
+      setStartDate(new Date(selectedValues.startDate.split(" ")[0]));
+      setEndDate(new Date(selectedValues.endDate.split(" ")[0]));
+    }
+  }, [modalType]);
 
   const toolsList = [
     {
@@ -141,58 +168,11 @@ const AddDaysCounterModal = ({
     if (endDate === null) {
       errObj.endDate = true;
     }
+    if (new Date(startDate) > new Date(endDate)) {
+      errObj.startDateGreater = true;
+      toastify("fromDate Cannot be Greater Than ToDate", "error");
+    }
     return errObj;
-  };
-
-  const handleStartDate = (date) => {
-    if (endDate) {
-      if (
-        date.getDate() === endDate.getDate() &&
-        date.getMonth() === endDate.getMonth() &&
-        date.getYear() === endDate.getYear()
-      ) {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      } else if (endDate.getTime() < date.getTime()) {
-        errObj.startDateGreater = true;
-        setError({ ...errObj });
-      } else {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      }
-    } else {
-      setStartDate(date);
-    }
-  };
-
-  const handleEndDate = (date) => {
-    if (startDate) {
-      if (
-        date.getDate() === startDate.getDate() &&
-        date.getMonth() === startDate.getMonth() &&
-        date.getYear() === startDate.getYear()
-      ) {
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else if (startDate.getTime() > date.getTime()) {
-        // console.log("Hi");
-        errObj.endDateSmaller = true;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else {
-        // console.log(2);
-        // console.log("Hi");
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      }
-    } else {
-      // console.log(3);
-      setEndDate(date);
-    }
   };
 
   const handleClearAll = () => {
@@ -215,24 +195,43 @@ const AddDaysCounterModal = ({
 
   const handleSaveBtnClick = async () => {
     const theError = handleError();
-    setError(theError);
-    const flag = Object.values(theError).some((ele) => ele);
+    const flag = Object.values({ ...theError, ...error }).some((ele) => ele);
     if (!flag) {
-      const payload = {
-        adminMarketingToolName: tools.value,
-        price: Number(price),
-        days: days.value,
-        startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
-        endDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
-        storeType: "RESELLER",
-      };
-      const { data, err } = await addIndividualPricing(payload);
-      if (data) {
-        toastify(data.message, "success");
-        setOpenAddDaysCounterModal(false);
-      }
-      if (err) {
-        toastify(err?.response?.data?.message, "error");
+      if (modalType === "Add") {
+        const payload = {
+          adminMarketingToolName: tools.value,
+          price: Number(price),
+          days: days.value,
+          startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+          endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
+          storeType: "RESELLER",
+        };
+        const { data, err } = await addIndividualPricing(payload);
+        if (data) {
+          toastify(data.message, "success");
+          setOpenAddDaysCounterModal(false);
+          getIndividualPricing();
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
+      } else {
+        const payload = {
+          toolId: marketingToolId,
+          price: Number(price),
+          startDateTime: `${format(startDate, "MM-dd-yyyy")} 00:00:00`,
+          endDateTime: `${format(endDate, "MM-dd-yyyy")} 00:00:00`,
+        };
+
+        const { data, err } = await updateMarketingToolPrice(payload);
+        if (data) {
+          getIndividualPricing();
+          setOpenAddDaysCounterModal(false);
+          toastify(data?.message, "success");
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
       }
     }
   };
@@ -241,7 +240,9 @@ const AddDaysCounterModal = ({
     <Box>
       <ModalComponent
         open={openAddDaysCounterModal}
-        ModalTitle="Add Days Counter"
+        ModalTitle={
+          modalType === "Add" ? "Add Days Counter" : "Edit Days Counter"
+        }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
@@ -261,6 +262,7 @@ const AddDaysCounterModal = ({
         <Grid container spacing={2} className="mt-1">
           <Grid item xs={6}>
             <SimpleDropdownComponent
+              disabled={modalType === "Edit"}
               label="Days"
               inputlabelshrink
               size="small"
@@ -275,6 +277,7 @@ const AddDaysCounterModal = ({
           </Grid>
           <Grid item xs={6}>
             <SimpleDropdownComponent
+              disabled={modalType === "Edit"}
               label="Tools"
               inputlabelshrink
               size="small"
@@ -304,12 +307,13 @@ const AddDaysCounterModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
               label="Start Date"
               inputlabelshrink
               size="small"
               value={startDate}
               onDateChange={(date) => {
-                handleStartDate(date);
+                setStartDate(date);
               }}
               error={error.startDate || error.startDateGreater}
               helperText={
@@ -323,12 +327,13 @@ const AddDaysCounterModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
               label="End Date"
               inputlabelshrink
               size="small"
               value={endDate}
               onDateChange={(date) => {
-                handleEndDate(date);
+                setEndDate(date);
               }}
               error={error.endDate || error.endDateSmaller}
               helperText={

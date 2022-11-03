@@ -22,7 +22,7 @@ const UnlockToolsForm = ({
 
   const handleRadio = (row, radioId) => {
     const res = tableData.map((i) => {
-      if (i[radioId].id === row) {
+      if (i[radioId]?.id === row) {
         const result = {};
         Object.entries(i).forEach(([key, value]) => {
           if (key === radioId) {
@@ -82,42 +82,54 @@ const UnlockToolsForm = ({
     data.forEach((row) => {
       result.push({
         col1: <span className="fw-600">{row.heading}</span>,
-        col2: getRadioComponent(
-          row.col2.id,
-          row.col2.label,
-          row.col2.isChecked,
-          "col2"
-        ),
-        col3: getRadioComponent(
-          row.col3.id,
-          row.col3.label,
-          row.col3.isChecked,
-          "col3"
-        ),
-        col4: getRadioComponent(
-          row.col4.id,
-          row.col4.label,
-          row.col4.isChecked,
-          "col4"
-        ),
-        col5: getRadioComponent(
-          row.col5.id,
-          row.col5.label,
-          row.col5.isChecked,
-          "col5"
-        ),
-        col6: getRadioComponent(
-          row.col6.id,
-          row.col6.label,
-          row.col6.isChecked,
-          "col6"
-        ),
-        col7: getRadioComponent(
-          row.col7.id,
-          row.col7.label,
-          row.col7.isChecked,
-          "col7"
-        ),
+        col2: row?.col2?.label?.toString().length
+          ? getRadioComponent(
+              row?.col2?.id,
+              row?.col2?.label,
+              row?.col2?.isChecked,
+              "col2"
+            )
+          : "--",
+        col3: row?.col3?.label?.toString().length
+          ? getRadioComponent(
+              row?.col3?.id,
+              row?.col3?.label,
+              row?.col3?.isChecked,
+              "col3"
+            )
+          : "--",
+        col4: row?.col4?.label?.toString().length
+          ? getRadioComponent(
+              row?.col4?.id,
+              row?.col4?.label,
+              row?.col4?.isChecked,
+              "col4"
+            )
+          : "--",
+        col5: row?.col5?.label?.toString().length
+          ? getRadioComponent(
+              row?.col5?.id,
+              row?.col5?.label,
+              row?.col5?.isChecked,
+              "col5"
+            )
+          : "--",
+        col6: row?.col6?.label?.toString().length
+          ? getRadioComponent(
+              row?.col6?.id,
+              row?.col6?.label,
+              row?.col6?.isChecked,
+              "col6"
+            )
+          : "--",
+        col7: row?.col7?.label?.toString().length
+          ? getRadioComponent(
+              row.col7?.id,
+              row.col7?.label,
+              row?.col7?.isChecked,
+              "col7"
+            )
+          : "--",
         col8: (
           <Button
             variant="contained"
@@ -142,7 +154,9 @@ const UnlockToolsForm = ({
   }, []);
 
   useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
+    if (tableData.length) {
+      setTableRows(mapRowsToTable(tableData));
+    }
   }, [tableData]);
 
   return (
