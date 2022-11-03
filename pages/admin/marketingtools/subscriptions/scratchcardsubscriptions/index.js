@@ -16,6 +16,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/scratchcardsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const ScratchCardSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -37,6 +38,7 @@ const ScratchCardSubscriptions = () => {
     commentAttachment: "",
   });
 
+  const router = useRouter();
   const column1 = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -294,6 +296,13 @@ const ScratchCardSubscriptions = () => {
   };
 
   useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
+  useEffect(() => {
     getScratchCardSubscription(0);
   }, [dropdownValue]);
 
@@ -331,6 +340,9 @@ const ScratchCardSubscriptions = () => {
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
               getScratchCardSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

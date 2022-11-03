@@ -17,6 +17,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/todaysdealsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -35,6 +36,7 @@ const TodaysDealSubscription = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -294,7 +296,13 @@ const TodaysDealSubscription = () => {
       }
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getDealSubscription(0);
   }, [dropdownValue]);
@@ -336,6 +344,9 @@ const TodaysDealSubscription = () => {
             }}
             handlePageEnd={(page = pageNumber) => {
               getDealSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

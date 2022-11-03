@@ -16,6 +16,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/quizsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const QuizSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -36,6 +37,7 @@ const QuizSubscriptions = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -286,7 +288,13 @@ const QuizSubscriptions = () => {
       if (page === 0) setRowsForQuizSubs([]);
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getQuizSubscription(0);
   }, [dropdownValue]);
@@ -325,6 +333,9 @@ const QuizSubscriptions = () => {
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
               getQuizSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

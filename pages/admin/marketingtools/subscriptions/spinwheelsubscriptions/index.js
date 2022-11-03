@@ -16,6 +16,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/spinwheelsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const SpinWheelSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -36,6 +37,7 @@ const SpinWheelSubscriptions = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -292,7 +294,13 @@ const SpinWheelSubscriptions = () => {
       if (page === 0) setRowsForSpinWheelSubs([]);
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getSpinWheelSubscription(0);
   }, [dropdownValue]);
@@ -331,6 +339,9 @@ const SpinWheelSubscriptions = () => {
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
               getSpinWheelSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

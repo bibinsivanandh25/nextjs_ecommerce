@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import ViewModal from "@/forms/admin/marketingtools&subscriptions/notification/ViewModal";
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/notification/AddNoteModal";
 import NotifyModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/notifymodal";
+import { useRouter } from "next/router";
 
 const column1 = [
   {
@@ -143,13 +144,13 @@ const column2 = [
 const listData = [
   {
     id: "1",
-    value: "SUPPLIER",
-    title: "SUPPLIER",
+    value: "Supplier",
+    title: "Supplier",
   },
   {
     id: "2",
-    value: "RESELLER",
-    title: "RESELLER",
+    value: "Reseller",
+    title: "Reseller",
   },
 ];
 const NotificationSubscription = () => {
@@ -162,6 +163,8 @@ const NotificationSubscription = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
+  const router = useRouter();
+
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
       setSelectedData(item);
@@ -269,7 +272,7 @@ const NotificationSubscription = () => {
     if (data) {
       if (page == 0) {
         setRows(getTableRows(data));
-        setpageNumber((pre) => pre + 1);
+        setpageNumber(1);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
@@ -280,7 +283,13 @@ const NotificationSubscription = () => {
       setRows([]);
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setSelectedList([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getTableData(0);
     setpageNumber(0);
@@ -319,7 +328,7 @@ const NotificationSubscription = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableRows(page);
+              getTableData(page);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);

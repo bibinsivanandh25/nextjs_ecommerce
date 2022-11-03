@@ -146,13 +146,13 @@ const column2 = [
 const listData = [
   {
     id: "1",
-    value: "SUPPLIER",
-    title: "SUPPLIER",
+    value: "Supplier",
+    title: "Supplier",
   },
   {
     id: "2",
-    value: "RESELLER",
-    title: "RESELLER",
+    value: "Reseller",
+    title: "Reseller",
   },
 ];
 const DiscountSubscriptions = () => {
@@ -193,7 +193,7 @@ const DiscountSubscriptions = () => {
   const getTableRows = (data) => {
     const result = [];
     if (data) {
-      data.forEach((item, index) => {
+      data?.forEach((item, index) => {
         result.push({
           id: index + 1,
           col1: index + 1,
@@ -274,7 +274,7 @@ const DiscountSubscriptions = () => {
     if (data) {
       if (page == 0) {
         setRows(getTableRows(data));
-        setpageNumber((pre) => pre + 1);
+        setpageNumber(1);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
@@ -285,10 +285,11 @@ const DiscountSubscriptions = () => {
       setRows([]);
     }
   };
-
   useEffect(() => {
     if (router.query.userType !== undefined) {
-      setSelectedList([{ id: "1", value: "SUPPLIER", title: "SUPPLIER" }]);
+      setSelectedList([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
     }
   }, [router.query]);
 
@@ -329,7 +330,7 @@ const DiscountSubscriptions = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableRows(page);
+              getTableData(page);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);

@@ -16,6 +16,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/flags/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
 const FlagsSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
@@ -36,6 +37,7 @@ const FlagsSubscription = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -292,7 +294,13 @@ const FlagsSubscription = () => {
       setShowNotificationModal(true);
     }
   };
-
+  useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setDropdownValue([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
   useEffect(() => {
     getFlagsSubscription(0);
   }, [dropdownValue]);
@@ -329,6 +337,9 @@ const FlagsSubscription = () => {
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
               getFlagsSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

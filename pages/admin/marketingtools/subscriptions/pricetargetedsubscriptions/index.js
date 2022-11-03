@@ -16,6 +16,7 @@ import toastify from "services/utils/toastUtils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { useSelector } from "react-redux";
 import NotifyModal from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
+import { useRouter } from "next/router";
 
 const column1 = [
   {
@@ -144,13 +145,13 @@ const column2 = [
 const listData = [
   {
     id: "1",
-    value: "SUPPLIER",
-    title: "SUPPLIER",
+    value: "Supplier",
+    title: "Supplier",
   },
   {
     id: "2",
-    value: "RESELLER",
-    title: "RESELLER",
+    value: "Reseller",
+    title: "Reseller",
   },
 ];
 const PriceTargetedSubscription = () => {
@@ -163,6 +164,8 @@ const PriceTargetedSubscription = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
+
+  const router = useRouter();
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
@@ -188,7 +191,7 @@ const PriceTargetedSubscription = () => {
     if (data?.length) {
       if (page == 0) {
         setRows(getTableRows(data));
-        setpageNumber((pre) => pre + 1);
+        setpageNumber(1);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
@@ -283,6 +286,13 @@ const PriceTargetedSubscription = () => {
     }
   };
   useEffect(() => {
+    if (router.query.userType !== undefined) {
+      setSelectedList([
+        { id: "1", value: router.query.userType, title: router.query.userType },
+      ]);
+    }
+  }, [router.query]);
+  useEffect(() => {
     getTableData(0);
     setpageNumber(0);
   }, [selectedList]);
@@ -319,7 +329,7 @@ const PriceTargetedSubscription = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getTableRows(page);
+              getTableData(page);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);
