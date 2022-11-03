@@ -157,6 +157,8 @@ const EnhancedTableHead = (props) => {
                   column.position === "sticky" && index === columns.length - 1
                     ? 0
                     : "",
+                position: "sticky",
+                top: "42px",
               }}
               classes={{ root: classes.borderChild }}
             >

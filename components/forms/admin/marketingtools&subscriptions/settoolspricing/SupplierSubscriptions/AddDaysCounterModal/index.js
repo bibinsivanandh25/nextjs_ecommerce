@@ -161,7 +161,6 @@ const AddDaysCounterModal = ({
       startDate: false,
       endDate: false,
       startDateGreater: false,
-      endDateSmaller: false,
     };
     if (days.label === "") {
       errObj.days = true;
@@ -178,54 +177,11 @@ const AddDaysCounterModal = ({
     if (endDate === null) {
       errObj.endDate = true;
     }
+    if (new Date(startDate) > new Date(endDate)) {
+      errObj.startDateGreater = true;
+      toastify("fromDate Cannot be Greater Than ToDate", "error");
+    }
     return errObj;
-  };
-
-  const handleStartDate = (date) => {
-    if (endDate) {
-      if (
-        date.getDate() === endDate.getDate() &&
-        date.getMonth() === endDate.getMonth() &&
-        date.getYear() === endDate.getYear()
-      ) {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      } else if (endDate.getTime() <= date.getTime()) {
-        errObj.startDateGreater = true;
-        setError({ ...errObj });
-      } else {
-        errObj.startDateGreater = false;
-        setError({ ...errObj });
-        setStartDate(date);
-      }
-    } else {
-      setStartDate(date);
-    }
-  };
-
-  const handleEndDate = (date) => {
-    if (startDate) {
-      if (
-        date.getDate() === startDate.getDate() &&
-        date.getMonth() === startDate.getMonth() &&
-        date.getYear() === startDate.getYear()
-      ) {
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else if (startDate.getTime() >= date.getTime()) {
-        errObj.endDateSmaller = true;
-        setError({ ...errObj });
-        setEndDate(date);
-      } else {
-        errObj.endDateSmaller = false;
-        setError({ ...errObj });
-        setEndDate(date);
-      }
-    } else {
-      setEndDate(date);
-    }
   };
 
   const handleClearAll = () => {
@@ -361,12 +317,13 @@ const AddDaysCounterModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
               label="Start Date"
               inputlabelshrink
               size="small"
               value={startDate}
               onDateChange={(date) => {
-                handleStartDate(date);
+                setStartDate(date);
               }}
               error={error.startDate || error.startDateGreater}
               helperText={
@@ -380,21 +337,14 @@ const AddDaysCounterModal = ({
           </Grid>
           <Grid item xs={6}>
             <DatePickerComponent
+              disablePast
               label="End Date"
               inputlabelshrink
               size="small"
               value={endDate}
               onDateChange={(date) => {
-                handleEndDate(date);
+                setEndDate(date);
               }}
-              error={error.endDate || error.endDateSmaller}
-              helperText={
-                error.endDate
-                  ? validateMessage.field_required
-                  : error.endDateSmaller
-                  ? "Invalid end date"
-                  : ""
-              }
             />
           </Grid>
         </Grid>

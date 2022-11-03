@@ -27,6 +27,10 @@ const ResellerSubscriptions = () => {
   const [marketingtoolsCount, setmarketingtoolsCount] = useState([]);
   const [marketingtoolsStatus, setmarketingtoolsStatus] = useState([]);
   const [showEditPriceModal, setShowEditPriceModal] = useState(false);
+  const [createDiscountModalType, setCreateDiscountModalType] = useState("Add");
+  const [toolsCampaignEditData, setToolsCampaignEditData] = useState({});
+  const [marketingToolCampaignId, setMarketingToolCampaignId] = useState("");
+
   const [showCreateNotificationModal, setShowCreateNotificationModal] =
     useState(false);
 
@@ -47,7 +51,7 @@ const ResellerSubscriptions = () => {
     settableColumsFormarketingtoolsCount,
   ] = useState([]);
   const [toolIDs, setToolIDs] = useState([]);
-  const [showIndividualPricing, setShowIndividualPricing] = useState(false);
+  const [showViewTableType, setShowViewTableType] = useState("");
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [modalType, setModalType] = useState("Add");
@@ -64,18 +68,6 @@ const ResellerSubscriptions = () => {
   ]);
 
   const filterData = [
-    {
-      name: "STATUS",
-      value: [
-        { item: "ACTIVE", isSelected: false },
-        { item: "REJECTED", isSelected: false },
-        { item: "EXPIRED", isSelected: false },
-        { item: "PENDING", isSelected: false },
-        { item: "DISABLED", isSelected: false },
-        { item: "YET_TO_START", isSelected: false },
-        { item: "APPROVED", isSelected: false },
-      ],
-    },
     {
       name: "DAYS",
       value: [
@@ -95,96 +87,128 @@ const ResellerSubscriptions = () => {
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col2",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col3",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col4",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col5",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col6",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col7",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col8",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col9",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col10",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col11",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col12",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col13",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col14",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col15",
       align: "center",
       label: "Active",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
     {
       id: "col16",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      minWidth: 15,
+      maxWidth: 15,
     },
   ];
 
@@ -334,6 +358,8 @@ const ResellerSubscriptions = () => {
           align: "center",
           label: ele.adminMarketingToolName.replaceAll("_", " "),
           data_align: "center",
+          minWidth: 30,
+          maxWidth: 30,
         });
 
         rows[`col${ind + 1}`] = (
@@ -365,35 +391,37 @@ const ResellerSubscriptions = () => {
     }
   };
   const mapIndivisualPricingRows = (data) => {
-    const result = [
-      {
-        id: "col1",
-        align: "center",
-        label: "Tools / Days",
-        data_align: "center",
-        position: "sticky",
-        minWidth: 200,
-      },
-    ];
-    data.forEach((item, ind) => {
-      result.push({
-        id: `col${ind + 2}`,
-        align: "center",
-        label: item.toolName.replaceAll("_", " "),
-        data_align: "center",
-        position: "",
-        minWidth: 200,
+    if (data?.length) {
+      const result = [
+        {
+          id: "col1",
+          align: "center",
+          label: "Tools / Days",
+          data_align: "center",
+          position: "sticky",
+          minWidth: 200,
+        },
+      ];
+      data.forEach((item, ind) => {
+        result.push({
+          id: `col${ind + 2}`,
+          align: "center",
+          label: item.toolName.replaceAll("_", " "),
+          data_align: "center",
+          position: "",
+          minWidth: 200,
+        });
       });
-    });
-    result.push({
-      id: "col10",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-      // minWidth: 200,
-      position: "sticky",
-    });
-    setIndividualPricingColumns([...result]);
+      result.push({
+        id: "col10",
+        align: "center",
+        label: "Actions",
+        data_align: "center",
+        // minWidth: 200,
+        position: "sticky",
+      });
+      setIndividualPricingColumns([...result]);
+    }
   };
   const enabledisablecampaign = async (id, status) => {
     const payload = {
@@ -429,39 +457,6 @@ const ResellerSubscriptions = () => {
     const { data } = await getAllIndividualPricingByUserType("RESELLER");
     if (data) {
       mapIndivisualPricingRows(data);
-      // days.forEach((val) => {
-      //   data.forEach((item, index) => {
-      //     item.adminMarketingTools.forEach((value) => {
-      //       res.push({
-      //         col1: val,
-      //       });
-      //       if (value.days.toLocaleLowerCase() === val.toLocaleLowerCase()) {
-      //         res.push({
-      //           [`col${index + 2}`]: (
-      //             <Box className="d-flex align-items-center justify-content-evenly">
-      //               <Typography className="h-5">{value.price}</Typography>
-      //               <CustomIcon type="edit" />
-      //               <CustomIcon type="calendar" />
-      //               <Box className="ms-2">
-      //                 <SwitchComponent label="" />
-      //               </Box>
-      //             </Box>
-      //           ),
-      //         });
-      //         res.push({
-      //           col10: (
-      //             <div className="d-flex justify-content-center align-items-center">
-      //               <CustomIcon type="view" title="view" className="mx-4" />
-      //               <SwitchComponent label="" />
-      //             </div>
-      //           ),
-      //         });
-      //       }
-      //     });
-      //   });
-      //   newres.push(Object.assign({}, ...res));
-      // });
-
       const days = [
         "7 days",
         "30 days",
@@ -561,7 +556,7 @@ const ResellerSubscriptions = () => {
                 className="mx-4"
                 onIconClick={() => {
                   setToolIDs(toolIds.filter((i) => i));
-                  setShowIndividualPricing(true);
+                  setShowViewTableType("INDIVIDUAL_PRICING");
                 }}
               />
               <SwitchComponent
@@ -689,7 +684,26 @@ const ResellerSubscriptions = () => {
         col16: ele.createdDate,
         col17: (
           <Box className="d-flex align-items-center justify-content-between">
-            <CustomIcon className="h-4" type="edit" />
+            <CustomIcon
+              className={`h-4 ${getStatus() === "EXPIRED" ? "d-none" : ""}`}
+              type="edit"
+              onIconClick={() => {
+                setOpenCreateDiscountModal(true);
+                setCreateDiscountModalType("Edit");
+                setMarketingToolCampaignId(ele.adminMarketingToolsCampaignId);
+                setToolsCampaignEditData({
+                  days: ele.days,
+                  title: ele.title,
+                  startDate: ele.startDateTime,
+                  endDate: ele.endDateTime,
+                  price: ele.price,
+                  id: ele.adminMarketingToolsCampaignId,
+                  toolNames: ele.adminMarketingTools.map(
+                    (i) => i.adminMarketingToolName
+                  ),
+                });
+              }}
+            />
             <CustomIcon
               type="calendar"
               className="ms-1 h-4"
@@ -709,7 +723,14 @@ const ResellerSubscriptions = () => {
                 }}
               />
             </Box>
-            <CustomIcon type="view" className="h-4" />
+            <CustomIcon
+              type="view"
+              className="h-4"
+              onIconClick={() => {
+                setToolIDs([ele.adminMarketingToolsCampaignId]);
+                setShowViewTableType("TOOL_CAMPAIGN");
+              }}
+            />
           </Box>
         ),
       });
@@ -742,7 +763,7 @@ const ResellerSubscriptions = () => {
       storeType: "RESELLER",
       fromDate: date?.fromDate ?? "",
       toDate: date?.toDate ?? "",
-      pageNumber: page,
+      pageNumber: getStatus() !== "ACTIVE" ? page ?? 0 : 0,
       pageSize: 50,
     };
     const { data, err } = await getToolsCampaignWithFilter(payload);
@@ -790,7 +811,7 @@ const ResellerSubscriptions = () => {
 
   return (
     <>
-      {!showIndividualPricing ? (
+      {!showViewTableType?.length ? (
         <div>
           <Box>
             <Paper className="p-2">
@@ -863,7 +884,8 @@ const ResellerSubscriptions = () => {
                     showSearchbar={false}
                     showCheckbox={false}
                     showDateFilter
-                    showFilterButton
+                    showFilterButton={getStatus() !== "ACTIVE"}
+                    showPagination={getStatus() !== "ACTIVE"}
                     tabChange={tabList}
                     showDateFilterBtn
                     filterData={filterData}
@@ -871,6 +893,7 @@ const ResellerSubscriptions = () => {
                     dateFilterBtnName="Create Discounts"
                     dateFilterBtnClick={() => {
                       setOpenCreateDiscountModal(true);
+                      setCreateDiscountModalType("Add");
                     }}
                     handlePageEnd={(
                       searchText,
@@ -925,6 +948,10 @@ const ResellerSubscriptions = () => {
           ) : null}
           {openCreateDiscountModal ? (
             <CreateDiscountModal
+              status={getStatus()}
+              campaignID={marketingToolCampaignId}
+              toolsCampaignEditData={toolsCampaignEditData}
+              modalType={createDiscountModalType}
               openCreateDiscountModal={openCreateDiscountModal}
               setOpenCreateDiscountModal={setOpenCreateDiscountModal}
               getToolCampaignTableData={getToolCampaignTableData}
@@ -941,7 +968,8 @@ const ResellerSubscriptions = () => {
       ) : (
         <ViewIndividualPricing
           toolIDs={[...toolIDs]}
-          setShowIndividualPricing={setShowIndividualPricing}
+          setShowViewTableType={setShowViewTableType}
+          showViewTableType={showViewTableType}
         />
       )}
     </>
