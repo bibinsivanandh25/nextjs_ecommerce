@@ -18,9 +18,10 @@ import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import TabsCard from "components/molecule/TabsCard";
+import { useRouter } from "next/router";
+import ViewIndividualPricing from "../ViewIndividualPricing";
 import AddDaysCounterModal from "./AddDaysCounterModal";
 import CreateDiscountModal from "./CreateDiscountModal";
-import ViewIndividualPricing from "../ViewIndividualPricing";
 import CreateNotification from "../CreateNotification";
 
 const ResellerSubscriptions = () => {
@@ -344,6 +345,7 @@ const ResellerSubscriptions = () => {
       position: "sticky",
     },
   ];
+  const router = useRouter();
 
   const gettableColumsFormarketingtoolsCount = async () => {
     const { data } = await getSubscrptionType("RESELLER");
@@ -351,6 +353,16 @@ const ResellerSubscriptions = () => {
       const result = [];
       const rows = {};
       const rows2 = {};
+      const getRouteName = (tool) => {
+        if (tool === "DISCOUNT_COUPON") {
+          return "discountsubscriptions";
+        }
+        if (tool === "FLAGS") {
+          return "flags";
+        }
+        if (tool === "NOTIFICATIONS") return "notification";
+        return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
+      };
       data.forEach((ele, ind) => {
         let count = Object.keys(rows2).length;
         result.push({
@@ -363,7 +375,16 @@ const ResellerSubscriptions = () => {
         });
 
         rows[`col${ind + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
+          <Typography
+            className="h-5 text-decoration-underline cursor-pointer"
+            onClick={() => {
+              router.push(
+                `/admin/marketingtools/subscriptions/${getRouteName(
+                  ele.adminMarketingToolName
+                )}?userType="RESELLER"`
+              );
+            }}
+          >
             {ele.totalCount}
           </Typography>
         );

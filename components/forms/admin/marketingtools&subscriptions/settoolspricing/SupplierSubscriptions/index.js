@@ -14,6 +14,7 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import toastify from "services/utils/toastUtils";
 import TabsCard from "components/molecule/TabsCard";
+import { useRouter } from "next/router";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
@@ -337,6 +338,8 @@ const SupplierSubscriptions = () => {
     },
   ];
 
+  const router = useRouter();
+
   const gettableColumsForSupplierSubscriptionsTableOne = async () => {
     const { data } = await getSubscrptionType("SUPPLIER");
     if (data) {
@@ -353,9 +356,27 @@ const SupplierSubscriptions = () => {
           minWidth: 30,
           maxWidth: 30,
         });
-
+        const getRouteName = (tool) => {
+          if (tool === "DISCOUNT_COUPON") {
+            return "discountsubscriptions";
+          }
+          if (tool === "FLAGS") {
+            return "flags";
+          }
+          if (tool === "NOTIFICATIONS") return "notification";
+          return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
+        };
         rows[`col${ind + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
+          <Typography
+            className="h-5 text-decoration-underline cursor-pointer"
+            onClick={() => {
+              router.push(
+                `/admin/marketingtools/subscriptions/${getRouteName(
+                  ele.adminMarketingToolName
+                )}?userType="SUPPLIER"`
+              );
+            }}
+          >
             {ele.totalCount}
           </Typography>
         );
