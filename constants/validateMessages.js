@@ -22,5 +22,6 @@ const validateMessage = {
   userId: "Invalid Email / Mobile Number",
   alphabets: "Only alphabets are allowed",
   alphabets_50: "Max 50 alphabets can be entered",
+  alphabets_3: "At least 3 alphabets required",
 };
 export default validateMessage;
