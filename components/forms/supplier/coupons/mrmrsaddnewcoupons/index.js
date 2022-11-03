@@ -220,7 +220,7 @@ const MrMrsAddNewCoupons = ({
             <Grid item xs={12} display="flex">
               <InputBox
                 disabled
-                label="Code"
+                label="Store Coupon Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
@@ -465,7 +465,6 @@ const MrMrsAddNewCoupons = ({
                 <>
                   <Grid item xs={11}>
                     <InputBox
-                      placeholder="eg: Zero"
                       inputlabelshrink
                       label="Usage Limit Per Coupon"
                       value={formValues.usageLimitPerCoupon}
@@ -480,7 +479,6 @@ const MrMrsAddNewCoupons = ({
                   <Grid item xs={11}>
                     <InputBox
                       disabled
-                      placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
                       value={formValues.usageLimittoXTimes}
@@ -495,8 +493,6 @@ const MrMrsAddNewCoupons = ({
                   <Grid item xs={12}>
                     <div className="d-flex h-100">
                       <InputBox
-                        placeholder="eg: Unlimited Usage"
-                        inputlabelshrink
                         label="Usage Limit Per User"
                         value={formValues.usageLimitPerUser}
                         id="usageLimitPerUser"

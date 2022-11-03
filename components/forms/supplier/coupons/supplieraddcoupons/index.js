@@ -149,7 +149,7 @@ const SupplierAddCoupons = ({
           <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12}>
               <InputBox
-                label="Code"
+                label="Store Coupon Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
@@ -313,8 +313,6 @@ const SupplierAddCoupons = ({
                 <>
                   <Grid item xs={11}>
                     <InputBox
-                      placeholder="eg: Zero"
-                      inputlabelshrink
                       label="Usage Limit Per Coupon"
                       value={formValues.usageLimitPerCoupon}
                       id="usageLimitPerCoupon"
@@ -329,8 +327,6 @@ const SupplierAddCoupons = ({
                   <Grid item xs={12}>
                     <div className="d-flex h-100">
                       <InputBox
-                        placeholder="eg: Unlimited Usage"
-                        inputlabelshrink
                         label="Usage Limit Per User"
                         value={formValues.usageLimitPerUser}
                         id="usageLimitPerUser"
