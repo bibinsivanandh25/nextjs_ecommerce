@@ -437,7 +437,7 @@ const FilterMenu = ({
 };
 export default function TableComponent({
   showPagination = true,
-  showCheckbox = true,
+  showCheckbox = false,
   table_heading = "",
   headerClassName = "",
   tableRows = [],

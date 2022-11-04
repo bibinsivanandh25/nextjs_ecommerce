@@ -25,8 +25,7 @@ import CreateDiscountModal from "./CreateDiscountModal";
 import CreateNotification from "../CreateNotification";
 
 const ResellerSubscriptions = () => {
-  const [marketingtoolsCount, setmarketingtoolsCount] = useState([]);
-  const [marketingtoolsStatus, setmarketingtoolsStatus] = useState([]);
+  const [subscriptionCount, setSubscriptionCount] = useState([]);
   const [showEditPriceModal, setShowEditPriceModal] = useState(false);
   const [createDiscountModalType, setCreateDiscountModalType] = useState("Add");
   const [toolsCampaignEditData, setToolsCampaignEditData] = useState({});
@@ -47,10 +46,6 @@ const ResellerSubscriptions = () => {
 
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
-  const [
-    tableColumsFormarketingtoolsCount,
-    settableColumsFormarketingtoolsCount,
-  ] = useState([]);
   const [toolIDs, setToolIDs] = useState([]);
   const [showViewTableType, setShowViewTableType] = useState("");
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
@@ -79,137 +74,6 @@ const ResellerSubscriptions = () => {
         { item: "270 days", isSelected: false },
         { item: "360 days", isSelected: false },
       ],
-    },
-  ];
-
-  const tableColumsFormarketingtoolsStatus = [
-    {
-      id: "col1",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col11",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col12",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col13",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col14",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col15",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
-    },
-    {
-      id: "col16",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      minWidth: 15,
-      maxWidth: 15,
     },
   ];
 
@@ -346,71 +210,16 @@ const ResellerSubscriptions = () => {
     },
   ];
   const router = useRouter();
-
-  const gettableColumsFormarketingtoolsCount = async () => {
+  const getMarketingToolCountForReseller = async () => {
     const { data } = await getSubscrptionType("RESELLER");
-    if (data) {
-      const result = [];
-      const rows = {};
-      const rows2 = {};
-      const getRouteName = (tool) => {
-        if (tool === "DISCOUNT_COUPON") {
-          return "discountsubscriptions";
-        }
-        if (tool === "FLAGS") {
-          return "flags";
-        }
-        if (tool === "NOTIFICATIONS") return "notification";
-        return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
-      };
-      data.forEach((ele, ind) => {
-        let count = Object.keys(rows2).length;
-        result.push({
-          id: `col${ind + 1}`,
-          align: "center",
-          label: ele.adminMarketingToolName.replaceAll("_", " "),
-          data_align: "center",
-          minWidth: 30,
-          maxWidth: 30,
-        });
-
-        rows[`col${ind + 1}`] = (
-          <Typography
-            className="h-5 text-decoration-underline cursor-pointer"
-            onClick={() => {
-              router.push(
-                `/admin/marketingtools/subscriptions/${getRouteName(
-                  ele.adminMarketingToolName
-                )}?userType=Reseller`
-              );
-            }}
-          >
-            {ele.totalCount}
-          </Typography>
-        );
-
-        rows2[`col${count + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {ele.activeCount}
-          </Typography>
-        );
-        count += 1;
-        rows2[`col${count + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {ele.inActiveCount}
-          </Typography>
-        );
-      });
-
-      const temp = [];
-      const temp1 = [];
-      temp1.push(rows2);
-      temp.push(rows);
-      setmarketingtoolsStatus([...temp1]);
-      setmarketingtoolsCount([...temp]);
-      settableColumsFormarketingtoolsCount([...result]);
+    if (data?.length) {
+      setSubscriptionCount([...data]);
     }
   };
+  useEffect(() => {
+    getMarketingToolCountForReseller();
+  }, []);
+
   const mapIndivisualPricingRows = (data) => {
     if (data?.length) {
       const result = [
@@ -806,7 +615,6 @@ const ResellerSubscriptions = () => {
   };
 
   useEffect(() => {
-    gettableColumsFormarketingtoolsCount();
     getIndividualPricing();
   }, []);
 
@@ -830,6 +638,102 @@ const ResellerSubscriptions = () => {
     }
   };
 
+  const getSubscriptionCount = () => {
+    const getRouteName = (tool) => {
+      if (tool === "DISCOUNT_COUPON") {
+        return "discountsubscriptions";
+      }
+      if (tool === "FLAGS") {
+        return "flags";
+      }
+      if (tool === "NOTIFICATIONS") return "notification";
+      return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
+    };
+    return subscriptionCount?.map((ele) => {
+      return (
+        <div
+          className="me-3 "
+          style={{
+            minWidth: "200px",
+          }}
+        >
+          <Paper className="mb-2 pb-2" elevation={3}>
+            <Typography className="fw-bold h-5 py-1 text-center bg-light-gray">
+              {ele.adminMarketingToolName?.replaceAll("_", " ")}
+            </Typography>
+            <div className="d-flex justify-content-center">
+              <Typography
+                className="fw-bold h-5 py-1 text-decoration-underline cursor-pointer  "
+                onClick={() => {
+                  router.push(
+                    `/admin/marketingtools/subscriptions/${getRouteName(
+                      ele.adminMarketingToolName
+                    )}?userType=Reseller&Status=null`
+                  );
+                }}
+              >
+                {ele.totalCount}
+              </Typography>
+            </div>
+            <div className="d-flex justify-content-around">
+              <div>
+                <Typography className="fw-bold h-5 text-center ">
+                  Active
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Reseller&Status=ACTIVE`
+                    );
+                  }}
+                >
+                  {ele.activeCount}
+                </Typography>
+              </div>
+              <div className="mx-4">
+                <Typography className="fw-bold h-5 text-center  ">
+                  Expired
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Reseller&Status=EXPIRED`
+                    );
+                  }}
+                >
+                  {ele.expiredCount}
+                </Typography>
+              </div>
+              <div>
+                <Typography className="fw-bold h-5 text-center ">
+                  Pending
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Reseller&Status=PENDING`
+                    );
+                  }}
+                >
+                  {ele.pendingCount}
+                </Typography>
+              </div>
+            </div>
+          </Paper>
+        </div>
+      );
+    });
+  };
+
   return (
     <>
       {!showViewTableType?.length ? (
@@ -839,44 +743,57 @@ const ResellerSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Reseller Subscriptions
               </Typography>
-              <TableComponent
-                columns={[...tableColumsFormarketingtoolsCount]}
-                tableRows={marketingtoolsCount}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
-              <TableComponent
-                columns={[...tableColumsFormarketingtoolsStatus]}
-                tableRows={marketingtoolsStatus}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
+              {subscriptionCount?.length ? (
+                <>
+                  <div className="d-flex overflow-auto hide-scrollbar my-2 ">
+                    {getSubscriptionCount()}
+                  </div>
+                </>
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              <TableComponent
-                columns={[...individualPricingColumns]}
-                tableRows={individualPricingTableRows}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-                showCustomButton
-                customButtonLabel="Add Day's Counter"
-                onCustomButtonClick={() => {
-                  setOpenAddDaysCounterModal(true);
-                  setModalType("Add");
-                }}
-              />
+              {individualPricingTableRows?.length ? (
+                <TableComponent
+                  columns={[...individualPricingColumns]}
+                  tableRows={individualPricingTableRows}
+                  tHeadBgColor="bg-light-gray"
+                  showPagination={false}
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  showCheckbox={false}
+                  showCustomButton
+                  customButtonLabel="Add Day's Counter"
+                  onCustomButtonClick={() => {
+                    setOpenAddDaysCounterModal(true);
+                    setModalType("Add");
+                  }}
+                />
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
