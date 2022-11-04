@@ -36,8 +36,8 @@ const FileUploadModal = ({
 
   const handlefileDrop = async (acceptedFiles) => {
     if (
-      type !== "base64" &&
-      acceptedTypes.includes(acceptedFiles[0].type.split("/")[1])
+      acceptedTypes.includes(acceptedFiles[0].type.split("/")[1]) &&
+      acceptedTypes.includes(acceptedFiles[0].name.split(".")[1])
     ) {
       setMultiPart((pre) => {
         return [...pre, ...acceptedFiles];
