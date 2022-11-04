@@ -209,7 +209,7 @@ const Banners = () => {
               <Box className="d-flex flex-column align-items-center">
                 <Box className="ms-4">
                   <SwitchComponent
-                    defaultChecked={item.disable}
+                    defaultChecked={!item.disable}
                     label=""
                     ontoggle={(val) => {
                       handleSwitchClick(val, item, fromdate, endDate);

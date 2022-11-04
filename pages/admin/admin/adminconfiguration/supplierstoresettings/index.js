@@ -129,6 +129,7 @@ const SupplierStoreSettings = () => {
           <TableComponent
             columns={columns}
             table_heading="Admin Configuration"
+            headerClassName="color-orange"
             tHeadBgColor="bg-light-gray"
             showPagination
             tableRows={tableRows}
