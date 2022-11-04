@@ -144,12 +144,12 @@ const column2 = [
 ];
 const listData = [
   {
-    id: "1",
+    id: "Supplier",
     value: "Supplier",
     title: "Supplier",
   },
   {
-    id: "2",
+    id: "Reseller",
     value: "Reseller",
     title: "Reseller",
   },
@@ -176,19 +176,19 @@ const PriceTargetedSubscription = () => {
       setOpenNotifyModal(true);
     }
   };
-  const getTableData = async (page) => {
-    const selectedListData = [];
+  const getTableData = async (page, userType) => {
+    const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
-        selectedListData.push(item.value);
+        temp.push(item.value);
       }
     });
     const payload = {
       marketingTool: "PRICE_TARGETED",
-      userType: selectedListData,
+      userType: userType ?? temp,
     };
     const { data, err } = await adminPriceTargetedSubscription(payload, page);
-    if (data?.length) {
+    if (data.length) {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber(1);
@@ -196,6 +196,8 @@ const PriceTargetedSubscription = () => {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
       }
+    } else if (data.length == 0 && page == 0) {
+      setRows([]);
     }
     if (err) {
       setRows([]);
@@ -285,17 +287,35 @@ const PriceTargetedSubscription = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const [selectedListData, setSelectedListData] = useState([]);
+
   useEffect(() => {
-    if (router.query.userType !== undefined) {
-      setSelectedList([
-        { id: "1", value: router.query.userType, title: router.query.userType },
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
       ]);
+      setSelectedList([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      getTableData(0, [router?.query?.userType]);
+      setpageNumber(0);
     }
-  }, [router.query]);
+  }, [router?.query?.userType]);
+
   useEffect(() => {
-    getTableData(0);
-    setpageNumber(0);
-  }, [selectedList]);
+    if (!router?.query?.userType) {
+      getTableData(0);
+      setpageNumber(0);
+    }
+  }, [router?.query?.userType]);
 
   return (
     <>
@@ -313,14 +333,28 @@ const PriceTargetedSubscription = () => {
                 placeholder=""
                 list={listData}
                 onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
                   setSelectedList(value);
+                  setpageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getTableData(0, [...temp]);
+                    setpageNumber(0);
+                  } else {
+                    getTableData(0, []);
+                    setpageNumber(0);
+                  }
                 }}
-                value={selectedList}
+                value={selectedList?.length ? selectedList : selectedListData}
               />
             </Grid>
           </Grid>
 
           <TableComponent
+            tabChange={`${selectedList.length}`}
             columns={[...column2]}
             column2={[...column1]}
             tableRows={rows}
