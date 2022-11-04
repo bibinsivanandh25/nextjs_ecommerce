@@ -30,5 +30,19 @@ const inviteSupplier = (username) => {
     })
     .catch((err) => ({ err }));
 };
+const getCategoryFilterData = () => {
+  return serviceUtil
+    .get(`products/categories?commissionType=ZERO_COMMISSION`)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 
-export { getAllTableDatas, supplierApprovedOrRejected, inviteSupplier };
+export {
+  getAllTableDatas,
+  supplierApprovedOrRejected,
+  inviteSupplier,
+  getCategoryFilterData,
+};

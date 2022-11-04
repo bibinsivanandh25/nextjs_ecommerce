@@ -13,8 +13,8 @@ const SpinWheel = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Tools To Approve", isSelected: true },
-    { label: "Rejected", isSelected: false },
     { label: "Approved", isSelected: false },
+    { label: "Rejected", isSelected: false },
   ]);
 
   const handleSelect = (index) => {
@@ -46,8 +46,8 @@ const SpinWheel = () => {
           <Box className="px-1 pt-2">
             {/* {activeTab === 0 && <Approved getCount={getCount} />} */}
             {activeTab === 0 && <SpinWheelToApprove />}
-            {activeTab === 1 && <SpinWheelRejected />}
-            {activeTab === 2 && <SpinWheelApprove />}
+            {activeTab === 1 && <SpinWheelApprove />}
+            {activeTab === 2 && <SpinWheelRejected />}
           </Box>
         </TabsCard>
       </Box>

@@ -68,7 +68,7 @@ const UploadDocumentModal = ({
     }
     if (documents.length === 0) {
       flag = false;
-      errorObj.files = "No Document is Choosen";
+      errorObj.files = "No Document is Chosen";
     }
     setError(errorObj);
     return flag;

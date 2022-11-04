@@ -112,8 +112,9 @@ const Tags = () => {
   const [tagName, setTageName] = useState("");
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
-  // const [viewRows, setViewRows] = useState([]);
+  const [modalType, setModalType] = useState("add");
   const [viewData, setViewData] = useState({});
+  const [selectedTagId, setSelectedTagId] = useState("");
 
   const getAllTags = async (page) => {
     const { data, err } = await getAdminTags(page);
@@ -170,6 +171,12 @@ const Tags = () => {
                   if (ele == "Delete") {
                     handleDeleteClick(item);
                   }
+                  if (ele === "Edit") {
+                    setModalType("edit");
+                    setSelectedTagId(item.tagId);
+                    setTageName(item.tagName);
+                    setModalOpen(true);
+                  }
                 }}
               />
             </Box>
@@ -183,18 +190,6 @@ const Tags = () => {
     if (item) {
       setViewData(item);
       setViewModalOpen(true);
-      // const viewRow = [
-      //   {
-      //     id: "col1",
-      //     col1: 1,
-      //     col2: item.tagName,
-      //     col3: item.tagId,
-      //     col4: item.createdBy,
-      //     col5: item.createdByType,
-      //     col6: item.lastUpdatedAt,
-      //   },
-      // ];
-      // setViewRows(viewRow);
     }
   };
   const handleAcceptRejectClick = async (item, type) => {
@@ -230,6 +225,7 @@ const Tags = () => {
         <ButtonComponent
           label="Create"
           onBtnClick={() => {
+            setModalType("add");
             setModalOpen(true);
           }}
         />
@@ -255,8 +251,9 @@ const Tags = () => {
         setTageName={setTageName}
         setpageNumber={setpageNumber}
         user={user}
+        modalType={modalType}
+        selectedTagId={selectedTagId}
       />
-
       <ModalComponent
         open={viewModalOpen}
         onCloseIconClick={() => {
@@ -267,15 +264,6 @@ const Tags = () => {
         titleClassName="fw-bold color-orange"
       >
         <Box className="px-2  overflow-auto hide-scrollbar">
-          {/* <TableComponent
-            columns={[...viewTableColumn]}
-            showSearchFilter={false}
-            showSearchbar={false}
-            tHeadBgColor="bg-light-gray"
-            tableRows={[...viewRows]}
-            showCheckbox={false}
-            showPagination={false}
-          /> */}
           <Box>
             <Grid container className="py-2" alignItems="center">
               <Grid item sm={5} display="flex" justifyContent="end">

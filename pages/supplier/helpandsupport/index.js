@@ -117,7 +117,7 @@ const HelpAndSupport = () => {
   const mapRowsToTable = (data) => {
     const result = [];
     data?.forEach((row, index) => {
-      const flag = row?.helpSupportMessages[0]?.helpSupportMessageViews?.some(
+      const flag = row?.helpSupportMessages?.helpSupportMessageViews?.some(
         (item) => item.viewedById == user.supplierId
       );
       result.push({
@@ -151,8 +151,8 @@ const HelpAndSupport = () => {
                 variant="dot"
                 sx={{
                   "& .MuiBadge-badge": {
-                    color: flag ? "red" : "white",
-                    backgroundColor: flag ? "red" : "white",
+                    color: flag ? "white" : "red",
+                    backgroundColor: flag ? "white" : "red",
                   },
                 }}
               >

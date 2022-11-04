@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
@@ -15,7 +16,20 @@ import {
 import toastify from "services/utils/toastUtils";
 import CreateNotification from "@/forms/admin/marketingtools&subscriptions/quizsubscriptions/CreateNotificationModal";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useRouter } from "next/router";
 
+const listData = [
+  {
+    id: "Supplier",
+    value: "Supplier",
+    title: "Supplier",
+  },
+  {
+    id: "Reseller",
+    value: "Reseller",
+    title: "Reseller",
+  },
+];
 const QuizSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
@@ -35,6 +49,7 @@ const QuizSubscriptions = () => {
     comment: "",
     commentAttachment: "",
   });
+  const router = useRouter();
 
   const column1 = [
     {
@@ -182,45 +197,28 @@ const QuizSubscriptions = () => {
     else if (error?.response?.data?.message)
       toastify(error?.response?.data?.message, "error");
   };
-
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
   const returnTableData = (data) => {
     const mappedArray = data.map((val, index) => {
-      const dateOne = new Date(val.activatedAt);
-      const dateTwo = new Date(val.expirationDate);
-      const timeDifference = dateTwo.getTime() - dateOne.getTime();
-      const divisor = 1000 * 60 * 60 * 24;
-      const numberOfDays = timeDifference / divisor;
       return {
         id: val.purchaseId,
         col1: index >= 9 ? index + 1 : `0${index + 1}`,
         col2: val.purchasedById,
-        col3:
-          numberOfDays === 7
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col4:
-          numberOfDays === 30
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col5:
-          numberOfDays === 90
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col6:
-          numberOfDays === 180
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col7:
-          numberOfDays === 270
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
-        col8:
-          numberOfDays === 360
-            ? `${val.activatedAt}-${val.expirationDate}`
-            : "--",
+        col3: getSubscriptionDate(val, "7 days"),
+        col4: getSubscriptionDate(val, "30 days"),
+        col5: getSubscriptionDate(val, "90 days"),
+        col6: getSubscriptionDate(val, "180 days"),
+        col7: getSubscriptionDate(val, "270 days"),
+        col8: getSubscriptionDate(val, "360 days"),
         col9: val.toolStatus,
         col10: val.subscriptionAmount,
-        col11: val.comments ? val.comments : "0",
+        col11: val.comments ? val.comments : "--",
         col12: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
@@ -277,11 +275,11 @@ const QuizSubscriptions = () => {
     return mappedArray;
   };
 
-  const getQuizSubscription = async (page) => {
-    const selectedListData = dropdownValue.map((value) => value.title);
+  const getQuizSubscription = async (page, usertype) => {
+    const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "QUIZ",
-      userType: selectedListData,
+      userType: usertype ?? selectedListDatas,
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
@@ -298,14 +296,39 @@ const QuizSubscriptions = () => {
         setRowsForQuizSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
       }
-    } else if (!data?.length) {
-      if (page === 0) setRowsForQuizSubs([]);
+    } else if (data?.length == 0 && page === 0) {
+      setRowsForQuizSubs([]);
     }
   };
+  const [selectedListData, setSelectedListData] = useState([]);
 
   useEffect(() => {
-    getQuizSubscription(0);
-  }, [dropdownValue]);
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      setDropdownValue([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      getQuizSubscription(0, [router?.query?.userType]);
+      setPageNumber(0);
+    }
+  }, [router?.query?.userType]);
+
+  useEffect(() => {
+    if (!router?.query?.userType) {
+      getQuizSubscription(0);
+      setPageNumber(0);
+    }
+  }, [router?.query?.userType]);
 
   return (
     <>
@@ -317,30 +340,44 @@ const QuizSubscriptions = () => {
             </Typography>
             <Box className="w-25 me-2">
               <MultiSelectComponent
-                list={[
-                  { title: "Supplier", id: 1 },
-                  { title: "Reseller", id: 2 },
-                ]}
-                label="Select Subscriber"
-                onSelectionChange={(_e, val) => {
-                  setDropdownValue(val);
+                label="FILTER"
+                placeholder=""
+                list={listData}
+                onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
+                  setDropdownValue(value);
+                  setPageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getQuizSubscription(0, [...temp]);
+                    setPageNumber(0);
+                  } else {
+                    getQuizSubscription(0, []);
+                    setPageNumber(0);
+                  }
                 }}
-                value={dropdownValue}
-                inputlabelshrink={false}
+                value={dropdownValue?.length ? dropdownValue : selectedListData}
               />
             </Box>
           </Box>
           <TableComponent
+            tabChange={`${dropdownValue.length}`}
             columns={[...column2]}
             column2={[...column1]}
             tableRows={[...rowsForQuizSubs]}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
+            showPagination
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
               getQuizSubscription(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
             }}
           />
         </Paper>

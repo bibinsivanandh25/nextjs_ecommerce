@@ -155,6 +155,7 @@ const AddNoteModal = ({
               helperText={
                 errorFe.addANote ? validateMessage.field_required : ""
               }
+              draggable={false}
             />
           </Box>
           <label

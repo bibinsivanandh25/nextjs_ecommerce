@@ -157,6 +157,8 @@ const EnhancedTableHead = (props) => {
                   column.position === "sticky" && index === columns.length - 1
                     ? 0
                     : "",
+                position: "sticky",
+                top: "42px",
               }}
               classes={{ root: classes.borderChild }}
             >
@@ -192,9 +194,10 @@ export default function TableComponent({
   onBtnClick = () => {},
   handlePageEnd = () => {},
   handleRowsPerPageChange = () => {},
+  tabChange = "",
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selected, setSelected] = useState([]);
   const [rows, setRows] = useState([]);
   const [filteredColumns, setfilteredColumns] = useState([]);
@@ -209,6 +212,9 @@ export default function TableComponent({
   // });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
+  useEffect(() => {
+    setPage(0);
+  }, [tabChange]);
   useEffect(() => {
     let arr = [...column2, ...columns];
     arr = arr.filter((ele) => {
@@ -532,7 +538,7 @@ export default function TableComponent({
             <Grid>
               <TablePagination
                 className="justify-content-start d-flex"
-                rowsPerPageOptions={[10, 25, 100]}
+                rowsPerPageOptions={[5, 10, 20]}
                 component="div"
                 count={rows.length}
                 rowsPerPage={rowsPerPage}

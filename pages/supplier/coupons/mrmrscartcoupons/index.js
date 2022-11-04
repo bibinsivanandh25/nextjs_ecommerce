@@ -112,7 +112,9 @@ const Coupons = () => {
         col2: row.discountType,
         col3:
           row.discountType === "PERCENTAGE" && row.minimumPurchaseAmount
-            ? `${(row.couponAmount * 100) / row.minimumPurchaseAmount} %`
+            ? `${((row.couponAmount * 100) / row.minimumPurchaseAmount).toFixed(
+                2
+              )} %`
             : `${row.couponAmount} Rs.`,
         col4: row.usageLimitPerCoupon || "-",
         col5: row.couponExpiryDate,
