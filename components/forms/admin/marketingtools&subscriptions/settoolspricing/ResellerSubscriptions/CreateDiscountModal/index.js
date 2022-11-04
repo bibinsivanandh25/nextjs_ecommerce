@@ -194,7 +194,6 @@ const CreateDiscountModal = ({
 
   const handleSaveBtnClick = async () => {
     const theError = handleError();
-    console.log(theError);
     setError(theError);
     const flag = Object.values(theError).some((e) => e);
     if (!flag) {
