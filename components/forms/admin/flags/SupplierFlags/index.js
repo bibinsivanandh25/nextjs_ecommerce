@@ -8,6 +8,7 @@ import CreateFlagModal from "./CreateFlagModal";
 import {
   getFlags,
   changeStatus,
+  deleteflags,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
 import { useEffect } from "react";
@@ -28,15 +29,21 @@ const SupplierFlags = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const removeFlag = async (id) => {
+    const { data, message, err } = await deleteflags(id);
+    if (data) {
+      toastify(message, "success");
+      getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
       removeFlag(id);
-    } else if (ele === "View") {
-      viewFlag(id);
-    } else if (ele === "Edit") {
-      editFlag(id);
     }
   };
+
   const getTableData = async (payload = oldPayload) => {
     const { data, err } = await getFlags(payload);
     if (data) {
