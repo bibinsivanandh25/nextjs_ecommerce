@@ -212,10 +212,6 @@ const CustomerSupport = () => {
               className="fs-18"
               onIconClick={() => {
                 getTicketById(val.ticketId);
-                setShowModal({
-                  show: true,
-                  type: "view",
-                });
               }}
             />
             <MenuOption
