@@ -862,44 +862,73 @@ const SupplierSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Supplier Subscriptions
               </Typography>
-              <TableComponent
-                columns={[...tableColumsForSupplierSubscriptionsTableOne]}
-                tableRows={supplierSubscriptionsTableOne}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
-              <TableComponent
-                columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
-                tableRows={supplierSubscriptionsTableTwo}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
+              {supplierSubscriptionsTableOne?.length ? (
+                <>
+                  <TableComponent
+                    columns={[...tableColumsForSupplierSubscriptionsTableOne]}
+                    tableRows={supplierSubscriptionsTableOne}
+                    tHeadBgColor="bg-light-gray"
+                    showPagination={false}
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                  />
+
+                  <TableComponent
+                    columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
+                    tableRows={supplierSubscriptionsTableTwo}
+                    tHeadBgColor="bg-light-gray"
+                    showPagination={false}
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                  />
+                </>
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              <TableComponent
-                columns={[...individualPricingColumns]}
-                tableRows={individualPricingTableRows}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-                showCustomButton
-                customButtonLabel="Add Day's Counter"
-                onCustomButtonClick={() => {
-                  setOpenAddDaysCounterModal(true);
-                  setModalType("Add");
-                }}
-              />
+              {individualPricingTableRows?.length ? (
+                <TableComponent
+                  columns={[...individualPricingColumns]}
+                  tableRows={individualPricingTableRows}
+                  tHeadBgColor="bg-light-gray"
+                  showPagination={false}
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  showCheckbox={false}
+                  showCustomButton
+                  customButtonLabel="Add Day's Counter"
+                  onCustomButtonClick={() => {
+                    setOpenAddDaysCounterModal(true);
+                    setModalType("Add");
+                  }}
+                />
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
