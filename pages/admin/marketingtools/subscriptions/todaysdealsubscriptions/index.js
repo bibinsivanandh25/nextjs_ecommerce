@@ -199,7 +199,8 @@ const TodaysDealSubscription = () => {
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getSubscriptions(0);
+      getDealSubscription(0, router?.query?.userType?[router?.query?.userType]:[]);
+
     } else if (message) toastify(message, "error");
     else if (error?.response?.data?.message)
       toastify(error?.response?.data?.message, "error");

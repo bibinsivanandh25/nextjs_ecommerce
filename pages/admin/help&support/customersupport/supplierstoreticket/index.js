@@ -327,6 +327,7 @@ const CustomerSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
+                headerClassName="color-orange"
                 tableRows={tableRows}
                 table_heading="Supplier Store"
                 showSearchFilter={false}
