@@ -5,9 +5,81 @@ import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
 import CreateFlagModal from "./CreateFlagModal";
-
+import {
+  getFlags,
+  changeStatus,
+} from "services/admin/admin/adminconfiguration/flags";
+import toastify from "services/utils/toastUtils";
+import { useEffect } from "react";
 const SupplierFlags = () => {
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);
+  const [rows, setRows] = useState([]);
+  const [oldPayload, setOldPayload] = useState({
+    userType: "SUPPLIER",
+    fromDate: "",
+    toDate: "",
+  });
+  const updateFlagStatus = async (id, flag) => {
+    const { data, message, err } = await changeStatus(id, flag);
+    if (data) {
+      toastify(message, "success");
+      getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const onClickOfMenuItem = (ele, id) => {
+    if (ele === "Delete") {
+      removeFlag(id);
+    } else if (ele === "View") {
+      viewFlag(id);
+    } else if (ele === "Edit") {
+      editFlag(id);
+    }
+  };
+  const getTableData = async (payload = oldPayload) => {
+    const { data, err } = await getFlags(payload);
+    if (data) {
+      const temp = data.map((item) => {
+        return {
+          flagId: item.flagId,
+          col1: item.flagTitle,
+          col2: <Image src={item.flagImageUrl[0]} height={50} width={50} />,
+          col3: "--",
+          col4: item.createdAt,
+          col5: item.lastUpdatedAt,
+          col6: item.flagStatus,
+          col7: (
+            <Box className="d-flex align-items-center justify-content-center">
+              <Box className="d-flex flex-column align-items-center">
+                <SwitchComponent
+                  label=""
+                  defaultChecked={item.enabled}
+                  ontoggle={() => {
+                    updateFlagStatus(item.flagId, !item.enabled);
+                  }}
+                />
+              </Box>
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  onClickOfMenuItem(ele, item.flagId);
+                }}
+                options={["View", "Edit", "Delete"]}
+                IconclassName="color-gray"
+              />
+            </Box>
+          ),
+        };
+      });
+      setRows(temp);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    getTableData();
+  }, []);
   const columns = [
     {
       id: "col1",
@@ -53,42 +125,6 @@ const SupplierFlags = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      col1: "Deal of the Day",
-      col2: (
-        <Image
-          src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg"
-          height={50}
-          width={50}
-        />
-      ),
-      col3: "---",
-      col4: "---",
-      col5: "---",
-      col6: "Active",
-      col7: (
-        <Box className="d-flex align-items-center justify-content-around">
-          <Box className="d-flex flex-column align-items-center">
-            <Box className="ms-4">
-              <SwitchComponent label="" />
-            </Box>
-            <Typography className="h-5">Disable</Typography>
-          </Box>
-          <MenuOption
-            getSelectedItem={() => {
-              // console.log(ele);
-              //   onClickOfMenuItem(ele);
-            }}
-            options={["view", "Edit", "Delete"]}
-            IconclassName="color-gray"
-          />
-        </Box>
-      ),
-    },
-  ];
-
   return (
     <>
       <Box className="mt-4">
@@ -104,6 +140,18 @@ const SupplierFlags = () => {
           dateFilterBtnName="Create Flags"
           dateFilterBtnClick={() => {
             setOpenCreateFlagModal(true);
+          }}
+          handlePageEnd={(searchText, _, page, dates) => {
+            setOldPayload({
+              userType: "SUPPLIER",
+              fromDate: dates.fromDate,
+              toDate: dates.toDate,
+            });
+            getTableData({
+              userType: "SUPPLIER",
+              fromDate: dates.fromDate,
+              toDate: dates.toDate,
+            });
           }}
         />
       </Box>
