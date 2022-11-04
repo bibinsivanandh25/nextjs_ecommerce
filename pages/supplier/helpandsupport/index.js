@@ -117,9 +117,11 @@ const HelpAndSupport = () => {
   const mapRowsToTable = (data) => {
     const result = [];
     data?.forEach((row, index) => {
-      const flag = row?.helpSupportMessages?.helpSupportMessageViews?.some(
-        (item) => item.viewedById == user.supplierId
-      );
+      const flag = row.helpSupportMessages?.map((item) => {
+        return item.helpSupportMessageViews.some(
+          (value) => value.viewedById == user.supplierId
+        );
+      });
       result.push({
         col1: index + 1,
         col2: row.ticketId,
@@ -151,8 +153,8 @@ const HelpAndSupport = () => {
                 variant="dot"
                 sx={{
                   "& .MuiBadge-badge": {
-                    color: flag ? "white" : "red",
-                    backgroundColor: flag ? "white" : "red",
+                    color: flag.every((val) => val) ? "white" : "red",
+                    backgroundColor: flag.every((val) => val) ? "white" : "red",
                   },
                 }}
               >
