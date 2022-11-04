@@ -44,7 +44,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
 axiosInstance.interceptors.request.use(
   function (config) {
-    document.getElementById("loader").classList.add("loadContainer");
+    document.getElementById("loader")?.classList.add("loadContainer");
     return config;
   },
   function (error) {
@@ -55,12 +55,12 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   function (response) {
     // document.body.classList.remove("spinner");
-    document.getElementById("loader").classList.remove("loadContainer");
+    document.getElementById("loader")?.classList.remove("loadContainer");
     return response;
   },
   function (error) {
     // document.body.classList.remove("spinner");
-    document.getElementById("loader").classList.remove("loadContainer");
+    document.getElementById("loader")?.classList.remove("loadContainer");
     return Promise.reject(error);
   }
 );
