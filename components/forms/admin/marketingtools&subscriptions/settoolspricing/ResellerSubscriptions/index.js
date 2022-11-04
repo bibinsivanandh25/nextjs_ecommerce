@@ -668,7 +668,7 @@ const ResellerSubscriptions = () => {
                   router.push(
                     `/admin/marketingtools/subscriptions/${getRouteName(
                       ele.adminMarketingToolName
-                    )}?userType=Reseller&Status=null`
+                    )}?userType=Reseller`
                   );
                 }}
               >
