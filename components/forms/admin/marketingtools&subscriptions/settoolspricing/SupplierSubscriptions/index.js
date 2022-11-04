@@ -693,7 +693,7 @@ const SupplierSubscriptions = () => {
                   router.push(
                     `/admin/marketingtools/subscriptions/${getRouteName(
                       ele.adminMarketingToolName
-                    )}?userType=Supplier&Status=null`
+                    )}?userType=Supplier`
                   );
                 }}
               >
