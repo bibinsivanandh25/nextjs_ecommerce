@@ -181,11 +181,23 @@ const Banners = () => {
         result.push({
           id: index + 1,
           col1: item.bannerImageUrlForWeb ? (
-            <Image src={item.bannerImageUrlForWeb} height={50} width={50} />
+            <Image
+              src={item.bannerImageUrlForWeb}
+              height={50}
+              width={50}
+              alt="Image"
+            />
           ) : null,
           col2: item.panelName,
           col3: item.displayPage,
-          col4: item.navigationUrl,
+          // col4: item.navigationUrl,
+          col4: item.navigationUrl ? (
+            <a href={item.navigationUrl} target="_blank" rel="noreferrer">
+              {item.navigationUrl}
+            </a>
+          ) : (
+            "--------"
+          ),
           col5: item.buttonName,
           col6: item.createdBy,
           col7: new Date(item.createdDate).toLocaleString(),
@@ -197,7 +209,7 @@ const Banners = () => {
               <Box className="d-flex flex-column align-items-center">
                 <Box className="ms-4">
                   <SwitchComponent
-                    defaultChecked={item.disable}
+                    defaultChecked={!item.disable}
                     label=""
                     ontoggle={(val) => {
                       handleSwitchClick(val, item, fromdate, endDate);

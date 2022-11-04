@@ -63,7 +63,14 @@ const DisplayImagesModal = ({
               <CustomIcon showColorOnHover={false} type="arrowBackIosNewIcon" />
             </Box>
             {openImagesArrayModal && (
-              <Image src={images[imageIndexForImageModal]} layout="fill" />
+              <Image
+                src={images[imageIndexForImageModal]}
+                layout="fill"
+                style={{
+                  height: "100vh",
+                  width: "100vh",
+                }}
+              />
             )}
             <Box
               sx={{

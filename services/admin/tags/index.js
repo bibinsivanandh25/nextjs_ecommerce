@@ -36,4 +36,19 @@ const approveAdminTags = (id, ststus) => {
     })
     .catch((err) => ({ err }));
 };
-export { getAdminTags, saveAdminTags, deleteAdminTags, approveAdminTags };
+const updateAdminTag = (payload) => {
+  return serviceUtil
+    .put(`products/product-tag`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getAdminTags,
+  saveAdminTags,
+  deleteAdminTags,
+  approveAdminTags,
+  updateAdminTag,
+};

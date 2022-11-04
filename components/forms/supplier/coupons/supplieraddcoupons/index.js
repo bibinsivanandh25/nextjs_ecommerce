@@ -46,16 +46,17 @@ const SupplierAddCoupons = ({
         formValues[id].toString() === "Invalid Date"
       ) {
         errObj[id] = "Invalid Date";
+      } else if (
+        id === "couponExpiryDate" &&
+        new Date().getTime() > new Date(formValues[id]).getTime()
+      ) {
+        errObj[id] = "Invalid Date";
       } else {
         errObj[id] = null;
       }
     };
 
-    validateFields(
-      "description",
-      /^.{1,255}$/,
-      validateMessage.alpha_numeric_max_255
-    );
+    validateFields("description");
     validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
@@ -68,6 +69,9 @@ const SupplierAddCoupons = ({
       validateFields("minpurchaseamount");
       validateFields("maximumamount");
     }
+    if (formValues.description.length > 255) {
+      errObj.description = validateMessage.alpha_numeric_max_255;
+    }
     validateFields("couponAmount");
     const limitErrors = {
       limitError: null,
@@ -77,11 +81,11 @@ const SupplierAddCoupons = ({
       parseInt(formValues.usageLimitPerUser, 10)
     ) {
       limitErrors.limitError =
-        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+        "Usage Limit Per Coupon Should Always Greater than Usage Limit PerUser";
     }
     setError({ ...errObj, ...limitErrors });
     let valid = true;
-    Object.values(errObj).forEach((i) => {
+    Object.values({ ...errObj, ...limitErrors }).forEach((i) => {
       if (i) {
         valid = false;
       }
@@ -144,7 +148,7 @@ const SupplierAddCoupons = ({
           <Grid container item xs={10} rowGap={2} pt={4}>
             <Grid item xs={12}>
               <InputBox
-                label="Code"
+                label="Store Coupon Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
@@ -215,6 +219,7 @@ const SupplierAddCoupons = ({
             </Grid>
             <Grid item xs={12}>
               <DatePickerComponent
+                disablePast
                 label="Coupon Expiry Date"
                 size="small"
                 inputlabelshrink
@@ -308,8 +313,6 @@ const SupplierAddCoupons = ({
                 <>
                   <Grid item xs={11}>
                     <InputBox
-                      placeholder="eg: Zero"
-                      inputlabelshrink
                       label="Usage Limit Per Coupon"
                       value={formValues.usageLimitPerCoupon}
                       id="usageLimitPerCoupon"
@@ -324,8 +327,6 @@ const SupplierAddCoupons = ({
                   <Grid item xs={12}>
                     <div className="d-flex h-100">
                       <InputBox
-                        placeholder="eg: Unlimited Usage"
-                        inputlabelshrink
                         label="Usage Limit Per User"
                         value={formValues.usageLimitPerUser}
                         id="usageLimitPerUser"

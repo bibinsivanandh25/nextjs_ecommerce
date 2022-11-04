@@ -78,16 +78,17 @@ const MrMrsAddNewCoupons = ({
         formValues[id].toString() === "Invalid Date"
       ) {
         errObj[id] = "Invalid Date";
+      } else if (
+        id === "couponExpiryDate" &&
+        new Date().getTime() > new Date(formValues[id]).getTime()
+      ) {
+        errObj[id] = "Invalid Date";
       } else {
         errObj[id] = null;
       }
     };
 
-    validateFields(
-      "description",
-      /^.{1,255}$/,
-      validateMessage.alpha_numeric_max_255
-    );
+    validateFields("description");
     // validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
@@ -101,7 +102,9 @@ const MrMrsAddNewCoupons = ({
     }
     validateFields("subcategory");
     // validateFields("new");
-
+    if (formValues.description.length > 255) {
+      errObj.description = validateMessage.alpha_numeric_max_255;
+    }
     const limitErrors = {
       limitError: null,
     };
@@ -215,7 +218,7 @@ const MrMrsAddNewCoupons = ({
             <Grid item xs={12} display="flex">
               <InputBox
                 disabled
-                label="Code"
+                label="Store Coupon Code"
                 placeholder="eg: 09543u45"
                 inputlabelshrink
                 value={formValues.code}
@@ -287,6 +290,7 @@ const MrMrsAddNewCoupons = ({
             </Grid>
             <Grid item xs={12}>
               <DatePickerComponent
+                disablePast
                 label="Coupon Expiry Date"
                 size="small"
                 inputlabelshrink
@@ -460,7 +464,6 @@ const MrMrsAddNewCoupons = ({
                 <>
                   <Grid item xs={11}>
                     <InputBox
-                      placeholder="eg: Zero"
                       inputlabelshrink
                       label="Usage Limit Per Coupon"
                       value={formValues.usageLimitPerCoupon}
@@ -475,7 +478,6 @@ const MrMrsAddNewCoupons = ({
                   <Grid item xs={11}>
                     <InputBox
                       disabled
-                      placeholder="eg: Apply to all Qualified items in Cart"
                       inputlabelshrink
                       label="Limit usage to X items"
                       value={formValues.usageLimittoXTimes}
@@ -490,8 +492,6 @@ const MrMrsAddNewCoupons = ({
                   <Grid item xs={12}>
                     <div className="d-flex h-100">
                       <InputBox
-                        placeholder="eg: Unlimited Usage"
-                        inputlabelshrink
                         label="Usage Limit Per User"
                         value={formValues.usageLimitPerUser}
                         id="usageLimitPerUser"

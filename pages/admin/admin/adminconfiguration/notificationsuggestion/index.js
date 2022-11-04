@@ -1,77 +1,79 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Add, Delete, Edit } from "@mui/icons-material";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
+import {
+  deleteNotificationSuggestion,
+  getNotificationSuggestion,
+  saveNotificationSuggestion,
+  updateNotificationSuggestion,
+} from "services/admin/admin/adminconfiguration/notificationsuggestion";
+import toastify from "services/utils/toastUtils";
 
-const listData = [
-  {
-    id: 1,
-    title: " Flat Cash Discount",
-  },
-  {
-    id: 2,
-    title: "Spin Cash DiscountFlat Cash Discount",
-  },
-  {
-    id: 3,
-    title: "Discount",
-  },
-  {
-    id: 1,
-    title: " Flat Cash Discount",
-  },
-  {
-    id: 2,
-    title: "Spin Cash Discount",
-  },
-  {
-    id: 3,
-    title: "Discount",
-  },
-  {
-    id: 1,
-    title: " Flat Cash Discount",
-  },
-  {
-    id: 2,
-    title: "Spin Cash Discount",
-  },
-  {
-    id: 3,
-    title: "Discount",
-  },
-  {
-    id: 1,
-    title: " Flat Cash Discount",
-  },
-  {
-    id: 2,
-    title: "Spin Cash Discount",
-  },
-  {
-    id: 3,
-    title: "Discount",
-  },
-  {
-    id: 1,
-    title: " Flat Cash Discount",
-  },
-  {
-    id: 2,
-    title: "Spin Cash Discount",
-  },
-  {
-    id: 3,
-    title: "Discount",
-  },
-];
 const NotificationSuggestion = () => {
   const [hoverId, setHoverId] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [keyData, setKeyData] = useState([]);
+  const [listData, setlistData] = useState([]);
   const [error, setError] = useState(false);
+  const [notificationSuggestion, setnotificationSuggestion] = useState(null);
+
+  const getSuggestion = async () => {
+    const { data, err } = await getNotificationSuggestion();
+    if (data) {
+      setlistData(data);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    getSuggestion();
+  }, []);
+
+  const handleSave = async () => {
+    if (!notificationSuggestion) {
+      const { data, message, err } = await saveNotificationSuggestion([
+        inputValue,
+      ]);
+      if (data) {
+        toastify(message, "success");
+        setShowModal(false);
+        setInputValue("");
+        getSuggestion();
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    } else {
+      const { data, message, err } = await updateNotificationSuggestion({
+        pushNotificationSuggestionId:
+          notificationSuggestion.pushNotificationSuggestionId,
+        title: inputValue,
+      });
+      if (data) {
+        toastify(message, "success");
+        setShowModal(false);
+        setInputValue("");
+        setnotificationSuggestion(null);
+        getSuggestion();
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
+
+  const deleteSuggestion = async (id) => {
+    const { data, message, err } = await deleteNotificationSuggestion(id);
+    if (data) {
+      toastify(message, "success");
+      getSuggestion();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <Paper className="mnh-85vh mxh-85vh p-3 overflow-auto hide-scrollbar">
       <Box
@@ -109,6 +111,7 @@ const NotificationSuggestion = () => {
             onMouseLeave={() => {
               setHoverId("");
             }}
+            key={item.pushNotificationSuggestionId}
             sx={{ position: "relative", boxShadow: " 0px 0px 8px #00000014" }}
           >
             <Typography className="h-5 p-2 text-truncate">
@@ -127,10 +130,22 @@ const NotificationSuggestion = () => {
               }}
             >
               <Box>
-                <Delete className="cursor-pointer delete-icon-color fs-20 me-1" />
+                <Delete
+                  onClick={() => {
+                    deleteSuggestion(item.pushNotificationSuggestionId);
+                  }}
+                  className="cursor-pointer delete-icon-color fs-20 me-1"
+                />
               </Box>
               <Box>
-                <Edit className="cursor-pointer delete-icon-color fs-20 me-1" />
+                <Edit
+                  onClick={() => {
+                    setnotificationSuggestion({ ...item });
+                    setInputValue(item.title);
+                    setShowModal(true);
+                  }}
+                  className="cursor-pointer delete-icon-color fs-20 me-1"
+                />
               </Box>
             </Box>
           </Grid>
@@ -148,6 +163,10 @@ const NotificationSuggestion = () => {
           footerClassName="justify-content-end border-top"
           ModalTitle="Notification Suggestion"
           titleClassName="h-5 fw-bold color-orange"
+          onClearBtnClick={() => {
+            setInputValue("");
+          }}
+          onSaveBtnClick={handleSave}
         >
           <Box className="m-4">
             <Box

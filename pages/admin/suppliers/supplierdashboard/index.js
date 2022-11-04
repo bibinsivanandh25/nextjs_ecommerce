@@ -600,7 +600,7 @@ const SupplierDashboard = () => {
       <Box className="mt-2 mb-2">{getSubCard()}</Box>
       <Grid container xs={12} spacing={2}>
         <Grid item lg={6} md={6} sm={12}>
-          <Paper elevation={3} className="p-2">
+          <Paper elevation={3} className="p-2 h-100">
             <Box className="d-flex justify-content-between">
               <Box>
                 <Typography className="h-4 fw-600">
@@ -645,7 +645,7 @@ const SupplierDashboard = () => {
           </Paper>
         </Grid>
         <Grid item lg={6} md={6} sm={12}>
-          <Paper elevation={2} className="p-1">
+          <Paper elevation={2} className="p-1 h-100">
             <Grid container className="d-flex justify-content-between px-2">
               <Grid item xs={7} className="fs-16 fw-bold px-2 mt-3">
                 Supplier with high product return

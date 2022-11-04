@@ -4,19 +4,28 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import CreateTicket from "@/forms/admin/help&support/customersupport/CreateTicket";
 import {
   getAllFilterDataByUserType,
   getAllTicketsBasedOnUserType,
+  helpandSupportCloseTicket,
+  helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 } from "services/admin/help&support";
+import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 
 const CustomerSupport = () => {
   const [tableRows, setTableRows] = useState([]);
-  const [showCreateTicketComponent, setShowCreateTicketComponent] =
-    useState(false);
   const [pageNumber, setpageNumber] = useState(0);
   const [filterData, setFilterData] = useState([]);
-
+  const [showModal, setShowModal] = useState({
+    show: false,
+    id: null,
+    type: "",
+  });
+  const [selectedData, setSelectedData] = useState(null);
+  const user = useSelector((state) => state.user);
   const options = ["Reply", "Delete", "Close"];
 
   const tableColumns = [
@@ -95,6 +104,12 @@ const CustomerSupport = () => {
     {
       id: "col12",
       align: "center",
+      label: "Status",
+      data_align: "center",
+    },
+    {
+      id: "col13",
+      align: "center",
       label: "Action",
       data_align: "center",
     },
@@ -118,7 +133,56 @@ const CustomerSupport = () => {
     getFilterValue();
   }, []);
 
-  const onClickOfMenuItem = () => {};
+  const handleDeleteTicket = async (item) => {
+    if (item) {
+      const { data, err } = await helpandSupportDeleteTicket(item.ticketId);
+      if (data) {
+        toastify(data.message, "success");
+        setpageNumber(0);
+        // eslint-disable-next-line no-use-before-define
+        getTabledata(0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+
+  const handleCloseTicket = async (item) => {
+    if (item) {
+      const { data, err } = await helpandSupportCloseTicket(item.ticketId);
+      if (data) {
+        toastify(data.message, "success");
+        setpageNumber(0);
+        // eslint-disable-next-line no-use-before-define
+        getTabledata(0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+
+  const onClickOfMenuItem = (item, ele) => {
+    if (item === "Reply") {
+      // eslint-disable-next-line no-use-before-define
+      getTicketById(ele.ticketId);
+    } else if (item === "Delete") {
+      handleDeleteTicket(ele);
+    } else {
+      handleCloseTicket(ele);
+    }
+  };
+  const getTicketById = async (ticketId) => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+    if (data.data) {
+      setSelectedData(data.data);
+      setShowModal({
+        show: true,
+        type: "view",
+      });
+    }
+  };
 
   const theTaleRowsData = (data) => {
     const anArray = [];
@@ -146,11 +210,13 @@ const CustomerSupport = () => {
             <CustomIcon
               type="view"
               className="fs-18"
-              //   onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                getTicketById(val.ticketId);
+              }}
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
+                onClickOfMenuItem(ele, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
@@ -159,7 +225,8 @@ const CustomerSupport = () => {
         ),
       });
     });
-    setTableRows(anArray);
+
+    return anArray;
   };
   const getTabledata = async (page, filters = []) => {
     const payload = {
@@ -204,8 +271,10 @@ const CustomerSupport = () => {
           result.push({
             ticketStatus: item.value
               // eslint-disable-next-line array-callback-return
+
               .map((ele) => {
                 if (ele.isSelected) return ele.item;
+                return null;
               })
               .filter((ele) => !!ele),
           });
@@ -216,6 +285,7 @@ const CustomerSupport = () => {
               // eslint-disable-next-line array-callback-return
               .map((ele) => {
                 if (ele.isSelected) return ele.item;
+                return null;
               })
               .filter((ele) => !!ele),
           });
@@ -226,6 +296,7 @@ const CustomerSupport = () => {
               // eslint-disable-next-line array-callback-return
               .map((ele) => {
                 if (ele.isSelected) return ele.item;
+                return null;
               })
               .filter((ele) => !!ele),
           });
@@ -234,10 +305,20 @@ const CustomerSupport = () => {
       getTabledata(0, result);
     }
   };
+
   return (
     <Box>
       <Box>
-        {!showCreateTicketComponent ? (
+        {showModal.show && showModal.type === "view" ? (
+          <HelpandsupportView1
+            selectedData={selectedData}
+            setShowModal={setShowModal}
+            // selectTab={selectTab}
+            user={user}
+            // eslint-disable-next-line no-undef
+            getTabledata={getTabledata}
+          />
+        ) : (
           <Paper
             sx={{ height: "78vh" }}
             className="overflow-auto hide-scrollbar"
@@ -246,17 +327,18 @@ const CustomerSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
-                table_heading="Customer Support"
-                // showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="Create Ticket"
-                dateFilterBtnClick={() => {
-                  setShowCreateTicketComponent(true);
-                }}
+                table_heading="Supplier Store"
+                showSearchFilter={false}
+                showSearchbar={false}
+                // customButtonLabel="Create Ticket"
+                showFilterButton
+                showCustomButton={false}
                 filterData={filterData}
+                showDateFilterSearch={false}
+                // dateFilterBtnClick={() => {
+                //   setShowCreateTicketComponent(true);
+                // }}
                 handlePageEnd={(searchText, filterText, page = pageNumber) => {
                   getTabledata(page);
                 }}
@@ -264,10 +346,6 @@ const CustomerSupport = () => {
               />
             </Box>
           </Paper>
-        ) : (
-          <CreateTicket
-            setShowCreateTicketComponent={setShowCreateTicketComponent}
-          />
         )}
       </Box>
     </Box>

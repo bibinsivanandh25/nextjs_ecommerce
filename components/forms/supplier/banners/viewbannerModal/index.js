@@ -46,7 +46,7 @@ const ViewBannerModal = ({
                 Image For Web
               </Typography>
               <Image
-                src={viewData.bannerImageUrlForMobile}
+                src={viewData.bannerImageUrlForWeb}
                 height={100}
                 width={100}
                 alt="alt"
@@ -61,7 +61,9 @@ const ViewBannerModal = ({
               </Grid>
               <Grid>&nbsp;:&nbsp;</Grid>
               <Grid item sm={6} display="flex" justifyContent="start">
-                <Typography className="">{viewData.navigationUrl}</Typography>
+                <Typography className="text-break">
+                  {viewData.navigationUrl}
+                </Typography>
               </Grid>
             </Grid>{" "}
             <Grid container className="py-2" xs={12}>

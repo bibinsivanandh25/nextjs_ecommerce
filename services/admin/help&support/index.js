@@ -66,6 +66,45 @@ const getMediaUrl = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+
+const helpandSupportDeleteTicket = (id) => {
+  // help-and-support/admin/ticket?ticketId=1
+  return serviceUtil
+    .deleteById(`help-and-support/admin/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+
+const helpandSupportCloseTicket = (id) => {
+  // help-and-support/admin/ticket?ticketId=1
+  return serviceUtil
+    .put(`help-and-support/admin/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+
+const helpandSupportGetTicketById = (id) => {
+  // help-and-support/admin/ticket?ticketId=1
+  return serviceUtil
+    .get(`help-and-support/user/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getAllTicketsBasedOnUserType,
   getAllFilterDataByUserType,
@@ -73,4 +112,7 @@ export {
   getCustomerList,
   helpandSupportTicket,
   getMediaUrl,
+  helpandSupportCloseTicket,
+  helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 };

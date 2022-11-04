@@ -185,8 +185,17 @@ const Login = () => {
       /> */}
       <Paper elevation={24}>
         <div className="p-5 " style={{ width: "450px" }}>
-          <div className="d-flex justify-content-center">
-            <Image src={assetsJson.logo} alt="logo" width={300} height={120} />
+          <div
+            className="d-flex justify-content-center"
+            style={{ minHeight: "120px" }}
+          >
+            <Image
+              src={assetsJson.logo}
+              layout="fixed"
+              alt="logo"
+              width={300}
+              height={120}
+            />
           </div>
           <Typography className="text-center fw-bold">
             A Multi Ecommerce Store
@@ -197,6 +206,7 @@ const Login = () => {
                 <InputBox
                   value={formValues.user}
                   label="E-mail Id / Mobile No."
+                  id="E-mail Id / Mobile No."
                   onInputChange={(e) => {
                     setFormValues((prev) => ({
                       ...prev,

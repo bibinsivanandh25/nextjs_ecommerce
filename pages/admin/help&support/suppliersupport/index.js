@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable prettier/prettier */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import { Box, Paper } from "@mui/material";
@@ -9,7 +12,13 @@ import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicke
 import {
   getAllTicketsBasedOnUserType,
   getAllFilterDataByUserType,
+  helpandSupportCloseTicket,
+  helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 } from "services/admin/help&support";
+import { useSelector } from "react-redux";
+import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
+import toastify from "services/utils/toastUtils";
 
 const SupplierSupport = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -17,6 +26,13 @@ const SupplierSupport = () => {
     useState(false);
   const [pageNumber, setpageNumber] = useState(0);
   const [filterData, setFilterData] = useState([]);
+  const [selectedData, setSelectedData] = useState(null);
+  const [showModal, setShowModal] = useState({
+    show: false,
+    id: null,
+    type: "",
+  });
+  const user = useSelector((state) => state.user);
 
   const options = ["Reply", "Delete", "Close"];
 
@@ -107,7 +123,12 @@ const SupplierSupport = () => {
       data.forEach((ele) => {
         result.push({
           name: ele.filterName,
-          value: ele.filterValue,
+          value: ele.filterValue.map((i) => {
+            return {
+              item: i,
+              isSelected: false,
+            };
+          }),
         });
       });
     }
@@ -118,7 +139,57 @@ const SupplierSupport = () => {
     getFilterValue();
   }, []);
 
-  const onClickOfMenuItem = () => {};
+  const handleDeleteTicket = async (item) => {
+    if (item) {
+      const { data, err } = await helpandSupportDeleteTicket(item.ticketId);
+      if (data) {
+        toastify(data.message, "success");
+        setpageNumber(0);
+        // eslint-disable-next-line no-use-before-define
+        getTabledata(0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+
+  const handleCloseTicket = async (item) => {
+    if (item) {
+      const { data, err } = await helpandSupportCloseTicket(item.ticketId);
+      if (data) {
+        toastify(data.message, "success");
+        setpageNumber(0);
+        // eslint-disable-next-line no-use-before-define
+        getTabledata(0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+
+  const onClickOfMenuItem = (item, ele) => {
+    if (item === "Reply") {
+      // eslint-disable-next-line no-use-before-define
+      getTicketById(ele.ticketId);
+    } else if (item === "Delete") {
+      handleDeleteTicket(ele);
+    } else {
+      handleCloseTicket(ele);
+    }
+  };
+
+  const getTicketById = async (ticketId) => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+    if (data.data) {
+      setSelectedData(data.data);
+      setShowModal({
+        show: true,
+        type: "view",
+      });
+    }
+  };
 
   const mapRowsToTable = (data) => {
     const result = [];
@@ -147,11 +218,13 @@ const SupplierSupport = () => {
               <CustomIcon
                 type="view"
                 className="fs-18"
-                //   onIconClick={() => setShowViewProducts(true)}
+                onIconClick={() => {
+                  getTicketById(ele.ticketId);
+                }}
               />
               <MenuOption
                 getSelectedItem={(item) => {
-                  onClickOfMenuItem(item);
+                  onClickOfMenuItem(item, ele);
                 }}
                 options={options}
                 IconclassName="fs-18 color-gray"
@@ -175,7 +248,6 @@ const SupplierSupport = () => {
         payload[key] = value;
       });
     });
-
     const { data } = await getAllTicketsBasedOnUserType(page, payload);
     if (data) {
       if (page === 0) {
@@ -232,7 +304,21 @@ const SupplierSupport = () => {
   return (
     <Box>
       <Box>
-        {!showCreateTicketComponent ? (
+        {showCreateTicketComponent ? (
+          <CreateTicket
+            setShowCreateTicketComponent={setShowCreateTicketComponent}
+            getTabledata={getTabledata}
+          />
+        ) : showModal.show && showModal.type === "view" ? (
+          <HelpandsupportView1
+            selectedData={selectedData}
+            setShowModal={setShowModal}
+            // selectTab={selectTab}
+            user={user}
+            // eslint-disable-next-line no-undef
+            getTabledata={getTabledata}
+          />
+        ) : (
           <Paper
             sx={{ height: "85vh" }}
             className="overflow-auto hide-scrollbar"
@@ -260,11 +346,6 @@ const SupplierSupport = () => {
               />
             </Box>
           </Paper>
-        ) : (
-          <CreateTicket
-            setShowCreateTicketComponent={setShowCreateTicketComponent}
-            getTabledata={getTabledata}
-          />
         )}
       </Box>
     </Box>

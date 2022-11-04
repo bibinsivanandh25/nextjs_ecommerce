@@ -27,8 +27,16 @@ const createToolCampaignSupplier = (payload) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
+
+const updateToolCampaign = (payload) => {
+  return serviceUtil
+    .put(`users/admin-marketing-tool-campaign`, payload)
+    .then((res) => res)
+    .catch((err) => ({ err }));
+};
 export {
   addIndividualPricing,
   getToolCampaignDropDownSupplier,
   createToolCampaignSupplier,
+  updateToolCampaign,
 };

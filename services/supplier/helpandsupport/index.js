@@ -49,11 +49,20 @@ const replyHelpandSupport = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-
+const getMessages = (id) => {
+  return serviceUtil
+    .get(`help-and-support/user/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   helpandsupportFileUpload,
   saveHelpandSupport,
   getAllHelpandSupportData,
   viewHelpandSupport,
   replyHelpandSupport,
+  getMessages,
 };

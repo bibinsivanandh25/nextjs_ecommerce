@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 /* eslint-disable no-plusplus */
 import { Paper } from "@mui/material";
 import UnlockToolsForm from "components/forms/supplier/marketingtools/unlocktools/unlocktoolsform";
@@ -46,15 +48,31 @@ const UnlockToolsSingle = () => {
     const { data } = await getAllIndividualPricing();
     if (data) {
       const result = [];
-      let count;
+
       data.forEach((ele) => {
         result.push({
           heading: ele.toolName,
           isRadioSelected: false,
         });
-        count = 2;
+        const getColCount = (days) => {
+          const day = [
+            "7 days",
+            "30 days",
+            "90 days",
+            "180 days",
+            "270 days",
+            "360 days",
+          ];
+          return day
+            .map((item, ind) => {
+              if (days === item) {
+                return ind + 2;
+              }
+            })
+            .filter((i) => i);
+        };
         ele.adminMarketingTools.forEach((item) => {
-          result[result.length - 1][`col${count++}`] = {
+          result[result.length - 1][`col${getColCount(item.days)}`] = {
             label: item.price,
             isChecked: false,
             id: item.adminMarketingToolId,
@@ -62,6 +80,7 @@ const UnlockToolsSingle = () => {
           result[result.length - 1].id = item.adminMarketingToolId;
         });
       });
+      console.log(result, "as,lhdasfdasfyu");
       setTableRows([...result]);
     }
   };

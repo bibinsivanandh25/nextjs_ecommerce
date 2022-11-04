@@ -212,6 +212,13 @@ const CreateShareProductByPrice = ({
     } else {
       errObj.priceEnd = null;
     }
+    if (formValues.inputValue >= formValues.priceEnd) {
+      errObj.inputValue = "Invalid start price";
+      errObj.priceEnd = "Invalid end price";
+    } else {
+      errObj.inputValue = null;
+      errObj.priceEnd = null;
+    }
     if (!categoriesList.category.length) {
       errObj.categories = validateMessage.field_required;
     } else if (!categoriesList.set.length) {
@@ -473,7 +480,7 @@ const CreateShareProductByPrice = ({
         <Grid item sm={1.5}>
           <InputBox
             size="small"
-            label="Margin type"
+            placeholder="Margin type"
             value={formValues.marginType}
             disabled
             error={Boolean(error.marginType)}

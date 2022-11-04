@@ -1,10 +1,12 @@
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import ViewModal from "@/forms/admin/suppliers/active/viewmodal";
+import { getCategoryFilterData } from "services/admin/supplier/supplierapproval";
+import toastify from "services/utils/toastUtils";
 
 const tableColumn = [
   {
@@ -117,6 +119,8 @@ const tableColumn = [
 ];
 const Active = () => {
   const [viewModalOpen, setViewModaOpen] = useState(false);
+  const [filterData, setFilterData] = useState([]);
+  const [selectedFilterData, setSelectedFilterData] = useState([]);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -166,7 +170,6 @@ const Active = () => {
           />
           <MenuOption
             options={[
-              "Edit",
               <>
                 Enable{" "}
                 <Box className="ms-4">
@@ -176,6 +179,7 @@ const Active = () => {
               "Notify",
               "Rasie a query",
               "Supplier Home Page",
+              "Marketing Tools Sub",
             ]}
             IconclassName="fs-5 cursor-pointer"
             getSelectedItem={() => {}}
@@ -184,6 +188,27 @@ const Active = () => {
       ),
     },
   ];
+  const getCategoryFilter = async () => {
+    const { data, err } = await getCategoryFilterData();
+    if (data?.data) {
+      const temp = [{ name: "Category", value: [] }];
+      data.data.forEach((item) => {
+        temp[0].value.push({
+          item: item.name,
+          id: item.id,
+          isSelected: false,
+        });
+      });
+      setFilterData(temp);
+    }
+    if (err) {
+      setFilterData([]);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    getCategoryFilter();
+  }, []);
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -192,13 +217,21 @@ const Active = () => {
       {!viewModalOpen ? (
         <Box className="mt-2">
           <TableComponent
-            columns={[...tableColumn]}
-            showDateFilter
             tableRows={[...rows]}
-            tHeadBgColor="bg-tableGray"
-            stickyCheckBox
-            stickyHeader
-            table_heading=" Active Suppliers (58)"
+            table_heading="Active Suppliers (58)"
+            stickyHeader={false}
+            showSearchFilter={false}
+            showDateFilter
+            showFilterButton
+            showDateFilterSearch
+            columns={[...tableColumn]}
+            showCheckbox={false}
+            allowOutSideClickClose
+            filterData={filterData}
+            getFilteredValues={(value) => {
+              setFilterData(value);
+              setSelectedFilterData(value);
+            }}
           />
         </Box>
       ) : (

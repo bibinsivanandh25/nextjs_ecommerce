@@ -201,7 +201,7 @@ const ProductDetailsPlusTrackDetails = ({
                       border: item.flag
                         ? "1px solid #E56700"
                         : "1px solid gray",
-                      top: 0,
+                      top: "-1px",
                       left: 6,
                     }}
                   ></div>
@@ -230,11 +230,11 @@ const ProductDetailsPlusTrackDetails = ({
                   <div
                     className="position-absolute"
                     style={{
-                      height: "6px",
+                      height: "7px",
                       border: item.flag
                         ? "1px solid #E56700"
                         : "1px solid gray",
-                      top: 19,
+                      top: 18,
                       left: 6,
                     }}
                   ></div>

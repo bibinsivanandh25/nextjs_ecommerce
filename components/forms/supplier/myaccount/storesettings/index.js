@@ -267,7 +267,12 @@ const StoreSettings = () => {
     //   flag = true;
     //   errObj.storeCode = validateMessage.field_required;
     // }
-    if (formValues.minOrderAmount === "") {
+    console.log(formValues.minOrderAmount);
+    if (
+      formValues.minOrderAmount == null ||
+      formValues.minOrderAmount === "" ||
+      !formValues.minOrderAmount
+    ) {
       flag = true;
       errObj.minOrderAmount = validateMessage.field_required;
     }
@@ -534,15 +539,22 @@ const StoreSettings = () => {
               <Grid item xs={6}>
                 <InputBox
                   onInputChange={(e) => {
+                    let char = e.target.value;
+                    if (char?.length) {
+                      if (e.target.value?.includes("-")) {
+                        char = char.toString.replace("-", "");
+                      }
+                    }
                     setFormValues((pre) => ({
                       ...pre,
-                      minOrderAmount: e.target.value,
+                      minOrderAmount: parseInt(char, 10),
                     }));
                   }}
                   helperText={errorObj.minOrderAmount}
                   error={errorObj.minOrderAmount}
                   label="Minimum Order Amount For The Free Delivery"
                   inputlabelshrink
+                  type="number"
                   value={formValues.minOrderAmount}
                 />
               </Grid>

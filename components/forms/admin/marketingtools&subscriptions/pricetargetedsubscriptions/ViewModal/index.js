@@ -6,7 +6,7 @@ import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
 import {
-  deleteDisCountSubscription,
+  // deleteDisCountSubscription,
   discountApproved,
   getViewDiscountData,
 } from "services/admin/discountsubscription";
@@ -19,6 +19,7 @@ const column1 = [
     label: "S.No.",
     align: "center",
     data_align: "center",
+    minWidth: 50,
     data_classname: "",
     rowSpan: 2,
   },
@@ -28,6 +29,7 @@ const column1 = [
     label: "Discount Title",
     align: "center",
     data_align: "center",
+    minWidth: 150,
     data_classname: "",
     rowSpan: 2,
   },
@@ -35,6 +37,7 @@ const column1 = [
     id: "col3",
     label: "Description",
     align: "center",
+    minWidth: 150,
     data_align: "center",
     data_classname: "",
     rowSpan: 2,
@@ -42,6 +45,7 @@ const column1 = [
   {
     label: "Campaign Period Start & End date with Time",
     align: "center",
+    minWidth: 350,
     data_align: "center",
     data_classname: "",
     colSpan: 2,
@@ -130,13 +134,11 @@ const ViewModal = ({
           col4: (
             <Box className="d-flex justify-content-around">
               <Typography className="h-5">{item.startDateTime}</Typography>
-              <CustomIcon type="edit" className="ms-2 fs-16" />
             </Box>
           ),
           col5: (
             <Box className="d-flex justify-content-around">
               <Typography className="h-5">{item.endDateTime}</Typography>
-              <CustomIcon type="edit" className="ms-2 fs-16" />
             </Box>
           ),
           col6: item.createdDate,
@@ -144,7 +146,6 @@ const ViewModal = ({
           col8: item.toolStatus,
           col9: (
             <Box className="d-flex align-items-center justify-content-center">
-              <CustomIcon type="edit" className="fs-18 mx-2" />
               <CustomIcon
                 type="close"
                 className="fs-18"
@@ -159,13 +160,13 @@ const ViewModal = ({
                   handleAcceptClick("APPROVED", item.marketingToolId);
                 }}
               />
-              <CustomIcon
+              {/* <CustomIcon
                 type="delete"
                 className="fs-18"
                 onIconClick={() => {
                   handleDeleteClick(item.marketingToolId);
                 }}
-              />
+              /> */}
             </Box>
           ),
         });
@@ -183,16 +184,16 @@ const ViewModal = ({
       toastify(err.response?.data?.message, "error");
     }
   };
-  const handleDeleteClick = async (id) => {
-    const { data, err } = await deleteDisCountSubscription(id);
-    if (data) {
-      getTableData(viewPageNumber);
-      toastify(data.message, "success");
-    }
-    if (err) {
-      toastify(err.response?.data?.message, "error");
-    }
-  };
+  // const handleDeleteClick = async (id) => {
+  //   const { data, err } = await deleteDisCountSubscription(id);
+  //   if (data) {
+  //     getTableData(viewPageNumber);
+  //     toastify(data.message, "success");
+  //   }
+  //   if (err) {
+  //     toastify(err.response?.data?.message, "error");
+  //   }
+  // };
   const getTableData = async (page) => {
     const { data, err } = await getViewDiscountData(viewData.purchaseId, page);
     if (data?.data?.length) {
@@ -236,22 +237,36 @@ const ViewModal = ({
             {viewData.expirationDate}
           </Typography>
         </Box>
-        <TableComponent
-          columns={[...column2]}
-          column2={[...column1]}
-          tableRows={[...rows]}
-          tHeadBgColor="bg-light-gray"
-          showSearchFilter={false}
-          showSearchbar={false}
-          showCheckbox={false}
-          handlePageEnd={(page = viewPageNumber) => {
-            getTableData(page);
-          }}
-          handleRowsPerPageChange={() => {
-            setViewPageNumber(0);
-          }}
-          stickyHeader
-        />
+
+        <Box>
+          {rows.length ? (
+            <TableComponent
+              columns={[...column2]}
+              column2={[...column1]}
+              tableRows={[...rows]}
+              tHeadBgColor="bg-light-gray"
+              showSearchFilter={false}
+              showSearchbar={false}
+              showCheckbox={false}
+              handlePageEnd={(page = viewPageNumber) => {
+                getTableData(page);
+              }}
+              handleRowsPerPageChange={() => {
+                setViewPageNumber(0);
+              }}
+              stickyHeader
+            />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              className="mnh-300"
+            >
+              <Typography className="fw-bold h-4">No Data Available</Typography>
+            </Box>
+          )}
+        </Box>
       </ModalComponent>
     </Box>
   );

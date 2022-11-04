@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
@@ -171,8 +172,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         .catch(() => {});
     } else if (["ADMIN", "ADMIN_MANAGER", "ADMIN_USER"].includes(user.role)) {
       setNavOptionsList(adminNav);
-      if (user.role !== "ADMIN") {
-        setstaffCapabilityList(getAdminCapability([...user.adminCapabilities]));
+      if (user.role !== "ADMIN" && user.adminCapabilities) {
+        setstaffCapabilityList(
+          getAdminCapability(
+            JSON.parse(
+              JSON.stringify(
+                user.adminCapabilities.adminCapabilitylist ??
+                  user.adminCapabilities
+              )
+            )
+          )
+        );
       }
     }
   };
@@ -249,7 +259,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
           id,
           selected: false,
           pathName: `${path}/${item.pathName}`,
-          disabled: !capabiliteArr.isEnable,
+          disabled:
+            user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
           locked: false,
         };
       }
@@ -258,7 +269,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         id,
         selected: false,
         pathName: `${path}/${item.pathName}`,
-        disabled: !capabiliteArr.isEnable,
+        disabled:
+          user.adminCapabilities === null ? true : !capabiliteArr.isEnable,
         locked: false,
         child: [
           ...item.child.map((ele, index) => {
@@ -266,7 +278,15 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               `${id}_${index}`,
               ele,
               `${path}/${item.pathName}`,
-              capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+              user.adminCapabilities === null
+                ? {}
+                : capabiliteArr &&
+                  capabiliteArr.child &&
+                  capabiliteArr.child.hasOwnProperty(
+                    `${ele.title.toLowerCase().trim()}`
+                  )
+                ? capabiliteArr.child[`${ele.title.toLowerCase().trim()}`]
+                : {}
             );
           }),
         ],
@@ -280,7 +300,14 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
               index,
               item,
               `/${getBasePath(role)}`,
-              staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+              user.adminCapabilities === null
+                ? {}
+                : staffCapabilityList &&
+                  staffCapabilityList.hasOwnProperty(
+                    `${item.title.toLowerCase().trim()}`
+                  )
+                ? staffCapabilityList[`${item.title.toLowerCase().trim()}`]
+                : {}
             )
         : addId(index, item, `/${getBasePath(role)}`);
     });

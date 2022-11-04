@@ -1,292 +1,234 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableWithSpan";
+import {
+  adminDiscountSubscription,
+  adminDiscountSubscriptionDisable,
+} from "services/admin/discountsubscription";
+import toastify from "services/utils/toastUtils";
+import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { useSelector } from "react-redux";
 import ViewModal from "@/forms/admin/marketingtools&subscriptions/notification/ViewModal";
 import AddNoteModal from "@/forms/admin/marketingtools&subscriptions/notification/AddNoteModal";
-import toastify from "services/utils/toastUtils";
-import {
-  enableOrDisableSubscriptions,
-  getSubscriptions,
-} from "services/admin/marketingtools/subscriptions";
-import CreateNotification from "@/forms/admin/marketingtools&subscriptions/notification/CreateNotificationModal";
+import NotifyModal from "@/forms/admin/marketingtools&subscriptions/discountsubscriptions/notifymodal";
+import { useRouter } from "next/router";
 
+const column1 = [
+  {
+    id: "col1", //  id value in column should be presented in row as key
+    label: "S.No.",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    rowSpan: 2,
+    position: "sticky",
+  },
+
+  {
+    id: "col2",
+    label: "Reseller Id/Supplier ID",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    rowSpan: 2,
+    position: "sticky",
+  },
+  {
+    label: "Subscription Period (Start Date & Time – End Date & Time)",
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    colSpan: 6,
+  },
+  {
+    id: "col9",
+    label: "Tool Status (Live or Not)",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    rowSpan: 2,
+  },
+  {
+    id: "col10",
+    label: "Subscription Amount Paid",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    rowSpan: 2,
+  },
+  {
+    id: "col11",
+    label: "Comments",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    rowSpan: 2,
+  },
+  {
+    id: "col12",
+    label: "Action",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    rowSpan: 2,
+    position: "sticky",
+  },
+];
+
+const column2 = [
+  {
+    id: "col3",
+    label: "7 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+  {
+    id: "col4",
+    label: "30 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+  {
+    id: "col5",
+    label: "90 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+  {
+    id: "col6",
+    label: "180 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+  {
+    id: "col7",
+    label: "270 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+  {
+    id: "col8",
+    label: "360 Days",
+    minWidth: 150,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+    // data_style: { paddingLeft: "7%" },
+  },
+];
+const listData = [
+  {
+    id: "Supplier",
+    value: "Supplier",
+    title: "Supplier",
+  },
+  {
+    id: "Reseller",
+    value: "Reseller",
+    title: "Reseller",
+  },
+];
 const NotificationSubscription = () => {
+  const user = useSelector((state) => state.user);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
+  const [rows, setRows] = useState([]);
+  const [viewData, setViewData] = useState({});
+  const [selectedList, setSelectedList] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [selectedData, setSelectedData] = useState({});
+  const [openNotifyModal, setOpenNotifyModal] = useState(false);
+  const router = useRouter();
 
-  const [showNotificationModal, setShowNotificationModal] = useState(false);
-
-  const [rowsForNotificationSubs, setRowsForNotificationSubs] = useState([]);
-
-  const column1 = [
-    {
-      id: "col1", //  id value in column should be presented in row as key
-      label: "S.No.",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-      position: "sticky",
-    },
-
-    {
-      id: "col2",
-      label: "Reseller Id/Supplier ID",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-      position: "sticky",
-    },
-    {
-      label: "Subscription Period (Start Date & Time – End Date & Time)",
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      colSpan: 6,
-    },
-    {
-      id: "col9",
-      label: "Tool Status (Live or Not)",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-    },
-    {
-      id: "col10",
-      label: "Subscription Amount Paid",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-    },
-    {
-      id: "col11",
-      label: "Comments",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-    },
-    {
-      id: "col12",
-      label: "Action",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-      position: "sticky",
-    },
-  ];
-
-  const column2 = [
-    {
-      id: "col3",
-      label: "7 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col4",
-      label: "30 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col5",
-      label: "90 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col6",
-      label: "180 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col7",
-      label: "270 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col8",
-      label: "360 Days",
-      minWidth: 150,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-  ];
-
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Add Note") setOpenAddNoteModal(true);
-
-    if (ele === "Notify") setShowNotificationModal(true);
-  };
-
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     col1: "01",
-  //     col2: "#827342",
-  //     col3: "--",
-  //     col4: "1/12/2021 - 12.25 to 30/12/2021 - 12.25",
-  //     col5: "--",
-  //     col6: "--",
-  //     col7: "--",
-  //     col8: "--",
-  //     col9: "sdasdasd",
-  //     col10: "Active",
-  //     col11: 25,
-  //     col12: (
-  //       <Box className="d-flex justify-content-evenly align-items-center">
-  //         <CustomIcon
-  //           type="view"
-  //           className="fs-18"
-  //           onIconClick={() => setOpenViewModal(true)}
-  //         />
-  //         <MenuOption
-  //           getSelectedItem={(ele) => {
-  //             onClickOfMenuItem(ele);
-  //           }}
-  //           options={[
-  //             "Notify",
-  //             "Add Note",
-  //             <Box className="d-flex align-items-center">
-  //               <Typography>Disable</Typography>
-  //               <Box className="ms-4">
-  //                 <SwitchComponent label="" />
-  //               </Box>
-  //             </Box>,
-  //           ]}
-  //           IconclassName="fs-18 color-gray"
-  //         />
-  //       </Box>
-  //     ),
-  //   },
-  // ];
-
-  const handleEnableOrDisable = async (purchaseId, status, marketingTool) => {
-    const { error } = await enableOrDisableSubscriptions(
-      purchaseId,
-      status,
-      marketingTool
-    );
-    if (!error) {
-      toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getNotificationsSubscription();
-    } else {
-      toastify(`Unable to change the status`, "error");
+  const onClickOfMenuItem = (ele, item) => {
+    if (ele === "Add Note") {
+      setSelectedData(item);
+      setOpenAddNoteModal(true);
+    }
+    if (ele === "Notify") {
+      setSelectedData(item);
+      setOpenNotifyModal(true);
     }
   };
-
-  async function getNotificationsSubscription() {
-    // eslint-disable-next-line no-unused-vars
-    const { data, error } = await getSubscriptions({
-      marketingTool: "NOTIFICATIONS",
-      toolStatus: "ACTIVE",
-      userType: "SUPPLIER",
-    });
+  const handleViewClick = async (value) => {
+    if (value) {
+      setViewData(value);
+      setOpenViewModal(true);
+    }
+  };
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
+  const getTableRows = (data) => {
+    const result = [];
     if (data) {
-      const mappedArray = data.map((val, index) => {
-        const dateOne = new Date(val.activatedAt);
-        const dateTwo = new Date(val.expirationDate);
-        const timeDifference = dateTwo.getTime() - dateOne.getTime();
-        const divisor = 1000 * 60 * 60 * 24;
-        const numberOfDays = timeDifference / divisor;
-        return {
-          id: val.purchaseId,
-          col1: index >= 9 ? index + 1 : `0${index + 1}`,
-          col2: val.purchasedById,
-          col3:
-            numberOfDays === 7
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col4:
-            numberOfDays === 30
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col5:
-            numberOfDays === 90
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col6:
-            numberOfDays === 180
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col7:
-            numberOfDays === 270
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col8:
-            numberOfDays === 360
-              ? `${val.activatedAt}-${val.expirationDate}`
-              : "--",
-          col9: val.toolStatus,
-          col10: val.subscriptionAmount,
-          col11: val.comments ? val.comments : "0",
+      data.forEach((item, index) => {
+        result.push({
+          id: index + 1,
+          col1: index + 1,
+          col2: item.purchasedById,
+          col3: getSubscriptionDate(item, "7 days"),
+          col4: getSubscriptionDate(item, "30 days"),
+          col5: getSubscriptionDate(item, "90 days"),
+          col6: getSubscriptionDate(item, "180 days"),
+          col7: getSubscriptionDate(item, "270 days"),
+          col8: getSubscriptionDate(item, "360 days"),
+          col9: item.toolStatus,
+          col10: item.subscriptionAmount,
+          col11: item.comments || "--",
           col12: (
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon
                 type="view"
                 className="fs-18"
-                onIconClick={() => {
-                  setDataOfSingleSupplierOrReseller(val.userMarketingTools);
-                  setOpenViewModal(true);
-                }}
+                onIconClick={() => handleViewClick(item)}
               />
               <MenuOption
                 getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele);
+                  onClickOfMenuItem(ele, item);
                 }}
                 options={[
                   "Notify",
                   "Add Note",
                   <Box className="d-flex align-items-center">
                     <Typography>
-                      {val.disabled ? "Disabled" : "Enabled"}
+                      {item.disabled ? "Disabled" : "Enabled"}
                     </Typography>
                     <Box className="ms-4">
                       <SwitchComponent
-                        defaultChecked={!val.disabled}
                         label=""
-                        ontoggle={() => {
-                          handleEnableOrDisable(
-                            val.purchaseId,
-                            !val.disabled,
-                            "TODAYS_DEAL"
-                          );
+                        defaultChecked={item.disabled}
+                        ontoggle={(val) => {
+                          handleSwitchClick(item.purchaseId, val);
                         }}
                       />
                     </Box>
@@ -296,52 +238,161 @@ const NotificationSubscription = () => {
               />
             </Box>
           ),
-        };
+        });
       });
-
-      setRowsForNotificationSubs(mappedArray);
     }
-  }
+    return result;
+  };
+  const handleSwitchClick = async (id, value) => {
+    const { data, err } = await adminDiscountSubscriptionDisable(
+      id,
+      value,
+      "NOTIFICATIONS"
+    );
+    if (data) {
+      toastify(data.message, "success");
+      getTableData(pageNumber);
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const getTableData = async (page, userType) => {
+    const temp = [];
+    selectedList.forEach((item) => {
+      if (item.value) {
+        temp.push(item.value);
+      }
+    });
+    const payload = {
+      marketingTool: "NOTIFICATIONS",
+      userType: userType ?? temp,
+    };
+    const { data, err } = await adminDiscountSubscription(payload, page);
+    if (data.length) {
+      if (page == 0) {
+        setRows(getTableRows(data));
+        setpageNumber(1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getTableRows(data)]);
+      }
+    } else if (data.length == 0 && page == 0) {
+      setRows([]);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      setRows([]);
+    }
+  };
+
+  const [selectedListData, setSelectedListData] = useState([]);
 
   useEffect(() => {
-    getNotificationsSubscription();
-  }, []);
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      setSelectedList([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      getTableData(0, [router?.query?.userType]);
+      setpageNumber(0);
+    }
+  }, [router?.query?.userType]);
+
+  useEffect(() => {
+    if (!router?.query?.userType) {
+      getTableData(0);
+      setpageNumber(0);
+    }
+  }, [router?.query?.userType]);
 
   return (
     <>
       <Box>
         <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
-          <Typography className="fw-bold color-orange">Notification</Typography>
+          <Grid container>
+            <Grid item xs={8.5}>
+              <Typography className="fw-bold color-orange">
+                Notification
+              </Typography>
+            </Grid>
+            <Grid item xs={3.5}>
+              <MultiSelectComponent
+                label="FILTER"
+                placeholder=""
+                list={listData}
+                onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
+                  setSelectedList(value);
+                  setpageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getTableData(0, [...temp]);
+                    setpageNumber(0);
+                  } else {
+                    getTableData(0, []);
+                    setpageNumber(0);
+                  }
+                }}
+                value={selectedList?.length ? selectedList : selectedListData}
+              />
+            </Grid>
+          </Grid>
           <TableComponent
+            tabChange={`${selectedList.length}`}
             columns={[...column2]}
             column2={[...column1]}
-            tableRows={[...rowsForNotificationSubs]}
+            tableRows={[...rows]}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}
-            onCustomButtonClick={() => {
-              // setOpenAddDaysCounterModal(true);
+            stickyHeader
+            handlePageEnd={(page = pageNumber) => {
+              getTableData(page);
+            }}
+            handleRowsPerPageChange={() => {
+              setpageNumber(0);
             }}
           />
+          {openViewModal ? (
+            <ViewModal
+              openViewModal={openViewModal}
+              setOpenViewModal={setOpenViewModal}
+              viewData={viewData}
+              user={user}
+            />
+          ) : null}
+          {openAddNoteModal ? (
+            <AddNoteModal
+              openAddNoteModal={openAddNoteModal}
+              setOpenAddNoteModal={setOpenAddNoteModal}
+              selectedData={selectedData}
+              getTableData={getTableData}
+            />
+          ) : null}
+          {openNotifyModal ? (
+            <NotifyModal
+              open={openNotifyModal}
+              closeModal={setOpenNotifyModal}
+              selectedData={selectedData}
+            />
+          ) : null}
         </Paper>
       </Box>
-      <ViewModal
-        openViewModal={openViewModal}
-        setOpenViewModal={setOpenViewModal}
-        dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-        setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
-      />
-      <AddNoteModal
-        openAddNoteModal={openAddNoteModal}
-        setOpenAddNoteModal={setOpenAddNoteModal}
-      />
-      <CreateNotification
-        showNotificationModal={showNotificationModal}
-        setShowNotificationModal={setShowNotificationModal}
-        type="add"
-      />
     </>
   );
 };

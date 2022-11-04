@@ -211,6 +211,7 @@ const CreateBanner = ({
         setpageNumber(0);
         getAllTableData(tableDate.fromDate, tableDate.toDate, 0);
         handleCloseClick();
+        toastify(data?.message, "success");
       } else if (err) {
         toastify(err.response.data.message, "error");
       }
@@ -264,8 +265,9 @@ const CreateBanner = ({
         setpageNumber(0);
         getAllTableData(tableDate.fromDate, tableDate.toDate, 0);
         handleCloseClick();
+        toastify(data.message, "success");
       } else if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data.message, "error");
       }
     }
   };

@@ -59,7 +59,7 @@ const StaffForm = ({
         return;
       temp.push({
         label: item.capabilityName,
-        isChecked: type === "add" ? true : item.isEnable,
+        isChecked: type === "add" ? false : item.isEnable,
         expand: false,
         children:
           item.childCapabilityNameList && item.childCapabilityNameList.length
@@ -363,41 +363,49 @@ const StaffForm = ({
                   />
                 </Grid>
 
-                {type !== "Edit" && (
-                  <Grid item sm={12} className="d-flex">
-                    <span className="fs-14 my-2 fw-600 me-3">
-                      Custom Capability :
-                    </span>
-                    <CheckBoxComponent
-                      label=""
-                      isChecked={checkbox}
-                      checkBoxClick={(_, value) => {
-                        setCheckbox(value);
-                        setCapabilities((pre) => {
-                          const temp = pre.map((item) => {
-                            return {
-                              ...item,
-                              isChecked: !value,
-                              children: item.children.length
-                                ? item.children.map((ele) => {
-                                    return {
-                                      ...ele,
-                                      isChecked: !value,
-                                    };
-                                  })
-                                : [],
-                            };
-                          });
-                          return temp;
+                <Grid item sm={12} className="d-flex">
+                  <span className="fs-14 my-2 fw-600 me-3">Select All :</span>
+                  <CheckBoxComponent
+                    label=""
+                    isChecked={checkbox}
+                    checkBoxClick={(_, value) => {
+                      setCheckbox(value);
+                      setCapabilities((pre) => {
+                        const temp = pre.map((item) => {
+                          return {
+                            ...item,
+                            isChecked: value,
+                            children: item.children.length
+                              ? item.children.map((ele) => {
+                                  const elecopy = JSON.parse(
+                                    JSON.stringify(ele)
+                                  );
+                                  if (ele?.children?.length) {
+                                    elecopy.children = ele.children.map((c) => {
+                                      return {
+                                        ...c,
+                                        isChecked: value,
+                                      };
+                                    });
+                                  }
+
+                                  return {
+                                    ...elecopy,
+                                    isChecked: value,
+                                  };
+                                })
+                              : [],
+                          };
                         });
-                      }}
-                      size="small"
-                    />
-                  </Grid>
-                )}
+                        return temp;
+                      });
+                    }}
+                    size="small"
+                  />
+                </Grid>
               </Grid>
             ) : (
-              <Grid container spacing={2}>
+              <Grid container spacing={2} className="h-5 fw-bold">
                 <Grid item md={12}>
                   First Name: {adminData.firstName}
                 </Grid>
@@ -421,7 +429,10 @@ const StaffForm = ({
                 </Grid>
                 <Grid item md={12}>
                   Created Date:{" "}
-                  {format(new Date(adminData.createdDate), "dd-MM-yyyy")}
+                  {format(
+                    new Date(adminData.createdDate),
+                    "dd-MM-yyyy HH:mm:ss"
+                  )}
                 </Grid>
               </Grid>
             )}
@@ -446,7 +457,7 @@ const StaffForm = ({
                       isChecked={item.isChecked}
                       size="small"
                       checkBoxClick={(e, val) => {
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -455,7 +466,20 @@ const StaffForm = ({
                               element.isChecked = val;
                               element.children = element.children.map(
                                 (child) => {
-                                  return { ...child, isChecked: val };
+                                  const childCopy = JSON.parse(
+                                    JSON.stringify(child)
+                                  );
+                                  if (child?.children?.length) {
+                                    childCopy.children = child.children.map(
+                                      (c) => {
+                                        return {
+                                          ...c,
+                                          isChecked: val,
+                                        };
+                                      }
+                                    );
+                                  }
+                                  return { ...childCopy, isChecked: val };
                                 }
                               );
                             }
@@ -469,7 +493,7 @@ const StaffForm = ({
                         e.stopPropagation();
                         e.preventDefault();
                         if (type === "view") return;
-                        if (type === "add" && !checkbox) return;
+                        // if (type === "add" && !checkbox) return;
                         setCapabilities((pre) => {
                           const temp = JSON.parse(JSON.stringify(pre));
                           temp.forEach((element, ind) => {
@@ -519,7 +543,7 @@ const StaffForm = ({
                             className="d-flex align-items-center justify-content-between"
                             onClick={() => {
                               if (type === "view") return;
-                              if (type === "add" && !checkbox) return;
+                              // if (type === "add" && !checkbox) return;
                               const temp = JSON.parse(
                                 JSON.stringify(capabilites)
                               );
@@ -536,7 +560,7 @@ const StaffForm = ({
                                 isChecked={ele.isChecked}
                                 size="small"
                                 checkBoxClick={(_, val) => {
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -561,7 +585,7 @@ const StaffForm = ({
                               <Typography
                                 onClick={() => {
                                   if (type === "view") return;
-                                  if (type === "add" && !checkbox) return;
+                                  // if (type === "add" && !checkbox) return;
                                   const temp = JSON.parse(
                                     JSON.stringify(capabilites)
                                   );
@@ -605,8 +629,6 @@ const StaffForm = ({
                                         size="small"
                                         checkBoxClick={(_, val) => {
                                           if (type === "view") return;
-                                          if (type === "add" && !checkbox)
-                                            return;
                                           const temp = JSON.parse(
                                             JSON.stringify(capabilites)
                                           );

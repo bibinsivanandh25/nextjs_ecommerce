@@ -1,95 +1,29 @@
 /* eslint-disable react/no-danger */
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-use-before-define */
 import { Box, Typography } from "@mui/material";
-import CustomIcon from "services/iconUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableWithSpan";
-import React, { useEffect, useState } from "react";
-import { acceptRejectSingleToolSubscription } from "services/admin/marketingtools/subscriptions";
+import CustomIcon from "services/iconUtils";
+import {
+  acceptRejectSingleToolSubscription,
+  viewAllSubsOfSingleUser,
+} from "services/admin/marketingtools/subscriptions";
+import toastify from "services/utils/toastUtils";
+import React, { useState, useEffect } from "react";
 
 const ViewModal = ({
   openViewModal,
   setOpenViewModal,
-  dataOfSingleSupplierOrReseller = [],
-  setDataOfSingleSupplierOrReseller,
+  purchaseIde,
+  subscriptionStatus,
+  subscriptionPeriod,
 }) => {
   const [rows, setRows] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
   const handleCloseIconClick = () => {
-    setDataOfSingleSupplierOrReseller([]);
+    setRows([]);
     setOpenViewModal(false);
   };
-
-  const approveRejectSubscription = async (status, marketingToolId, userId) => {
-    const { data, error } = await acceptRejectSingleToolSubscription(
-      status,
-      marketingToolId,
-      userId
-    );
-  };
-
-  const setRowsOfTable = () => {
-    const mappedArray = dataOfSingleSupplierOrReseller.map((val, index) => {
-      return {
-        id: val.marketingToolId,
-        col1: index >= 9 ? index + 1 : `0${index + 1}`,
-        col2: val.campaignTitle,
-        col3: (
-          <div
-            className="ms-4"
-            dangerouslySetInnerHTML={{
-              __html: val.description,
-            }}
-          />
-        ),
-        col4: (
-          <Box className="d-flex justify-content-around">
-            <Typography className="h-5">{val.startDateTime}</Typography>
-            <CustomIcon type="edit" className="ms-2" />
-          </Box>
-        ),
-        col5: (
-          <Box className="d-flex justify-content-around">
-            <Typography className="h-5">{val.endDateTime}</Typography>
-            <CustomIcon type="edit" className="ms-2" />
-          </Box>
-        ),
-        col6: val.createdDate,
-        col7: val.customerType,
-        col8: val.toolStatus,
-        col9: (
-          <Box className="d-flex align-items-center">
-            <CustomIcon type="edit" />
-            <CustomIcon
-              type="close"
-              onIconClick={() => {
-                approveRejectSubscription(
-                  "REJECTED",
-                  val.marketingToolId,
-                  val.userTypeId
-                );
-              }}
-            />
-            <CustomIcon
-              type="doneIcon"
-              onIconClick={() => {
-                approveRejectSubscription(
-                  "APPROVED",
-                  val.marketingToolId,
-                  val.userTypeId
-                );
-              }}
-            />
-            <CustomIcon type="delete" />
-          </Box>
-        ),
-      };
-    });
-    setRows([...mappedArray]);
-  };
-
-  useEffect(() => {
-    setRowsOfTable();
-  }, [dataOfSingleSupplierOrReseller]);
 
   const column1 = [
     {
@@ -179,37 +113,101 @@ const ViewModal = ({
     },
   ];
 
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     col1: "01",
-  //     col2: "Dipawli Special Discounts",
-  //     col3: "Dipawli Special Discounts",
-  //     col4: (
-  //       <Box className="d-flex justify-content-around">
-  //         <Typography className="h-5">25/01/2022 11.42</Typography>
-  //         <CustomIcon type="edit" className="ms-2" />
-  //       </Box>
-  //     ),
-  //     col5: (
-  //       <Box className="d-flex justify-content-around">
-  //         <Typography className="h-5">25/01/2022 11.42</Typography>
-  //         <CustomIcon type="edit" className="ms-2" />
-  //       </Box>
-  //     ),
-  //     col6: "24/12/2021 -17.58",
-  //     col7: "New",
-  //     col8: "Yet to Start",
-  //     col9: (
-  //       <Box className="d-flex align-items-center">
-  //         <CustomIcon type="edit" />
-  //         <CustomIcon type="close" />
-  //         <CustomIcon type="doneIcon" />
-  //         <CustomIcon type="delete" />
-  //       </Box>
-  //     ),
-  //   },
-  // ];
+  const handleAcceptReject = async (status, tool, typeId) => {
+    const { data, error, message } = await acceptRejectSingleToolSubscription(
+      status,
+      tool,
+      typeId
+    );
+
+    if (error) {
+      if (message) toastify(message, "error");
+      if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+    } else if (data) {
+      toastify(message, "success");
+    }
+  };
+
+  const returnRowsOfSingleSubs = (data) => {
+    const mappedArray = data.map((val, index) => {
+      return {
+        id: val.marketingToolId,
+        col1: index >= 9 ? index + 1 : `0${index + 1}`,
+        col2: val.campaignTitle,
+        col3: (
+          <div
+            className="ms-4"
+            dangerouslySetInnerHTML={{
+              __html: val.description,
+            }}
+          />
+        ),
+        col4: (
+          <Box className="d-flex justify-content-around">
+            <Typography className="h-5">{val.startDateTime}</Typography>
+          </Box>
+        ),
+        col5: (
+          <Box className="d-flex justify-content-around">
+            <Typography className="h-5">{val.endDateTime}</Typography>
+          </Box>
+        ),
+        col6: val.createdDate,
+        col7: val.customerType,
+        col8: val.toolStatus,
+        col9: (
+          <Box className="d-flex justify-content-center align-items-center">
+            <CustomIcon
+              type="close"
+              onIconClick={() => {
+                handleAcceptReject(
+                  "REJECTED",
+                  val.marketingToolId,
+                  val.userTypeId
+                );
+              }}
+            />
+            <CustomIcon
+              type="doneIcon"
+              onIconClick={() => {
+                handleAcceptReject(
+                  "APPROVED",
+                  val.marketingToolId,
+                  val.userTypeId
+                );
+              }}
+            />
+          </Box>
+        ),
+      };
+    });
+
+    return mappedArray;
+  };
+
+  async function getSubscriptionsRows(purchaseId, page) {
+    const { data, error } = await viewAllSubsOfSingleUser(purchaseId, page);
+    if (error?.response?.data?.message) {
+      if (page === 0) {
+        setRows([]);
+      }
+      toastify(error?.response?.data?.message, "error");
+    } else if (data?.length) {
+      if (page === 0) {
+        setPageNumber(1);
+        setRows(returnRowsOfSingleSubs(data));
+      } else {
+        setPageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...returnRowsOfSingleSubs(data)]);
+      }
+      setOpenViewModal(true);
+    }
+  }
+
+  useEffect(() => {
+    getSubscriptionsRows(purchaseIde, 0);
+  }, []);
 
   return (
     <Box>
@@ -223,28 +221,55 @@ const ViewModal = ({
           handleCloseIconClick();
         }}
       >
-        <Box className="d-flex">
-          <Typography className="fw-bold">
-            Subscription status:Active
+        <Box className="d-flex justify-content-between mt-1">
+          <Typography className="fw-bold h-5">
+            Subscription status:{subscriptionStatus}
           </Typography>
-          <Typography className="fw-bold">
-            Subscription period (8/30days) - 01/01/2022 : 11.44 to 30/01/2022 :
-            11.11
+          <Typography className="fw-bold h-5">
+            Subscription period: {subscriptionPeriod}
           </Typography>
         </Box>
-        <TableComponent
+        {/* <TableComponent
           columns={[...column2]}
           column2={[...column1]}
           tableRows={[...rows]}
           tHeadBgColor="bg-light-gray"
-          showPagination={false}
           showSearchFilter={false}
           showSearchbar={false}
           showCheckbox={false}
-          onCustomButtonClick={() => {
-            // setOpenAddDaysCounterModal(true);
+          handlePageEnd={(page = pageNumber) => {
+            getSubscriptionsRows(purchaseIde, page);
           }}
-        />
+        /> */}
+        <Box>
+          {rows.length ? (
+            <TableComponent
+              columns={[...column2]}
+              column2={[...column1]}
+              tableRows={[...rows]}
+              tHeadBgColor="bg-light-gray"
+              showSearchFilter={false}
+              showSearchbar={false}
+              showCheckbox={false}
+              handlePageEnd={(page = pageNumber) => {
+                getSubscriptionsRows(purchaseIde, page);
+              }}
+              handleRowsPerPageChange={() => {
+                setPageNumber(0);
+              }}
+              stickyHeader
+            />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              className="mnh-300"
+            >
+              <Typography className="fw-bold h-4">No Data Available</Typography>
+            </Box>
+          )}
+        </Box>
       </ModalComponent>
     </Box>
   );

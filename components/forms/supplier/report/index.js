@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
@@ -8,6 +9,10 @@ import BasicMenu from "components/atoms/Menu";
 import SelectComponent from "components/atoms/SelectComponent";
 import TableComponent from "components/atoms/TableComponent";
 import { useEffect, useState } from "react";
+import exceldownload from "services/utils/exceldownload";
+// import * as xlsx from "xlsx";
+// import * as FileSaver from "file-saver";
+// import { toast } from "react-toastify";
 
 const ReportLayout = ({
   barGraphLabels = [],
@@ -101,7 +106,6 @@ const ReportLayout = ({
     } else if (val.label === "Sort By Date") {
       sortCol = "col4";
     }
-
     if (val.sort === "ascending") {
       rows.sort((a, b) => {
         if (a[sortCol] > b[sortCol]) {
@@ -183,6 +187,32 @@ const ReportLayout = ({
       });
     }
     setDateRows([...rows]);
+  };
+  const handleexcelDownload = (data) => {
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Sl.No"] = index + 1;
+      tempObj["Months"] = item.col1;
+      tempObj["No of Sales"] = item.col2;
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Month_Wise_Order_Details");
+  };
+  const handleSummaryexcelDownload = (data) => {
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Sl.No"] = index + 1;
+      tempObj["Payment Id"] = item.col1;
+      tempObj["Product"] = item.col2;
+      tempObj["Customer"] = item.col3;
+      tempObj["Date"] = item.col4;
+      tempObj["Amount"] = item.col5;
+      tempObj["Status"] = item.col6;
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Order_Summary");
   };
 
   const getCardDetails = () => {
@@ -288,7 +318,15 @@ const ReportLayout = ({
                   <BasicMenu
                     menuList={detailMenuList}
                     getSelectedValue={(item) => {
-                      sortTable(item);
+                      if (
+                        item.label == "Sort By Sale Count" ||
+                        item.label == "Sort By Date"
+                      ) {
+                        sortTable(item);
+                      }
+                      if (item.label == "Download") {
+                        handleexcelDownload(tableRows);
+                      }
                     }}
                   />
                 </Grid>
@@ -328,13 +366,16 @@ const ReportLayout = ({
                     <BasicMenu
                       menuList={summaryMenuList}
                       getSelectedValue={(item) => {
-                        sortSummaryTable(item);
+                        if (item.label == "Download") {
+                          handleSummaryexcelDownload(summarytableRows);
+                        } else {
+                          sortSummaryTable(item);
+                        }
                       }}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-
               <TableComponent
                 showSearchFilter={false}
                 showSearchbar={false}
@@ -348,7 +389,7 @@ const ReportLayout = ({
         </Grid>
         {showCurrentDateTable ? (
           <Grid container spacing={3} className="mt-2">
-            <Grid item xs={4}>
+            <Grid item xs={4.3}>
               <Paper className="h-100 rounded">
                 <Grid className="d-flex align-items-center ">
                   <Grid className="fs-12 fw-bold px-2 mt-3">
@@ -376,7 +417,7 @@ const ReportLayout = ({
                 />
               </Paper>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={7.7}>
               <Paper className="h-100 rounded">
                 <Grid className="d-flex align-items-center justify-content-between">
                   <Grid className="fs-12 fw-bold px-2 mt-3">
@@ -399,7 +440,6 @@ const ReportLayout = ({
                     </Grid>
                   </Grid>
                 </Grid>
-
                 <TableComponent
                   showSearchFilter={false}
                   showSearchbar={false}
