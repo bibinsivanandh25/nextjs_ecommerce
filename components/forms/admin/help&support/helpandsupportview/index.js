@@ -141,7 +141,7 @@ const HelpandsupportView1 = ({
   };
 
   return (
-    <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar">
+    <Paper className="mnh-87vh mxh-87vh d-flex flex-column">
       <Typography
         className="h-5 color-orange cursor-pointer ms-2 mt-1"
         onClick={() => {
@@ -154,7 +154,7 @@ const HelpandsupportView1 = ({
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
-      <div className="fs-12 border-bottom px-4 py-1">
+       <div className="fs-12 border-bottom px-4 py-1">
         {getContent(
           "Date & Time",
 
@@ -283,8 +283,7 @@ const HelpandsupportView1 = ({
             );
           })}
         </div>
-      </div>
-      {/* </div> */}
+      </div> 
     </Paper>
   );
 };
