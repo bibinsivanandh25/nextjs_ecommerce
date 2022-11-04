@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-danger */
 
@@ -12,15 +13,6 @@ import {
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
 import { Close } from "@mui/icons-material";
-// import axios from "axios";
-
-// import Image from "next/image";
-// import {
-//   helpandsupportFileUpload,
-//   replyHelpandSupport,
-// } from "services/supplier/helpandsupport";
-// import toastify from "services/utils/toastUtils";
-// import { Close } from "@mui/icons-material";
 
 const HelpandsupportView1 = ({
   selectedData,
@@ -41,7 +33,7 @@ const HelpandsupportView1 = ({
       </p>
     );
   };
-  console.log(selectedData);
+
   useEffect(() => {
     const result = [];
     selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
@@ -146,18 +138,6 @@ const HelpandsupportView1 = ({
     temp.splice(index, 1);
     setSelectedFile([...temp]);
   };
-
-  // const download = async (url) => {
-  //   console.log("url", url);
-  //   const a = document.createElement("a");
-  //   // const file = await new Blob([url]);
-  //   // a.href = URL.createObjectURL(file);
-  //   // // eslint-disable-next-line prefer-destructuring
-  //   // a.setAttribute("download", url.split("/")[7]);
-  //   // a.style.display = "none";
-  //   // document.body.appendChild(a);
-  //   a.click();
-  // };
 
   return (
     <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar">
@@ -273,21 +253,18 @@ const HelpandsupportView1 = ({
                 <>
                   <strong>{val.messageFromName}</strong>
                   <p className="fs-9 mb-2">{val.mobileNumber}</p>
-                  <div
-                    // className="mb-3"
-                    dangerouslySetInnerHTML={{ __html: val.message }}
-                  />
+                  <div dangerouslySetInnerHTML={{ __html: val.message }} />
                   {val.helpSupportMessageMedias.map((media) => {
                     return (
                       <div>
                         <span className=" fw-600 ">Attach File :</span>
                         <a
-                          // className=" fs-12 mb-3 color-black"
+                          className=" fs-12 mb-3 color-black"
                           // onClick={() => download(media.mediaUrl)}
-                          // type="button"
-                          // style={{ textDecoration: "none" }}
+                          style={{ textDecoration: "none" }}
                           href={media.mediaUrl}
                           download
+                          target="_blank"
                         >
                           {media.mediaUrl.split("/")[7]}
                         </a>
