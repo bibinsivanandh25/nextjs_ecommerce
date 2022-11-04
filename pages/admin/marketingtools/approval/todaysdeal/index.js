@@ -13,8 +13,8 @@ const TodaysDeal = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Tools To Approve", isSelected: true },
-    { label: "Rejected", isSelected: false },
     { label: "Approved", isSelected: false },
+    { label: "Rejected", isSelected: false },
   ]);
 
   const handleSelect = (index) => {
@@ -45,8 +45,8 @@ const TodaysDeal = () => {
         >
           <Box className="px-1 pt-2">
             {activeTab === 0 && <TodaysDealToolsToApprove />}
-            {activeTab === 1 && <TodaysDealRejected />}
-            {activeTab === 2 && <TodaysDealApprove />}
+            {activeTab === 1 && <TodaysDealApprove />}
+            {activeTab === 2 && <TodaysDealRejected />}
           </Box>
         </TabsCard>
       </Box>

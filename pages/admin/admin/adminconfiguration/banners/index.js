@@ -190,7 +190,14 @@ const Banners = () => {
           ) : null,
           col2: item.panelName,
           col3: item.displayPage,
-          col4: item.navigationUrl,
+          // col4: item.navigationUrl,
+          col4: item.navigationUrl ? (
+            <a href={item.navigationUrl} target="_blank" rel="noreferrer">
+              {item.navigationUrl}
+            </a>
+          ) : (
+            "--------"
+          ),
           col5: item.buttonName,
           col6: item.createdBy,
           col7: new Date(item.createdDate).toLocaleString(),

@@ -2,15 +2,17 @@
 /* eslint-disable consistent-return */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
-import { Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import {
+  getMessages,
   helpandsupportFileUpload,
   replyHelpandSupport,
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
 import { Close } from "@mui/icons-material";
+import Image from "next/image";
 
 const HelpandsupportView = ({
   selectedData,
@@ -147,6 +149,87 @@ const HelpandsupportView = ({
     temp.splice(index, 1);
     setSelectedFile([...temp]);
   };
+  const [messageData, setMessageData] = useState([]);
+  const getTicketMessage = async () => {
+    const { data, err } = await getMessages(selectedData.ticketId);
+    if (data) {
+      setMessageData(data.data);
+    }
+    if (err) {
+      setMessageData([]);
+    }
+  };
+  useEffect(() => {
+    getTicketMessage();
+  }, []);
+  const getDownloadFileName = (item) => {
+    let data = "";
+    if (typeof item == "string") {
+      const x = item.split("-");
+      data = x[x.length - 1];
+    }
+    return data;
+  };
+  const getSupplierTicketMessage = () => {
+    return (
+      <Box className="mx-2 overflow-auto hide-scrollbar">
+        {messageData?.helpSupportMessages?.map((item) => (
+          <Box className="mt-2">
+            <Box className="d-flex">
+              <Box>
+                {item?.imageUrl ? (
+                  <Image
+                    src={item.imageUrl}
+                    alt="UserImage"
+                    height={50}
+                    width={50}
+                    style={{ borderRadius: "5px" }}
+                  />
+                ) : (
+                  <Avatar
+                    variant="rounded"
+                    sx={{ height: "50px", width: "50px" }}
+                  />
+                )}
+              </Box>
+              <Box className="ps-2">
+                <Typography className="h-5 fw-bold">
+                  {item.messageFromName}
+                </Typography>
+                <Typography className="h-6">{item.messageFromId}</Typography>
+                <Typography className="h-6">{item.messagedAt}</Typography>
+              </Box>
+            </Box>
+            <Box marginLeft={7}>
+              <div
+                className="h-5"
+                dangerouslySetInnerHTML={{
+                  __html: item.message,
+                }}
+              />
+              {item?.helpSupportMessageMedias[0]?.mediaUrl ? (
+                <Typography className="h-5">
+                  <span className="fw-bold"> Attached File :</span>
+                  <a
+                    href={item?.helpSupportMessageMedias[0]?.mediaUrl}
+                    download
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ms-3 cursor-pointer text-decoration-none"
+                  >
+                    {getDownloadFileName(
+                      item?.helpSupportMessageMedias[0]?.mediaUrl
+                    )}
+                  </a>
+                </Typography>
+              ) : null}
+            </Box>
+            <Divider color="black" />
+          </Box>
+        ))}
+      </Box>
+    );
+  };
   return (
     <Paper className="mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
       <Typography
@@ -169,82 +252,78 @@ const HelpandsupportView = ({
         {getContent("Ticket ID", selectedData.ticketId)}
         {getContent("Subject", selectedData.issueSubject)}
         {getContent("Status", selectedData.ticketStatus, getClassName())}
-        <p className="mx-3 my-2 d-flex">
-          <span>Reply</span> :{" "}
-          <div
-            className="fw-bold text-break"
-            dangerouslySetInnerHTML={{
-              __html: selectedData.helpSupportMessages[0].message,
-            }}
-          />
-        </p>
       </div>
-      <div className="my-2 border-bottom">
-        <div className="px-4 pt-2">
-          <TextEditor
-            getContent={(text) => {
-              setFormValue(text);
-            }}
-          />
-          {error && (
-            <p className="error" id="textbox-helper-text">
-              {error}
-            </p>
-          )}
-        </div>
-        <Grid
-          container
-          className="my-3 px-4"
-          item
-          xs={12}
-          justifyContent="space-between"
-        >
-          <Grid item>
-            <>
-              <span className="me-2 fw-600">Attach File :</span>
-              <input
-                type="file"
-                hidden
-                ref={inputField}
-                onChange={(e) => {
-                  if (
-                    e.target?.files.length &&
-                    acceptedTypes.includes(e.target.files[0].type.split("/")[1])
-                  ) {
-                    setSelectedFile((prev) => [...prev, e.target.files[0]]);
-                  } else {
-                    toastify("This files Type are not accepted", "error");
-                  }
-                }}
-              />
-              <ButtonComponent
-                label="Choose File"
-                color="#e8e8e8"
-                onBtnClick={() => {
-                  inputField.current.click();
-                }}
-              />
-            </>
-          </Grid>
-          <Grid item className="d-flex justify-content-end me-5">
-            <ButtonComponent
-              label="Send Reply"
-              onBtnClick={handleCreateBtnClick}
-            />
-          </Grid>
-        </Grid>
-        {showFileNames().map((item, index) => (
-          <Typography className="h-5 ms-5">
-            {item.filename}
-            <Close
-              onClick={() => {
-                handleFileDelete(index);
+      {selectedData?.ticketStatus == "CLOSED" ? null : (
+        <div className="my-2 border-bottom">
+          <div className="px-4 pt-2">
+            <TextEditor
+              getContent={(text) => {
+                setFormValue(text);
               }}
-              className="h-5 color-orange cursor-pointer ms-1"
             />
-          </Typography>
-        ))}
-      </div>
+            {error && (
+              <p className="error" id="textbox-helper-text">
+                {error}
+              </p>
+            )}
+          </div>
+          <Grid
+            container
+            className="my-3 px-4"
+            item
+            xs={12}
+            justifyContent="space-between"
+          >
+            <Grid item>
+              <>
+                <span className="me-2 fw-600">Attach File :</span>
+                <input
+                  type="file"
+                  hidden
+                  ref={inputField}
+                  onChange={(e) => {
+                    if (
+                      e.target?.files.length &&
+                      acceptedTypes.includes(
+                        e.target.files[0].type.split("/")[1]
+                      )
+                    ) {
+                      setSelectedFile((prev) => [...prev, e.target.files[0]]);
+                    } else {
+                      toastify("This files Type are not accepted", "error");
+                    }
+                  }}
+                />
+                <ButtonComponent
+                  label="Choose File"
+                  color="#e8e8e8"
+                  onBtnClick={() => {
+                    inputField.current.click();
+                  }}
+                />
+              </>
+            </Grid>
+            <Grid item className="d-flex justify-content-end me-5">
+              <ButtonComponent
+                label="Send Reply"
+                onBtnClick={handleCreateBtnClick}
+              />
+            </Grid>
+          </Grid>
+          {showFileNames().map((item, index) => (
+            <Typography className="h-5 ms-5">
+              {item.filename}
+              <Close
+                onClick={() => {
+                  handleFileDelete(index);
+                }}
+                className="h-5 color-orange cursor-pointer ms-1"
+              />
+            </Typography>
+          ))}
+        </div>
+      )}
+      <Box>{messageData ? getSupplierTicketMessage() : null}</Box>
     </Paper>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -15,6 +16,7 @@ import toastify from "services/utils/toastUtils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { useSelector } from "react-redux";
 import NotifyModal from "@/forms/admin/marketingtools&subscriptions/pricetargetedsubscriptions/CreateNotificationModal";
+import { useRouter } from "next/router";
 
 const column1 = [
   {
@@ -142,14 +144,14 @@ const column2 = [
 ];
 const listData = [
   {
-    id: "1",
-    value: "SUPPLIER",
-    title: "SUPPLIER",
+    id: "Supplier",
+    value: "Supplier",
+    title: "Supplier",
   },
   {
-    id: "2",
-    value: "RESELLER",
-    title: "RESELLER",
+    id: "Reseller",
+    value: "Reseller",
+    title: "Reseller",
   },
 ];
 const PriceTargetedSubscription = () => {
@@ -163,6 +165,8 @@ const PriceTargetedSubscription = () => {
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
 
+  const router = useRouter();
+
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
       setOpenAddNoteModal(true);
@@ -172,26 +176,28 @@ const PriceTargetedSubscription = () => {
       setOpenNotifyModal(true);
     }
   };
-  const getTableData = async (page) => {
-    const selectedListData = [];
+  const getTableData = async (page, userType) => {
+    const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
-        selectedListData.push(item.value);
+        temp.push(item.value);
       }
     });
     const payload = {
       marketingTool: "PRICE_TARGETED",
-      userType: selectedListData,
+      userType: userType ?? temp,
     };
     const { data, err } = await adminPriceTargetedSubscription(payload, page);
-    if (data?.length) {
+    if (data.length) {
       if (page == 0) {
         setRows(getTableRows(data));
-        setpageNumber((pre) => pre + 1);
+        setpageNumber(1);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
       }
+    } else if (data.length == 0 && page == 0) {
+      setRows([]);
     }
     if (err) {
       setRows([]);
@@ -205,6 +211,13 @@ const PriceTargetedSubscription = () => {
       setOpenViewModal(true);
     }
   };
+  const getSubscriptionDate = (item, date) => {
+    return item.days == date
+      ? item.activatedAt === null || item.expirationDate === null
+        ? "PENDING"
+        : `${item.activatedAt} - ${item.expirationDate}`
+      : "--";
+  };
   const getTableRows = (data) => {
     const result = [];
     if (data) {
@@ -213,15 +226,12 @@ const PriceTargetedSubscription = () => {
           id: index + 1,
           col1: index + 1,
           col2: item.purchasedById,
-          col3: item.days == 7 ? item.activatedAt - item.expirationDate : "--",
-          col4: item.days == 30 ? item.activatedAt - item.expirationDate : "--",
-          col5: item.days == 90 ? item.activatedAt - item.expirationDate : "--",
-          col6:
-            item.days == 180 ? item.activatedAt - item.expirationDate : "--",
-          col7:
-            item.days == 270 ? item.activatedAt - item.expirationDate : "--",
-          col8:
-            item.days == 360 ? item.activatedAt - item.expirationDate : "--",
+          col3: getSubscriptionDate(item, "7 days"),
+          col4: getSubscriptionDate(item, "30 days"),
+          col5: getSubscriptionDate(item, "90 days"),
+          col6: getSubscriptionDate(item, "180 days"),
+          col7: getSubscriptionDate(item, "270 days"),
+          col8: getSubscriptionDate(item, "360 days"),
           col9: item.toolStatus,
           col10: item.subscriptionAmount,
           col11: item.comments || "--",
@@ -277,10 +287,35 @@ const PriceTargetedSubscription = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const [selectedListData, setSelectedListData] = useState([]);
+
   useEffect(() => {
-    getTableData(0);
-    setpageNumber(0);
-  }, [selectedList]);
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      setSelectedList([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      getTableData(0, [router?.query?.userType]);
+      setpageNumber(0);
+    }
+  }, [router?.query?.userType]);
+
+  useEffect(() => {
+    if (!router?.query?.userType) {
+      getTableData(0);
+      setpageNumber(0);
+    }
+  }, [router?.query?.userType]);
 
   return (
     <>
@@ -298,14 +333,28 @@ const PriceTargetedSubscription = () => {
                 placeholder=""
                 list={listData}
                 onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
                   setSelectedList(value);
+                  setpageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getTableData(0, [...temp]);
+                    setpageNumber(0);
+                  } else {
+                    getTableData(0, []);
+                    setpageNumber(0);
+                  }
                 }}
-                value={selectedList}
+                value={selectedList?.length ? selectedList : selectedListData}
               />
             </Grid>
           </Grid>
 
           <TableComponent
+            tabChange={`${selectedList.length}`}
             columns={[...column2]}
             column2={[...column1]}
             tableRows={rows}
@@ -314,7 +363,7 @@ const PriceTargetedSubscription = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getTableRows(page);
+              getTableData(page);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);

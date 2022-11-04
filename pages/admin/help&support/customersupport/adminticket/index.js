@@ -11,6 +11,7 @@ import {
   getAllTicketsBasedOnUserType,
   helpandSupportCloseTicket,
   helpandSupportDeleteTicket,
+  helpandSupportGetTicketById,
 } from "services/admin/help&support";
 import { useSelector } from "react-redux";
 import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
@@ -165,14 +166,24 @@ const SupplierSupport = () => {
 
   const onClickOfMenuItem = (item, ele) => {
     if (item === "Reply") {
-      setShowModal({
-        show: true,
-        type: "view",
-      });
+      // eslint-disable-next-line no-use-before-define
+      getTicketById(ele.ticketId);
     } else if (item === "Delete") {
       handleDeleteTicket(ele);
     } else {
       handleCloseTicket(ele);
+    }
+  };
+
+  const getTicketById = async (ticketId) => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+
+    if (data.data) {
+      setSelectedData(data.data);
+      setShowModal({
+        show: true,
+        type: "view",
+      });
     }
   };
 
@@ -205,17 +216,12 @@ const SupplierSupport = () => {
                 className="fs-18"
                 // onIconClick={() => setShowViewProducts(true)}
                 onIconClick={() => {
-                  setSelectedData(ele);
-                  setShowModal({
-                    show: true,
-                    type: "view",
-                  });
+                  getTicketById(ele.ticketId);
                 }}
               />
               <MenuOption
                 getSelectedItem={(item) => {
                   onClickOfMenuItem(item, ele);
-                  setSelectedData(ele);
                 }}
                 options={options}
                 IconclassName="fs-18 color-gray"

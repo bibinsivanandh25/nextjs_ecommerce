@@ -520,6 +520,7 @@ const MyProducts = () => {
         <Paper sx={{ px: 0, py: 2 }}>
           <TableComponent
             filterList={filterList}
+            showCheckbox
             columns={columns}
             tableRows={tableRows}
             customDropdownLabel="Style Code"

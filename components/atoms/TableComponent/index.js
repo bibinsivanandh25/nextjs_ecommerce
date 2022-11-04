@@ -437,7 +437,7 @@ const FilterMenu = ({
 };
 export default function TableComponent({
   showPagination = true,
-  showCheckbox = true,
+  showCheckbox = false,
   table_heading = "",
   headerClassName = "",
   tableRows = [],
@@ -507,6 +507,10 @@ export default function TableComponent({
   useEffect(() => {
     setPage(0);
   }, [tabChange]);
+
+  useEffect(() => {
+    if (!showPagination) setRowsPerPage(20);
+  }, []);
   useEffect(() => {
     if (filterList.length) setSearchFilterList(filterList);
   }, [filterList]);

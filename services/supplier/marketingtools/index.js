@@ -44,7 +44,7 @@ const getSubCategorybySets = (payload) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 
@@ -58,7 +58,7 @@ const getProductsBySubCategoryId = (supplierId, subCategoryId) => {
       return { data };
     })
     .catch((err) => {
-      return err;
+      return { err };
     });
 };
 const deleteMarketingToolData = (id) => {

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable no-use-before-define */
 import { Box, Typography } from "@mui/material";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -228,18 +229,34 @@ const ViewModal = ({
             Subscription period: {subscriptionPeriod}
           </Typography>
         </Box>
-        <TableComponent
-          columns={[...column2]}
-          column2={[...column1]}
-          tableRows={[...rows]}
-          tHeadBgColor="bg-light-gray"
-          showSearchFilter={false}
-          showSearchbar={false}
-          showCheckbox={false}
-          handlePageEnd={(page = pageNumber) => {
-            getSubscriptionsRows(purchaseIde, page);
-          }}
-        />
+
+        {rows.length ? (
+          <TableComponent
+            columns={[...column2]}
+            column2={[...column1]}
+            tableRows={[...rows]}
+            tHeadBgColor="bg-light-gray"
+            showSearchFilter={false}
+            showSearchbar={false}
+            showCheckbox={false}
+            handlePageEnd={(page = pageNumber) => {
+              getSubscriptionsRows(purchaseIde, page);
+            }}
+            handleRowsPerPageChange={() => {
+              setPageNumber(0);
+            }}
+            stickyHeader
+          />
+        ) : (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            className="mnh-300"
+          >
+            <Typography className="fw-bold h-4">No Data Available</Typography>
+          </Box>
+        )}
       </ModalComponent>
     </Box>
   );

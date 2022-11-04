@@ -12,6 +12,11 @@ const ChangePassword = () => {
   const [error, setError] = useState({});
   const user = useSelector((state) => state.user);
   const [formValues, setFormValues] = useState({ emailId: user.emailId });
+  const [showPassword, setShowPassword] = useState({
+    oldPassword: false,
+    newPassword: false,
+    confirmPassword: false,
+  });
 
   const validateForm = () => {
     const errObj = { ...error };
@@ -87,6 +92,14 @@ const ChangePassword = () => {
         <Grid item xs={12}>
           <InputBox
             value={formValues.oldPassword}
+            type={showPassword.oldPassword ? "text" : "password"}
+            iconName={showPassword.oldPassword ? "visible" : "visibleOff"}
+            onIconClick={() => {
+              setShowPassword((pre) => ({
+                ...pre,
+                oldPassword: !showPassword.oldPassword,
+              }));
+            }}
             label="Old Password"
             className="w-100"
             size="small"
@@ -98,13 +111,20 @@ const ChangePassword = () => {
             }}
             error={Boolean(error?.oldPassword)}
             helperText={error?.oldPassword}
-            type="password"
             inputlabelshrink
           />
         </Grid>
         <Grid item xs={12}>
           <InputBox
             value={formValues.newPassword}
+            type={showPassword.newPassword ? "text" : "password"}
+            iconName={showPassword.newPassword ? "visible" : "visibleOff"}
+            onIconClick={() => {
+              setShowPassword((pre) => ({
+                ...pre,
+                newPassword: !showPassword.newPassword,
+              }));
+            }}
             label="New Password"
             className="w-100"
             size="small"
@@ -116,13 +136,20 @@ const ChangePassword = () => {
             }}
             error={Boolean(error?.newPassword)}
             helperText={error?.newPassword}
-            type="password"
             inputlabelshrink
           />
         </Grid>
         <Grid item xs={12}>
           <InputBox
             value={formValues.reEnterPassword}
+            type={showPassword.confirmPassword ? "text" : "password"}
+            iconName={showPassword.confirmPassword ? "visible" : "visibleOff"}
+            onIconClick={() => {
+              setShowPassword((pre) => ({
+                ...pre,
+                confirmPassword: !showPassword.confirmPassword,
+              }));
+            }}
             label="Re-enter New Password"
             className="w-100"
             size="small"
@@ -134,7 +161,6 @@ const ChangePassword = () => {
             }}
             error={Boolean(error?.reEnterPassword)}
             helperText={error?.reEnterPassword}
-            type="password"
             inputlabelshrink
           />
         </Grid>

@@ -14,6 +14,7 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import toastify from "services/utils/toastUtils";
 import TabsCard from "components/molecule/TabsCard";
+import { useRouter } from "next/router";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import AddDaysCounterModal from "./AddDaysCounterModal";
@@ -32,14 +33,16 @@ const SupplierSubscriptions = () => {
   const [individualPricingTableRows, setIndividualPricingTableRows] = useState(
     []
   );
+  const [createDiscountModalType, setCreateDiscountModalType] = useState("Add");
   const [toolsCampaignTableRows, setToolsCampaignTableRows] = useState([]);
   const [editDetials, setEditDetails] = useState({
     days: "",
     tools: "",
   });
+  const [toolsCampaignEditData, setToolsCampaignEditData] = useState({});
 
   const [modalType, setModalType] = useState("Add");
-
+  const [marketingToolCampaignId, setMarketingToolCampaignId] = useState("");
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
   const [
@@ -52,24 +55,12 @@ const SupplierSubscriptions = () => {
     { label: "Expired", isSelected: false },
   ]);
   const [toolIDs, setToolIDs] = useState([]);
-  const [showIndividualPricing, setShowIndividualPricing] = useState(false);
+  const [showViewTableType, setShowViewTableType] = useState("");
   const [individualPricingColumns, setIndividualPricingColumns] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [marketingToolId, setMarketingToolId] = useState("");
 
   const filterData = [
-    {
-      name: "STATUS",
-      value: [
-        { item: "ACTIVE", isSelected: false },
-        { item: "REJECTED", isSelected: false },
-        { item: "EXPIRED", isSelected: false },
-        { item: "PENDING", isSelected: false },
-        { item: "DISABLED", isSelected: false },
-        { item: "YET_TO_START", isSelected: false },
-        { item: "APPROVED", isSelected: false },
-      ],
-    },
     {
       name: "DAYS",
       value: [
@@ -89,96 +80,128 @@ const SupplierSubscriptions = () => {
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col2",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col3",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col4",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col5",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col6",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col7",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col8",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col9",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col10",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col11",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col12",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col13",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col14",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col15",
       align: "center",
       label: "Active",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
     {
       id: "col16",
       align: "center",
       label: "Inactive",
       data_align: "center",
+      maxWidth: 15,
+      minWidth: 15,
     },
   ];
 
@@ -291,13 +314,13 @@ const SupplierSubscriptions = () => {
       data_align: "center",
       minWidth: 150,
     },
-    {
-      id: "col15",
-      align: "center",
-      label: "Status",
-      data_align: "center",
-      minWidth: 75,
-    },
+    // {
+    //   id: "col15",
+    //   align: "center",
+    //   label: "Status",
+    //   data_align: "center",
+    //   minWidth: 75,
+    // },
     {
       id: "col16",
       align: "center",
@@ -315,6 +338,8 @@ const SupplierSubscriptions = () => {
     },
   ];
 
+  const router = useRouter();
+
   const gettableColumsForSupplierSubscriptionsTableOne = async () => {
     const { data } = await getSubscrptionType("SUPPLIER");
     if (data) {
@@ -328,10 +353,30 @@ const SupplierSubscriptions = () => {
           align: "center",
           label: ele.adminMarketingToolName.replaceAll("_", " "),
           data_align: "center",
+          minWidth: 30,
+          maxWidth: 30,
         });
-
+        const getRouteName = (tool) => {
+          if (tool === "DISCOUNT_COUPON") {
+            return "discountsubscriptions";
+          }
+          if (tool === "FLAGS") {
+            return "flags";
+          }
+          if (tool === "NOTIFICATIONS") return "notification";
+          return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
+        };
         rows[`col${ind + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
+          <Typography
+            className="h-5 text-decoration-underline cursor-pointer"
+            onClick={() => {
+              router.push(
+                `/admin/marketingtools/subscriptions/${getRouteName(
+                  ele.adminMarketingToolName
+                )}?userType=Supplier`
+              );
+            }}
+          >
             {ele.totalCount}
           </Typography>
         );
@@ -359,35 +404,37 @@ const SupplierSubscriptions = () => {
     }
   };
   const mapIndivisualPricingRows = (data) => {
-    const result = [
-      {
-        id: "col1",
-        align: "center",
-        label: "Tools / Days",
-        data_align: "center",
-        position: "sticky",
-        minWidth: 200,
-      },
-    ];
-    data.forEach((item, ind) => {
-      result.push({
-        id: `col${ind + 2}`,
-        align: "center",
-        label: item.toolName.replaceAll("_", " "),
-        data_align: "center",
-        position: "",
-        minWidth: 200,
+    if (data?.length) {
+      const result = [
+        {
+          id: "col1",
+          align: "center",
+          label: "Tools / Days",
+          data_align: "center",
+          position: "sticky",
+          minWidth: 200,
+        },
+      ];
+      data.forEach((item, ind) => {
+        result.push({
+          id: `col${ind + 2}`,
+          align: "center",
+          label: item.toolName.replaceAll("_", " "),
+          data_align: "center",
+          position: "",
+          minWidth: 200,
+        });
       });
-    });
-    result.push({
-      id: "col10",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-      // minWidth: 200,
-      position: "sticky",
-    });
-    setIndividualPricingColumns([...result]);
+      result.push({
+        id: "col10",
+        align: "center",
+        label: "Actions",
+        data_align: "center",
+        // minWidth: 200,
+        position: "sticky",
+      });
+      setIndividualPricingColumns([...result]);
+    }
   };
 
   const enableDisableMarketingTool = async (ids, status = false) => {
@@ -405,7 +452,6 @@ const SupplierSubscriptions = () => {
       getIndividualPricing();
     }
   };
-  console.error("error", 5);
 
   const getIndividualPricing = async () => {
     const { data } = await getAllIndividualPricingByUserType("SUPPLIER");
@@ -542,7 +588,7 @@ const SupplierSubscriptions = () => {
               className="mx-4"
               onIconClick={() => {
                 setToolIDs(toolIds.filter((i) => i));
-                setShowIndividualPricing(true);
+                setShowViewTableType("INDIVIDUAL_PRICING");
               }}
             />
             <SwitchComponent
@@ -564,7 +610,7 @@ const SupplierSubscriptions = () => {
   };
 
   const checkToolCampaign = (tool, data) => {
-    return data.map((ele) => ele.adminMarketingToolName).includes(tool);
+    return data?.map((ele) => ele?.adminMarketingToolName)?.includes(tool);
   };
   const mapTableCampaignTableRows = (data) => {
     const result = [];
@@ -666,11 +712,30 @@ const SupplierSubscriptions = () => {
         col12: ele.title,
         col13: ele.startDateTime,
         col14: ele.endDateTime,
-        col15: ele.status,
+        // col15: ele.status,
         col16: ele.createdDate,
         col17: (
           <Box className="d-flex align-items-center justify-content-between">
-            <CustomIcon className="h-4" type="edit" />
+            <CustomIcon
+              className={`h-4 ${getStatus() === "EXPIRED" ? "d-none" : ""}`}
+              type="edit"
+              onIconClick={() => {
+                setCreateDiscountModalType("Edit");
+                setOpenCreateDiscountModal(true);
+                setMarketingToolCampaignId(ele.adminMarketingToolsCampaignId);
+                setToolsCampaignEditData({
+                  days: ele.days,
+                  title: ele.title,
+                  startDate: ele.startDateTime,
+                  endDate: ele.endDateTime,
+                  price: ele.price,
+                  id: ele.adminMarketingToolsCampaignId,
+                  toolNames: ele.adminMarketingTools.map(
+                    (i) => i.adminMarketingToolName
+                  ),
+                });
+              }}
+            />
             <CustomIcon
               type="calendar"
               className="ms-1 h-4"
@@ -689,7 +754,14 @@ const SupplierSubscriptions = () => {
                 }}
               />
             </Box>
-            <CustomIcon type="view" className="h-4" />
+            <CustomIcon
+              type="view"
+              className="h-4"
+              onIconClick={() => {
+                setToolIDs([ele.adminMarketingToolsCampaignId]);
+                setShowViewTableType("TOOL_CAMPAIGN");
+              }}
+            />
           </Box>
         ),
       });
@@ -737,7 +809,7 @@ const SupplierSubscriptions = () => {
       storeType: "SUPPLIER",
       fromDate: date?.fromDate ?? "",
       toDate: date?.toDate ?? "",
-      pageNumber: page,
+      pageNumber: getStatus() !== "ACTIVE" ? page ?? 0 : 0,
       pageSize: 50,
     };
     const { data, err } = await getToolsCampaignWithFilter(payload);
@@ -783,51 +855,80 @@ const SupplierSubscriptions = () => {
   }, [tabList]);
   return (
     <>
-      {!showIndividualPricing ? (
+      {!showViewTableType?.length ? (
         <div>
           <Box>
             <Paper className="p-2">
               <Typography className="color-orange fw-bold">
                 Supplier Subscriptions
               </Typography>
-              <TableComponent
-                columns={[...tableColumsForSupplierSubscriptionsTableOne]}
-                tableRows={supplierSubscriptionsTableOne}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
-              <TableComponent
-                columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
-                tableRows={supplierSubscriptionsTableTwo}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-              />
+              {supplierSubscriptionsTableOne?.length ? (
+                <>
+                  <TableComponent
+                    columns={[...tableColumsForSupplierSubscriptionsTableOne]}
+                    tableRows={supplierSubscriptionsTableOne}
+                    tHeadBgColor="bg-light-gray"
+                    showPagination={false}
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                  />
+
+                  <TableComponent
+                    columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
+                    tableRows={supplierSubscriptionsTableTwo}
+                    tHeadBgColor="bg-light-gray"
+                    showPagination={false}
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    showCheckbox={false}
+                  />
+                </>
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              <TableComponent
-                columns={[...individualPricingColumns]}
-                tableRows={individualPricingTableRows}
-                tHeadBgColor="bg-light-gray"
-                showPagination={false}
-                showSearchFilter={false}
-                showSearchbar={false}
-                showCheckbox={false}
-                showCustomButton
-                customButtonLabel="Add Day's Counter"
-                onCustomButtonClick={() => {
-                  setOpenAddDaysCounterModal(true);
-                  setModalType("Add");
-                }}
-              />
+              {individualPricingTableRows?.length ? (
+                <TableComponent
+                  columns={[...individualPricingColumns]}
+                  tableRows={individualPricingTableRows}
+                  tHeadBgColor="bg-light-gray"
+                  showPagination={false}
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  showCheckbox={false}
+                  showCustomButton
+                  customButtonLabel="Add Day's Counter"
+                  onCustomButtonClick={() => {
+                    setOpenAddDaysCounterModal(true);
+                    setModalType("Add");
+                  }}
+                />
+              ) : (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  className="h-50"
+                >
+                  <Typography className="fw-bold h-4">
+                    No Data Available
+                  </Typography>
+                </Box>
+              )}
             </Paper>
             <Paper className="p-2 mt-4">
               <Typography className="color-orange fw-bold">
@@ -859,11 +960,13 @@ const SupplierSubscriptions = () => {
                     showDateFilterBtn
                     tabChange={tabList}
                     filterData={filterData}
-                    showFilterButton
+                    showFilterButton={getStatus() !== "ACTIVE"}
+                    showPagination={getStatus() !== "ACTIVE"}
                     showDateFilterSearch={false}
                     dateFilterBtnName="Create Discounts"
                     dateFilterBtnClick={() => {
                       setOpenCreateDiscountModal(true);
+                      setCreateDiscountModalType("Add");
                     }}
                     getFilteredValues={(values) => {
                       filterTableData(values);
@@ -901,6 +1004,11 @@ const SupplierSubscriptions = () => {
           ) : null}
           {openCreateDiscountModal ? (
             <CreateDiscountModal
+              status={getStatus()}
+              campaignID={marketingToolCampaignId}
+              getToolCampaignTableData={getToolCampaignTableData}
+              toolsCampaignEditData={toolsCampaignEditData}
+              modalType={createDiscountModalType}
               openCreateDiscountModal={openCreateDiscountModal}
               setOpenCreateDiscountModal={setOpenCreateDiscountModal}
             />
@@ -909,7 +1017,8 @@ const SupplierSubscriptions = () => {
       ) : (
         <ViewIndividualPricing
           toolIDs={[...toolIDs]}
-          setShowIndividualPricing={setShowIndividualPricing}
+          setShowViewTableType={setShowViewTableType}
+          showViewTableType={showViewTableType}
         />
       )}
     </>

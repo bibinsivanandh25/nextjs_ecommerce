@@ -8,22 +8,24 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const CustomDatePickerComponent = ({
   value = null,
   onDateChange = () => {},
+  showToolbar = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const getDate = () => {
     if (value) {
       const selectedDate = new Date(value);
-      return `${selectedDate.getDate()} ${
+      return `${selectedDate.getDate()}-${
         selectedDate.getMonth() + 1
-      } ${selectedDate.getFullYear()}`;
+      }-${selectedDate.getFullYear()}`;
     }
-    return "dd mm yyyy";
+    return "dd-mm-yyyy";
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
+        showToolbar={showToolbar}
         open={isOpen}
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}

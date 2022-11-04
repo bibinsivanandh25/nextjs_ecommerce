@@ -1,14 +1,14 @@
 const supplierMenu = [
   {
     title: "Dashboard",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/005-dashboard.svg",
     path_name: "dashboard",
     navigate: true,
     child: [],
   },
   {
     title: "My Order",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/001-my-orders.svg",
     path_name: "myorders",
     navigate: false,
     child: [
@@ -86,14 +86,14 @@ const supplierMenu = [
   },
   {
     title: "My Collections",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/002-collection.svg",
     path_name: "mycollections",
     navigate: true,
   },
 
   {
     title: "Products & Inventory",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/002-products-and-inventory.svg",
     path_name: "products&inventory",
     navigate: false,
     child: [
@@ -141,14 +141,14 @@ const supplierMenu = [
   },
   {
     title: "My Earnings",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/006-earnings.svg",
     path_name: "earnings",
     navigate: false,
     child: [{ title: "Summary", path_name: "summary", navigate: true }],
   },
   {
     title: "Coupons",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/003-coupons.svg",
     path_name: "coupons",
     navigate: false,
     child: [
@@ -168,21 +168,21 @@ const supplierMenu = [
   },
   {
     title: "Staff",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/004-staff.svg",
     path_name: "staff",
     navigate: true,
     child: [],
   },
   {
     title: "Customer Review",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/005-customer-review.svg",
     path_name: "customerreview",
     navigate: true,
     child: [],
   },
   {
     title: "Report",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/016-profit-report.svg",
     path_name: "reports",
     navigate: false,
     child: [
@@ -210,21 +210,21 @@ const supplierMenu = [
   },
   {
     title: "Help & Support",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/008-support-services.svg",
     path_name: "helpandsupport",
     navigate: true,
     child: [],
   },
   {
     title: "Banners",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/001-banner.svg",
     path_name: "banners",
     navigate: true,
     child: [],
   },
   {
     title: "Marketing Tools",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/006-marketing-tools.svg",
     path_name: "marketingtools",
     navigate: false,
     child: [
@@ -314,21 +314,21 @@ const supplierMenu = [
   },
   {
     title: "News & Notifications",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/007-news-and-notification.svg",
     path_name: "newsandnotifications",
     navigate: true,
     child: [],
   },
   {
     title: "Customer Q&A",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/013-question-and-answer.svg",
     path_name: "customerq&a",
     navigate: true,
     child: [],
   },
   {
     title: "Invite User",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/008-invite-user.svg",
     path_name: "inviteuser",
     navigate: true,
     child: [],
@@ -336,21 +336,21 @@ const supplierMenu = [
   },
   {
     title: "My Shared Products",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/009-my-shared-products.svg",
     path_name: "mysharedproduct",
     navigate: true,
     child: [],
   },
   {
     title: "Referred Supplier",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/015-refer.svg",
     path_name: "referredsupplier",
     navigate: true,
     child: [],
   },
   {
     title: "Help Center",
-    logo: "fas fa-shopping-cart",
+    logo: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/010-help-center.svg",
     path_name: "helpcenter",
     navigate: true,
     child: [],
