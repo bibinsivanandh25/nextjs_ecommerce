@@ -52,6 +52,7 @@ const SpinWheelSubscriptions = () => {
   });
   const router = useRouter();
   const [selectedListData, setSelectedListData] = useState([]);
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const column1 = [
     {
@@ -283,11 +284,12 @@ const SpinWheelSubscriptions = () => {
     return mappedArray;
   };
 
-  const getSpinWheelSubscription = async (page, usertype) => {
+  const getSpinWheelSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "SPIN_WHEEL",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -324,17 +326,22 @@ const SpinWheelSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getSpinWheelSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getSpinWheelSubscription(
+        0,
+        [router?.query?.userType],
+        router?.query?.Status
+      );
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getSpinWheelSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -379,7 +386,7 @@ const SpinWheelSubscriptions = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getSpinWheelSubscription(page);
+              getSpinWheelSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);

@@ -50,6 +50,7 @@ const QuizSubscriptions = () => {
     commentAttachment: "",
   });
   const router = useRouter();
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const column1 = [
     {
@@ -275,11 +276,12 @@ const QuizSubscriptions = () => {
     return mappedArray;
   };
 
-  const getQuizSubscription = async (page, usertype) => {
+  const getQuizSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "QUIZ",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
@@ -318,17 +320,18 @@ const QuizSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getQuizSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getQuizSubscription(0, [router?.query?.userType], router?.query?.Status);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getQuizSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -374,7 +377,7 @@ const QuizSubscriptions = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getQuizSubscription(page);
+              getQuizSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);
