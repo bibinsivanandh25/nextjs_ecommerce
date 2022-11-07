@@ -798,7 +798,7 @@ const SupplierSubscriptions = () => {
 
               <TableComponent
                 columns={[...individualPricingColumns]}
-                tableRows={[individualPricingTableRows]}
+                tableRows={[...individualPricingTableRows]}
                 tHeadBgColor="bg-light-gray"
                 showPagination={false}
                 showSearchFilter={false}
