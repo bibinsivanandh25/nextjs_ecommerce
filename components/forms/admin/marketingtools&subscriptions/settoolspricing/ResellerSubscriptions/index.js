@@ -754,23 +754,22 @@ const ResellerSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              {individualPricingTableRows?.length ? (
-                <TableComponent
-                  columns={[...individualPricingColumns]}
-                  tableRows={individualPricingTableRows}
-                  tHeadBgColor="bg-light-gray"
-                  showPagination={false}
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  showCheckbox={false}
-                  showCustomButton
-                  customButtonLabel="Add Day's Counter"
-                  onCustomButtonClick={() => {
-                    setOpenAddDaysCounterModal(true);
-                    setModalType("Add");
-                  }}
-                />
-              ) : (
+              <TableComponent
+                columns={[...individualPricingColumns]}
+                tableRows={individualPricingTableRows}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+                showCustomButton
+                customButtonLabel="Add Day's Counter"
+                onCustomButtonClick={() => {
+                  setOpenAddDaysCounterModal(true);
+                  setModalType("Add");
+                }}
+              />
+              {individualPricingTableRows?.length === 0 && (
                 <Box
                   display="flex"
                   justifyContent="center"
