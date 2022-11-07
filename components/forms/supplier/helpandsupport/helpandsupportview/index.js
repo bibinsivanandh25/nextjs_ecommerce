@@ -208,19 +208,23 @@ const HelpandsupportView = ({
                 }}
               />
               {item?.helpSupportMessageMedias[0]?.mediaUrl ? (
-                <Typography className="h-5">
+                <Typography className="h-5 d-flex">
                   <span className="fw-bold"> Attached File :</span>
-                  <a
-                    href={item?.helpSupportMessageMedias[0]?.mediaUrl}
-                    download
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ms-3 cursor-pointer text-decoration-none"
-                  >
-                    {getDownloadFileName(
-                      item?.helpSupportMessageMedias[0]?.mediaUrl
-                    )}
-                  </a>
+                  <Box>
+                    {item?.helpSupportMessageMedias?.map((val) => (
+                      <Box>
+                        <a
+                          href={val?.mediaUrl}
+                          download
+                          target="_blank"
+                          rel="noreferrer"
+                          className="ms-3 cursor-pointer text-decoration-none "
+                        >
+                          {getDownloadFileName(val?.mediaUrl)}
+                        </a>
+                      </Box>
+                    ))}
+                  </Box>
                 </Typography>
               ) : null}
             </Box>

@@ -166,6 +166,7 @@ const PriceTargetedSubscription = () => {
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
 
   const router = useRouter();
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
@@ -176,7 +177,7 @@ const PriceTargetedSubscription = () => {
       setOpenNotifyModal(true);
     }
   };
-  const getTableData = async (page, userType) => {
+  const getTableData = async (page, userType, Status) => {
     const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
@@ -186,6 +187,7 @@ const PriceTargetedSubscription = () => {
     const payload = {
       marketingTool: "PRICE_TARGETED",
       userType: userType ?? temp,
+      status: Status || queryStatus,
     };
     const { data, err } = await adminPriceTargetedSubscription(payload, page);
     if (data.length) {
@@ -305,17 +307,18 @@ const PriceTargetedSubscription = () => {
           title: router.query.userType,
         },
       ]);
-      getTableData(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getTableData(0, [router?.query?.userType], router?.query?.Status);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getTableData(0);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -363,7 +366,7 @@ const PriceTargetedSubscription = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getTableData(page);
+              getTableData(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);

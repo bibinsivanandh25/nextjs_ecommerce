@@ -50,6 +50,7 @@ const ScratchCardSubscriptions = () => {
     comment: "",
     commentAttachment: "",
   });
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const router = useRouter();
   const column1 = [
@@ -282,11 +283,12 @@ const ScratchCardSubscriptions = () => {
       toastify(error?.response?.data?.message, "error");
   };
 
-  const getScratchCardSubscription = async (page, usertype) => {
+  const getScratchCardSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "SCRATCH_CARD",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
@@ -324,17 +326,22 @@ const ScratchCardSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getScratchCardSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getScratchCardSubscription(
+        0,
+        [router?.query?.userType],
+        router?.query?.Status
+      );
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getScratchCardSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -379,7 +386,7 @@ const ScratchCardSubscriptions = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getScratchCardSubscription(page);
+              getScratchCardSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);
