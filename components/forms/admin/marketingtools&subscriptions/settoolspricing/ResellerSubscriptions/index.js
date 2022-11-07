@@ -256,14 +256,16 @@ const ResellerSubscriptions = () => {
       toolIdList: [...ids],
       disabled: !status,
     };
-    const { data, err } = await enableDisableMarketingTools(payload);
-    if (data?.message) {
-      toastify(data.message, "success");
-      getIndividualPricing();
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-      getIndividualPricing();
+    if (ids?.length) {
+      const { data, err } = await enableDisableMarketingTools(payload);
+      if (data?.message) {
+        toastify(data.message, "success");
+        getIndividualPricing();
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        getIndividualPricing();
+      }
     }
   };
 
@@ -300,7 +302,9 @@ const ResellerSubscriptions = () => {
           result.forEach((ele, index) => {
             if (ele) {
               toolIds.push(ele.adminMarketingToolId);
-              status.push(ele.disabled);
+              if (ele.price !== "--") {
+                status.push(ele.disabled);
+              }
             }
             result2[`col${index + 2}`] =
               ele.price !== "--" ? (
@@ -375,7 +379,7 @@ const ResellerSubscriptions = () => {
               />
               <SwitchComponent
                 label=""
-                defaultChecked={status.every((ele) => !ele)}
+                defaultChecked={status.some((ele) => !ele)}
                 ontoggle={() => {
                   enableDisableMarketingTool(
                     toolIds.filter((i) => i),
