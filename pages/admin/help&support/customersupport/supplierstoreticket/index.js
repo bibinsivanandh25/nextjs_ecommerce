@@ -212,10 +212,6 @@ const CustomerSupport = () => {
               className="fs-18"
               onIconClick={() => {
                 getTicketById(val.ticketId);
-                setShowModal({
-                  show: true,
-                  type: "view",
-                });
               }}
             />
             <MenuOption
@@ -331,6 +327,7 @@ const CustomerSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
+                headerClassName="color-orange"
                 tableRows={tableRows}
                 table_heading="Supplier Store"
                 showSearchFilter={false}

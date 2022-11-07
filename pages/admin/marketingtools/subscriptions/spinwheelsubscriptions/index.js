@@ -18,6 +18,19 @@ import CreateNotification from "@/forms/admin/marketingtools&subscriptions/spinw
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { useRouter } from "next/router";
 
+const listData = [
+  {
+    id: "Supplier",
+    value: "Supplier",
+    title: "Supplier",
+  },
+  {
+    id: "Reseller",
+    value: "Reseller",
+    title: "Reseller",
+  },
+];
+
 const SpinWheelSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
@@ -38,6 +51,7 @@ const SpinWheelSubscriptions = () => {
     commentAttachment: "",
   });
   const router = useRouter();
+  const [selectedListData, setSelectedListData] = useState([]);
 
   const column1 = [
     {
@@ -269,11 +283,11 @@ const SpinWheelSubscriptions = () => {
     return mappedArray;
   };
 
-  const getSpinWheelSubscription = async (page) => {
-    const selectedListData = dropdownValue.map((value) => value.title);
+  const getSpinWheelSubscription = async (page, usertype) => {
+    const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "SPIN_WHEEL",
-      userType: selectedListData,
+      userType: usertype ?? selectedListDatas,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -290,20 +304,37 @@ const SpinWheelSubscriptions = () => {
         setRowsForSpinWheelSubs((pre) => [...pre, ...returnTableData(data)]);
         setPageNumber((pre) => pre + 1);
       }
-    } else if (!data?.length) {
-      if (page === 0) setRowsForSpinWheelSubs([]);
+    } else if (data?.length == 0 && page == 0) {
+      setRowsForSpinWheelSubs([]);
     }
   };
   useEffect(() => {
-    if (router.query.userType !== undefined) {
-      setDropdownValue([
-        { id: "1", value: router.query.userType, title: router.query.userType },
+    if (router?.query?.userType?.length) {
+      setSelectedListData([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
       ]);
+      setDropdownValue([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
+      getSpinWheelSubscription(0, [router?.query?.userType]);
+      setPageNumber(0);
     }
-  }, [router.query]);
+  }, [router?.query?.userType]);
+
   useEffect(() => {
-    getSpinWheelSubscription(0);
-  }, [dropdownValue]);
+    if (!router?.query?.userType) {
+      getSpinWheelSubscription(0);
+      setPageNumber(0);
+    }
+  }, [router?.query?.userType]);
 
   return (
     <>
@@ -315,25 +346,35 @@ const SpinWheelSubscriptions = () => {
             </Typography>
             <Box className="w-25 me-2">
               <MultiSelectComponent
-                list={[
-                  { title: "Supplier", id: 1 },
-                  { title: "Reseller", id: 2 },
-                ]}
-                label="Select Subscriber"
-                onSelectionChange={(_e, val) => {
-                  setDropdownValue(val);
+                label="FILTER"
+                placeholder=""
+                list={listData}
+                onSelectionChange={(e, value) => {
+                  setSelectedListData([]);
+                  setDropdownValue(value);
+                  setPageNumber(0);
+                  if (value?.length) {
+                    const temp = [];
+                    value.forEach((ele) => {
+                      temp.push(ele.value);
+                    });
+                    getSpinWheelSubscription(0, [...temp]);
+                    setPageNumber(0);
+                  } else {
+                    getSpinWheelSubscription(0, []);
+                    setPageNumber(0);
+                  }
                 }}
-                value={dropdownValue}
-                inputlabelshrink={false}
+                value={dropdownValue?.length ? dropdownValue : selectedListData}
               />
             </Box>
           </Box>
           <TableComponent
+            tabChange={`${dropdownValue.length}`}
             columns={[...column2]}
             column2={[...column1]}
             tableRows={[...rowsForSpinWheelSubs]}
             tHeadBgColor="bg-light-gray"
-            showPagination={false}
             showSearchFilter={false}
             showSearchbar={false}
             showCheckbox={false}

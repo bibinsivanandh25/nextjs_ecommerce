@@ -194,6 +194,7 @@ export default function TableComponent({
   onBtnClick = () => {},
   handlePageEnd = () => {},
   handleRowsPerPageChange = () => {},
+  tabChange = "",
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -211,6 +212,9 @@ export default function TableComponent({
   // });
   const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
+  useEffect(() => {
+    setPage(0);
+  }, [tabChange]);
   useEffect(() => {
     let arr = [...column2, ...columns];
     arr = arr.filter((ele) => {

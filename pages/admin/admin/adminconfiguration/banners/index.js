@@ -209,7 +209,7 @@ const Banners = () => {
               <Box className="d-flex flex-column align-items-center">
                 <Box className="ms-4">
                   <SwitchComponent
-                    defaultChecked={item.disable}
+                    defaultChecked={!item.disable}
                     label=""
                     ontoggle={(val) => {
                       handleSwitchClick(val, item, fromdate, endDate);
@@ -244,7 +244,7 @@ const Banners = () => {
     return result;
   };
   const handleSwitchClick = async (value, item, fromdate, endDate) => {
-    const { data, err } = await adminBannerDisable(item.bannerId, value);
+    const { data, err } = await adminBannerDisable(item.bannerId, !value);
     if (data) {
       toastify(data.message, "success");
       getAllBanners(fromdate, endDate, 0);

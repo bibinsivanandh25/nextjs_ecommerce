@@ -189,7 +189,6 @@ const StoreSettings = () => {
   const user = useSelector((state) => {
     return state.user;
   });
-  // console.log(formValues);
 
   // const get12hourformat = (time) => {
   //   // Prepend any date. Use your birthday.
@@ -267,7 +266,6 @@ const StoreSettings = () => {
     //   flag = true;
     //   errObj.storeCode = validateMessage.field_required;
     // }
-    console.log(formValues.minOrderAmount);
     if (
       formValues.minOrderAmount == null ||
       formValues.minOrderAmount === "" ||
@@ -356,7 +354,7 @@ const StoreSettings = () => {
         formData.append("supplierLogo", storeLogo.file);
         formData.append("storeImage", discriptionImage.file);
         formData.append("supplierId", user?.supplierId);
-        const { data, err } = await supplierStoreImageConfig(formData);
+        const { data } = await supplierStoreImageConfig(formData);
         if (data) {
           setStoreLogo((pre) => ({
             ...pre,
@@ -367,9 +365,9 @@ const StoreSettings = () => {
             url: data[1] ?? pre.url,
           }));
           updateSupplierStore(data);
-        } else if (err) {
-          // console.log(err.response);
         }
+        // else if (err) {
+        // }
       } else {
         updateSupplierStore([storeLogo.url, discriptionImage.url]);
       }

@@ -272,7 +272,7 @@ const DiscountSubscriptions = () => {
       userType: userType ?? temp,
     };
     const { data, err } = await adminDiscountSubscription(payload, page);
-    if (data) {
+    if (data.length) {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber(1);
@@ -280,6 +280,8 @@ const DiscountSubscriptions = () => {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
       }
+    } else if (data.length == 0 && page == 0) {
+      setRows([]);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -295,13 +297,22 @@ const DiscountSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
+      setSelectedList([
+        {
+          id: router.query.userType,
+          value: router.query.userType,
+          title: router.query.userType,
+        },
+      ]);
       getTableData(0, [router?.query?.userType]);
+      setpageNumber(0);
     }
   }, [router?.query?.userType]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getTableData(0);
+      setpageNumber(0);
     }
   }, [router?.query?.userType]);
 
@@ -330,8 +341,10 @@ const DiscountSubscriptions = () => {
                       temp.push(ele.value);
                     });
                     getTableData(0, [...temp]);
+                    setpageNumber(0);
                   } else {
                     getTableData(0, []);
+                    setpageNumber(0);
                   }
                 }}
                 value={selectedList?.length ? selectedList : selectedListData}
@@ -339,6 +352,7 @@ const DiscountSubscriptions = () => {
             </Grid>
           </Grid>
           <TableComponent
+            tabChange={`${selectedList.length}`}
             columns={[...column2]}
             column2={[...column1]}
             tableRows={[...rows]}

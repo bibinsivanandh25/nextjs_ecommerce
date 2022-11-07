@@ -4,7 +4,7 @@
 
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
-import { Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import {
@@ -13,6 +13,7 @@ import {
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
 import { Close } from "@mui/icons-material";
+import Image from "next/image";
 
 const HelpandsupportView1 = ({
   selectedData,
@@ -140,7 +141,7 @@ const HelpandsupportView1 = ({
   };
 
   return (
-    <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar">
+    <Paper className="mnh-87vh mxh-87vh d-flex flex-column">
       <Typography
         className="h-5 color-orange cursor-pointer ms-2 mt-1"
         onClick={() => {
@@ -153,7 +154,7 @@ const HelpandsupportView1 = ({
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
-      <div className="fs-12 border-bottom px-4 py-1">
+       <div className="fs-12 border-bottom px-4 py-1">
         {getContent(
           "Date & Time",
 
@@ -239,44 +240,50 @@ const HelpandsupportView1 = ({
         ))}
       </div>
       <div className=" overflow-auto mxh-15 mnh-15 hide-scrollbar mx-4">
-        <div className="d-flex">
-          <div className="p-2">
-            {/* <Image
-              style={{ height: "50px", width: "50px", borderRadius: "10px" }}
-              alt=" photo"
-              // src="https://media.istockphoto.com/photos/illustration-of-cute-cartoon-man-with-eyeglasses-in-blue-shirt-with-picture-id1312136351?b=1&k=20&m=1312136351&s=170667a&w=0&h=I8RLLZH4bWF4dSeIO1NLTCVX6TZ3EBb7OZ3OrDeTo-o="
-            /> */}
-          </div>
-          <div>
-            {selectedData.helpSupportMessages.map((val) => {
-              return (
-                <>
-                  <strong>{val.messageFromName}</strong>
-                  <p className="fs-9 mb-2">{val.mobileNumber}</p>
-                  <div dangerouslySetInnerHTML={{ __html: val.message }} />
-                  {val.helpSupportMessageMedias.map((media) => {
-                    return (
-                      <div>
-                        <span className=" fw-600 ">Attach File :</span>
-                        <a
-                          className=" fs-12 mb-3 color-black"
-                          // onClick={() => download(media.mediaUrl)}
-                          style={{ textDecoration: "none" }}
-                          href={media.mediaUrl}
-                          download
-                          target="_blank"
-                        >
-                          {media.mediaUrl.split("/")[7]}
-                        </a>
-                      </div>
-                    );
-                  })}
-                </>
-              );
-            })}
-          </div>
+        <div className="p-0">
+          {selectedData.helpSupportMessages.map((val) => {
+            return (
+              <>
+                <div className="d-flex">
+                  <div className="px-3">
+                    {val.imageUrl ? (
+                      <Image
+                        className="rounded"
+                        height={40}
+                        width={40}
+                        src={val.imageUrl}
+                        layout="intrinsic"
+                      />
+                    ) : (
+                      <Avatar />
+                    )}
+                  </div>
+                  <div>
+                    <strong>{val.messageFromName}</strong>
+                    <p className="fs-9 ">{val.mobileNumber}</p>
+                    <div dangerouslySetInnerHTML={{ __html: val.message }} />
+                    {val.helpSupportMessageMedias.map((media) => {
+                      return (
+                        <div>
+                          <span className="fw-bold h-4">Attached File :</span>
+                          <a
+                            className=" fs-12 mb-3 text-primary text-decoration-none"
+                            href={media.mediaUrl}
+                            target="_blank"
+                          >
+                            {media.mediaUrl.split("/")[7]}
+                          </a>
+                        </div>
+                      );
+                    })}
+                    <hr />
+                  </div>
+                </div>
+              </>
+            );
+          })}
         </div>
-      </div>
+      </div> 
     </Paper>
   );
 };
