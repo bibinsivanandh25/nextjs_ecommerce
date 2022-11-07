@@ -167,6 +167,7 @@ const DiscountSubscriptions = () => {
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
   const [selectedListData, setSelectedListData] = useState([]);
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
@@ -260,7 +261,7 @@ const DiscountSubscriptions = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const getTableData = async (page, userType) => {
+  const getTableData = async (page, userType, Status) => {
     const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
@@ -270,9 +271,10 @@ const DiscountSubscriptions = () => {
     const payload = {
       marketingTool: "DISCOUNT_COUPON",
       userType: userType ?? temp,
+      status: Status || queryStatus,
     };
     const { data, err } = await adminDiscountSubscription(payload, page);
-    if (data.length) {
+    if (data?.length) {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber(1);
@@ -304,17 +306,18 @@ const DiscountSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getTableData(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getTableData(0, [router?.query?.userType], router?.query?.Status);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
-    if (!router?.query?.userType) {
+    if (!router?.query) {
       getTableData(0);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -362,7 +365,7 @@ const DiscountSubscriptions = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableData(page);
+              getTableData(page, null, router?.query?.status);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);
