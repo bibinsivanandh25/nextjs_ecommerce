@@ -243,7 +243,9 @@ const CreateDiscountModal = ({
     <Box>
       <ModalComponent
         open={openCreateDiscountModal}
-        ModalTitle="Add Days Counter"
+        ModalTitle={
+          modalType === "Edit" ? "Edit Tools Campaign" : "Add Tools Campaign"
+        }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
