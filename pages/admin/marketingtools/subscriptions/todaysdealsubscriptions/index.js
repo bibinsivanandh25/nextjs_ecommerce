@@ -51,6 +51,7 @@ const TodaysDealSubscription = () => {
   });
   const router = useRouter();
   const [selectedListData, setSelectedListData] = useState([]);
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const column1 = [
     {
@@ -283,11 +284,12 @@ const TodaysDealSubscription = () => {
     return mappedArray;
   };
 
-  const getDealSubscription = async (page, usertype) => {
+  const getDealSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "TODAYS_DEAL",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -325,17 +327,18 @@ const TodaysDealSubscription = () => {
           title: router.query.userType,
         },
       ]);
-      getDealSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getDealSubscription(0, [router?.query?.userType], router?.query?.Status);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getDealSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -384,7 +387,7 @@ const TodaysDealSubscription = () => {
               // setOpenAddDaysCounterModal(true);
             }}
             handlePageEnd={(page = pageNumber) => {
-              getDealSubscription(page);
+              getDealSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);

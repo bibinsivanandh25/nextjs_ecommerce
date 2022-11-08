@@ -50,6 +50,7 @@ const FlagsSubscription = () => {
     commentAttachment: "",
   });
   const router = useRouter();
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const column1 = [
     {
@@ -267,11 +268,12 @@ const FlagsSubscription = () => {
     return mappedArray;
   };
 
-  const getFlagsSubscription = async (page, usertype) => {
+  const getFlagsSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "FLAGS",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -324,17 +326,18 @@ const FlagsSubscription = () => {
           title: router.query.userType,
         },
       ]);
-      getFlagsSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getFlagsSubscription(0, [router?.query?.userType], router?.query?.Status);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getFlagsSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -378,7 +381,7 @@ const FlagsSubscription = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getFlagsSubscription(page);
+              getFlagsSubscription(page, null, router?.query?.status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);

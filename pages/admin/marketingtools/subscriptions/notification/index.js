@@ -164,6 +164,7 @@ const NotificationSubscription = () => {
   const [selectedData, setSelectedData] = useState({});
   const [openNotifyModal, setOpenNotifyModal] = useState(false);
   const router = useRouter();
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const onClickOfMenuItem = (ele, item) => {
     if (ele === "Add Note") {
@@ -257,7 +258,7 @@ const NotificationSubscription = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const getTableData = async (page, userType) => {
+  const getTableData = async (page, userType, Status) => {
     const temp = [];
     selectedList.forEach((item) => {
       if (item.value) {
@@ -267,6 +268,7 @@ const NotificationSubscription = () => {
     const payload = {
       marketingTool: "NOTIFICATIONS",
       userType: userType ?? temp,
+      status: Status || queryStatus,
     };
     const { data, err } = await adminDiscountSubscription(payload, page);
     if (data.length) {
@@ -304,17 +306,18 @@ const NotificationSubscription = () => {
           title: router.query.userType,
         },
       ]);
-      getTableData(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getTableData(0, [router?.query?.userType], router?.query?.Status);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getTableData(0);
       setpageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -362,7 +365,7 @@ const NotificationSubscription = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableData(page);
+              getTableData(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);
