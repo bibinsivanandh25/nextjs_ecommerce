@@ -88,6 +88,16 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       startTime: "",
       endTime: "",
     })
+    setErrorObj({
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    })
   };
 
   const handleChange = (value, name) => {
@@ -108,6 +118,26 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       ModalWidth={650}
       onCloseIconClick={() => {
         setOpen(false);
+        setFormDate({
+          flagTitle: {},
+          visibilityPlace: {},
+          themeSelection: {},
+          colorSelection: {},
+          startDate: "",
+          endDate: "",
+          startTime: "",
+          endTime: "",
+        })
+        setErrorObj({
+          flagTitle: "",
+          visibilityPlace: "",
+          themeSelection: "",
+          colorSelection: "",
+          startDate: "",
+          endDate: "",
+          startTime: "",
+          endTime: "",
+        })
       }}
       onSaveBtnClick={() => {
         handleSubmit();
@@ -124,7 +154,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             inputlabelshrink
             list={[{ label: "Type One" }, { label: "Type Two" }]}
             onDropdownSelect={(value) => {
-              handleChange(value, "flagTitle");
+              handleChange(value ?? {}, "flagTitle");
             }}
             value={formData.flagTitle}
             helperText={errorObj.flagTitle}
@@ -139,7 +169,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             inputlabelshrink
             list={[{ label: "Type One" }, { label: "Type Two" }]}
             onDropdownSelect={(value) => {
-              handleChange(value, "visibilityPlace");
+              handleChange(value ?? {}, "visibilityPlace");
             }}
             id="visibilityPlace"
             value={formData.visibilityPlace}
@@ -153,7 +183,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             inputlabelshrink
             list={[{ label: "Type One" }, { label: "Type Two" }]}
             onDropdownSelect={(value) => {
-              handleChange(value, "themeSelection");
+              handleChange(value ?? {}, "themeSelection");
             }}
             id="themeSelection"
             value={formData.themeSelection}
@@ -167,7 +197,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             inputlabelshrink
             list={[{ label: "Type One" }, { label: "Type Two" }]}
             onDropdownSelect={(value) => {
-              handleChange(value, "colorSelection");
+              handleChange(value ?? {}, "colorSelection");
             }}
             id="colorSelection"
             value={formData.colorSelection}
