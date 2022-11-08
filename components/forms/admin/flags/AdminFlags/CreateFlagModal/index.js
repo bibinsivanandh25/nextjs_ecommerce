@@ -10,8 +10,6 @@ import MultiSelectComponent from "../../../../../atoms/MultiSelectComponent";
 
 const tempObj = {
   flagTitle: {},
-  productCategory: {},
-  products: [],
   visibilityPlace: {},
   themeSelection: {},
   colorSelection: {},
@@ -23,8 +21,74 @@ const tempObj = {
 
 const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
-  const handleSubmit = () => {};
-  const handleClearAll = () => {};
+  const [errorObj, setErrorObj] = useState({});
+  const validate = () => {
+    let flag = false;
+    const errObj = {
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    };
+    if (!Object.keys(formData.flagTitle).length) {
+      errObj.flagTitle = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.visibilityPlace).length) {
+      errObj.visibilityPlace = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.themeSelection).length) {
+      errObj.themeSelection = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.colorSelection).length) {
+      errObj.colorSelection = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startDate === "") {
+      errObj.startDate = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startDate > formData.endDate) {
+      errObj.startDate = validateMessage.startDateValid;
+      flag = true;
+    }
+    if (formData.endDate === "") {
+      errObj.endDate = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startTime === "") {
+      errObj.startTime = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.endTime === "") {
+      errObj.endTime = validateMessage.field_required;
+      flag = true;
+    }
+    setErrorObj(errObj);
+    return flag;
+  };
+  const handleSubmit = () => {
+    if (!validate()) {
+    }
+  };
+  const handleClearAll = () => {
+    setFormDate({
+      flagTitle: {},
+      visibilityPlace: {},
+      themeSelection: {},
+      colorSelection: {},
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    })
+  };
 
   const handleChange = (value, name) => {
     setFormDate((pre) => ({
@@ -63,31 +127,11 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
               handleChange(value, "flagTitle");
             }}
             value={formData.flagTitle}
+            helperText={errorObj.flagTitle}
           />
         </Grid>
-        <Grid item md={6}>
-          <SimpleDropdownComponent
-            size="small"
-            label="Product Category"
-            id="productCategory"
-            inputlabelshrink
-            list={[{ label: "Type One" }, { label: "Type Two" }]}
-            onDropdownSelect={(value) => {
-              handleChange(value, "productCategory");
-            }}
-            value={formData.productCategory}
-          />
-        </Grid>
-        <Grid item md={6}>
-          <MultiSelectComponent
-            label="Products"
-            value={formData.products}
-            list={[]}
-            onSelectionChange={(value) => {
-              handleChange(value, "products");
-            }}
-          />
-        </Grid>
+       
+       
         <Grid item md={6}>
           <SimpleDropdownComponent
             size="small"
@@ -99,6 +143,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             }}
             id="visibilityPlace"
             value={formData.visibilityPlace}
+            helperText={errorObj.visibilityPlace}
           />
         </Grid>
         <Grid item md={6}>
@@ -112,6 +157,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             }}
             id="themeSelection"
             value={formData.themeSelection}
+            helperText={errorObj.themeSelection}
           />
         </Grid>
         <Grid item md={6}>
@@ -125,6 +171,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             }}
             id="colorSelection"
             value={formData.colorSelection}
+            helperText={errorObj.colorSelection}
           />
         </Grid>
 
@@ -138,7 +185,16 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
               }}
               size="small"
             />
+            
+            
           </Box>
+          {errorObj.startDate ? (
+              <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.startDate}
+              </Typography>
+              </Grid>
+            ) : null}
         </Grid>
         <Grid item md={6}>
           <Box className="d-flex align-items-center">
@@ -151,7 +207,15 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
               size="small"
             />
           </Box>
+          {errorObj.endDate ? (
+              <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.endDate}
+              </Typography>
+              </Grid>
+            ) : null}
         </Grid>
+        
         <Grid item md={6}>
           <Box className="d-flex align-items-center">
             <Typography className="h-5">Start Time:</Typography>
@@ -172,7 +236,15 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
               // value={endTime}
             />
           </Box>
+          {errorObj.startTime ? (
+              <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.startTime}
+              </Typography>
+              </Grid>
+            ) : null}
         </Grid>
+       
         <Grid item md={6}>
           <Box className="d-flex align-items-center">
             <Typography className="h-5">End Time:</Typography>
@@ -188,11 +260,19 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
                 flexDirection: "row-reverse",
               }}
               onChange={(e) => {
-                handleChange(e.target.value, "endtime");
+                handleChange(e.target.value, "endTime");
               }}
+
               // value={endTime}
             />
           </Box>
+          {errorObj.endTime ? (
+              <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.endTime}
+              </Typography>
+              </Grid>
+            ) : null}
         </Grid>
       </Grid>
     </ModalComponent>
