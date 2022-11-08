@@ -551,7 +551,6 @@ export default function TableComponent({
       setTableFilterList([...result]);
     }
   }, [filterData]);
-
   const handleChangePage = (event, newPage) => {
     const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
     if (newPage === numberOfPage - 1) {
@@ -688,7 +687,7 @@ export default function TableComponent({
                   value={searchFilter}
                   onDropdownSelect={(value) => {
                     if (value) {
-                      handlePageEnd("", value, 0, {
+                      handlePageEnd(searchText, value?.value, 0, {
                         fromDate: filteredDates.fromDate
                           ? `${format(
                               new Date(filteredDates.fromDate),
@@ -704,6 +703,20 @@ export default function TableComponent({
                       });
                       setSearchFilter(value);
                     } else {
+                      handlePageEnd(searchText, "", 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
                       setSearchFilter([]);
                     }
                   }}
@@ -954,7 +967,7 @@ export default function TableComponent({
                 onDropdownSelect={(value) => {
                   if (value) {
                     if (!showSearchbar) {
-                      handlePageEnd("", value, 0, {
+                      handlePageEnd(searchText, value, 0, {
                         fromDate: filteredDates.fromDate
                           ? `${format(
                               new Date(filteredDates.fromDate),
@@ -1004,7 +1017,7 @@ export default function TableComponent({
                     size="small"
                     onInputChange={(e) => {
                       if (e.target.value === "") {
-                        handlePageEnd("", searchFilter?.value, 0, {
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
                           fromDate: filteredDates.fromDate
                             ? `${format(
                                 new Date(filteredDates.fromDate),
