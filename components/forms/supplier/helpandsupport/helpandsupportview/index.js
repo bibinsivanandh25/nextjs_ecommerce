@@ -20,7 +20,7 @@ const HelpandsupportView = ({
   user = {},
   getAllData = () => {},
   selectTab = {},
-  acceptedTypes = ["png", "JPG", "pdf"],
+  acceptedTypes = ["png", "jpg", "pdf"],
 }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
@@ -34,15 +34,7 @@ const HelpandsupportView = ({
       </p>
     );
   };
-  useEffect(() => {
-    const result = [];
-    selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
-      (item) => {
-        result.push(item.mediaUrl);
-      }
-    );
-    setSelectedFile(result);
-  }, []);
+
   const getClassName = () => {
     if (selectedData.ticketStatus.toLowerCase() === "open")
       return "text-success";
@@ -162,14 +154,14 @@ const HelpandsupportView = ({
   useEffect(() => {
     getTicketMessage();
   }, []);
-  const getDownloadFileName = (item) => {
-    let data = "";
-    if (typeof item == "string") {
-      const x = item.split("-");
-      data = x[x.length - 1];
-    }
-    return data;
-  };
+  // const getDownloadFileName = (item) => {
+  //   let data = "";
+  //   if (typeof item == "string") {
+  //     const x = item.split("-");
+  //     data = x[x.length - 1];
+  //   }
+  //   return data;
+  // };
   const getSupplierTicketMessage = () => {
     return (
       <Box className="mx-2 overflow-auto hide-scrollbar">
@@ -196,22 +188,24 @@ const HelpandsupportView = ({
                 <Typography className="h-5 fw-bold">
                   {item.messageFromName}
                 </Typography>
-                <Typography className="h-6">{item.messageFromId}</Typography>
-                <Typography className="h-6">{item.messagedAt}</Typography>
+                <Typography className="h-5">{item.messageFromId}</Typography>
+                <Typography className="h-5">{item.messagedAt}</Typography>
               </Box>
             </Box>
             <Box marginLeft={7}>
-              <div
-                className="h-5"
-                dangerouslySetInnerHTML={{
-                  __html: item.message,
-                }}
-              />
+              <div className="d-flex align-items-center">
+                <Typography className="h-5 fw-bold">Description : </Typography>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: item.message,
+                  }}
+                />
+              </div>
               {item?.helpSupportMessageMedias[0]?.mediaUrl ? (
-                <Typography className="h-5 d-flex">
-                  <span className="fw-bold"> Attached File :</span>
+                <Typography className="h-5 ">
+                  <span className="fw-bold me-1 h-5"> Attached File :</span>
                   <Box>
-                    {item?.helpSupportMessageMedias?.map((val) => (
+                    {item?.helpSupportMessageMedias?.map((val, ind) => (
                       <Box>
                         <a
                           href={val?.mediaUrl}
@@ -220,7 +214,13 @@ const HelpandsupportView = ({
                           rel="noreferrer"
                           className="ms-3 cursor-pointer text-decoration-none "
                         >
-                          {getDownloadFileName(val?.mediaUrl)}
+                          {val.helpSupportMessageMedias?.length === ind + 1
+                            ? `file${ind + 1}${val?.mediaUrl?.slice(
+                                val.mediaUrl?.lastIndexOf(".")
+                              )}`
+                            : `file${ind + 1}${val?.mediaUrl?.slice(
+                                val.mediaUrl?.lastIndexOf(".")
+                              )},`}
                         </a>
                       </Box>
                     ))}

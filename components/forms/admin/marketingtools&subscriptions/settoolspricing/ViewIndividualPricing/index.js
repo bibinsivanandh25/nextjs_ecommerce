@@ -149,7 +149,7 @@ const ViewIndividualPricing = ({
           columns={[...columns]}
           tableRows={[...tableRows]}
           filterList={tableFilters}
-          showSearchFilter
+          showSearchFilter={toolIDs.length !== 1}
           showSearchbar={false}
           handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
             getTableRows(page, searchFilter.value ?? null);

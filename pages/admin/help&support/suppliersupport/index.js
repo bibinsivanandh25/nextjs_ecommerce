@@ -17,7 +17,7 @@ import {
   helpandSupportGetTicketById,
 } from "services/admin/help&support";
 import { useSelector } from "react-redux";
-import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
+import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import toastify from "services/utils/toastUtils";
 
 const SupplierSupport = () => {
@@ -50,13 +50,13 @@ const SupplierSupport = () => {
     {
       id: "col3",
       align: "center",
-      label: "User From ID/Name",
+      label: "User From ID / Name",
       data_align: "center",
     },
     {
       id: "col4",
       align: "center",
-      label: "User To ID",
+      label: "User To ID / Name",
       data_align: "center",
     },
     {
@@ -83,12 +83,12 @@ const SupplierSupport = () => {
       label: "Comments",
       data_align: "center",
     },
-    {
-      id: "col9",
-      align: "center",
-      label: "Attachments",
-      data_align: "center",
-    },
+    // {
+    //   id: "col9",
+    //   align: "center",
+    //   label: "Attachments",
+    //   data_align: "center",
+    // },
     {
       id: "col10",
       align: "center",
@@ -180,7 +180,7 @@ const SupplierSupport = () => {
 
   const getTicketById = async (ticketId) => {
     const { data } = await helpandSupportGetTicketById(ticketId);
-    if (data.data) {
+    if (data?.data) {
       setSelectedData(data.data);
       setShowModal({
         show: true,
@@ -198,12 +198,11 @@ const SupplierSupport = () => {
           col1: ind + 1,
           col2: ele.ticketId,
           col3: `${ele.userFromId} / ${ele.userFromName}`,
-          col4: ele.userToId,
+          col4: `${ele.userToId} / ${ele.userToName}`,
           col5: ele.issueType.replaceAll("_", " "),
           col6: ele.orderId,
           col7: ele.issueSubject,
           col8: "--",
-          col9: "--",
           col10: `${ele.createdDate.split("T")[0]} ${
             ele.createdDate.split("T")[1]
           }`,
@@ -215,6 +214,7 @@ const SupplierSupport = () => {
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon
                 type="view"
+                title="View and Reply"
                 className="fs-18"
                 onIconClick={() => {
                   getTicketById(ele.ticketId);
@@ -312,7 +312,7 @@ const SupplierSupport = () => {
             getTabledata={getTabledata}
           />
         ) : showModal.show && showModal.type === "view" ? (
-          <HelpandsupportView1
+          <HelpandsupportView
             selectedData={selectedData}
             setShowModal={setShowModal}
             // selectTab={selectTab}

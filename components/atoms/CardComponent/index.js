@@ -25,7 +25,7 @@ const CardComponent = ({
         // setClick(!click);
         onCardClick();
       }}
-      className={className}
+      className={`${className} cursor-pointer`}
     >
       {children}
     </Box>
