@@ -64,17 +64,13 @@ const ResellerSubscriptions = () => {
   ]);
 
   const filterData = [
-    {
-      name: "DAYS",
-      value: [
-        { item: "7 days", isSelected: false },
-        { item: "30 days", isSelected: false },
-        { item: "90 days", isSelected: false },
-        { item: "180 days", isSelected: false },
-        { item: "270 days", isSelected: false },
-        { item: "360 days", isSelected: false },
-      ],
-    },
+    { label: "All", value: "All" },
+    { label: "7 days", value: "7 days" },
+    { label: "30 days", value: "30 days" },
+    { label: "90 days", value: "90 days" },
+    { label: "180 days", value: "180 days" },
+    { label: "270 days", value: "270 days" },
+    { label: "360 days", value: "360 days" },
   ];
 
   const tableColumsForToolsCampaign = [
@@ -574,9 +570,19 @@ const ResellerSubscriptions = () => {
     return Status;
   };
 
-  const getToolCampaignTableData = async (page, date) => {
+  const getToolCampaignTableData = async (page, date, filter) => {
+    const getdayFilters = (days) => {
+      if (days?.value) {
+        if (days?.value === "All") {
+          return [];
+        }
+        return [days?.value];
+      }
+      return [];
+    };
+
     const payload = {
-      daysList: [],
+      daysList: getdayFilters(filter),
       status: getStatus(),
       storeType: "RESELLER",
       fromDate: date?.fromDate ?? "",
@@ -809,11 +815,11 @@ const ResellerSubscriptions = () => {
                     showSearchbar={false}
                     showCheckbox={false}
                     showDateFilter
-                    showFilterButton={getStatus() !== "ACTIVE"}
+                    showDateFilterDropDown={getStatus() !== "ACTIVE"}
                     showPagination={getStatus() !== "ACTIVE"}
                     tabChange={tabList}
                     showDateFilterBtn
-                    filterData={filterData}
+                    filterList={filterData}
                     showDateFilterSearch={false}
                     dateFilterBtnName="Create Discounts"
                     dateFilterBtnClick={() => {
@@ -826,7 +832,7 @@ const ResellerSubscriptions = () => {
                       page = pageNumber,
                       datefilter
                     ) => {
-                      getToolCampaignTableData(page, datefilter);
+                      getToolCampaignTableData(page, datefilter, searchFilter);
                     }}
                   />
                 </div>

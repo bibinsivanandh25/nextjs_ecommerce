@@ -54,17 +54,13 @@ const SupplierSubscriptions = () => {
   const [marketingToolId, setMarketingToolId] = useState("");
 
   const filterData = [
-    {
-      name: "DAYS",
-      value: [
-        { item: "7 days", isSelected: false },
-        { item: "30 days", isSelected: false },
-        { item: "90 days", isSelected: false },
-        { item: "180 days", isSelected: false },
-        { item: "270 days", isSelected: false },
-        { item: "360 days", isSelected: false },
-      ],
-    },
+    { label: "All", value: "All" },
+    { label: "7 days", value: "7 days" },
+    { label: "30 days", value: "30 days" },
+    { label: "90 days", value: "90 days" },
+    { label: "180 days", value: "180 days" },
+    { label: "270 days", value: "270 days" },
+    { label: "360 days", value: "360 days" },
   ];
 
   const tableColumsForToolsCampaign = [
@@ -617,8 +613,17 @@ const SupplierSubscriptions = () => {
     return Status;
   };
   const getToolCampaignTableData = async (page, date, filter) => {
+    const getdayFilters = (days) => {
+      if (days?.value) {
+        if (days?.value === "All") {
+          return [];
+        }
+        return [days?.value];
+      }
+      return [];
+    };
     const payload = {
-      daysList: filter?.DAYS ?? [],
+      daysList: getdayFilters(filter),
       status: getStatus(),
       storeType: "SUPPLIER",
       fromDate: date?.fromDate ?? "",
@@ -644,20 +649,21 @@ const SupplierSubscriptions = () => {
     }
   };
 
-  const filterTableData = (data) => {
-    const result = {};
-    data.forEach((ele) => {
-      result[ele.name] = ele.value
-        .map((item) => {
-          if (item.isSelected) {
-            return item.item;
-          }
-          return null;
-        })
-        .filter((val) => val);
-    });
-    getToolCampaignTableData(0, undefined, result);
-  };
+  // const filterTableData = (data) => {
+  //   const result = {};
+  //   data.forEach((ele) => {
+  //     result[ele.name] = ele.value
+  //       .map((item) => {
+  //         if (item.isSelected) {
+  //           return item.item;
+  //         }
+  //         return null;
+  //       })
+  //       .filter((val) => val);
+  //   });
+  //   return result;
+  //   // getToolCampaignTableData(0, undefined, result);
+  // };
 
   useEffect(() => {
     getIndividualPricing();
@@ -853,8 +859,8 @@ const SupplierSubscriptions = () => {
                     showDateFilter
                     showDateFilterBtn
                     tabChange={tabList}
-                    filterData={filterData}
-                    showFilterButton={getStatus() !== "ACTIVE"}
+                    filterList={filterData}
+                    showDateFilterDropDown={getStatus() !== "ACTIVE"}
                     showPagination={getStatus() !== "ACTIVE"}
                     showDateFilterSearch={false}
                     dateFilterBtnName="Create Discounts"
@@ -862,16 +868,13 @@ const SupplierSubscriptions = () => {
                       setOpenCreateDiscountModal(true);
                       setCreateDiscountModalType("Add");
                     }}
-                    getFilteredValues={(values) => {
-                      filterTableData(values);
-                    }}
                     handlePageEnd={(
                       searchText,
                       searchFilter,
                       page = pageNumber,
                       datefilter
                     ) => {
-                      getToolCampaignTableData(page, datefilter);
+                      getToolCampaignTableData(page, datefilter, searchFilter);
                     }}
                   />
                 </div>
