@@ -10,14 +10,17 @@ import {
   updateNotificationSuggestion,
 } from "services/admin/admin/adminconfiguration/notificationsuggestion";
 import toastify from "services/utils/toastUtils";
+import InputFieldWithChip from "@/atoms/InputWithChip";
+import validateMessage from "constants/validateMessages";
+import InputBox from "@/atoms/InputBoxComponent";
 
 const NotificationSuggestion = () => {
   const [hoverId, setHoverId] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [keyData, setKeyData] = useState([]);
   const [listData, setlistData] = useState([]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [notificationSuggestion, setnotificationSuggestion] = useState(null);
 
   const getSuggestion = async () => {
@@ -34,14 +37,18 @@ const NotificationSuggestion = () => {
   }, []);
 
   const handleSave = async () => {
+    if (showModal==="Create"?!keyData.length:inputValue==="") {
+      setError(validateMessage.field_required);
+      return;
+    }
+    setError("")
     if (!notificationSuggestion) {
       const { data, message, err } = await saveNotificationSuggestion([
-        inputValue,
+        ...keyData
       ]);
       if (data) {
         toastify(message, "success");
-        setShowModal(false);
-        setInputValue("");
+        setShowModal("");
         getSuggestion();
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
@@ -54,8 +61,8 @@ const NotificationSuggestion = () => {
       });
       if (data) {
         toastify(message, "success");
-        setShowModal(false);
-        setInputValue("");
+        setShowModal("");
+        setKeyData([]);
         setnotificationSuggestion(null);
         getSuggestion();
       } else if (err) {
@@ -79,7 +86,7 @@ const NotificationSuggestion = () => {
       <Box
         display="flex"
         justifyContent="space-between"
-        paddingX={2}
+        paddingStart={2}
         marginBottom={2}
         className="border-bottom"
       >
@@ -90,7 +97,7 @@ const NotificationSuggestion = () => {
           label="Create"
           muiProps="mb-2"
           onBtnClick={() => {
-            setShowModal(true);
+            setShowModal("Create");
           }}
         />
       </Box>
@@ -134,7 +141,7 @@ const NotificationSuggestion = () => {
                   onClick={() => {
                     deleteSuggestion(item.pushNotificationSuggestionId);
                   }}
-                  className="cursor-pointer delete-icon-color fs-20 me-1"
+                  className="hover-class cursor-pointer delete-icon-color fs-20 me-1"
                 />
               </Box>
               <Box>
@@ -142,9 +149,9 @@ const NotificationSuggestion = () => {
                   onClick={() => {
                     setnotificationSuggestion({ ...item });
                     setInputValue(item.title);
-                    setShowModal(true);
+                    setShowModal("Edit");
                   }}
-                  className="cursor-pointer delete-icon-color fs-20 me-1"
+                  className="hover-class cursor-pointer delete-icon-color fs-20 me-1"
                 />
               </Box>
             </Box>
@@ -153,90 +160,46 @@ const NotificationSuggestion = () => {
       </Grid>
       {showModal && (
         <ModalComponent
-          open={showModal}
+          open={showModal!==""}
           onCloseIconClick={() => {
-            setShowModal(false);
-            setInputValue("");
+            setShowModal("");
             setKeyData([]);
-            setError(false);
+            setError("");
+            setInputValue("");
           }}
           footerClassName="justify-content-end border-top"
           ModalTitle="Notification Suggestion"
           titleClassName="h-5 fw-bold color-orange"
           onClearBtnClick={() => {
-            setInputValue("");
+            setKeyData([]);
+            setInputValue("")
           }}
           onSaveBtnClick={handleSave}
         >
           <Box className="m-4">
-            <Box
-              className="border d-flex align-items-center"
-              sx={{
-                borderTopLeftRadius: "5px",
-                borderTopRightRadius: "5px",
-                position: "relative",
-                borderBottomLeftRadius: keyData.length == 0 ? "5px" : "0px",
-                borderBottomRightRadius: keyData.length == 0 ? "5px" : "0px",
+            {showModal==="Create"?(<InputFieldWithChip
+              label="Key Word"
+              inputlabelshrink
+              id="keyword"
+              handleChange={(e, val) => {
+                console.log(val);
+                setKeyData(val);
               }}
-            >
-              <Typography
-                className="h-6 fw-bold bg-white"
-                sx={{ position: "absolute", top: -9, left: 20 }}
-              >
-                &nbsp; Key Word &nbsp;
-              </Typography>
-              <input
-                value={inputValue}
-                className="w-100 px-2"
-                style={{
-                  outline: "none",
-                  border: "none",
-                  height: "35px",
-                  borderTopLeftRadius: "5px",
-                  borderBottomLeftRadius: "5px",
-                }}
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                }}
+              value={keyData}
+              required
+              helperText={error}
+              error={error!==""}
+            />):(
+              <InputBox
+              label="Key Word"
+              value={inputValue}
+              onInputChange={(e)=>{
+                setInputValue(e.target.value)
+              }}
+              helperText={error}
+              error={error!==""}
               />
-              <Box
-                className="border-start"
-                sx={{ borderColor: "black !important" }}
-              >
-                <Add
-                  className="mx-1 cursor-pointer"
-                  onClick={() => {
-                    if (inputValue.length > 0) {
-                      setKeyData((pre) => [inputValue, ...pre]);
-                      setInputValue("");
-                      setError(false);
-                    } else {
-                      setError(true);
-                    }
-                  }}
-                />
-              </Box>
-            </Box>
-            {keyData.length > 0 ? (
-              <Box className="border border-top-0  mxh-40vh overflow-auto">
-                {keyData.map((item, index) => (
-                  <Typography
-                    className={`color-black fw-bold h-5 py-1 px-2 ${
-                      keyData.length > index + 1
-                        ? `border-bottom`
-                        : `border-bottom-0`
-                    }`}
-                  >
-                    {item}
-                  </Typography>
-                ))}
-              </Box>
-            ) : null}
-            {error ? (
-              <Typography className="h-6 color-red ">
-                This field is required
-              </Typography>
-            ) : null}
+            )}
           </Box>
         </ModalComponent>
       )}

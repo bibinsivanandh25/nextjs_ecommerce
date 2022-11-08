@@ -14,15 +14,16 @@ let errObj = {
 };
 
 const ViewModal = ({
-  openViewModal,
-  setOpenViewModal,
-  getTableData,
+  openViewModal = false,
+  setOpenViewModal = () => {},
+  getTableData = [],
   edit,
   configurationSettingObject = {
     configurationName: "",
     configurationLabel: "",
   },
   configurationId,
+  closeModal = () => {},
 }) => {
   const [configurationName, setConfigurationName] = useState("");
   const [configurationLabel, setConfigurationLabel] = useState("");
@@ -100,6 +101,7 @@ const ViewModal = ({
     const anError = handleError();
     if (!anError) {
       addUpdateSetting();
+      closeModal();
       setOpenViewModal(false);
     }
   };
@@ -108,7 +110,7 @@ const ViewModal = ({
     <>
       <ModalComponent
         open={openViewModal}
-        ModalTitle="Edit Product"
+        ModalTitle={edit==="create"?"Create Configuration":"Edit Configuration"}
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Cancel"
@@ -117,6 +119,7 @@ const ViewModal = ({
         // ModalWidth={650}
         // minHeightClassName="mnh-70vh mxh-70vh overflow-auto"
         onCloseIconClick={() => {
+          closeModal();
           handleCloseIconClick();
         }}
         onSaveBtnClick={() => {
@@ -149,7 +152,7 @@ const ViewModal = ({
           error={err.configurationLabel}
           helperText={err.configurationLabel}
         />
-      </ModalComponent>{" "}
+      </ModalComponent>
     </>
   );
 };

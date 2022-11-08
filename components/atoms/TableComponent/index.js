@@ -1041,7 +1041,7 @@ export default function TableComponent({
               justifyContent="end"
               alignItems="center"
             >
-              <Grid item sm={12} display="flex" justifyContent="start">
+              <Grid item sm={12} display="flex" justifyContent="end">
                 <div>
                   <ButtonComponent
                     // variant="contained"
