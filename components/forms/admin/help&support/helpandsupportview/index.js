@@ -252,9 +252,18 @@ const HelpandsupportView = ({
                     </Typography>
                     <p className="h-5">{val.messageFromId}</p>
                     <p className="h-5">{val.messagedAt}</p>
-                    <div dangerouslySetInnerHTML={{ __html: val.message }} />
+                    <div className="d-flex align-items-center">
+                      <Typography className="h-5 fw-bold">
+                        Description :{" "}
+                      </Typography>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: val.message,
+                        }}
+                      />
+                    </div>
                     <div className="d-flex align-item-center">
-                      <span className="fw-bold h-4 me-1">Attached File :</span>
+                      <span className="fw-bold h-5 me-1">Attached File :</span>
                       {val.helpSupportMessageMedias.map((media, ind) => {
                         return (
                           <div>
