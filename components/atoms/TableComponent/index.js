@@ -484,6 +484,7 @@ export default function TableComponent({
   filterData = [],
   getFilteredValues = () => {},
   getFilteredValuesOnCheckBoxClick = false,
+  showDateFilterDropDown = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -550,7 +551,6 @@ export default function TableComponent({
       setTableFilterList([...result]);
     }
   }, [filterData]);
-
   const handleChangePage = (event, newPage) => {
     const numberOfPage = Math.ceil(tableRows.length / rowsPerPage);
     if (newPage === numberOfPage - 1) {
@@ -675,6 +675,52 @@ export default function TableComponent({
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
+                />
+              </Grid>
+            )}
+            {!showFilterButton && showDateFilterDropDown && (
+              <Grid item md={2} justifyContent="end">
+                <SimpleDropdownComponent
+                  list={[...searchFilterList]}
+                  size="small"
+                  // label="Search Filter"
+                  value={searchFilter}
+                  onDropdownSelect={(value) => {
+                    if (value) {
+                      handlePageEnd(searchText, value?.value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
+                      setSearchFilter(value);
+                    } else {
+                      handlePageEnd(searchText, "", 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
+                      setSearchFilter([]);
+                    }
+                  }}
+                  placeholder={customDropDownPlaceholder}
                 />
               </Grid>
             )}
@@ -921,7 +967,7 @@ export default function TableComponent({
                 onDropdownSelect={(value) => {
                   if (value) {
                     if (!showSearchbar) {
-                      handlePageEnd("", value, 0, {
+                      handlePageEnd(searchText, value, 0, {
                         fromDate: filteredDates.fromDate
                           ? `${format(
                               new Date(filteredDates.fromDate),
@@ -971,7 +1017,7 @@ export default function TableComponent({
                     size="small"
                     onInputChange={(e) => {
                       if (e.target.value === "") {
-                        handlePageEnd("", searchFilter?.value, 0, {
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
                           fromDate: filteredDates.fromDate
                             ? `${format(
                                 new Date(filteredDates.fromDate),

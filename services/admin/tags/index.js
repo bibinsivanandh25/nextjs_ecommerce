@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAdminTags = (page) => {
+const getAdminTags = (page, payload) => {
   return serviceUtil
-    .get(`products/product-tags/${page}/50`)
+    .post(`products/product-tags/${page}/50`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -27,9 +27,9 @@ const deleteAdminTags = (id) => {
     })
     .catch((err) => ({ err }));
 };
-const approveAdminTags = (id, ststus) => {
+const approveAdminTags = (id, status) => {
   return serviceUtil
-    .put(`products/product-tag/status/${id}/${ststus}`)
+    .put(`products/product-tag/status/${id}/${status}`)
     .then((res) => {
       const { data } = res && res;
       return { data };
@@ -45,10 +45,20 @@ const updateAdminTag = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const enableDisableTags = (id, status) => {
+  return serviceUtil
+    .put(`products/product-tag/tag-status?tagId=${id}&disable=${status}`)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getAdminTags,
   saveAdminTags,
   deleteAdminTags,
   approveAdminTags,
   updateAdminTag,
+  enableDisableTags,
 };
