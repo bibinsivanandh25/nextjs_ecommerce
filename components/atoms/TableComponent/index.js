@@ -484,6 +484,7 @@ export default function TableComponent({
   filterData = [],
   getFilteredValues = () => {},
   getFilteredValuesOnCheckBoxClick = false,
+  showDateFilterDropDown = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -675,6 +676,38 @@ export default function TableComponent({
                   }}
                   setPage={setPage}
                   setTableFilterList={setTableFilterList}
+                />
+              </Grid>
+            )}
+            {!showFilterButton && showDateFilterDropDown && (
+              <Grid item md={2} justifyContent="end">
+                <SimpleDropdownComponent
+                  list={[...searchFilterList]}
+                  size="small"
+                  // label="Search Filter"
+                  value={searchFilter}
+                  onDropdownSelect={(value) => {
+                    if (value) {
+                      handlePageEnd("", value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
+                      setSearchFilter(value);
+                    } else {
+                      setSearchFilter([]);
+                    }
+                  }}
+                  placeholder={customDropDownPlaceholder}
                 />
               </Grid>
             )}
