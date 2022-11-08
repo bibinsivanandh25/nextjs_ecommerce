@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable no-use-before-define */
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -8,11 +9,13 @@ import TableComponent from "@/atoms/TableComponent";
 import {
   approveAdminTags,
   deleteAdminTags,
+  enableDisableTags,
   getAdminTags,
 } from "services/admin/tags";
 // import CreateTags from "@/forms/admin/tags/createtags";
 import toastify from "services/utils/toastUtils";
 // import { useSelector } from "react-redux";
+import SwitchComponent from "@/atoms/SwitchComponent";
 import TagsViewModal from "../viewmodal";
 
 const tableColumn = [
@@ -69,17 +72,17 @@ const filterList = [
   {
     id: 2,
     label: "Active",
-    value: "Active",
+    value: "ACTIVE",
   },
   {
     id: 3,
     label: "InActive",
-    value: "InActive",
+    value: "INACTIVE",
   },
   {
     id: 4,
     label: "Pending",
-    value: "Pending",
+    value: "INITIATED",
   },
 ];
 const SupplierTags = () => {
@@ -93,8 +96,15 @@ const SupplierTags = () => {
   const [viewData, setViewData] = useState({});
   //   const [selectedTagId, setSelectedTagId] = useState("");
 
-  const getAllTags = async (page) => {
-    const { data, err } = await getAdminTags(page);
+  const getAllTags = async (page, searchText, searchFilter, date) => {
+    const payload = {
+      keyword: searchText || null,
+      status: searchFilter == "All" ? null : searchFilter || null,
+      fromDate: date?.fromDate || null,
+      toDate: date?.toDate || null,
+      createdByType: "SUPPLIER",
+    };
+    const { data, err } = await getAdminTags(page, payload);
     if (data?.length) {
       if (page == 0) {
         setRows(getTableData(data));
@@ -113,6 +123,16 @@ const SupplierTags = () => {
   useEffect(() => {
     getAllTags(0);
   }, []);
+  const handleSwitchClick = async (id, flag) => {
+    const { data, err } = await enableDisableTags(id, flag);
+    if (data) {
+      toastify(data?.message, "success");
+      getAllTags(0);
+    }
+    if (err) {
+      toastify(err?.response?.data.message, "error");
+    }
+  };
   const getTableData = (data) => {
     const result = [];
     if (data) {
@@ -123,23 +143,47 @@ const SupplierTags = () => {
           col2: item.tagName,
           col3: item.createdByType,
           col4: item.lastUpdatedAt,
-          col5: item.status,
+          col5: item.status == "INITIATED" ? "PENDING" : item.status,
           col6: (
             <Box>
-              <DoneIcon
-                className="border rounded bg-green color-white fs-18 me-2 cursor-pointer"
-                onClick={() => {
-                  handleAcceptRejectClick(item, true);
-                }}
-              />
-              <ClearIcon
-                className="border rounded bg-red color-white fs-18 me-1 cursor-pointer"
-                onClick={() => {
-                  handleAcceptRejectClick(item, false);
-                }}
-              />
+              {item.status == "INITIATED" ? (
+                <>
+                  <DoneIcon
+                    className="border rounded bg-green color-white fs-18 me-2 cursor-pointer"
+                    onClick={() => {
+                      handleAcceptRejectClick(item, true);
+                    }}
+                  />
+                  <ClearIcon
+                    className="border rounded bg-red color-white fs-18 me-1 cursor-pointer"
+                    onClick={() => {
+                      handleAcceptRejectClick(item, false);
+                    }}
+                  />
+                </>
+              ) : null}
               <MenuOption
-                options={["View", "Edit", "Delete"]}
+                options={[
+                  "View",
+                  "Delete",
+                  item.status == "ACTIVE" || item.status == "DISABLED" ? (
+                    <>
+                      <span className="me-3">
+                        {item.approved ? "Enabled" : "Disabled"}
+                      </span>
+                      <SwitchComponent
+                        label=""
+                        defaultChecked={item.status === "ACTIVE"}
+                        ontoggle={() => {
+                          handleSwitchClick(
+                            item.tagId,
+                            item.status == "ACTIVE" ? true : false
+                          );
+                        }}
+                      />
+                    </>
+                  ) : null,
+                ]}
                 IconclassName="fs-5 cursor-pointer"
                 getSelectedItem={(ele) => {
                   if (ele === "View") {
@@ -211,8 +255,8 @@ const SupplierTags = () => {
         showDateFilterDropDown
         filterList={filterList}
         showFilterButton={false}
-        handlePageEnd={(searchText, searchFilter, page = pageNumber) => {
-          getAllTags(page);
+        handlePageEnd={(searchText, searchFilter, page = pageNumber, date) => {
+          getAllTags(page, searchText, searchFilter, date);
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);
