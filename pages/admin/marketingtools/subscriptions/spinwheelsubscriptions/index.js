@@ -35,8 +35,6 @@ const SpinWheelSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rowsForSpinWheelSubs, setRowsForSpinWheelSubs] = useState([]);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [purchaseIde, setPurchaseIde] = useState(null);
@@ -53,7 +51,9 @@ const SpinWheelSubscriptions = () => {
   const router = useRouter();
   const [selectedListData, setSelectedListData] = useState([]);
   const [queryStatus, setQueryStatus] = useState(null);
-
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
+  
   const column1 = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -236,8 +236,10 @@ const SpinWheelSubscriptions = () => {
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -398,11 +400,11 @@ const SpinWheelSubscriptions = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (
