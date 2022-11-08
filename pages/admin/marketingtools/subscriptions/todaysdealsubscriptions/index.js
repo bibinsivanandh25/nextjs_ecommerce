@@ -36,13 +36,14 @@ const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [tableRowsTodaysDealSubs, setTableRowsTodaysDealSubs] = useState([]);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
+  
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [dropdownValue, setDropdownValue] = useState([]);
   const [typeId, setTypeId] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [purchaseIde, setPurchaseIde] = useState(null);
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState("");
   const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
   const [adminComments, setAdminComments] = useState({
@@ -235,9 +236,11 @@ const TodaysDealSubscription = () => {
               className="fs-18"
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionStatus(val.toolStatus);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -399,11 +402,11 @@ const TodaysDealSubscription = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (

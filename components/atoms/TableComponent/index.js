@@ -839,7 +839,7 @@ export default function TableComponent({
             ) : null}
           </Grid>
           {showDateFilterBtn && (
-            <Grid item sm={2} justifyContent="center" display="flex">
+            <Grid item sm={2} justifyContent="end" display="flex">
               <ButtonComponent
                 variant="contained"
                 label={dateFilterBtnName}
