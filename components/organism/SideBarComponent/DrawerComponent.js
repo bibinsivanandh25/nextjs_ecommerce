@@ -215,7 +215,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       "unlocktools",
       "single",
       "combo",
-      "createluckydraw",
+      "createluckydraw","subscriptionhistory"
     ];
     const addId = (id, item, path) => {
       if (!item?.child?.length) {
@@ -227,6 +227,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
           disabled:
             user.role === "STAFF"
               ? !staffCapabilityList.includes(item.title)
+              : path.includes("/supplier/marketingtools")
+              ? !marketingToolsList.includes(item.pathName)
               : false,
           locked: path.includes("/supplier/marketingtools")
             ? !marketingToolsList.includes(item.pathName)
