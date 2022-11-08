@@ -64,17 +64,13 @@ const ResellerSubscriptions = () => {
   ]);
 
   const filterData = [
-    {
-      name: "DAYS",
-      value: [
-        { item: "7 days", isSelected: false },
-        { item: "30 days", isSelected: false },
-        { item: "90 days", isSelected: false },
-        { item: "180 days", isSelected: false },
-        { item: "270 days", isSelected: false },
-        { item: "360 days", isSelected: false },
-      ],
-    },
+    { label: "All", value: "All" },
+    { label: "7 days", value: "7 days" },
+    { label: "30 days", value: "30 days" },
+    { label: "90 days", value: "90 days" },
+    { label: "180 days", value: "180 days" },
+    { label: "270 days", value: "270 days" },
+    { label: "360 days", value: "360 days" },
   ];
 
   const tableColumsForToolsCampaign = [
@@ -256,14 +252,16 @@ const ResellerSubscriptions = () => {
       toolIdList: [...ids],
       disabled: !status,
     };
-    const { data, err } = await enableDisableMarketingTools(payload);
-    if (data?.message) {
-      toastify(data.message, "success");
-      getIndividualPricing();
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-      getIndividualPricing();
+    if (ids?.length) {
+      const { data, err } = await enableDisableMarketingTools(payload);
+      if (data?.message) {
+        toastify(data.message, "success");
+        getIndividualPricing();
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        getIndividualPricing();
+      }
     }
   };
 
@@ -300,7 +298,9 @@ const ResellerSubscriptions = () => {
           result.forEach((ele, index) => {
             if (ele) {
               toolIds.push(ele.adminMarketingToolId);
-              status.push(ele.disabled);
+              if (ele.price !== "--") {
+                status.push(ele.disabled);
+              }
             }
             result2[`col${index + 2}`] =
               ele.price !== "--" ? (
@@ -375,7 +375,7 @@ const ResellerSubscriptions = () => {
               />
               <SwitchComponent
                 label=""
-                defaultChecked={status.every((ele) => !ele)}
+                defaultChecked={status.some((ele) => !ele)}
                 ontoggle={() => {
                   enableDisableMarketingTool(
                     toolIds.filter((i) => i),
@@ -570,9 +570,19 @@ const ResellerSubscriptions = () => {
     return Status;
   };
 
-  const getToolCampaignTableData = async (page, date) => {
+  const getToolCampaignTableData = async (page, date, filter) => {
+    const getdayFilters = (days) => {
+      if (days?.value) {
+        if (days?.value === "All") {
+          return [];
+        }
+        return [days?.value];
+      }
+      return [];
+    };
+
     const payload = {
-      daysList: [],
+      daysList: getdayFilters(filter),
       status: getStatus(),
       storeType: "RESELLER",
       fromDate: date?.fromDate ?? "",
@@ -750,23 +760,22 @@ const ResellerSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              {individualPricingTableRows?.length ? (
-                <TableComponent
-                  columns={[...individualPricingColumns]}
-                  tableRows={individualPricingTableRows}
-                  tHeadBgColor="bg-light-gray"
-                  showPagination={false}
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  showCheckbox={false}
-                  showCustomButton
-                  customButtonLabel="Add Day's Counter"
-                  onCustomButtonClick={() => {
-                    setOpenAddDaysCounterModal(true);
-                    setModalType("Add");
-                  }}
-                />
-              ) : (
+              <TableComponent
+                columns={[...individualPricingColumns]}
+                tableRows={individualPricingTableRows}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+                showCustomButton
+                customButtonLabel="Add Day's Counter"
+                onCustomButtonClick={() => {
+                  setOpenAddDaysCounterModal(true);
+                  setModalType("Add");
+                }}
+              />
+              {individualPricingTableRows?.length === 0 && (
                 <Box
                   display="flex"
                   justifyContent="center"
@@ -806,11 +815,11 @@ const ResellerSubscriptions = () => {
                     showSearchbar={false}
                     showCheckbox={false}
                     showDateFilter
-                    showFilterButton={getStatus() !== "ACTIVE"}
+                    showDateFilterDropDown={getStatus() !== "ACTIVE"}
                     showPagination={getStatus() !== "ACTIVE"}
                     tabChange={tabList}
                     showDateFilterBtn
-                    filterData={filterData}
+                    filterList={filterData}
                     showDateFilterSearch={false}
                     dateFilterBtnName="Create Discounts"
                     dateFilterBtnClick={() => {
@@ -823,7 +832,7 @@ const ResellerSubscriptions = () => {
                       page = pageNumber,
                       datefilter
                     ) => {
-                      getToolCampaignTableData(page, datefilter);
+                      getToolCampaignTableData(page, datefilter, searchFilter);
                     }}
                   />
                 </div>

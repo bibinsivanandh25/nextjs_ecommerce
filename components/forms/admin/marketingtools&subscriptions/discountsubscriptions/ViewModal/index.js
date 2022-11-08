@@ -115,11 +115,10 @@ const ViewModal = ({
     setOpenViewModal(false);
   };
   const handleAcceptClick = async (value, id) => {
-    const { data, err } = await discountApproved(value, id, user?.userId);
+    const { data } = await discountApproved(value, id, user?.userId);
     if (data) {
       getTableData(viewPageNumber);
     }
-    
   };
   // const handleDeleteClick = async (id) => {
   //   const { data, err } = await deleteDisCountSubscription(id);
@@ -203,7 +202,7 @@ const ViewModal = ({
         setViewPageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data.data)]);
       }
-    } 
+    }
     if (err) {
       setRows([]);
     }
@@ -219,14 +218,18 @@ const ViewModal = ({
           <>
             <Box>
               <Typography>
-                {viewData.purchasedByType === "SUPPLIER" ? "Supplier" : "Reseller"} Subscription
-                Details
+                {viewData.purchasedByType === "SUPPLIER"
+                  ? "Supplier"
+                  : "Reseller"}{" "}
+                Subscription Details
               </Typography>
             </Box>
             <Box>
               <Typography className="fs-12 color-black">
-                {viewData.purchasedByType === "SUPPLIER" ? "Supplier ID" : "Reseller Id"} : #
-                {viewData.purchasedById}
+                {viewData.purchasedByType === "SUPPLIER"
+                  ? "Supplier ID"
+                  : "Reseller Id"}{" "}
+                : #{viewData.purchasedById}
               </Typography>
             </Box>
           </>

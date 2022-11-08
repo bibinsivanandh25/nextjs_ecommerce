@@ -50,7 +50,6 @@ const SupplierStoreSettings = () => {
     },
   ];
 
-
   const handleEdit = (configName, configValue, configId) => {
     setModalType("Edit");
     setConfigurationId(configId);
@@ -128,7 +127,7 @@ const SupplierStoreSettings = () => {
             showSearchbar={false}
             showSearchFilter={false}
             onCustomButtonClick={() => {
-              setModalType("create")
+              setModalType("create");
               setOpenViewModal(true);
             }}
             handlePageEnd={(
@@ -150,13 +149,13 @@ const SupplierStoreSettings = () => {
           configurationSettingObject={configurationSettingObject}
           edit={modalType}
           configurationId={configurationId}
-          closeModal={()=>{
+          closeModal={() => {
             setModalType("");
-              setConfigurationId(null);
-              setConfigurationSettingObject({
-                configurationName: "",
-                configurationLabel: "",
-              });
+            setConfigurationId(null);
+            setConfigurationSettingObject({
+              configurationName: "",
+              configurationLabel: "",
+            });
           }}
         />
       )}

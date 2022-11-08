@@ -16,7 +16,8 @@ const ViewModal = ({
   setOpenViewModal,
   purchaseIde,
   subscriptionStatus,
-  subscriptionPeriod,userType,
+  subscriptionPeriod,
+  userType,
   userId,
 }) => {
   const [rows, setRows] = useState([]);
@@ -125,9 +126,9 @@ const ViewModal = ({
       if (message) toastify(message, "error");
       if (error?.response?.data?.message)
         toastify(error?.response?.data?.message, "error");
-      } else if (data) {
-        toastify(message, "success");
-        await getSubscriptionsRows(purchaseIde, 0);
+    } else if (data) {
+      toastify(message, "success");
+      await getSubscriptionsRows(purchaseIde, 0);
     }
   };
 
