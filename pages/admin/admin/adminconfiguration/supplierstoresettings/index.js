@@ -11,7 +11,7 @@ const SupplierStoreSettings = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [edit, setEdit] = useState("");
+  const [modalType, setModalType] = useState("");
   const [configurationId, setConfigurationId] = useState(null);
   const [configurationSettingObject, setConfigurationSettingObject] = useState({
     configurationName: "",
@@ -50,19 +50,9 @@ const SupplierStoreSettings = () => {
     },
   ];
 
-  //   const rows = [
-  //     {
-  //       id: "1",
-  //       col1: "01",
-  //       col2: "FREE ORDERS COUNT",
-  //       col3: 50,
-  //       col4: "--",
-  //       col5: <CustomIcon type="edit" />,
-  //     },
-  //   ];
 
   const handleEdit = (configName, configValue, configId) => {
-    setEdit("Edit");
+    setModalType("Edit");
     setConfigurationId(configId);
     setConfigurationSettingObject({
       configurationName: configName,
@@ -128,7 +118,7 @@ const SupplierStoreSettings = () => {
         <Paper className="overflow-auto hide-scrollbar pt-2 mnh-80vh mxh-80vh">
           <TableComponent
             columns={columns}
-            table_heading="Admin Configuration"
+            table_heading="Supplier Store Settings"
             headerClassName="color-orange"
             tHeadBgColor="bg-light-gray"
             showPagination
@@ -138,12 +128,7 @@ const SupplierStoreSettings = () => {
             showSearchbar={false}
             showSearchFilter={false}
             onCustomButtonClick={() => {
-              setEdit("");
-              setConfigurationId(null);
-              setConfigurationSettingObject({
-                configurationName: "",
-                configurationLabel: "",
-              });
+              setModalType("create")
               setOpenViewModal(true);
             }}
             handlePageEnd={(
@@ -163,8 +148,16 @@ const SupplierStoreSettings = () => {
           setOpenViewModal={setOpenViewModal}
           getTableData={getTableData}
           configurationSettingObject={configurationSettingObject}
-          edit={edit}
+          edit={modalType}
           configurationId={configurationId}
+          closeModal={()=>{
+            setModalType("");
+              setConfigurationId(null);
+              setConfigurationSettingObject({
+                configurationName: "",
+                configurationLabel: "",
+              });
+          }}
         />
       )}
     </>

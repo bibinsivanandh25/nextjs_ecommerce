@@ -244,7 +244,7 @@ const Banners = () => {
     return result;
   };
   const handleSwitchClick = async (value, item, fromdate, endDate) => {
-    const { data, err } = await adminBannerDisable(item.bannerId, value);
+    const { data, err } = await adminBannerDisable(item.bannerId, !value);
     if (data) {
       toastify(data.message, "success");
       getAllBanners(fromdate, endDate, 0);

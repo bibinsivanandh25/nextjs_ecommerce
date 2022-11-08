@@ -885,7 +885,7 @@ export default function TableComponent({
             ) : null}
           </Grid>
           {showDateFilterBtn && (
-            <Grid item sm={2} justifyContent="center" display="flex">
+            <Grid item sm={2} justifyContent="end" display="flex">
               <ButtonComponent
                 variant="contained"
                 label={dateFilterBtnName}
@@ -1087,7 +1087,7 @@ export default function TableComponent({
               justifyContent="end"
               alignItems="center"
             >
-              <Grid item sm={12} display="flex" justifyContent="start">
+              <Grid item sm={12} display="flex" justifyContent="end">
                 <div>
                   <ButtonComponent
                     // variant="contained"

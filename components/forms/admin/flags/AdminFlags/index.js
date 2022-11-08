@@ -87,7 +87,6 @@ const AdminFlags = () => {
   };
 
   const onClickOfMenuItem = (ele, id) => {
-    console.log(ele);
     if (ele === "Delete") {
       removeFlag(id);
     }

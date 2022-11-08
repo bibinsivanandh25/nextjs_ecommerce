@@ -34,8 +34,6 @@ const listData = [
 const ScratchCardSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
 
   const [rowsOfScratchCardSubs, setRowsOfScratchCardSubs] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -51,7 +49,9 @@ const ScratchCardSubscriptions = () => {
     commentAttachment: "",
   });
   const [queryStatus, setQueryStatus] = useState(null);
-
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
+  
   const router = useRouter();
   const column1 = [
     {
@@ -208,8 +208,10 @@ const ScratchCardSubscriptions = () => {
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -398,11 +400,11 @@ const ScratchCardSubscriptions = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (

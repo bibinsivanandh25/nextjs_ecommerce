@@ -33,8 +33,6 @@ const listData = [
 const QuizSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [rowsForQuizSubs, setRowsForQuizSubs] = useState([]);
@@ -51,7 +49,9 @@ const QuizSubscriptions = () => {
   });
   const router = useRouter();
   const [queryStatus, setQueryStatus] = useState(null);
-
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
+  
   const column1 = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -228,8 +228,10 @@ const QuizSubscriptions = () => {
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -389,11 +391,11 @@ const QuizSubscriptions = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionPeriod={subscriptionPeriod}
           subscriptionStatus={subscriptionStatus}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (

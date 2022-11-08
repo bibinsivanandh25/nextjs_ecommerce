@@ -135,22 +135,6 @@ const ResellerSubscriptions = () => {
       minWidth: 100,
     },
     {
-      id: "col8",
-      align: "center",
-      label: "NOTIFICATIONS",
-      data_align: "center",
-      position: "",
-      minWidth: 100,
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "FLAGS",
-      data_align: "center",
-      position: "",
-      minWidth: 100,
-    },
-    {
       id: "col10",
       align: "center",
       label: "QUIZ",
@@ -476,27 +460,27 @@ const ResellerSubscriptions = () => {
             />
           </div>
         ),
-        col8: (
-          <div className="d-flex justify-content-center">
-            <CheckBoxComponent
-              isChecked={checkToolCampaign(
-                "NOTIFICATIONS",
-                ele.adminMarketingTools
-              )}
-              isDisabled
-              id="NOTIFICATIONS"
-            />
-          </div>
-        ),
-        col9: (
-          <div className="d-flex justify-content-center">
-            <CheckBoxComponent
-              isChecked={checkToolCampaign("FLAGS", ele.adminMarketingTools)}
-              isDisabled
-              id="FLAGS"
-            />
-          </div>
-        ),
+        // col8: (
+        //   <div className="d-flex justify-content-center">
+        //     <CheckBoxComponent
+        //       isChecked={checkToolCampaign(
+        //         "NOTIFICATIONS",
+        //         ele.adminMarketingTools
+        //       )}
+        //       isDisabled
+        //       id="NOTIFICATIONS"
+        //     />
+        //   </div>
+        // ),
+        // col9: (
+        //   <div className="d-flex justify-content-center">
+        //     <CheckBoxComponent
+        //       isChecked={checkToolCampaign("FLAGS", ele.adminMarketingTools)}
+        //       isDisabled
+        //       id="FLAGS"
+        //     />
+        //   </div>
+        // ),
         col10: (
           <div className="d-flex justify-content-center">
             <CheckBoxComponent

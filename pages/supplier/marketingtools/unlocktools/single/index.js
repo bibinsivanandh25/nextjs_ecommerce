@@ -80,7 +80,6 @@ const UnlockToolsSingle = () => {
           result[result.length - 1].id = item.adminMarketingToolId;
         });
       });
-      console.log(result, "as,lhdasfdasfyu");
       setTableRows([...result]);
     }
   };

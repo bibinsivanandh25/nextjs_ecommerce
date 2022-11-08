@@ -33,8 +33,6 @@ const SupplierSupport = () => {
     type: "",
   });
 
-  const options = ["Reply", "Delete", "Close"];
-
   const tableColumns = [
     {
       id: "col1",
@@ -223,7 +221,11 @@ const SupplierSupport = () => {
                 getSelectedItem={(item) => {
                   onClickOfMenuItem(item, ele);
                 }}
-                options={options}
+                options={
+                  ele.ticketStatus === "CLOSED"
+                    ? ["Delete"]
+                    : ["Reply", "Delete", "Close"]
+                }
                 IconclassName="fs-18 color-gray"
               />
             </Box>
@@ -327,6 +329,7 @@ const SupplierSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
+                headerClassName="color-orange"
                 tableRows={tableRows}
                 table_heading="Customer Support"
                 showSearchFilter={false}
