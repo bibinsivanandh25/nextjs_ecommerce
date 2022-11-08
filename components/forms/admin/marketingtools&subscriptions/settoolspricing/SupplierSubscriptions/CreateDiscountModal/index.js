@@ -297,6 +297,7 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <InputBox
+              disabled={status === "ACTIVE" && modalType === "Edit"}
               label="Price"
               type="number"
               value={price}

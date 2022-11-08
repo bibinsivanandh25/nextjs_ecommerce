@@ -72,7 +72,7 @@ const Dashboard = () => {
                 .toLocaleLowerCase()}`}
               )
             </Typography>
-            <Box className="d-flex justify-content-around">
+            <Box className="d-flex justify-content-between px-5">
               <Box>
                 <Typography className="h-5 color-gray fw-bold">
                   Total Active Tickets
@@ -125,7 +125,7 @@ const Dashboard = () => {
           <Grid
             container
             sx={{ borderBottom: "2px dashed lightgray" }}
-            className="d-flex ps-5 justify-content-around pb-3 mb-3"
+            className="d-flex ps-5 justify-content-between pb-3 mb-3"
           >
             <Grid item xs={3}>
               <Typography className="h-5 color-gray fw-bold">
@@ -153,7 +153,7 @@ const Dashboard = () => {
             </Grid>
             <Grid item xs={3}>
               <Typography className="h-5 color-gray fw-bold">
-                Losgistics related issue
+                Logistics related issue
               </Typography>
               <Typography className="h-3 fw-bold">
                 {ele.logisticRelatedIssueCount}
@@ -198,7 +198,7 @@ const Dashboard = () => {
   const returnCards = () => {
     return cardsData.map((val, ind) => {
       return (
-        <Grid item xs={3} key={val.boxColor}>
+        <Grid item xs={3.5} key={val.boxColor}>
           <CardComponent
             className="p-2"
             boxColor={val.boxColor}
@@ -218,37 +218,57 @@ const Dashboard = () => {
             }}
             isSelected={val.selected}
           >
-            <Typography sx={{ color: val.boxColor }} className="h-4 ">
+            <Typography
+              sx={{ color: val.boxColor }}
+              className="h-4 cursor-pointer"
+            >
               {`${val.cardHeading[0]}${val.cardHeading
                 .slice(1)
                 .toLocaleLowerCase()}`}
             </Typography>
             <Grid container>
-              <Grid item xs={8}>
-                <Typography className="h-5">Total Active Tickets -</Typography>
+              <Grid item xs={8} justifyContent="start" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer ">
+                  Total Active Tickets
+                </Typography>
               </Grid>
-              <Grid item xs={4}>
-                <Typography className="h-5 fw-bold">
+              <Grid item xs={1} justifyContent="center" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer ">
+                  -
+                </Typography>
+              </Grid>
+              <Grid item xs={3} justifyContent="end" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer ">
                   {val.totalActiveTickets}{" "}
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
-                <Typography className="h-5">
-                  Pending Customer Tickets -
+              <Grid item xs={8} justifyContent="start" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer">
+                  Pending Customer Tickets
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
-                <Typography className="h-5 fw-bold">
+              <Grid item xs={1} justifyContent="center" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer ">
+                  -
+                </Typography>
+              </Grid>
+              <Grid item xs={3} justifyContent="end" display="flex">
+                <Typography className="h-5 fw-bold cursor-pointer ">
                   {val.pendingTickets}
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
-                <Typography className="h-5">
-                  Resolved Customer Tickets -
+              <Grid item xs={8} justifyContent="start" display="flex">
+                <Typography className="h-5 fw-bold fw-bold cursor-pointer ">
+                  Resolved Customer Tickets
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
-                <Typography className="h-5 fw-bold">
+              <Grid item xs={1} justifyContent="center" display="flex">
+                <Typography className="h-5 cursor-pointer fw-bold ">
+                  -
+                </Typography>
+              </Grid>
+              <Grid item xs={3} justifyContent="end" display="flex">
+                <Typography className="h-5 fw-bold fw-bold cursor-pointer ">
                   {val.resolvedTickets}
                 </Typography>
               </Grid>
@@ -263,7 +283,7 @@ const Dashboard = () => {
     <Box>
       <Paper className="mxh-85vh mnh-85vh p-3 overflow-auto hide-scrollbar">
         <Box>
-          <Grid container columnSpacing={2}>
+          <Grid container columnSpacing={6}>
             {returnCards()}
           </Grid>
         </Box>

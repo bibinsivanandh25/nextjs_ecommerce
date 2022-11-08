@@ -11,7 +11,7 @@ import {
   helpandSupportDeleteTicket,
   helpandSupportGetTicketById,
 } from "services/admin/help&support";
-import HelpandsupportView1 from "@/forms/admin/help&support/helpandsupportview";
+import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 
@@ -54,51 +54,45 @@ const CustomerSupport = () => {
       data_align: "center",
     },
     {
-      id: "col4",
+      id: "col5",
       align: "center",
       label: "Issue Type",
       data_align: "center",
     },
     {
-      id: "col5",
+      id: "col6",
       align: "center",
       label: "Order ID",
       data_align: "center",
     },
     {
-      id: "col6",
+      id: "col7",
       align: "center",
       label: "Subject",
       data_align: "center",
     },
     {
-      id: "col7",
+      id: "col8",
       align: "center",
       label: "Comments",
       data_align: "center",
     },
+    // {
+    //   id: "col9",
+    //   align: "center",
+    //   label: "Attachments",
+    //   data_align: "center",
+    // },
     {
-      id: "col8",
-      align: "center",
-      label: "Attachments",
-      data_align: "center",
-    },
-    {
-      id: "col9",
+      id: "col10",
       align: "center",
       label: "Created Date And Time",
       data_align: "center",
     },
     {
-      id: "col10",
-      align: "center",
-      label: "Last Update Date and Time (Customers/MrMrsCart)",
-      data_align: "center",
-    },
-    {
       id: "col11",
       align: "center",
-      label: "Status",
+      label: "Last Update Date and Time (Customers/MrMrsCart)",
       data_align: "center",
     },
     {
@@ -109,6 +103,12 @@ const CustomerSupport = () => {
     },
     {
       id: "col13",
+      align: "center",
+      label: "Status",
+      data_align: "center",
+    },
+    {
+      id: "col14",
       align: "center",
       label: "Action",
       data_align: "center",
@@ -192,12 +192,12 @@ const CustomerSupport = () => {
         col1: index + 1,
         col2: val.ticketId,
         col3: `${val.userFromId} / ${val.userFromName}`,
-        col4: val.userToId,
+        col4: `${val.userToId} / ${val.userToName}`,
         col5: val.issueType.replaceAll("_", " "),
         col6: val.orderId,
         col7: val.issueSubject,
         col8: "--",
-        col9: "--",
+        // col9: "--",
         col10: `${val.createdDate.split("T")[0]} ${
           val.createdDate.split("T")[1]
         }`,
@@ -209,6 +209,7 @@ const CustomerSupport = () => {
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
               type="view"
+              title="View and Reply"
               className="fs-18"
               onIconClick={() => {
                 getTicketById(val.ticketId);
@@ -310,7 +311,7 @@ const CustomerSupport = () => {
     <Box>
       <Box>
         {showModal.show && showModal.type === "view" ? (
-          <HelpandsupportView1
+          <HelpandsupportView
             selectedData={selectedData}
             setShowModal={setShowModal}
             // selectTab={selectTab}
@@ -329,7 +330,7 @@ const CustomerSupport = () => {
                 tHeadBgColor="bg-light-gray"
                 headerClassName="color-orange"
                 tableRows={tableRows}
-                table_heading="Supplier Store"
+                table_heading="Supplier Store Tickets"
                 showSearchFilter={false}
                 showSearchbar={false}
                 // customButtonLabel="Create Ticket"

@@ -34,15 +34,7 @@ const HelpandsupportView = ({
       </p>
     );
   };
-  useEffect(() => {
-    const result = [];
-    selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
-      (item) => {
-        result.push(item.mediaUrl);
-      }
-    );
-    setSelectedFile(result);
-  }, []);
+
   const getClassName = () => {
     if (selectedData.ticketStatus.toLowerCase() === "open")
       return "text-success";

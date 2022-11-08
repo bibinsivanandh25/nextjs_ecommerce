@@ -5,7 +5,7 @@
 import ButtonComponent from "components/atoms/ButtonComponent";
 import TextEditor from "components/atoms/TextEditor";
 import { Avatar, Divider, Grid, Paper, Typography } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import validateMessage from "constants/validateMessages";
 import {
   helpandsupportFileUpload,
@@ -15,17 +15,18 @@ import toastify from "services/utils/toastUtils";
 import { Close } from "@mui/icons-material";
 import Image from "next/image";
 
-const HelpandsupportView1 = ({
+const HelpandsupportView = ({
   selectedData,
   setShowModal = () => {},
   user = {},
-  acceptedTypes = ["png", "JPG", "pdf"],
+  acceptedTypes = ["png", "jpg", "pdf"],
   getTabledata,
 }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState([]);
+
   const getContent = (label, value, className) => {
     return (
       <p className="mx-3 my-2">
@@ -34,16 +35,6 @@ const HelpandsupportView1 = ({
       </p>
     );
   };
-
-  useEffect(() => {
-    const result = [];
-    selectedData?.helpSupportMessages[0]?.helpSupportMessageMedias?.forEach(
-      (item) => {
-        result.push(item.mediaUrl);
-      }
-    );
-    setSelectedFile(result);
-  }, []);
 
   const validateForm = () => {
     let errorText = true;
@@ -141,7 +132,7 @@ const HelpandsupportView1 = ({
   };
 
   return (
-    <Paper className="mnh-87vh mxh-87vh d-flex flex-column">
+    <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar d-flex flex-column">
       <Typography
         className="h-5 color-orange cursor-pointer ms-2 mt-1"
         onClick={() => {
@@ -154,10 +145,9 @@ const HelpandsupportView1 = ({
         Help & support{" "}
         <span className="fs-12 fw-normal text-secondary">(View & Reply)</span>
       </p>
-       <div className="fs-12 border-bottom px-4 py-1">
+      <div className="fs-12 border-bottom px-4 py-1">
         {getContent(
           "Date & Time",
-
           new Date(selectedData.lastModifiedDate).toLocaleString()
         )}
         {getContent("Ticket ID", selectedData.ticketId)}
@@ -257,24 +247,34 @@ const HelpandsupportView1 = ({
                     )}
                   </div>
                   <div>
-                    <strong>{val.messageFromName}</strong>
-                    <p className="fs-9 ">{val.mobileNumber}</p>
-                    <p className="fs-9 ">{val.messagedAt}</p>
+                    <Typography className="fw-bold">
+                      {val.messageFromName}
+                    </Typography>
+                    <p className="h-5">{val.messageFromId}</p>
+                    <p className="h-5">{val.messagedAt}</p>
                     <div dangerouslySetInnerHTML={{ __html: val.message }} />
-                    {val.helpSupportMessageMedias.map((media) => {
-                      return (
-                        <div>
-                          <span className="fw-bold h-4">Attached File :</span>
-                          <a
-                            className=" fs-12 mb-3 text-primary text-decoration-none"
-                            href={media.mediaUrl}
-                            target="_blank"
-                          >
-                            {media.mediaUrl.split("/")[7]}
-                          </a>
-                        </div>
-                      );
-                    })}
+                    <div className="d-flex align-item-center">
+                      <span className="fw-bold h-4 me-1">Attached File :</span>
+                      {val.helpSupportMessageMedias.map((media, ind) => {
+                        return (
+                          <div>
+                            <a
+                              className="fs-12 mb-3 me-1 text-primary text-decoration-none"
+                              href={media.mediaUrl}
+                              target="_blank"
+                            >
+                              {val.helpSupportMessageMedias?.length === ind + 1
+                                ? `file${ind + 1}${media?.mediaUrl?.slice(
+                                    media.mediaUrl?.lastIndexOf(".")
+                                  )}`
+                                : `file${ind + 1}${media?.mediaUrl?.slice(
+                                    media.mediaUrl?.lastIndexOf(".")
+                                  )},`}
+                            </a>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
                 <Divider color="black" />
@@ -282,8 +282,8 @@ const HelpandsupportView1 = ({
             );
           })}
         </div>
-      </div> 
+      </div>
     </Paper>
   );
 };
-export default HelpandsupportView1;
+export default HelpandsupportView;
