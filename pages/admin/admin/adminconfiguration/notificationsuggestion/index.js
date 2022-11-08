@@ -1,6 +1,6 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import { Add, Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import {
@@ -37,14 +37,14 @@ const NotificationSuggestion = () => {
   }, []);
 
   const handleSave = async () => {
-    if (showModal==="Create"?!keyData.length:inputValue==="") {
+    if (showModal === "Create" ? !keyData.length : inputValue === "") {
       setError(validateMessage.field_required);
       return;
     }
-    setError("")
+    setError("");
     if (!notificationSuggestion) {
       const { data, message, err } = await saveNotificationSuggestion([
-        ...keyData
+        ...keyData,
       ]);
       if (data) {
         toastify(message, "success");
@@ -160,7 +160,7 @@ const NotificationSuggestion = () => {
       </Grid>
       {showModal && (
         <ModalComponent
-          open={showModal!==""}
+          open={showModal !== ""}
           onCloseIconClick={() => {
             setShowModal("");
             setKeyData([]);
@@ -172,32 +172,33 @@ const NotificationSuggestion = () => {
           titleClassName="h-5 fw-bold color-orange"
           onClearBtnClick={() => {
             setKeyData([]);
-            setInputValue("")
+            setInputValue("");
           }}
           onSaveBtnClick={handleSave}
         >
           <Box className="m-4">
-            {showModal==="Create"?(<InputFieldWithChip
-              label="Key Word"
-              inputlabelshrink
-              id="keyword"
-              handleChange={(e, val) => {
-                console.log(val);
-                setKeyData(val);
-              }}
-              value={keyData}
-              required
-              helperText={error}
-              error={error!==""}
-            />):(
+            {showModal === "Create" ? (
+              <InputFieldWithChip
+                label="Key Word"
+                inputlabelshrink
+                id="keyword"
+                handleChange={(e, val) => {
+                  setKeyData(val);
+                }}
+                value={keyData}
+                required
+                helperText={error}
+                error={error !== ""}
+              />
+            ) : (
               <InputBox
-              label="Key Word"
-              value={inputValue}
-              onInputChange={(e)=>{
-                setInputValue(e.target.value)
-              }}
-              helperText={error}
-              error={error!==""}
+                label="Key Word"
+                value={inputValue}
+                onInputChange={(e) => {
+                  setInputValue(e.target.value);
+                }}
+                helperText={error}
+                error={error !== ""}
               />
             )}
           </Box>

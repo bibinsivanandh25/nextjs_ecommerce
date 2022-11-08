@@ -36,7 +36,7 @@ const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [tableRowsTodaysDealSubs, setTableRowsTodaysDealSubs] = useState([]);
-  
+
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [dropdownValue, setDropdownValue] = useState([]);
   const [typeId, setTypeId] = useState("");
@@ -201,8 +201,10 @@ const TodaysDealSubscription = () => {
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getDealSubscription(0, router?.query?.userType?[router?.query?.userType]:[]);
-
+      getDealSubscription(
+        0,
+        router?.query?.userType ? [router?.query?.userType] : []
+      );
     } else if (message) toastify(message, "error");
     else if (error?.response?.data?.message)
       toastify(error?.response?.data?.message, "error");

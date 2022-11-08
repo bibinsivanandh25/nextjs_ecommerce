@@ -51,7 +51,7 @@ const ScratchCardSubscriptions = () => {
   const [queryStatus, setQueryStatus] = useState(null);
   const [userType, setuserType] = useState("");
   const [userId, setuserId] = useState(null);
-  
+
   const router = useRouter();
   const column1 = [
     {

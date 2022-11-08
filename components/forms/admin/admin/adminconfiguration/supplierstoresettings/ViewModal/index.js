@@ -110,7 +110,9 @@ const ViewModal = ({
     <>
       <ModalComponent
         open={openViewModal}
-        ModalTitle={edit==="create"?"Create Configuration":"Edit Configuration"}
+        ModalTitle={
+          edit === "create" ? "Create Configuration" : "Edit Configuration"
+        }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Cancel"

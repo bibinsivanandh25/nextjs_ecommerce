@@ -51,7 +51,7 @@ const QuizSubscriptions = () => {
   const [queryStatus, setQueryStatus] = useState(null);
   const [userType, setuserType] = useState("");
   const [userId, setuserId] = useState(null);
-  
+
   const column1 = [
     {
       id: "col1", //  id value in column should be presented in row as key
