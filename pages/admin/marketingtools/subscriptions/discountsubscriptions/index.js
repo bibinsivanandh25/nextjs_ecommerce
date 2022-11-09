@@ -255,7 +255,7 @@ const DiscountSubscriptions = () => {
     );
     if (data) {
       toastify(data.message, "success");
-      getTableData(pageNumber);
+    getTableData(pageNumber);
     }
     if (err) {
       toastify(err.response.data.message, "error");
@@ -307,14 +307,12 @@ const DiscountSubscriptions = () => {
         },
       ]);
       setQueryStatus(router?.query?.Status);
-      getTableData(0, [router?.query?.userType], router?.query?.Status);
+    getTableData(0, [router?.query?.userType], router?.query?.Status);
       setpageNumber(0);
-    }
-  }, [router?.query]);
-
-  useEffect(() => {
+    }else{
       getTableData(0);
       setpageNumber(0);
+    }
   }, [router?.query]);
  
 
@@ -342,10 +340,10 @@ const DiscountSubscriptions = () => {
                     value.forEach((ele) => {
                       temp.push(ele.value);
                     });
-                    getTableData(0, [...temp]);
+    getTableData(0, [...temp]);
                     setpageNumber(0);
                   } else {
-                    getTableData(0, []);
+    getTableData(0, []);
                     setpageNumber(0);
                   }
                 }}
@@ -364,7 +362,7 @@ const DiscountSubscriptions = () => {
             showCheckbox={false}
             stickyHeader
             handlePageEnd={(page = pageNumber) => {
-              getTableData(page, null, router?.query?.status);
+    getTableData(page, null, router?.query?.status);
             }}
             handleRowsPerPageChange={() => {
               setpageNumber(0);
