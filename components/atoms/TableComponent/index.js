@@ -679,7 +679,7 @@ export default function TableComponent({
               </Grid>
             )}
             {!showFilterButton && showDateFilterDropDown && (
-              <Grid item md={2} justifyContent="end">
+              <Grid item md={2} justifyContent="center">
                 <SimpleDropdownComponent
                   list={[...searchFilterList]}
                   size="small"
@@ -727,7 +727,7 @@ export default function TableComponent({
             <Grid
               item
               md={3.1}
-              className="d-flex align-items-center justify-content-end"
+              className="d-flex align-items-center justify-content-center"
             >
               <span className="fs-12">From date:</span>
               <span className=" bg-orange mx-1 rounded cursor-pointer">
@@ -783,7 +783,7 @@ export default function TableComponent({
             <Grid
               item
               md={2.9}
-              className="d-flex align-items-center justify-content-end"
+              className="d-flex align-items-center justify-content-center"
             >
               <span className="fs-12">To date:</span>
               <span className=" bg-orange mx-1 rounded cursor-pointer">

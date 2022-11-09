@@ -202,9 +202,9 @@ const HelpandsupportView = ({
                 />
               </div>
               {item?.helpSupportMessageMedias[0]?.mediaUrl ? (
-                <Typography className="h-5 ">
+                <Typography className="h-5 d-flex">
                   <span className="fw-bold me-1 h-5"> Attached File :</span>
-                  <Box>
+                  <Box className="d-flex">
                     {item?.helpSupportMessageMedias?.map((val, ind) => (
                       <Box>
                         <a
@@ -212,9 +212,9 @@ const HelpandsupportView = ({
                           download
                           target="_blank"
                           rel="noreferrer"
-                          className="ms-3 cursor-pointer text-decoration-none "
+                          className="ms-1 cursor-pointer text-decoration-none "
                         >
-                          {val.helpSupportMessageMedias?.length === ind + 1
+                          {item.helpSupportMessageMedias?.length === ind + 1
                             ? `file${ind + 1}${val?.mediaUrl?.slice(
                                 val.mediaUrl?.lastIndexOf(".")
                               )}`
