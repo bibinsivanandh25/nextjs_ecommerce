@@ -207,6 +207,7 @@ const AdminTags = () => {
         columns={[...tableColumn]}
         tHeadBgColor="bg-light-gray"
         tableRows={rows}
+        showDateFilterSearch
         showDateFilterBtn
         dateFilterBtnName="Create"
         dateFilterBtnClick={() => {
