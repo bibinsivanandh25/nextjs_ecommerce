@@ -36,13 +36,14 @@ const TodaysDealSubscription = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [tableRowsTodaysDealSubs, setTableRowsTodaysDealSubs] = useState([]);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
+
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [dropdownValue, setDropdownValue] = useState([]);
   const [typeId, setTypeId] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
   const [purchaseIde, setPurchaseIde] = useState(null);
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState("");
   const [subscriptionPeriod, setSubscriptionPeriod] = useState("");
   const [adminComments, setAdminComments] = useState({
@@ -51,6 +52,7 @@ const TodaysDealSubscription = () => {
   });
   const router = useRouter();
   const [selectedListData, setSelectedListData] = useState([]);
+  const [queryStatus, setQueryStatus] = useState(null);
 
   const column1 = [
     {
@@ -199,7 +201,10 @@ const TodaysDealSubscription = () => {
     );
     if (!error) {
       toastify(`${status ? "Disabled" : "Enabled"} successfully`, "success");
-      getSubscriptions(0);
+      getDealSubscription(
+        0,
+        router?.query?.userType ? [router?.query?.userType] : []
+      );
     } else if (message) toastify(message, "error");
     else if (error?.response?.data?.message)
       toastify(error?.response?.data?.message, "error");
@@ -233,9 +238,11 @@ const TodaysDealSubscription = () => {
               className="fs-18"
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionStatus(val.toolStatus);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -282,11 +289,12 @@ const TodaysDealSubscription = () => {
     return mappedArray;
   };
 
-  const getDealSubscription = async (page, usertype) => {
+  const getDealSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "TODAYS_DEAL",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -324,17 +332,18 @@ const TodaysDealSubscription = () => {
           title: router.query.userType,
         },
       ]);
-      getDealSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getDealSubscription(0, [router?.query?.userType], router?.query?.Status);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getDealSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -383,7 +392,7 @@ const TodaysDealSubscription = () => {
               // setOpenAddDaysCounterModal(true);
             }}
             handlePageEnd={(page = pageNumber) => {
-              getDealSubscription(page);
+              getDealSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);
@@ -395,11 +404,11 @@ const TodaysDealSubscription = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (

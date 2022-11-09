@@ -35,8 +35,6 @@ const SpinWheelSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
   const [rowsForSpinWheelSubs, setRowsForSpinWheelSubs] = useState([]);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [purchaseIde, setPurchaseIde] = useState(null);
@@ -52,6 +50,9 @@ const SpinWheelSubscriptions = () => {
   });
   const router = useRouter();
   const [selectedListData, setSelectedListData] = useState([]);
+  const [queryStatus, setQueryStatus] = useState(null);
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
 
   const column1 = [
     {
@@ -235,8 +236,10 @@ const SpinWheelSubscriptions = () => {
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -283,11 +286,12 @@ const SpinWheelSubscriptions = () => {
     return mappedArray;
   };
 
-  const getSpinWheelSubscription = async (page, usertype) => {
+  const getSpinWheelSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "SPIN_WHEEL",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error } = await getSubscriptions(payload, page);
 
@@ -324,17 +328,22 @@ const SpinWheelSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getSpinWheelSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getSpinWheelSubscription(
+        0,
+        [router?.query?.userType],
+        router?.query?.Status
+      );
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getSpinWheelSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -379,7 +388,7 @@ const SpinWheelSubscriptions = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getSpinWheelSubscription(page);
+              getSpinWheelSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);
@@ -391,11 +400,11 @@ const SpinWheelSubscriptions = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (

@@ -30,32 +30,32 @@ const daysList = [
   {
     id: 1,
     label: "7 Days",
-    value: "7 Days",
+    value: "7 days",
   },
   {
     id: 2,
     label: "30 Days",
-    value: "30 Days",
+    value: "30 days",
   },
   {
     id: 3,
     label: "90 Days",
-    value: "90 Days",
+    value: "90 days",
   },
   {
     id: 4,
     label: "180 Days",
-    value: "180 Days",
+    value: "180 days",
   },
   {
     id: 5,
     label: "270 Days",
-    value: "270 Days",
+    value: "270 days",
   },
   {
     id: 6,
     label: "360 Days",
-    value: "360 Days",
+    value: "360 days",
   },
 ];
 
@@ -243,7 +243,9 @@ const CreateDiscountModal = ({
     <Box>
       <ModalComponent
         open={openCreateDiscountModal}
-        ModalTitle="Add Days Counter"
+        ModalTitle={
+          modalType === "Edit" ? "Edit Tools Campaign" : "Add Tools Campaign"
+        }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
@@ -295,6 +297,7 @@ const CreateDiscountModal = ({
           </Grid>
           <Grid item xs={6}>
             <InputBox
+              disabled={status === "ACTIVE" && modalType === "Edit"}
               label="Price"
               type="number"
               value={price}

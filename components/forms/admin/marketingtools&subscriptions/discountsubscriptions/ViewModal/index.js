@@ -10,7 +10,6 @@ import {
   discountApproved,
   getViewDiscountData,
 } from "services/admin/discountsubscription";
-import toastify from "services/utils/toastUtils";
 
 const column1 = [
   {
@@ -116,13 +115,9 @@ const ViewModal = ({
     setOpenViewModal(false);
   };
   const handleAcceptClick = async (value, id) => {
-    const { data, err } = await discountApproved(value, id, user?.userId);
+    const { data } = await discountApproved(value, id, user?.userId);
     if (data) {
       getTableData(viewPageNumber);
-      toastify(data.message, "success");
-    }
-    if (err) {
-      toastify(err.response?.data?.message, "error");
     }
   };
   // const handleDeleteClick = async (id) => {
@@ -200,7 +195,6 @@ const ViewModal = ({
   const getTableData = async (page) => {
     const { data, err } = await getViewDiscountData(viewData.purchaseId, page);
     if (data?.data?.length) {
-      toastify(data?.message, "success");
       if (page == 0) {
         setRows(getTableRows(data.data));
         setViewPageNumber((pre) => pre + 1);
@@ -208,11 +202,8 @@ const ViewModal = ({
         setViewPageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data.data)]);
       }
-    } else {
-      toastify(data?.message, "success");
     }
     if (err) {
-      toastify(err?.response?.data?.message, "error");
       setRows([]);
     }
   };
@@ -223,7 +214,26 @@ const ViewModal = ({
     <Box>
       <ModalComponent
         open={openViewModal}
-        ModalTitle={`Reseller ID/Supplier ID : ${viewData.purchasedById}`}
+        ModalTitle={
+          <>
+            <Box>
+              <Typography>
+                {viewData.purchasedByType === "SUPPLIER"
+                  ? "Supplier"
+                  : "Reseller"}{" "}
+                Subscription Details
+              </Typography>
+            </Box>
+            <Box>
+              <Typography className="fs-12 color-black">
+                {viewData.purchasedByType === "SUPPLIER"
+                  ? "Supplier ID"
+                  : "Reseller Id"}{" "}
+                : #{viewData.purchasedById}
+              </Typography>
+            </Box>
+          </>
+        }
         titleClassName="fw-bold fs-14 color-orange"
         showFooter={false}
         ModalWidth={900}

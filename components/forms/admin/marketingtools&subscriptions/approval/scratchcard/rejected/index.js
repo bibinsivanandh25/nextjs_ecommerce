@@ -17,7 +17,7 @@ const tableColumn = [
   },
   {
     id: "col2",
-    label: "Reseller ID/ Shop Name",
+    label: "Supplier ID/ Reseller ID",
     minWidth: 150,
     align: "center",
     data_align: "center",

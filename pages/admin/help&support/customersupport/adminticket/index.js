@@ -33,8 +33,6 @@ const SupplierSupport = () => {
     type: "",
   });
 
-  const options = ["Reply", "Delete", "Close"];
-
   const tableColumns = [
     {
       id: "col1",
@@ -51,13 +49,13 @@ const SupplierSupport = () => {
     {
       id: "col3",
       align: "center",
-      label: "User From Id/Name",
+      label: "User From Id / Name",
       data_align: "center",
     },
     {
       id: "col4",
       align: "center",
-      label: "User To Id",
+      label: "User To Id / Name",
       data_align: "center",
     },
     {
@@ -84,12 +82,12 @@ const SupplierSupport = () => {
       label: "Comments",
       data_align: "center",
     },
-    {
-      id: "col9",
-      align: "center",
-      label: "Attachments",
-      data_align: "center",
-    },
+    // {
+    //   id: "col9",
+    //   align: "center",
+    //   label: "Attachments",
+    //   data_align: "center",
+    // },
     {
       id: "col10",
       align: "center",
@@ -196,12 +194,12 @@ const SupplierSupport = () => {
           col1: ind + 1,
           col2: ele.ticketId,
           col3: `${ele.userFromId} / ${ele.userFromName}`,
-          col4: ele.userToId,
+          col4: `${ele.userToId} /  ${ele.userToName}`,
           col5: ele.issueType.replaceAll("_", " "),
           col6: ele.orderId,
           col7: ele.issueSubject,
           col8: "--",
-          col9: "--",
+          // col9: "--",
           col10: `${ele.createdDate.split("T")[0]} ${
             ele.createdDate.split("T")[1]
           }`,
@@ -212,6 +210,7 @@ const SupplierSupport = () => {
           col13: (
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon
+                title="View and Reply"
                 type="view"
                 className="fs-18"
                 // onIconClick={() => setShowViewProducts(true)}
@@ -223,7 +222,11 @@ const SupplierSupport = () => {
                 getSelectedItem={(item) => {
                   onClickOfMenuItem(item, ele);
                 }}
-                options={options}
+                options={
+                  ele.ticketStatus === "CLOSED"
+                    ? ["Delete"]
+                    : ["Reply", "Delete", "Close"]
+                }
                 IconclassName="fs-18 color-gray"
               />
             </Box>
@@ -327,6 +330,7 @@ const SupplierSupport = () => {
               <TableComponent
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
+                headerClassName="color-orange"
                 tableRows={tableRows}
                 table_heading="Customer Support"
                 showSearchFilter={false}

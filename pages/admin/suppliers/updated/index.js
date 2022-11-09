@@ -164,7 +164,6 @@ const Updated = () => {
   const getTableRows = async () => {
     const { data, error, message } = await getAll();
     if (data) {
-      console.log("data ", data);
       const tempRows = data.map((val, index) => {
         return {
           id: val.changeHistoryId,

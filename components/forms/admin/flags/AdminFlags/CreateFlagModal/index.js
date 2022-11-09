@@ -1,8 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import validateMessage from "constants/validateMessages";
+import React, { useState } from "react";
 import ModalComponent from "@/atoms/ModalComponent";
-import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
 import styles from "./createflag.module.css";

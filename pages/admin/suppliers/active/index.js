@@ -120,7 +120,7 @@ const tableColumn = [
 const Active = () => {
   const [viewModalOpen, setViewModaOpen] = useState(false);
   const [filterData, setFilterData] = useState([]);
-  const [selectedFilterData, setSelectedFilterData] = useState([]);
+  // const [selectedFilterData, setSelectedFilterData] = useState([]);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -230,7 +230,7 @@ const Active = () => {
             filterData={filterData}
             getFilteredValues={(value) => {
               setFilterData(value);
-              setSelectedFilterData(value);
+              // setSelectedFilterData(value);
             }}
           />
         </Box>

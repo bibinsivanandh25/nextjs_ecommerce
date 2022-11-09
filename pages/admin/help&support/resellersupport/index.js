@@ -11,7 +11,7 @@ import {
 } from "services/admin/help&support";
 import CreateTicket from "@/forms/admin/help&support/resellersupport/CreateTicket";
 
-const SupplierSupport = () => {
+const ResellerSupport = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateTicketComponent, setShowCreateTicketComponent] =
     useState(false);
@@ -36,12 +36,12 @@ const SupplierSupport = () => {
     {
       id: "col3",
       align: "center",
-      label: "User From ID/Name",
+      label: "User From ID / Name",
       data_align: "center",
     },
     {
       id: "col4",
-      align: "User To ID",
+      align: "User To ID / Name",
       label: "Issue Type",
       data_align: "center",
     },
@@ -69,12 +69,12 @@ const SupplierSupport = () => {
       label: "Comments",
       data_align: "center",
     },
-    {
-      id: "col9",
-      align: "center",
-      label: "Attachments",
-      data_align: "center",
-    },
+    // {
+    //   id: "col9",
+    //   align: "center",
+    //   label: "Attachments",
+    //   data_align: "center",
+    // },
     {
       id: "col10",
       align: "center",
@@ -84,7 +84,7 @@ const SupplierSupport = () => {
     {
       id: "col11",
       align: "center",
-      label: "Last Update Date and Time (Supplier/MrMrsCart)",
+      label: "Last Update Date and Time (Reseller/MrMrsCart)",
       data_align: "center",
     },
     {
@@ -129,12 +129,12 @@ const SupplierSupport = () => {
           col1: ind + 1,
           col2: ele.ticketId,
           col3: `${ele.userFromId} / ${ele.userFromName}`,
-          col4: ele.userToId,
+          col4: `${ele.userToId} -  ${ele.userToName}`,
           col5: ele.issueType.replaceAll("_", " "),
           col6: ele.orderId,
           col7: ele.issueSubject,
           col8: "--",
-          col9: "--",
+          // col9: "--",
           col10: `${ele.createdDate.split("T")[0]} ${
             ele.createdDate.split("T")[1]
           }`,
@@ -145,6 +145,7 @@ const SupplierSupport = () => {
           col13: (
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon
+                title="View and Reply"
                 type="view"
                 className="fs-18"
                 //   onIconClick={() => setShowViewProducts(true)}
@@ -241,7 +242,7 @@ const SupplierSupport = () => {
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
                 tableRows={tableRows}
-                table_heading="Supplier Support"
+                table_heading="Reseller Support"
                 showSearchFilter={false}
                 showSearchbar={false}
                 showCustomButton
@@ -269,4 +270,4 @@ const SupplierSupport = () => {
   );
 };
 
-export default SupplierSupport;
+export default ResellerSupport;

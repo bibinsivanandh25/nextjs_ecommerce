@@ -17,6 +17,8 @@ const ViewModal = ({
   purchaseIde,
   subscriptionStatus,
   subscriptionPeriod,
+  userType,
+  userId,
 }) => {
   const [rows, setRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -125,6 +127,7 @@ const ViewModal = ({
       if (error?.response?.data?.message)
         toastify(error?.response?.data?.message, "error");
     } else if (data) {
+      getSubscriptionsRows(purchaseIde, 0);
       toastify(message, "success");
     }
   };
@@ -213,7 +216,22 @@ const ViewModal = ({
     <Box>
       <ModalComponent
         open={openViewModal}
-        ModalTitle="Reseller ID: #132564987"
+        ModalTitle={
+          <>
+            <Box>
+              <Typography>
+                {userType === "SUPPLIER" ? "Supplier" : "Reseller"} Subscription
+                Details
+              </Typography>
+            </Box>
+            <Box>
+              <Typography className="fs-12 color-black">
+                {userType === "SUPPLIER" ? "Supplier ID" : "Reseller Id"} : #
+                {userId}
+              </Typography>
+            </Box>
+          </>
+        }
         titleClassName="fw-bold fs-14 color-orange"
         showFooter={false}
         ModalWidth={800}

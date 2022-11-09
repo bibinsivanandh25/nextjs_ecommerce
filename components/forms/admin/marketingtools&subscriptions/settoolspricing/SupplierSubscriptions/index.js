@@ -23,10 +23,7 @@ import ViewIndividualPricing from "../ViewIndividualPricing";
 import CreateNotification from "../CreateNotification";
 
 const SupplierSubscriptions = () => {
-  const [supplierSubscriptionsTableOne, setSupplierSubscriptionsTableOne] =
-    useState([]);
-  const [supplierSubscriptionsTableTwo, setSupplierSubscriptionsTableTwo] =
-    useState([]);
+  const [subscriptionCount, setSubscriptionCount] = useState([]);
   const [showCreateNotificationModal, setShowCreateNotificationModal] =
     useState(false);
 
@@ -45,10 +42,6 @@ const SupplierSubscriptions = () => {
   const [marketingToolCampaignId, setMarketingToolCampaignId] = useState("");
   const [openAddDaysCounterModal, setOpenAddDaysCounterModal] = useState(false);
   const [openCreateDiscountModal, setOpenCreateDiscountModal] = useState(false);
-  const [
-    tableColumsForSupplierSubscriptionsTableOne,
-    settableColumsForSupplierSubscriptionsTableOne,
-  ] = useState([]);
   const [tabList, setTabList] = useState([
     { label: "Active", isSelected: true },
     { label: "Scheduled", isSelected: false },
@@ -61,148 +54,13 @@ const SupplierSubscriptions = () => {
   const [marketingToolId, setMarketingToolId] = useState("");
 
   const filterData = [
-    {
-      name: "DAYS",
-      value: [
-        { item: "7 days", isSelected: false },
-        { item: "30 days", isSelected: false },
-        { item: "90 days", isSelected: false },
-        { item: "180 days", isSelected: false },
-        { item: "270 days", isSelected: false },
-        { item: "360 days", isSelected: false },
-      ],
-    },
-  ];
-
-  const tableColumsForSupplierSubscriptionsTableTwo = [
-    {
-      id: "col1",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col11",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col12",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col13",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col14",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col15",
-      align: "center",
-      label: "Active",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
-    {
-      id: "col16",
-      align: "center",
-      label: "Inactive",
-      data_align: "center",
-      maxWidth: 15,
-      minWidth: 15,
-    },
+    { label: "All", value: "All" },
+    { label: "7 days", value: "7 days" },
+    { label: "30 days", value: "30 days" },
+    { label: "90 days", value: "90 days" },
+    { label: "180 days", value: "180 days" },
+    { label: "270 days", value: "270 days" },
+    { label: "360 days", value: "360 days" },
   ];
 
   const tableColumsForToolsCampaign = [
@@ -340,69 +198,17 @@ const SupplierSubscriptions = () => {
 
   const router = useRouter();
 
-  const gettableColumsForSupplierSubscriptionsTableOne = async () => {
+  const getMarketingToolCountForSupplier = async () => {
     const { data } = await getSubscrptionType("SUPPLIER");
-    if (data) {
-      const result = [];
-      const rows = {};
-      const rows2 = {};
-      data.forEach((ele, ind) => {
-        let count = Object.keys(rows2).length;
-        result.push({
-          id: `col${ind + 1}`,
-          align: "center",
-          label: ele.adminMarketingToolName.replaceAll("_", " "),
-          data_align: "center",
-          minWidth: 30,
-          maxWidth: 30,
-        });
-        const getRouteName = (tool) => {
-          if (tool === "DISCOUNT_COUPON") {
-            return "discountsubscriptions";
-          }
-          if (tool === "FLAGS") {
-            return "flags";
-          }
-          if (tool === "NOTIFICATIONS") return "notification";
-          return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
-        };
-        rows[`col${ind + 1}`] = (
-          <Typography
-            className="h-5 text-decoration-underline cursor-pointer"
-            onClick={() => {
-              router.push(
-                `/admin/marketingtools/subscriptions/${getRouteName(
-                  ele.adminMarketingToolName
-                )}?userType=Supplier`
-              );
-            }}
-          >
-            {ele.totalCount}
-          </Typography>
-        );
-
-        rows2[`col${count + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {ele.activeCount}
-          </Typography>
-        );
-        count += 1;
-        rows2[`col${count + 1}`] = (
-          <Typography className="h-5 text-decoration-underline cursor-pointer">
-            {ele.inActiveCount}
-          </Typography>
-        );
-      });
-
-      const temp = [];
-      const temp1 = [];
-      temp1.push(rows2);
-      temp.push(rows);
-      setSupplierSubscriptionsTableTwo([...temp1]);
-      setSupplierSubscriptionsTableOne([...temp]);
-      settableColumsForSupplierSubscriptionsTableOne([...result]);
+    if (data?.length) {
+      setSubscriptionCount([...data]);
     }
   };
+
+  useEffect(() => {
+    getMarketingToolCountForSupplier();
+  }, []);
+
   const mapIndivisualPricingRows = (data) => {
     if (data?.length) {
       const result = [
@@ -442,14 +248,16 @@ const SupplierSubscriptions = () => {
       toolIdList: [...ids],
       disabled: !status,
     };
-    const { data, err } = await enableDisableMarketingTools(payload);
-    if (data?.message) {
-      toastify(data.message, "success");
-      getIndividualPricing();
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-      getIndividualPricing();
+    if (ids?.length) {
+      const { data, err } = await enableDisableMarketingTools(payload);
+      if (data?.message) {
+        toastify(data.message, "success");
+        getIndividualPricing();
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        getIndividualPricing();
+      }
     }
   };
 
@@ -518,7 +326,9 @@ const SupplierSubscriptions = () => {
         result.forEach((ele, index) => {
           if (ele) {
             toolIds.push(ele.adminMarketingToolId);
-            status.push(ele.disabled);
+            if (ele.price !== "--") {
+              status.push(ele.disabled);
+            }
           }
           result2[`col${index + 2}`] =
             ele.price !== "--" ? (
@@ -593,7 +403,7 @@ const SupplierSubscriptions = () => {
             />
             <SwitchComponent
               label=""
-              defaultChecked={status.every((ele) => !ele)}
+              defaultChecked={status.some((ele) => !ele)}
               ontoggle={() => {
                 enableDisableMarketingTool(
                   toolIds.filter((i) => i),
@@ -803,8 +613,17 @@ const SupplierSubscriptions = () => {
     return Status;
   };
   const getToolCampaignTableData = async (page, date, filter) => {
+    const getdayFilters = (days) => {
+      if (days?.value) {
+        if (days?.value === "All") {
+          return [];
+        }
+        return [days?.value];
+      }
+      return [];
+    };
     const payload = {
-      daysList: filter?.DAYS ?? [],
+      daysList: getdayFilters(filter),
       status: getStatus(),
       storeType: "SUPPLIER",
       fromDate: date?.fromDate ?? "",
@@ -830,29 +649,126 @@ const SupplierSubscriptions = () => {
     }
   };
 
-  const filterTableData = (data) => {
-    const result = {};
-    data.forEach((ele) => {
-      result[ele.name] = ele.value
-        .map((item) => {
-          if (item.isSelected) {
-            return item.item;
-          }
-          return null;
-        })
-        .filter((val) => val);
-    });
-    getToolCampaignTableData(0, undefined, result);
-  };
+  // const filterTableData = (data) => {
+  //   const result = {};
+  //   data.forEach((ele) => {
+  //     result[ele.name] = ele.value
+  //       .map((item) => {
+  //         if (item.isSelected) {
+  //           return item.item;
+  //         }
+  //         return null;
+  //       })
+  //       .filter((val) => val);
+  //   });
+  //   return result;
+  //   // getToolCampaignTableData(0, undefined, result);
+  // };
 
   useEffect(() => {
-    gettableColumsForSupplierSubscriptionsTableOne();
     getIndividualPricing();
   }, []);
 
   useEffect(() => {
     getToolCampaignTableData(0);
   }, [tabList]);
+
+  const getSubscriptionCount = () => {
+    const getRouteName = (tool) => {
+      if (tool === "DISCOUNT_COUPON") {
+        return "discountsubscriptions";
+      }
+      if (tool === "FLAGS") {
+        return "flags";
+      }
+      if (tool === "NOTIFICATIONS") return "notification";
+      return `${tool?.replace("_", "").toLocaleLowerCase()}subscriptions`;
+    };
+    return subscriptionCount?.map((ele) => {
+      return (
+        <div
+          className="me-3 "
+          style={{
+            minWidth: "200px",
+          }}
+        >
+          <Paper className="mb-2 pb-2" elevation={3}>
+            <Typography className="fw-bold h-5 py-1 text-center bg-light-gray">
+              {ele.adminMarketingToolName?.replaceAll("_", " ")}
+            </Typography>
+            <div className="d-flex justify-content-center">
+              <Typography
+                className="fw-bold h-5 py-1 text-decoration-underline cursor-pointer  "
+                onClick={() => {
+                  router.push(
+                    `/admin/marketingtools/subscriptions/${getRouteName(
+                      ele.adminMarketingToolName
+                    )}?userType=Supplier`
+                  );
+                }}
+              >
+                {ele.totalCount}
+              </Typography>
+            </div>
+            <div className="d-flex justify-content-around">
+              <div>
+                <Typography className="fw-bold h-5 text-center ">
+                  Active
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Supplier&Status=ACTIVE`
+                    );
+                  }}
+                >
+                  {ele.activeCount}
+                </Typography>
+              </div>
+              <div className="mx-4">
+                <Typography className="fw-bold h-5 text-center  ">
+                  Expired
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Supplier&Status=EXPIRED`
+                    );
+                  }}
+                >
+                  {ele.expiredCount}
+                </Typography>
+              </div>
+              <div>
+                <Typography className="fw-bold h-5 text-center ">
+                  Pending
+                </Typography>
+                <Typography
+                  className="fw-bold h-5 text-center text-decoration-underline cursor-pointer"
+                  onClick={() => {
+                    router.push(
+                      `/admin/marketingtools/subscriptions/${getRouteName(
+                        ele.adminMarketingToolName
+                      )}?userType=Supplier&Status=PENDING`
+                    );
+                  }}
+                >
+                  {ele.pendingCount}
+                </Typography>
+              </div>
+            </div>
+          </Paper>
+        </div>
+      );
+    });
+  };
+
   return (
     <>
       {!showViewTableType?.length ? (
@@ -862,27 +778,11 @@ const SupplierSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Supplier Subscriptions
               </Typography>
-              {supplierSubscriptionsTableOne?.length ? (
+              {subscriptionCount?.length ? (
                 <>
-                  <TableComponent
-                    columns={[...tableColumsForSupplierSubscriptionsTableOne]}
-                    tableRows={supplierSubscriptionsTableOne}
-                    tHeadBgColor="bg-light-gray"
-                    showPagination={false}
-                    showSearchFilter={false}
-                    showSearchbar={false}
-                    showCheckbox={false}
-                  />
-
-                  <TableComponent
-                    columns={[...tableColumsForSupplierSubscriptionsTableTwo]}
-                    tableRows={supplierSubscriptionsTableTwo}
-                    tHeadBgColor="bg-light-gray"
-                    showPagination={false}
-                    showSearchFilter={false}
-                    showSearchbar={false}
-                    showCheckbox={false}
-                  />
+                  <div className="d-flex overflow-auto hide-scrollbar my-2 ">
+                    {getSubscriptionCount()}
+                  </div>
                 </>
               ) : (
                 <Box
@@ -901,23 +801,23 @@ const SupplierSubscriptions = () => {
               <Typography className="color-orange fw-bold">
                 Individual Pricing
               </Typography>
-              {individualPricingTableRows?.length ? (
-                <TableComponent
-                  columns={[...individualPricingColumns]}
-                  tableRows={individualPricingTableRows}
-                  tHeadBgColor="bg-light-gray"
-                  showPagination={false}
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  showCheckbox={false}
-                  showCustomButton
-                  customButtonLabel="Add Day's Counter"
-                  onCustomButtonClick={() => {
-                    setOpenAddDaysCounterModal(true);
-                    setModalType("Add");
-                  }}
-                />
-              ) : (
+
+              <TableComponent
+                columns={[...individualPricingColumns]}
+                tableRows={[...individualPricingTableRows]}
+                tHeadBgColor="bg-light-gray"
+                showPagination={false}
+                showSearchFilter={false}
+                showSearchbar={false}
+                showCheckbox={false}
+                showCustomButton
+                customButtonLabel="Add Day's Counter"
+                onCustomButtonClick={() => {
+                  setOpenAddDaysCounterModal(true);
+                  setModalType("Add");
+                }}
+              />
+              {individualPricingTableRows?.length === 0 && (
                 <Box
                   display="flex"
                   justifyContent="center"
@@ -959,8 +859,8 @@ const SupplierSubscriptions = () => {
                     showDateFilter
                     showDateFilterBtn
                     tabChange={tabList}
-                    filterData={filterData}
-                    showFilterButton={getStatus() !== "ACTIVE"}
+                    filterList={filterData}
+                    showDateFilterDropDown={getStatus() !== "ACTIVE"}
                     showPagination={getStatus() !== "ACTIVE"}
                     showDateFilterSearch={false}
                     dateFilterBtnName="Create Discounts"
@@ -968,16 +868,13 @@ const SupplierSubscriptions = () => {
                       setOpenCreateDiscountModal(true);
                       setCreateDiscountModalType("Add");
                     }}
-                    getFilteredValues={(values) => {
-                      filterTableData(values);
-                    }}
                     handlePageEnd={(
                       searchText,
                       searchFilter,
                       page = pageNumber,
                       datefilter
                     ) => {
-                      getToolCampaignTableData(page, datefilter);
+                      getToolCampaignTableData(page, datefilter, searchFilter);
                     }}
                   />
                 </div>

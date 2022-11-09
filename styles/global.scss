@@ -335,3 +335,7 @@ div, p, span {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
+
+.hover-class :hover{
+color:#e56700
+}

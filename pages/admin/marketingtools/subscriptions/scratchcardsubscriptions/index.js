@@ -34,8 +34,6 @@ const listData = [
 const ScratchCardSubscriptions = () => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openAddNoteModal, setOpenAddNoteModal] = useState(false);
-  const [dataOfSingleSupplierOrReseller, setDataOfSingleSupplierOrReseller] =
-    useState([]);
 
   const [rowsOfScratchCardSubs, setRowsOfScratchCardSubs] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -50,6 +48,9 @@ const ScratchCardSubscriptions = () => {
     comment: "",
     commentAttachment: "",
   });
+  const [queryStatus, setQueryStatus] = useState(null);
+  const [userType, setuserType] = useState("");
+  const [userId, setuserId] = useState(null);
 
   const router = useRouter();
   const column1 = [
@@ -207,8 +208,10 @@ const ScratchCardSubscriptions = () => {
               onIconClick={() => {
                 setPurchaseIde(val.purchaseId);
                 setSubscriptionStatus(val.toolStatus);
+                setuserType(val.purchasedByType);
+                setuserId(val.purchasedById);
                 setSubscriptionPeriod(
-                  `${val.activatedAt ? val.activatedAt : "--"} - ${
+                  `${val.activatedAt ? val.activatedAt : "--"} to ${
                     val.expirationDate ? val.expirationDate : "--"
                   }`
                 );
@@ -282,11 +285,12 @@ const ScratchCardSubscriptions = () => {
       toastify(error?.response?.data?.message, "error");
   };
 
-  const getScratchCardSubscription = async (page, usertype) => {
+  const getScratchCardSubscription = async (page, usertype, Status) => {
     const selectedListDatas = dropdownValue.map((value) => value.title);
     const payload = {
       marketingTool: "SCRATCH_CARD",
       userType: usertype ?? selectedListDatas,
+      status: Status || queryStatus,
     };
     const { data, error, message } = await getSubscriptions(payload, page);
 
@@ -324,17 +328,22 @@ const ScratchCardSubscriptions = () => {
           title: router.query.userType,
         },
       ]);
-      getScratchCardSubscription(0, [router?.query?.userType]);
+      setQueryStatus(router?.query?.Status);
+      getScratchCardSubscription(
+        0,
+        [router?.query?.userType],
+        router?.query?.Status
+      );
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   useEffect(() => {
     if (!router?.query?.userType) {
       getScratchCardSubscription(0);
       setPageNumber(0);
     }
-  }, [router?.query?.userType]);
+  }, [router?.query]);
 
   return (
     <>
@@ -379,7 +388,7 @@ const ScratchCardSubscriptions = () => {
             showSearchbar={false}
             showCheckbox={false}
             handlePageEnd={(page = pageNumber) => {
-              getScratchCardSubscription(page);
+              getScratchCardSubscription(page, null, router?.query?.Status);
             }}
             handleRowsPerPageChange={() => {
               setPageNumber(0);
@@ -391,11 +400,11 @@ const ScratchCardSubscriptions = () => {
         <ViewModal
           openViewModal={openViewModal}
           setOpenViewModal={setOpenViewModal}
-          dataOfSingleSupplierOrReseller={dataOfSingleSupplierOrReseller}
-          setDataOfSingleSupplierOrReseller={setDataOfSingleSupplierOrReseller}
           purchaseIde={purchaseIde}
           subscriptionStatus={subscriptionStatus}
           subscriptionPeriod={subscriptionPeriod}
+          userType={userType}
+          userId={userId}
         />
       )}
       {openAddNoteModal && (
