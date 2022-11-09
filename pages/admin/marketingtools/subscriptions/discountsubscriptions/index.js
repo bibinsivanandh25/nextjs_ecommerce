@@ -278,12 +278,12 @@ const DiscountSubscriptions = () => {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber(1);
+      } else if (data.length == 0 && page == 0) {
+        setRows([]);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
       }
-    } else if (data.length == 0 && page == 0) {
-      setRows([]);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
