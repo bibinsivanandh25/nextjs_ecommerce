@@ -313,11 +313,10 @@ const DiscountSubscriptions = () => {
   }, [router?.query]);
 
   useEffect(() => {
-    if (!router?.query) {
       getTableData(0);
       setpageNumber(0);
-    }
   }, [router?.query]);
+ 
 
   return (
     <>
