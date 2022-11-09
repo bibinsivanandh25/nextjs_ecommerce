@@ -26,6 +26,7 @@ import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
 import adminNav from "constants/adminNav";
 import CollapseList from "./CollapseList";
+import Image from "next/image";
 
 const drawerWidth = 245;
 const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
@@ -456,7 +457,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           title={!open ? item.title : ""}
                           placement="right"
                         >
-                          <InboxIcon />
+                          {/* <object
+                            id={`svg${index}`}
+                            data={item.logo}
+                            type="image/svg+xml"
+                            style={{ width: "20px" }}
+                          ></object> */}
+                          <Image height={15} width={15} src={item.logo} />
                         </Tooltip>
                       </ListItemIcon>
                       <ListItemText
