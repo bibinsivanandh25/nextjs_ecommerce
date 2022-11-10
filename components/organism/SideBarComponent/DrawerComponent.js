@@ -20,11 +20,12 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+// import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useDispatch, useSelector } from "react-redux";
 import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
 import adminNav from "constants/adminNav";
+import Image from "next/image";
 import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
@@ -456,7 +457,13 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           title={!open ? item.title : ""}
                           placement="right"
                         >
-                          <InboxIcon />
+                          {/* <object
+                            id={`svg${index}`}
+                            data={item.logo}
+                            type="image/svg+xml"
+                            style={{ width: "20px" }}
+                          ></object> */}
+                          <Image height={15} width={15} src={item.logo} />
                         </Tooltip>
                       </ListItemIcon>
                       <ListItemText

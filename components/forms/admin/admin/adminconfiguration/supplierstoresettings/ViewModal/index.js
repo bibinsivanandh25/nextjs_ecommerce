@@ -141,7 +141,7 @@ const ViewModal = ({
           }}
           error={err.configurationName}
           helperText={err.configurationName}
-          disabled={Boolean(edit)}
+          disabled={edit !== "create"}
         />
         <InputBox
           inputlabelshrink

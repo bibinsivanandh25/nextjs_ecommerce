@@ -780,7 +780,7 @@ const SupplierSubscriptions = () => {
               </Typography>
               {subscriptionCount?.length ? (
                 <>
-                  <div className="d-flex overflow-auto hide-scrollbar my-2 ">
+                  <div className="d-flex overflow-auto hide-scrollbar my-2 ps-1">
                     {getSubscriptionCount()}
                   </div>
                 </>

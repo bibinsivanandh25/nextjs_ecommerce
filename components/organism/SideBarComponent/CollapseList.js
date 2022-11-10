@@ -9,10 +9,11 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+// import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import CustomIcon from "services/iconUtils";
+import Image from "next/image";
 
 const ChildCollapes = ({ list = {}, open = false }) => {
   const [expandChild, setExpandchild] = useState(false);
@@ -167,7 +168,7 @@ const CollapseList = ({
           } cursor-pointer`}
         >
           <Tooltip title={!open ? menuList.title : ""} placement="right">
-            <InboxIcon />
+            <Image height={15} width={15} src={menuList.logo} />
           </Tooltip>
         </ListItemIcon>
         <ListItemText
