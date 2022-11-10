@@ -38,4 +38,17 @@ const getProductTitles = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-export { getMainCategories, getSubCategories, getBrands, getProductTitles };
+
+const deleteProducts = (id) => {
+  return serviceUtil
+    .remove(`products/variation`, id)
+    .then((res) => res)
+    .catch((err) => ({ err }));
+};
+export {
+  getMainCategories,
+  getSubCategories,
+  getBrands,
+  getProductTitles,
+  deleteProducts,
+};
