@@ -20,13 +20,13 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+// import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useDispatch, useSelector } from "react-redux";
 import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
 import adminNav from "constants/adminNav";
-import CollapseList from "./CollapseList";
 import Image from "next/image";
+import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
 const DrawerComponent = ({ open = false, setOpen = () => {} }) => {

@@ -108,7 +108,6 @@ const ViewModal = ({
   openViewModal,
   setOpenViewModal = () => {},
   viewData = {},
-  user = {},
 }) => {
   const [rows, setRows] = useState([]);
   const [viewPageNumber, setViewPageNumber] = useState(0);
