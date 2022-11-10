@@ -49,8 +49,8 @@ const SideBarComponent = ({ children }) => {
         sx={{
           maxWidth: ` ${open ? "calc(100vw - 245px)" : "calc(100vw - 60px)"}`,
           marginLeft: ` ${open ? "245px" : "60px"}`,
-          transition: "margin 0.2s ease-out",
-          WebkitTransition: "margin 0.2s ease-out",
+          transition: "all 0.2s ease-out",
+          WebkitTransition: "all 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
           outline: "none",
         }}
