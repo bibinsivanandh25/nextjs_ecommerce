@@ -27,7 +27,7 @@ const adminNav = [
         logo: null,
         navigate: true,
         disabled: false,
-        pathName: "",
+        pathName: "fixedmargin",
         child: [],
       },
       {
@@ -351,7 +351,7 @@ const adminNav = [
           {
             title: "Transactional, E-mail, SMS & Push Notification",
             logo: "",
-            pathName: "notification",
+            pathName: "pushnotifications",
             navigate: true,
             disabled: false,
             child: [],
@@ -523,7 +523,7 @@ const adminNav = [
           {
             title: "Notifications",
             logo: "",
-            pathName: "notification",
+            pathName: "notifications",
             navigate: true,
             disabled: false,
             child: [],
@@ -629,7 +629,7 @@ const adminNav = [
               {
                 title: "Supplier Payment",
                 logo: "",
-                pathName: "paymenthistory",
+                pathName: "supplierpayment",
                 navigate: true,
                 disabled: false,
                 child: [],
@@ -662,7 +662,7 @@ const adminNav = [
               {
                 title: "Customer Payment",
                 logo: "",
-                pathName: "paymenthistory",
+                pathName: "customerpayment",
                 navigate: true,
                 disabled: false,
                 child: [],
@@ -679,7 +679,7 @@ const adminNav = [
               {
                 title: "Reseller Payment",
                 logo: "",
-                pathName: "paymenthistory",
+                pathName: "resellerpayment",
                 navigate: true,
                 disabled: false,
                 child: [],
@@ -687,7 +687,7 @@ const adminNav = [
               {
                 title: "Reseller Subscriptions",
                 logo: "",
-                pathName: "subscriptions",
+                pathName: "resellersubscriptions",
                 navigate: true,
                 disabled: false,
                 child: [],
@@ -762,7 +762,7 @@ const adminNav = [
               {
                 title: "Tools subscription",
                 logo: "",
-                pathName: "totalsubscriptions",
+                pathName: "toolssubscriptions",
                 navigate: true,
                 disabled: false,
                 child: [],

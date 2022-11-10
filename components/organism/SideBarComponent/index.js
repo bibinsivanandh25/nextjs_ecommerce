@@ -19,7 +19,9 @@ const SideBarComponent = ({ children }) => {
   const [showFallBack, setShowFallBack] = useState(false);
 
   useEffect(() => {
-    if (allowedPath) setShowFallBack(!allowedPath.includes(route.asPath));
+    if (allowedPath) {
+      setShowFallBack(!allowedPath.includes(route.asPath.split("?")[0]));
+    }
   }, [route.pathname, allowedPath]);
 
   return (

@@ -230,9 +230,9 @@ const DiscountSubscriptions = () => {
                     <Box className="ms-4">
                       <SwitchComponent
                         label=""
-                        defaultChecked={item.disabled}
-                        ontoggle={(val) => {
-                          handleSwitchClick(item.purchaseId, val);
+                        defaultChecked={!item.disabled}
+                        ontoggle={() => {
+                          handleSwitchClick(item.purchaseId, !item.disabled);
                         }}
                       />
                     </Box>
@@ -313,10 +313,8 @@ const DiscountSubscriptions = () => {
   }, [router?.query]);
 
   useEffect(() => {
-    if (!router?.query) {
-      getTableData(0);
-      setpageNumber(0);
-    }
+    getTableData(0);
+    setpageNumber(0);
   }, [router?.query]);
 
   return (

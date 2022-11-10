@@ -17,6 +17,7 @@ const NewPasswordForm = ({
   const validateForm = () => {
     const errObj = { ...error };
     const validate = (id, errMsg, valid1, valid2) => {
+      debugger
       if (!formValues[id]) {
         errObj[id] = validateMessage.field_required;
       } else if (
@@ -24,7 +25,7 @@ const NewPasswordForm = ({
           valid2 &&
           !valid1.test(formValues[id]) &&
           !valid2.test(formValues[id])) ||
-        !valid1.test(formValues[id])
+        valid1.test(formValues[id])
       ) {
         errObj[id] = errMsg;
       } else {
