@@ -257,10 +257,10 @@ const PriceTargetedSubscription = () => {
                     </Typography>
                     <Box className="ms-4">
                       <SwitchComponent
-                        defaultChecked={item.disabled}
+                        defaultChecked={!item.disabled}
                         label=""
-                        ontoggle={(value) => {
-                          handleSwitchClcik(item.purchaseId, value);
+                        ontoggle={() => {
+                          handleSwitchClcik(item.purchaseId, !item.disabled);
                         }}
                       />
                     </Box>

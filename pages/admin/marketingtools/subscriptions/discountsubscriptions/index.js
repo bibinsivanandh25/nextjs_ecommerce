@@ -230,9 +230,9 @@ const DiscountSubscriptions = () => {
                     <Box className="ms-4">
                       <SwitchComponent
                         label=""
-                        defaultChecked={item.disabled}
-                        ontoggle={(val) => {
-                          handleSwitchClick(item.purchaseId, val);
+                        defaultChecked={!item.disabled}
+                        ontoggle={() => {
+                          handleSwitchClick(item.purchaseId, !item.disabled);
                         }}
                       />
                     </Box>

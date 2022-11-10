@@ -663,7 +663,7 @@ export default function TableComponent({
             justifyContent={showDateFilterSearch ? "center" : "end"}
           >
             {showFilterButton && (
-              <Grid item sm={3}>
+              <Grid item sm={2}>
                 <FilterMenu
                   getFilteredValuesOnCheckBoxClick={
                     getFilteredValuesOnCheckBoxClick
