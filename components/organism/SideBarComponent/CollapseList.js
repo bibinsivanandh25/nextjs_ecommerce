@@ -162,6 +162,7 @@ const CollapseList = ({
             minWidth: 0,
             mr: open ? 1 : "auto",
             justifyContent: "center",
+            margin: open ? "" : "0px",
           }}
           className={`${
             router.pathname.includes(menuList.pathName) ? "color-orange" : ""
@@ -188,7 +189,7 @@ const CollapseList = ({
               {menuList.title}
             </Typography>
           }
-          sx={{ opacity: open ? 1 : 0 }}
+          sx={{ opacity: open ? 1 : 0, display: open ? "block" : "none" }}
         />
       </ListItemButton>
       <Collapse in={expand} timeout="auto" unmountOnExit className="ms-4">

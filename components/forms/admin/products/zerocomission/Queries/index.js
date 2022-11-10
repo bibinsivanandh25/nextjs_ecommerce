@@ -17,7 +17,6 @@ const Queries = ({
   rowsDataObjectsForQueries = [],
   setrowsDataObjectsForQueries = () => {},
 }) => {
-  // console.log("Hi");
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -98,16 +97,7 @@ const Queries = ({
     }
   };
 
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
+  const options = ["Replay", "Close"];
 
   const tableColumnsForProductsToApprove = [
     {
@@ -133,17 +123,22 @@ const Queries = ({
     {
       id: "col6",
       align: "center",
-      label: "Weight/Volume",
+      label: "Issue Subject",
       data_align: "center",
     },
-    { id: "col7", align: "center", label: "Total Stock", data_align: "center" },
+    { id: "col7", align: "center", label: "Answers", data_align: "center" },
     {
       id: "col8",
       align: "center",
-      label: "Sale Price/MRP",
+      label: "Created Date & Time",
       data_align: "center",
     },
-    { id: "col9", align: "center", label: "Brand", data_align: "center" },
+    {
+      id: "col9",
+      align: "center",
+      label: "Ticket Status",
+      data_align: "center",
+    },
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
 
@@ -234,9 +229,7 @@ const Queries = ({
                   // showPagination={false}
                   tableRows={tableRows}
                   // showSearchbar={false}
-                  showDateFilterBtn
                   showDateFilter
-                  dateFilterBtnName="+ New Product"
                   dateFilterBtnClick={() => {
                     setProductDetails({
                       vendorIdOrName: "",

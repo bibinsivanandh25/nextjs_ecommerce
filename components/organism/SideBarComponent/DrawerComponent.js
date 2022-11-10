@@ -446,6 +446,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
                           // color: item.selected && "#e56700",
+                          margin: open ? "" : "0px",
                         }}
                         className={`${
                           route.pathname.includes(item.pathName)
@@ -483,7 +484,10 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                             {item.title}
                           </Typography>
                         }
-                        sx={{ opacity: open ? 1 : 0 }}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          display: open ? "block" : "none",
+                        }}
                       />
                     </ListItemButton>
                   ) : (
