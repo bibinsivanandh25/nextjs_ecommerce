@@ -6,7 +6,7 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import ViewTransactionSummaryInward from "@/forms/admin/payments&subscriptions/totalsubscriptions/ViewTransactionSummaryInward";
 import EditModal from "@/forms/admin/payments&subscriptions/totalsubscriptions/EditModal";
 
-const TotalSubscriptions = () => {
+const ToolsSubscriptions = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [
@@ -219,4 +219,4 @@ const TotalSubscriptions = () => {
   );
 };
 
-export default TotalSubscriptions;
+export default ToolsSubscriptions;
