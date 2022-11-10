@@ -10,6 +10,7 @@ import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
 import FallbackComponent from "@/atoms/FallbackComponent";
 import DrawerComponent from "./DrawerComponent";
+import Image from "next/image";
 
 const SideBarComponent = ({ children }) => {
   const route = useRouter();

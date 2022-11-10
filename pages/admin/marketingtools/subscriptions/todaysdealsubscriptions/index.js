@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";
@@ -261,24 +261,26 @@ const TodaysDealSubscription = () => {
               options={[
                 "Notify",
                 "Add Note",
-                <Box className="d-flex align-items-center">
-                  <Typography>
-                    {val.disabled ? "Disabled" : "Enabled"}
-                  </Typography>
-                  <Box className="ms-4">
-                    <SwitchComponent
-                      defaultChecked={!val.disabled}
-                      label=""
-                      ontoggle={() => {
-                        handleEnableOrDisable(
-                          val.purchaseId,
-                          !val.disabled,
-                          "TODAYS_DEAL"
-                        );
-                      }}
-                    />
+                <Tooltip title={val.disabled ? "Disabled" : "Enabled"}>
+                  <Box className="d-flex align-items-center">
+                    <Typography>Enable/Disable</Typography>
+                    <Box className="ms-4">
+                      <Tooltip title={val.disabled ? "Disabled" : "Enabled"}>
+                        <SwitchComponent
+                          defaultChecked={!val.disabled}
+                          label=""
+                          ontoggle={() => {
+                            handleEnableOrDisable(
+                              val.purchaseId,
+                              !val.disabled,
+                              "TODAYS_DEAL"
+                            );
+                          }}
+                        />
+                      </Tooltip>
+                    </Box>
                   </Box>
-                </Box>,
+                </Tooltip>,
               ]}
               IconclassName="fs-18 color-gray"
             />
