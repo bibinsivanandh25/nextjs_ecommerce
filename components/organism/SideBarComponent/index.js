@@ -41,15 +41,27 @@ const SideBarComponent = ({ children }) => {
       <CssBaseline />
       <DrawerComponent open={open} setOpen={setOpen} />
       <Box
-        component="main"
+        id="main-layout"
+        tabindex={0}
+        // component="main"
         sx={{
           maxWidth: ` ${open ? "calc(100vw - 245px)" : "calc(100vw - 60px)"}`,
           marginLeft: ` ${open ? "245px" : "60px"}`,
           transition: "margin 0.2s ease-out",
           WebkitTransition: "margin 0.2s ease-out",
           minHeight: "calc(100vh - 60px)",
+          outline: "none",
         }}
         className={`${showFallBack ? "" : "p-3 pt-2"} w-100 body-bg`}
+        onKeyDown={(e) => {
+          if (e.ctrlKey && e.keyCode === 39) {
+            e.preventDefault();
+            setOpen(true);
+          } else if (e.ctrlKey && e.keyCode === 37) {
+            e.preventDefault();
+            setOpen(false);
+          }
+        }}
       >
         {showFallBack ? (
           <div
