@@ -476,7 +476,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   showSearchFilter={false}
                   dateFilterBtnName="+ New Product"
                   showFilterButton
-                  filterData={filterData}
+                  filterData={[]}
                   getFilteredValues={(value) => {
                     getFilteredValue(value);
                     setFilterData(value);
