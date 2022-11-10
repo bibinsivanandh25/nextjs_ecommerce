@@ -8,6 +8,7 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import {
+  deleteProducts,
   getBrands,
   getMainCategories,
   getProductTitles,
@@ -15,6 +16,7 @@ import {
 } from "services/admin/products";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
+import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import ViewProducts from "./ViewProducts";
 import AcceptRejectModal from "./AcceptRejectmodal";
@@ -60,10 +62,24 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   const [images, setImages] = useState([]);
   const [filterData, setFilterData] = useState([]);
 
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
+    }
+    if (ele === "Delete") {
+      deleteProduct(val.productVariationId);
     }
   };
 
@@ -460,7 +476,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   showSearchFilter={false}
                   dateFilterBtnName="+ New Product"
                   showFilterButton
-                  filterData={filterData}
+                  filterData={[]}
                   getFilteredValues={(value) => {
                     getFilteredValue(value);
                     setFilterData(value);

@@ -32,6 +32,7 @@ const InputBox = ({
   textInputProps = {},
   showAutoCompleteOff = "on",
   labelColorWhite = null,
+  onFocus = () => {},
   onEnter = () => {},
 }) => {
   const getIcons = () => {
@@ -88,6 +89,7 @@ const InputBox = ({
         multiline={isMultiline}
         rows={rows}
         fullWidth={fullWidth}
+        onFocus={onFocus}
         InputProps={{
           endAdornment: iconName !== "" && (
             <InputAdornment position="end">

@@ -67,6 +67,7 @@ const MyProfile = () => {
   const dispatch = useDispatch();
 
   const cities = City.getCitiesOfCountry("IN");
+
   const citiesList = cities.map((ele) => ({
     label: ele.name,
     value: ele.name,

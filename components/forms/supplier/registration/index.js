@@ -7,6 +7,7 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
 import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { City } from "country-state-city";
 
 const RegistrationForm = ({
   formValues = {},
@@ -15,6 +16,14 @@ const RegistrationForm = ({
   setFormValues = () => {},
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
+
+  const cities = City.getCitiesOfCountry("IN");
+
+  const citiesList = cities.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+    id: ele.name,
+  }));
   const getMainCategories = async () => {
     const { data } = await serviceUtil.get(
       `products/main-category/drop-down-list`
@@ -159,10 +168,7 @@ const RegistrationForm = ({
         </Grid>
         <Grid item md={6} sm={12}>
           <SimpleDropdownComponent
-            list={[
-              { label: "Bangalore", value: "Bangalore", id: 1 },
-              { label: "Mysore", value: "Mysore", id: 3 },
-            ]}
+            list={[...citiesList]}
             label="Choose City"
             required
             placeholder="Choose City"

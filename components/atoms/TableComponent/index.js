@@ -262,7 +262,7 @@ const FilterMenu = ({
     temp.forEach((ele) => {
       ele.isSelected = false;
       ele.isExpand = false;
-      ele.value.forEach((e) => {
+      ele?.value?.forEach((e) => {
         e.isSelected = false;
       });
       // const some = ele.value.some((item) => item.isSelected);
