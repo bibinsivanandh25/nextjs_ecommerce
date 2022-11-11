@@ -126,20 +126,19 @@ const Queries = ({
       label: "Issue Subject",
       data_align: "center",
     },
-    { id: "col7", align: "center", label: "Answers", data_align: "center" },
     {
-      id: "col8",
+      id: "col7",
       align: "center",
       label: "Created Date & Time",
       data_align: "center",
     },
     {
-      id: "col9",
+      id: "col8",
       align: "center",
       label: "Ticket Status",
       data_align: "center",
     },
-    { id: "col10", align: "center", label: "Action", data_align: "center" },
+    { id: "col9", align: "center", label: "Action", data_align: "center" },
   ];
 
   const theTaleRowsData = () => {
