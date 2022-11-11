@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import ShowPreviousInvoices from "components/forms/supplier/myorder/showpreviousorder";
 import { useRouter } from "next/router";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
-import logo from "../../../../../public/assets/logo.jpeg";
+// import logo from "../../../../../public/assets/logo.jpeg";
 import styles from "./GenerateInvoiceandmanifest.module.css";
 
 const Generateinvoiceandmanifest = () => {
@@ -113,7 +113,7 @@ const Generateinvoiceandmanifest = () => {
   const rows = [
     {
       id: "1",
-      col1: <Image src={logo} height={50} width={50} />,
+      col1: <Image src="" height={50} width={50} />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "IN1234",
@@ -125,7 +125,7 @@ const Generateinvoiceandmanifest = () => {
     },
     {
       id: "2",
-      col1: <Image src={logo} height={50} width={50} />,
+      col1: <Image src="" height={50} width={50} />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",

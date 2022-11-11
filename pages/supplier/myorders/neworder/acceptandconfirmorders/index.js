@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import OrderConfirmModal from "@/forms/supplier/myorder/orderconfirmodal";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
-import logo from "../../../../../public/assets/logo.jpeg";
+// import logo from "../../../../../public/assets/logo.jpeg";
 
 const AcceptandConfirmOrder = () => {
   const [dropDownValue, setDropDownValue] = useState();
@@ -143,7 +143,7 @@ const AcceptandConfirmOrder = () => {
   const rows = [
     {
       id: "1",
-      col1: <Image src={logo} height={50} width={50} alt="" />,
+      col1: <Image src="" height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -167,7 +167,7 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "2",
-      col1: <Image src={logo} height={50} width={50} alt="" />,
+      col1: <Image src="" height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -191,7 +191,7 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "3",
-      col1: <Image src={logo} height={50} width={50} alt="" />,
+      col1: <Image src="" height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",
@@ -218,7 +218,7 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "4",
-      col1: <Image src={logo} height={50} width={50} alt="" />,
+      col1: <Image src="" height={50} width={50} alt="" />,
       col2: "#23234342",
       col3: "#23234342",
       col4: "SL1234",

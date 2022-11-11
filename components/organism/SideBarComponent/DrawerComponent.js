@@ -328,6 +328,12 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         temp.push(...getCapabilityPathList(item.child));
       }
     });
+    temp.push(
+      ...[
+        "/supplier/products&inventory/myproducts/viewModal",
+        "/supplier/myaccount",
+      ]
+    );
     return temp;
   };
 
@@ -458,13 +464,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           title={!open ? item.title : ""}
                           placement="right"
                         >
-                          {/* <object
-                            id={`svg${index}`}
-                            data={item.logo}
-                            type="image/svg+xml"
-                            style={{ width: "20px" }}
-                          ></object> */}
-                          <Image height={15} width={15} src={item.logo} />
+                          <Image height={18} width={18} src={item.logo} />
                         </Tooltip>
                       </ListItemIcon>
                       <ListItemText

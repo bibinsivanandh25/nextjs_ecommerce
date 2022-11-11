@@ -21,8 +21,8 @@ import Layout from "../components/organism/Layout";
 import Loading from "../components/organism/Loading";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
-import Image from "next/image";
-import Loader from "public/assets/loader.gif";
+// import Image from "next/image";
+// import Loader from "public/assets/loader.gif";
 
 function MyApp({ Component, pageProps, router }) {
   useEffect(() => {
@@ -101,7 +101,8 @@ function MyApp({ Component, pageProps, router }) {
         <ErrorBoundary>
           <div id="loader" style={{ display: "none" }}>
             {/* <div className="spinner" /> */}
-            <Image width={300} height={300} src={Loader} />
+            {/* <Image width={300} height={300} src={Loader} /> */}
+            <span className="loader" />
           </div>
           <PersistGate loading={null} persistor={persistor}>
             <motion.div
