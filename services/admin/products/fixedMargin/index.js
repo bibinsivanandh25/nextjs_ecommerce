@@ -1,8 +1,9 @@
 import serviceUtil from "services/utils";
 
-const getAdminProductsByFilter = (payLoad) => {
+const getAdminProductsByFilter = (payLoad, pageNumber) => {
+  const pageSize = 40;
   return serviceUtil
-    .post(`products/admin/products/0/20`, payLoad)
+    .post(`products/admin/products/${pageNumber}/${pageSize}`, payLoad)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
