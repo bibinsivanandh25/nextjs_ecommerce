@@ -238,6 +238,8 @@ const FilterMenu = ({
   setPage = () => {},
   setTableFilterList = () => {},
   getFilteredValuesOnCheckBoxClick = false,
+  showFilterList = true,
+  onFilterButtonClick = () => {},
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [filterData, setFilterData] = useState([]);
@@ -385,7 +387,10 @@ const FilterMenu = ({
           iconName="filter"
           iconColorClass="color-orange"
           variant="outlined"
-          onBtnClick={handleClick}
+          onBtnClick={() => {
+            if (showFilterList) handleClick();
+            else onFilterButtonClick();
+          }}
         />
       </Grid>
 
@@ -436,6 +441,8 @@ const FilterMenu = ({
   );
 };
 export default function TableComponent({
+  onFilterButtonClick = () => {},
+  showFilterList = true,
   showPagination = true,
   showCheckbox = false,
   table_heading = "",
@@ -665,6 +672,8 @@ export default function TableComponent({
             {showFilterButton && (
               <Grid item sm={2}>
                 <FilterMenu
+                  onFilterButtonClick={onFilterButtonClick}
+                  showFilterList={showFilterList}
                   getFilteredValuesOnCheckBoxClick={
                     getFilteredValuesOnCheckBoxClick
                   }
@@ -932,6 +941,8 @@ export default function TableComponent({
           {showFilterButton && (
             <Grid item sm={3}>
               <FilterMenu
+                onFilterButtonClick={onFilterButtonClick}
+                showFilterList={showFilterList}
                 getFilteredValuesOnCheckBoxClick={
                   getFilteredValuesOnCheckBoxClick
                 }

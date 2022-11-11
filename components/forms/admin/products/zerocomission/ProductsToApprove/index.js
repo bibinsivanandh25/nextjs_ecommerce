@@ -9,10 +9,10 @@ import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import {
   deleteProducts,
-  getBrands,
-  getMainCategories,
-  getProductTitles,
-  getSubCategories,
+  // getBrands,
+  // getMainCategories,
+  // getProductTitles,
+  // getSubCategories,
 } from "services/admin/products";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
@@ -25,6 +25,7 @@ import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
+import FilterModal from "../../FilterModal";
 
 const ProductsToApprove = ({ getCount = () => {} }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -41,6 +42,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     useState(false);
   const [showFlagModal, setShowFlagModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
@@ -52,7 +54,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     salePriceAndMrp: "",
     discounts: "",
   });
-
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [categoryIds, setCategoryIds] = useState([]);
   const [subCategoryIds, setSubCategoryIds] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -60,13 +62,12 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   const [products, setProducts] = useState([]);
 
   const [images, setImages] = useState([]);
-  const [filterData, setFilterData] = useState([]);
 
   const deleteProduct = async (id) => {
     const { data, err } = await deleteProducts(id);
     if (data) {
       toastify(data?.message, "success");
-      getTableData();
+      getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -83,127 +84,9 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     }
   };
 
-  const getAllInitialFilters = () => {
-    const subCategoryPayload = [];
-    const productPayload = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      commissionType: "ZERO_COMMISSION",
-      status: "INITIATED",
-    };
-    const BrandsPayload = {
-      categoryIds: [],
-      subCategoryIds: [],
-      commissionType: "ZERO_COMMISSION",
-      status: "APPROVED",
-    };
-
-    const mainCategories = () =>
-      getMainCategories("ZERO_COMMISSION").then((res) => {
-        return { categories: res.data };
-      });
-    const subCategories = () =>
-      getSubCategories("ZERO_COMMISSION", subCategoryPayload).then((res) => {
-        return { subCategories: res.data };
-      });
-    const productTitles = () =>
-      getProductTitles(productPayload).then((res) => {
-        return {
-          Products: res.data,
-        };
-      });
-    const Brands = () =>
-      getBrands(BrandsPayload).then((res) => {
-        return {
-          brands: res.data,
-        };
-      });
-    const promiseArr = [
-      mainCategories(),
-      subCategories(),
-      productTitles(),
-      Brands(),
-    ];
-    Promise.all(promiseArr).then((data) => {
-      const temp = [
-        { name: "categories", value: [] },
-        { name: "Sub Categories", value: [] },
-        { name: "Brands", value: [] },
-        { name: "Products", value: [] },
-      ];
-      if (data) {
-        data.forEach((ele) => {
-          ele.categories?.forEach((item) => {
-            temp[0].value.push({
-              item: item.name,
-              id: item.id,
-              isSelected: false,
-            });
-          });
-          ele.subCategories?.forEach((item) => {
-            temp[1].value.push({
-              item: item.name,
-              id: item.id,
-              isSelected: false,
-            });
-          });
-          ele.brands?.forEach((item) => {
-            temp[2].value.push({
-              item: item.name,
-              isSelected: false,
-            });
-          });
-          ele.Products?.forEach((item) => {
-            temp[3].value.push({
-              item: item.name,
-              isSelected: false,
-            });
-          });
-        });
-      }
-      setFilterData([...temp]);
-    });
-  };
-
-  const getProductTitleData = async () => {
-    const payload = {
-      categoryIds,
-      subCategoryIds,
-      brandNames: brands,
-      commissionType: "ZERO_COMMISSION",
-      status: "INITIATED",
-    };
-    const { data } = await getProductTitles(payload);
-    if (data) {
-      return {
-        Products: data,
-      };
-    }
-  };
-  const getBrandsDropDown = async () => {
-    const payload = {
-      categoryIds,
-      subCategoryIds,
-      commissionType: "ZERO_COMMISSION",
-      status: "APPROVED",
-    };
-    const { data } = await getBrands(payload);
-    return {
-      brands: data,
-    };
-  };
-  const getSubCategoriesData = async () => {
-    const payload = categoryIds;
-    const { data } = await getSubCategories("ZERO_COMMISSION", payload);
-    return {
-      subCategories: data,
-    };
-  };
-
   useEffect(() => {
     getTableData();
-    getAllInitialFilters();
+    // getAllInitialFilters();
   }, []);
 
   const options = [
@@ -255,204 +138,116 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
 
-  const getTableData = async () => {
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      result.push({
+        id: index + 1,
+        col1: (
+          <>
+            <Typography className="fs-12 text-primary">
+              {val.supplierId}
+            </Typography>
+            <Typography className="fs-12 text-primary">
+              {val.supplierName}
+            </Typography>
+          </>
+        ),
+        col2: val.variationMedia ? (
+          <Box className="d-flex align-items-end justify-content-center">
+            <Box
+              onClick={() => {
+                setImages([...val.variationMedia]);
+                setImageIndexForImageModal(0);
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
+              <Image
+                src={val.variationMedia[0]}
+                width="50"
+                height="50"
+                className="cursor-pointer"
+              />
+            </Box>
+            <Typography className="h-5">
+              /{val.variationMedia.length}
+            </Typography>
+          </Box>
+        ) : null,
+        col3: <Typography className="h-5">{val.productTitle}</Typography>,
+        col4: <Typography className="h-5">{val.skuId}</Typography>,
+        col5: (
+          <>
+            <Typography className="h-5">{val.categoryName}</Typography>
+            <Typography className="h-5">{val.subCategoryName}</Typography>
+          </>
+        ),
+        col6: (
+          <>
+            <Typography className="h-5">
+              {val.weightInclusivePackage}
+            </Typography>
+            <Typography className="h-5">{val.volume}</Typography>
+          </>
+        ),
+        col7: val.stockQty,
+        col8: (
+          <Typography className="h-5">
+            &#8377; {val.salePrice}/ &#8377; {val.mrp}
+          </Typography>
+        ),
+        col9: val.brand,
+        col10: (
+          <Box className="d-flex justify-content-evenly align-items-center">
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => setShowViewProducts(true)}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, val);
+              }}
+              options={options}
+              IconclassName="fs-18 color-gray"
+            />
+          </Box>
+        ),
+      });
+    });
+    return result;
+  };
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
     const payLoad = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      productVariationIds: [],
-      dateFrom: "",
-      dateTo: "",
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? "",
+      dateTo: date?.toDate ?? "",
       commissionType: "ZERO_COMMISSION",
       status: "INITIATED",
     };
-    const { data } = await getAdminProductsByFilter(payLoad);
+    const { data } = await getAdminProductsByFilter(payLoad, page);
     if (data) {
-      const result = [];
-      data?.forEach((val, index) => {
-        result.push({
-          id: index + 1,
-          col1: (
-            <>
-              <Typography className="fs-12 text-primary">
-                {val.supplierId}
-              </Typography>
-              <Typography className="fs-12 text-primary">
-                {val.supplierName}
-              </Typography>
-            </>
-          ),
-          col2: val.variationMedia ? (
-            <Box className="d-flex align-items-end justify-content-center">
-              <Box
-                onClick={() => {
-                  setImages([...val.variationMedia]);
-                  setImageIndexForImageModal(0);
-                  setModalId(index);
-                  setOpenImagesArrayModal(true);
-                }}
-                className="h-30 border d-flex justify-content-center"
-              >
-                <Image
-                  src={val.variationMedia[0]}
-                  width="50"
-                  height="50"
-                  className="cursor-pointer"
-                />
-              </Box>
-              <Typography className="h-5">
-                /{val.variationMedia.length}
-              </Typography>
-            </Box>
-          ) : null,
-          col3: <Typography className="h-5">{val.productTitle}</Typography>,
-          col4: <Typography className="h-5">{val.skuId}</Typography>,
-          col5: (
-            <>
-              <Typography className="h-5">{val.categoryName}</Typography>
-              <Typography className="h-5">{val.subCategoryName}</Typography>
-            </>
-          ),
-          col6: (
-            <>
-              <Typography className="h-5">
-                {val.weightInclusivePackage}
-              </Typography>
-              <Typography className="h-5">{val.volume}</Typography>
-            </>
-          ),
-          col7: val.stockQty,
-          col8: (
-            <Typography className="h-5">
-              &#8377; {val.salePrice}/ &#8377; {val.mrp}
-            </Typography>
-          ),
-          col9: val.brand,
-          col10: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => setShowViewProducts(true)}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele, val);
-                }}
-                options={options}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        });
-      });
-
-      setTableRows([...result]);
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      }
     }
   };
-
-  const getFilteredValue = (value) => {
-    const temp = JSON.parse(JSON.stringify(value));
-    const tempCategoryIds = [];
-    temp[0].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempCategoryIds.push(i.id);
-      }
-    });
-    if (JSON.stringify(categoryIds) != JSON.stringify(tempCategoryIds))
-      setCategoryIds([...tempCategoryIds]);
-    const tempSubCategoryIds = [];
-    temp[1].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempSubCategoryIds.push(i.id);
-      }
-    });
-    if (JSON.stringify(subCategoryIds) != JSON.stringify(tempSubCategoryIds))
-      setSubCategoryIds([...tempSubCategoryIds]);
-    const tempBrands = [];
-    temp[2].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempBrands.push(i.item);
-      }
-    });
-
-    if (JSON.stringify(brands) != JSON.stringify(tempBrands))
-      setBrands([...tempBrands]);
-  };
-
-  useEffect(() => {
-    setSubCategoryIds([]);
-    setBrands([]);
-    setProducts([]);
-    const promiseArr = [
-      getSubCategoriesData(),
-      getBrandsDropDown(),
-      getProductTitleData(),
-    ];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[1].value = data[0]?.subCategories?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          temp[2].value = data[1]?.brands?.map((i) => ({
-            item: i.name,
-            isSelected: false,
-          }));
-          temp[3].value = data[2]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
-    });
-  }, [categoryIds]);
-
-  useEffect(() => {
-    setBrands([]);
-    setProducts([]);
-    const promiseArr = [getBrandsDropDown(), getProductTitleData()];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[2].value = data[0]?.brands?.map((i) => ({
-            item: i.name,
-            isSelected: false,
-          }));
-          temp[3].value = data[1]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
-    });
-  }, [subCategoryIds]);
-
-  useEffect(() => {
-    setProducts([]);
-    const promiseArr = [getProductTitleData()];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[3].value = data[0]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
-    });
-  }, [brands]);
 
   return (
     <>
@@ -465,8 +260,11 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             >
               <Box className="px-1 pt-2">
                 <TableComponent
+                  showFilterList={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
+                  }}
                   columns={columns}
-                  getFilteredValuesOnCheckBoxClick
                   tHeadBgColor="bg-light-gray"
                   tableRows={tableRows}
                   showDateFilterBtn
@@ -476,26 +274,36 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   showSearchFilter={false}
                   dateFilterBtnName="+ New Product"
                   showFilterButton
-                  filterData={[]}
-                  getFilteredValues={(value) => {
-                    getFilteredValue(value);
-                    setFilterData(value);
-                  }}
                   dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
+                    // setProductDetails({
+                    //   vendorIdOrName: "",
+                    //   images: "",
+                    //   productTitle: "",
+                    //   sku: "",
+                    //   categorySubcategory: "",
+                    //   weightOrVolume: "",
+                    //   totalStock: "",
+                    //   salePriceAndMrp: "",
+                    //   discounts: "",
+                    // });
                     setImageArray([]);
                     setOpenEditModal(true);
                     setModalId(null);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    dateFilter
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
                   }}
                 />
               </Box>
@@ -517,6 +325,20 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
         modalId={modalId}
         rowsDataObjects={tableRows}
       />
+      {showFilterModal && (
+        <FilterModal
+          status="INITIATED"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
       {/* Images Modal Component */}
       <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}

@@ -148,7 +148,7 @@ const ApprovedTools = () => {
     return result;
   };
   const getTableData = async (
-    page = pageNumber,
+    page = pageNumber ?? 0,
     dateFilter = {
       fromDate: "",
       toDate: "",
@@ -173,6 +173,7 @@ const ApprovedTools = () => {
   useEffect(() => {
     getTableData(0);
   }, []);
+
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
