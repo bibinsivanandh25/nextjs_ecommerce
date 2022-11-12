@@ -492,6 +492,7 @@ export default function TableComponent({
   getFilteredValues = () => {},
   getFilteredValuesOnCheckBoxClick = false,
   showDateFilterDropDown = false,
+  showFromToDateFilter = true,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -655,7 +656,7 @@ export default function TableComponent({
         </Grid>
         <Grid
           container
-          justifyContent="end"
+          justifyContent="center"
           alignItems="center"
           item
           md={10.5}
@@ -667,10 +668,17 @@ export default function TableComponent({
             container
             display="flex"
             alignItems="center"
-            justifyContent={showDateFilterSearch ? "center" : "end"}
+            justifyContent="end"
+            spacing={1}
           >
             {showFilterButton && (
-              <Grid item sm={2}>
+              <Grid
+                item
+                sm={2}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
                 <FilterMenu
                   onFilterButtonClick={onFilterButtonClick}
                   showFilterList={showFilterList}
@@ -733,117 +741,121 @@ export default function TableComponent({
                 />
               </Grid>
             )}
-            <Grid
-              item
-              md={3.1}
-              className="d-flex align-items-center justify-content-center"
-            >
-              <span className="fs-12">From date:</span>
-              <span className=" bg-orange mx-1 rounded cursor-pointer">
-                <AiOutlineCalendar
-                  className="m-1 color-white"
-                  onClick={() => {
-                    dateFromRef.current.showPicker();
-                  }}
-                />
-              </span>
+            {showFromToDateFilter ? (
+              <>
+                <Grid
+                  item
+                  md={3.1}
+                  className="d-flex align-items-center justify-content-center"
+                >
+                  <span className="fs-12">From date:</span>
+                  <span className=" bg-orange mx-1 rounded cursor-pointer">
+                    <AiOutlineCalendar
+                      className="m-1 color-white"
+                      onClick={() => {
+                        dateFromRef.current.showPicker();
+                      }}
+                    />
+                  </span>
 
-              <span>
-                {filteredDates.fromDate !== ""
-                  ? format(new Date(filteredDates.fromDate), "MM-dd-yyyy")
-                  : "mm-dd-yyyy"}
-              </span>
-              <input
-                ref={dateFromRef}
-                type="date"
-                value={filteredDates.fromDate}
-                className="position-absolute invisible"
-                onChange={(e) => {
-                  setFilteredDates((pre) => ({
-                    ...pre,
-                    fromDate: e.target.value,
-                  }));
-                  if (
-                    (filteredDates.toDate &&
-                      (e.target.value || filteredDates.fromDate)) ||
-                    (filteredDates.toDate === "" &&
-                      e.target.value === "" &&
-                      filteredDates.fromDate === "")
-                  ) {
-                    handlePageEnd(searchText, searchFilter?.value, 0, {
-                      toDate: filteredDates.toDate
-                        ? `${format(
-                            new Date(filteredDates.toDate),
-                            "MM-dd-yyyy"
-                          )} 23:59:59`
-                        : "",
-                      fromDate: e.target.value
-                        ? `${format(
-                            new Date(e.target.value),
-                            "MM-dd-yyyy"
-                          )} 00:00:00`
-                        : "",
-                    });
-                  }
-                }}
-                // max={dateValue.to}
-              />
-            </Grid>
-            <Grid
-              item
-              md={2.9}
-              className="d-flex align-items-center justify-content-center"
-            >
-              <span className="fs-12">To date:</span>
-              <span className=" bg-orange mx-1 rounded cursor-pointer">
-                <AiOutlineCalendar
-                  className="m-1 color-white"
-                  onClick={() => {
-                    dateToRef.current.showPicker();
-                  }}
-                />
-              </span>
-              <span>
-                {filteredDates.toDate !== ""
-                  ? format(new Date(filteredDates.toDate), "MM-dd-yyyy")
-                  : "mm-dd-yyyy"}
-              </span>
-              <input
-                ref={dateToRef}
-                type="date"
-                value={filteredDates.toDate}
-                className="position-absolute invisible"
-                onChange={(e) => {
-                  setFilteredDates((pre) => ({
-                    ...pre,
-                    toDate: e.target.value,
-                  }));
-                  if (
-                    (filteredDates.fromDate &&
-                      (e.target.value || filteredDates.toDate)) ||
-                    (filteredDates.fromDate === "" &&
-                      e.target.value === "" &&
-                      filteredDates.toDate === "")
-                  ) {
-                    handlePageEnd(searchText, searchFilter?.value, 0, {
-                      fromDate: filteredDates.fromDate
-                        ? `${format(
-                            new Date(filteredDates.fromDate),
-                            "MM-dd-yyyy"
-                          )} 00:00:00`
-                        : "",
-                      toDate: e.target.value
-                        ? `${format(
-                            new Date(e.target.value),
-                            "MM-dd-yyyy"
-                          )} 23:59:59`
-                        : "",
-                    });
-                  }
-                }}
-                // min={dateValue.from}
-              />
-            </Grid>
+                  <span>
+                    {filteredDates.fromDate !== ""
+                      ? format(new Date(filteredDates.fromDate), "MM-dd-yyyy")
+                      : "mm-dd-yyyy"}
+                  </span>
+                  <input
+                    ref={dateFromRef}
+                    type="date"
+                    value={filteredDates.fromDate}
+                    className="position-absolute invisible"
+                    onChange={(e) => {
+                      setFilteredDates((pre) => ({
+                        ...pre,
+                        fromDate: e.target.value,
+                      }));
+                      if (
+                        (filteredDates.toDate &&
+                          (e.target.value || filteredDates.fromDate)) ||
+                        (filteredDates.toDate === "" &&
+                          e.target.value === "" &&
+                          filteredDates.fromDate === "")
+                      ) {
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
+                          toDate: filteredDates.toDate
+                            ? `${format(
+                                new Date(filteredDates.toDate),
+                                "MM-dd-yyyy"
+                              )} 23:59:59`
+                            : "",
+                          fromDate: e.target.value
+                            ? `${format(
+                                new Date(e.target.value),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                        });
+                      }
+                    }}
+                    // max={dateValue.to}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  md={2.9}
+                  className="d-flex align-items-center justify-content-center"
+                >
+                  <span className="fs-12">To date:</span>
+                  <span className=" bg-orange mx-1 rounded cursor-pointer">
+                    <AiOutlineCalendar
+                      className="m-1 color-white"
+                      onClick={() => {
+                        dateToRef.current.showPicker();
+                      }}
+                    />
+                  </span>
+                  <span>
+                    {filteredDates.toDate !== ""
+                      ? format(new Date(filteredDates.toDate), "MM-dd-yyyy")
+                      : "mm-dd-yyyy"}
+                  </span>
+                  <input
+                    ref={dateToRef}
+                    type="date"
+                    value={filteredDates.toDate}
+                    className="position-absolute invisible"
+                    onChange={(e) => {
+                      setFilteredDates((pre) => ({
+                        ...pre,
+                        toDate: e.target.value,
+                      }));
+                      if (
+                        (filteredDates.fromDate &&
+                          (e.target.value || filteredDates.toDate)) ||
+                        (filteredDates.fromDate === "" &&
+                          e.target.value === "" &&
+                          filteredDates.toDate === "")
+                      ) {
+                        handlePageEnd(searchText, searchFilter?.value, 0, {
+                          fromDate: filteredDates.fromDate
+                            ? `${format(
+                                new Date(filteredDates.fromDate),
+                                "MM-dd-yyyy"
+                              )} 00:00:00`
+                            : "",
+                          toDate: e.target.value
+                            ? `${format(
+                                new Date(e.target.value),
+                                "MM-dd-yyyy"
+                              )} 23:59:59`
+                            : "",
+                        });
+                      }
+                    }}
+                    // min={dateValue.from}
+                  />
+                </Grid>
+              </>
+            ) : null}
             {showDateFilterSearch ? (
               <Grid
                 item
