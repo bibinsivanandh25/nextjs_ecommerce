@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -5,9 +6,13 @@ import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import toastify from "services/utils/toastUtils";
 import { deleteProducts } from "services/admin/products";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  getAdminProductsByFilter,
+  raiseQuery,
+} from "services/admin/products/fixedMargin";
 import { useDispatch } from "react-redux";
 import { updateProduct, viewProduct } from "features/productsSlice";
 import { getVariation } from "services/supplier/myProducts";
@@ -49,7 +54,12 @@ const Updated = ({
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
 
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
-
+  const [helpSupportModal, sethelpSupportModal] = useState({
+    show: false,
+    type: "",
+    to: {},
+    productVariationId: null,
+  });
   const [modalId, setModalId] = useState(null);
   const [tableRows, setTableRows] = useState([]);
   const [images, setImages] = useState([]);
@@ -132,6 +142,18 @@ const Updated = ({
           flagged: false,
         },
       ]);
+    }
+    if (ele === "Raise Query") {
+      sethelpSupportModal({
+        show: true,
+        type: "ACTIVE_PRODUCT",
+        to: {
+          id: val.supplierId,
+          label: val.supplierName,
+          value: val.supplierId,
+        },
+        productVariationId: val?.productVariationId,
+      });
     }
   };
 
@@ -246,75 +268,53 @@ const Updated = ({
       }
     }
   };
+  const saveQuery = async (val) => {
+    const payload = {
+      issueType: "PRODUCT_RELATED_ISSUE",
+      issueSubject: val.issueSubject,
+      userFromType: "ADMIN",
+      userFromId: val.userFromId,
+      userToType: "SUPPLIER",
+      userToId: val.userToId,
+      mediaUrl: [...val.mediaUrl],
+      helpSupportMessagePojos: [...val.helpSupportMessagePojos],
+      productVariationId: helpSupportModal.productVariationId,
+    };
+    const { data, message, err } = await raiseQuery(payload);
+    if (data) {
+      toastify(message, "success");
+      sethelpSupportModal({
+        show: false,
+        type: "",
+        to: {},
+        productVariationId: null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   useEffect(() => {
     getTableData();
   }, []);
 
-  //   const anArray = [];
-  //   rowsDataObjectsForUpdated.forEach((val, index) => {
-  //     anArray.push({
-  //       id: index + 1,
-  //       col1: (
-  //         <Typography className="fs-12 text-primary">{val.col1}</Typography>
-  //       ),
-  //       col2: (
-  //         <Box className="d-flex align-items-end justify-content-center">
-  //           <Box
-  //             onClick={() => {
-  //               setImages([...val.col2.imgSrc]);
-  //               setModalId(index);
-  //               setOpenImagesArrayModal(true);
-  //               setImageIndexForImageModal(0);
-  //             }}
-  //             className="h-30 border d-flex justify-content-center"
-  //           >
-  //             <Image
-  //               src={val.col2.imgSrc[0]}
-  //               width="50"
-  //               height="50"
-  //               className="cursor-pointer"
-  //             />
-  //           </Box>
-  //           <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-  //         </Box>
-  //       ),
-  //       col3: val.col3,
-  //       col4: val.col4,
-  //       col5: val.col5,
-  //       col6: val.col6,
-  //       col7: (
-  //         <Box className="d-flex justify-content-evenly align-items-center">
-  //           <CustomIcon
-  //             onIconClick={() => {
-  //               setOpenEditModalForUpdated(true);
-  //             }}
-  //             type="view"
-  //             className="fs-18"
-  //           />
-  //           <MenuOption
-  //             getSelectedItem={(ele) => {
-  //               // console.log("Index", index);
-  //               // console.log("ele ", typeof ele);
-  //               onClickOfMenuItem(ele, index);
-  //             }}
-  //             options={options}
-  //             IconclassName="fs-18 color-gray"
-  //           />
-  //         </Box>
-  //       ),
-  //     });
-  //   });
-  //   setTableRows(anArray);
-  // };
-
-  // useEffect(() => {
-  //   theTableRowsData();
-  // }, []);
-
   return (
     <>
-      {!showViewProducts ? (
+      {helpSupportModal.show ? (
+        <CreateTicket
+          setShowCreateTicketComponent={() => {
+            sethelpSupportModal({
+              show: false,
+              type: "",
+              to: {},
+              productVariationId: null,
+            });
+          }}
+          type={helpSupportModal.type}
+          to={helpSupportModal.to}
+          submit={saveQuery}
+        />
+      ) : !showViewProducts ? (
         <Box>
           <Box>
             <Paper

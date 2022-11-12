@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
@@ -6,7 +7,10 @@ import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  getAdminProductsByFilter,
+  raiseQuery,
+} from "services/admin/products/fixedMargin";
 import {
   deleteProducts,
   // getBrands,
@@ -21,6 +25,7 @@ import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
 import { updateProduct, viewProduct } from "features/productsSlice";
+import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
@@ -63,6 +68,12 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   const [brands, setBrands] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
+  const [helpSupportModal, sethelpSupportModal] = useState({
+    show: false,
+    type: "",
+    to: {},
+    productVariationId: null,
+  });
 
   const [images, setImages] = useState([]);
 
@@ -102,6 +113,18 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
           flagged: false,
         },
       ]);
+    }
+    if (ele === "Raise Query") {
+      sethelpSupportModal({
+        show: true,
+        type: "ACTIVE_PRODUCT",
+        to: {
+          id: val.supplierId,
+          label: val.supplierName,
+          value: val.supplierId,
+        },
+        productVariationId: val?.productVariationId,
+      });
     }
   };
 
@@ -286,10 +309,50 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     }
   };
 
+  const saveQuery = async (val) => {
+    const payload = {
+      issueType: "PRODUCT_RELATED_ISSUE",
+      issueSubject: val.issueSubject,
+      userFromType: "ADMIN",
+      userFromId: val.userFromId,
+      userToType: "SUPPLIER",
+      userToId: val.userToId,
+      mediaUrl: [...val.mediaUrl],
+      helpSupportMessagePojos: [...val.helpSupportMessagePojos],
+      productVariationId: helpSupportModal.productVariationId,
+    };
+    const { data, message, err } = await raiseQuery(payload);
+    if (data) {
+      toastify(message, "success");
+      sethelpSupportModal({
+        show: false,
+        type: "",
+        to: {},
+        productVariationId: null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <>
       <Box>
-        {!showViewProducts ? (
+        {helpSupportModal.show ? (
+          <CreateTicket
+            setShowCreateTicketComponent={() => {
+              sethelpSupportModal({
+                show: false,
+                type: "",
+                to: {},
+                productVariationId: null,
+              });
+            }}
+            type={helpSupportModal.type}
+            to={helpSupportModal.to}
+            submit={saveQuery}
+          />
+        ) : !showViewProducts ? (
           <Box>
             <Paper
               sx={{ height: "78vh" }}
@@ -312,17 +375,6 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   dateFilterBtnName="+ New Product"
                   showFilterButton
                   dateFilterBtnClick={() => {
-                    // setProductDetails({
-                    //   vendorIdOrName: "",
-                    //   images: "",
-                    //   productTitle: "",
-                    //   sku: "",
-                    //   categorySubcategory: "",
-                    //   weightOrVolume: "",
-                    //   totalStock: "",
-                    //   salePriceAndMrp: "",
-                    //   discounts: "",
-                    // });
                     setImageArray([]);
                     setOpenEditModal(true);
                     setModalId(null);
