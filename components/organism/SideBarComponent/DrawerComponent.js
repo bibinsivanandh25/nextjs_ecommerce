@@ -20,11 +20,12 @@ import MuiDrawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+// import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useDispatch, useSelector } from "react-redux";
 import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
 import adminNav from "constants/adminNav";
+import Image from "next/image";
 import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
@@ -327,6 +328,12 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         temp.push(...getCapabilityPathList(item.child));
       }
     });
+    temp.push(
+      ...[
+        "/supplier/products&inventory/myproducts/viewModal",
+        "/supplier/myaccount",
+      ]
+    );
     return temp;
   };
 
@@ -445,6 +452,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           mr: open ? 1 : "auto",
                           justifyContent: "center",
                           // color: item.selected && "#e56700",
+                          margin: open ? "" : "0px",
                         }}
                         className={`${
                           route.pathname.includes(item.pathName)
@@ -456,7 +464,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           title={!open ? item.title : ""}
                           placement="right"
                         >
-                          <InboxIcon />
+                          <Image height={18} width={18} src={item.logo} />
                         </Tooltip>
                       </ListItemIcon>
                       <ListItemText
@@ -476,7 +484,10 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                             {item.title}
                           </Typography>
                         }
-                        sx={{ opacity: open ? 1 : 0 }}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          display: open ? "block" : "none",
+                        }}
                       />
                     </ListItemButton>
                   ) : (

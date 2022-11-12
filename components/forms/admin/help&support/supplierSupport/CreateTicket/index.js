@@ -17,6 +17,9 @@ import toastify from "services/utils/toastUtils";
 const CreateTicket = ({
   setShowCreateTicketComponent = () => {},
   getTabledata = () => {},
+  type = "",
+  to = {},
+  submit = () => {},
 }) => {
   const [mediaConverted, setMediaConverted] = useState([]);
 
@@ -52,6 +55,11 @@ const CreateTicket = ({
       value: "RETURN_AND_REFUND",
     },
     {
+      id: "PRODUCT_RELATED_ISSUE",
+      label: "Product Releated Issue",
+      value: "PRODUCT_RELATED_ISSUE",
+    },
+    {
       id: "LOGISTICS_RELATED_ISSUE",
       label: "Logistic Related Issue",
       value: "LOGISTICS_RELATED_ISSUE",
@@ -63,7 +71,7 @@ const CreateTicket = ({
     },
     {
       id: "PROFILE_RELATED_ISSUE",
-      lable: "Profile Related Issue",
+      label: "Profile Related Issue",
       value: "PROFILE_RELATED_ISSUE",
     },
     {
@@ -99,6 +107,21 @@ const CreateTicket = ({
   });
 
   const [orderIdDisplay, setorderIdDisplay] = useState(false);
+  useEffect(() => {
+    if (type === "ACTIVE_PRODUCT" && suplierList.length) {
+      setFormValue((pre) => {
+        return {
+          ...pre,
+          issueType: {
+            id: "PRODUCT_RELATED_ISSUE",
+            label: "Product Related Issue",
+            value: "PRODUCT_RELATED_ISSUE",
+          },
+          userToId: to,
+        };
+      });
+    }
+  }, [type, suplierList, to]);
 
   useEffect(() => {
     if (formValue.issueType.value == "ORDER_RELATED_ISSUE") {
@@ -136,10 +159,6 @@ const CreateTicket = ({
       flag = true;
     }
     setErrorObj({ ...errObj });
-    if (!flag) {
-      // route.push("/supplier/helpandsupport");
-      setShowCreateTicketComponent(false);
-    }
     return flag;
   };
 
@@ -168,15 +187,19 @@ const CreateTicket = ({
   const handleSubmit = async () => {
     if (!validateFields()) {
       const payload = createPayload();
-      const { data, err } = await helpandSupportTicket(payload);
-      if (data) {
-        toastify(data.message, "success");
-        setShowCreateTicketComponent(false);
-        getTabledata(0);
-      }
-      if (err) {
-        toastify(err?.response?.data?.message, "error");
-        setShowCreateTicketComponent(true);
+      if (type === "ACTIVE_PRODUCT") {
+        await submit(payload);
+      } else {
+        const { data, err } = await helpandSupportTicket(payload);
+        if (data) {
+          toastify(data.message, "success");
+          setShowCreateTicketComponent(false);
+          getTabledata(0);
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+          setShowCreateTicketComponent(true);
+        }
       }
     }
   };
@@ -230,6 +253,7 @@ const CreateTicket = ({
                     issueType: { ...value },
                   }));
                 }}
+                disabled={type === "ACTIVE_PRODUCT"}
               />
             </Grid>
           </Grid>
@@ -294,6 +318,7 @@ const CreateTicket = ({
                     userToId: value,
                   }));
                 }}
+                disabled={type === "ACTIVE_PRODUCT"}
               />
             </Grid>
           </Grid>

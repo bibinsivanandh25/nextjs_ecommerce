@@ -10,6 +10,7 @@ import {
   discountApproved,
   getViewDiscountData,
 } from "services/admin/discountsubscription";
+import toastify from "services/utils/toastUtils";
 
 const column1 = [
   {
@@ -107,29 +108,21 @@ const ViewModal = ({
   openViewModal,
   setOpenViewModal = () => {},
   viewData = {},
-  user = {},
 }) => {
   const [rows, setRows] = useState([]);
   const [viewPageNumber, setViewPageNumber] = useState(0);
   const handleCloseIconClick = () => {
     setOpenViewModal(false);
   };
-  const handleAcceptClick = async (value, id) => {
-    const { data } = await discountApproved(value, id, user?.userId);
+  const handleAcceptClick = async (value, id, userId) => {
+    const { data, err } = await discountApproved(value, id, userId);
     if (data) {
-      getTableData(viewPageNumber);
+      toastify(data.message, "success");
+      await getTableData(viewPageNumber);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
-  // const handleDeleteClick = async (id) => {
-  //   const { data, err } = await deleteDisCountSubscription(id);
-  //   if (data) {
-  //     getTableData(viewPageNumber);
-  //     toastify(data.message, "success");
-  //   }
-  //   if (err) {
-  //     toastify(err.response?.data?.message, "error");
-  //   }
-  // };
   const getTableRows = (data) => {
     const result = [];
     if (data) {
@@ -168,15 +161,25 @@ const ViewModal = ({
                 type="close"
                 className="fs-18"
                 onIconClick={() => {
-                  handleAcceptClick("REJECTED", item.marketingToolId);
+                  handleAcceptClick(
+                    "REJECTED",
+                    item.marketingToolId,
+                    item.userTypeId
+                  );
                 }}
+                title="REJECT"
               />
               <CustomIcon
                 type="doneIcon"
                 className="fs-18 mx-2"
                 onIconClick={() => {
-                  handleAcceptClick("APPROVED", item.marketingToolId);
+                  handleAcceptClick(
+                    "APPROVED",
+                    item.marketingToolId,
+                    item.userTypeId
+                  );
                 }}
+                title="APPROVE"
               />
               {/* <CustomIcon
                 type="delete"
@@ -194,8 +197,10 @@ const ViewModal = ({
   };
   const getTableData = async (page) => {
     const { data, err } = await getViewDiscountData(viewData.purchaseId, page);
-    if (data?.data?.length) {
-      if (page == 0) {
+    if (data?.data) {
+      if (!data.data.length) {
+        setRows([]);
+      } else if (page == 0) {
         setRows(getTableRows(data.data));
         setViewPageNumber((pre) => pre + 1);
       } else {

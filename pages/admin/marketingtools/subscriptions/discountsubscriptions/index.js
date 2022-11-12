@@ -230,9 +230,9 @@ const DiscountSubscriptions = () => {
                     <Box className="ms-4">
                       <SwitchComponent
                         label=""
-                        defaultChecked={item.disabled}
-                        ontoggle={(val) => {
-                          handleSwitchClick(item.purchaseId, val);
+                        defaultChecked={!item.disabled}
+                        ontoggle={() => {
+                          handleSwitchClick(item.purchaseId, !item.disabled);
                         }}
                       />
                     </Box>
@@ -278,12 +278,12 @@ const DiscountSubscriptions = () => {
       if (page == 0) {
         setRows(getTableRows(data));
         setpageNumber(1);
+      } else if (data.length == 0 && page == 0) {
+        setRows([]);
       } else {
         setpageNumber((pre) => pre + 1);
         setRows((pre) => [...pre, ...getTableRows(data)]);
       }
-    } else if (data.length == 0 && page == 0) {
-      setRows([]);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -309,11 +309,7 @@ const DiscountSubscriptions = () => {
       setQueryStatus(router?.query?.Status);
       getTableData(0, [router?.query?.userType], router?.query?.Status);
       setpageNumber(0);
-    }
-  }, [router?.query]);
-
-  useEffect(() => {
-    if (!router?.query) {
+    } else {
       getTableData(0);
       setpageNumber(0);
     }

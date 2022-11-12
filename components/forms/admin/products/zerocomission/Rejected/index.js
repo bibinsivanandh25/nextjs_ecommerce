@@ -6,6 +6,10 @@ import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
+import toastify from "services/utils/toastUtils";
 import ViewProducts from "./ViewProducts";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -13,6 +17,7 @@ import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
+import FilterModal from "../../FilterModal";
 
 const Rejected = () => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -28,6 +33,14 @@ const Rejected = () => {
   const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
     useState(false);
   const [showFlagModal, setShowFlagModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [subCategoryIds, setSubCategoryIds] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  // eslint-disable-next-line no-unused-vars
+  const [products, setProducts] = useState([]);
 
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
@@ -91,103 +104,163 @@ const Rejected = () => {
     { id: "col9", align: "center", label: "Brand", data_align: "center" },
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
+  const dispatch = useDispatch();
 
-  const getTableData = async () => {
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
+
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
+    }
+  };
+
+  const onClickOfMenuItem = (ele, val) => {
+    // if (ele === "Accept/Reject") {
+    //   setOpenAcceptRejectModal(true);
+    // }
+    // if (ele === "Delete") {
+    //   deleteProduct(val.productVariationId);
+    // }
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
+    }
+  };
+
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      result.push({
+        id: index + 1,
+        col1: (
+          <>
+            <Typography className="fs-12 text-primary">
+              {val.supplierId}
+            </Typography>
+            <Typography className="fs-12 text-primary">
+              {val.supplierName}
+            </Typography>
+          </>
+        ),
+        col2: val.variationMedia ? (
+          <Box className="d-flex align-items-end justify-content-center">
+            <Box
+              onClick={() => {
+                setImages([...val.variationMedia]);
+                setImageIndexForImageModal(0);
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
+              <Image
+                src={val.variationMedia[0]}
+                width="50"
+                height="50"
+                className="cursor-pointer"
+              />
+            </Box>
+            <Typography className="fs-10">
+              /{val.variationMedia.length}
+            </Typography>
+          </Box>
+        ) : null,
+        col3: val.productTitle,
+        col4: val.skuId,
+        col5: (
+          <>
+            <Typography className="fs-12">{val.categoryName}</Typography>
+            <Typography className="fs-12">{val.subCategoryName}</Typography>
+          </>
+        ),
+        col6: (
+          <>
+            <Typography className="fs-12">
+              {val.weightInclusivePackage}
+            </Typography>
+            <Typography className="fs-12">{val.volume}</Typography>
+          </>
+        ),
+        col7: val.stockQty,
+        col8: (
+          <Typography className="fs-12">
+            &#8377; {val.salePrice}/ &#8377; {val.mrp}
+          </Typography>
+        ),
+        col9: val.brand,
+        col10: (
+          <Box className="d-flex justify-content-evenly align-items-center">
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, val);
+              }}
+              options={options}
+              IconclassName="fs-18 color-gray"
+            />
+          </Box>
+        ),
+      });
+    });
+
+    return result;
+  };
+
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
     const payLoad = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      productVariationIds: [],
-      dateFrom: "",
-      dateTo: "",
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? "",
+      dateTo: date?.toDate ?? "",
       commissionType: "ZERO_COMMISSION",
       status: "REJECTED",
     };
-    const { data, err } = await getAdminProductsByFilter(payLoad);
+    const { data } = await getAdminProductsByFilter(payLoad, page);
 
     if (data) {
-      // console.log("The data ", data);
-      const result = [];
-      data.products.forEach((val, index) => {
-        result.push({
-          id: index + 1,
-          col1: (
-            <>
-              <Typography className="fs-12 text-primary">
-                {val.supplierId}
-              </Typography>
-              <Typography className="fs-12 text-primary">
-                {val.supplierName}
-              </Typography>
-            </>
-          ),
-          col2: val.variationMedia ? (
-            <Box className="d-flex align-items-end justify-content-center">
-              <Box
-                onClick={() => {
-                  setImages([...val.variationMedia]);
-                  setImageIndexForImageModal(0);
-                  setModalId(index);
-                  setOpenImagesArrayModal(true);
-                }}
-                className="h-30 border d-flex justify-content-center"
-              >
-                <Image
-                  src={val.variationMedia[0]}
-                  width="50"
-                  height="50"
-                  className="cursor-pointer"
-                />
-              </Box>
-              <Typography className="fs-10">
-                /{val.variationMedia.length}
-              </Typography>
-            </Box>
-          ) : null,
-          col3: val.productTitle,
-          col4: val.skuId,
-          col5: (
-            <>
-              <Typography>{val.categoryName}</Typography>
-              <Typography>{val.subCategoryName}</Typography>
-            </>
-          ),
-          col6: (
-            <>
-              <Typography>{val.weightInclusivePackage}</Typography>
-              <Typography>{val.volume}</Typography>
-            </>
-          ),
-          col7: val.stockQty,
-          col8: (
-            <Typography className="fs-12">
-              &#8377; {val.salePrice}/ &#8377; {val.mrp}
-            </Typography>
-          ),
-          col9: val.brand,
-          col10: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => setShowViewProducts(true)}
-              />
-              <MenuOption
-                getSelectedItem={() => {
-                  // onClickOfMenuItem(ele, index);
-                }}
-                options={options}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        });
-      });
-
-      setTableRows([...result]);
-    }
-    if (err) {
-      // console.log(err);
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      }
     }
   };
 
@@ -207,29 +280,30 @@ const Rejected = () => {
               <Box className="px-1 pt-2">
                 <TableComponent
                   columns={columns}
+                  showFilterButton
                   tHeadBgColor="bg-light-gray"
-                  // showPagination={false}
+                  showFilterList={false}
                   tableRows={tableRows}
-                  // showSearchbar={false}
-                  showDateFilterBtn
-                  showDateFilter
-                  dateFilterBtnName="+ New Product"
-                  dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
-                    setImageArray([]);
-                    setOpenEditModal(true);
-                    setModalId(null);
+                  showDateFilterSearch={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
                   }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    dateFilter
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
+                  }}
+                  showDateFilter
                 />
               </Box>
             </Paper>
@@ -252,6 +326,20 @@ const Rejected = () => {
           // rowsDataObjects={rowsDataObjectsForRejected}
         />
       ) : null}
+      {showFilterModal && (
+        <FilterModal
+          status="REJECTED"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
       {/* Images Modal Component */}
       {openImagesArrayModal ? (
         <DisplayImagesModal

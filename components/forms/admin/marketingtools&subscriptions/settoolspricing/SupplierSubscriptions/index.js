@@ -687,12 +687,12 @@ const SupplierSubscriptions = () => {
     return subscriptionCount?.map((ele) => {
       return (
         <div
-          className="me-3 "
+          className="me-3"
           style={{
             minWidth: "200px",
           }}
         >
-          <Paper className="mb-2 pb-2" elevation={3}>
+          <Paper className="mb-2 pb-2 ms-2" elevation={3}>
             <Typography className="fw-bold h-5 py-1 text-center bg-light-gray">
               {ele.adminMarketingToolName?.replaceAll("_", " ")}
             </Typography>
@@ -780,7 +780,7 @@ const SupplierSubscriptions = () => {
               </Typography>
               {subscriptionCount?.length ? (
                 <>
-                  <div className="d-flex overflow-auto hide-scrollbar my-2 ">
+                  <div className="d-flex overflow-auto hide-scrollbar my-2 ps-1">
                     {getSubscriptionCount()}
                   </div>
                 </>
