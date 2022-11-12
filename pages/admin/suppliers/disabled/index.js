@@ -96,60 +96,6 @@ const Disabled = () => {
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [masterData, setMasterData] = useState(0);
-  const rows = [
-    {
-      id: "col1",
-      col1: 1,
-      col2: "VRL Transport",
-      col3: "Active",
-      col4: "--",
-      col5: "--",
-      col6: (
-        <>
-          <Typography className="h-5 text-decoration-underline color-dark-green">
-            - &#8377; 333
-          </Typography>
-          <Typography className="h-5 text-decoration-underline color-red">
-            + &#8377; 133
-          </Typography>
-        </>
-      ),
-      col7: "--",
-      col8: "--",
-      col9: (
-        <Box>
-          <CustomIcon
-            type="view"
-            className="fs-18 me-1"
-            title="View"
-            onIconClick={() => {
-              setViewModalOpen(true);
-            }}
-          />
-          <MenuOption
-            options={[
-              "Notify",
-              <>
-                Activate{" "}
-                <Box className="ms-4">
-                  <SwitchComponent label="" />
-                </Box>
-              </>,
-              "Raise a Query",
-              "Add a Note",
-              "Supplier Shopping Page",
-            ]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              if (ele === "Notify") setNotifyModalOpen(true);
-              if (ele === "Raise a Query") setQueryModalOpen(true);
-              if (ele === "Add a Note") setAddnoteModalOpen(true);
-            }}
-          />
-        </Box>
-      ),
-    },
-  ];
 
   const getTableRows = (data) => {
     const temp = [];
