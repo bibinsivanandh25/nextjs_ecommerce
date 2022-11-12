@@ -1,6 +1,7 @@
+import React, { useState } from "react";
+import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
-import React, { useState } from "react";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
@@ -11,7 +12,7 @@ import {
   deleteflags,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
-import { useEffect } from "react";
+
 const SupplierFlags = () => {
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);
   const [rows, setRows] = useState([]);
@@ -20,30 +21,10 @@ const SupplierFlags = () => {
     fromDate: "",
     toDate: "",
   });
-  const updateFlagStatus = async (id, flag) => {
-    const { data, message, err } = await changeStatus(id, flag);
-    if (data) {
-      toastify(message, "success");
-      getTableData();
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
-  const removeFlag = async (id) => {
-    const { data, message, err } = await deleteflags(id);
-    if (data) {
-      toastify(message, "success");
-      getTableData();
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
-  const onClickOfMenuItem = (ele, id) => {
-    if (ele === "Delete") {
-      removeFlag(id);
-    }
-  };
-
+  const [editModalDetails, setEditModalDetails] = useState({
+    type: "",
+    id: null,
+  });
   const getTableData = async (payload = oldPayload) => {
     const { data, err } = await getFlags(payload);
     if (data) {
@@ -81,6 +62,32 @@ const SupplierFlags = () => {
       setRows(temp);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const updateFlagStatus = async (id, flag) => {
+    const { data, message, err } = await changeStatus(id, flag);
+    if (data) {
+      toastify(message, "success");
+      getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const removeFlag = async (id) => {
+    const { data, message, err } = await deleteflags(id);
+    if (data) {
+      toastify(message, "success");
+      getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const onClickOfMenuItem = (ele, id) => {
+    if (ele === "Delete") {
+      removeFlag(id);
+    } else if (ele === "Edit") {
+      setEditModalDetails({ type: "edit", id });
+      setOpenCreateFlagModal(true);
     }
   };
 
@@ -146,6 +153,7 @@ const SupplierFlags = () => {
           showDateFilterBtn
           dateFilterBtnName="Create Flags"
           dateFilterBtnClick={() => {
+            setEditModalDetails({ type: "create", id: null });
             setOpenCreateFlagModal(true);
           }}
           handlePageEnd={(searchText, _, page, dates) => {
@@ -162,9 +170,15 @@ const SupplierFlags = () => {
           }}
         />
       </Box>
+      {/* <CreateFlagModal
+        openCreateFlagModal={openCreateFlagModal}
+        setOpenCreateFlagModal={setOpenCreateFlagModal}
+      /> */}
       <CreateFlagModal
         openCreateFlagModal={openCreateFlagModal}
         setOpenCreateFlagModal={setOpenCreateFlagModal}
+        setmodalDetails={setEditModalDetails}
+        modalDetails={editModalDetails}
       />
     </>
   );

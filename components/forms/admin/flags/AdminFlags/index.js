@@ -65,6 +65,7 @@ const AdminFlags = () => {
     fromDate: "",
     toDate: "",
   });
+  const [modalDetails, setmodalDetails] = useState({ type: "", id: null });
 
   const updateFlagStatus = async (id, flag) => {
     const { data, message, err } = await changeStatus(id, flag);
@@ -89,6 +90,9 @@ const AdminFlags = () => {
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
       removeFlag(id);
+    } else if (ele === "Edit") {
+      setmodalDetails({ type: "edit", id });
+      setOpenCreateFlagModal(true);
     }
   };
 
@@ -99,7 +103,9 @@ const AdminFlags = () => {
         return {
           flagId: item.flagId,
           col1: item.flagTitle,
-          col2: <Image src={item.flagImageUrl[0]} height={50} width={50} />,
+          col2: (
+            <Image src={item.flagImageUrl[0] || ""} height={50} width={50} />
+          ),
           col3: "--",
           col4: item.createdAt,
           col5: item.lastUpdatedAt,
@@ -150,6 +156,7 @@ const AdminFlags = () => {
           showDateFilterBtn
           dateFilterBtnName="Create Flags"
           dateFilterBtnClick={() => {
+            setmodalDetails({ type: "create", id: null });
             setOpenCreateFlagModal(true);
           }}
           showCheckbox={false}
@@ -171,6 +178,8 @@ const AdminFlags = () => {
       <CreateFlagModal
         open={openCreateFlagModal}
         setOpen={setOpenCreateFlagModal}
+        setmodalDetails={setmodalDetails}
+        modalDetails={modalDetails}
       />
     </>
   );

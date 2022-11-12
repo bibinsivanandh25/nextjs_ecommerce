@@ -1,18 +1,23 @@
+/* eslint-disable no-empty */
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
-import styles from "./createflag.module.css";
-import MultiSelectComponent from "../../../../../atoms/MultiSelectComponent";
 import {
   getFlagTitle,
   getTheme,
   editThemeLayout,
+  getFlagById,
+  saveAdminFlag,
 } from "services/admin/admin/adminconfiguration/flags";
 import Image from "next/image";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
+import { format } from "date-fns";
+import MultiSelectComponent from "../../../../../atoms/MultiSelectComponent";
+import styles from "./createflag.module.css";
+
 const tempObj = {
   flagTitle: {},
   visibilityPlace: [],
@@ -24,7 +29,12 @@ const tempObj = {
   endTime: "",
 };
 
-const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
+const CreateFlagModal = ({
+  open = false,
+  setOpen = () => {},
+  modalDetails = {},
+  setmodalDetails = () => {},
+}) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
   const [flagTitleState, setflagTitleState] = useState({});
@@ -65,8 +75,16 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
   const flahLayoutTheme = async () => {
     const payload = {
       flagTitle: formData.flagTitle.label,
-      flagLayoutIdList: [...formData.themeSelection.map(item=>{return item.id})],
-      visibilityPlaceList: [...formData.visibilityPlace.map(item=>{return item.title})],
+      flagLayoutIdList: [
+        ...formData.themeSelection.map((item) => {
+          return item.id;
+        }),
+      ],
+      visibilityPlaceList: [
+        ...formData.visibilityPlace.map((item) => {
+          return item.title;
+        }),
+      ],
     };
     const { data, err } = await editThemeLayout(payload);
 
@@ -75,10 +93,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       data.forEach((ele) => {
         result.push({
           id: ele.flagThemeId,
-          flagLayoutId: ele.flagLayoutId,
-          visibilityPlace: ele.visibilityPlace,
-          flagTitle: ele.flagTitle,
-          label:<Image src={ele.flagThemeImageUrl} width={400} height={80} /> ,
+          label: <Image src={ele.flagThemeImageUrl} width={400} height={80} />,
         });
       });
       setcolorTheme([...result]);
@@ -138,8 +153,30 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
     setErrorObj(errObj);
     return flag;
   };
-  const handleSubmit = () => {
+
+  const submitFunction = () => {
+    const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
+      formData.startTime
+    }:00`;
+    const endDate = `${format(new Date(formData.endDate), "MM-dd-yyyy")} ${
+      formData.endTime
+    }:00`;
+    const payload = {
+      flagTitle: formData.flagTitle.label,
+      visibilityPlace: [formData.visibilityPlace.title],
+      startDateTime: startDate,
+      endDateTime: endDate,
+      flagImageUrl: [formData.colorSelection.url],
+      userType: "ADMIN",
+    };
+    saveAdminFlag(payload);
+  };
+
+  const handleSubmit = async () => {
     if (!validate()) {
+      if (modalDetails.type === "create") {
+        await submitFunction();
+      }
     }
   };
   const handleClearAll = () => {
@@ -163,7 +200,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       startTime: "",
       endTime: "",
     });
-    setcolorTheme([])
+    setcolorTheme([]);
   };
 
   const handleChange = (value, name) => {
@@ -182,11 +219,47 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       flahLayoutTheme();
     }
   }, [formData]);
+  const getFlagData = async () => {
+    const { data, err } = await getFlagById(modalDetails.id);
+    if (data) {
+      setcolorTheme([
+        {
+          id: "",
+          label: <Image src={data.flagImageUrl[0]} width={400} height={80} />,
+        },
+      ]);
+      setFormDate({
+        flagTitle: { id: data.flagTitle, label: data.flagTitle },
+        visibilityPlace: data.visibilityPlace.map((item) => {
+          return { id: item, title: item };
+        }),
+        themeSelection: [],
+        colorSelection: {
+          id: "k",
+          label: <Image src={data.flagImageUrl[0]} width={400} height={80} />,
+        },
+        startDate: data.startDateTime.split(" ")[0],
+        endDate: data.endDateTime.split(" ")[0],
+        startTime: data.startDateTime.split(" ")[1],
+        endTime: data.endDateTime.split(" ")[1],
+      });
+    } else if (err?.response?.data?.message) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    if (modalDetails?.type === "edit") {
+      getFlagData();
+    }
+  }, [modalDetails]);
 
   return (
     <ModalComponent
       open={open}
-      ModalTitle="Create Flag"
+      ModalTitle={
+        modalDetails.type === "create" ? "Create Flag" : "Update Flag"
+      }
       titleClassName="fw-bold fs-14 color-orange"
       footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
       ClearBtnText="Reset"
@@ -195,6 +268,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
       ModalWidth={650}
       onCloseIconClick={() => {
         setOpen(false);
+        setmodalDetails({ type: "", id: "" });
         setFormDate({
           flagTitle: {},
           visibilityPlace: [],
@@ -215,7 +289,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
           startTime: "",
           endTime: "",
         });
-        setcolorTheme([])
+        setcolorTheme([]);
       }}
       onSaveBtnClick={() => {
         handleSubmit();
@@ -236,6 +310,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             }}
             value={formData.flagTitle}
             helperText={errorObj.flagTitle}
+            disabled={modalDetails?.type === "edit"}
           />
         </Grid>
 
@@ -281,6 +356,7 @@ const CreateFlagModal = ({ open = false, setOpen = () => {} }) => {
             inputlabelshrink
             list={colorTheme}
             onDropdownSelect={(value) => {
+              console.log(value);
               handleChange(value ?? {}, "colorSelection");
             }}
             id="colorSelection"

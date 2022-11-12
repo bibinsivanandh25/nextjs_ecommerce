@@ -1,4 +1,5 @@
 import serviceUtil from "services/utils";
+import toastify from "services/utils/toastUtils";
 
 const getFlags = (payLoad) => {
   return serviceUtil
@@ -30,26 +31,22 @@ const deleteflags = (id) => {
 
 const getFlagTitle = () => {
   return serviceUtil
-    .get(
-      `products/product-flag/title`
-    )
-    .then((res) => { 
+    .get(`products/product-flag/title`)
+    .then((res) => {
       const { data } = res && res;
       return { data };
-      
     })
     .catch((err) => ({ err }));
 };
-const getTheme=()=>{
+const getTheme = () => {
   return serviceUtil
-  .get(
-    `products/product-flag/layout`
-  ).then((res)=>{
-    const { data } = res && res;
-    return { data };
-  })
-  .catch((err) => ({ err }));
-}
+    .get(`products/product-flag/layout`)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 
 const editThemeLayout = (payLoad) => {
   return serviceUtil
@@ -60,4 +57,33 @@ const editThemeLayout = (payLoad) => {
     })
     .catch((err) => ({ err }));
 };
-export { getFlags, changeStatus, deleteflags, getFlagTitle, getTheme,editThemeLayout };
+
+const getFlagById = (id) => {
+  return serviceUtil
+    .get(`products/produt-flag/${id}`)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+const saveAdminFlag = async (payload) => {
+  await serviceUtil
+    .post("products/product-flag", payload)
+    .then((res) => {
+      toastify(res.data.message, "success");
+    })
+    .catch((err) => {
+      toastify(err.response.data.message, "error");
+    });
+};
+export {
+  getFlags,
+  changeStatus,
+  deleteflags,
+  getFlagTitle,
+  getTheme,
+  editThemeLayout,
+  getFlagById,
+  saveAdminFlag,
+};
