@@ -169,7 +169,7 @@ const CollapseList = ({
           } cursor-pointer`}
         >
           <Tooltip title={!open ? menuList.title : ""} placement="right">
-            <Image height={15} width={15} src={menuList.logo} />
+            <Image height={18} width={18} src={menuList.logo} />
           </Tooltip>
         </ListItemIcon>
         <ListItemText

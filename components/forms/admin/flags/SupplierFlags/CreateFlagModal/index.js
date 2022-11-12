@@ -1,666 +1,785 @@
+/* eslint-disable no-empty */
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
-import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
+import {
+  getFlagTitle,
+  getTheme,
+  editThemeLayout,
+  getFlagById,
+  saveAdminFlag,
+} from "services/admin/admin/adminconfiguration/flags";
+import Image from "next/image";
+import toastify from "services/utils/toastUtils";
+import validateMessage from "constants/validateMessages";
+import { format } from "date-fns";
+import MultiSelectComponent from "../../../../../atoms/MultiSelectComponent";
 import styles from "./createflag.module.css";
 
-let errObj = {
-  flagTitle: false,
-  imageType: false,
-  productCategory: false,
-  productType: false,
-  products: false,
-  visibilityPlace: false,
-  themeSection: false,
-  colorSection: false,
-  startDate: false,
-  endDate: false,
-  startTime: false,
-  endTime: false,
-  invalidStartDate: false,
-  invalidEndDate: false,
-  invalidStartTime: false,
-  invalidEndTime: false,
-  cannotSetEndTime: false,
-  cannotSetStartTime: false,
+const tempObj = {
+  flagTitle: {},
+  visibilityPlace: [],
+  themeSelection: [],
+  colorSelection: {},
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
 };
 
-const CreateFlagModal = ({ openCreateFlagModal, setOpenCreateFlagModal }) => {
-  const [flagTitle, setFlagTitle] = useState("");
-  const [imageType, setImageType] = useState({ label: "" });
-  const [productCategory, setProductCategory] = useState({ label: "" });
-  const [productType, setProductType] = useState({ label: "" });
-  const [products, setProducts] = useState({ label: "" });
-  const [visibilityPlace, setVisibilityPlace] = useState({ label: "" });
-  const [themeSection, setThemeSection] = useState({ label: "" });
-  const [colorSection, setColorSection] = useState({ label: "" });
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [error, setError] = useState(errObj);
+const CreateFlagModal = ({
+  openCreateFlagModal = false,
+  setOpenCreateFlagModal = () => {},
+  modalDetails = {},
+  setmodalDetails = () => {},
+}) => {
+  useEffect(() => {
+    console.log(modalDetails, "modalDetails");
+  }, []);
 
-  const handleCloseIconClick = () => {
-    errObj = {
-      flagTitle: false,
-      imageType: false,
-      productCategory: false,
-      productType: false,
-      products: false,
-      visibilityPlace: false,
-      themeSection: false,
-      colorSection: false,
-      startDate: false,
-      endDate: false,
-      startTime: false,
-      endTime: false,
-      invalidStartDate: false,
-      invalidEndDate: false,
-      invalidStartTime: false,
-      invalidEndTime: false,
-      cannotSetEndTime: false,
-      cannotSetStartTime: false,
+  const [formData, setFormDate] = useState({ ...tempObj });
+  const [errorObj, setErrorObj] = useState({});
+  const [flagTitleState, setflagTitleState] = useState({});
+  const [themeState, setthemeState] = useState({});
+  const [colorTheme, setcolorTheme] = useState({});
+
+  const getFlagTitleFunction = async () => {
+    const { data } = await getFlagTitle();
+    if (data) {
+      const result = [];
+      data?.data.forEach((ele) => {
+        result.push({
+          id: ele.flatTitleId,
+          label: ele.flagTitle,
+        });
+        setflagTitleState([...result]);
+      });
+    }
+  };
+  const getFlagTheme = async () => {
+    const { data } = await getTheme();
+    if (data) {
+      const result = [];
+      data?.data.forEach((ele) => {
+        result.push({
+          id: ele.flagLayoutId,
+          title: <Image src={ele.flagLayoutImageUrl} width={400} height={80} />,
+          url: ele.flagLayoutImageUrl,
+        });
+      });
+      setthemeState([...result]);
+    }
+  };
+  useEffect(() => {
+    getFlagTitleFunction();
+    getFlagTheme();
+  }, []);
+  const flahLayoutTheme = async () => {
+    const payload = {
+      flagTitle: formData.flagTitle.label,
+      flagLayoutIdList: [
+        ...formData.themeSelection.map((item) => {
+          return item.id;
+        }),
+      ],
+      visibilityPlaceList: [
+        ...formData.visibilityPlace.map((item) => {
+          return item.title;
+        }),
+      ],
     };
-    setFlagTitle("");
-    setImageType({ label: "" });
-    setProductCategory({ label: "" });
-    setProductType({ label: "" });
-    setProducts({ label: "" });
-    setVisibilityPlace({ label: "" });
-    setThemeSection({ label: "" });
-    setColorSection({ label: "" });
-    setStartDate("");
-    setEndDate("");
-    setStartTime("");
-    setEndTime("");
-    setError(errObj);
-    setOpenCreateFlagModal(false);
+    const { data, err } = await editThemeLayout(payload);
+
+    if (data) {
+      const result = [];
+      data.forEach((ele) => {
+        result.push({
+          id: ele.flagThemeId,
+          label: <Image src={ele.flagThemeImageUrl} width={400} height={80} />,
+        });
+      });
+      setcolorTheme([...result]);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
+  const validate = () => {
+    let flag = false;
+    const errObj = {
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    };
+    if (!Object.keys(formData.flagTitle).length) {
+      errObj.flagTitle = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.visibilityPlace).length) {
+      errObj.visibilityPlace = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.themeSelection).length) {
+      errObj.themeSelection = validateMessage.field_required;
+      flag = true;
+    }
+    if (!Object.keys(formData.colorSelection).length) {
+      errObj.colorSelection = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startDate === "") {
+      errObj.startDate = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startDate > formData.endDate) {
+      errObj.startDate = validateMessage.startDateValid;
+      flag = true;
+    }
+    if (formData.endDate === "") {
+      errObj.endDate = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.startTime === "") {
+      errObj.startTime = validateMessage.field_required;
+      flag = true;
+    }
+    if (formData.endTime === "") {
+      errObj.endTime = validateMessage.field_required;
+      flag = true;
+    }
+    setErrorObj(errObj);
+    return flag;
+  };
+
+  const submitFunction = () => {
+    const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
+      formData.startTime
+    }:00`;
+    const endDate = `${format(new Date(formData.endDate), "MM-dd-yyyy")} ${
+      formData.endTime
+    }:00`;
+    const payload = {
+      flagTitle: formData.flagTitle.label,
+      visibilityPlace: [formData.visibilityPlace.title],
+      startDateTime: startDate,
+      endDateTime: endDate,
+      flagImageUrl: [formData.colorSelection.url],
+      userType: "SUPPLIER",
+    };
+    saveAdminFlag(payload);
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) {
+      console.log(modalDetails.type, "click");
+      if (modalDetails.type === "create") {
+        await submitFunction();
+      }
+    }
+  };
   const handleClearAll = () => {
-    errObj = {
-      flagTitle: false,
-      imageType: false,
-      productCategory: false,
-      productType: false,
-      products: false,
-      visibilityPlace: false,
-      themeSection: false,
-      colorSection: false,
-      startDate: false,
-      endDate: false,
-      startTime: false,
-      endTime: false,
-      invalidStartDate: false,
-      invalidEndDate: false,
-      invalidStartTime: false,
-      invalidEndTime: false,
-      cannotSetEndTime: false,
-      cannotSetStartTime: false,
-    };
-    setFlagTitle("");
-    setImageType({ label: "" });
-    setProductCategory({ label: "" });
-    setProductType({ label: "" });
-    setProducts({ label: "" });
-    setVisibilityPlace({ label: "" });
-    setThemeSection({ label: "" });
-    setColorSection({ label: "" });
-    setStartDate("");
-    setEndDate("");
-    setStartTime("");
-    setEndTime("");
-    setError(errObj);
+    setFormDate({
+      flagTitle: {},
+      visibilityPlace: [],
+      themeSelection: [],
+      colorSelection: {},
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setErrorObj({
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setcolorTheme([]);
   };
 
-  const handleStartDate = (value) => {
-    if (value) {
-      if (endDate) {
-        if (
-          value.getDate() === endDate.getDate() &&
-          value.getMonth() === endDate.getMonth() &&
-          value.getYear() == endDate.getYear()
-        ) {
-          setStartDate(value);
-          errObj.invalidStartDate = false;
-          errObj.invalidEndDate = false;
-          errObj.startDate = false;
-        } else if (value.getTime() < endDate.getTime()) {
-          setStartDate(value);
-          errObj.invalidStartDate = false;
-          errObj.invalidEndDate = false;
-          errObj.startDate = false;
-        } else {
-          setStartDate(value);
-          errObj.invalidEndDate = true;
-          errObj.invalidStartDate = true;
-          errObj.invalidEndTime = false;
-          errObj.invalidStartTime = false;
-          errObj.endTime = true;
-          errObj.startTime = true;
-          setStartTime("");
-          setEndTime("");
-        }
-      } else {
-        errObj.invalidStartDate = false;
-        errObj.startDate = false;
-        setStartDate(value);
-      }
-    } else {
-      errObj.startDate = true;
-    }
-
-    setError({ ...error, ...errObj });
-  };
-
-  const handleEndDate = (value) => {
-    if (value) {
-      if (startDate) {
-        if (
-          value.getDate() === startDate.getDate() &&
-          value.getMonth() === startDate.getMonth() &&
-          value.getYear() === startDate.getYear()
-        ) {
-          errObj.invalidEndDate = false;
-          errObj.invalidStartDate = false;
-          errObj.endDate = false;
-          setEndDate(value);
-        } else if (value.getTime() > startDate.getTime()) {
-          errObj.invalidEndDate = false;
-          errObj.invalidStartDate = false;
-          errObj.endDate = false;
-          setEndDate(value);
-        } else {
-          setEndDate(value);
-          errObj.invalidEndDate = true;
-          errObj.invalidStartDate = true;
-          errObj.invalidEndTime = false;
-          errObj.invalidStartTime = false;
-          errObj.endTime = true;
-          errObj.startTime = true;
-          errObj.startDate = false;
-          errObj.endDate = false;
-          setStartTime("");
-          setEndTime("");
-        }
-      } else {
-        errObj.invalidEndDate = false;
-        errObj.endDate = false;
-        setEndDate(value);
-      }
-    } else {
-      errObj.endDate = true;
-    }
-
-    setError({ ...error, ...errObj });
-  };
-
-  const handleError = () => {
-    errObj = {
-      flagTitle: false,
-      imageType: false,
-      productCategory: false,
-      productType: false,
-      products: false,
-      visibilityPlace: false,
-      themeSection: false,
-      colorSection: false,
-      startDate: false,
-      endDate: false,
-      startTime: false,
-      endTime: false,
-      invalidStartDate: false,
-      invalidEndDate: false,
-      invalidStartTime: false,
-      invalidEndTime: false,
-      cannotSetEndTime: false,
-      cannotSetStartTime: false,
-    };
-    if (flagTitle === "") {
-      errObj.flagTitle = true;
-    }
-    if (imageType.label === "") {
-      errObj.imageType = true;
-    }
-    if (productCategory.label === "") {
-      errObj.productCategory = true;
-    }
-    if (productType.label === "") {
-      errObj.productType = true;
-    }
-    if (products.label === "") {
-      errObj.products = true;
-    }
-    if (visibilityPlace.label === "") {
-      errObj.visibilityPlace = true;
-    }
-    if (themeSection.label === "") {
-      errObj.themeSection = true;
-    }
-    if (colorSection.label === "") {
-      errObj.colorSection = true;
-    }
-    if (startDate === "") {
-      errObj.startDate = true;
-    }
-    if (endDate === "") {
-      errObj.endDate = true;
-    }
-    if (startTime === "") {
-      errObj.startTime = true;
-    }
-    if (endTime === "") {
-      errObj.endTime = true;
-    }
-    if (error.invalidEndDate) {
-      errObj.invalidEndDate = true;
-    }
-    if (error.invalidStartDate) {
-      errObj.invalidStartDate = true;
-    }
-    if (error.invalidEndTime) {
-      errObj.invalidEndTime = true;
-    }
-    if (error.invalidStartTime) {
-      errObj.invalidStartTime = true;
-    }
-    return errObj;
-  };
-
-  const handleEndTime = (value) => {
-    if (
-      error.startDate ||
-      error.endDate ||
-      error.invalidEndDate ||
-      error.invalidStartDate ||
-      !startDate ||
-      !endDate
-    ) {
-      errObj.cannotSetEndTime = true;
-    } else {
-      errObj.cannotSetEndTime = false;
-      if (
-        endDate.getDate() === startDate.getDate() &&
-        endDate.getMonth() === startDate.getMonth() &&
-        endDate.getYear() === startDate.getYear()
-      ) {
-        if (startTime) {
-          const startTimeSplitted = startTime.split(":");
-          const endTimeSplitted = value.split(":");
-          const startHour = parseInt(startTimeSplitted[0], 10);
-          const startMinute = parseInt(startTimeSplitted[1], 10);
-          const endHour = parseInt(endTimeSplitted[0], 10);
-          const endMinute = parseInt(endTimeSplitted[1], 10);
-          if (startHour < endHour) {
-            errObj.invalidEndTime = false;
-            errObj.invalidStartTime = false;
-            errObj.endTime = false;
-            setEndTime(value);
-          } else if (startHour === endHour && startMinute < endMinute) {
-            errObj.invalidEndTime = false;
-            errObj.invalidStartTime = false;
-            errObj.endTime = false;
-            setEndTime(value);
-          } else if (startHour === endHour && startMinute >= endMinute) {
-            // console.log("Hi");
-            errObj.invalidEndTime = true;
-            errObj.invalidStartTime = true;
-            setEndTime(value);
-          } else if (startHour > endHour) {
-            // console.log("Hey");
-            errObj.invalidEndTime = true;
-            errObj.invalidStartTime = true;
-            setEndTime(value);
-          }
-        } else {
-          errObj.invalidEndTime = false;
-          errObj.endTime = false;
-          setEndTime(value);
-        }
-      } else if (startDate.getTime() < endDate.getTime()) {
-        errObj.invalidEndTime = false;
-        errObj.endTime = false;
-        setEndTime(value);
-      }
-    }
-
-    setError({ ...error, ...errObj });
-  };
-
-  const handleStartTime = (value) => {
-    if (
-      error.startDate ||
-      error.endDate ||
-      error.invalidEndDate ||
-      error.invalidStartDate ||
-      !startDate ||
-      !endDate
-    ) {
-      errObj.cannotSetStartTime = true;
-    } else {
-      errObj.cannotSetStartTime = false;
-      if (
-        endDate.getDate() === startDate.getDate() &&
-        endDate.getMonth() === startDate.getMonth() &&
-        endDate.getYear() === startDate.getYear()
-      ) {
-        if (endTime) {
-          const startTimeSplitted = value.split(":");
-          const endTimeSplitted = endTime.split(":");
-          const startHour = parseInt(startTimeSplitted[0], 10);
-          const startMinute = parseInt(startTimeSplitted[1], 10);
-          const endHour = parseInt(endTimeSplitted[0], 10);
-          const endMinute = parseInt(endTimeSplitted[1], 10);
-          if (startHour < endHour) {
-            errObj.invalidStartTime = false;
-            errObj.invalidEndTime = false;
-            errObj.startTime = false;
-            setStartTime(value);
-          } else if (startHour === endHour && startMinute < endMinute) {
-            errObj.invalidStartTime = false;
-            errObj.invalidEndTime = false;
-            errObj.startTime = false;
-            setStartTime(value);
-          } else if (startHour === endHour && startMinute >= endMinute) {
-            // console.log("Hi");
-            errObj.invalidStartTime = true;
-            errObj.invalidEndTime = true;
-            setStartTime(value);
-          } else if (startHour > endHour) {
-            // console.log("Hey");
-            errObj.invalidStartTime = true;
-            errObj.invalidEndTime = true;
-            setStartTime(value);
-          }
-        } else {
-          errObj.invalidStartTime = false;
-          errObj.startTime = false;
-          setStartTime(value);
-        }
-      } else if (startDate.getTime() < endDate.getTime()) {
-        errObj.invalidStartTime = false;
-        errObj.startTime = false;
-        setStartTime(value);
-      }
-    }
-    setError({ ...error, ...errObj });
+  const handleChange = (value, name) => {
+    setFormDate((pre) => ({
+      ...pre,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
-    if (startTime && endTime) {
-      handleStartTime(startTime);
-      handleEndTime(endTime);
+    if (
+      formData.flagTitle?.label &&
+      formData.themeSelection.length &&
+      formData.visibilityPlace.length
+    ) {
+      flahLayoutTheme();
     }
-  }, [startDate, endDate]);
-
-  const handleSubmit = () => {
-    const theErrorObj = handleError();
-    setError(theErrorObj);
+  }, [formData]);
+  const getFlagData = async () => {
+    const { data, err } = await getFlagById(modalDetails.id);
+    if (data) {
+      setcolorTheme([
+        {
+          id: "",
+          label: <Image src={data.flagImageUrl[0]} width={400} height={80} />,
+        },
+      ]);
+      setFormDate({
+        flagTitle: { id: data.flagTitle, label: data.flagTitle },
+        visibilityPlace: data.visibilityPlace.map((item) => {
+          return { id: item, title: item };
+        }),
+        themeSelection: [],
+        colorSelection: {
+          id: "k",
+          label: <Image src={data.flagImageUrl[0]} width={400} height={80} />,
+        },
+        startDate: data.startDateTime.split(" ")[0],
+        endDate: data.endDateTime.split(" ")[0],
+        startTime: data.startDateTime.split(" ")[1],
+        endTime: data.endDateTime.split(" ")[1],
+      });
+    } else if (err?.response?.data?.message) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
-  return (
-    <Box>
-      <ModalComponent
-        open={openCreateFlagModal}
-        ModalTitle="Create Flag"
-        titleClassName="fw-bold fs-14 color-orange"
-        footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
-        ClearBtnText="Reset"
-        saveBtnText="Save"
-        saveBtnClassName="ms-1"
-        ModalWidth={650}
-        onCloseIconClick={() => {
-          handleCloseIconClick();
-        }}
-        onSaveBtnClick={() => {
-          handleSubmit();
-        }}
-        onClearBtnClick={() => {
-          handleClearAll();
-        }}
-      >
-        <Grid container spacing={2} className="my-2">
-          <Grid item xs={6}>
-            <InputBox
-              label="Flag Title"
-              value={flagTitle}
-              onInputChange={(e) => {
-                setFlagTitle(e.target.value);
-              }}
-              inputlabelshrink
-              error={error.flagTitle}
-              helperText={error.flagTitle ? validateMessage.field_required : ""}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Image Type"
-              inputlabelshrink
-              list={[{ label: "Type One" }, { label: "Type Two" }]}
-              onDropdownSelect={(value) => {
-                setImageType(value);
-              }}
-              value={imageType}
-              helperText={error.imageType ? validateMessage.field_required : ""}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Product Category"
-              inputlabelshrink
-              list={[{ label: "Category One" }, { label: "Category Two" }]}
-              onDropdownSelect={(value) => {
-                setProductCategory(value);
-              }}
-              value={productCategory}
-              helperText={
-                error.productCategory ? validateMessage.field_required : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Product Type"
-              inputlabelshrink
-              list={[{ label: "Type One" }, { label: "Type Two" }]}
-              onDropdownSelect={(value) => {
-                setProductType(value);
-              }}
-              value={productType}
-              helperText={
-                error.productType ? validateMessage.field_required : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Products"
-              inputlabelshrink
-              list={[{ label: "Product One" }, { label: "Product Two" }]}
-              onDropdownSelect={(value) => {
-                setProducts(value);
-              }}
-              value={products}
-              helperText={error.products ? validateMessage.field_required : ""}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Visibility Place"
-              inputlabelshrink
-              list={[{ label: "One" }, { label: "Two" }]}
-              onDropdownSelect={(value) => {
-                setVisibilityPlace(value);
-              }}
-              value={visibilityPlace}
-              helperText={
-                error.visibilityPlace ? validateMessage.field_required : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Theme Selection"
-              inputlabelshrink
-              list={[{ label: "Theme One" }, { label: "Theme Two" }]}
-              onDropdownSelect={(value) => {
-                setThemeSection(value);
-              }}
-              value={themeSection}
-              helperText={
-                error.themeSection ? validateMessage.field_required : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <SimpleDropdownComponent
-              size="small"
-              label="Color Selection"
-              inputlabelshrink
-              list={[{ label: "Product One" }, { label: "Product Two" }]}
-              onDropdownSelect={(value) => {
-                setColorSection(value);
-              }}
-              value={colorSection}
-              helperText={
-                error.colorSection ? validateMessage.field_required : ""
-              }
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Box className="d-flex align-items-center">
-              <Typography className="h-5">From Date</Typography>
-              <CustomDatePickerComponent
-                value={startDate}
-                onDateChange={(value) => {
-                  handleStartDate(value);
-                }}
-                size="small"
-              />
-            </Box>
+  useEffect(() => {
+    if (modalDetails?.type === "edit") {
+      getFlagData();
+    }
+  }, [modalDetails]);
 
-            {error.startDate && !error.invalidStartDate && (
-              <Typography className="text-danger h-5">
-                {validateMessage.field_required}
-              </Typography>
-            )}
-            {error.invalidStartDate && (
-              <Typography className="text-danger h-5">
-                Invalid start date
-              </Typography>
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            <Box className="d-flex align-items-center">
-              <Typography className="h-5">To Date</Typography>
-              <CustomDatePickerComponent
-                value={endDate}
-                onDateChange={(value) => {
-                  handleEndDate(value);
-                }}
-                size="small"
-              />
-            </Box>
-            {error.endDate && (
-              <Typography className="text-danger h-5">
-                {validateMessage.field_required}
-              </Typography>
-            )}
-            {error.invalidEndDate && (
-              <Typography className="text-danger h-5">
-                Invalid end date
-              </Typography>
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            <Box className="d-flex align-items-center">
-              <Typography className="h-5">Start Time:</Typography>
-              <input
-                type="time"
-                // value={dateValue.from}
-                placeholder="hh:mm"
-                className={styles.timepicker}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                }}
-                onChange={(e) => {
-                  handleStartTime(e.target.value);
-                }}
-                value={startTime}
-              />
-            </Box>
-            {error.startTime &&
-              !error.invalidStartTime &&
-              !error.cannotSetStartTime && (
-                <Typography className="text-danger h-5">
-                  {validateMessage.field_required}
-                </Typography>
-              )}
-            {error.invalidStartTime && (
-              <Typography className="text-danger h-5">
-                Invalid start time
-              </Typography>
-            )}
-            {error.cannotSetStartTime && (
-              <Typography className="text-danger h-5">
-                Please specify dates first
-              </Typography>
-            )}
-          </Grid>
-          <Grid item xs={6}>
-            <Box className="d-flex align-items-center">
-              <Typography className="h-5">End Time:</Typography>
-              <input
-                type="time"
-                // value={dateValue.from}
-                placeholder="hh:mm"
-                className={styles.timepicker}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                }}
-                onChange={(e) => {
-                  handleEndTime(e.target.value);
-                }}
-                value={endTime}
-              />
-            </Box>
-            {error.endTime &&
-              !error.invalidEndTime &&
-              !error.cannotSetEndTime && (
-                <Typography className="text-danger h-5">
-                  {validateMessage.field_required}
-                </Typography>
-              )}
-            {error.cannotSetEndTime && (
-              <Typography className="text-danger h-5">
-                Please specify dates first
-              </Typography>
-            )}
-            {error.invalidEndTime && (
-              <Typography className="text-danger h-5">
-                Invalid end time
-              </Typography>
-            )}
-          </Grid>
+  return (
+    <ModalComponent
+      open={openCreateFlagModal}
+      ModalTitle={
+        modalDetails.type === "create" ? "Create Flag" : "Update Flag"
+      }
+      titleClassName="fw-bold fs-14 color-orange"
+      footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
+      ClearBtnText="Reset"
+      saveBtnText="Save"
+      saveBtnClassName="ms-1"
+      ModalWidth={650}
+      onCloseIconClick={() => {
+        setOpenCreateFlagModal(false);
+        setmodalDetails({ type: "", id: "" });
+        setFormDate({
+          flagTitle: {},
+          visibilityPlace: [],
+          themeSelection: [],
+          colorSelection: {},
+          startDate: "",
+          endDate: "",
+          startTime: "",
+          endTime: "",
+        });
+        setErrorObj({
+          flagTitle: "",
+          visibilityPlace: "",
+          themeSelection: "",
+          colorSelection: "",
+          startDate: "",
+          endDate: "",
+          startTime: "",
+          endTime: "",
+        });
+        setcolorTheme([]);
+      }}
+      onSaveBtnClick={() => {
+        handleSubmit();
+      }}
+      onClearBtnClick={() => {
+        handleClearAll();
+      }}
+    >
+      <Grid container spacing={2} className="mt-2">
+        <Grid item md={6}>
+          <SimpleDropdownComponent
+            size="small"
+            label="Flag Title"
+            inputlabelshrink
+            list={flagTitleState}
+            onDropdownSelect={(value) => {
+              handleChange(value ?? {}, "flagTitle");
+            }}
+            value={formData.flagTitle}
+            helperText={errorObj.flagTitle}
+            disabled={modalDetails?.type === "edit"}
+          />
         </Grid>
-      </ModalComponent>
-    </Box>
+
+        <Grid item md={6}>
+          <MultiSelectComponent
+            size="small"
+            inputlabelshrink
+            list={[
+              { id: 1, title: "BOTTOM_RIGHT" },
+              { id: 2, title: "TOP_RIGHT" },
+              { id: 3, title: "BOTTOM_LEFT" },
+              { id: 4, title: "TOP_LEFT" },
+            ]}
+            onSelectionChange={(e, val) => {
+              handleChange([...val] ?? [], "visibilityPlace");
+            }}
+            label="Visibility Place"
+            id="visibilityPlace"
+            value={formData.visibilityPlace}
+            helperText={errorObj.visibilityPlace}
+            error={errorObj?.visibilityPlace}
+          />
+        </Grid>
+        <Grid item md={6}>
+          <MultiSelectComponent
+            size="small"
+            inputlabelshrink
+            list={themeState}
+            onSelectionChange={(e, val) => {
+              handleChange([...val] ?? [], "themeSelection");
+            }}
+            label="Theme Selection"
+            id="themeSelection"
+            value={formData.themeSelection}
+            helperText={errorObj.themeSelection}
+            error={errorObj?.themeSelection}
+          />
+        </Grid>
+        <Grid item md={6}>
+          <SimpleDropdownComponent
+            size="small"
+            label="Color Selection"
+            inputlabelshrink
+            list={colorTheme}
+            onDropdownSelect={(value) => {
+              console.log(value);
+              handleChange(value ?? {}, "colorSelection");
+            }}
+            id="colorSelection"
+            value={formData.colorSelection}
+            helperText={errorObj.colorSelection}
+          />
+        </Grid>
+
+        <Grid item md={6}>
+          <Box className="d-flex align-items-center">
+            <Typography className="h-5">From Date:</Typography>
+            <CustomDatePickerComponent
+              value={formData.startDate}
+              onDateChange={(value) => {
+                handleChange(value, "startDate");
+              }}
+              size="small"
+            />
+          </Box>
+          {errorObj.startDate ? (
+            <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.startDate}
+              </Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+        <Grid item md={6}>
+          <Box className="d-flex align-items-center">
+            <Typography className="h-5">To Date: </Typography>
+            <CustomDatePickerComponent
+              value={formData.endDate}
+              onDateChange={(value) => {
+                handleChange(value, "endDate");
+              }}
+              size="small"
+            />
+          </Box>
+          {errorObj.endDate ? (
+            <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.endDate}
+              </Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+
+        <Grid item md={6}>
+          <Box className="d-flex align-items-center">
+            <Typography className="h-5">Start Time:</Typography>
+            <input
+              type="time"
+              value={formData.startTime}
+              placeholder="hh:mm"
+              className={styles.timepicker}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+              onChange={(e) => {
+                handleChange(e.target.value, "startTime");
+              }}
+              // value={endTime}
+            />
+          </Box>
+          {errorObj.startTime ? (
+            <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.startTime}
+              </Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+
+        <Grid item md={6}>
+          <Box className="d-flex align-items-center">
+            <Typography className="h-5">End Time:</Typography>
+            <input
+              type="time"
+              value={formData.endTime}
+              placeholder="hh:mm"
+              className={styles.timepicker}
+              style={{
+                border: "none",
+                outline: "none",
+                display: "flex",
+                flexDirection: "row-reverse",
+              }}
+              onChange={(e) => {
+                handleChange(e.target.value, "endTime");
+              }}
+
+              // value={endTime}
+            />
+          </Box>
+          {errorObj.endTime ? (
+            <Grid>
+              <Typography className="color-error fs-12 fw-400">
+                {errorObj.endTime}
+              </Typography>
+            </Grid>
+          ) : null}
+        </Grid>
+      </Grid>
+    </ModalComponent>
   );
 };
 
 export default CreateFlagModal;
+
+// import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
+// import ModalComponent from "@/atoms/ModalComponent";
+// import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+// import { Box, Grid, Typography } from "@mui/material";
+// import validateMessage from "constants/validateMessages";
+// import React from "react";
+// import { useState } from "react";
+// import styles from "./createflag.module.css";
+// const tempObj = {
+//   flagTitle: {},
+//   visibilityPlace: {},
+//   themeSelection: {},
+//   colorSelection: {},
+//   startDate: "",
+//   endDate: "",
+//   startTime: "",
+//   endTime: "",
+// };
+// const CreateFlagModal = ({ openCreateFlagModal, setOpenCreateFlagModal }) => {
+//   const [formData, setFormDate] = useState({ ...tempObj });
+//   const [errorObj, setErrorObj] = useState({});
+
+//   const validate = () => {
+//     let flag = false;
+//     const errObj = {
+//       flagTitle: "",
+//       visibilityPlace: "",
+//       themeSelection: "",
+//       colorSelection: "",
+//       startDate: "",
+//       endDate: "",
+//       startTime: "",
+//       endTime: "",
+//     };
+//     if (!Object.keys(formData.flagTitle).length) {
+//       errObj.flagTitle = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (!Object.keys(formData.visibilityPlace).length) {
+//       errObj.visibilityPlace = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (!Object.keys(formData.themeSelection).length) {
+//       errObj.themeSelection = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (!Object.keys(formData.colorSelection).length) {
+//       errObj.colorSelection = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (formData.startDate === "") {
+//       errObj.startDate = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (formData.startDate > formData.endDate) {
+//       errObj.startDate = validateMessage.startDateValid;
+//       flag = true;
+//     }
+//     if (formData.endDate === "") {
+//       errObj.endDate = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (formData.startTime === "") {
+//       errObj.startTime = validateMessage.field_required;
+//       flag = true;
+//     }
+//     if (formData.endTime === "") {
+//       errObj.endTime = validateMessage.field_required;
+//       flag = true;
+//     }
+//     setErrorObj(errObj);
+//     return flag;
+//   };
+//   const handleSubmit = () => {
+//     if (!validate()) {
+//     }
+//   };
+//   const handleClearAll = () => {
+//     setFormDate({
+//       flagTitle: {},
+//       visibilityPlace: {},
+//       themeSelection: {},
+//       colorSelection: {},
+//       startDate: "",
+//       endDate: "",
+//       startTime: "",
+//       endTime: "",
+//     });
+//     setErrorObj({
+//       flagTitle: "",
+//       visibilityPlace: "",
+//       themeSelection: "",
+//       colorSelection: "",
+//       startDate: "",
+//       endDate: "",
+//       startTime: "",
+//       endTime: "",
+//     });
+//   };
+
+//   const handleChange = (value, name) => {
+//     setFormDate((pre) => ({
+//       ...pre,
+//       [name]: value,
+//     }));
+//   };
+
+//   return (
+//     <Box>
+//       <ModalComponent
+//         titleClassName="fw-bold fs-14 color-orange"
+//         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
+//         saveBtnClassName="ms-1"
+//         open={openCreateFlagModal}
+//         onCloseIconClick={() => {
+//           setOpenCreateFlagModal(false);
+//           setFormDate({
+//             flagTitle: {},
+//             visibilityPlace: {},
+//             themeSelection: {},
+//             colorSelection: {},
+//             startDate: "",
+//             endDate: "",
+//             startTime: "",
+//             endTime: "",
+//           });
+//           setErrorObj({
+//             flagTitle: "",
+//             visibilityPlace: "",
+//             themeSelection: "",
+//             colorSelection: "",
+//             startDate: "",
+//             endDate: "",
+//             startTime: "",
+//             endTime: "",
+//           });
+//         }}
+//         ModalTitle="Create Flag"
+//         saveBtnText="Save"
+//         ClearBtnText="Reset"
+//         ModalWidth={650}
+//         onSaveBtnClick={() => {
+//           handleSubmit();
+//         }}
+//         onClearBtnClick={() => {
+//           handleClearAll();
+//         }}
+//       >
+//         <Grid container spacing={2} className="mt-2">
+//           <Grid item md={6}>
+//             <SimpleDropdownComponent
+//               size="small"
+//               label="Flag Title"
+//               inputlabelshrink
+//               list={[{ label: "Type One" }, { label: "Type Two" }]}
+//               onDropdownSelect={(value) => {
+//                 handleChange(value ?? {}, "flagTitle");
+//               }}
+//               value={formData.flagTitle}
+//               helperText={errorObj.flagTitle}
+//             />
+//           </Grid>
+
+//           <Grid item md={6}>
+//             <SimpleDropdownComponent
+//               size="small"
+//               label="Visibility Place"
+//               inputlabelshrink
+//               list={[{ label: "Type One" }, { label: "Type Two" }]}
+//               onDropdownSelect={(value) => {
+//                 handleChange(value ?? {}, "visibilityPlace");
+//               }}
+//               id="visibilityPlace"
+//               value={formData.visibilityPlace}
+//               helperText={errorObj.visibilityPlace}
+//             />
+//           </Grid>
+//           <Grid item md={6}>
+//             <SimpleDropdownComponent
+//               size="small"
+//               label="Theme Selection"
+//               inputlabelshrink
+//               list={[{ label: "Type One" }, { label: "Type Two" }]}
+//               onDropdownSelect={(value) => {
+//                 handleChange(value ?? {}, "themeSelection");
+//               }}
+//               id="themeSelection"
+//               value={formData.themeSelection}
+//               helperText={errorObj.themeSelection}
+//             />
+//           </Grid>
+//           <Grid item md={6}>
+//             <SimpleDropdownComponent
+//               size="small"
+//               label="Color Selection"
+//               inputlabelshrink
+//               list={[{ label: "Type One" }, { label: "Type Two" }]}
+//               onDropdownSelect={(value) => {
+//                 handleChange(value ?? {}, "colorSelection");
+//               }}
+//               id="colorSelection"
+//               value={formData.colorSelection}
+//               helperText={errorObj.colorSelection}
+//             />
+//           </Grid>
+
+//           <Grid item md={6}>
+//             <Box className="d-flex align-items-center">
+//               <Typography className="h-5">From Date:</Typography>
+//               <CustomDatePickerComponent
+//                 value={formData.startDate}
+//                 onDateChange={(value) => {
+//                   handleChange(value, "startDate");
+//                 }}
+//                 size="small"
+//               />
+//             </Box>
+//             {errorObj.startDate ? (
+//               <Grid>
+//                 <Typography className="color-error fs-12 fw-400">
+//                   {errorObj.startDate}
+//                 </Typography>
+//               </Grid>
+//             ) : null}
+//           </Grid>
+//           <Grid item md={6}>
+//             <Box className="d-flex align-items-center">
+//               <Typography className="h-5">To Date: </Typography>
+//               <CustomDatePickerComponent
+//                 value={formData.endDate}
+//                 onDateChange={(value) => {
+//                   handleChange(value, "endDate");
+//                 }}
+//                 size="small"
+//               />
+//             </Box>
+//             {errorObj.endDate ? (
+//               <Grid>
+//                 <Typography className="color-error fs-12 fw-400">
+//                   {errorObj.endDate}
+//                 </Typography>
+//               </Grid>
+//             ) : null}
+//           </Grid>
+
+//           <Grid item md={6}>
+//             <Box className="d-flex align-items-center">
+//               <Typography className="h-5">Start Time:</Typography>
+//               <input
+//                 type="time"
+//                 value={formData.startTime}
+//                 placeholder="hh:mm"
+//                 className={styles.timepicker}
+//                 style={{
+//                   border: "none",
+//                   outline: "none",
+//                   display: "flex",
+//                   flexDirection: "row-reverse",
+//                 }}
+//                 onChange={(e) => {
+//                   handleChange(e.target.value, "startTime");
+//                 }}
+//                 // value={endTime}
+//               />
+//             </Box>
+//             {errorObj.startTime ? (
+//               <Grid>
+//                 <Typography className="color-error fs-12 fw-400">
+//                   {errorObj.startTime}
+//                 </Typography>
+//               </Grid>
+//             ) : null}
+//           </Grid>
+
+//           <Grid item md={6}>
+//             <Box className="d-flex align-items-center">
+//               <Typography className="h-5">End Time:</Typography>
+//               <input
+//                 type="time"
+//                 value={formData.endTime}
+//                 placeholder="hh:mm"
+//                 className={styles.timepicker}
+//                 style={{
+//                   border: "none",
+//                   outline: "none",
+//                   display: "flex",
+//                   flexDirection: "row-reverse",
+//                 }}
+//                 onChange={(e) => {
+//                   handleChange(e.target.value, "endTime");
+//                 }}
+
+//                 // value={endTime}
+//               />
+//             </Box>
+//             {errorObj.endTime ? (
+//               <Grid>
+//                 <Typography className="color-error fs-12 fw-400">
+//                   {errorObj.endTime}
+//                 </Typography>
+//               </Grid>
+//             ) : null}
+//           </Grid>
+//         </Grid>
+//       </ModalComponent>
+//     </Box>
+//   );
+// };
+// export default CreateFlagModal;

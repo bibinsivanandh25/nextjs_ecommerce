@@ -45,10 +45,22 @@ const deleteProducts = (id) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
+
+const getAllProductsCount = (commissionType) => {
+  return serviceUtil
+    .get(`products/admin/products/count?commissionType=${commissionType}`)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getMainCategories,
   getSubCategories,
   getBrands,
   getProductTitles,
   deleteProducts,
+  getAllProductsCount,
 };
