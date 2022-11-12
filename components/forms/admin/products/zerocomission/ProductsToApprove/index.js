@@ -74,6 +74,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     to: {},
     productVariationId: null,
   });
+  const [productVariationId, setProductVariationId] = useState("");
 
   const [images, setImages] = useState([]);
 
@@ -82,6 +83,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     if (data) {
       toastify(data?.message, "success");
       getTableData(0);
+      getCount();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -125,6 +127,11 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
         },
         productVariationId: val?.productVariationId,
       });
+    }
+
+    if (ele === "Merge to") {
+      setProductVariationId(val?.productVariationId);
+      setOpenMergeToModal(true);
     }
   };
 
@@ -196,6 +203,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       toastify(err?.response?.data?.messagea);
     }
   };
+
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -351,6 +359,8 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             type={helpSupportModal.type}
             to={helpSupportModal.to}
             submit={saveQuery}
+            getTabledata={getTableData}
+            getCount={getCount}
           />
         ) : !showViewProducts ? (
           <Box>
@@ -459,8 +469,10 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       />
       {/* Merge To Modal */}
       <MergeToModal
+        productId={productVariationId}
         openMergeToModal={openMergeToModal}
         setOpenMergeToModal={setOpenMergeToModal}
+        viewClick={viewClick}
       />
       <VisibilityRangeModal
         openVisibilityRangeModal={openVisibilityRangeModal}

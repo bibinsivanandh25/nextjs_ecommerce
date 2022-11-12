@@ -175,11 +175,11 @@ const ZeroCommission = () => {
           }}
         >
           <Box className="px-1 pt-2">
-            {activeTab === 0 && <ProductsToApprove />}
-            {activeTab === 1 && <Queries />}
-            {activeTab === 2 && <Active />}
-            {activeTab === 3 && <Updated />}
-            {activeTab === 4 && <Rejected />}
+            {activeTab === 0 && <ProductsToApprove getCount={getCount} />}
+            {activeTab === 1 && <Queries getCount={getCount} />}
+            {activeTab === 2 && <Active getCount={getCount} />}
+            {activeTab === 3 && <Updated getCount={getCount} />}
+            {activeTab === 4 && <Rejected getCount={getCount} />}
           </Box>
         </TabsCard>
       </Box>
