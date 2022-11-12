@@ -18,7 +18,9 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import ViewProducts from "./ViewProducts";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
@@ -26,6 +28,7 @@ import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const ProductsToApprove = ({ getCount = () => {} }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -74,6 +77,15 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     }
   };
 
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
+    }
+  };
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
     if (ele === "Accept/Reject") {
@@ -81,6 +93,15 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     }
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
+    }
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
     }
   };
 
@@ -95,7 +116,6 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     "Visibility Range",
     "Accept/Reject",
     "Raise Query",
-    "Draft",
     "Merge to",
     "Flags",
   ];
@@ -138,6 +158,21 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
 
+  const dispatch = useDispatch();
+
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -204,7 +239,9 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             <CustomIcon
               type="view"
               className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
             />
             <MenuOption
               getSelectedItem={(ele) => {
@@ -310,7 +347,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
         )}
       </Box>
       {/* Edit Modal Component */}
