@@ -25,5 +25,14 @@ const acceptOrRejectProduct = (payLoad) => {
     })
     .catch((err) => ({ err }));
 };
+const raiseQuery = (payLoad) => {
+  return serviceUtil
+    .post(`help-and-support/product-ticket`, payLoad)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
 
-export { getAdminProductsByFilter, acceptOrRejectProduct };
+export { getAdminProductsByFilter, acceptOrRejectProduct, raiseQuery };

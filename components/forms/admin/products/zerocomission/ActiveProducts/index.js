@@ -1,12 +1,18 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Paper, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  getAdminProductsByFilter,
+  raiseQuery,
+} from "services/admin/products/fixedMargin";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
+import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import ViewProducts from "./ViewProducts";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -46,6 +52,12 @@ const Active = () => {
   const [brands, setBrands] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
+  const [helpSupportModal, sethelpSupportModal] = useState({
+    show: false,
+    type: "",
+    to: {},
+    productVariationId: null,
+  });
 
   const options = [
     "Edit",
@@ -58,6 +70,7 @@ const Active = () => {
     "Remove",
     "Reject",
     "Discount",
+    "Raise Query",
   ];
   const tableColumnsForActive = [
     {
@@ -152,7 +165,7 @@ const Active = () => {
     },
   ];
 
-  const onClickOfMenuItem = (ele, index) => {
+  const onClickOfMenuItem = (ele, index, val) => {
     if (ele === "Edit") {
       setProductDetails({
         vendorIdOrName: rowsDataObjectsForActive[index].col5,
@@ -172,8 +185,17 @@ const Active = () => {
       setOpenEditModal(true);
     }
 
-    if (typeof ele === "object") {
-      // console.log("Display button clicked");
+    if (ele === "Raise Query") {
+      sethelpSupportModal({
+        show: true,
+        type: "ACTIVE_PRODUCT",
+        to: {
+          id: val.supplierId,
+          label: val.supplierName,
+          value: val.supplierId,
+        },
+        productVariationId: val?.productVariationId,
+      });
     }
 
     if (ele === "Remove") {
@@ -246,8 +268,7 @@ const Active = () => {
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                // console.log("Index", index);
-                onClickOfMenuItem(ele, index);
+                onClickOfMenuItem(ele, index, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
@@ -293,9 +314,49 @@ const Active = () => {
     getTableData();
   }, []);
 
+  const saveQuery = async (val) => {
+    const payload = {
+      issueType: "PRODUCT_RELATED_ISSUE",
+      issueSubject: val.issueSubject,
+      userFromType: "ADMIN",
+      userFromId: val.userFromId,
+      userToType: "SUPPLIER",
+      userToId: val.userToId,
+      mediaUrl: [...val.mediaUrl],
+      helpSupportMessagePojos: [...val.helpSupportMessagePojos],
+      productVariationId: helpSupportModal.productVariationId,
+    };
+    const { data, message, err } = await raiseQuery(payload);
+    if (data) {
+      toastify(message, "success");
+      sethelpSupportModal({
+        show: false,
+        type: "",
+        to: {},
+        productVariationId: null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <>
-      {!showViewProducts ? (
+      {helpSupportModal.show ? (
+        <CreateTicket
+          setShowCreateTicketComponent={() => {
+            sethelpSupportModal({
+              show: false,
+              type: "",
+              to: {},
+              productVariationId: null,
+            });
+          }}
+          type={helpSupportModal.type}
+          to={helpSupportModal.to}
+          submit={saveQuery}
+        />
+      ) : !showViewProducts ? (
         <Box>
           <Paper
             sx={{ height: "78vh" }}
