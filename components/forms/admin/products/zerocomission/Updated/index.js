@@ -8,10 +8,14 @@ import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import toastify from "services/utils/toastUtils";
 import { deleteProducts } from "services/admin/products";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import { useDispatch } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
+import { getVariation } from "services/supplier/myProducts";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import EditProductModalForUpdated from "./EditProductModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Updated = ({
   rowsDataObjectsForUpdated,
@@ -34,6 +38,7 @@ const Updated = ({
   const [subCategoryIds, setSubCategoryIds] = useState([]);
   const [brands, setBrands] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
+  const [showViewProducts, setShowViewProducts] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
@@ -102,24 +107,47 @@ const Updated = ({
     }
   };
 
+  const dispatch = useDispatch();
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
+    }
+  };
   const onClickOfMenuItem = (ele, val) => {
-    if (ele === "Edit") {
-      // setModalId(index);
-      setOpenEditModalForUpdated(true);
-    }
-
-    if (ele === "Raise Query") {
-      setOpenRaiseQueryModal(true);
-    }
-    // setSelectedRow(val);
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
     }
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
     }
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
+    }
   };
 
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -172,7 +200,9 @@ const Updated = ({
             <CustomIcon
               type="view"
               className="fs-18"
-              // onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
             />
             <MenuOption
               getSelectedItem={(ele) => {
@@ -219,10 +249,8 @@ const Updated = ({
 
   useEffect(() => {
     getTableData();
-    // getAllInitialFilters();
   }, []);
 
-  // const theTableRowsData = () => {
   //   const anArray = [];
   //   rowsDataObjectsForUpdated.forEach((val, index) => {
   //     anArray.push({
@@ -286,63 +314,67 @@ const Updated = ({
 
   return (
     <>
-      <Box>
+      {!showViewProducts ? (
         <Box>
-          <Paper
-            sx={{ height: "78vh" }}
-            className="overflow-auto hide-scrollbar"
-          >
-            <Box className="px-1 pt-2">
-              <TableComponent
-                columns={tableColumnsForProductsToUpdated}
-                showFilterButton
-                showFilterList={false}
-                tHeadBgColor="bg-light-gray"
-                // showPagination={false}
-                tableRows={tableRows}
-                // showSearchbar={false}
-                showDateFilter
-                showDateFilterSearch={false}
-                dateFilterBtnClick={() => {
-                  setProductDetails({
-                    vendorIdOrName: "",
-                    images: "",
-                    productTitle: "",
-                    sku: "",
-                    categorySubcategory: "",
-                    weightOrVolume: "",
-                    totalStock: "",
-                    salePriceAndMrp: "",
-                    discounts: "",
-                  });
-                  setOpenEditModal(true);
-                  setModalId(null);
-                }}
-                showSearchbar={false}
-                showSearchFilter={false}
-                onFilterButtonClick={() => {
-                  setShowFilterModal(true);
-                }}
-                handlePageEnd={(
-                  searchText,
-                  searchFilter,
-                  page = pageNumber,
-                  dateFilter
-                ) => {
-                  getTableData(
-                    page,
-                    undefined,
-                    undefined,
-                    undefined,
-                    undefined,
+          <Box>
+            <Paper
+              sx={{ height: "78vh" }}
+              className="overflow-auto hide-scrollbar"
+            >
+              <Box className="px-1 pt-2">
+                <TableComponent
+                  columns={tableColumnsForProductsToUpdated}
+                  showFilterButton
+                  showFilterList={false}
+                  tHeadBgColor="bg-light-gray"
+                  // showPagination={false}
+                  tableRows={tableRows}
+                  // showSearchbar={false}
+                  showDateFilter
+                  showDateFilterSearch={false}
+                  dateFilterBtnClick={() => {
+                    setProductDetails({
+                      vendorIdOrName: "",
+                      images: "",
+                      productTitle: "",
+                      sku: "",
+                      categorySubcategory: "",
+                      weightOrVolume: "",
+                      totalStock: "",
+                      salePriceAndMrp: "",
+                      discounts: "",
+                    });
+                    setOpenEditModal(true);
+                    setModalId(null);
+                  }}
+                  showSearchbar={false}
+                  showSearchFilter={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
                     dateFilter
-                  );
-                }}
-              />
-            </Box>
-          </Paper>
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
+                  }}
+                />
+              </Box>
+            </Paper>
+          </Box>
         </Box>
-      </Box>
+      ) : (
+        <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
+      )}
       <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}

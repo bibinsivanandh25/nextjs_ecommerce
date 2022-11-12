@@ -6,6 +6,10 @@ import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
+import toastify from "services/utils/toastUtils";
 import ViewProducts from "./ViewProducts";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -100,6 +104,49 @@ const Rejected = () => {
     { id: "col9", align: "center", label: "Brand", data_align: "center" },
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
+  const dispatch = useDispatch();
+
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
+
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
+    }
+  };
+
+  const onClickOfMenuItem = (ele, val) => {
+    // if (ele === "Accept/Reject") {
+    //   setOpenAcceptRejectModal(true);
+    // }
+    // if (ele === "Delete") {
+    //   deleteProduct(val.productVariationId);
+    // }
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
+    }
+  };
 
   const mapTableRows = (data) => {
     const result = [];
@@ -167,11 +214,13 @@ const Rejected = () => {
             <CustomIcon
               type="view"
               className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
             />
             <MenuOption
-              getSelectedItem={() => {
-                // onClickOfMenuItem(ele, index);
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"

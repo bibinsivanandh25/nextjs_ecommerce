@@ -12,12 +12,15 @@ import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import { updateProduct, viewProduct } from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
-import ViewProducts from "./ViewProducts";
 import RaiseQueryModal from "./RaiseQueryModal";
 import DiscountModal from "./DiscountModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Active = () => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
@@ -68,10 +71,11 @@ const Active = () => {
       </Box>
     </Box>,
     "Remove",
-    "Reject",
     "Discount",
     "Raise Query",
   ];
+  const dispatch = useDispatch();
+
   const tableColumnsForActive = [
     {
       id: "col1",
@@ -164,27 +168,26 @@ const Active = () => {
       data_align: "center",
     },
   ];
-
-  const onClickOfMenuItem = (ele, index, val) => {
-    if (ele === "Edit") {
-      setProductDetails({
-        vendorIdOrName: rowsDataObjectsForActive[index].col5,
-        images: rowsDataObjectsForActive[index].col3.imgSrc,
-        productTitle: rowsDataObjectsForActive[index].col4,
-        sku: rowsDataObjectsForActive[index].col6,
-        categorySubcategory: rowsDataObjectsForActive[index].col11,
-        weightOrVolume: rowsDataObjectsForActive[index].col8,
-        totalStock: rowsDataObjectsForActive[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForActive[index].col10.salePrice}/${rowsDataObjectsForActive[index].col10.mrpPrice} `,
-        discounts:
-          rowsDataObjectsForActive[index].col10.mrpPrice -
-          rowsDataObjectsForActive[index].col10.salePrice,
-      });
-      setModalId(index);
-      setImageArray(rowsDataObjectsForActive[index].col3.imgSrc);
-      setOpenEditModal(true);
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
     }
+  };
 
+  const onClickOfMenuItem = (ele, val) => {
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
+    }
     if (ele === "Raise Query") {
       sethelpSupportModal({
         show: true,
@@ -197,19 +200,22 @@ const Active = () => {
         productVariationId: val?.productVariationId,
       });
     }
+  };
 
-    if (ele === "Remove") {
-      setOpenRemoveModal(true);
-    }
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
 
-    if (ele === "Reject") {
-      setOpenRejectModal(true);
-    }
-
-    if (ele === "Discount") {
-      setOpenDiscountModal(true);
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
     }
   };
+
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -264,11 +270,14 @@ const Active = () => {
             <CustomIcon
               type="view"
               className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index, val);
+                // console.log("Index", index);
+                onClickOfMenuItem(ele, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
@@ -415,7 +424,7 @@ const Active = () => {
           </Paper>
         </Box>
       ) : (
-        <ViewProducts setShowViewProduct={setShowViewProducts} />
+        <ViewOrEditProducts setShowViewProduct={setShowViewProducts} />
       )}
       {/* Edit Modal Component */}
       <AddEditProductModal
