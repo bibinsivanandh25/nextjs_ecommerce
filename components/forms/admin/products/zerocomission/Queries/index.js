@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
@@ -18,7 +19,12 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import ViewProducts from "./ViewProducts";
+import { getVariation } from "services/supplier/myProducts";
+import { viewProduct } from "features/productsSlice";
+import { useDispatch, useSelector } from "react-redux";
+// import ViewProducts from "./ViewProducts";
+import { helpandSupportGetTicketById } from "services/admin/help&support";
+import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
@@ -26,6 +32,7 @@ import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Queries = ({ getCount = () => {} }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -62,6 +69,13 @@ const Queries = ({ getCount = () => {} }) => {
   const [products, setProducts] = useState([]);
 
   const [images, setImages] = useState([]);
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState({
+    type: "",
+    show: "",
+    details: null,
+  });
+  const user = useSelector((state) => state.user);
 
   const deleteProduct = async (id) => {
     const { data, err } = await deleteProducts(id);
@@ -73,14 +87,40 @@ const Queries = ({ getCount = () => {} }) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const getTicketById = async (ticketId) => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+    if (data?.data) {
+      // setSelectedData(data.data);
+      setShowModal({
+        details: data.data,
+        show: true,
+        type: "view",
+      });
+    }
+  };
 
   const onClickOfMenuItem = (ele, val) => {
     setSelectedRow(val);
-    if (ele === "Accept/Reject") {
-      setOpenAcceptRejectModal(true);
-    }
+
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
+    } else if (ele === "Close") {
+      console.log(val);
+    } else if (ele === "Replay") {
+      getTicketById(64);
+    }
+  };
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      dispatch(viewProduct(data[0]));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
     }
   };
 
@@ -89,16 +129,7 @@ const Queries = ({ getCount = () => {} }) => {
     // getAllInitialFilters();
   }, []);
 
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
+  const options = ["Replay", "Close", "Delete"];
 
   const columns = [
     {
@@ -202,13 +233,14 @@ const Queries = ({ getCount = () => {} }) => {
             &#8377; {val.salePrice}/ &#8377; {val.mrp}
           </Typography>
         ),
-        col9: val.brand,
-        col10: (
+        col9: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
               type="view"
               className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
             />
             <MenuOption
               getSelectedItem={(ele) => {
@@ -256,7 +288,19 @@ const Queries = ({ getCount = () => {} }) => {
   return (
     <>
       <Box>
-        {!showViewProducts ? (
+        {showModal.show ? (
+          <HelpandsupportView
+            selectedData={showModal.details}
+            setShowModal={() => {
+              setShowModal({
+                show: false,
+                type: "",
+                details: null,
+              });
+            }}
+            user={user}
+          />
+        ) : !showViewProducts ? (
           <Box>
             <Paper
               sx={{ height: "78vh" }}
@@ -312,7 +356,7 @@ const Queries = ({ getCount = () => {} }) => {
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
         )}
       </Box>
       {/* Edit Modal Component */}

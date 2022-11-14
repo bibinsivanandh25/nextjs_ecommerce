@@ -7,7 +7,7 @@ import {
   upsellsProduct,
 } from "services/supplier/AddProducts";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-import { validateLinked } from "../validation";
+// import { validateLinked } from "../validation";
 
 const LinkedForm = forwardRef(
   ({ formData = {}, setFormData = () => {} }, ref) => {
@@ -74,15 +74,16 @@ const LinkedForm = forwardRef(
     useImperativeHandle(ref, () => {
       return {
         validate: () => {
-          const { errObj, flag } = validateLinked(formData.linked);
-          if (Object.keys(errObj).length) {
-            const element = document.getElementById(Object.keys(errObj)[0]);
-            if (element) {
-              element.scrollIntoView();
-            }
-          }
-          setErrorObj(errObj);
-          return flag;
+          // const { errObj, flag } = validateLinked(formData.linked);
+          // if (Object.keys(errObj).length) {
+          //   const element = document.getElementById(Object.keys(errObj)[0]);
+          //   if (element) {
+          //     element.scrollIntoView();
+          //   }
+          // }
+          // setErrorObj(errObj);
+          // return Flag;
+          return false;
         },
         clearPage: () => {
           setErrorObj({});
