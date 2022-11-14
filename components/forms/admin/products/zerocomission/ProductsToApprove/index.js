@@ -35,7 +35,10 @@ import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
-const ProductsToApprove = ({ getCount = () => {} }) => {
+const ProductsToApprove = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -302,7 +305,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       productVariationIds: productIds ?? products ?? [],
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType,
       status: "INITIATED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);

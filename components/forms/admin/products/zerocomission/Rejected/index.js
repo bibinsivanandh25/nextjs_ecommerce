@@ -19,7 +19,10 @@ import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 
-const Rejected = () => {
+const Rejected = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -248,7 +251,7 @@ const Rejected = () => {
       productVariationIds: productIds ?? products ?? [],
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType,
       status: "REJECTED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);

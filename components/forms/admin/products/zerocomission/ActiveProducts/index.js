@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import {
+  disableActiveProduct,
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
@@ -22,7 +23,10 @@ import DiscountModal from "./DiscountModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
-const Active = () => {
+const Active = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
@@ -62,18 +66,18 @@ const Active = () => {
     productVariationId: null,
   });
 
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-cenetr">
-      <Typography className="me-3">Disable</Typography>,
-      <Box className="pt-1">
-        <SwitchComponent label={null} />
-      </Box>
-    </Box>,
-    "Remove",
-    "Discount",
-    "Raise Query",
-  ];
+  // const options = [
+  //   "Edit",
+  //   <Box className="d-flex align-items-cenetr">
+  //     <Typography className="me-3">Disable</Typography>,
+  //     <Box className="pt-1">
+  //       <SwitchComponent label={null} />
+  //     </Box>
+  //   </Box>,
+  //   "Remove",
+  //   "Discount",
+  //   "Raise Query",
+  // ];
   const dispatch = useDispatch();
 
   const tableColumnsForActive = [
@@ -216,6 +220,13 @@ const Active = () => {
     }
   };
 
+  const enableDisableProduct = async () => {
+    const { data } = await disableActiveProduct();
+    if (data) {
+      console.log(data);
+    }
+  };
+
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -276,10 +287,26 @@ const Active = () => {
             />
             <MenuOption
               getSelectedItem={(ele) => {
-                // console.log("Index", index);
                 onClickOfMenuItem(ele, val);
               }}
-              options={options}
+              options={[
+                "Edit",
+                <Box className="d-flex align-items-cenetr">
+                  <Typography className="me-3">Disable</Typography>,
+                  <Box className="pt-1">
+                    <SwitchComponent
+                      label={null}
+                      defaultChecked={false}
+                      ontoggle={() => {
+                        enableDisableProduct(val.productVariationId);
+                      }}
+                    />
+                  </Box>
+                </Box>,
+                "Remove",
+                "Discount",
+                "Raise Query",
+              ]}
               IconclassName="fs-18 color-gray"
             />
           </Box>
@@ -304,7 +331,7 @@ const Active = () => {
       productVariationIds: productIds ?? products ?? [],
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType,
       status: "APPROVED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);

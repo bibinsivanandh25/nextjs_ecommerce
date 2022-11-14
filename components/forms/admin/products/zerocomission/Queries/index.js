@@ -27,7 +27,10 @@ import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 
-const Queries = ({ getCount = () => {} }) => {
+const Queries = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -238,7 +241,7 @@ const Queries = ({ getCount = () => {} }) => {
       productVariationIds: productIds ?? products ?? [],
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType,
       status: "IN_QUERY",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);

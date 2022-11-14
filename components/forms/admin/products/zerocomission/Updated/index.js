@@ -25,6 +25,8 @@ import ViewOrEditProducts from "../../VieworEditProducts";
 const Updated = ({
   rowsDataObjectsForUpdated,
   setRowsDataObjectsForUpdated,
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
 }) => {
   // eslint-disable-next-line no-unused-vars
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
@@ -254,7 +256,7 @@ const Updated = ({
       productVariationIds: productIds ?? products ?? [],
       dateFrom: date?.fromDate ?? "",
       dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      commissionType,
       status: "UPDATED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);
