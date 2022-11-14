@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import React, { useState, useEffect } from "react";
+import { Box } from "@mui/material";
 import Image from "next/image";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
-import CreateFlagModal from "./CreateFlagModal";
 import {
   getFlags,
   changeStatus,
   deleteflags,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
+import CreateFlagModal from "./CreateFlagModal";
 
 const SupplierFlags = () => {
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);

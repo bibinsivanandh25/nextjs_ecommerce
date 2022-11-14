@@ -114,16 +114,15 @@ const StaffForm = ({
     if (formData.firstName.trim() === "") {
       errObj.firstName = validateMessage.field_required;
       flag = true;
-    }else if(formData.firstName.trim().length < 3){
+    } else if (formData.firstName.trim().length < 3) {
       errObj.firstName = validateMessage.alphabets_3;
-    }else if (!validationRegex.name.test(formData.firstName.trim())) {
+    } else if (!validationRegex.name.test(formData.firstName.trim())) {
       errObj.firstName = validateMessage.alphabets;
       flag = true;
     }
-    if (formData.last_Name.trim() === ""){
+    if (formData.last_Name.trim() === "") {
       flag = false;
-    }
-    else if (!validationRegex.name.test(formData.last_Name.trim())) {
+    } else if (!validationRegex.name.test(formData.last_Name.trim())) {
       errObj.last_Name = validateMessage.alphabets;
       flag = true;
     }
