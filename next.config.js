@@ -1,12 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack(config) {
-    config.module.rules.push({
+  webpack(config, { isServer }) {
+    const configCopy = { ...config };
+    if (!isServer) {
+      configCopy.resolve.fallback.fs = false;
+    }
+    configCopy.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],
     });
-
-    return config;
+    return configCopy;
   },
   images: {
     domains: [
