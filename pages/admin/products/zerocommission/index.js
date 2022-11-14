@@ -22,107 +22,6 @@ const ZeroCommission = () => {
     { label: "Rejected", isSelected: false },
   ]);
 
-  // const callApi = (type, payload) => {
-  //   // eslint-disable-next-line consistent-return
-  //   return getAdminProductsByFilter(payload)
-  //     .then((res) => {
-  //       return { [`${type}`]: res.data };
-  //     })
-  //     .catch(() => {
-  //       return null;
-  //     });
-  // };
-
-  // const getCount = async () => {
-  //   const status = ["INITIATED", "APPROVED", "REJECTED"];
-  //   const promiseArr = [];
-  //   status.forEach((ele) => {
-  //     if (ele === "INITIATED") {
-  //       promiseArr.push(
-  //         callApi("INITIATED", {
-  //           categoryIds: [],
-  //           subCategoryIds: [],
-  //           brandNames: [],
-  //           productVariationIds: [],
-  //           dateFrom: "",
-  //           dateTo: "",
-  //           commissionType: "ZERO_COMMISSION",
-  //           status: ele,
-  //         })
-  //       );
-  //     }
-  //     if (ele === "APPROVED") {
-  //       promiseArr.push(
-  //         callApi("APPROVED", {
-  //           categoryIds: [],
-  //           subCategoryIds: [],
-  //           brandNames: [],
-  //           productVariationIds: [],
-  //           dateFrom: "",
-  //           dateTo: "",
-  //           commissionType: "ZERO_COMMISSION",
-  //           status: ele,
-  //         })
-  //       );
-  //     }
-  //     if (ele === "REJECTED") {
-  //       promiseArr.push(
-  //         callApi("REJECTED", {
-  //           categoryIds: [],
-  //           subCategoryIds: [],
-  //           brandNames: [],
-  //           productVariationIds: [],
-  //           dateFrom: "",
-  //           dateTo: "",
-  //           commissionType: "ZERO_COMMISSION",
-  //           status: ele,
-  //         })
-  //       );
-  //     }
-  //   });
-
-  //   await Promise.all(promiseArr).then((res) => {
-  //     const tabs = JSON.parse(JSON.stringify(tabList));
-  //     res?.forEach((item) => {
-  //       if (!item) return;
-  //       if (Object.keys(item)[0] === "INITIATED") {
-  //         tabs.map((element) => {
-  //           if (element.label === "Products to approve")
-  //             return (element.label += `( ${
-  //               item[Object.keys(item)[0]]?.count
-  //                 ? item[Object.keys(item)[0]]?.count
-  //                 : 0
-  //             } )`);
-  //           return element;
-  //         });
-  //       }
-  //       if (Object.keys(item)[0] === "REJECTED") {
-  //         tabs.map((element) => {
-  //           if (element.label === "Rejected")
-  //             return (element.label += `( ${
-  //               item[Object.keys(item)[0]]?.count
-  //                 ? item[Object.keys(item)[0]]?.count
-  //                 : 0
-  //             } )`);
-  //           return element;
-  //         });
-  //       }
-  //       if (Object.keys(item)[0] === "APPROVED") {
-  //         tabs.map((element) => {
-  //           if (element.label === "Active")
-  //             return (element.label += `( ${
-  //               item[Object.keys(item)[0]]?.count
-  //                 ? item[Object.keys(item)[0]]?.count
-  //                 : 0
-  //             } )`);
-  //           return element;
-  //         });
-  //       }
-  //     });
-  //     setTabList([...tabs]);
-  //   });
-  // };
-
   const getCount = async () => {
     const { data } = await getAllProductsCount("ZERO_COMMISSION");
     if (data) {
@@ -175,11 +74,11 @@ const ZeroCommission = () => {
           }}
         >
           <Box className="px-1 pt-2">
-            {activeTab === 0 && <ProductsToApprove />}
-            {activeTab === 1 && <Queries />}
-            {activeTab === 2 && <Active />}
-            {activeTab === 3 && <Updated />}
-            {activeTab === 4 && <Rejected />}
+            {activeTab === 0 && <ProductsToApprove getCount={getCount} />}
+            {activeTab === 1 && <Queries getCount={getCount} />}
+            {activeTab === 2 && <Active getCount={getCount} />}
+            {activeTab === 3 && <Updated getCount={getCount} />}
+            {activeTab === 4 && <Rejected getCount={getCount} />}
           </Box>
         </TabsCard>
       </Box>

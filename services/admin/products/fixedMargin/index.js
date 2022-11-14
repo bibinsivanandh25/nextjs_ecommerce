@@ -35,4 +35,19 @@ const raiseQuery = (payLoad) => {
     .catch((err) => ({ err }));
 };
 
-export { getAdminProductsByFilter, acceptOrRejectProduct, raiseQuery };
+const disableActiveProduct = (productID, disable) => {
+  return serviceUtil
+    .put(`products/product-variation/${productID}/${disable}`)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export {
+  getAdminProductsByFilter,
+  acceptOrRejectProduct,
+  raiseQuery,
+  disableActiveProduct,
+};

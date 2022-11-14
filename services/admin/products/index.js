@@ -56,6 +56,30 @@ const getAllProductsCount = (commissionType) => {
     .catch((err) => ({ err }));
 };
 
+const getProductsToMergeBySearch = (payload) => {
+  return serviceUtil
+    .put(`products/admin/products/merge-products`, payload, {
+      header: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const mergeProducts = (productId) => {
+  return serviceUtil
+    .put(`products/merge-product/${productId}`)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getMainCategories,
   getSubCategories,
@@ -63,4 +87,6 @@ export {
   getProductTitles,
   deleteProducts,
   getAllProductsCount,
+  getProductsToMergeBySearch,
+  mergeProducts,
 };
