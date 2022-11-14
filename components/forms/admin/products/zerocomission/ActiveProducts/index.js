@@ -14,7 +14,7 @@ import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import { adminProductView, updateProduct } from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -207,7 +207,7 @@ const Active = () => {
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      dispatch(adminProductView(data[0]));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -424,7 +424,7 @@ const Active = () => {
           </Paper>
         </Box>
       ) : (
-        <ViewOrEditProducts setShowViewProduct={setShowViewProducts} />
+        <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
       )}
       {/* Edit Modal Component */}
       <AddEditProductModal

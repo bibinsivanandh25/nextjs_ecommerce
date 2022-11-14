@@ -44,6 +44,10 @@ import TextEditor from "@/atoms/TextEditor";
 import { GrClose } from "react-icons/gr";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
+import Discount from "./Discount";
+import OrderSummary from "./OrderSummary";
+import MergedProducts from "./MergedProducts";
+import Logs from "./Logs";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
@@ -58,7 +62,9 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
-  const { editProduct, viewFlag } = useSelector((state) => state.product);
+  const { editProduct, viewFlag, adminView } = useSelector(
+    (state) => state.product
+  );
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -90,6 +96,12 @@ const ProductsLayout = ({
   );
   const [longDescModal, setLongDescModal] = useState(false);
   const [shortDescModal, setShortDescModal] = useState(false);
+  const [adminViewList, setadminViewList] = useState([
+    { title: "Discount", component: <Discount /> },
+    { title: "Order Summary", component: <OrderSummary /> },
+    { title: "Merged Products", component: <MergedProducts /> },
+    { title: "Logs", component: <Logs /> },
+  ]);
 
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
@@ -1031,42 +1043,6 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  {/* <TextAreaComponent
-                    showExpandIcon
-                    legend="Short Description*"
-                    placeholder="Enter short description"
-                    id="short_description"
-                    onChange={(e) => {
-                      setFormData((prev) => {
-                        return {
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            short_description: {
-                              ...prev.mainForm.short_description.media,
-                              text: e.target.value.replace(/\s\s+/g, " "),
-                            },
-                          },
-                        };
-                      });
-                    }}
-                    value={formData?.mainForm?.short_description?.text}
-                    onBtnClick={() => {
-                      setShowFileUploadModal("short_description");
-                    }}
-                    btnLabel="Add Media"
-                    btnSize="small"
-                    btnVariant="outlined"
-                    widthClassName="w-100 mt-0"
-                    rows={2}
-                    muiProps="m-0 p-0 fs-10"
-                    error={
-                      errorObj?.short_description?.text &&
-                      errorObj?.short_description?.text !== ""
-                    }
-                    helperText={errorObj?.short_description?.text ?? ""}
-                    disabled={viewFlag}
-                  /> */}
                   <div className="w-100 d-flex justify-content-between">
                     <Typography>Short Description*</Typography>
                     <ButtonComponent
@@ -1220,42 +1196,6 @@ const ProductsLayout = ({
                       </div>
                     )}
                   </div>
-                  {/* <TextAreaComponent
-                    showExpandIcon
-                    id="long_description"
-                    legend="Long Description*"
-                    value={formData?.mainForm?.long_description?.text}
-                    placeholder="Enter long description"
-                    onChange={(e) => {
-                      setFormData((prev) => {
-                        return {
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            long_description: {
-                              ...prev.mainForm.long_description.media,
-                              text: e.target.value.replace(/\s\s+/g, " "),
-                            },
-                          },
-                        };
-                      });
-                    }}
-                    onBtnClick={() => {
-                      setShowFileUploadModal("long_description");
-                    }}
-                    btnLabel="Add Media"
-                    btnSize="small"
-                    btnVariant="outlined"
-                    widthClassName="w-100 mt-0"
-                    rows={3}
-                    muiProps="m-0 p-0 fs-10"
-                    error={
-                      errorObj?.long_description?.text &&
-                      errorObj?.long_description?.text !== ""
-                    }
-                    helperText={errorObj?.long_description?.text}
-                    disabled={viewFlag}
-                  /> */}
                 </Grid>
 
                 <Grid item md={12}>
@@ -1438,31 +1378,86 @@ const ProductsLayout = ({
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
-                  {tabsLists.map((item, index) => {
-                    return (
-                      <Grid
-                        item
-                        key={index}
-                        md={12}
-                        className={`text-center py-1 rounded my-1 fs-14 ${
-                          activeTab === index
-                            ? "bg-orange color-white"
-                            : "bg-light-gray"
-                        }`}
-                      >
-                        {item.title}
-                      </Grid>
-                    );
-                  })}
+                  {!adminView &&
+                    tabsLists.map((item, index) => {
+                      return (
+                        <Grid
+                          item
+                          key={index}
+                          md={12}
+                          className={`text-center py-1 rounded my-1 fs-14 ${
+                            activeTab === index
+                              ? "bg-orange color-white"
+                              : "bg-light-gray"
+                          }`}
+                        >
+                          {item.title}
+                        </Grid>
+                      );
+                    })}
+                  {adminView &&
+                    [...tabsLists, ...adminViewList].map((item, index) => {
+                      return (
+                        <Grid
+                          item
+                          key={index}
+                          md={12}
+                          className={`text-center py-1 rounded my-1 fs-14 ${
+                            activeTab === index
+                              ? "bg-orange color-white"
+                              : "bg-light-gray"
+                          }`}
+                        >
+                          {item.title}
+                        </Grid>
+                      );
+                    })}
                 </Grid>
               </Box>
               <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll">
-                {tabsLists.map((item, ind) => {
-                  return activeTab === ind ? item.component : null;
-                })}
+                {!adminView &&
+                  tabsLists.map((item, ind) => {
+                    return activeTab === ind ? item.component : null;
+                  })}
+                {adminView &&
+                  [...tabsLists, ...adminViewList].map((item, ind) => {
+                    return activeTab === ind ? item.component : null;
+                  })}
               </Box>
             </Box>
             <Box className="d-flex justify-content-end me-3 mb-1">
+              {adminView && (
+                <>
+                  <ButtonComponent
+                    label="Flag"
+                    size="small"
+                    variant="text"
+                    muiProps="text-secondary bnt-hover-class mx-2"
+                    // onBtnClick={handleNextClick}
+                  />
+                  <ButtonComponent
+                    label="Merge To"
+                    variant="text"
+                    muiProps="text-secondary bnt-hover-class mx-2"
+                    size="small"
+                    // onBtnClick={handleNextClick}
+                  />
+                  <ButtonComponent
+                    label="Raise Query"
+                    size="small"
+                    variant="text"
+                    muiProps="text-secondary bnt-hover-class mx-2"
+                    // onBtnClick={handleNextClick}
+                  />
+                  <ButtonComponent
+                    label="Update"
+                    variant="text"
+                    muiProps="text-secondary bnt-hover-class mx-2"
+                    size="small"
+                    // onBtnClick={handleNextClick}
+                  />
+                </>
+              )}
               {!viewFlag && (
                 <ButtonComponent
                   label="Clear"
@@ -1523,7 +1518,9 @@ const ProductsLayout = ({
                   muiProps="me-2"
                 />
               ) : null}
-              {activeTab !== tabsList.length - 1 && (
+              {(!adminView
+                ? activeTab !== tabsList.length - 1
+                : activeTab !== 12) && (
                 <ButtonComponent
                   label="Next"
                   size="small"
