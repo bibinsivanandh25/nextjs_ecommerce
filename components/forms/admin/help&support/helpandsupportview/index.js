@@ -20,7 +20,7 @@ const HelpandsupportView = ({
   setShowModal = () => {},
   user = {},
   acceptedTypes = ["png", "jpg", "pdf"],
-  getTabledata,
+  getTabledata = () => {},
 }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");

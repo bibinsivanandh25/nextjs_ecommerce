@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAllTableDatas = () => {
+const getSuppliers = (page, payload) => {
   return serviceUtil
-    .get(`users/admin/supplier/supplier-status/0/50?status=INITIATED`)
+    .post(`users/admin/supplier/supplier-status/${page}/50`, payload)
     .then((res) => {
       const { data } = res && res;
       return { data };
@@ -41,7 +41,7 @@ const getCategoryFilterData = () => {
 };
 
 export {
-  getAllTableDatas,
+  getSuppliers,
   supplierApprovedOrRejected,
   inviteSupplier,
   getCategoryFilterData,
