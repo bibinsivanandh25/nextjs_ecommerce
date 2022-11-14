@@ -23,7 +23,10 @@ import { getVariation } from "services/supplier/myProducts";
 import { viewProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import ViewProducts from "./ViewProducts";
-import { helpandSupportGetTicketById } from "services/admin/help&support";
+import {
+  closeTicketById,
+  helpandSupportGetTicketById,
+} from "services/admin/help&support";
 import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -98,16 +101,24 @@ const Queries = ({ getCount = () => {} }) => {
       });
     }
   };
+  const closeticket = async (ticketId) => {
+    const { data, message, err } = await closeTicketById(ticketId);
+    if (data === null) {
+      toastify(message, "success");
+      await getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
-  const onClickOfMenuItem = (ele, val) => {
+  const onClickOfMenuItem = (ele, val, id) => {
     setSelectedRow(val);
-
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
     } else if (ele === "Close") {
-      console.log(val);
+      closeticket(id);
     } else if (ele === "Replay") {
-      getTicketById(64);
+      getTicketById(id);
     }
   };
   const viewClick = async (masterProductId, variationId) => {
@@ -117,19 +128,16 @@ const Queries = ({ getCount = () => {} }) => {
     if (data) {
       dispatch(viewProduct(data[0]));
       setShowViewProducts(true);
-
-      // window.open("/supplier/products&inventory/addnewproduct");
-    } else {
-      toastify(err?.response?.data?.messagea);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
   useEffect(() => {
     getTableData();
-    // getAllInitialFilters();
   }, []);
 
-  const options = ["Replay", "Close", "Delete"];
+  const options = ["Reply", "Close"];
 
   const columns = [
     {
@@ -176,81 +184,71 @@ const Queries = ({ getCount = () => {} }) => {
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
-      result.push({
-        id: index + 1,
-        col1: (
-          <>
-            <Typography className="fs-12 text-primary">
-              {val.supplierId}
-            </Typography>
-            <Typography className="fs-12 text-primary">
-              {val.supplierName}
-            </Typography>
-          </>
-        ),
-        col2: val.variationMedia ? (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setImages([...val.variationMedia]);
-                setImageIndexForImageModal(0);
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.variationMedia[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
+      val.tickets.forEach((ele) => {
+        result.push({
+          col1: (
+            <>
+              <Typography className="fs-12 text-primary">
+                {val.supplierId}
+              </Typography>
+              <Typography className="fs-12 text-primary">
+                {val.supplierName}
+              </Typography>
+            </>
+          ),
+          col2: val.variationMedia ? (
+            <Box className="d-flex align-items-end justify-content-center">
+              <Box
+                onClick={() => {
+                  setImages([...val.variationMedia]);
+                  setImageIndexForImageModal(0);
+                  setModalId(index);
+                  setOpenImagesArrayModal(true);
+                }}
+                className="h-30 border d-flex justify-content-center"
+              >
+                <Image
+                  src={val.variationMedia[0]}
+                  width="50"
+                  height="50"
+                  className="cursor-pointer"
+                />
+              </Box>
+              <Typography className="h-5">
+                /{val.variationMedia.length}
+              </Typography>
+            </Box>
+          ) : null,
+          col3: <Typography className="h-5">{val.productTitle}</Typography>,
+          col4: <Typography className="h-5">{val.skuId}</Typography>,
+          col5: (
+            <>
+              <Typography className="h-5">{val.categoryName}</Typography>
+              <Typography className="h-5">{val.subCategoryName}</Typography>
+            </>
+          ),
+          col6: <Typography className="h-5">{ele.issueSubject}</Typography>,
+          col7: ele.createdDate,
+          col8: ele.ticketStatus,
+          col9: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                onIconClick={() => {
+                  viewClick(val.masterProductId, val.productVariationId);
+                }}
+              />
+              <MenuOption
+                getSelectedItem={(e) => {
+                  onClickOfMenuItem(e, val, ele.ticketId);
+                }}
+                options={options}
+                IconclassName="fs-18 color-gray"
               />
             </Box>
-            <Typography className="h-5">
-              /{val.variationMedia.length}
-            </Typography>
-          </Box>
-        ) : null,
-        col3: <Typography className="h-5">{val.productTitle}</Typography>,
-        col4: <Typography className="h-5">{val.skuId}</Typography>,
-        col5: (
-          <>
-            <Typography className="h-5">{val.categoryName}</Typography>
-            <Typography className="h-5">{val.subCategoryName}</Typography>
-          </>
-        ),
-        col6: (
-          <>
-            <Typography className="h-5">
-              {val.weightInclusivePackage}
-            </Typography>
-            <Typography className="h-5">{val.volume}</Typography>
-          </>
-        ),
-        col7: val.stockQty,
-        col8: (
-          <Typography className="h-5">
-            &#8377; {val.salePrice}/ &#8377; {val.mrp}
-          </Typography>
-        ),
-        col9: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => {
-                viewClick(val.masterProductId, val.productVariationId);
-              }}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, val);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
+          ),
+        });
       });
     });
     return result;
@@ -277,9 +275,10 @@ const Queries = ({ getCount = () => {} }) => {
     if (data) {
       if (page === 0) {
         setTableRows([...mapTableRows(data)]);
-        setPageNumber(pageNumber + 1);
       } else {
         setTableRows([...tableRows, ...mapTableRows(data)]);
+      }
+      if (data.length) {
         setPageNumber(pageNumber + 1);
       }
     }

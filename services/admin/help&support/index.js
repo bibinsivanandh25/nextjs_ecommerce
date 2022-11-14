@@ -105,6 +105,18 @@ const helpandSupportGetTicketById = (id) => {
       return { err };
     });
 };
+const closeTicketById = (id) => {
+  // help-and-support/admin/ticket?ticketId=1
+  return serviceUtil
+    .put(`help-and-support/product/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data, message } = res && res.data;
+      return { data, message };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getAllTicketsBasedOnUserType,
   getAllFilterDataByUserType,
@@ -115,4 +127,5 @@ export {
   helpandSupportCloseTicket,
   helpandSupportDeleteTicket,
   helpandSupportGetTicketById,
+  closeTicketById,
 };
