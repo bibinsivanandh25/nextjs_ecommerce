@@ -1,19 +1,23 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BiLeftArrow } from "react-icons/bi";
 import { VscChromeMinimize } from "react-icons/vsc";
+// import styles from "./SideDrawer.module.css";
+import { BiCopyAlt } from "react-icons/bi";
+import { BsShop } from "react-icons/bs";
+import InputBox from "../InputBoxComponent";
 
 const SideDrawer = () => {
   const [open, setOpen] = useState(false);
+
   return (
     <>
       <motion.div
         style={{
-          height: "300px",
+          height: "200px",
           position: "fixed",
           top: "60px",
-          right: 0,
+          right: "5px",
           zIndex: 12,
           borderTopLeftRadius: "10px",
           borderBottomLeftRadius: "10px",
@@ -34,34 +38,68 @@ const SideDrawer = () => {
             }}
           />
         </Box>
-        jhdb sdcb sdcjksdc sdjkcsdc sjkdcbs dcjksdbc
+        <Grid container className="w-100 p-3">
+          <Grid item md={5} className="fw-bold">
+            Shop Name :
+          </Grid>
+          <Grid item md={7} className="fw-bold">
+            MY SHOP
+          </Grid>
+          <Grid item md={5} className="fw-bold">
+            Shop Code :
+          </Grid>
+          <Grid item md={7} className="fw-bold">
+            #1234 <BiCopyAlt fill="blue" className="fs-18" />
+          </Grid>
+          <Grid item md={12} className="fw-bold">
+            Shop Link :
+          </Grid>
+          <Grid item md={12} className="text-primary">
+            <InputBox value="http://localhost:3010/admin/products/zerocommission" />
+          </Grid>
+          <Grid
+            item
+            md={12}
+            className="text-end pt-2 fs-12 color-blue cursor-pointer"
+          >
+            Copy Link
+          </Grid>
+        </Grid>
       </motion.div>
       <motion.div
-        className="shadow bg-white"
+        animate={{
+          scale: [1, 2, 2, 1, 1],
+          rotate: [0, 0, 180, 360, 0],
+          borderRadius: ["2%", "10%", "50%", "50%", "2%"],
+        }}
+        transition={{
+          duration: 2,
+          ease: "easeInOut",
+          times: [0, 0.2, 0.5, 0.8, 1],
+          repeat: Infinity,
+          repeatDelay: 1,
+        }}
         style={{
-          borderTopLeftRadius: "50%",
-          borderBottomLeftRadius: "50%",
+          width: "40px",
+          height: "40px",
+          background: "#e56700",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           position: "fixed",
           top: "60px",
-          right: 0,
+          right: "30px",
           zIndex: 10,
           padding: "10px",
+          margin: "10px 5px 5px 10px",
         }}
-        animate={{
-          opacity: open ? 0 : 1,
+        onClick={() => {
+          setOpen(true);
         }}
-        transition={{ type: "spring" }}
       >
-        <Box
-          className="rounded-circle bg-orange d-flex justify-content-center align-items-center"
-          style={{ width: "40px", height: "40px" }}
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          <BiLeftArrow className="h3 mt-2 cursor-pointer" fill="white" />
-        </Box>
+        <BsShop className="h3 mt-2 cursor-pointer" fill="white" />
       </motion.div>
+      {/* </motion.div> */}
     </>
   );
 };
