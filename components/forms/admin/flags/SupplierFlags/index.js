@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+/* eslint-disable no-use-before-define */
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
-import CreateFlagModal from "./CreateFlagModal";
 import {
   getFlags,
   changeStatus,
   deleteflags,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
+import CreateFlagModal from "./CreateFlagModal";
 import ModalComponent from "@/atoms/ModalComponent";
 
 const SupplierFlags = () => {
@@ -92,7 +92,7 @@ const SupplierFlags = () => {
 
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
-      const payload = { id: id, bool: true };
+      const payload = { id, bool: true };
       const { data } = removeFlag(payload);
     } else if (ele === "Edit") {
       setEditModalDetails({ type: "edit", id });

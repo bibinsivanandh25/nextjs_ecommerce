@@ -20,7 +20,6 @@ const SimpleDropdownComponent = ({
   disabled = false,
   removeRadius = false,
   freeSolo = false,
-  showImage=false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -49,7 +48,9 @@ const SimpleDropdownComponent = ({
         size={size}
         fullWidth={fullWidth}
         getOptionLabel={(option) => {
-          return typeof option.label === 'object' ? option.id:(option.label || "")
+          return typeof option.label === "object"
+            ? option.id
+            : option.label || "";
         }}
         isOptionEqualToValue={(option, val) =>
           option?.id === val?.id || option.value === val.value
