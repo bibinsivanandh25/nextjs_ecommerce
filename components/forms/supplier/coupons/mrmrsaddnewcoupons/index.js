@@ -166,12 +166,13 @@ const MrMrsAddNewCoupons = ({
         discountType: formValues.discountTypeObj?.value,
         couponAmount: parseInt(formValues.couponAmount, 10),
         subCategoryIncluded: formValues.subcategoryObj?.value,
-        couponExpiryDate: formValues.couponExpiryDate,
+        couponExpiryDate: new Date(formValues.couponExpiryDate)
+          .toLocaleDateString()
+          .toString()
+          .replaceAll("/", "-"),
         categoryIncluded: formValues.categoryIncludeObj?.value,
-        productsIncluded: formValues.productsIncludeObj?.map(
-          (ele) => ele?.value
-        ),
-        usageLimitPerCoupon: formValues.usageLimitPerCoupon,
+        productsIncluded: formValues.productsIncludeObj?.map((ele) => ele?.id),
+        usageLimitPerCoupon: parseInt(formValues.usageLimitPerCoupon, 10),
         usageLimitPerUser: parseInt(formValues.usageLimitPerUser, 10),
         usageLimitToXItems: parseInt(formValues.usageLimittoXTimes, 10),
         couponStatus,

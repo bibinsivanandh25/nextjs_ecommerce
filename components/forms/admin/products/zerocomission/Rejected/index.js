@@ -1,15 +1,16 @@
-import { Box, Paper, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import { viewProduct } from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
+import { deleteProducts } from "services/admin/products";
 import ViewProducts from "./ViewProducts";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -59,16 +60,16 @@ const Rejected = ({
 
   const [images, setImages] = useState([]);
 
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
+  // const options = [
+  //   "Edit",
+  //   "Delete",
+  //   "Visibility Range",
+  //   "Accept/Reject",
+  //   "Raise Query",
+  //   "Draft",
+  //   "Merge to",
+  //   "Flags",
+  // ];
 
   const columns = [
     {
@@ -123,33 +124,44 @@ const Rejected = ({
     }
   };
 
-  const editClick = async (payload) => {
-    const { data, err } = await getVariation(payload);
+  // const editClick = async (payload) => {
+  //   const { data, err } = await getVariation(payload);
+  //   if (err) {
+  //     toastify(err?.response?.data?.messagea);
+  //   } else {
+  //     dispatch(updateProduct(data[0]));
+  //     setShowViewProducts(true);
+  //   }
+  // };
+
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
+      getCount();
+    }
     if (err) {
-      toastify(err?.response?.data?.messagea);
-    } else {
-      dispatch(updateProduct(data[0]));
-      setShowViewProducts(true);
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
-  const onClickOfMenuItem = (ele, val) => {
-    // if (ele === "Accept/Reject") {
-    //   setOpenAcceptRejectModal(true);
-    // }
-    // if (ele === "Delete") {
-    //   deleteProduct(val.productVariationId);
-    // }
-    if (ele === "Edit") {
-      editClick([
-        {
-          masterProductId: val.masterProductId,
-          variationId: val.productVariationId,
-          flagged: false,
-        },
-      ]);
-    }
-  };
+  // const onClickOfMenuItem = (ele, val) => {
+  //   // if (ele === "Accept/Reject") {
+  //   //   setOpenAcceptRejectModal(true);
+  //   // }
+  //   if (ele === "Delete") {
+  //   }
+  //   if (ele === "Edit") {
+  //     editClick([
+  //       {
+  //         masterProductId: val.masterProductId,
+  //         variationId: val.productVariationId,
+  //         flagged: false,
+  //       },
+  //     ]);
+  //   }
+  // };
 
   const mapTableRows = (data) => {
     const result = [];
@@ -189,7 +201,13 @@ const Rejected = ({
             </Typography>
           </Box>
         ) : null,
-        col3: val.productTitle,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography className="h-5 text-truncate">
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
         col4: val.skuId,
         col5: (
           <>
@@ -213,21 +231,30 @@ const Rejected = ({
         ),
         col9: val.brand,
         col10: (
-          <Box className="d-flex justify-content-evenly align-items-center">
+          <Box className="d-flex justify-content-between align-items-center">
             <CustomIcon
               type="view"
-              className="fs-18"
+              className="h-4"
+              title="view"
               onIconClick={() => {
                 viewClick(val.masterProductId, val.productVariationId);
               }}
             />
-            <MenuOption
+            <CustomIcon
+              type="delete"
+              className="h-4 ms-1"
+              title="delete"
+              onIconClick={() => {
+                deleteProduct(val.productVariationId);
+              }}
+            />
+            {/* <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
-            />
+            /> */}
           </Box>
         ),
       });
@@ -249,8 +276,8 @@ const Rejected = ({
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
       commissionType,
       status: "REJECTED",
     };
