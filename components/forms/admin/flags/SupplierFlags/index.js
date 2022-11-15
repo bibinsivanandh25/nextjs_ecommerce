@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
@@ -12,6 +12,7 @@ import {
   deleteflags,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const SupplierFlags = () => {
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);
@@ -21,6 +22,8 @@ const SupplierFlags = () => {
     fromDate: "",
     toDate: "",
   });
+  const [deleteMessage, setdeleteMessage] = useState("");
+  const [openDeleteModal, setopenDeleteModal] = useState(false);
   const [editModalDetails, setEditModalDetails] = useState({
     type: "",
     id: null,
@@ -79,17 +82,38 @@ const SupplierFlags = () => {
       toastify(message, "success");
       getTableData();
     } else if (err) {
+      if (err) {
+        setopenDeleteModal(true);
+      }
+      setdeleteMessage(err?.response?.data?.message);
       toastify(err?.response?.data?.message, "error");
     }
   };
+
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
-      removeFlag(id);
+      const payload = { id: id, bool: true };
+      const { data } = removeFlag(payload);
     } else if (ele === "Edit") {
       setEditModalDetails({ type: "edit", id });
       setOpenCreateFlagModal(true);
     }
   };
+
+  //
+  const supplierDelete = async (payload = oldPayload) => {
+    const { data, err } = await getFlags(payload);
+    if (data) {
+      const temp = data.map((item) => {
+        const deletePayload = { id: item.flagId, bool: false };
+        const { data, message } = removeFlag(deletePayload);
+        return temp;
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  //
 
   useEffect(() => {
     getTableData();
@@ -180,6 +204,29 @@ const SupplierFlags = () => {
         setmodalDetails={setEditModalDetails}
         modalDetails={editModalDetails}
       />
+      {openDeleteModal && (
+        <ModalComponent
+          ModalWidth={500}
+          open={openDeleteModal}
+          titleClassName="fw-bold fs-14 color-orange"
+          ModalTitle="Delete Product"
+          saveBtnText="Yes"
+          ClearBtnText="Cancel"
+          onCloseIconClick={() => {
+            setopenDeleteModal(false);
+          }}
+          onClearBtnClick={() => {
+            setopenDeleteModal(false);
+          }}
+          onSaveBtnClick={() => {
+            supplierDelete();
+          }}
+        >
+          <Grid>
+            <Typography>{deleteMessage}</Typography>
+          </Grid>
+        </ModalComponent>
+      )}
     </>
   );
 };

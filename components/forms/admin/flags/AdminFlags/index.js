@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import MenuOption from "@/atoms/MenuOptions";
@@ -9,9 +9,11 @@ import {
   changeStatus,
   deleteflags,
   getFlags,
+  editFlag,
 } from "services/admin/admin/adminconfiguration/flags";
 import toastify from "services/utils/toastUtils";
 import CreateFlagModal from "./CreateFlagModal";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const AdminFlags = () => {
   const columns = [
@@ -60,6 +62,8 @@ const AdminFlags = () => {
   ];
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);
   const [rows, setRows] = useState([]);
+  const [openDeleteModal, setopenDeleteModal] = useState(false);
+  const [deleteMessage, setdeleteMessage] = useState("");
   const [oldPayload, setOldPayload] = useState({
     userType: "ADMIN",
     fromDate: "",
@@ -77,25 +81,41 @@ const AdminFlags = () => {
     }
   };
 
-  const removeFlag = async (id) => {
-    const { data, message, err } = await deleteflags(id);
+  const removeFlag = async (payload) => {
+    const { data, message, err } = await deleteflags(payload);
     if (data) {
       toastify(message, "success");
       getTableData();
     } else if (err) {
+      if (err) {
+        setopenDeleteModal(true);
+      }
+      setdeleteMessage(err?.response?.data?.message);
       toastify(err?.response?.data?.message, "error");
     }
   };
 
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
-      removeFlag(id);
+      const payload = { id: id, bool: true };
+      const { data } = removeFlag(payload);
     } else if (ele === "Edit") {
       setmodalDetails({ type: "edit", id });
       setOpenCreateFlagModal(true);
     }
   };
-
+  const supplierDelete = async (payload = oldPayload) => {
+    const { data, err } = await getFlags(payload);
+    if (data) {
+      const temp = data.map((item) => {
+        const deletePayload = { id: item.flagId, bool: false };
+        const { data, message } = removeFlag(deletePayload);
+        return temp;
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const getTableData = async (payload = oldPayload) => {
     const { data, err } = await getFlags(payload);
     if (data) {
@@ -180,7 +200,31 @@ const AdminFlags = () => {
         setOpen={setOpenCreateFlagModal}
         setmodalDetails={setmodalDetails}
         modalDetails={modalDetails}
+        getTableData={getTableData}
       />
+      {openDeleteModal && (
+        <ModalComponent
+          ModalWidth={500}
+          open={openDeleteModal}
+          titleClassName="fw-bold fs-14 color-orange"
+          ModalTitle="Delete Product"
+          saveBtnText="Yes"
+          ClearBtnText="Cancel"
+          onCloseIconClick={() => {
+            setopenDeleteModal(false);
+          }}
+          onClearBtnClick={() => {
+            setopenDeleteModal(false);
+          }}
+          onSaveBtnClick={() => {
+            supplierDelete();
+          }}
+        >
+          <Grid>
+            <Typography>{deleteMessage}</Typography>
+          </Grid>
+        </ModalComponent>
+      )}
     </>
   );
 };

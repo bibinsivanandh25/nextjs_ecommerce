@@ -19,9 +19,9 @@ const changeStatus = (id, flag) => {
     })
     .catch((err) => ({ err }));
 };
-const deleteflags = (id) => {
+const deleteflags = (payload) => {
   return serviceUtil
-    .deleteById(`products/produt-flag/${id}`)
+    .deleteById(`products/produt-flag/${payload.id}/${payload.bool}`)
     .then((res) => {
       const { message } = res && res.data;
       return { data: res.data, message };
@@ -77,6 +77,16 @@ const saveAdminFlag = async (payload) => {
       toastify(err.response.data.message, "error");
     });
 };
+
+const editFlag = (payload) => {
+  return serviceUtil
+    .put(`products/product-flag`, payload)
+    .then((res) => {
+      const { message } = res && res.data;
+      return { data: res.data, message };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getFlags,
   changeStatus,
@@ -86,4 +96,5 @@ export {
   editThemeLayout,
   getFlagById,
   saveAdminFlag,
+  editFlag,
 };
