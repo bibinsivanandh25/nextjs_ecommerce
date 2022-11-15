@@ -62,7 +62,7 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
-  const { editProduct, viewFlag, adminView } = useSelector(
+  const { editProduct, viewFlag, adminView, list, showExtraTabs } = useSelector(
     (state) => state.product
   );
 
@@ -1378,86 +1378,64 @@ const ProductsLayout = ({
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
-                  {!adminView &&
-                    tabsLists.map((item, index) => {
-                      return (
-                        <Grid
-                          item
-                          key={index}
-                          md={12}
-                          className={`text-center py-1 rounded my-1 fs-14 ${
-                            activeTab === index
-                              ? "bg-orange color-white"
-                              : "bg-light-gray"
-                          }`}
-                        >
-                          {item.title}
-                        </Grid>
-                      );
-                    })}
-                  {adminView &&
-                    [...tabsLists, ...adminViewList].map((item, index) => {
-                      return (
-                        <Grid
-                          item
-                          key={index}
-                          md={12}
-                          className={`text-center py-1 rounded my-1 fs-14 ${
-                            activeTab === index
-                              ? "bg-orange color-white"
-                              : "bg-light-gray"
-                          }`}
-                        >
-                          {item.title}
-                        </Grid>
-                      );
-                    })}
+                  {adminView && showExtraTabs
+                    ? [...tabsLists, ...adminViewList].map((item, index) => {
+                        return (
+                          <Grid
+                            item
+                            key={index}
+                            md={12}
+                            className={`text-center py-1 rounded my-1 fs-14 ${
+                              activeTab === index
+                                ? "bg-orange color-white"
+                                : "bg-light-gray"
+                            }`}
+                          >
+                            {item.title}
+                          </Grid>
+                        );
+                      })
+                    : tabsLists.map((item, index) => {
+                        return (
+                          <Grid
+                            item
+                            key={index}
+                            md={12}
+                            className={`text-center py-1 rounded my-1 fs-14 ${
+                              activeTab === index
+                                ? "bg-orange color-white"
+                                : "bg-light-gray"
+                            }`}
+                          >
+                            {item.title}
+                          </Grid>
+                        );
+                      })}
                 </Grid>
               </Box>
               <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll">
-                {!adminView &&
-                  tabsLists.map((item, ind) => {
-                    return activeTab === ind ? item.component : null;
-                  })}
-                {adminView &&
-                  [...tabsLists, ...adminViewList].map((item, ind) => {
-                    return activeTab === ind ? item.component : null;
-                  })}
+                {adminView && showExtraTabs
+                  ? [...tabsLists, ...adminViewList].map((item, ind) => {
+                      return activeTab === ind ? item.component : null;
+                    })
+                  : tabsLists.map((item, ind) => {
+                      return activeTab === ind ? item.component : null;
+                    })}
               </Box>
             </Box>
             <Box className="d-flex justify-content-end me-3 mb-1">
-              {adminView && (
-                <>
-                  <ButtonComponent
-                    label="Flag"
-                    size="small"
-                    variant="text"
-                    muiProps="text-secondary bnt-hover-class mx-2"
-                    // onBtnClick={handleNextClick}
-                  />
-                  <ButtonComponent
-                    label="Merge To"
-                    variant="text"
-                    muiProps="text-secondary bnt-hover-class mx-2"
-                    size="small"
-                    // onBtnClick={handleNextClick}
-                  />
-                  <ButtonComponent
-                    label="Raise Query"
-                    size="small"
-                    variant="text"
-                    muiProps="text-secondary bnt-hover-class mx-2"
-                    // onBtnClick={handleNextClick}
-                  />
-                  <ButtonComponent
-                    label="Update"
-                    variant="text"
-                    muiProps="text-secondary bnt-hover-class mx-2"
-                    size="small"
-                    // onBtnClick={handleNextClick}
-                  />
-                </>
-              )}
+              {adminView &&
+                list.map((item) => {
+                  return (
+                    <ButtonComponent
+                      label={item.label}
+                      size="small"
+                      variant="text"
+                      muiProps="text-secondary bnt-hover-class mx-2"
+                      onBtnClick={item.callBack}
+                    />
+                  );
+                })}
               {!viewFlag && (
                 <ButtonComponent
                   label="Clear"

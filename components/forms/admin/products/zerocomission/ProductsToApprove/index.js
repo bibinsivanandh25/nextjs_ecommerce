@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import {
+  acceptOrRejectProduct,
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
@@ -24,7 +25,11 @@ import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import {
+  updateProduct,
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -193,13 +198,77 @@ const ProductsToApprove = ({
   ];
 
   const dispatch = useDispatch();
+  const approveOrRejectProduct = async (status, id) => {
+    const payload = {
+      productVariationId: id,
+      status,
+    };
+    const { data, err, message } = await acceptOrRejectProduct(payload);
 
-  const viewClick = async (masterProductId, variationId) => {
+    if (data) {
+      setShowViewProducts(false);
+      dispatch(resetAdminProductView());
+      toastify(message, "success");
+      await getTableData(0);
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+
+  const viewClick = async (masterProductId, variationId, val) => {
     const { data, err } = await getVariation([
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+          {
+            label: "Merge To",
+            callBack: () => {
+              console.log("Merge");
+            },
+          },
+          {
+            label: "Raise Query",
+            callBack: () => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+              sethelpSupportModal({
+                show: true,
+                type: "ACTIVE_PRODUCT",
+                to: {
+                  id: val.supplierId,
+                  label: val.supplierName,
+                  value: val.supplierId,
+                },
+                productVariationId: val?.productVariationId,
+              });
+            },
+          },
+          {
+            label: "Approve",
+            callBack: () => {
+              approveOrRejectProduct("APPROVED", val.productVariationId);
+            },
+          },
+          {
+            label: "Reject",
+            callBack: () => {
+              approveOrRejectProduct("REJECTED", val.productVariationId);
+            },
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -281,7 +350,7 @@ const ProductsToApprove = ({
               type="view"
               className="fs-18"
               onIconClick={() => {
-                viewClick(val.masterProductId, val.productVariationId);
+                viewClick(val.masterProductId, val.productVariationId, val);
               }}
             />
             <MenuOption
@@ -419,7 +488,12 @@ const ProductsToApprove = ({
             </Paper>
           </Box>
         ) : (
-          <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}

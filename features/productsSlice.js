@@ -8,6 +8,8 @@ const initialState = {
   productDetails: {},
   viewFlag: false,
   adminView: false,
+  list: [],
+  showExtraTabs: false,
 };
 
 export const productSlice = createSlice({
@@ -68,7 +70,9 @@ export const productSlice = createSlice({
         ...state,
         viewFlag: true,
         adminView: true,
-        productDetails: { ...action.payload },
+        productDetails: { ...action.payload.data },
+        list: [...action.payload.list],
+        showExtraTabs: action.payload.showExtraTabs,
       };
     },
     resetAdminProductView: (state) => {
@@ -77,6 +81,8 @@ export const productSlice = createSlice({
         viewFlag: false,
         adminView: false,
         productDetails: {},
+        list: [],
+        showExtraTabs: false,
       };
     },
   },

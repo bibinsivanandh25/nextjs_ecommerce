@@ -14,7 +14,7 @@ const SideDrawer = () => {
           position: "fixed",
           top: "60px",
           right: 0,
-          zIndex: 10,
+          zIndex: 12,
           borderTopLeftRadius: "10px",
           borderBottomLeftRadius: "10px",
         }}

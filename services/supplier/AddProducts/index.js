@@ -155,6 +155,17 @@ const crossSellsProduct = (payload) => {
       return err;
     });
 };
+const getMergeproduct = (mergeProductId, productId) => {
+  return serviceUtil
+    .get(`products/merge-product/variation/${mergeProductId}/${productId}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
 export {
   getSet,
@@ -169,4 +180,5 @@ export {
   updateProduct,
   upsellsProduct,
   crossSellsProduct,
+  getMergeproduct,
 };

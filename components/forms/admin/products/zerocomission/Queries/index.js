@@ -19,8 +19,6 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import { getVariation } from "services/supplier/myProducts";
-import { viewProduct } from "features/productsSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import ViewProducts from "./ViewProducts";
 import {
@@ -28,17 +26,12 @@ import {
   helpandSupportGetTicketById,
 } from "services/admin/help&support";
 import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
-import AcceptRejectModal from "./AcceptRejectmodal";
-import RaiseQueryModal from "./RaiseQueryModal";
-import MergeToModal from "./MergeToModal";
-import VisibilityRangeModal from "./VisibilityRangeModal";
-import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Queries = ({
-  getCount = () => {},
+  // getCount = () => {},
   commissionType = "ZERO_COMMISSION",
 }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -48,13 +41,6 @@ const Queries = ({
   const [imageArray, setImageArray] = useState([]);
   const [tableRows, setTableRows] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
-  const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
@@ -93,14 +79,14 @@ const Queries = ({
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const getTicketById = async (ticketId) => {
+  const getTicketById = async (ticketId, type = "") => {
     const { data } = await helpandSupportGetTicketById(ticketId);
     if (data?.data) {
       // setSelectedData(data.data);
       setShowModal({
         details: data.data,
         show: true,
-        type: "view",
+        type,
       });
     }
   };
@@ -115,24 +101,12 @@ const Queries = ({
   };
 
   const onClickOfMenuItem = (ele, val, id) => {
-    setSelectedRow(val);
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
     } else if (ele === "Close") {
       closeticket(id);
-    } else if (ele === "Replay") {
+    } else if (ele === "Reply") {
       getTicketById(id);
-    }
-  };
-  const viewClick = async (masterProductId, variationId) => {
-    const { data, err } = await getVariation([
-      { masterProductId, variationId },
-    ]);
-    if (data) {
-      dispatch(viewProduct(data[0]));
-      setShowViewProducts(true);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -239,7 +213,8 @@ const Queries = ({
                 type="view"
                 className="fs-18"
                 onIconClick={() => {
-                  viewClick(val.masterProductId, val.productVariationId);
+                  // viewClick(val.masterProductId, val.productVariationId);
+                  getTicketById(ele.ticketId, "view");
                 }}
               />
               <MenuOption
@@ -397,38 +372,6 @@ const Queries = ({
         modalId={modalId}
         productDetails={productDetails}
         images={images}
-      />
-      {/* Accept Reject Modal */}
-      {openAcceptRejectModal ? (
-        <AcceptRejectModal
-          getCount={getCount}
-          openAcceptRejectModal={openAcceptRejectModal}
-          setOpenAcceptRejectModal={setOpenAcceptRejectModal}
-          modalId={modalId}
-          rowsDataObjects={selectedRow}
-          getTableData={getTableData}
-        />
-      ) : null}
-      {/* Raise Query Modal */}
-      <RaiseQueryModal
-        openRaiseQueryModal={openRaiseQueryModal}
-        setOpenRaiseQueryModal={setOpenRaiseQueryModal}
-        modalTitle="Raise Query"
-        placeholder="Type your query"
-      />
-      {/* Merge To Modal */}
-      <MergeToModal
-        openMergeToModal={openMergeToModal}
-        setOpenMergeToModal={setOpenMergeToModal}
-      />
-      <VisibilityRangeModal
-        openVisibilityRangeModal={openVisibilityRangeModal}
-        setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
-      {/* Flag Modal */}
-      <FlagModal
-        showFlagModal={showFlagModal}
-        setShowFlagModal={setShowFlagModal}
       />
     </>
   );

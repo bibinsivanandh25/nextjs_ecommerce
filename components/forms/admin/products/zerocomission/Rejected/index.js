@@ -8,10 +8,12 @@ import TableComponent from "@/atoms/TableComponent";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { viewProduct } from "features/productsSlice";
+import {
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
 import { deleteProducts } from "services/admin/products";
-import ViewProducts from "./ViewProducts";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
@@ -19,6 +21,7 @@ import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Rejected = ({
   getCount = () => {},
@@ -59,17 +62,6 @@ const Rejected = ({
   });
 
   const [images, setImages] = useState([]);
-
-  // const options = [
-  //   "Edit",
-  //   "Delete",
-  //   "Visibility Range",
-  //   "Accept/Reject",
-  //   "Raise Query",
-  //   "Draft",
-  //   "Merge to",
-  //   "Flags",
-  // ];
 
   const columns = [
     {
@@ -115,7 +107,12 @@ const Rejected = ({
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -123,16 +120,6 @@ const Rejected = ({
       toastify(err?.response?.data?.messagea);
     }
   };
-
-  // const editClick = async (payload) => {
-  //   const { data, err } = await getVariation(payload);
-  //   if (err) {
-  //     toastify(err?.response?.data?.messagea);
-  //   } else {
-  //     dispatch(updateProduct(data[0]));
-  //     setShowViewProducts(true);
-  //   }
-  // };
 
   const deleteProduct = async (id) => {
     const { data, err } = await deleteProducts(id);
@@ -145,23 +132,6 @@ const Rejected = ({
       toastify(err?.response?.data?.message, "error");
     }
   };
-
-  // const onClickOfMenuItem = (ele, val) => {
-  //   // if (ele === "Accept/Reject") {
-  //   //   setOpenAcceptRejectModal(true);
-  //   // }
-  //   if (ele === "Delete") {
-  //   }
-  //   if (ele === "Edit") {
-  //     editClick([
-  //       {
-  //         masterProductId: val.masterProductId,
-  //         variationId: val.productVariationId,
-  //         flagged: false,
-  //       },
-  //     ]);
-  //   }
-  // };
 
   const mapTableRows = (data) => {
     const result = [];
@@ -339,7 +309,12 @@ const Rejected = ({
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}
