@@ -27,10 +27,10 @@ import { useDispatch } from "react-redux";
 import { updateProduct, viewProduct } from "features/productsSlice";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import AcceptRejectModal from "./AcceptRejectmodal";
-import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
-import VisibilityRangeModal from "./VisibilityRangeModal";
-import FlagModal from "./FlagModal";
+// import RaiseQueryModal from "./RaiseQueryModal";
+// import VisibilityRangeModal from "./VisibilityRangeModal";
+// import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
@@ -48,10 +48,10 @@ const ProductsToApprove = ({
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
   const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
+  // const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
+  // const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
+  //   useState(false);
+  // const [showFlagModal, setShowFlagModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
@@ -474,28 +474,31 @@ const ProductsToApprove = ({
         />
       ) : null}
       {/* Raise Query Modal */}
-      <RaiseQueryModal
+      {/* <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
         modalTitle="Raise Query"
         placeholder="Type your query"
-      />
+      /> */}
       {/* Merge To Modal */}
-      <MergeToModal
-        productId={productVariationId}
-        openMergeToModal={openMergeToModal}
-        setOpenMergeToModal={setOpenMergeToModal}
-        viewClick={viewClick}
-      />
-      <VisibilityRangeModal
+      {openMergeToModal ? (
+        <MergeToModal
+          getTableData={getTableData}
+          productId={productVariationId}
+          openMergeToModal={openMergeToModal}
+          setOpenMergeToModal={setOpenMergeToModal}
+          viewClick={viewClick}
+        />
+      ) : null}
+      {/* <VisibilityRangeModal
         openVisibilityRangeModal={openVisibilityRangeModal}
         setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
+      /> */}
       {/* Flag Modal */}
-      <FlagModal
+      {/* <FlagModal
         showFlagModal={showFlagModal}
         setShowFlagModal={setShowFlagModal}
-      />
+      /> */}
     </>
   );
 };

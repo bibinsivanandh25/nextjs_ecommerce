@@ -70,9 +70,9 @@ const getProductsToMergeBySearch = (payload) => {
     .catch((err) => ({ err }));
 };
 
-const mergeProducts = (productId) => {
+const mergeProducts = (payload) => {
   return serviceUtil
-    .put(`products/merge-product/${productId}`)
+    .put(`products/merge-product/`, payload)
     .then((res) => {
       const data = res?.data;
       return { data };
