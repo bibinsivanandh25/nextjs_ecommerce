@@ -1,18 +1,23 @@
-import React from "react";
 import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import { acceptOrRejectProduct } from "services/admin/products/fixedMargin";
 import toastify from "services/utils/toastUtils";
 import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import { useState } from "react";
+import ReasonToReject from "./ReasonToReject";
 
 const AcceptRejectModal = ({
+  sethelpSupportModal = () => {},
   getCount = () => {},
   rowsDataObjects = [],
   openAcceptRejectModal,
   setOpenAcceptRejectModal = () => {},
   getTableData = () => {},
+  setOpenMergeToModal = () => {},
 }) => {
+  const [rejectReason, setRejectReason] = useState("");
+  const [showReasonModal, setShowReasonModal] = useState(false);
   const returnImages = () => {
     return rowsDataObjects.variationMedia?.map((val) => {
       return (
@@ -27,12 +32,15 @@ const AcceptRejectModal = ({
     const payload = {
       productVariationId: rowsDataObjects.productVariationId,
       status,
+      rejectedReason: status === "APPROVED" ? null : rejectReason,
     };
     const { data, err, message } = await acceptOrRejectProduct(payload);
 
     if (data) {
       setOpenAcceptRejectModal(false);
       toastify(message, "success");
+      getTableData(0);
+      getCount();
     }
     if (err) {
       toastify(err.response.data.message, "error");
@@ -121,17 +129,34 @@ const AcceptRejectModal = ({
             variant="text"
             label="flag"
           />
-          <Tooltip title="Merge to flag">
+          <Tooltip title="Merge to">
             <ButtonComponent
               muiProps="fs-12 color-gray"
               variant="text"
-              label="Merge to flag"
+              label="Merge to"
+              onBtnClick={() => {
+                setOpenAcceptRejectModal(false);
+                setOpenMergeToModal(true);
+              }}
             />
           </Tooltip>
           <ButtonComponent
             muiProps="fs-12 color-gray"
             variant="text"
             label="Raise Query"
+            onBtnClick={() => {
+              setOpenAcceptRejectModal(false);
+              sethelpSupportModal({
+                show: true,
+                type: "ACTIVE_PRODUCT",
+                to: {
+                  id: rowsDataObjects.supplierId,
+                  label: rowsDataObjects.supplierName,
+                  value: rowsDataObjects.supplierId,
+                },
+                productVariationId: rowsDataObjects?.productVariationId,
+              });
+            }}
           />
           <ButtonComponent
             muiProps="fs-12 color-gray"
@@ -139,15 +164,16 @@ const AcceptRejectModal = ({
             label="Cancel"
           />
           <ButtonComponent
-            muiProps="fs-12"
+            muiProps="fs-12 mx-3"
             borderColor="border-danger"
             textColor="text-danger"
             variant="outlined"
             label="Reject"
             onBtnClick={() => {
-              approveOrRejectProduct("REJECTED");
-              getTableData();
-              getCount();
+              setShowReasonModal(true);
+              // approveOrRejectProduct("REJECTED");
+              // getTableData(0);
+              // getCount();
             }}
           />
           <ButtonComponent
@@ -155,11 +181,18 @@ const AcceptRejectModal = ({
             label="Approve"
             onBtnClick={() => {
               approveOrRejectProduct("APPROVED");
-              getTableData();
-              getCount();
             }}
           />
         </Box>
+        {showReasonModal ? (
+          <ReasonToReject
+            showModal={showReasonModal}
+            setShowModal={setShowReasonModal}
+            rejectReason={rejectReason}
+            setRejectReason={setRejectReason}
+            onSaveClick={approveOrRejectProduct}
+          />
+        ) : null}
       </ModalComponent>
     </>
   );

@@ -269,8 +269,8 @@ const Queries = ({
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
       commissionType,
       status: "IN_QUERY",
     };

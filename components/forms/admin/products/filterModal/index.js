@@ -82,7 +82,7 @@ const FilterModal = ({
     Promise.all(promiseArr).then((data) => {
       if (data) {
         setCategories(
-          data[0]?.categories.map((ele) => {
+          data[0]?.categories?.map((ele) => {
             return {
               ...ele,
               isSelected: false,
@@ -90,7 +90,7 @@ const FilterModal = ({
           })
         );
         setSubcategories(
-          data[1]?.subCategories.map((ele) => {
+          data[1]?.subCategories?.map((ele) => {
             return {
               ...ele,
               isSelected: false,
@@ -98,7 +98,7 @@ const FilterModal = ({
           })
         );
         setproducts(
-          data[2]?.Products.map((ele) => {
+          data[2]?.Products?.map((ele) => {
             return {
               ...ele,
               isSelected: false,
@@ -106,7 +106,7 @@ const FilterModal = ({
           })
         );
         SetBrands(
-          data[3]?.brands.map((ele) => {
+          data[3]?.brands?.map((ele) => {
             return {
               ...ele,
               isSelected: false,
@@ -149,7 +149,7 @@ const FilterModal = ({
               Promise.all(promiseArr).then((data) => {
                 if (data) {
                   setSubcategories(
-                    data[0]?.subCategories.map((i) => {
+                    data[0]?.subCategories?.map((i) => {
                       return {
                         ...i,
                         isSelected: false,
@@ -210,7 +210,7 @@ const FilterModal = ({
               Promise.all(promiseArr).then((data) => {
                 if (data) {
                   setproducts(
-                    data[0]?.Products.map((i) => {
+                    data[0]?.Products?.map((i) => {
                       return {
                         ...i,
                         isSelected: false,
@@ -218,7 +218,7 @@ const FilterModal = ({
                     })
                   );
                   SetBrands(
-                    data[1]?.brands.map((i) => {
+                    data[1]?.brands?.map((i) => {
                       return {
                         ...i,
                         isSelected: false,

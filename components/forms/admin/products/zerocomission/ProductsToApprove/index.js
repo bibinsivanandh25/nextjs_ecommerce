@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -103,6 +103,7 @@ const ProductsToApprove = ({
     }
   };
   const onClickOfMenuItem = (ele, val) => {
+    setProductVariationId(val?.productVariationId);
     setSelectedRow(val);
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
@@ -245,7 +246,13 @@ const ProductsToApprove = ({
             </Typography>
           </Box>
         ) : null,
-        col3: <Typography className="h-5">{val.productTitle}</Typography>,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography className="h-5 text-truncate">
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
         col4: <Typography className="h-5">{val.skuId}</Typography>,
         col5: (
           <>
@@ -303,8 +310,8 @@ const ProductsToApprove = ({
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
       commissionType,
       status: "INITIATED",
     };
@@ -417,6 +424,7 @@ const ProductsToApprove = ({
       </Box>
       {/* Edit Modal Component */}
       <AddEditProductModal
+        setOpenMergeToModal={setOpenMergeToModal}
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
         productDetails={productDetails}
@@ -455,12 +463,14 @@ const ProductsToApprove = ({
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          sethelpSupportModal={sethelpSupportModal}
           getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
           rowsDataObjects={selectedRow}
           getTableData={getTableData}
+          setOpenMergeToModal={setOpenMergeToModal}
         />
       ) : null}
       {/* Raise Query Modal */}

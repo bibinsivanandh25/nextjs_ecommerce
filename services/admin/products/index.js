@@ -80,6 +80,19 @@ const mergeProducts = (productId) => {
     .catch((err) => ({ err }));
 };
 
+const getDiscountByProductVariationId = (page, supplierId, ProductId) => {
+  const pageSize = 50;
+  return serviceUtil
+    .get(
+      `users/admin/product-coupon/${page}/${pageSize}?productVariationId=${ProductId}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getMainCategories,
   getSubCategories,
@@ -89,4 +102,5 @@ export {
   getAllProductsCount,
   getProductsToMergeBySearch,
   mergeProducts,
+  getDiscountByProductVariationId,
 };
