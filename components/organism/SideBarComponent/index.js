@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
 import FallbackComponent from "@/atoms/FallbackComponent";
+import SideDrawer from "@/atoms/SideDrawer";
 import DrawerComponent from "./DrawerComponent";
 
 const SideBarComponent = ({ children }) => {
@@ -65,6 +66,7 @@ const SideBarComponent = ({ children }) => {
           }
         }}
       >
+        <SideDrawer />
         {showFallBack ? (
           <div
             style={{
