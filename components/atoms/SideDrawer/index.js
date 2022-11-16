@@ -2,7 +2,6 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { VscChromeMinimize } from "react-icons/vsc";
-// import styles from "./SideDrawer.module.css";
 import { BiCopyAlt } from "react-icons/bi";
 import { BsShop } from "react-icons/bs";
 import InputBox from "../InputBoxComponent";
@@ -99,7 +98,6 @@ const SideDrawer = () => {
       >
         <BsShop className="h3 mt-2 cursor-pointer" fill="white" />
       </motion.div>
-      {/* </motion.div> */}
     </>
   );
 };
