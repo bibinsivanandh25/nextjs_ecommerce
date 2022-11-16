@@ -24,16 +24,12 @@ import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 import DiscountModal from "../DiscountModal";
 
-const Active = ({
-  // getCount = () => {},
-  commissionType = "ZERO_COMMISSION",
-}) => {
+const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
-    productTitle: "",
     sku: "",
     categorySubcategory: "",
     weightOrVolume: "",
