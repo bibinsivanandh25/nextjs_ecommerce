@@ -16,7 +16,11 @@ import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import {
+  adminProductView,
+  resetAdminProductView,
+  updateProduct,
+} from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
@@ -204,7 +208,26 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: true,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+
+          {
+            label: "Raise Query",
+            callBack: () => {
+              console.log("Query");
+            },
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -456,7 +479,12 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
           </Paper>
         </Box>
       ) : (
-        <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
+        <ViewOrEditProducts
+          setShowViewOrEdit={() => {
+            setShowViewProducts(false);
+            dispatch(resetAdminProductView());
+          }}
+        />
       )}
       {/* Edit Modal Component */}
       <AddEditProductModal

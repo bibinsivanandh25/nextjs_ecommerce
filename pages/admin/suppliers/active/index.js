@@ -171,7 +171,6 @@ const Active = () => {
   }, []);
 
   const handleActionClick = (ele, item) => {
-    console.log(ele, item);
     if (ele == "Rasie a query") {
       setSelectedData(item);
       setShowQueryModal(true);

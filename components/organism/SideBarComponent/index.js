@@ -9,13 +9,14 @@ import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
 import FallbackComponent from "@/atoms/FallbackComponent";
+import SideDrawer from "@/atoms/SideDrawer";
 import DrawerComponent from "./DrawerComponent";
 
 const SideBarComponent = ({ children }) => {
   const route = useRouter();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { allowedPath } = useSelector((state) => state.user);
+  const { allowedPath, role } = useSelector((state) => state.user);
   const [showFallBack, setShowFallBack] = useState(false);
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const SideBarComponent = ({ children }) => {
           }
         }}
       >
+        {["SUPPLIER", "STAFF"].includes(role) && <SideDrawer />}
         {showFallBack ? (
           <div
             style={{
@@ -72,11 +74,6 @@ const SideBarComponent = ({ children }) => {
                 ? "calc(100vh - 60px)"
                 : "calc(100vh - 130px)",
               overflowY: "scroll",
-              // background:
-              //   "url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/401.jpg)",
-              // backgroundPosition: "center",
-              // backgroundSize: "auto",
-              // height: "88vh",
             }}
             className="hide-scrollbar "
           >

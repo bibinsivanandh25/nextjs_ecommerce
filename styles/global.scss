@@ -336,6 +336,11 @@ div, p, span {
                                   supported by Chrome, Opera and Firefox */
 }
 
+.bnt-hover-class:hover{
+  background-color: #e3f0ff !important;
+  color: rgb(89, 89, 248) !important
+}
+
 .hover-class :hover{
 color:#e56700
 }
