@@ -19,7 +19,7 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // import ViewProducts from "./ViewProducts";
 import {
   closeTicketById,
