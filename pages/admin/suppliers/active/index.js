@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -8,8 +9,14 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import ViewModal from "@/forms/admin/suppliers/active/viewmodal";
 import { getCategoryFilterData } from "services/admin/supplier/supplierapproval";
 import toastify from "services/utils/toastUtils";
-import { getActiveSuppliers } from "services/admin/supplier/active";
+import {
+  enableDisableSupplier,
+  getActiveSuppliers,
+} from "services/admin/supplier/active";
 import QueryModal from "@/forms/admin/suppliers/active/querymodal";
+import ModalComponent from "@/atoms/ModalComponent";
+import TextArea from "@/atoms/SimpleTextArea";
+import validateMessage from "constants/validateMessages";
 
 const tableColumn = [
   {
@@ -121,7 +128,7 @@ const tableColumn = [
   },
 ];
 const Active = () => {
-  const [viewModalOpen, setViewModaOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [filterData, setFilterData] = useState([]);
   const [selectedFilterData, setSelectedFilterData] = useState([]);
   const [masterData, setMasterData] = useState("");
@@ -134,15 +141,6 @@ const Active = () => {
   const [selectedData, setSelectedData] = useState({});
   const [showQueryModal, setShowQueryModal] = useState(false);
 
-  useEffect(() => {
-    const selected = [];
-    filterData[0]?.value?.forEach((item) => {
-      if (item.isSelected) {
-        selected.push(item.id);
-      }
-    });
-    // getAllTableData(0, selected);
-  }, [selectedFilterData]);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -175,6 +173,10 @@ const Active = () => {
       setSelectedData(item);
       setShowQueryModal(true);
     }
+  };
+  const handleDisableSupplier = (item) => {
+    setSelectedData(item);
+    setDisableModal(true);
   };
   const getTableRows = (data) => {
     const rowDatas = [];
@@ -238,15 +240,21 @@ const Active = () => {
               className="fs-18 me-2"
               onIconClick={() => {
                 setSelectedData(item);
-                setViewModaOpen(true);
+                setViewModalOpen(true);
               }}
             />
             <MenuOption
               options={[
                 <>
-                  Enable{" "}
+                  Disable{" "}
                   <Box className="ms-4">
-                    <SwitchComponent label="" />
+                    <SwitchComponent
+                      label=""
+                      defaultChecked
+                      ontoggle={() => {
+                        handleDisableSupplier(item);
+                      }}
+                    />
                   </Box>
                 </>,
                 "Notify",
@@ -276,7 +284,7 @@ const Active = () => {
     };
     const { data, err } = await getActiveSuppliers(payload);
     setMasterData(data?.data?.totalcount);
-    if (data?.data?.activeSupplierWrappers.length) {
+    if (data?.data?.activeSupplierWrappers?.length) {
       if (page == 0) {
         setTableRows(getTableRows(data.data.activeSupplierWrappers));
         setPageNumber(1);
@@ -287,7 +295,7 @@ const Active = () => {
           ...getTableRows(data?.data?.activeSupplierWrappers),
         ]);
       }
-    } else if (data?.data?.length === 0 && page == 0) {
+    } else if (data?.data?.activeSupplierWrappers?.length === 0 && page == 0) {
       setTableRows([]);
     }
     if (err) {
@@ -305,6 +313,62 @@ const Active = () => {
     setPageNumber(0);
     getAllTableData(0, selected, filterValues.searchvalue, filterValues.date);
   }, [selectedFilterData]);
+
+  // disable
+  const [disableModal, setDisableModal] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const [disableError, setDisableError] = useState({
+    text: "",
+  });
+  const disableValidate = () => {
+    const disableErrorObj = {
+      text: "",
+    };
+    let flag = true;
+    if (comment == "") {
+      disableErrorObj.text = validateMessage.field_required;
+      flag = false;
+    } else {
+      disableErrorObj.text = "";
+      flag = true;
+    }
+    setDisableError(disableErrorObj);
+    return flag;
+  };
+  const handleDisableSaveClick = async () => {
+    if (disableValidate()) {
+      const payload = {
+        supplierId: selectedData.supplierId,
+        disable: true,
+        reason: comment,
+      };
+      const { data, err } = await enableDisableSupplier(payload);
+      if (data) {
+        setDisableModal(false);
+        const selected = [];
+        filterData[0]?.value?.forEach((item) => {
+          if (item.isSelected) {
+            selected.push(item.id);
+          }
+        });
+        getAllTableData(
+          0,
+          selected,
+          filterValues.searchvalue,
+          filterValues.date
+        );
+        toastify(data?.message, "success");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
+  const handleDisableClose = () => {
+    setDisableModal(false);
+    setDisableError({ text: "" });
+  };
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -313,8 +377,9 @@ const Active = () => {
       {viewModalOpen ? (
         <ViewModal
           viewModalOpen={viewModalOpen}
-          setViewModaOpen={setViewModaOpen}
+          setViewModalOpen={setViewModalOpen}
           selectedData={selectedData}
+          type="APPROVED"
         />
       ) : showQueryModal ? (
         <QueryModal
@@ -358,6 +423,27 @@ const Active = () => {
           />
         </Box>
       )}
+      {disableModal ? (
+        <ModalComponent
+          open={disableModal}
+          onCloseIconClick={() => handleDisableClose()}
+          onClearBtnClick={() => handleDisableClose()}
+          ModalTitle="Disable"
+          titleClassName="fs-16 color-orange"
+          onSaveBtnClick={() => handleDisableSaveClick()}
+        >
+          <Box className="my-2">
+            <TextArea
+              onInputChange={(e) => {
+                setComment(e.target.value);
+              }}
+              value={comment}
+              error={disableError.text !== ""}
+              helperText={disableError.text}
+            />
+          </Box>
+        </ModalComponent>
+      ) : null}
     </Paper>
   );
 };

@@ -8,7 +8,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { getAllActiveViewData } from "services/admin/supplier/active";
 import toastify from "services/utils/toastUtils";
 import AddressModal from "../addressmodal";
-import PolicyModal from "../policymodal";
+// import PolicyModal from "../policymodal";
 import StaffInfo from "../staffinfo";
 
 // const activeSupplierdata = {
@@ -165,15 +165,21 @@ import StaffInfo from "../staffinfo";
 //     col2: "Leather",
 //   },
 // ];
-const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
+const ViewModal = ({
+  setViewModalOpen = () => {},
+  selectedData = {},
+  type = "",
+}) => {
   const [viewData, setViewData] = useState({});
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [addressData, setAddressData] = useState([]);
-  const [policyData, setPolicyData] = useState([]);
-  const [showPolicyModal, setShowPolicyModal] = useState(false);
-
+  // const [policyData, setPolicyData] = useState([]);
+  // const [showPolicyModal, setShowPolicyModal] = useState(false);
   const getAllViewData = async () => {
-    const { data, err } = await getAllActiveViewData(selectedData.supplierId);
+    const { data, err } = await getAllActiveViewData(
+      selectedData.supplierId,
+      type
+    );
     if (data) {
       setViewData(data?.data);
       toastify(data?.message, "success");
@@ -186,11 +192,11 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
     getAllViewData();
   }, [selectedData]);
 
-  const handlePolicyClick = (item) => {
-    setPolicyData(item);
-    setShowPolicyModal(false);
-  };
-  const handleAddressClcik = (item) => {
+  // const handlePolicyClick = (item) => {
+  //   setPolicyData(item);
+  //   setShowPolicyModal(false);
+  // };
+  const handleAddressClick = (item) => {
     setAddressData(item);
     setShowAddressModal(true);
   };
@@ -202,13 +208,15 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
   };
   return (
     <Box className="p-2">
-      <Box onClick={() => setViewModaOpen(false)} className="d-flex ">
+      <Box onClick={() => setViewModalOpen(false)} className="d-flex ">
         <Typography className="h-5 d-flex align-items-center cursor-pointer me-3">
           <ArrowBackIosIcon className="fs-14" />
           Back
         </Typography>
         <Typography className="h-4 color-orange fw-bold">
-          View Active Suppliers
+          {type === "DISABLED"
+            ? "View Disabled Suppliers"
+            : "View Active Suppliers"}
         </Typography>
       </Box>
       {viewData ? (
@@ -357,7 +365,7 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                 <Grid item xs={5} display="flex">
                   <Typography
                     onClick={() => {
-                      handleAddressClcik(viewData?.userAddressDetails);
+                      handleAddressClick(viewData?.userAddressDetails);
                     }}
                     className={`text-break fw-bold h-5 ${
                       viewData?.userAddressDetails?.length !== 0 &&
@@ -390,13 +398,13 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                     }`}
                   >
                     {viewData?.staffManagementInfos?.length
-                      ? "Clcik Here"
+                      ? "Click Here"
                       : "--"}
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item lg={3} md={4} sm={12}>
+            {/* <Grid item lg={3} md={4} sm={12}>
               <Grid container>
                 <Grid item xs={6} display="flex" justifyContent="end">
                   <Typography className=" text-end h-5">
@@ -420,8 +428,8 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                   </Typography>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item lg={3} md={4} sm={12}>
+            </Grid> */}
+            {/* <Grid item lg={3} md={4} sm={12}>
               <Grid container>
                 <Grid item xs={6} display="flex" justifyContent="end">
                   <Typography className=" text-end h-5">
@@ -437,7 +445,7 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                   </Typography>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid item lg={3} md={4} sm={12}>
               <Grid container>
                 <Grid item xs={6} display="flex" justifyContent="end">
@@ -472,17 +480,16 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                   :
                 </Grid>
                 <Grid item xs={5} display="flex">
-                  need
-                  {/* <Typography
-                  className={`text-break fw-bold h-5 ${
-                    activeSupplierdata.orderhistory == "" &&
-                    `color-light-blue text-decoration-underline cursor-pointer`
-                  }`}
-                >
-                  {activeSupplierdata.orderhistory
-                    ? activeSupplierdata.orderhistory
-                    : "Click here"}
-                </Typography> */}
+                  <Typography
+                    className={`text-break fw-bold h-5 ${
+                      viewData.orderHistory == "" &&
+                      `color-light-blue text-decoration-underline cursor-pointer`
+                    }`}
+                  >
+                    {viewData.orderHistory
+                      ? viewData.orderHistory
+                      : "Click here"}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -631,17 +638,16 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
                   :
                 </Grid>
                 <Grid item xs={5} display="flex">
-                  {/* <Typography
-                  className={`text-break fw-bold h-5 ${
-                    activeSupplierdata.paymentHistory == "" &&
-                    `color-light-blue text-decoration-underline cursor-pointer`
-                  }`}
-                >
-                  {activeSupplierdata.paymentHistory
-                    ? activeSupplierdata.paymentHistory
-                    : "Click here"}
-                </Typography> */}
-                  need
+                  <Typography
+                    className={`text-break fw-bold h-5 ${
+                      viewData.paymentHistory == "" &&
+                      `color-light-blue text-decoration-underline cursor-pointer`
+                    }`}
+                  >
+                    {viewData.paymentHistory
+                      ? viewData.paymentHistory
+                      : "Click here"}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -778,18 +784,18 @@ const ViewModal = ({ setViewModaOpen = () => {}, selectedData = {} }) => {
           addressData={addressData}
         />
       ) : null}
-      {showPolicyModal ? (
+      {/* {showPolicyModal ? (
         <PolicyModal
           showPolicyModal={showPolicyModal}
           setShowPolicyModal={setShowPolicyModal}
           policyData={policyData}
         />
-      ) : null}
+      ) : null} */}
       {showStaffModal ? (
         <StaffInfo
           showStaffModal={showStaffModal}
           setShowStaffModal={setShowStaffModal}
-          staffInfo={staffInfo}
+          selectedData={staffInfo}
         />
       ) : null}
     </Box>
