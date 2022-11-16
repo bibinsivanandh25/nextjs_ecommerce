@@ -15,11 +15,15 @@ import { getAllProductsCount } from "services/admin/products";
 const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
-    { label: "Products to approve", isSelected: true },
-    { label: "Queries", isSelected: false },
-    { label: "Active", isSelected: false },
-    { label: "Updated", isSelected: false },
-    { label: "Rejected", isSelected: false },
+    {
+      id: "Products to approve",
+      label: "Products to approve",
+      isSelected: true,
+    },
+    { id: "Queries", label: "Queries", isSelected: false },
+    { id: "Active", label: "Active", isSelected: false },
+    { id: "Updated", label: "Updated", isSelected: false },
+    { id: "Rejected", label: "Rejected", isSelected: false },
   ]);
 
   const getCount = async () => {
@@ -27,16 +31,26 @@ const ZeroCommission = () => {
     if (data) {
       const tab = JSON.parse(JSON.stringify(tabList));
       tab.map((element) => {
-        if (element.label === "Products to approve")
-          return (element.label += `( ${data?.data?.INITIATED ?? 0} )`);
-        if (element.label === "Queries")
-          return (element.label += `( ${data?.data?.IN_QUERY ?? 0} )`);
-        if (element.label === "Active")
-          return (element.label += `( ${data?.data?.APPROVED ?? 0} )`);
-        if (element.label === "Updated")
-          return (element.label += `( ${data?.data?.UPDATED ?? 0} )`);
-        if (element.label === "Rejected")
-          return (element.label += `( ${data?.data?.REJECTED ?? 0} )`);
+        if (element.id === "Products to approve")
+          return (element.label = `${element.id}( ${
+            data?.data?.INITIATED ?? 0
+          } )`);
+        if (element.id === "Queries")
+          return (element.label = `${element.id}( ${
+            data?.data?.IN_QUERY ?? 0
+          } )`);
+        if (element.id === "Active")
+          return (element.label = `${element.id}( ${
+            data?.data?.APPROVED ?? 0
+          } )`);
+        if (element.id === "Updated")
+          return (element.label = `${element.id}( ${
+            data?.data?.UPDATED ?? 0
+          } )`);
+        if (element.id === "Rejected")
+          return (element.label = `${element.id}( ${
+            data?.data?.REJECTED ?? 0
+          } )`);
         return element;
       });
       setTabList(tab);

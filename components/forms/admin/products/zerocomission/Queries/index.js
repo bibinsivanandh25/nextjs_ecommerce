@@ -19,7 +19,7 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // import ViewProducts from "./ViewProducts";
 import {
   closeTicketById,
@@ -61,7 +61,6 @@ const Queries = ({
   const [products, setProducts] = useState([]);
 
   const [images, setImages] = useState([]);
-  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState({
     type: "",
     show: "",

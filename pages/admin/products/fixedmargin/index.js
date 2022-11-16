@@ -27,16 +27,26 @@ const ZeroCommission = () => {
     if (data) {
       const tab = JSON.parse(JSON.stringify(tabList));
       tab.map((element) => {
-        if (element.label === "Products to approve")
-          return (element.label += `( ${data?.data?.INITIATED ?? 0} )`);
-        if (element.label === "Queries")
-          return (element.label += `( ${data?.data?.IN_QUERY ?? 0} )`);
-        if (element.label === "Active")
-          return (element.label += `( ${data?.data?.APPROVED ?? 0} )`);
-        if (element.label === "Updated")
-          return (element.label += `( ${data?.data?.UPDATED ?? 0} )`);
-        if (element.label === "Rejected")
-          return (element.label += `( ${data?.data?.REJECTED ?? 0} )`);
+        if (element.id === "Products to approve")
+          return (element.label = `${element.id}( ${
+            data?.data?.INITIATED ?? 0
+          } )`);
+        if (element.id === "Queries")
+          return (element.label = `${element.id}( ${
+            data?.data?.IN_QUERY ?? 0
+          } )`);
+        if (element.id === "Active")
+          return (element.label = `${element.id}( ${
+            data?.data?.APPROVED ?? 0
+          } )`);
+        if (element.id === "Updated")
+          return (element.label = `${element.id}( ${
+            data?.data?.UPDATED ?? 0
+          } )`);
+        if (element.id === "Rejected")
+          return (element.label = `${element.id}( ${
+            data?.data?.REJECTED ?? 0
+          } )`);
         return element;
       });
       setTabList(tab);

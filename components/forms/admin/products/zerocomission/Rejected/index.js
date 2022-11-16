@@ -173,7 +173,12 @@ const Rejected = ({
         ) : null,
         col3: (
           <Tooltip title={val.productTitle} placement="top">
-            <Typography className="h-5 text-truncate">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
               {val.productTitle}
             </Typography>
           </Tooltip>
