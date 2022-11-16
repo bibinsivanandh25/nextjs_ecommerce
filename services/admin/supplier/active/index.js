@@ -9,9 +9,9 @@ const getActiveSuppliers = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-const getAllActiveViewData = (supplierId) => {
+const getAllActiveViewData = (supplierId, type) => {
   return serviceUtil
-    .get(`users/admin/supplier/view?supplierId=${supplierId}&status=APPROVED`)
+    .get(`users/admin/supplier/view?supplierId=${supplierId}&status=${type}`)
     .then((res) => {
       const { data } = res && res;
       return { data };
@@ -19,4 +19,14 @@ const getAllActiveViewData = (supplierId) => {
     .catch((err) => ({ err }));
 };
 
-export { getActiveSuppliers, getAllActiveViewData };
+const enableDisableSupplier = (payload) => {
+  return serviceUtil
+    .put(`users/admin/supplier/status`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export { getActiveSuppliers, getAllActiveViewData, enableDisableSupplier };
