@@ -91,6 +91,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
       align: "center",
       label: "Product Title",
       data_align: "center",
+      maxWidth: 100,
     },
     {
       id: "col5",
@@ -247,20 +248,25 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
               className="h-30 border d-flex justify-content-center"
             >
               <Image
-                src={val.variationMedia[0]}
+                src={val.variationMedia?.length ? val.variationMedia[0] : ""}
                 width="50"
                 height="50"
                 className="cursor-pointer"
               />
             </Box>
             <Typography className="fs-10">
-              /{val.variationMedia.length}
+              /{val?.variationMedia?.length ?? 0}
             </Typography>
           </Box>
         ),
         col4: (
           <Tooltip title={val.productTitle} placement="top">
-            <Typography className="h-5 text-truncate">
+            <Typography
+              style={{
+                maxWidth: "100px",
+              }}
+              className="h-5 text-truncate"
+            >
               {val.productTitle}
             </Typography>
           </Tooltip>
