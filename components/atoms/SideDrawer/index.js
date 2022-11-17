@@ -1,14 +1,13 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { motion } from "framer-motion";
 import { VscChromeMinimize } from "react-icons/vsc";
 import { BiCopyAlt } from "react-icons/bi";
 import { BsShop } from "react-icons/bs";
 import InputBox from "../InputBoxComponent";
 
-const SideDrawer = () => {
+const SideDrawer = forwardRef((_, ref = null) => {
   const [open, setOpen] = useState(false);
-
   return (
     <>
       <motion.div
@@ -37,7 +36,7 @@ const SideDrawer = () => {
             }}
           />
         </Box>
-        <Grid container className="w-100 p-3">
+        <Grid container className={`${open ? "w-100 p-3" : "d-none"}`}>
           <Grid item md={5} className="fw-bold">
             Shop Name :
           </Grid>
@@ -66,6 +65,8 @@ const SideDrawer = () => {
         </Grid>
       </motion.div>
       <motion.div
+        drag
+        dragConstraints={ref}
         animate={{
           scale: [1, 2, 2, 1, 1],
           rotate: [0, 0, 180, 360, 0],
@@ -100,6 +101,6 @@ const SideDrawer = () => {
       </motion.div>
     </>
   );
-};
+});
 
 export default SideDrawer;

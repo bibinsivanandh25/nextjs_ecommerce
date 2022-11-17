@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
@@ -18,7 +18,7 @@ const SideBarComponent = ({ children }) => {
   const [open, setOpen] = useState(false);
   const { allowedPath, role } = useSelector((state) => state.user);
   const [showFallBack, setShowFallBack] = useState(false);
-
+  const constraintsRef = useRef(null);
   useEffect(() => {
     if (allowedPath) {
       setShowFallBack(!allowedPath.includes(route.asPath.split("?")[0]));
@@ -46,6 +46,7 @@ const SideBarComponent = ({ children }) => {
       <Box
         id="main-layout"
         tabindex={0}
+        ref={constraintsRef}
         // component="main"
         sx={{
           maxWidth: ` ${open ? "calc(100vw - 245px)" : "calc(100vw - 60px)"}`,
@@ -66,7 +67,9 @@ const SideBarComponent = ({ children }) => {
           }
         }}
       >
-        {["SUPPLIER", "STAFF"].includes(role) && <SideDrawer />}
+        {["SUPPLIER", "STAFF"].includes(role) && (
+          <SideDrawer ref={constraintsRef} />
+        )}
         {showFallBack ? (
           <div
             style={{
