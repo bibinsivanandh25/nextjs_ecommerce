@@ -218,7 +218,7 @@ const ViewModalQueries = ({
   };
 
   return (
-    <Paper className="mnh-87vh mxh-87vh overflow-auto hide-scrollbar d-flex flex-column">
+    <Paper className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar d-flex flex-column">
       <Typography
         className="h-5 color-orange cursor-pointer ms-2 mt-1"
         onClick={() => {

@@ -17,14 +17,14 @@ const AddressModal = ({
       showCloseIcon={false}
       headerBorder=""
       showFooter={false}
-      ModalWidth={1000}
+      ModalWidth={addressData.length > 1 ? 1000 : 500}
     >
       <Box className=" mxh-500 overflow-y-scroll hide-scrollbar mb-2">
         <Typography className="color-orange">Address</Typography>
         <Grid container spacing={2}>
           {addressData?.map((item) => {
             return (
-              <Grid item sm={4}>
+              <Grid item sm={addressData.length > 1 ? 4 : 12}>
                 <Box
                   sx={{
                     py: 1.5,

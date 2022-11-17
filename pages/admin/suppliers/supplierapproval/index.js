@@ -229,7 +229,7 @@ const SupplierApproval = () => {
       status: "INITIATED",
     };
     const { data, err } = await getSuppliers(page, payload);
-    setMasterData(data.data.count);
+    if (data?.data) setMasterData(data?.data?.count);
     if (data?.data?.supplierInfo?.length) {
       if (page == 0) {
         setTableRows(getTableRows(data.data.supplierInfo));

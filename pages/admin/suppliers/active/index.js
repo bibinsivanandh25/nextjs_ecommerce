@@ -184,11 +184,12 @@ const Active = () => {
       rowDatas.push({
         id: index + 1,
         col1: index + 1,
-        col2: (
-          <Typography className="h-5  cursor-pointer">
-            {item.supplierId}/{item.businessName}
-          </Typography>
-        ),
+        // col2: (
+        //   <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
+        //     {item.businessName}
+        //   </Typography>
+        // ),
+        col2: `${item?.supplierId} / ${item.businessName}`,
         col3: item.city,
         col4: (
           <Box className="d-flex justify-content-around ">
@@ -283,7 +284,7 @@ const Active = () => {
       pageSize: 50,
     };
     const { data, err } = await getActiveSuppliers(payload);
-    setMasterData(data?.data?.totalcount);
+    if (data?.data) setMasterData(data?.data?.totalcount);
     if (data?.data?.activeSupplierWrappers?.length) {
       if (page == 0) {
         setTableRows(getTableRows(data.data.activeSupplierWrappers));
@@ -345,6 +346,7 @@ const Active = () => {
       };
       const { data, err } = await enableDisableSupplier(payload);
       if (data) {
+        setComment("");
         setDisableModal(false);
         const selected = [];
         filterData[0]?.value?.forEach((item) => {
