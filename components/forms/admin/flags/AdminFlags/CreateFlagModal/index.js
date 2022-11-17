@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable no-empty */
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -38,9 +40,9 @@ const CreateFlagModal = ({
 }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
-  const [flagTitleState, setflagTitleState] = useState({});
-  const [themeState, setthemeState] = useState({});
-  const [colorTheme, setcolorTheme] = useState({});
+  const [flagTitleState, setflagTitleState] = useState([]);
+  const [themeState, setthemeState] = useState([]);
+  const [colorTheme, setcolorTheme] = useState([]);
   const getFlagTitleFunction = async () => {
     const { data } = await getFlagTitle();
     if (data) {
@@ -156,7 +158,29 @@ const CreateFlagModal = ({
     setErrorObj(errObj);
     return flag;
   };
-
+  const handleClearAll = () => {
+    setFormDate({
+      flagTitle: {},
+      visibilityPlace: [],
+      themeSelection: [],
+      colorSelection: {},
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setErrorObj({
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setcolorTheme([]);
+  };
   const submitFunction = () => {
     const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
       formData.startTime
@@ -184,39 +208,6 @@ const CreateFlagModal = ({
     saveAdminFlag(payload);
     handleClearAll();
     setOpen(false);
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) {
-      if (modalDetails.type === "create") {
-        await submitFunction();
-      } else if (modalDetails.type === "edit") {
-        await editFlagFunction();
-      }
-    }
-  };
-  const handleClearAll = () => {
-    setFormDate({
-      flagTitle: {},
-      visibilityPlace: [],
-      themeSelection: [],
-      colorSelection: {},
-      startDate: "",
-      endDate: "",
-      startTime: "",
-      endTime: "",
-    });
-    setErrorObj({
-      flagTitle: "",
-      visibilityPlace: "",
-      themeSelection: "",
-      colorSelection: "",
-      startDate: "",
-      endDate: "",
-      startTime: "",
-      endTime: "",
-    });
-    setcolorTheme([]);
   };
 
   const handleChange = (value, name) => {
@@ -315,6 +306,15 @@ const CreateFlagModal = ({
       setOpen(false);
     } else if (err?.response?.data?.message) {
       toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const handleSubmit = async () => {
+    if (!validate()) {
+      if (modalDetails.type === "create") {
+        await submitFunction();
+      } else if (modalDetails.type === "edit") {
+        await editFlagFunction();
+      }
     }
   };
   return (

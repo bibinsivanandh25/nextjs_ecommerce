@@ -11,7 +11,6 @@ import {
   getFlagById,
   saveAdminFlag,
   editFlag,
-  getFlags,
 } from "services/admin/admin/adminconfiguration/flags";
 import Image from "next/image";
 import toastify from "services/utils/toastUtils";
@@ -32,7 +31,6 @@ const tempObj = {
 };
 
 const CreateFlagModal = ({
-  getTableData = () => {},
   openCreateFlagModal = false,
   setOpenCreateFlagModal = () => {},
   modalDetails = {},
@@ -40,9 +38,9 @@ const CreateFlagModal = ({
 }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
-  const [flagTitleState, setflagTitleState] = useState({});
-  const [themeState, setthemeState] = useState({});
-  const [colorTheme, setcolorTheme] = useState({});
+  const [flagTitleState, setflagTitleState] = useState([]);
+  const [themeState, setthemeState] = useState([]);
+  const [colorTheme, setcolorTheme] = useState([]);
   const getFlagTitleFunction = async () => {
     const { data } = await getFlagTitle();
     if (data) {
@@ -158,6 +156,29 @@ const CreateFlagModal = ({
     return flag;
   };
 
+  const handleClearAll = () => {
+    setFormDate({
+      flagTitle: {},
+      visibilityPlace: [],
+      themeSelection: [],
+      colorSelection: {},
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setErrorObj({
+      flagTitle: "",
+      visibilityPlace: "",
+      themeSelection: "",
+      colorSelection: "",
+      startDate: "",
+      endDate: "",
+      startTime: "",
+      endTime: "",
+    });
+    setcolorTheme([]);
+  };
   const submitFunction = () => {
     const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
       formData.startTime
@@ -187,39 +208,6 @@ const CreateFlagModal = ({
     setOpenCreateFlagModal(false);
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) {
-      if (modalDetails.type === "create") {
-        await submitFunction();
-      } else if (modalDetails.type === "edit") {
-        await editFlagFunction();
-      }
-    }
-  };
-  const handleClearAll = () => {
-    setFormDate({
-      flagTitle: {},
-      visibilityPlace: [],
-      themeSelection: [],
-      colorSelection: {},
-      startDate: "",
-      endDate: "",
-      startTime: "",
-      endTime: "",
-    });
-    setErrorObj({
-      flagTitle: "",
-      visibilityPlace: "",
-      themeSelection: "",
-      colorSelection: "",
-      startDate: "",
-      endDate: "",
-      startTime: "",
-      endTime: "",
-    });
-    setcolorTheme([]);
-  };
-
   const handleChange = (value, name) => {
     setFormDate((pre) => ({
       ...pre,
@@ -241,9 +229,12 @@ const CreateFlagModal = ({
     if (data) {
       const colorList = await editThemeLayout({
         flagTitle: data.flagTitle,
-        flagLayoutIdList: data.flagLayoutId.filter((item) => {
-          if (data.flagLayoutId.includes(item)) return item;
-        }),
+        // flagLayoutIdList: data.flagLayoutId.filter((item) => {
+        //   if (data.flagLayoutId.includes(item)) return item;
+        // }),
+        flagLayoutIdList: data.flagLayoutId.filter((item) =>
+          data.flagLayoutId.includes(item)
+        ),
         visibilityPlaceList: data.visibilityPlace.map((item) => {
           return item;
         }),
@@ -316,6 +307,15 @@ const CreateFlagModal = ({
       setOpenCreateFlagModal(false);
     } else if (err?.response?.data?.message) {
       toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const handleSubmit = async () => {
+    if (!validate()) {
+      if (modalDetails.type === "create") {
+        await submitFunction();
+      } else if (modalDetails.type === "edit") {
+        await editFlagFunction();
+      }
     }
   };
   return (

@@ -9,10 +9,11 @@ import {
   getFlags,
   changeStatus,
   deleteflags,
+  getFlagById,
 } from "services/admin/admin/adminconfiguration/flags";
+import ModalComponent from "@/atoms/ModalComponent";
 import toastify from "services/utils/toastUtils";
 import CreateFlagModal from "./CreateFlagModal";
-import ModalComponent from "@/atoms/ModalComponent";
 
 const SupplierFlags = () => {
   const [openCreateFlagModal, setOpenCreateFlagModal] = useState(false);
@@ -23,7 +24,12 @@ const SupplierFlags = () => {
     toDate: "",
   });
   const [deleteMessage, setdeleteMessage] = useState("");
+  const [flagId, setflagId] = useState("");
+  const [openVIew, setopenVIew] = useState(false);
   const [openDeleteModal, setopenDeleteModal] = useState(false);
+  const [opendisableModal, setopendisableModal] = useState(false);
+  const [flagData, setflagData] = useState({});
+
   const [editModalDetails, setEditModalDetails] = useState({
     type: "",
     id: null,
@@ -45,9 +51,9 @@ const SupplierFlags = () => {
               <Box className="d-flex flex-column align-items-center">
                 <SwitchComponent
                   label=""
-                  defaultChecked={item.enabled}
+                  defaultChecked={!item.disabled}
                   ontoggle={() => {
-                    updateFlagStatus(item.flagId, !item.enabled);
+                    updateFlagStatus(item.flagId, !item.disabled);
                   }}
                 />
               </Box>
@@ -68,15 +74,22 @@ const SupplierFlags = () => {
     }
   };
   const updateFlagStatus = async (id, flag) => {
-    const { data, message, err } = await changeStatus(id, flag);
+    setflagId({ id, flag });
+    const action = true;
+    const { data, message, err } = await changeStatus(id, flag, action);
     if (data) {
       toastify(message, "success");
       getTableData();
     } else if (err) {
+      if (err) {
+        setopendisableModal(true);
+        setdeleteMessage(err?.response?.data?.message);
+      }
       toastify(err?.response?.data?.message, "error");
     }
   };
   const removeFlag = async (id) => {
+    setflagId(id);
     const { data, message, err } = await deleteflags(id);
     if (data) {
       toastify(message, "success");
@@ -89,31 +102,53 @@ const SupplierFlags = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
+  const getFlagByID = async (id) => {
+    const { data, err, message } = await getFlagById(id);
+    if (data) {
+      toastify(message, "success");
+      setflagData(data);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const onClickOfMenuItem = (ele, id) => {
     if (ele === "Delete") {
       const payload = { id, bool: true };
-      const { data } = removeFlag(payload);
+      removeFlag(payload);
     } else if (ele === "Edit") {
       setEditModalDetails({ type: "edit", id });
       setOpenCreateFlagModal(true);
+    } else if (ele === "View") {
+      getFlagByID(id);
+      setopenVIew(true);
     }
   };
 
   //
-  const supplierDelete = async (payload = oldPayload) => {
-    const { data, err } = await getFlags(payload);
+  const supplierDelete = () => {
+    const payload = {
+      id: flagId.id,
+      bool: false,
+    };
+    const { data, message, err } = removeFlag(payload);
     if (data) {
-      const temp = data.map((item) => {
-        const deletePayload = { id: item.flagId, bool: false };
-        const { data, message } = removeFlag(deletePayload);
-        return temp;
-      });
+      toastify(message, "success");
+      getTableData();
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
   //
+  const supplierDisable = async () => {
+    const action = false;
+    const { id, flag } = flagId;
+    const { data, message, err } = await changeStatus(id, flag, action);
+    if (data) {
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   useEffect(() => {
     getTableData();
@@ -204,6 +239,33 @@ const SupplierFlags = () => {
         setmodalDetails={setEditModalDetails}
         modalDetails={editModalDetails}
       />
+      {opendisableModal && (
+        <ModalComponent
+          ModalWidth={500}
+          open={opendisableModal}
+          titleClassName="fw-bold fs-14 color-orange"
+          ModalTitle="Disable Product"
+          saveBtnText="Yes"
+          ClearBtnText="Cancel"
+          onCloseIconClick={() => {
+            setopendisableModal(false);
+            setflagId("");
+          }}
+          onClearBtnClick={() => {
+            setopendisableModal(false);
+            setflagId("");
+          }}
+          onSaveBtnClick={() => {
+            supplierDisable();
+            setopendisableModal(false);
+            setflagId("");
+          }}
+        >
+          <Grid>
+            <Typography>{deleteMessage}</Typography>
+          </Grid>
+        </ModalComponent>
+      )}
       {openDeleteModal && (
         <ModalComponent
           ModalWidth={500}
@@ -214,17 +276,162 @@ const SupplierFlags = () => {
           ClearBtnText="Cancel"
           onCloseIconClick={() => {
             setopenDeleteModal(false);
+            setflagId("");
           }}
           onClearBtnClick={() => {
             setopenDeleteModal(false);
+            setflagId("");
           }}
           onSaveBtnClick={() => {
             supplierDelete();
+            setopenDeleteModal(false);
+            setflagId("");
           }}
         >
           <Grid>
             <Typography>{deleteMessage}</Typography>
           </Grid>
+        </ModalComponent>
+      )}
+      {openVIew && (
+        <ModalComponent
+          ModalWidth={800}
+          open={openVIew}
+          ModalTitle="Falg Details"
+          onCloseIconClick={() => {
+            setopenVIew(false);
+          }}
+          showSaveBtn={false}
+          titleClassName="fw-bold fs-14 color-orange "
+          showClearBtn={false}
+        >
+          <Box>
+            <Grid item md={6} xs={12}>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">Flag Title:</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.flagTitle}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">Flag Id:</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.flagId}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">Created By:</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.createdBy}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">Created At:</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.createdAt}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">
+                    Last Updated By:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.lastModifiedBy}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">
+                    Last Updated At:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.lastUpdatedAt}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">
+                    Flag Started From:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.startDateTime}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">
+                    Flag Expired By:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.endDateTime}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">Flag Status:</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData.flagStatus}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid container py={1}>
+                <Grid item xs={12} sm={6} md={6} lg={4}>
+                  <Typography className="fw-600 fs-16">
+                    Flag visibility Place:
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} lg={8}>
+                  <Typography className="fs-16 fw-500">
+                    {flagData?.visibilityPlace?.map((ele) => {
+                      return <span key={ele}>{ele}</span>;
+                    })}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Grid item>
+                <Typography className="fw-600 fs-16">flag Image:</Typography>
+                <Image
+                  src={flagData?.flagImageUrl?.toString()}
+                  height={100}
+                  width={300}
+                  alt="flag"
+                  layout="intrinsic"
+                  className="d-flex justify-content-center align-items-center"
+                />
+              </Grid>
+            </Grid>
+          </Box>
         </ModalComponent>
       )}
     </>

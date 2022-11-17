@@ -10,9 +10,9 @@ const getFlags = (payLoad) => {
     })
     .catch((err) => ({ err }));
 };
-const changeStatus = (id, flag) => {
+const changeStatus = (id, flag, action) => {
   return serviceUtil
-    .put(`products/product-flag/${id}/${flag}`)
+    .put(`products/product-flag/${id}/${flag}/${action}`)
     .then((res) => {
       const { message } = res && res.data;
       return { data: res.data, message };
