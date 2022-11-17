@@ -482,13 +482,11 @@ const ViewModal = ({
                 <Grid item xs={5} display="flex">
                   <Typography
                     className={`text-break fw-bold h-5 ${
-                      viewData.orderHistory == "" &&
+                      viewData.orderHistory !== null &&
                       `color-light-blue text-decoration-underline cursor-pointer`
                     }`}
                   >
-                    {viewData.orderHistory
-                      ? viewData.orderHistory
-                      : "Click here"}
+                    {viewData.orderHistory !== null ? "Click Here" : "--"}
                   </Typography>
                 </Grid>
               </Grid>
@@ -571,7 +569,17 @@ const ViewModal = ({
                 </Grid>
                 <Grid item xs={5} display="flex">
                   <Typography className="text-break fw-bold h-5 color-light-blue text-decoration-underline cursor-pointer">
-                    {viewData?.websiteLink}
+                    {viewData?.websiteLink ? (
+                      <a
+                        href={viewData?.websiteLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {viewData?.websiteLink}
+                      </a>
+                    ) : (
+                      "--"
+                    )}
                   </Typography>
                 </Grid>
               </Grid>
@@ -604,7 +612,12 @@ const ViewModal = ({
                   :
                 </Grid>
                 <Grid item xs={5} display="flex">
-                  <Typography className="text-break fw-bold h-5 color-light-blue text-decoration-underline cursor-pointer">
+                  <Typography
+                    className={`text-break fw-bold h-5 ${
+                      viewData.productCount > 0 &&
+                      `color-light-blue text-decoration-underline cursor-pointer`
+                    } `}
+                  >
                     {viewData.productCount}
                   </Typography>
                 </Grid>
@@ -640,13 +653,11 @@ const ViewModal = ({
                 <Grid item xs={5} display="flex">
                   <Typography
                     className={`text-break fw-bold h-5 ${
-                      viewData.paymentHistory == "" &&
+                      viewData.paymentHistory !== null &&
                       `color-light-blue text-decoration-underline cursor-pointer`
                     }`}
                   >
-                    {viewData.paymentHistory
-                      ? viewData.paymentHistory
-                      : "Click here"}
+                    {viewData.paymentHistory ? "Click Here" : "--"}
                   </Typography>
                 </Grid>
               </Grid>

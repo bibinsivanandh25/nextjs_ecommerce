@@ -207,7 +207,7 @@ const Disabled = () => {
       pageSize: 50,
     };
     const { data, err } = await getDisabledSuppliers(payload);
-    setMasterData(data.data.totalcount);
+    if (data?.data) setMasterData(data?.data?.totalcount);
     if (data?.data?.disableSupplierWrappers?.length) {
       if (page == 0) {
         setTableRows(getTableRows(data.data.disableSupplierWrappers));
