@@ -1,5 +1,6 @@
 .tabContainer {
   display: flex;
+  cursor: pointer;
   /* position: absolute;
   top: -30px;
   left: 0px; */
@@ -7,6 +8,7 @@
 
 .tabStyle {
   padding: 3px 16px 3px 15px;
+  cursor: pointer;
   background: #f0f0f0;
   border-radius: 10px 10px 0 0;
   /* min-width: 100px; */
@@ -15,6 +17,7 @@
 }
 
 .activeTab {
+  cursor: pointer;
   color: #e56700;
   font-weight: 600;
   background: white;
@@ -27,6 +30,7 @@
 
 .activeTab::before {
   box-shadow: 10px 0px 0 #fff;
+  cursor: pointer;
   content: "";
   display: block;
   position: absolute;
@@ -40,6 +44,7 @@
 }
 .activeTab::after {
   box-shadow: -8px 2px 0 #ffffff;
+  cursor: pointer;
   content: "";
   display: block;
   position: absolute;
@@ -52,6 +57,7 @@
   z-index: 1;
 }
 .firstActiveTab {
+  cursor: pointer;
   color: #e56700;
   font-weight: 600;
   background: white;
@@ -65,6 +71,7 @@
 .firstActiveTab::after {
   box-shadow: -8px 2px 0 #ffffff;
   content: "";
+  cursor: pointer;
   display: block;
   position: absolute;
   top: 14px;
@@ -83,6 +90,7 @@
   border-radius: 10px 10px 0 0;
   /* min-width: 100px; */
   position: relative;
+  cursor: pointer;
   text-align: center;
 }
 
@@ -92,6 +100,7 @@
   display: block;
   position: absolute;
   top: 12px;
+  cursor: pointer;
   left: -16px;
   background: #f0f0f0;
   border-bottom-right-radius: 13px;
