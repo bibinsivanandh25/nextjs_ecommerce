@@ -20,6 +20,7 @@ const MergeToModal = ({
   productId = "",
   viewClick = () => {},
   getTableData = () => {},
+  getCount = () => {},
 }) => {
   const [searchText, setSearchText] = useState("");
   const [productDetails, setProductDetails] = useState([]);
@@ -60,6 +61,7 @@ const MergeToModal = ({
     if (data) {
       toastify(data?.message, "success");
       getTableData(0);
+      getCount();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");

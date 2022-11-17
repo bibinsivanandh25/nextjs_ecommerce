@@ -81,6 +81,7 @@ const ZeroCommission = () => {
           tabList={tabList}
           onSelect={(index) => {
             handleSelect(index);
+            getCount();
           }}
         >
           <Box className="px-1 pt-2">

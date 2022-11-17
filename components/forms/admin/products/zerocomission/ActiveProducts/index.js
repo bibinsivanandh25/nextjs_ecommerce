@@ -195,7 +195,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
@@ -221,9 +221,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
 
           {
             label: "Raise Query",
-            callBack: () => {
-              console.log("Query");
-            },
+            callBack: () => {},
           },
         ],
       };
@@ -294,7 +292,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
             </Typography>
           </Tooltip>
         ),
-        col5: `${val.supplierId} / ${val.supplierName}`,
+        col5: `${val.supplierId} / ${val.businessName}`,
         col6: val.skuId,
         col7: val.stockQty,
         col8: `${val.weightInclusivePackage} / ${val.volume}`,
@@ -311,16 +309,22 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
         col15: (
           <Box className="d-flex align-items-center">
             <Box className="ms-2 w-75">
-              <SwitchComponent
-                label=""
-                styledSwitch
-                defaultChecked={!val.disable}
-                ontoggle={() => {
-                  enableDisableProduct(val.productVariationId, !val.disable);
-                }}
-              />
+              <Tooltip
+                title={val.disable ? "Disabled" : "Enabled"}
+                placement="top"
+              >
+                <SwitchComponent
+                  label=""
+                  styledSwitch
+                  defaultChecked={!val.disable}
+                  ontoggle={() => {
+                    enableDisableProduct(val.productVariationId, !val.disable);
+                  }}
+                />
+              </Tooltip>
             </Box>
             <CustomIcon
+              title="View"
               type="view"
               className="me-2"
               onIconClick={() => {

@@ -144,7 +144,7 @@ const Rejected = ({
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),

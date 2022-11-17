@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
@@ -102,7 +103,6 @@ const ProductsLayout = ({
     { title: "Merged Products", component: <MergedProducts /> },
     { title: "Logs", component: <Logs /> },
   ]);
-
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
@@ -413,7 +413,7 @@ const ProductsLayout = ({
       const temp = ["countryOfOrigin", "others", "expiryDate"];
       const variationProperty = [];
       Object.keys(formData.variation).forEach((item) => {
-        if (!temp.includes(item)) {
+        if (!temp.includes(item) && formData.attribute.hasOwnProperty(item)) {
           variationProperty.push({
             variationId: item,
             optionId: formData.variation[item],
@@ -607,7 +607,10 @@ const ProductsLayout = ({
         "MM-dd-yyyy HH:mm:ss"
       ),
       productType: editProduct ? productDetails.productType : "SIMPLE_PRODUCT",
-      supplierId: userInfo.id,
+      supplierId:
+        userInfo.role === "SUPPLIER" || userInfo.role === "STAFF"
+          ? userInfo.id
+          : productDetails.supplierId,
     };
     if (duplicateFlag) {
       const { data, err } = await saveDuplicateProduct(

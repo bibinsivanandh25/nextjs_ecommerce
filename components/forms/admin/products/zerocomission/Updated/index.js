@@ -173,7 +173,7 @@ const Updated = ({
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
@@ -241,7 +241,7 @@ const Updated = ({
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),

@@ -131,6 +131,9 @@ const FilterModal = ({
               setSubcategories(null);
               SetBrands(null);
               setproducts(null);
+              setSubCategoryIds([]);
+              setBrandNames([]);
+              setproductVariationIds([]);
               const tempIDs = [];
               const temp = JSON.parse(JSON.stringify(categories));
               temp[index].isSelected = !temp[index].isSelected;
@@ -191,6 +194,8 @@ const FilterModal = ({
             isChecked={ele.isSelected}
             id={ele.id}
             checkBoxClick={() => {
+              setBrandNames([]);
+              setproductVariationIds([]);
               SetBrands(null);
               setproducts(null);
               const tempIDs = [];
@@ -244,6 +249,7 @@ const FilterModal = ({
             isChecked={ele.isSelected}
             id={ele.id}
             checkBoxClick={() => {
+              setproductVariationIds([]);
               setproducts(null);
               const temp = JSON.parse(JSON.stringify(brands));
               temp[ind].isSelected = !temp[ind].isSelected;

@@ -151,7 +151,7 @@ const AcceptRejectModal = ({
                 type: "ACTIVE_PRODUCT",
                 to: {
                   id: rowsDataObjects.supplierId,
-                  label: rowsDataObjects.supplierName,
+                  label: rowsDataObjects.businessName,
                   value: rowsDataObjects.supplierId,
                 },
                 productVariationId: rowsDataObjects?.productVariationId,
@@ -162,6 +162,9 @@ const AcceptRejectModal = ({
             muiProps="fs-12 color-gray"
             variant="text"
             label="Cancel"
+            onBtnClick={() => {
+              setOpenAcceptRejectModal(false);
+            }}
           />
           <ButtonComponent
             muiProps="fs-12 mx-3"

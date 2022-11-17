@@ -131,7 +131,7 @@ const ProductsToApprove = ({
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
@@ -288,7 +288,7 @@ const ProductsToApprove = ({
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),
@@ -415,6 +415,7 @@ const ProductsToApprove = ({
     };
     const { data, message, err } = await raiseQuery(payload);
     if (data) {
+      getCount();
       toastify(message, "success");
       sethelpSupportModal({
         show: false,
@@ -567,6 +568,7 @@ const ProductsToApprove = ({
           openMergeToModal={openMergeToModal}
           setOpenMergeToModal={setOpenMergeToModal}
           viewClick={viewClick}
+          getCount={getCount}
         />
       ) : null}
       {/* <VisibilityRangeModal
