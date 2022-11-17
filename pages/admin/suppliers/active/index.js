@@ -185,8 +185,8 @@ const Active = () => {
         id: index + 1,
         col1: index + 1,
         col2: (
-          <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
-            {item.businessName}
+          <Typography className="h-5  cursor-pointer">
+            {item.supplierId}/{item.businessName}
           </Typography>
         ),
         col3: item.city,

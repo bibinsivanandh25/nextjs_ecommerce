@@ -29,4 +29,19 @@ const enableDisableSupplier = (payload) => {
     .catch((err) => ({ err }));
 };
 
-export { getActiveSuppliers, getAllActiveViewData, enableDisableSupplier };
+const getProductsBySupplierId = (supplierId, page) => {
+  return serviceUtil
+    .get(`products/admin/supplier/product/${page}/50/${supplierId}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export {
+  getActiveSuppliers,
+  getAllActiveViewData,
+  enableDisableSupplier,
+  getProductsBySupplierId,
+};
