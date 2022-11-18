@@ -38,7 +38,9 @@ const DatePickerComponent = ({
           disableFuture={disableFuture}
           value={value}
           label={label}
-          onChange={(newData) => onDateChange(new Date(newData))}
+          onChange={(newData) => {
+            onDateChange(newData ? new Date(newData) : null);
+          }}
           // inputFormat="dd/MM/yyyy"
           renderInput={(params) => (
             <TextField

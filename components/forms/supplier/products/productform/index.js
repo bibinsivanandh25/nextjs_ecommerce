@@ -55,6 +55,7 @@ const ProductsLayout = ({
   formData = {},
   setFormData = () => {},
   setShowGroupVariant = () => {},
+  closeModal = () => {},
   tabsList = [],
   formsRef = null,
   showGroupVariant = false,
@@ -431,7 +432,7 @@ const ProductsLayout = ({
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
       longDescriptionFileUrls: imgdata.long_description
-        ? formData?.mainForm?.long_description?.media?.filter.length
+        ? formData?.mainForm?.long_description?.media?.length
           ? [
               ...imgdata.long_description,
               ...formData?.mainForm?.long_description?.media?.filter((item) => {
@@ -594,7 +595,22 @@ const ProductsLayout = ({
           stockStatus: formData.inventory.stock_status.label,
           allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
           backOrders: parseInt(formData.inventory.back_Orders, 10) || 0,
-          variationMedia: imgdata.productImage,
+          variationMedia: imgdata?.productImage
+            ? formData.productImage.length
+              ? [
+                  ...imgdata?.productImage,
+                  ...formData.productImage.filter((item) => {
+                    if (item.includes("https://")) {
+                      return item;
+                    }
+                  }),
+                ]
+              : [...imgdata?.productImage]
+            : formData?.productImage?.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }) ?? [],
           variationProperty: getvariationProperty(),
         },
       ],
@@ -602,10 +618,9 @@ const ProductsLayout = ({
       otherInformation,
       zoneChargeInfo: {},
       countryOfOrigin: formData.variation.countryOfOrigin,
-      expiryDate: format(
-        new Date(formData.variation.expiryDate),
-        "MM-dd-yyyy HH:mm:ss"
-      ),
+      expiryDate: formData.variation.expiryDate
+        ? format(new Date(formData.variation.expiryDate), "MM-dd-yyyy HH:mm:ss")
+        : null,
       productType: editProduct ? productDetails.productType : "SIMPLE_PRODUCT",
       supplierId:
         userInfo.role === "SUPPLIER" || userInfo.role === "STAFF"
@@ -640,12 +655,17 @@ const ProductsLayout = ({
       } else if (data) {
         toastify(data.message, "success");
         dispatch(clearProduct());
-        router.replace({
-          pathname: "/supplier/products&inventory/myproducts",
-          query: {
-            active: "2",
-          },
-        });
+        // router.pathname.includes("admin")
+        if (!user.role.includes("ADMIN")) {
+          router.replace({
+            pathname: "/supplier/products&inventory/myproducts",
+            query: {
+              active: "2",
+            },
+          });
+        } else {
+          closeModal();
+        }
       }
     } else {
       const { data, err } = await saveProduct(payload);

@@ -7,14 +7,14 @@ import Image from "next/image";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
-import testImage from "../../../../../public/assets/test-image.jpg";
+// import "" from "../../../../../public/assets/test-image.jpg";
 
 const ComapareProducts = ({ handleBackclick = () => {} }) => {
   const [theItems, setTheItems] = useState([
     {
       id: 1,
       productName: "Product Name",
-      productImage: testImage,
+      productImage: "",
       productPrice: "Rs. 23342134",
       productAvailability: "In Stock",
       productDescription:
@@ -30,7 +30,7 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
     {
       id: 2,
       productName: "Product Name",
-      productImage: testImage,
+      productImage: "",
       productPrice: "Rs. 235",
       productAvailability: "In Stock",
       productDescription:
@@ -46,7 +46,7 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
     {
       id: 3,
       productName: "Product Name",
-      productImage: testImage,
+      productImage: "",
       productPrice: "Rs. 235",
       productAvailability: "In Stock",
       productDescription:
@@ -62,7 +62,7 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
     {
       id: 4,
       productName: "Product Name",
-      productImage: testImage,
+      productImage: "",
       productPrice: "Rs. 235",
       productAvailability: "In Stock",
       productDescription:
@@ -78,7 +78,7 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
     {
       id: 5,
       productName: "Product Name",
-      productImage: testImage,
+      productImage: "",
       productPrice: "Rs. 235",
       productAvailability: "In Stock",
       productDescription:
@@ -129,12 +129,7 @@ const ComapareProducts = ({ handleBackclick = () => {} }) => {
                 />
               </Box>
               <Box>
-                <Image
-                  src={testImage}
-                  layout="intrinsic"
-                  width="120"
-                  height="120"
-                />
+                <Image src="" layout="intrinsic" width="120" height="120" />
               </Box>
               <Box className="fs-14 text-center">{val.productName}</Box>
             </Box>
