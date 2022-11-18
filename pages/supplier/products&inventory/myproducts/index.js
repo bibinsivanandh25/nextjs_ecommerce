@@ -35,6 +35,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -161,6 +162,8 @@ const MyProducts = () => {
   };
   const [flagFormData, setFlagFormData] = useState(flagSchema);
   const [disableFlagField, setdisableFlagField] = useState(false);
+  const [flagTitle, setFlagTitle] = useState({});
+  const [flagUrlList, setflagUrlList] = useState([]);
   const { id } = useUserInfo();
   const router = useRouter();
 
@@ -455,6 +458,9 @@ const MyProducts = () => {
   }, [showAddFlagModal]);
 
   const getFlagDetails = async (val) => {
+    if (!val) {
+      return;
+    }
     const { data, err } = await getFlagById(
       val.value,
       val.purchaseId,
@@ -498,13 +504,18 @@ const MyProducts = () => {
   };
 
   const flagSubmit = async () => {
-    const { data, err } = await addProductFlag(flagFormData);
+    const { data, err } = await addProductFlag({
+      ...flagFormData,
+      imageUrl: flagUrlList.filter((item) => item.checked)[0].url,
+    });
     if (data) {
       toastify(data.message, "success");
       setShowAddFlagModal(false);
       setFlagFormData({ ...flagSchema });
       setdisableFlagField(false);
       setIds({ masterProductId: "", variationId: "", flagged: false });
+      setflagUrlList([]);
+      setFlagTitle([]);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -598,6 +609,8 @@ const MyProducts = () => {
             onCloseIconClick={() => {
               setShowAddFlagModal(false);
               setFlagFormData({ ...flagSchema });
+              setflagUrlList([]);
+              setFlagTitle([]);
             }}
             open={showAddFlagModal}
             ModalTitle="Add Flag"
@@ -608,6 +621,8 @@ const MyProducts = () => {
             onClearBtnClick={() => {
               setShowAddFlagModal(false);
               setFlagFormData({ ...flagSchema });
+              setflagUrlList([]);
+              setFlagTitle([]);
             }}
             onSaveBtnClick={flagSubmit}
           >
@@ -615,36 +630,42 @@ const MyProducts = () => {
               <Grid item xs={12}>
                 <SimpleDropdownComponent
                   size="small"
-                  placeholder="Todays Deal"
+                  placeholder="Flag Title"
                   list={flagsList}
+                  value={flagTitle}
                   onDropdownSelect={(val) => {
+                    setFlagTitle(JSON.parse(JSON.stringify(val)));
+                    const temp = val?.imageUrl?.map((item) => {
+                      return {
+                        checked: false,
+                        url: item,
+                        label: <Image src={item} width={400} height={50} />,
+                      };
+                    });
+                    setflagUrlList(temp);
                     getFlagDetails(val);
                   }}
                 />
               </Grid>
-              {/* <Grid item xs={6}>
-                <InputBox
-                  size="small"
-                  placeholder="Sale Price"
-                  type="number"
-                  disabled
-                />
-              </Grid> */}
-              <Grid item sm={6}>
-                <InputBox
-                  size="small"
-                  value={flagFormData.discount}
-                  placeholder="Enter discount in %"
-                  onInputChange={(e) => {
-                    setFlagFormData((pre) => ({
-                      ...pre,
-                      discount: e.target.value,
-                    }));
-                  }}
-                  type="number"
-                  disabled={disableFlagField}
-                />
-              </Grid>
+
+              {flagTitle?.label === "Deal Of The Day" && (
+                <Grid item sm={6}>
+                  <InputBox
+                    size="small"
+                    value={flagFormData.discount}
+                    placeholder="Enter discount in %"
+                    onInputChange={(e) => {
+                      setFlagFormData((pre) => ({
+                        ...pre,
+                        discount: e.target.value,
+                      }));
+                    }}
+                    type="number"
+                    disabled={disableFlagField}
+                  />
+                </Grid>
+              )}
+
               <Grid item sm={6}>
                 <DatePickerComponent
                   size="small"
@@ -690,6 +711,31 @@ const MyProducts = () => {
                   }}
                   disabled={disableFlagField}
                 />
+              </Grid>
+              <Grid item sm={12} container>
+                {flagUrlList.map((item, ind) => {
+                  return (
+                    <Grid item md={6}>
+                      <div className="d-flex">
+                        <CheckBoxComponent
+                          isChecked={item.checked}
+                          checkBoxClick={() => {
+                            const temp = [...flagUrlList];
+                            temp.forEach((ele, index) => {
+                              if (index === ind) {
+                                ele.checked = true;
+                              } else {
+                                ele.checked = false;
+                              }
+                            });
+                            setflagUrlList(temp);
+                          }}
+                        />
+                        {item.label}
+                      </div>
+                    </Grid>
+                  );
+                })}
               </Grid>
             </Grid>
           </ModalComponent>

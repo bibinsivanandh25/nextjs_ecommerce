@@ -25,6 +25,15 @@ const SupplierFlags = () => {
     type: "",
     id: null,
   });
+  const updateFlagStatus = async (id, flag) => {
+    const { data, message, err } = await changeStatus(id, flag);
+    if (data) {
+      toastify(message, "success");
+      getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const getTableData = async (payload = oldPayload) => {
     const { data, err } = await getFlags(payload);
     if (data) {
@@ -64,15 +73,7 @@ const SupplierFlags = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const updateFlagStatus = async (id, flag) => {
-    const { data, message, err } = await changeStatus(id, flag);
-    if (data) {
-      toastify(message, "success");
-      getTableData();
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
+
   const removeFlag = async (id) => {
     const { data, message, err } = await deleteflags(id);
     if (data) {

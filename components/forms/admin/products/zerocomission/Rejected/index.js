@@ -1,16 +1,19 @@
-import { Box, Paper, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import {
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
-import ViewProducts from "./ViewProducts";
+import { deleteProducts } from "services/admin/products";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
@@ -18,8 +21,12 @@ import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
-const Rejected = () => {
+const Rejected = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -55,17 +62,6 @@ const Rejected = () => {
   });
 
   const [images, setImages] = useState([]);
-
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
 
   const columns = [
     {
@@ -111,7 +107,12 @@ const Rejected = () => {
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -120,31 +121,15 @@ const Rejected = () => {
     }
   };
 
-  const editClick = async (payload) => {
-    const { data, err } = await getVariation(payload);
-    if (err) {
-      toastify(err?.response?.data?.messagea);
-    } else {
-      dispatch(updateProduct(data[0]));
-      setShowViewProducts(true);
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
+      getCount();
     }
-  };
-
-  const onClickOfMenuItem = (ele, val) => {
-    // if (ele === "Accept/Reject") {
-    //   setOpenAcceptRejectModal(true);
-    // }
-    // if (ele === "Delete") {
-    //   deleteProduct(val.productVariationId);
-    // }
-    if (ele === "Edit") {
-      editClick([
-        {
-          masterProductId: val.masterProductId,
-          variationId: val.productVariationId,
-          flagged: false,
-        },
-      ]);
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -159,7 +144,7 @@ const Rejected = () => {
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),
@@ -186,7 +171,18 @@ const Rejected = () => {
             </Typography>
           </Box>
         ) : null,
-        col3: val.productTitle,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
         col4: val.skuId,
         col5: (
           <>
@@ -210,21 +206,30 @@ const Rejected = () => {
         ),
         col9: val.brand,
         col10: (
-          <Box className="d-flex justify-content-evenly align-items-center">
+          <Box className="d-flex justify-content-between align-items-center">
             <CustomIcon
               type="view"
-              className="fs-18"
+              className="h-4"
+              title="view"
               onIconClick={() => {
                 viewClick(val.masterProductId, val.productVariationId);
               }}
             />
-            <MenuOption
+            <CustomIcon
+              type="delete"
+              className="h-4 ms-1"
+              title="delete"
+              onIconClick={() => {
+                deleteProduct(val.productVariationId);
+              }}
+            />
+            {/* <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, val);
               }}
               options={options}
               IconclassName="fs-18 color-gray"
-            />
+            /> */}
           </Box>
         ),
       });
@@ -246,9 +251,9 @@ const Rejected = () => {
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
       status: "REJECTED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);
@@ -309,7 +314,12 @@ const Rejected = () => {
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}

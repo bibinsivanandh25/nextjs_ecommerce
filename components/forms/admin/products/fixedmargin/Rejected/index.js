@@ -108,7 +108,7 @@ const Rejected = () => {
     if (data) {
       // console.log("The data ", data);
       const result = [];
-      data.products.forEach((val, index) => {
+      data.forEach((val, index) => {
         result.push({
           id: index + 1,
           col1: (

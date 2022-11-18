@@ -3,11 +3,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import {
+  acceptOrRejectProduct,
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
@@ -24,18 +25,25 @@ import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import {
+  updateProduct,
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import AcceptRejectModal from "./AcceptRejectmodal";
-import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
-import VisibilityRangeModal from "./VisibilityRangeModal";
-import FlagModal from "./FlagModal";
+// import RaiseQueryModal from "./RaiseQueryModal";
+// import VisibilityRangeModal from "./VisibilityRangeModal";
+// import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
-const ProductsToApprove = ({ getCount = () => {} }) => {
+const ProductsToApprove = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -45,10 +53,10 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
   const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
+  // const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
+  // const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
+  //   useState(false);
+  // const [showFlagModal, setShowFlagModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
@@ -74,6 +82,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     to: {},
     productVariationId: null,
   });
+  const [productVariationId, setProductVariationId] = useState("");
 
   const [images, setImages] = useState([]);
 
@@ -82,6 +91,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     if (data) {
       toastify(data?.message, "success");
       getTableData(0);
+      getCount();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -98,6 +108,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     }
   };
   const onClickOfMenuItem = (ele, val) => {
+    setProductVariationId(val?.productVariationId);
     setSelectedRow(val);
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
@@ -120,11 +131,16 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
       });
+    }
+
+    if (ele === "Merge to") {
+      setProductVariationId(val?.productVariationId);
+      setOpenMergeToModal(true);
     }
   };
 
@@ -182,13 +198,77 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   ];
 
   const dispatch = useDispatch();
+  const approveOrRejectProduct = async (status, id) => {
+    const payload = {
+      productVariationId: id,
+      status,
+    };
+    const { data, err, message } = await acceptOrRejectProduct(payload);
 
-  const viewClick = async (masterProductId, variationId) => {
+    if (data) {
+      setShowViewProducts(false);
+      dispatch(resetAdminProductView());
+      toastify(message, "success");
+      await getTableData(0);
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+
+  const viewClick = async (masterProductId, variationId, val) => {
     const { data, err } = await getVariation([
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+          {
+            label: "Merge To",
+            callBack: () => {
+              console.log("Merge");
+            },
+          },
+          {
+            label: "Raise Query",
+            callBack: () => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+              sethelpSupportModal({
+                show: true,
+                type: "ACTIVE_PRODUCT",
+                to: {
+                  id: val.supplierId,
+                  label: val.supplierName,
+                  value: val.supplierId,
+                },
+                productVariationId: val?.productVariationId,
+              });
+            },
+          },
+          {
+            label: "Approve",
+            callBack: () => {
+              approveOrRejectProduct("APPROVED", val.productVariationId);
+            },
+          },
+          {
+            label: "Reject",
+            callBack: () => {
+              approveOrRejectProduct("REJECTED", val.productVariationId);
+            },
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
@@ -196,6 +276,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       toastify(err?.response?.data?.messagea);
     }
   };
+
   const mapTableRows = (data) => {
     const result = [];
     data?.forEach((val, index) => {
@@ -207,7 +288,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),
@@ -234,7 +315,18 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             </Typography>
           </Box>
         ) : null,
-        col3: <Typography className="h-5">{val.productTitle}</Typography>,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
         col4: <Typography className="h-5">{val.skuId}</Typography>,
         col5: (
           <>
@@ -263,7 +355,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
               type="view"
               className="fs-18"
               onIconClick={() => {
-                viewClick(val.masterProductId, val.productVariationId);
+                viewClick(val.masterProductId, val.productVariationId, val);
               }}
             />
             <MenuOption
@@ -292,9 +384,9 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
       status: "INITIATED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);
@@ -323,6 +415,7 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     };
     const { data, message, err } = await raiseQuery(payload);
     if (data) {
+      getCount();
       toastify(message, "success");
       sethelpSupportModal({
         show: false,
@@ -351,6 +444,8 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             type={helpSupportModal.type}
             to={helpSupportModal.to}
             submit={saveQuery}
+            getTabledata={getTableData}
+            getCount={getCount}
           />
         ) : !showViewProducts ? (
           <Box>
@@ -399,11 +494,17 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             </Paper>
           </Box>
         ) : (
-          <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}
       <AddEditProductModal
+        setOpenMergeToModal={setOpenMergeToModal}
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
         productDetails={productDetails}
@@ -442,35 +543,43 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          sethelpSupportModal={sethelpSupportModal}
           getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
           rowsDataObjects={selectedRow}
           getTableData={getTableData}
+          setOpenMergeToModal={setOpenMergeToModal}
         />
       ) : null}
       {/* Raise Query Modal */}
-      <RaiseQueryModal
+      {/* <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
         modalTitle="Raise Query"
         placeholder="Type your query"
-      />
+      /> */}
       {/* Merge To Modal */}
-      <MergeToModal
-        openMergeToModal={openMergeToModal}
-        setOpenMergeToModal={setOpenMergeToModal}
-      />
-      <VisibilityRangeModal
+      {openMergeToModal ? (
+        <MergeToModal
+          getTableData={getTableData}
+          productId={productVariationId}
+          openMergeToModal={openMergeToModal}
+          setOpenMergeToModal={setOpenMergeToModal}
+          viewClick={viewClick}
+          getCount={getCount}
+        />
+      ) : null}
+      {/* <VisibilityRangeModal
         openVisibilityRangeModal={openVisibilityRangeModal}
         setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
+      /> */}
       {/* Flag Modal */}
-      <FlagModal
+      {/* <FlagModal
         showFlagModal={showFlagModal}
         setShowFlagModal={setShowFlagModal}
-      />
+      /> */}
     </>
   );
 };

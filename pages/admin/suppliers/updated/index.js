@@ -1,4 +1,5 @@
-import { Box, Paper } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import { Box, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
@@ -7,8 +8,9 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import UpdateViewModal from "@/forms/admin/suppliers/updated/viewmodal";
 import UpdateRaiseQuery from "@/forms/admin/suppliers/updated/raisequery";
-import { accept, getAll } from "services/admin/supplier/updated";
+import { accept, getAll, reject } from "services/admin/supplier/updated";
 import toastify from "services/utils/toastUtils";
+import { format } from "date-fns";
 
 const tableColumn = [
   {
@@ -40,29 +42,14 @@ const tableColumn = [
   {
     id: "col4",
     label: "Categories",
-    minWidth: 150,
+    minWidth: 250,
     align: "center",
-    data_align: "center",
+    data_align: "start",
     data_classname: "",
   },
+
   {
     id: "col5",
-    label: "Queries",
-    minWidth: 200,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col5",
-    label: "Answers",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col6",
     label: "Created Date & Time",
     minWidth: 200,
     align: "center",
@@ -70,7 +57,7 @@ const tableColumn = [
     data_classname: "",
   },
   {
-    id: "col7",
+    id: "col6",
     label: "Updated Date & Time",
     minWidth: 200,
     align: "center",
@@ -78,7 +65,7 @@ const tableColumn = [
     data_classname: "",
   },
   {
-    id: "col8",
+    id: "col7",
     label: "Actions",
     minWidth: 150,
     align: "center",
@@ -87,73 +74,53 @@ const tableColumn = [
     position: "sticky",
   },
 ];
-const viewModalData = [
-  {
-    id: 1,
-    title: "Supplier ID / Name",
-    value: "Balu",
-  },
-  {
-    id: 2,
-    title: "Email / Mobile",
-    value: "balu123@gmail.com",
-  },
-  {
-    id: 3,
-    title: "Categories",
-    value: "--",
-  },
-  {
-    id: 4,
-    title: "Queries",
-    value: "--",
-  },
-];
 
 const Updated = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [queryModalOpen, setQueryModalOpen] = useState(false);
   const [tableRows, setTableRows] = useState([]);
-  // const rows = [
-  //   {
-  //     id: "col1",
-  //     col1: 1,
-  //     col2: "VRL Transport",
-  //     col3: "--",
-  //     col4: "--",
-  //     col5: "--",
-  //     col6: "--",
-  //     col7: "--",
-  //     col8: (
-  //       <Box>
-  //         <DoneIcon className="border rounded bg-green color-white fs-18 me-1" />
-  //         <ClearIcon className="border rounded bg-red color-white fs-18 me-1" />
-  //         <CustomIcon
-  //           type="view"
-  //           className="fs-18 me-1"
-  //           title="View"
-  //           onIconClick={() => {
-  //             setViewModalOpen(true);
-  //           }}
-  //         />
-  //         <MenuOption
-  //           options={["Edit", "Raise a query", "Supplier Shopping Page"]}
-  //           IconclassName="fs-5 cursor-pointer"
-  //           getSelectedItem={(ele) => {
-  //             if (ele === "Raise a query") {
-  //               setQueryModalOpen(true);
-  //             }
-  //           }}
-  //         />
-  //       </Box>
-  //     ),
-  //   },
-  // ];
+  const [count, setCount] = useState([]);
+  const [details, setDetails] = useState([]);
+  // const [payload, setPayload] = useState({
+  //   fromDate: null,
+  //   toDate: null,
+  //   keyword: null,
+  //   pageNumber: 0,
+  //   pageSize: 50,
+  // });
 
   const acceptChanges = async (id) => {
     const { data, error, message } = await accept(id);
     if (data) {
-      if (message) toastify(message, "success");
+      if (message) {
+        toastify(message, "success");
+        getTableRows({
+          fromDate: null,
+          toDate: null,
+          keyword: null,
+          pageNumber: 0,
+          pageSize: 50,
+        });
+      }
+    } else if (error) {
+      if (message) toastify(message, "error");
+      else if (error?.response?.data?.message)
+        toastify(error?.response?.data?.message, "error");
+    }
+  };
+  const rejectChanges = async (id) => {
+    const { data, error, message } = await reject(id);
+    if (data) {
+      if (message) {
+        toastify(message, "success");
+        getTableRows({
+          fromDate: null,
+          toDate: null,
+          keyword: null,
+          pageNumber: 0,
+          pageSize: 50,
+        });
+      }
     } else if (error) {
       if (message) toastify(message, "error");
       else if (error?.response?.data?.message)
@@ -161,49 +128,82 @@ const Updated = () => {
     }
   };
 
-  const getTableRows = async () => {
-    const { data, error, message } = await getAll();
+  const getTableRows = async (
+    payloads = {
+      fromDate: null,
+      toDate: null,
+      keyword: null,
+      pageNumber: 0,
+      pageSize: 50,
+    }
+  ) => {
+    const { data, error, message } = await getAll(payloads);
     if (data) {
-      const tempRows = data.map((val, index) => {
-        return {
-          id: val.changeHistoryId,
-          col1: index < 9 ? `0${index + 1}` : index + 1,
-          col2: val.supplierId,
-          col3: `${val.emailId}/${val.mobileNumber}`,
-          col4: val.queries ? val.queries : "--",
-          col5: val.answers ? val.answers : "--",
-          col6: val.createdDate,
-          col7: val.updatedAt,
-          col8: (
-            <Box>
-              <DoneIcon
-                className="border cursor-pointer rounded bg-green color-white fs-18 me-1"
-                onClick={() => {
-                  acceptChanges(val.changeHistoryId);
-                }}
-              />
-              <ClearIcon className="border cursor-pointer rounded bg-red color-white fs-18 me-1" />
-              <CustomIcon
-                type="view"
-                className="fs-18 me-1"
-                title="View"
-                onIconClick={() => {
-                  setViewModalOpen(true);
-                }}
-              />
-              <MenuOption
-                options={["Edit", "Raise a query", "Supplier Shopping Page"]}
-                IconclassName="fs-5 cursor-pointer"
-                getSelectedItem={(ele) => {
-                  if (ele === "Raise a query") {
-                    setQueryModalOpen(true);
-                  }
-                }}
-              />
-            </Box>
-          ),
-        };
-      });
+      setCount(data.totalUpdateCount);
+      const tempRows = data.supplierChangesHistoryViewPojos.map(
+        (val, index) => {
+          return {
+            id: val.changeHistoryId,
+            col1: index < 9 ? `0${index + 1}` : index + 1,
+            col2: `${val.supplierId}/${val.businessName}`,
+            col3: (
+              <div>
+                <div>{val.emailId}/</div>
+                <div>{val.mobileNumber}</div>
+              </div>
+            ),
+            col4: (
+              <div className="mxh-100 overflow-y-scroll">
+                <ol>
+                  {val.mainCategoryWrappers.map((item) => (
+                    <li key={item.mainCategoryId}>
+                      <Typography>{item.mainCategoryName}</Typography>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ),
+            col5: format(new Date(val.createdDate), "MM-dd-yyyy hh:mm:ss"),
+            col6: val.updatedAt
+              ? format(new Date(val.updatedAt), "MM-dd-yyyy hh:mm:ss")
+              : "--",
+            col7: (
+              <Box>
+                <DoneIcon
+                  className="border cursor-pointer rounded bg-green color-white fs-18 me-1"
+                  onClick={() => {
+                    acceptChanges(val.changeHistoryId);
+                  }}
+                />
+                <ClearIcon
+                  onClick={() => {
+                    rejectChanges(val.changeHistoryId);
+                  }}
+                  className="border cursor-pointer rounded bg-red color-white fs-18 me-1"
+                />
+                <CustomIcon
+                  type="view"
+                  className="fs-18 me-1"
+                  title="View"
+                  onIconClick={() => {
+                    setViewModalOpen(true);
+                    setDetails(val);
+                  }}
+                />
+                <MenuOption
+                  options={["Edit", "Raise a query", "Supplier Shopping Page"]}
+                  IconclassName="fs-5 cursor-pointer"
+                  getSelectedItem={(ele) => {
+                    if (ele === "Raise a query") {
+                      setQueryModalOpen(true);
+                    }
+                  }}
+                />
+              </Box>
+            ),
+          };
+        }
+      );
       setTableRows([...tempRows]);
     } else if (error) {
       if (message) {
@@ -228,11 +228,18 @@ const Updated = () => {
           <TableComponent
             showDateFilter
             tHeadBgColor="bg-tableGray"
-            stickyCheckBox
-            stickyHeader
-            table_heading="Updated (4/58)"
+            table_heading={`Updated (${count})`}
             columns={[...tableColumn]}
             tableRows={[...tableRows]}
+            handlePageEnd={(searchText = "", searchFilter, _, dates) => {
+              getTableRows({
+                fromDate: dates.fromDate || null,
+                toDate: dates.toDate || null,
+                keyword: searchText === "" ? null : searchText,
+                pageNumber: 0,
+                pageSize: 50,
+              });
+            }}
           />
         </Box>
       </Paper>
@@ -240,7 +247,7 @@ const Updated = () => {
         <UpdateViewModal
           viewModalOpen={viewModalOpen}
           setViewModalOpen={setViewModalOpen}
-          data={viewModalData}
+          data={details}
         />
       )}
       {queryModalOpen && (

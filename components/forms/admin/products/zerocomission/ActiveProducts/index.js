@@ -1,9 +1,11 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import {
+  disableActiveProduct,
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
@@ -14,21 +16,24 @@ import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import { getVariation } from "services/supplier/myProducts";
 import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
+import {
+  adminProductView,
+  resetAdminProductView,
+  updateProduct,
+} from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
-import DiscountModal from "./DiscountModal";
 import FilterModal from "../../FilterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
+import DiscountModal from "../DiscountModal";
 
-const Active = () => {
+const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
-    productTitle: "",
     sku: "",
     categorySubcategory: "",
     weightOrVolume: "",
@@ -43,6 +48,8 @@ const Active = () => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [productId, setProductId] = useState("");
+  const [supplierId, setSupplierId] = useState("");
   //   const [first, setfirst] = useState(second);
 
   const [openRemoveModal, setOpenRemoveModal] = useState(false);
@@ -62,18 +69,6 @@ const Active = () => {
     productVariationId: null,
   });
 
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-cenetr">
-      <Typography className="me-3">Disable</Typography>,
-      <Box className="pt-1">
-        <SwitchComponent label={null} />
-      </Box>
-    </Box>,
-    "Remove",
-    "Discount",
-    "Raise Query",
-  ];
   const dispatch = useDispatch();
 
   const tableColumnsForActive = [
@@ -100,6 +95,7 @@ const Active = () => {
       align: "center",
       label: "Product Title",
       data_align: "center",
+      maxWidth: 100,
     },
     {
       id: "col5",
@@ -179,6 +175,11 @@ const Active = () => {
   };
 
   const onClickOfMenuItem = (ele, val) => {
+    setProductId(val.productVariationId);
+    setSupplierId(val.supplierId);
+    if (ele === "Discount") {
+      setOpenDiscountModal(true);
+    }
     if (ele === "Edit") {
       editClick([
         {
@@ -194,7 +195,7 @@ const Active = () => {
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
@@ -207,12 +208,41 @@ const Active = () => {
       { masterProductId, variationId },
     ]);
     if (data) {
-      dispatch(viewProduct(data[0]));
+      const temp = {
+        data: data[0],
+        showExtraTabs: true,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+
+          {
+            label: "Raise Query",
+            callBack: () => {},
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
       setShowViewProducts(true);
 
       // window.open("/supplier/products&inventory/addnewproduct");
     } else {
       toastify(err?.response?.data?.messagea);
+    }
+  };
+
+  const enableDisableProduct = async (id, status) => {
+    const { data, err } = await disableActiveProduct(id, status);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      getTableData(0);
     }
   };
 
@@ -239,19 +269,30 @@ const Active = () => {
               className="h-30 border d-flex justify-content-center"
             >
               <Image
-                src={val.variationMedia[0]}
+                src={val.variationMedia?.length ? val.variationMedia[0] : ""}
                 width="50"
                 height="50"
                 className="cursor-pointer"
               />
             </Box>
             <Typography className="fs-10">
-              /{val.variationMedia.length}
+              /{val?.variationMedia?.length ?? 0}
             </Typography>
           </Box>
         ),
-        col4: val.productTitle,
-        col5: `${val.supplierId} / ${val.supplierName}`,
+        col4: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              style={{
+                maxWidth: "100px",
+              }}
+              className="h-5 text-truncate"
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
+        col5: `${val.supplierId} / ${val.businessName}`,
         col6: val.skuId,
         col7: val.stockQty,
         col8: `${val.weightInclusivePackage} / ${val.volume}`,
@@ -266,22 +307,40 @@ const Active = () => {
         col13: val.createdAt,
         col14: val.approvedAt,
         col15: (
-          <Box className="d-flex justify-content-evenly align-items-center">
+          <Box className="d-flex align-items-center">
+            <Box className="ms-2 w-75">
+              <Tooltip
+                title={val.disable ? "Disabled" : "Enabled"}
+                placement="top"
+              >
+                <SwitchComponent
+                  label=""
+                  styledSwitch
+                  defaultChecked={!val.disable}
+                  ontoggle={() => {
+                    enableDisableProduct(val.productVariationId, !val.disable);
+                  }}
+                />
+              </Tooltip>
+            </Box>
             <CustomIcon
+              title="View"
               type="view"
-              className="fs-18"
+              className="me-2"
               onIconClick={() => {
                 viewClick(val.masterProductId, val.productVariationId);
               }}
             />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                // console.log("Index", index);
-                onClickOfMenuItem(ele, val);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
+
+            <Box>
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  onClickOfMenuItem(ele, val);
+                }}
+                options={["Edit", "Remove", "Discount", "Raise Query"]}
+                IconclassName="color-gray "
+              />
+            </Box>
           </Box>
         ),
       });
@@ -302,9 +361,9 @@ const Active = () => {
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
       status: "APPROVED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);
@@ -424,7 +483,12 @@ const Active = () => {
           </Paper>
         </Box>
       ) : (
-        <ViewOrEditProducts setShowViewProduct={setShowViewProducts} />
+        <ViewOrEditProducts
+          setShowViewOrEdit={() => {
+            setShowViewProducts(false);
+            dispatch(resetAdminProductView());
+          }}
+        />
       )}
       {/* Edit Modal Component */}
       <AddEditProductModal
@@ -477,10 +541,14 @@ const Active = () => {
         placeholder="Type your Reason"
       />
       {/* Discount Modal */}
-      <DiscountModal
-        openDiscountModal={openDiscountModal}
-        setOpenDiscountModal={setOpenDiscountModal}
-      />
+      {openDiscountModal ? (
+        <DiscountModal
+          showModal={openDiscountModal}
+          setShowModal={setOpenDiscountModal}
+          productVariationId={productId}
+          supplierId={supplierId}
+        />
+      ) : null}
     </>
   );
 };
