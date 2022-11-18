@@ -176,17 +176,15 @@ const SupplierProduct = ({ supplierId = null, backClick = () => {} }) => {
     productIds,
     date
   ) => {
-    // const payLoad = {
-    //   categoryIds: catIDs ?? categoryIds ?? [],
-    //   subCategoryIds: subcatIds ?? subCategoryIds ?? [],
-    //   brandNames: brandNames ?? brands ?? [],
-    //   productVariationIds: productIds ?? products ?? [],
-    //   dateFrom: date?.fromDate ?? null,
-    //   dateTo: date?.toDate ?? null,
-    //   commissionType: "ZERO_COMMISSION",
-    //   status: "APPROVED",
-    // };
-    const { data } = await getProductsBySupplierId(supplierId, page);
+    const payLoad = {
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+    };
+    const { data } = await getProductsBySupplierId(supplierId, page, payLoad);
     if (data) {
       if (page === 0) {
         setTableRows([...mapTableRows(data)]);
@@ -196,9 +194,6 @@ const SupplierProduct = ({ supplierId = null, backClick = () => {} }) => {
       }
     }
   };
-  useEffect(() => {
-    console.log(pageNumber);
-  }, [pageNumber]);
 
   useEffect(() => {
     if (supplierId) getTableData();

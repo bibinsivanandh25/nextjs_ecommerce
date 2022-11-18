@@ -593,6 +593,12 @@ const ViewModal = ({
                 </Grid>
                 <Grid item xs={5} display="flex">
                   <Typography
+                    onClick={() => {
+                      setSupplierProductView({
+                        show: true,
+                        supplierId: viewData.supplierId,
+                      });
+                    }}
                     className={`text-break fw-bold h-5 ${
                       viewData.productCount > 0 &&
                       `color-light-blue text-decoration-underline cursor-pointer`
