@@ -295,7 +295,6 @@ const SupplierFlags = () => {
       )}
       {openVIew && (
         <ModalComponent
-          ModalWidth={800}
           open={openVIew}
           ModalTitle="Falg Details"
           onCloseIconClick={() => {
@@ -414,7 +413,7 @@ const SupplierFlags = () => {
                 <Grid item xs={12} sm={6} md={6} lg={8}>
                   <Typography className="fs-16 fw-500">
                     {flagData?.visibilityPlace?.map((ele) => {
-                      return <span key={ele}>{ele}</span>;
+                      return <span key={ele}>{ele} &nbsp;</span>;
                     })}
                   </Typography>
                 </Grid>

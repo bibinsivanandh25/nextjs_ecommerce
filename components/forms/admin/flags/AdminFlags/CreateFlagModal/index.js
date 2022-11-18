@@ -131,7 +131,7 @@ const CreateFlagModal = ({
       errObj.themeSelection = validateMessage.field_required;
       flag = true;
     }
-    if (!Object.keys(formData.colorSelection).length) {
+    if (!Object?.keys(formData?.colorSelection)?.length) {
       errObj.colorSelection = validateMessage.field_required;
       flag = true;
     }
@@ -230,34 +230,36 @@ const CreateFlagModal = ({
     const { data, err } = await getFlagById(modalDetails.id);
     if (data) {
       const colorList = await editThemeLayout({
-        flagTitle: data.flagTitle,
-        flagLayoutIdList: data.flagLayoutId.filter((item) => {
-          if (data.flagLayoutId.includes(item)) return item;
+        flagTitle: data?.flagTitle,
+        flagLayoutIdList: data?.flagLayoutId?.filter((item) => {
+          if (data?.flagLayoutId.includes(item)) return item;
         }),
-        visibilityPlaceList: data.visibilityPlace.map((item) => {
+        visibilityPlaceList: data?.visibilityPlace?.map((item) => {
           return item;
         }),
       });
-      const temp = colorList.data.map((item) => {
+      const temp = colorList?.data.map((item) => {
         return {
           id: item.flagThemeId,
-          label: <Image src={item.flagThemeImageUrl} width={400} height={80} />,
-          visibilityPlace: item.visibilityPlace,
-          url: item.flagThemeImageUrl,
+          label: (
+            <Image src={item?.flagThemeImageUrl} width={400} height={80} />
+          ),
+          visibilityPlace: item?.visibilityPlace,
+          url: item?.flagThemeImageUrl,
         };
       });
       setcolorTheme([...temp]);
       setFormDate({
         flagId: data.flagId,
-        flagTitle: { id: data.flagTitle, label: data.flagTitle },
-        visibilityPlace: data.visibilityPlace.map((item) => {
+        flagTitle: { id: data?.flagTitle, label: data.flagTitle },
+        visibilityPlace: data?.visibilityPlace.map((item) => {
           return { id: item, title: item };
         }),
-        themeSelection: themeState.filter((item) => {
-          if (data.flagLayoutId.includes(item.id)) return item;
+        themeSelection: themeState?.filter((item) => {
+          if (data?.flagLayoutId?.includes(item.id)) return item;
         }),
-        colorSelection: temp.filter((item) => {
-          if (item.url === data.flagImageUrl[0]) return item;
+        colorSelection: temp?.filter((item) => {
+          if (item?.url === data?.flagImageUrl[0]) return item;
         })[0],
         startDate: data.startDateTime.split(" ")[0],
         endDate: data.endDateTime.split(" ")[0],

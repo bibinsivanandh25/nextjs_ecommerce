@@ -187,14 +187,14 @@ const CreateFlagModal = ({
       formData.endTime
     }:00`;
     const payload = {
-      flagTitle: formData.flagTitle.label,
+      flagTitle: formData?.flagTitle?.label,
       visibilityPlace: [
-        ...formData.visibilityPlace.map((item) => {
+        ...formData.visibilityPlace?.map((item) => {
           return item.title;
         }),
       ],
       flagLayoutId: [
-        ...formData.themeSelection.map((item) => {
+        ...formData.themeSelection?.map((item) => {
           return item.id;
         }),
       ],
@@ -218,8 +218,8 @@ const CreateFlagModal = ({
   useEffect(() => {
     if (
       formData.flagTitle?.label &&
-      formData.themeSelection.length &&
-      formData.visibilityPlace.length
+      formData.themeSelection?.length &&
+      formData.visibilityPlace?.length
     ) {
       flahLayoutTheme();
     }
@@ -232,32 +232,34 @@ const CreateFlagModal = ({
         // flagLayoutIdList: data.flagLayoutId.filter((item) => {
         //   if (data.flagLayoutId.includes(item)) return item;
         // }),
-        flagLayoutIdList: data.flagLayoutId.filter((item) =>
-          data.flagLayoutId.includes(item)
+        flagLayoutIdList: data?.flagLayoutId?.filter((item) =>
+          data?.flagLayoutId?.includes(item)
         ),
-        visibilityPlaceList: data.visibilityPlace.map((item) => {
+        visibilityPlaceList: data?.visibilityPlace?.map((item) => {
           return item;
         }),
       });
-      const temp = colorList.data.map((item) => {
+      const temp = colorList?.data?.map((item) => {
         return {
           id: item.flagThemeId,
-          label: <Image src={item.flagThemeImageUrl} width={400} height={80} />,
-          visibilityPlace: item.visibilityPlace,
-          url: item.flagThemeImageUrl,
+          label: (
+            <Image src={item?.flagThemeImageUrl} width={400} height={80} />
+          ),
+          visibilityPlace: item?.visibilityPlace,
+          url: item?.flagThemeImageUrl,
         };
       });
       setcolorTheme([...temp]);
       setFormDate({
-        flagId: data.flagId,
-        flagTitle: { id: data.flagTitle, label: data.flagTitle },
-        visibilityPlace: data.visibilityPlace.map((item) => {
+        flagId: data?.flagId,
+        flagTitle: { id: data?.flagTitle, label: data?.flagTitle },
+        visibilityPlace: data?.visibilityPlace?.map((item) => {
           return { id: item, title: item };
         }),
-        themeSelection: themeState.filter((item) => {
-          if (data.flagLayoutId.includes(item.id)) return item;
+        themeSelection: themeState?.filter((item) => {
+          if (data?.flagLayoutId?.includes(item.id)) return item;
         }),
-        colorSelection: temp.filter((item) => {
+        colorSelection: temp?.filter((item) => {
           if (item.url === data.flagImageUrl[0]) return item;
         })[0],
         startDate: data.startDateTime.split(" ")[0],
