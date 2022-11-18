@@ -4,7 +4,8 @@ import { Box, Paper, Typography } from "@mui/material";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
-import CreateCategories from "@/forms/admin/productcategories/categories/CreateCategories";
+// import CreateCategories from "@/forms/admin/productcategories/categories/CreateCategories";
+import CreateCategoriesModal from "@/forms/admin/productcategories/categories/CreateCategories/CreateCategoriesModal";
 
 const Categories = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -133,28 +134,26 @@ const Categories = () => {
     <>
       <Box>
         <Box className="px-1 pt-2">
-          {!showCreateCategories ? (
-            <Paper className="overflow-auto hide-scrollbar pt-3 mnh-85vh mxh-85vh">
-              <TableComponent
-                table_heading="Categories"
-                columns={tableColumns}
-                tHeadBgColor="bg-light-gray"
-                // showPagination={false}
-                tableRows={tableRows}
-                showSearchbar={false}
-                showDateFilterBtn
-                showDateFilter
-                dateFilterBtnName="Create Categories"
-                dateFilterBtnClick={() => {
-                  setShowCreateCategories(true);
-                }}
-              />
-            </Paper>
-          ) : (
-            <CreateCategories
-              setShowCreateCategories={setShowCreateCategories}
+          <Paper className="overflow-auto hide-scrollbar pt-3 mnh-85vh mxh-85vh">
+            <TableComponent
+              table_heading="Categories"
+              columns={tableColumns}
+              tHeadBgColor="bg-light-gray"
+              // showPagination={false}
+              tableRows={tableRows}
+              showSearchbar={false}
+              showDateFilterBtn
+              showDateFilter
+              dateFilterBtnName="Create Categories"
+              dateFilterBtnClick={() => {
+                setShowCreateCategories(true);
+              }}
             />
-          )}
+          </Paper>
+          <CreateCategoriesModal
+            openCreateNewCategories={showCreateCategories}
+            setOpenCreateCategoriesModal={setShowCreateCategories}
+          />
         </Box>
       </Box>
     </>
