@@ -557,9 +557,15 @@ const ViewModal = ({
                     :
                   </Grid>
                   <Grid item xs={5} display="flex">
-                    <Typography className="text-break fw-bold h-5 color-light-blue text-decoration-underline cursor-pointer">
+                    <a
+                      href={viewData?.websiteLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-break fw-bold h-5"
+                    >
+                      {" "}
                       {viewData?.websiteLink}
-                    </Typography>
+                    </a>
                   </Grid>
                 </Grid>
               </Grid>
