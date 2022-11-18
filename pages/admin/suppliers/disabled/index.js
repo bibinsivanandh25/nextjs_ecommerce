@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-undef */
 import { Box, Paper } from "@mui/material";
+=======
+/* eslint-disable no-unused-vars */
+import { Box, Paper, Typography } from "@mui/material";
+>>>>>>> 1edd3e9fef639354fe8c7a5ba6e23ea129a70a68
 import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import MenuOption from "@/atoms/MenuOptions";

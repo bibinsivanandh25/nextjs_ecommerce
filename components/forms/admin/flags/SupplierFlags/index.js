@@ -1,6 +1,5 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from "react";
-
 import { Box } from "@mui/material";
 import Image from "next/image";
 import MenuOption from "@/atoms/MenuOptions";
