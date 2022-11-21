@@ -12,7 +12,11 @@ const ViewOrEditProducts = ({ setShowViewOrEdit = () => {} }) => {
       >
         {"<"}Back
       </Typography>
-      <NewProducts />
+      <NewProducts
+        closeModal={() => {
+          setShowViewOrEdit(false);
+        }}
+      />
     </>
   );
 };

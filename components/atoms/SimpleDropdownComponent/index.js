@@ -47,7 +47,11 @@ const SimpleDropdownComponent = ({
         options={list}
         size={size}
         fullWidth={fullWidth}
-        getOptionLabel={(option) => option.label || ""}
+        getOptionLabel={(option) => {
+          return typeof option.label === "object"
+            ? option.id
+            : option.label || "";
+        }}
         isOptionEqualToValue={(option, val) =>
           option?.id === val?.id || option.value === val.value
         }

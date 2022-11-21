@@ -29,9 +29,9 @@ const enableDisableSupplier = (payload) => {
     .catch((err) => ({ err }));
 };
 
-const getProductsBySupplierId = (supplierId, page) => {
+const getProductsBySupplierId = (supplierId, page, payload) => {
   return serviceUtil
-    .get(`products/admin/supplier/product/${page}/50/${supplierId}`)
+    .post(`products/admin/supplier/product/${page}/50/${supplierId}`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
