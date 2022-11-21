@@ -34,6 +34,7 @@ const InputBox = ({
   labelColorWhite = null,
   onFocus = () => {},
   onEnter = () => {},
+  readOnly = false,
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -103,7 +104,7 @@ const InputBox = ({
               </IconButton>
             </InputAdornment>
           ),
-
+          readOnly: readOnly,
           ...InputProps,
         }}
         helperText={helperText}
