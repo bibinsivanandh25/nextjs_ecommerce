@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable no-empty */
 import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -179,7 +181,7 @@ const CreateFlagModal = ({
     });
     setcolorTheme([]);
   };
-  const submitFunction = () => {
+  const submitFunction = async () => {
     const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
       formData.startTime
     }:00`;
@@ -203,9 +205,14 @@ const CreateFlagModal = ({
       flagImageUrl: [formData?.themeSelection[0].url],
       userType: "SUPPLIER",
     };
-    saveAdminFlag(payload);
-    handleClearAll();
-    setOpenCreateFlagModal(false);
+    const { data, err } = await saveAdminFlag(payload);
+    if (data) {
+      toastify(data.data.message, "success");
+      handleClearAll();
+      setOpenCreateFlagModal(false);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   const handleChange = (value, name) => {
@@ -213,6 +220,19 @@ const CreateFlagModal = ({
       ...pre,
       [name]: value,
     }));
+    if (name === "flagTitle") {
+      setFormDate((val) => ({
+        ...val,
+        visibilityPlace: [],
+        themeSelection: [],
+        colorSelection: {},
+      }));
+    } else if (name === "visibilityPlace" || name === "themeSelection") {
+      setFormDate((item) => ({
+        ...item,
+        colorSelection: {},
+      }));
+    }
   };
 
   useEffect(() => {
@@ -223,15 +243,12 @@ const CreateFlagModal = ({
     ) {
       flahLayoutTheme();
     }
-  }, [formData]);
+  }, [formData.flagTitle, formData.themeSelection, formData.visibilityPlace]);
   const getFlagData = async () => {
     const { data, err } = await getFlagById(modalDetails.id);
     if (data) {
       const colorList = await editThemeLayout({
         flagTitle: data.flagTitle,
-        // flagLayoutIdList: data.flagLayoutId.filter((item) => {
-        //   if (data.flagLayoutId.includes(item)) return item;
-        // }),
         flagLayoutIdList: data?.flagLayoutId?.filter((item) =>
           data?.flagLayoutId?.includes(item)
         ),

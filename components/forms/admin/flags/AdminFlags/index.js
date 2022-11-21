@@ -119,6 +119,7 @@ const AdminFlags = () => {
   useEffect(() => {
     getTableData();
   }, []);
+
   const updateFlagStatus = async (id, flag) => {
     setflagId({ id, flag });
     const action = true;
@@ -150,9 +151,8 @@ const AdminFlags = () => {
     }
   };
   const getFlagByID = async (id) => {
-    const { data, err, message } = await getFlagById(id);
+    const { data, err } = await getFlagById(id);
     if (data) {
-      toastify(message, "success");
       setflagData(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -303,118 +303,122 @@ const AdminFlags = () => {
             <Grid item md={6} xs={12}>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">Flag Title:</Typography>
+                  <Typography className="fw-600 fs-14">Flag Title:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.flagTitle}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">Flag Id:</Typography>
+                  <Typography className="fw-600 fs-14">Flag Id:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.flagId}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">Created By:</Typography>
+                  <Typography className="fw-600 fs-14">Created By:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.createdBy}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">Created At:</Typography>
+                  <Typography className="fw-600 fs-14">Created At:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.createdAt}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">
+                  <Typography className="fw-600 fs-14">
                     Last Updated By:
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.lastModifiedBy}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">
+                  <Typography className="fw-600 fs-14">
                     Last Updated At:
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.lastUpdatedAt}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">
+                  <Typography className="fw-600 fs-14">
                     Flag Started From:
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.startDateTime}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">
+                  <Typography className="fw-600 fs-14">
                     Flag Expired By:
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.endDateTime}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">Flag Status:</Typography>
+                  <Typography className="fw-600 fs-14">Flag Status:</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
+                  <Typography className="fs-14 fw-500">
                     {flagData.flagStatus}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid container py={1}>
                 <Grid item xs={12} sm={6} md={6} lg={4}>
-                  <Typography className="fw-600 fs-16">
+                  <Typography className="fw-600 fs-14">
                     Flag visibility Place:
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
-                  <Typography className="fs-16 fw-500">
-                    {flagData?.visibilityPlace?.map((ele) => {
-                      return <span key={ele}>{ele} &nbsp;</span>;
+                  <Typography className="fs-14 fw-500">
+                    {flagData?.visibilityPlace?.map((ele, index) => {
+                      return (
+                        <span key={ele}>
+                          {(index ? ",  " : "") + ele.split("_").join(" ")}
+                        </span>
+                      );
                     })}
                   </Typography>
                 </Grid>
               </Grid>
               <Grid item>
-                <Typography className="fw-600 fs-16">flag Image:</Typography>
+                <Typography className="fw-600 fs-14">Flag Image:</Typography>
                 <Image
                   src={flagData?.flagImageUrl?.toString()}
                   height={100}

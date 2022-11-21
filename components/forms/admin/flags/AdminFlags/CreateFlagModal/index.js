@@ -181,7 +181,7 @@ const CreateFlagModal = ({
     });
     setcolorTheme([]);
   };
-  const submitFunction = () => {
+  const submitFunction = async () => {
     const startDate = `${format(new Date(formData.startDate), "MM-dd-yyyy")} ${
       formData.startTime
     }:00`;
@@ -205,9 +205,15 @@ const CreateFlagModal = ({
       flagImageUrl: [formData?.themeSelection[0].url],
       userType: "ADMIN",
     };
-    saveAdminFlag(payload);
-    handleClearAll();
-    setOpen(false);
+
+    const { data, err } = await saveAdminFlag(payload);
+    if (data) {
+      toastify(data.data.message, "success");
+      handleClearAll();
+      setOpen(false);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   const handleChange = (value, name) => {
@@ -215,8 +221,20 @@ const CreateFlagModal = ({
       ...pre,
       [name]: value,
     }));
+    if (name === "flagTitle") {
+      setFormDate((val) => ({
+        ...val,
+        visibilityPlace: [],
+        themeSelection: [],
+        colorSelection: {},
+      }));
+    } else if (name === "visibilityPlace" || name === "themeSelection") {
+      setFormDate((item) => ({
+        ...item,
+        colorSelection: {},
+      }));
+    }
   };
-
   useEffect(() => {
     if (
       formData.flagTitle?.label &&
@@ -225,7 +243,7 @@ const CreateFlagModal = ({
     ) {
       flahLayoutTheme();
     }
-  }, [formData]);
+  }, [formData.flagTitle, formData.themeSelection, formData.visibilityPlace]);
   const getFlagData = async () => {
     const { data, err } = await getFlagById(modalDetails.id);
     if (data) {

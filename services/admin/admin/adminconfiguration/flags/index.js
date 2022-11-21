@@ -1,5 +1,4 @@
 import serviceUtil from "services/utils";
-import toastify from "services/utils/toastUtils";
 
 const getFlags = (payLoad) => {
   return serviceUtil
@@ -67,14 +66,15 @@ const getFlagById = (id) => {
     })
     .catch((err) => ({ err }));
 };
-const saveAdminFlag = async (payload) => {
-  await serviceUtil
+const saveAdminFlag = (payload) => {
+  return serviceUtil
     .post("products/product-flag", payload)
     .then((res) => {
-      toastify(res.data.message, "success");
+      const { data, message } = res && res.data;
+      return { data, message };
     })
     .catch((err) => {
-      toastify(err.response.data.message, "error");
+      return { err };
     });
 };
 
