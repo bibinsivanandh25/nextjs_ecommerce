@@ -9,7 +9,7 @@ import CreateSubCategoryModal from "@/forms/admin/productcategories/productsubca
 const SubCategories = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openCreateNewSubCategories, setOpenCreateNewSubCategories] =
-    useState();
+    useState(false);
   const [formData, setFormData] = useState({
     category: {},
     set: "",
@@ -173,10 +173,9 @@ const SubCategories = () => {
               className="overflow-auto hide-scrollbar pt-3"
             >
               <TableComponent
-                table_heading="Sets"
+                table_heading="Sub - Categories"
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
                 showSearchbar={false}
                 showDateFilterBtn
@@ -190,13 +189,15 @@ const SubCategories = () => {
           </Box>
         </Box>
       </Box>
-      <CreateSubCategoryModal
-        openCreateNewSubCategories={openCreateNewSubCategories}
-        setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
-        formData={formData}
-        setFormData={setFormData}
-        rowId={rowId}
-      />
+      {openCreateNewSubCategories && (
+        <CreateSubCategoryModal
+          openCreateNewSubCategories={openCreateNewSubCategories}
+          setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
+          formData={formData}
+          setFormData={setFormData}
+          rowId={rowId}
+        />
+      )}
     </>
   );
 };

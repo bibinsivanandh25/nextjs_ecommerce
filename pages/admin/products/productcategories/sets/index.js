@@ -13,6 +13,7 @@ const Sets = () => {
   const [setDetails, setSetDetails] = useState({
     category: {},
     set: "",
+    setImage: "",
   });
 
   const tableColumns = [
@@ -132,18 +133,21 @@ const Sets = () => {
               dateFilterBtnClick={() => {
                 setOpenCreateSetModal(true);
               }}
+              showDateFilterSearch={false}
             />
           </Paper>
         </Box>
       </Box>
-      <CreateSetModal
-        openCreateSetModal={openCreateSetModal}
-        setOpenCreateSetModal={setOpenCreateSetModal}
-        rowId={rowId}
-        rowsDataObjectsForSets={rowsDataObjectsForSets}
-        setDetails={setDetails}
-        setSetDetails={setSetDetails}
-      />
+      {openCreateSetModal && (
+        <CreateSetModal
+          openCreateSetModal={openCreateSetModal}
+          setOpenCreateSetModal={setOpenCreateSetModal}
+          rowId={rowId}
+          rowsDataObjectsForSets={rowsDataObjectsForSets}
+          setDetails={setDetails}
+          setSetDetails={setSetDetails}
+        />
+      )}
     </>
   );
 };
