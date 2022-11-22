@@ -232,16 +232,20 @@ const CreateCategoriesModal = ({
 
             <Grid item xs={12}>
               <SimpleDropdownComponent
-                list={[{ label: "Type One" }, { label: "Type Two" }]}
+                list={[
+                  { label: "Zero Commission", value: "ZERO_COMMISSION" },
+                  { label: "Fixed Commission", value: "FIXED_COMMISSION" },
+                ]}
                 inputlabelshrink
                 size="small"
                 label="Comission Type"
                 onDropdownSelect={(val) => {
                   setCategoryDetails({
                     ...categoryDetails,
-                    comissionType: { label: val.label },
+                    comissionType: val,
                   });
                 }}
+                value={categoryDetails.comissionType}
                 error={errorObj.comissionType !== ""}
                 helperText={errorObj.comissionType}
               />
@@ -356,8 +360,8 @@ const CreateCategoriesModal = ({
                 <Grid item md={4}>
                   <InputBox
                     inputlabelshrink
-                    name="supplierProfitPercentage"
-                    label="Supplier Profit % Percentage"
+                    name="resellerProfitPercentage"
+                    label="Reseller Profit % Percentage"
                     value={formData[activeStep].supplierProfitPercentage}
                     onInputChange={handlFormDataChange}
                     error={errorObj.supplierProfitPercentage !== ""}
