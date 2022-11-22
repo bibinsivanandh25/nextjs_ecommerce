@@ -1,6 +1,15 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 import React, { useState } from "react";
-import { Box, Grid, Paper, Step, StepLabel, Stepper } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Paper,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -33,6 +42,7 @@ const CreateCategoriesModal = ({
       comissionPercentage: "",
       mmcProfitPercentage: "",
       supplierProfitPercentage: "",
+      resellerProfitPercentage: "",
     },
     {
       minPriceRange: "",
@@ -40,6 +50,7 @@ const CreateCategoriesModal = ({
       comissionPercentage: "",
       mmcProfitPercentage: "",
       supplierProfitPercentage: "",
+      resellerProfitPercentage: "",
     },
     {
       minPriceRange: "",
@@ -47,8 +58,12 @@ const CreateCategoriesModal = ({
       comissionPercentage: "",
       mmcProfitPercentage: "",
       supplierProfitPercentage: "",
+      resellerProfitPercentage: "",
     },
   ]);
+  const [selectedTab, setSelectedTab] = useState("SUPPLIER");
+  const [showStepper, setShowStepper] = useState(false);
+
   const [errorObj, setErrobj] = useState({
     category: "",
     commissionType: "",
@@ -57,6 +72,7 @@ const CreateCategoriesModal = ({
     comissionPercentage: "",
     mmcProfitPercentage: "",
     supplierProfitPercentage: "",
+    resellerProfitPercentage: "",
   });
 
   const handlFormDataChange = (e) => {
@@ -84,6 +100,7 @@ const CreateCategoriesModal = ({
         comissionPercentage: "",
         mmcProfitPercentage: "",
         supplierProfitPercentage: "",
+        resellerProfitPercentage: "",
       },
       {
         minPriceRange: "",
@@ -91,6 +108,7 @@ const CreateCategoriesModal = ({
         comissionPercentage: "",
         mmcProfitPercentage: "",
         supplierProfitPercentage: "",
+        resellerProfitPercentage: "",
       },
       {
         minPriceRange: "",
@@ -98,6 +116,7 @@ const CreateCategoriesModal = ({
         comissionPercentage: "",
         mmcProfitPercentage: "",
         supplierProfitPercentage: "",
+        resellerProfitPercentage: "",
       },
     ]);
     setErrobj({
@@ -108,6 +127,7 @@ const CreateCategoriesModal = ({
       comissionPercentage: "",
       mmcProfitPercentage: "",
       supplierProfitPercentage: "",
+      resellerProfitPercentage: "",
     });
     setOpenCreateCategoriesModal(false);
     setActiveStep(0);
@@ -134,6 +154,7 @@ const CreateCategoriesModal = ({
       comissionPercentage: "",
       mmcProfitPercentage: "",
       supplierProfitPercentage: "",
+      resellerProfitPercentage: "",
     };
     let flag = false;
     if (categoryDetails.category === "") {
@@ -168,8 +189,8 @@ const CreateCategoriesModal = ({
       tempErr.mmcProfitPercentage = validateMessage.field_required;
       flag = true;
     }
-    if (tempData.supplierProfitPercentage === "") {
-      tempErr.supplierProfitPercentage = validateMessage.field_required;
+    if (tempData.resellerProfitPercentage === "") {
+      tempErr.resellerProfitPercentage = validateMessage.field_required;
       flag = true;
     }
     setErrobj(tempErr);
@@ -179,6 +200,10 @@ const CreateCategoriesModal = ({
   const handleNextClick = () => {
     if (validate()) return;
     if (activeStep < 2) {
+      const temp = [...formData];
+      temp[activeStep + 1].minPriceRange =
+        parseInt(temp[activeStep].maxPriceRange, 10) + 1;
+      setFormData(temp);
       setActiveStep(activeStep + 1);
     } else {
       handleSaveBtnClick();
@@ -196,7 +221,7 @@ const CreateCategoriesModal = ({
         saveBtnText={activeStep === 2 ? "Submit" : "Next"}
         saveBtnClassName="ms-1"
         ModalWidth={650}
-        minHeightClassName="overflow-auto"
+        minHeightClassName="overflow-auto pb-2"
         onCloseIconClick={() => {
           handleCloseIconClick();
         }}
@@ -205,173 +230,237 @@ const CreateCategoriesModal = ({
           handleClearAll();
         }}
       >
-        <Grid container columnSpacing={2} rowSpacing={2} className="mt-2">
-          <Grid item xs={12}>
-            <InputBox
-              name="category"
-              value={categoryDetails.category}
-              inputlabelshrink
-              label="Category Name"
-              onInputChange={onInputChange}
-              error={errorObj.category !== ""}
-              helperText={errorObj.category}
-            />
-          </Grid>
-          <Grid item md={6} container>
+        <Box className="d-flex align-items-center ms-2 mt-2">
+          <Typography
+            className={`rounded-pill p-2 px-4  h-5  cursor-pointer ${
+              selectedTab === "SUPPLIER"
+                ? "bg-orange color-white fw-bold"
+                : "bg-gray"
+            }`}
+            onClick={() => {
+              setSelectedTab("SUPPLIER");
+            }}
+          >
+            Supplier
+          </Typography>
+          <Typography
+            className={`rounded-pill p-2 px-4 ms-2 h-5  cursor-pointer ${
+              selectedTab === "RESELLER"
+                ? "bg-orange color-white fw-bold"
+                : "bg-gray"
+            }`}
+            onClick={() => {
+              setSelectedTab("RESELLER");
+            }}
+          >
+            Reseller
+          </Typography>
+        </Box>
+        <div className="w-100 p-2">
+          <Grid container columnSpacing={2} rowSpacing={2} className="mt-2">
             <Grid item xs={12}>
               <InputBox
-                name="gst"
-                value={categoryDetails.gst}
+                name="category"
+                value={categoryDetails.category}
                 inputlabelshrink
-                label="GST in %"
+                label="Category Name"
                 onInputChange={onInputChange}
-                error={errorObj.gst !== ""}
-                helperText={errorObj.gst}
+                error={errorObj.category !== ""}
+                helperText={errorObj.category}
               />
             </Grid>
-
-            <Grid item xs={12}>
-              <SimpleDropdownComponent
-                list={[
-                  { label: "Zero Commission", value: "ZERO_COMMISSION" },
-                  { label: "Fixed Commission", value: "FIXED_COMMISSION" },
-                ]}
-                inputlabelshrink
-                size="small"
-                label="Comission Type"
-                onDropdownSelect={(val) => {
-                  setCategoryDetails({
-                    ...categoryDetails,
-                    comissionType: val,
-                  });
-                }}
-                value={categoryDetails.comissionType}
-                error={errorObj.comissionType !== ""}
-                helperText={errorObj.comissionType}
-              />
-            </Grid>
-          </Grid>
-          <Grid item md={6}>
-            <Box className="d-flex justify-content-center">
-              <ImageCard
-                showClose={false}
-                handleImageUpload={async (e) => {
-                  if (e.target.files.length) {
-                    if (e.target.files[0].size <= 1000000) {
-                      const file = await getBase64(e.target.files[0]);
-                      setCategoryDetails((prev) => {
-                        return {
-                          ...prev,
-                          categoryImg: file,
-                        };
-                      });
-                    } else {
-                      toastify("Image size should be less than 1MB", "error");
-                    }
-                  }
-                }}
-                imgSrc={categoryDetails.categoryImg || ""}
-              />
-            </Box>
-          </Grid>
-
-          <Grid item md={12}>
-            <Stepper activeStep={activeStep} alternativeLabel>
-              {steps.map((label, index) => (
-                <Step
-                  sx={{
-                    "& .MuiStepLabel-root .Mui-completed": {
-                      color: "#e56700", // circle color (COMPLETED)
-                      cursor: "pointer",
-                    },
-                    "& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel":
-                      {
-                        color: "grey.500", // Just text label (COMPLETED)
-                      },
-                    "& .MuiStepLabel-root .Mui-active": {
-                      color: "#e56700", // circle color (ACTIVE)
-                    },
-                    "& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel":
-                      {
-                        color: "#e56700", // Just text label (ACTIVE)
-                      },
-                    "& .MuiStepLabel-root .Mui-active .MuiStepIcon-text": {
-                      fill: "white", // circle's number (ACTIVE)
-                    },
-                  }}
-                  key={label}
-                  onClick={() => {
-                    if (index < activeStep) {
-                      setActiveStep(index);
-                    }
-                  }}
-                >
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Grid>
-          <Grid item md={12}>
-            <Paper elevation={5} className="my-2 p-3">
-              <Grid container spacing={2}>
-                <Grid item md={6}>
-                  <InputBox
-                    inputlabelshrink
-                    name="minPriceRange"
-                    label="Min. Price Range"
-                    value={formData[activeStep].minPriceRange}
-                    onInputChange={handlFormDataChange}
-                    readOnly
-                  />
-                </Grid>
-                <Grid item md={6}>
-                  <InputBox
-                    inputlabelshrink
-                    name="maxPriceRange"
-                    label="Max. Price Range"
-                    value={formData[activeStep].maxPriceRange}
-                    onInputChange={handlFormDataChange}
-                    error={errorObj.maxPriceRange !== ""}
-                    helperText={errorObj.maxPriceRange}
-                  />
-                </Grid>
-                <Grid item md={4}>
-                  <InputBox
-                    inputlabelshrink
-                    name="comissionPercentage"
-                    label="Comission Percentage"
-                    value={formData[activeStep].comissionPercentage}
-                    onInputChange={handlFormDataChange}
-                    error={errorObj.comissionPercentage !== ""}
-                    helperText={errorObj.comissionPercentage}
-                  />
-                </Grid>
-                <Grid item md={4}>
-                  <InputBox
-                    inputlabelshrink
-                    name="mmcProfitPercentage"
-                    label="MMC Profit % Percentage"
-                    value={formData[activeStep].mmcProfitPercentage}
-                    onInputChange={handlFormDataChange}
-                    error={errorObj.mmcProfitPercentage !== ""}
-                    helperText={errorObj.mmcProfitPercentage}
-                  />
-                </Grid>
-                <Grid item md={4}>
-                  <InputBox
-                    inputlabelshrink
-                    name="resellerProfitPercentage"
-                    label="Reseller Profit % Percentage"
-                    value={formData[activeStep].supplierProfitPercentage}
-                    onInputChange={handlFormDataChange}
-                    error={errorObj.supplierProfitPercentage !== ""}
-                    helperText={errorObj.supplierProfitPercentage}
-                  />
-                </Grid>
+            <Grid item md={6} container>
+              <Grid item xs={12}>
+                <InputBox
+                  name="gst"
+                  value={categoryDetails.gst}
+                  inputlabelshrink
+                  label="GST in %"
+                  onInputChange={onInputChange}
+                  error={errorObj.gst !== ""}
+                  helperText={errorObj.gst}
+                />
               </Grid>
-            </Paper>
+
+              <Grid item xs={12}>
+                <SimpleDropdownComponent
+                  list={[
+                    { label: "Zero Commission", value: "ZERO_COMMISSION" },
+                    {
+                      label: "Fixed Commission",
+                      value: "FIXED_COMMISSION",
+                    },
+                  ]}
+                  inputlabelshrink
+                  size="small"
+                  label="Comission Type"
+                  onDropdownSelect={(val) => {
+                    setCategoryDetails({
+                      ...categoryDetails,
+                      comissionType: val,
+                    });
+                  }}
+                  value={categoryDetails.comissionType}
+                  error={errorObj.comissionType !== ""}
+                  helperText={errorObj.comissionType}
+                />
+              </Grid>
+            </Grid>
+            <Grid item md={6}>
+              <Box className="d-flex justify-content-center">
+                <ImageCard
+                  showClose
+                  handleImageUpload={async (e) => {
+                    if (e.target.files.length) {
+                      if (e.target.files[0].size <= 1000000) {
+                        const file = await getBase64(e.target.files[0]);
+                        setCategoryDetails((prev) => {
+                          return {
+                            ...prev,
+                            categoryImg: file,
+                          };
+                        });
+                      } else {
+                        toastify("Image size should be less than 1MB", "error");
+                      }
+                    }
+                  }}
+                  imgSrc={categoryDetails.categoryImg || ""}
+                />
+              </Box>
+            </Grid>
+
+            {!showStepper ? (
+              <>
+                <Typography className="fs-12 ms-3">
+                  Do you want to enter Price Range?
+                </Typography>
+                <Typography
+                  onClick={() => {
+                    setShowStepper(true);
+                  }}
+                  className="fs-12 ms-2 cursor-pointer color-light-blue"
+                >
+                  Click Here
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Grid item md={12}>
+                  <Typography
+                    className="d-inline fs-12 color-orange cursor-pointer"
+                    onClick={() => {
+                      setShowStepper(false);
+                    }}
+                  >
+                    {`< Back`}
+                  </Typography>
+                  <Stepper activeStep={activeStep} alternativeLabel>
+                    {steps.map((label, index) => (
+                      <Step
+                        sx={{
+                          "& .MuiStepLabel-root .Mui-completed": {
+                            color: "#e56700", // circle color (COMPLETED)
+                            cursor: "pointer",
+                          },
+                          "& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel":
+                            {
+                              color: "grey.500", // Just text label (COMPLETED)
+                            },
+                          "& .MuiStepLabel-root .Mui-active": {
+                            color: "#e56700", // circle color (ACTIVE)
+                          },
+                          "& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel":
+                            {
+                              color: "#e56700", // Just text label (ACTIVE)
+                            },
+                          "& .MuiStepLabel-root .Mui-active .MuiStepIcon-text":
+                            {
+                              fill: "white", // circle's number (ACTIVE)
+                            },
+                        }}
+                        key={label}
+                        onClick={() => {
+                          if (index < activeStep) {
+                            setActiveStep(index);
+                          }
+                        }}
+                      >
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Grid>
+                <Grid item md={12}>
+                  <Paper elevation={5} className="my-2 p-3">
+                    <Grid container spacing={2}>
+                      <Grid item md={selectedTab === "SUPPLIER" ? 4 : 6}>
+                        <InputBox
+                          inputlabelshrink
+                          name="minPriceRange"
+                          label="Min. Price Range"
+                          value={formData[activeStep].minPriceRange}
+                          onInputChange={handlFormDataChange}
+                          readOnly
+                        />
+                      </Grid>
+                      <Grid item md={selectedTab === "SUPPLIER" ? 4 : 6}>
+                        <InputBox
+                          inputlabelshrink
+                          name="maxPriceRange"
+                          label="Max. Price Range"
+                          value={formData[activeStep].maxPriceRange}
+                          onInputChange={handlFormDataChange}
+                          error={errorObj.maxPriceRange !== ""}
+                          helperText={errorObj.maxPriceRange}
+                        />
+                      </Grid>
+                      <Grid item md={4}>
+                        <InputBox
+                          inputlabelshrink
+                          name="comissionPercentage"
+                          label="Comission Percentage"
+                          value={formData[activeStep].comissionPercentage}
+                          onInputChange={handlFormDataChange}
+                          error={errorObj.comissionPercentage !== ""}
+                          helperText={errorObj.comissionPercentage}
+                        />
+                      </Grid>
+                      {selectedTab === "RESELLER" && (
+                        <>
+                          <Grid item md={4}>
+                            <InputBox
+                              inputlabelshrink
+                              name="mmcProfitPercentage"
+                              label="MMC Profit % Percentage"
+                              value={formData[activeStep].mmcProfitPercentage}
+                              onInputChange={handlFormDataChange}
+                              error={errorObj.mmcProfitPercentage !== ""}
+                              helperText={errorObj.mmcProfitPercentage}
+                            />
+                          </Grid>
+                          <Grid item md={4}>
+                            <InputBox
+                              inputlabelshrink
+                              name="resellerProfitPercentage"
+                              label="Reseller Profit % Percentage"
+                              value={
+                                formData[activeStep].resellerProfitPercentage
+                              }
+                              onInputChange={handlFormDataChange}
+                              error={errorObj.resellerProfitPercentage !== ""}
+                              helperText={errorObj.resellerProfitPercentage}
+                            />
+                          </Grid>
+                        </>
+                      )}
+                    </Grid>
+                  </Paper>
+                </Grid>
+              </>
+            )}
           </Grid>
-        </Grid>
+        </div>
       </ModalComponent>
     </Box>
   );
