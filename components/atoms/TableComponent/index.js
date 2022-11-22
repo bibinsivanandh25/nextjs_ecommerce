@@ -387,8 +387,8 @@ const FilterMenu = ({
           iconName="filter"
           iconColorClass="color-orange"
           variant="outlined"
-          onBtnClick={() => {
-            if (showFilterList) handleClick();
+          onBtnClick={(e) => {
+            if (showFilterList) handleClick(e);
             else onFilterButtonClick();
           }}
         />
