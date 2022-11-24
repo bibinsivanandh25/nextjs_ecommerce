@@ -1,7 +1,7 @@
 .dateinput::-webkit-calendar-picker-indicator {
   opacity: 1;
   display: block;
-  background-image: url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/calendar.png);
+  background-image: url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/calendar.png) !important;
   width: 30px;
   height: 30px !important;
   border-width: thin;
@@ -17,11 +17,11 @@
 }
 
 .timepicker::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  display: block;
+  opacity: 1 !important;
+  display: block !important;
   background-image: url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/image_2022_11_12T08_11_12_685Z.png);
-  width: 25px;
+  width: 25px !important;
   height: 25px !important;
-  border-width: thin;
-  user-select: none;
+  border-width: thin !important;
+  user-select: none !important;
 }

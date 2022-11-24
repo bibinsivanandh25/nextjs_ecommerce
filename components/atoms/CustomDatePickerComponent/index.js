@@ -9,6 +9,8 @@ const CustomDatePickerComponent = ({
   value = null,
   onDateChange = () => {},
   showToolbar = false,
+  disablePast = false,
+  disableFuture = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,6 +28,8 @@ const CustomDatePickerComponent = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         showToolbar={showToolbar}
+        disableFuture={disableFuture}
+        disablePast={disablePast}
         open={isOpen}
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}
