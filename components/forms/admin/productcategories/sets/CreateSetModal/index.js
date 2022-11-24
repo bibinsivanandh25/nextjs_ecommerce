@@ -1,5 +1,8 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-shadow */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, FormHelperText, Grid } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -7,6 +10,14 @@ import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ImageCard from "@/atoms/ImageCard";
 import { getBase64 } from "services/utils/functionUtils";
+import {
+  editSet,
+  getAllCategorys,
+  getSetDataById,
+  saveSet,
+  uploadSetMedia,
+} from "services/admin/products/productCategories/sets";
+import toastify from "services/utils/toastUtils";
 
 const err = {
   category: "",
@@ -17,18 +28,25 @@ const err = {
 const CreateSetModal = ({
   openCreateSetModal,
   setOpenCreateSetModal,
-  //   rowId,
-  //   rowsDataObjectsForSets,
-  setDetails,
-  setSetDetails,
+  getAllSet = () => {},
+  selectedData = {},
+  type = "",
 }) => {
+  const [setDetails, setSetDetails] = useState({
+    category: {},
+    set: "",
+    setImage: "",
+    imageFile: "",
+    editsetid: "",
+  });
   const [error, setError] = useState(err);
-
+  const [categoryList, setCategoryList] = useState([]);
   const handleCloseIconClick = () => {
     setSetDetails({
       category: {},
       set: "",
       setImage: "",
+      imageFile: "",
     });
     setError({
       category: "",
@@ -58,16 +76,59 @@ const CreateSetModal = ({
     const flag = Object.values(errObj).every((x) => x == "");
     return flag;
   };
-  const handleSaveBtnClick = () => {
-    const result = handleError();
-    console.log(result);
+  const convertFileToUrl = async (file) => {
+    const formdata = new FormData();
+    formdata.append("media", file);
+    formdata.set("data", {});
+    const { data, err } = await uploadSetMedia(formdata);
+    if (data) {
+      return data.data;
+    }
+    if (err) {
+      return null;
+    }
+    return null;
   };
-
+  const handleSaveBtnClick = async () => {
+    const result = handleError();
+    if (result) {
+      let payload;
+      if (type == "add") {
+        const imgurl = await convertFileToUrl(setDetails.imageFile);
+        payload = {
+          setName: setDetails.set,
+          mainCategoryId: setDetails.category.id,
+          categorySetImageUrl: imgurl,
+        };
+      } else if (type == "edit") {
+        const imgurl =
+          setDetails.imageFile !== ""
+            ? await convertFileToUrl(setDetails.imageFile)
+            : setDetails.setImage;
+        payload = {
+          categorySetId: setDetails.editsetid,
+          setName: setDetails.set,
+          categorySetImageUrl: imgurl,
+        };
+      }
+      const { data, err } =
+        type == "add" ? await saveSet(payload) : await editSet(payload);
+      if (data) {
+        toastify(data?.message, "success");
+        handleClearAll();
+        setOpenCreateSetModal(false);
+        getAllSet(0, null);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
   const handleClearAll = () => {
     setSetDetails({
       category: {},
       set: "",
       setImage: "",
+      imageFile: "",
     });
     setError({
       category: "",
@@ -76,6 +137,42 @@ const CreateSetModal = ({
     });
   };
 
+  const getCategory = async () => {
+    const { data, err } = await getAllCategorys();
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({
+          label: val.name,
+          id: val.id,
+        });
+      });
+      setCategoryList(temp);
+    }
+    if (err) {
+      setCategoryList([]);
+    }
+  };
+  useEffect(() => {
+    getCategory();
+  }, []);
+  const getEditData = async () => {
+    const { data } = await getSetDataById(selectedData.categorySetId);
+    if (data?.data) {
+      setSetDetails({
+        category: "",
+        set: data.data.setName,
+        setImage: data.data.categorySetImageUrl,
+        imageFile: "",
+        editsetid: data.data.categorySetId,
+      });
+    }
+  };
+  useEffect(() => {
+    if (type === "edit") {
+      getEditData();
+    }
+  }, [selectedData]);
   return (
     <Box>
       <ModalComponent
@@ -97,16 +194,16 @@ const CreateSetModal = ({
           handleClearAll();
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container>
           <Grid item sm={8}>
             <Box>
               <SimpleDropdownComponent
-                list={[{ label: "Category One" }, { label: "Category Two" }]}
+                disabled={type == "edit"}
+                list={categoryList}
                 label="Category"
                 inputlabelshrink
                 size="small"
                 onDropdownSelect={(value) => {
-                  // console.log(setDetails);
                   setSetDetails({ ...setDetails, category: value });
                 }}
                 value={setDetails?.category}
@@ -138,7 +235,11 @@ const CreateSetModal = ({
                 imgSrc={setDetails?.setImage}
                 handleImageUpload={async (e) => {
                   const file = await getBase64(e.target.files[0]);
-                  setSetDetails({ ...setDetails, setImage: file });
+                  setSetDetails({
+                    ...setDetails,
+                    setImage: file,
+                    imageFile: e.target.files[0],
+                  });
                 }}
               />
             </Box>
