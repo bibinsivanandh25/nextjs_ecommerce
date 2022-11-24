@@ -1,21 +1,38 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-return-assign */
+/* eslint-disable no-param-reassign */
+/* eslint-disable consistent-return */
+/* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
+import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  deleteProducts,
+  // getBrands,
+  // getMainCategories,
+  // getProductTitles,
+  // getSubCategories,
+} from "services/admin/products";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
+import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import ViewProducts from "./ViewProducts";
-import AcceptRejectModal from "./AcceptRejectmodal";
-import RaiseQueryModal from "./RaiseQueryModal";
-import MergeToModal from "./MergeToModal";
-import VisibilityRangeModal from "./VisibilityRangeModal";
-import FlagModal from "./FlagModal";
+import { useSelector } from "react-redux";
+// import ViewProducts from "./ViewProducts";
+import {
+  closeTicketById,
+  helpandSupportGetTicketById,
+} from "services/admin/help&support";
+import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import AddEditProductModal from "./AddEditProductModal";
+import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Queries = ({
-  rowsDataObjectsForQueries = [],
-  setrowsDataObjectsForQueries = () => {},
+  // getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
 }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
@@ -24,13 +41,7 @@ const Queries = ({
   const [imageArray, setImageArray] = useState([]);
   const [tableRows, setTableRows] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
-  const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
-
+  const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
@@ -42,64 +53,69 @@ const Queries = ({
     salePriceAndMrp: "",
     discounts: "",
   });
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [subCategoryIds, setSubCategoryIds] = useState([]);
+  const [brands, setBrands] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [products, setProducts] = useState([]);
 
   const [images, setImages] = useState([]);
+  const [showModal, setShowModal] = useState({
+    type: "",
+    show: "",
+    details: null,
+  });
+  const user = useSelector((state) => state.user);
 
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setProductDetails({
-        vendorIdOrName: rowsDataObjectsForQueries[index].col1,
-        images: rowsDataObjectsForQueries[index].col2.imgSrc,
-        productTitle: rowsDataObjectsForQueries[index].col3,
-        sku: rowsDataObjectsForQueries[index].col4,
-        categorySubcategory: rowsDataObjectsForQueries[index].col5,
-        weightOrVolume: rowsDataObjectsForQueries[index].col6,
-        totalStock: rowsDataObjectsForQueries[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForQueries[index].col8.salePrice}/${rowsDataObjectsForQueries[index].col8.mrpPrice} `,
-        discounts:
-          rowsDataObjectsForQueries[index].col8.mrpPrice -
-          rowsDataObjectsForQueries[index].col8.salePrice,
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const getTicketById = async (ticketId, type = "") => {
+    const { data } = await helpandSupportGetTicketById(ticketId);
+    if (data?.data) {
+      // setSelectedData(data.data);
+      setShowModal({
+        details: data.data,
+        show: true,
+        type,
       });
-      setModalId(index);
-      setImageArray(rowsDataObjectsForQueries[index].col2.imgSrc);
-      setOpenEditModal(true);
     }
-
-    if (ele === "Delete") {
-      const tempArray = [...rowsDataObjectsForQueries];
-      tempArray.splice(index, 1);
-      setrowsDataObjectsForQueries([...tempArray]);
-    }
-
-    if (ele === "Accept/Reject") {
-      setModalId(index);
-      setOpenAcceptRejectModal(true);
-    }
-
-    if (ele === "Merge to") {
-      setModalId(index);
-      setOpenMergeToModal(true);
-    }
-
-    if (ele === "Raise Query") {
-      setModalId(index);
-      setOpenRaiseQueryModal(true);
-    }
-
-    if (ele === "Visibility Range") {
-      setModalId(index);
-      setOpenVisibilityRangeModal(true);
-    }
-
-    if (ele === "Flags") {
-      setModalId(index);
-      setShowFlagModal(true);
+  };
+  const closeticket = async (ticketId) => {
+    const { data, message, err } = await closeTicketById(ticketId);
+    if (data === null) {
+      toastify(message, "success");
+      await getTableData();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
-  const options = ["Replay", "Close"];
+  const onClickOfMenuItem = (ele, val, id) => {
+    if (ele === "Delete") {
+      deleteProduct(val.productVariationId);
+    } else if (ele === "Close") {
+      closeticket(id);
+    } else if (ele === "Reply") {
+      getTicketById(id);
+    }
+  };
 
-  const tableColumnsForProductsToApprove = [
+  useEffect(() => {
+    getTableData();
+  }, []);
+
+  const options = ["Reply", "Close"];
+
+  const columns = [
     {
       id: "col1",
       align: "center",
@@ -126,97 +142,141 @@ const Queries = ({
       label: "Issue Subject",
       data_align: "center",
     },
-    { id: "col7", align: "center", label: "Answers", data_align: "center" },
     {
-      id: "col8",
+      id: "col7",
       align: "center",
       label: "Created Date & Time",
       data_align: "center",
     },
     {
-      id: "col9",
+      id: "col8",
       align: "center",
       label: "Ticket Status",
       data_align: "center",
     },
-    { id: "col10", align: "center", label: "Action", data_align: "center" },
+    { id: "col9", align: "center", label: "Action", data_align: "center" },
   ];
 
-  const theTaleRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForQueries.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: (
-          <Typography className="fs-12 text-primary">{val.col1}</Typography>
-        ),
-        col2: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box
-              onClick={() => {
-                setImages([...val.col2.imgSrc]);
-                setImageIndexForImageModal(0);
-                setModalId(index);
-                setOpenImagesArrayModal(true);
-              }}
-              className="h-30 border d-flex justify-content-center"
-            >
-              <Image
-                src={val.col2.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      val.tickets.forEach((ele) => {
+        result.push({
+          col1: (
+            <>
+              <Typography className="fs-12 text-primary">
+                {val.supplierId}
+              </Typography>
+              <Typography className="fs-12 text-primary">
+                {val.businessName}
+              </Typography>
+            </>
+          ),
+          col2: val.variationMedia ? (
+            <Box className="d-flex align-items-end justify-content-center">
+              <Box
+                onClick={() => {
+                  setImages([...val.variationMedia]);
+                  setImageIndexForImageModal(0);
+                  setModalId(index);
+                  setOpenImagesArrayModal(true);
+                }}
+                className="h-30 border d-flex justify-content-center"
+              >
+                <Image
+                  src={val.variationMedia[0]}
+                  width="50"
+                  height="50"
+                  className="cursor-pointer"
+                />
+              </Box>
+              <Typography className="h-5">
+                /{val.variationMedia.length}
+              </Typography>
+            </Box>
+          ) : null,
+          col3: <Typography className="h-5">{val.productTitle}</Typography>,
+          col4: <Typography className="h-5">{val.skuId}</Typography>,
+          col5: (
+            <>
+              <Typography className="h-5">{val.categoryName}</Typography>
+              <Typography className="h-5">{val.subCategoryName}</Typography>
+            </>
+          ),
+          col6: <Typography className="h-5">{ele.issueSubject}</Typography>,
+          col7: ele.createdDate,
+          col8: ele.ticketStatus,
+          col9: (
+            <Box className="d-flex justify-content-evenly align-items-center">
+              <CustomIcon
+                type="view"
+                className="fs-18"
+                onIconClick={() => {
+                  // viewClick(val.masterProductId, val.productVariationId);
+                  getTicketById(ele.ticketId, "view");
+                }}
+              />
+              <MenuOption
+                getSelectedItem={(e) => {
+                  onClickOfMenuItem(e, val, ele.ticketId);
+                }}
+                options={options}
+                IconclassName="fs-18 color-gray"
               />
             </Box>
-            <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-          </Box>
-        ),
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: (
-          <Typography className="fs-12">
-            &#8377; {val.col8.salePrice}/ &#8377; {val.col8.mrpPrice}
-          </Typography>
-        ),
-        col9: "PUMA",
-        col10: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <CustomIcon
-              type="view"
-              className="fs-18"
-              onIconClick={() => setShowViewProducts(true)}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                // console.log("Index", index);
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
+          ),
+        });
       });
     });
-
-    setTableRows(anArray);
+    return result;
   };
-
-  useEffect(() => {
-    theTaleRowsData();
-  }, []);
-
-  useEffect(() => {
-    theTaleRowsData();
-  }, [rowsDataObjectsForQueries]);
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
+    const payLoad = {
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
+      status: "IN_QUERY",
+    };
+    const { data } = await getAdminProductsByFilter(payLoad, page);
+    if (data) {
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+      }
+      if (data.length) {
+        setPageNumber(pageNumber + 1);
+      }
+    }
+  };
 
   return (
     <>
       <Box>
-        {!showViewProducts ? (
+        {showModal.show ? (
+          <HelpandsupportView
+            selectedData={showModal.details}
+            setShowModal={() => {
+              setShowModal({
+                show: false,
+                type: "",
+                details: null,
+              });
+            }}
+            user={user}
+          />
+        ) : !showViewProducts ? (
           <Box>
             <Paper
               sx={{ height: "78vh" }}
@@ -224,34 +284,55 @@ const Queries = ({
             >
               <Box className="px-1 pt-2">
                 <TableComponent
-                  columns={tableColumnsForProductsToApprove}
+                  showFilterList={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
+                  }}
+                  columns={columns}
                   tHeadBgColor="bg-light-gray"
-                  // showPagination={false}
                   tableRows={tableRows}
-                  // showSearchbar={false}
                   showDateFilter
+                  showDateFilterSearch={false}
+                  showSearchbar={false}
+                  showSearchFilter={false}
+                  showFilterButton
                   dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
+                    // setProductDetails({
+                    //   vendorIdOrName: "",
+                    //   images: "",
+                    //   productTitle: "",
+                    //   sku: "",
+                    //   categorySubcategory: "",
+                    //   weightOrVolume: "",
+                    //   totalStock: "",
+                    //   salePriceAndMrp: "",
+                    //   discounts: "",
+                    // });
                     setImageArray([]);
                     setOpenEditModal(true);
                     setModalId(null);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    dateFilter
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
                   }}
                 />
               </Box>
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
         )}
       </Box>
       {/* Edit Modal Component */}
@@ -262,48 +343,34 @@ const Queries = ({
         setImageArray={setImageArray}
         setProductDetails={setProductDetails}
         imageArray={imageArray}
-        setRowDataObjects={setrowsDataObjectsForQueries}
+        setRowDataObjects={setTableRows}
         modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForQueries}
+        rowsDataObjects={tableRows}
       />
+      {showFilterModal && (
+        <FilterModal
+          status="IN_QUERY"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
       {/* Images Modal Component */}
       <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
         setOpenImagesArrayModal={setOpenImagesArrayModal}
         imageIndexForImageModal={imageIndexForImageModal}
         setImageIndexForImageModal={setImageIndexForImageModal}
-        rowsDataObjects={rowsDataObjectsForQueries}
+        rowsDataObjects={tableRows}
         modalId={modalId}
         productDetails={productDetails}
         images={images}
-      />
-      {/* Accept Reject Modal */}
-      <AcceptRejectModal
-        openAcceptRejectModal={openAcceptRejectModal}
-        setOpenAcceptRejectModal={setOpenAcceptRejectModal}
-        modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForQueries}
-      />
-      {/* Raise Query Modal */}
-      <RaiseQueryModal
-        openRaiseQueryModal={openRaiseQueryModal}
-        setOpenRaiseQueryModal={setOpenRaiseQueryModal}
-        modalTitle="Raise Query"
-        placeholder="Type your query"
-      />
-      {/* Merge To Modal */}
-      <MergeToModal
-        openMergeToModal={openMergeToModal}
-        setOpenMergeToModal={setOpenMergeToModal}
-      />
-      <VisibilityRangeModal
-        openVisibilityRangeModal={openVisibilityRangeModal}
-        setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
-      {/* Flag Modal */}
-      <FlagModal
-        showFlagModal={showFlagModal}
-        setShowFlagModal={setShowFlagModal}
       />
     </>
   );

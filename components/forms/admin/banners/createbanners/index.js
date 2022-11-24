@@ -573,7 +573,7 @@ const CreateBanner = ({
             </Grid>
             <Grid container item md={6}>
               <Grid item sm={3.7}>
-                <span className="fs-12">End date:</span>
+                <span className="fs-12">End time:</span>
               </Grid>
               <Grid item sm={8}>
                 <input

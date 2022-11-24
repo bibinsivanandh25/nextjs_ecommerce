@@ -1,14 +1,14 @@
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import {
-  getAllTableDatas,
   getCategoryFilterData,
+  getSuppliers,
   inviteSupplier,
 } from "services/admin/supplier/supplierapproval";
 import serviceUtil from "services/utils";
@@ -54,7 +54,8 @@ const tableColumn = [
   {
     id: "col5",
     label: "Categories",
-    minWidth: 100,
+    minWidth: 50,
+    maxWidth: 50,
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -94,7 +95,7 @@ const tableColumn = [
 ];
 
 const SupplierApproval = () => {
-  const [masterData, setMasterData] = useState({});
+  const [masterData, setMasterData] = useState("0");
   const [tableRows, setTableRows] = useState([]);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState([]);
@@ -104,6 +105,11 @@ const SupplierApproval = () => {
   const [modalInputError, setModalInputError] = useState(false);
   const [filterData, setFilterData] = useState([]);
   const [selectedFilterData, setSelectedFilterData] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [filterValues, setFilterValues] = useState({
+    searchvalue: "",
+  });
+
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -125,7 +131,7 @@ const SupplierApproval = () => {
       .then((res) => {
         setViewModalOpen(false);
         toastify(`${res?.data?.message}`, "success");
-        getAllTableData();
+        getAllTableData(0);
       })
       .catch((err) => {
         toastify(`${err?.response?.data?.message}`, "error");
@@ -158,7 +164,25 @@ const SupplierApproval = () => {
             </Tooltip>
           </Box>
         ),
-        col5: item.mainCategories.join(", "),
+        col5: (
+          <div className="d-flex justify-content-center">
+            <Tooltip
+              title={item.mainCategories.map((e) => (
+                <Typography>{e}</Typography>
+              ))}
+              placement="top"
+            >
+              <Typography
+                className="text-truncate h-5"
+                style={{
+                  maxWidth: "100px",
+                }}
+              >
+                {item.mainCategories}
+              </Typography>
+            </Tooltip>
+          </div>
+        ),
         col6: item.avgStockCount,
         col7: item.websiteLink,
         col8: item.websiteName,
@@ -195,17 +219,30 @@ const SupplierApproval = () => {
         ),
       });
     });
-    setTableRows(rowDatas);
+    // setTableRows(rowDatas);
+    return rowDatas;
   };
-  const getAllTableData = async () => {
-    const { data, err } = await getAllTableDatas();
-    if (data?.data) {
-      setMasterData(data.data);
-      if (data.data?.supplierRegistrations?.length) {
-        getTableRows(data.data.supplierRegistrations);
+  const getAllTableData = async (page, selected, searchtext) => {
+    const payload = {
+      category: selected ?? [],
+      keyword: searchtext ?? null,
+      status: "INITIATED",
+    };
+    const { data, err } = await getSuppliers(page, payload);
+    if (data?.data) setMasterData(data?.data?.count);
+    if (data?.data?.supplierInfo?.length) {
+      if (page == 0) {
+        setTableRows(getTableRows(data.data.supplierInfo));
+        setPageNumber(1);
       } else {
-        getTableRows([]);
+        setPageNumber((prev) => prev + 1);
+        setTableRows((pre) => [
+          ...pre,
+          ...getTableRows(data.data.supplierInfo),
+        ]);
       }
+    } else if (data?.data?.supplierInfo?.length == 0 && page == 0) {
+      setTableRows([]);
     }
     if (err) {
       setTableRows([]);
@@ -233,22 +270,22 @@ const SupplierApproval = () => {
   useEffect(() => {
     getCategoryFilter();
   }, []);
-  useMemo(() => {
-    // const selected = filterData[0]?.value?.filter((item) => item.isSelected);
+  useEffect(() => {
     const selected = [];
     filterData[0]?.value?.forEach((item) => {
       if (item.isSelected) {
         selected.push(item.id);
       }
     });
-    getAllTableData(selected);
+    setPageNumber(0);
+    getAllTableData(0, selected, filterValues.searchvalue);
   }, [selectedFilterData]);
   const handleInviteSupplierClick = async () => {
     if (modalUserData !== "") {
       const { data, err } = await inviteSupplier(modalUserData);
       if (data) {
         setOpenInviteModal(false);
-        getAllTableData();
+        getAllTableData(0);
       }
       if (err) {
         toastify(err.response?.data?.message, "error");
@@ -264,14 +301,13 @@ const SupplierApproval = () => {
       elevation={3}
     >
       <TableComponent
-        table_heading={`Supplier approval (${masterData?.count || 0})`}
-        showFilterButton
-        showDateFilterBtn
+        table_heading={`Supplier approval (${masterData || 0})`}
         showDateFilter
         showDateFilterSearch
-        showSearchFilter={false}
-        showSearchbar={false}
-        stickyHeader={false}
+        dateFilterBtnName="Invite supplier"
+        showFilterButton
+        showDateFilterBtn
+        showFromToDateFilter={false}
         columns={[...tableColumn]}
         tableRows={[...tableRows]}
         showCheckbox={false}
@@ -284,7 +320,16 @@ const SupplierApproval = () => {
           setFilterData(value);
           setSelectedFilterData(value);
         }}
-        dateFilterBtnName="Invite supplier"
+        handlePageEnd={(searchtext, filter, page = pageNumber) => {
+          const selected = [];
+          filterData[0]?.value?.forEach((item) => {
+            if (item.isSelected) {
+              selected.push(item.id);
+            }
+          });
+          setFilterValues((pre) => ({ ...pre, searchvalue: searchtext }));
+          getAllTableData(page, selected, searchtext);
+        }}
       />
       {viewModalOpen && (
         <ModalComponent

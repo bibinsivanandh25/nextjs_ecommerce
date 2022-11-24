@@ -1,24 +1,39 @@
-import { Box, Paper, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-nested-ternary */
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  disableActiveProduct,
+  getAdminProductsByFilter,
+  raiseQuery,
+} from "services/admin/products/fixedMargin";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
+import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import {
+  adminProductView,
+  resetAdminProductView,
+  updateProduct,
+} from "features/productsSlice";
+import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
-import ViewProducts from "./ViewProducts";
 import RaiseQueryModal from "./RaiseQueryModal";
-import DiscountModal from "./DiscountModal";
+import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
+import DiscountModal from "../DiscountModal";
 
-const Active = () => {
+const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
   const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
-    productTitle: "",
     sku: "",
     categorySubcategory: "",
     weightOrVolume: "",
@@ -32,26 +47,30 @@ const Active = () => {
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [tableRows, setTableRows] = useState([]);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [productId, setProductId] = useState("");
+  const [supplierId, setSupplierId] = useState("");
   //   const [first, setfirst] = useState(second);
 
   const [openRemoveModal, setOpenRemoveModal] = useState(false);
   const [openRejectModal, setOpenRejectModal] = useState(false);
   const [openDiscountModal, setOpenDiscountModal] = useState(false);
-
+  const [pageNumber, setPageNumber] = useState(0);
   const [images, setImages] = useState([]);
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [subCategoryIds, setSubCategoryIds] = useState([]);
+  const [brands, setBrands] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [products, setProducts] = useState([]);
+  const [helpSupportModal, sethelpSupportModal] = useState({
+    show: false,
+    type: "",
+    to: {},
+    productVariationId: null,
+  });
 
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-cenetr">
-      <Typography className="me-3">Disable</Typography>,
-      <Box className="pt-1">
-        <SwitchComponent label={null} />
-      </Box>
-    </Box>,
-    "Remove",
-    "Reject",
-    "Discount",
-  ];
+  const dispatch = useDispatch();
+
   const tableColumnsForActive = [
     {
       id: "col1",
@@ -76,6 +95,7 @@ const Active = () => {
       align: "center",
       label: "Product Title",
       data_align: "center",
+      maxWidth: 100,
     },
     {
       id: "col5",
@@ -144,144 +164,217 @@ const Active = () => {
       data_align: "center",
     },
   ];
-
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setProductDetails({
-        vendorIdOrName: rowsDataObjectsForActive[index].col5,
-        images: rowsDataObjectsForActive[index].col3.imgSrc,
-        productTitle: rowsDataObjectsForActive[index].col4,
-        sku: rowsDataObjectsForActive[index].col6,
-        categorySubcategory: rowsDataObjectsForActive[index].col11,
-        weightOrVolume: rowsDataObjectsForActive[index].col8,
-        totalStock: rowsDataObjectsForActive[index].col7,
-        salePriceAndMrp: `${rowsDataObjectsForActive[index].col10.salePrice}/${rowsDataObjectsForActive[index].col10.mrpPrice} `,
-        discounts:
-          rowsDataObjectsForActive[index].col10.mrpPrice -
-          rowsDataObjectsForActive[index].col10.salePrice,
-      });
-      setModalId(index);
-      setImageArray(rowsDataObjectsForActive[index].col3.imgSrc);
-      setOpenEditModal(true);
-    }
-
-    if (typeof ele === "object") {
-      // console.log("Display button clicked");
-    }
-
-    if (ele === "Remove") {
-      setOpenRemoveModal(true);
-    }
-
-    if (ele === "Reject") {
-      setOpenRejectModal(true);
-    }
-
-    if (ele === "Discount") {
-      setOpenDiscountModal(true);
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
     }
   };
 
-  const getTableData = async () => {
-    const payLoad = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      productVariationIds: [],
-      dateFrom: "",
-      dateTo: "",
-      commissionType: "ZERO_COMMISSION",
-      status: "APPROVED",
-    };
-    const { data, err } = await getAdminProductsByFilter(payLoad);
-    if (data) {
-      const result = [];
-      data.products.forEach((val, index) => {
-        result.push({
-          id: index + 1,
-          col1: (
-            <>
-              <Typography className="fs-12">{index + 1}</Typography>
-            </>
-          ),
-          col2: val.productVariationId,
-          col3: (
-            <Box className="d-flex align-items-end justify-content-center">
-              <Box
-                onClick={() => {
-                  setImages([...val.variationMedia]);
-                  setImageIndexForImageModal(0);
-                  setModalId(index);
-                  setOpenImagesArrayModal(true);
-                }}
-                className="h-30 border d-flex justify-content-center"
-              >
-                <Image
-                  src={val.variationMedia[0]}
-                  width="50"
-                  height="50"
-                  className="cursor-pointer"
-                />
-              </Box>
-              <Typography className="fs-10">
-                /{val.variationMedia.length}
-              </Typography>
-            </Box>
-          ),
-          col4: val.productTitle,
-          col5: (
-            <>
-              <Typography>{val.supplierId}</Typography>
-              <Typography>{val.supplierName}</Typography>
-            </>
-          ),
-          col6: val.skuId,
-          col7: val.stockQty,
-          col8: (
-            <>
-              <Typography>{val.weightInclusivePackage}</Typography>
-              <Typography>{val.volume}</Typography>
-            </>
-          ),
-          col9: val.brand,
-          col10: (
-            <Typography className="fs-12">
-              &#8377; {val.salePrice}/ &#8377; {val.mrp}
-            </Typography>
-          ),
-          col11: (
-            <>
-              <Typography>{val.categoryName}</Typography>
-              <Typography>{val.subCategoryName}</Typography>
-            </>
-          ),
-          col12: val.activeFlag,
-          col13: val.createdAt,
-          col14: val.approvedAt,
-          col15: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => setShowViewProducts(true)}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  // console.log("Index", index);
-                  onClickOfMenuItem(ele, index);
-                }}
-                options={options}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        });
+  const onClickOfMenuItem = (ele, val) => {
+    setProductId(val.productVariationId);
+    setSupplierId(val.supplierId);
+    if (ele === "Discount") {
+      setOpenDiscountModal(true);
+    }
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
+    }
+    if (ele === "Raise Query") {
+      sethelpSupportModal({
+        show: true,
+        type: "ACTIVE_PRODUCT",
+        to: {
+          id: val.supplierId,
+          label: val.businessName,
+          value: val.supplierId,
+        },
+        productVariationId: val?.productVariationId,
       });
+    }
+  };
 
-      setTableRows([...result]);
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      const temp = {
+        data: data[0],
+        showExtraTabs: true,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+
+          {
+            label: "Raise Query",
+            callBack: () => {},
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
+      setShowViewProducts(true);
+
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
+
+  const enableDisableProduct = async (id, status) => {
+    const { data, err } = await disableActiveProduct(id, status);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
     }
     if (err) {
-      // console.log(err);
+      toastify(err?.response?.data?.message, "error");
+      getTableData(0);
+    }
+  };
+
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      result.push({
+        id: index + 1,
+        col1: (
+          <>
+            <Typography className="fs-12">{index + 1}</Typography>
+          </>
+        ),
+        col2: val.productVariationId,
+        col3: (
+          <Box className="d-flex align-items-end justify-content-center">
+            <Box
+              onClick={() => {
+                setImages([...val.variationMedia]);
+                setImageIndexForImageModal(0);
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
+              <Image
+                src={val.variationMedia?.length ? val.variationMedia[0] : ""}
+                width="50"
+                height="50"
+                className="cursor-pointer"
+              />
+            </Box>
+            <Typography className="fs-10">
+              /{val?.variationMedia?.length ?? 0}
+            </Typography>
+          </Box>
+        ),
+        col4: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              style={{
+                maxWidth: "100px",
+              }}
+              className="h-5 text-truncate"
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
+        col5: `${val.supplierId} / ${val.businessName}`,
+        col6: val.skuId,
+        col7: val.stockQty,
+        col8: `${val.weightInclusivePackage} / ${val.volume}`,
+        col9: val.brand,
+        col10: (
+          <Typography className="fs-12">
+            &#8377; {val.salePrice}/ &#8377; {val.mrp}
+          </Typography>
+        ),
+        col11: `  ${val.categoryName} / ${val.subCategoryName}`,
+        col12: val.activeFlag,
+        col13: val.createdAt,
+        col14: val.approvedAt,
+        col15: (
+          <Box className="d-flex align-items-center">
+            <Box className="ms-2 w-75">
+              <Tooltip
+                title={val.disable ? "Disabled" : "Enabled"}
+                placement="top"
+              >
+                <SwitchComponent
+                  label=""
+                  styledSwitch
+                  defaultChecked={!val.disable}
+                  ontoggle={() => {
+                    enableDisableProduct(val.productVariationId, !val.disable);
+                  }}
+                />
+              </Tooltip>
+            </Box>
+            <CustomIcon
+              title="View"
+              type="view"
+              className="me-2"
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
+            />
+
+            <Box>
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  onClickOfMenuItem(ele, val);
+                }}
+                options={["Edit", "Remove", "Discount", "Raise Query"]}
+                IconclassName="color-gray "
+              />
+            </Box>
+          </Box>
+        ),
+      });
+    });
+
+    return result;
+  };
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
+    const payLoad = {
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
+      status: "APPROVED",
+    };
+    const { data } = await getAdminProductsByFilter(payLoad, page);
+    if (data) {
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      }
     }
   };
 
@@ -289,9 +382,49 @@ const Active = () => {
     getTableData();
   }, []);
 
+  const saveQuery = async (val) => {
+    const payload = {
+      issueType: "PRODUCT_RELATED_ISSUE",
+      issueSubject: val.issueSubject,
+      userFromType: "ADMIN",
+      userFromId: val.userFromId,
+      userToType: "SUPPLIER",
+      userToId: val.userToId,
+      mediaUrl: [...val.mediaUrl],
+      helpSupportMessagePojos: [...val.helpSupportMessagePojos],
+      productVariationId: helpSupportModal.productVariationId,
+    };
+    const { data, message, err } = await raiseQuery(payload);
+    if (data) {
+      toastify(message, "success");
+      sethelpSupportModal({
+        show: false,
+        type: "",
+        to: {},
+        productVariationId: null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <>
-      {!showViewProducts ? (
+      {helpSupportModal.show ? (
+        <CreateTicket
+          setShowCreateTicketComponent={() => {
+            sethelpSupportModal({
+              show: false,
+              type: "",
+              to: {},
+              productVariationId: null,
+            });
+          }}
+          type={helpSupportModal.type}
+          to={helpSupportModal.to}
+          submit={saveQuery}
+        />
+      ) : !showViewProducts ? (
         <Box>
           <Paper
             sx={{ height: "78vh" }}
@@ -306,29 +439,56 @@ const Active = () => {
                 // showSearchbar={false}
                 showDateFilterBtn
                 showDateFilter
+                showFilterList={false}
+                showFilterButton
+                showDateFilterSearch={false}
+                showSearchbar={false}
                 dateFilterBtnName="+ New Product"
                 dateFilterBtnClick={() => {
-                  setProductDetails({
-                    vendorIdOrName: "",
-                    images: "",
-                    productTitle: "",
-                    sku: "",
-                    categorySubcategory: "",
-                    weightOrVolume: "",
-                    totalStock: "",
-                    salePriceAndMrp: "",
-                    discounts: "",
-                  });
+                  // setProductDetails({
+                  //   vendorIdOrName: "",
+                  //   images: "",
+                  //   productTitle: "",
+                  //   sku: "",
+                  //   categorySubcategory: "",
+                  //   weightOrVolume: "",
+                  //   totalStock: "",
+                  //   salePriceAndMrp: "",
+                  //   discounts: "",
+                  // });
                   setImageArray([]);
                   setOpenEditModal(true);
                   setModalId(null);
+                }}
+                onFilterButtonClick={() => {
+                  setShowFilterModal(true);
+                }}
+                handlePageEnd={(
+                  searchText,
+                  searchFilter,
+                  page = pageNumber,
+                  dateFilter
+                ) => {
+                  getTableData(
+                    page,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    dateFilter
+                  );
                 }}
               />
             </Box>
           </Paper>
         </Box>
       ) : (
-        <ViewProducts setShowViewProduct={setShowViewProducts} />
+        <ViewOrEditProducts
+          setShowViewOrEdit={() => {
+            setShowViewProducts(false);
+            dispatch(resetAdminProductView());
+          }}
+        />
       )}
       {/* Edit Modal Component */}
       <AddEditProductModal
@@ -342,6 +502,20 @@ const Active = () => {
         modalId={modalId}
         rowsDataObjects={rowsDataObjectsForActive}
       />
+      {showFilterModal && (
+        <FilterModal
+          status="APPROVED"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
 
       {/* Images Modal Component */}
       <DisplayImagesModal
@@ -367,10 +541,14 @@ const Active = () => {
         placeholder="Type your Reason"
       />
       {/* Discount Modal */}
-      <DiscountModal
-        openDiscountModal={openDiscountModal}
-        setOpenDiscountModal={setOpenDiscountModal}
-      />
+      {openDiscountModal ? (
+        <DiscountModal
+          showModal={openDiscountModal}
+          setShowModal={setOpenDiscountModal}
+          productVariationId={productId}
+          supplierId={supplierId}
+        />
+      ) : null}
     </>
   );
 };

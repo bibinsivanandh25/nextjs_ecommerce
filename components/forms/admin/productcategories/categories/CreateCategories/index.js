@@ -7,7 +7,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import CreateCategoriesModal from "./CreateCategoriesModal";
 import CreateVariationModal from "./CreateVariationModal";
 
-const CreateCategories = ({ setShowCreateCategories }) => {
+const CreateCategories = () => {
   const [variations, setVariations] = useState([
     {
       variationName: "Variation 1",
@@ -105,14 +105,6 @@ const CreateCategories = ({ setShowCreateCategories }) => {
               sx={{ minHeight: "84vh" }}
               className="border-end "
             >
-              <Typography
-                onClick={() => {
-                  setShowCreateCategories(false);
-                }}
-                className="h-5 cursor-pointer color-orange py-2 ps-3"
-              >
-                {"<"}Back
-              </Typography>
               <Box className="w-50 mt-3 ms-5">
                 <DropDownWithAddNewOptions
                   label="Category"
@@ -210,31 +202,35 @@ const CreateCategories = ({ setShowCreateCategories }) => {
                 </Box>
               )}
             </Grid>
-            <Grid item xs={6} sx={{ minHeight: "84vh" }} className="h-100">
-              <Box className="ms-4 mt-5 me-4">
-                <Typography className="h-5 fw-bold color-orange">
-                  Variation lists
-                </Typography>
-                <Box className="mxh-50vh overflow-auto">{getVariations()}</Box>
-                <Typography
-                  sx={{ border: "1px dashed #e56700" }}
-                  className="color-orange cursor-pointer w-50 m-auto text-center mt-4 border-orange py-2"
-                  onClick={() => {
-                    setAttributesArray([]);
-                    setVariationName("");
-                    setOpenVariationModal(true);
-                    setVariationId(null);
-                  }}
-                >
-                  Add New Variations
-                </Typography>
-              </Box>
+            <Grid item xs={6}>
               <Box
-                sx={{ top: "90%", left: { md: "80%", lg: "84%" } }}
-                className="position-fixed"
+                sx={{ height: "84vh" }}
+                className="h-100 d-flex flex-column justify-content-between"
               >
-                <ButtonComponent label="Reset" variant="outlined" />
-                <ButtonComponent label="Submit" muiProps="ms-2" />
+                <Box className="ms-4 mt-5 me-4">
+                  <Typography className="h-5 fw-bold color-orange">
+                    Variation lists
+                  </Typography>
+                  <Box className="mxh-50vh overflow-auto">
+                    {getVariations()}
+                  </Box>
+                  <Typography
+                    sx={{ border: "1px dashed #e56700" }}
+                    className="color-orange cursor-pointer w-50 m-auto text-center mt-4 border-orange py-2"
+                    onClick={() => {
+                      setAttributesArray([]);
+                      setVariationName("");
+                      setOpenVariationModal(true);
+                      setVariationId(null);
+                    }}
+                  >
+                    Add New Variations
+                  </Typography>
+                </Box>
+                <Box className="d-flex justify-content-end me-2 mb-1">
+                  <ButtonComponent label="Reset" variant="outlined" />
+                  <ButtonComponent label="Submit" muiProps="ms-2" />
+                </Box>
               </Box>
             </Grid>
           </Grid>

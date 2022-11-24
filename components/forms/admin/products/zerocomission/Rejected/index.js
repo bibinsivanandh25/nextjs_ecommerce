@@ -1,20 +1,32 @@
-import { Box, Paper, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import ViewProducts from "./ViewProducts";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import {
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
+import toastify from "services/utils/toastUtils";
+import { deleteProducts } from "services/admin/products";
 import AcceptRejectModal from "./AcceptRejectmodal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
+import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
-const Rejected = () => {
+const Rejected = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -28,6 +40,14 @@ const Rejected = () => {
   const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
     useState(false);
   const [showFlagModal, setShowFlagModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [subCategoryIds, setSubCategoryIds] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  // eslint-disable-next-line no-unused-vars
+  const [products, setProducts] = useState([]);
 
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
@@ -42,17 +62,6 @@ const Rejected = () => {
   });
 
   const [images, setImages] = useState([]);
-
-  const options = [
-    "Edit",
-    "Delete",
-    "Visibility Range",
-    "Accept/Reject",
-    "Raise Query",
-    "Draft",
-    "Merge to",
-    "Flags",
-  ];
 
   const columns = [
     {
@@ -91,103 +100,172 @@ const Rejected = () => {
     { id: "col9", align: "center", label: "Brand", data_align: "center" },
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
+  const dispatch = useDispatch();
 
-  const getTableData = async () => {
-    const payLoad = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      productVariationIds: [],
-      dateFrom: "",
-      dateTo: "",
-      commissionType: "ZERO_COMMISSION",
-      status: "REJECTED",
-    };
-    const { data, err } = await getAdminProductsByFilter(payLoad);
-
+  const viewClick = async (masterProductId, variationId) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
     if (data) {
-      // console.log("The data ", data);
-      const result = [];
-      data.products.forEach((val, index) => {
-        result.push({
-          id: index + 1,
-          col1: (
-            <>
-              <Typography className="fs-12 text-primary">
-                {val.supplierId}
-              </Typography>
-              <Typography className="fs-12 text-primary">
-                {val.supplierName}
-              </Typography>
-            </>
-          ),
-          col2: val.variationMedia ? (
-            <Box className="d-flex align-items-end justify-content-center">
-              <Box
-                onClick={() => {
-                  setImages([...val.variationMedia]);
-                  setImageIndexForImageModal(0);
-                  setModalId(index);
-                  setOpenImagesArrayModal(true);
-                }}
-                className="h-30 border d-flex justify-content-center"
-              >
-                <Image
-                  src={val.variationMedia[0]}
-                  width="50"
-                  height="50"
-                  className="cursor-pointer"
-                />
-              </Box>
-              <Typography className="fs-10">
-                /{val.variationMedia.length}
-              </Typography>
-            </Box>
-          ) : null,
-          col3: val.productTitle,
-          col4: val.skuId,
-          col5: (
-            <>
-              <Typography>{val.categoryName}</Typography>
-              <Typography>{val.subCategoryName}</Typography>
-            </>
-          ),
-          col6: (
-            <>
-              <Typography>{val.weightInclusivePackage}</Typography>
-              <Typography>{val.volume}</Typography>
-            </>
-          ),
-          col7: val.stockQty,
-          col8: (
-            <Typography className="fs-12">
-              &#8377; {val.salePrice}/ &#8377; {val.mrp}
-            </Typography>
-          ),
-          col9: val.brand,
-          col10: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => setShowViewProducts(true)}
-              />
-              <MenuOption
-                getSelectedItem={() => {
-                  // onClickOfMenuItem(ele, index);
-                }}
-                options={options}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        });
-      });
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [],
+      };
+      dispatch(adminProductView(temp));
+      setShowViewProducts(true);
 
-      setTableRows([...result]);
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData(0);
+      getCount();
     }
     if (err) {
-      // console.log(err);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      result.push({
+        id: index + 1,
+        col1: (
+          <>
+            <Typography className="fs-12 text-primary">
+              {val.supplierId}
+            </Typography>
+            <Typography className="fs-12 text-primary">
+              {val.businessName}
+            </Typography>
+          </>
+        ),
+        col2: val.variationMedia ? (
+          <Box className="d-flex align-items-end justify-content-center">
+            <Box
+              onClick={() => {
+                setImages([...val.variationMedia]);
+                setImageIndexForImageModal(0);
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
+              <Image
+                src={val.variationMedia[0]}
+                width="50"
+                height="50"
+                className="cursor-pointer"
+              />
+            </Box>
+            <Typography className="fs-10">
+              /{val.variationMedia.length}
+            </Typography>
+          </Box>
+        ) : null,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
+        col4: val.skuId,
+        col5: (
+          <>
+            <Typography className="fs-12">{val.categoryName}</Typography>
+            <Typography className="fs-12">{val.subCategoryName}</Typography>
+          </>
+        ),
+        col6: (
+          <>
+            <Typography className="fs-12">
+              {val.weightInclusivePackage}
+            </Typography>
+            <Typography className="fs-12">{val.volume}</Typography>
+          </>
+        ),
+        col7: val.stockQty,
+        col8: (
+          <Typography className="fs-12">
+            &#8377; {val.salePrice}/ &#8377; {val.mrp}
+          </Typography>
+        ),
+        col9: val.brand,
+        col10: (
+          <Box className="d-flex justify-content-between align-items-center">
+            <CustomIcon
+              type="view"
+              className="h-4"
+              title="view"
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId);
+              }}
+            />
+            <CustomIcon
+              type="delete"
+              className="h-4 ms-1"
+              title="delete"
+              onIconClick={() => {
+                deleteProduct(val.productVariationId);
+              }}
+            />
+            {/* <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, val);
+              }}
+              options={options}
+              IconclassName="fs-18 color-gray"
+            /> */}
+          </Box>
+        ),
+      });
+    });
+
+    return result;
+  };
+
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
+    const payLoad = {
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
+      status: "REJECTED",
+    };
+    const { data } = await getAdminProductsByFilter(payLoad, page);
+
+    if (data) {
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      }
     }
   };
 
@@ -207,35 +285,41 @@ const Rejected = () => {
               <Box className="px-1 pt-2">
                 <TableComponent
                   columns={columns}
+                  showFilterButton
                   tHeadBgColor="bg-light-gray"
-                  // showPagination={false}
+                  showFilterList={false}
                   tableRows={tableRows}
-                  // showSearchbar={false}
-                  showDateFilterBtn
-                  showDateFilter
-                  dateFilterBtnName="+ New Product"
-                  dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
-                    setImageArray([]);
-                    setOpenEditModal(true);
-                    setModalId(null);
+                  showDateFilterSearch={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
                   }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    dateFilter
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
+                  }}
+                  showDateFilter
                 />
               </Box>
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}
@@ -252,6 +336,20 @@ const Rejected = () => {
           // rowsDataObjects={rowsDataObjectsForRejected}
         />
       ) : null}
+      {showFilterModal && (
+        <FilterModal
+          status="REJECTED"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
       {/* Images Modal Component */}
       {openImagesArrayModal ? (
         <DisplayImagesModal

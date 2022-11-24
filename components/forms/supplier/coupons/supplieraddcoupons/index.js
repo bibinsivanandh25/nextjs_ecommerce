@@ -99,8 +99,11 @@ const SupplierAddCoupons = ({
       const payload = {
         storeCouponCode: formValues.code,
         minimumOrderValue: parseInt(formValues.minpurchaseamount, 10),
-        expirationDate: formValues.couponExpiryDate,
-        couponUsageLimit: formValues.usageLimitPerCoupon,
+        expirationDate: new Date(formValues.couponExpiryDate)
+          .toLocaleDateString()
+          .toString()
+          .replaceAll("/", "-"),
+        couponUsageLimit: parseInt(formValues.usageLimitPerCoupon, 10),
         customerUsageLimit: parseInt(formValues.usageLimitPerUser, 10),
         couponAmount: parseInt(formValues.couponAmount, 10),
         couponStatus,

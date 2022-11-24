@@ -334,6 +334,7 @@ const SupplierSupport = () => {
                 table_heading="Supplier Support"
                 showSearchFilter={false}
                 showSearchbar={false}
+                showFilterList
                 showCustomButton
                 customButtonLabel="Create Ticket"
                 showFilterButton

@@ -28,7 +28,7 @@ import VariationForm from "@/forms/supplier/products/productform/VariationForm";
 import PricingForMrMRsCartForm from "@/forms/supplier/products/productform/pricingformrmrscartForm";
 // import { getAttributes } from "services/supplier/AddProducts";
 
-const NewProducts = () => {
+const NewProducts = ({ closeModal = () => {} }) => {
   const formsRef = useRef(null);
   const schema = {
     productImage: [],
@@ -455,7 +455,9 @@ const NewProducts = () => {
     await getB2BTradmarkValues("TRADEMARK_LETTER");
 
     const temp = JSON.parse(JSON.stringify(schema));
-    temp.productImage = [...productDetails.variationData.variationMedia];
+    temp.productImage = productDetails.variationData?.variationMedia
+      ? [...productDetails.variationData.variationMedia]
+      : [];
     temp.mainForm.commision_mode = productDetails.commissionMode;
     temp.mainForm.brand = productDetails.brand;
     temp.mainForm.short_description.text = productDetails.shortDescription;
@@ -767,6 +769,7 @@ const NewProducts = () => {
         tabsList={tabsList}
         formsRef={formsRef}
         schema={schema}
+        closeModal={closeModal}
       />
     </Paper>
   );

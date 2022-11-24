@@ -45,10 +45,62 @@ const deleteProducts = (id) => {
     .then((res) => res)
     .catch((err) => ({ err }));
 };
+
+const getAllProductsCount = (commissionType) => {
+  return serviceUtil
+    .get(`products/admin/products/count?commissionType=${commissionType}`)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getProductsToMergeBySearch = (payload) => {
+  return serviceUtil
+    .put(`products/admin/products/merge-products`, payload, {
+      header: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const mergeProducts = (payload) => {
+  return serviceUtil
+    .put(`products/merge-product/`, payload)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getDiscountByProductVariationId = (page, supplierId, ProductId) => {
+  const pageSize = 50;
+  return serviceUtil
+    .get(
+      `users/admin/product-coupon/${page}/${pageSize}?productVariationId=${ProductId}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getMainCategories,
   getSubCategories,
   getBrands,
   getProductTitles,
   deleteProducts,
+  getAllProductsCount,
+  getProductsToMergeBySearch,
+  mergeProducts,
+  getDiscountByProductVariationId,
 };

@@ -5,127 +5,60 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TabsCard from "components/molecule/TabsCard";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import ProductsToApprove from "@/forms/admin/products/zerocomission/ProductsToApprove";
 import Rejected from "@/forms/admin/products/zerocomission/Rejected";
 import Queries from "@/forms/admin/products/zerocomission/Queries";
 import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
 import Updated from "@/forms/admin/products/zerocomission/Updated";
+import { getAllProductsCount } from "services/admin/products";
 
 const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
-    { label: "Products to approve", isSelected: true },
-    { label: "Queries", isSelected: false },
-    { label: "Active", isSelected: false },
-    { label: "Updated", isSelected: false },
-    { label: "Rejected", isSelected: false },
+    {
+      id: "Products to approve",
+      label: "Products to approve",
+      isSelected: true,
+    },
+    { id: "Queries", label: "Queries", isSelected: false },
+    { id: "Active", label: "Active", isSelected: false },
+    { id: "Updated", label: "Updated", isSelected: false },
+    { id: "Rejected", label: "Rejected", isSelected: false },
   ]);
 
-  const callApi = (type, payload) => {
-    // eslint-disable-next-line consistent-return
-    return getAdminProductsByFilter(payload)
-      .then((res) => {
-        return { [`${type}`]: res.data };
-      })
-      .catch(() => {
-        return null;
-      });
-  };
-
   const getCount = async () => {
-    const status = ["INITIATED", "APPROVED", "REJECTED"];
-    const promiseArr = [];
-    status.forEach((ele) => {
-      if (ele === "INITIATED") {
-        promiseArr.push(
-          callApi("INITIATED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "ZERO_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-      if (ele === "APPROVED") {
-        promiseArr.push(
-          callApi("APPROVED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "ZERO_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-      if (ele === "REJECTED") {
-        promiseArr.push(
-          callApi("REJECTED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "ZERO_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-    });
-
-    await Promise.all(promiseArr).then((res) => {
-      const tabs = JSON.parse(JSON.stringify(tabList));
-      res?.forEach((item) => {
-        if (!item) return;
-        if (Object.keys(item)[0] === "INITIATED") {
-          tabs.map((element) => {
-            if (element.label === "Products to approve")
-              return (element.label += `( ${
-                item[Object.keys(item)[0]]?.count
-                  ? item[Object.keys(item)[0]]?.count
-                  : 0
-              } )`);
-            return element;
-          });
-        }
-        if (Object.keys(item)[0] === "REJECTED") {
-          tabs.map((element) => {
-            if (element.label === "Rejected")
-              return (element.label += `( ${
-                item[Object.keys(item)[0]]?.count
-                  ? item[Object.keys(item)[0]]?.count
-                  : 0
-              } )`);
-            return element;
-          });
-        }
-        if (Object.keys(item)[0] === "APPROVED") {
-          tabs.map((element) => {
-            if (element.label === "Active")
-              return (element.label += `( ${
-                item[Object.keys(item)[0]]?.count
-                  ? item[Object.keys(item)[0]]?.count
-                  : 0
-              } )`);
-            return element;
-          });
-        }
+    const { data } = await getAllProductsCount("ZERO_COMMISSION");
+    if (data) {
+      const tab = JSON.parse(JSON.stringify(tabList));
+      tab.map((element) => {
+        if (element.id === "Products to approve")
+          return (element.label = `${element.id}( ${
+            data?.data?.INITIATED ?? 0
+          } )`);
+        if (element.id === "Queries")
+          return (element.label = `${element.id}( ${
+            data?.data?.IN_QUERY ?? 0
+          } )`);
+        if (element.id === "Active")
+          return (element.label = `${element.id}( ${
+            data?.data?.APPROVED ?? 0
+          } )`);
+        if (element.id === "Updated")
+          return (element.label = `${element.id}( ${
+            data?.data?.UPDATED ?? 0
+          } )`);
+        if (element.id === "Rejected")
+          return (element.label = `${element.id}( ${
+            data?.data?.REJECTED ?? 0
+          } )`);
+        return element;
       });
-      setTabList([...tabs]);
-    });
+      setTabList(tab);
+    }
   };
 
   useEffect(() => {
     getCount();
-    // setTabList([...temp]);
   }, []);
 
   const handleSelect = (index) => {
@@ -152,6 +85,7 @@ const ZeroCommission = () => {
           tabList={tabList}
           onSelect={(index) => {
             handleSelect(index);
+            getCount();
           }}
         >
           <Box className="px-1 pt-2">

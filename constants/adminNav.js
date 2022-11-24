@@ -70,6 +70,14 @@ const adminNav = [
             child: [],
           },
           {
+            title: "Assign Variation",
+            logo: null,
+            navigate: true,
+            disabled: false,
+            pathName: "assignvariation",
+            child: [],
+          },
+          {
             title: "Variations",
             logo: null,
             navigate: true,

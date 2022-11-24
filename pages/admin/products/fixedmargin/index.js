@@ -5,14 +5,14 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TabsCard from "components/molecule/TabsCard";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
-import ProductsToApprove from "@/forms/admin/products/fixedmargin/ProductsToApprove/index";
-import Active from "@/forms/admin/products/fixedmargin/ActiveProducts";
-import Updated from "@/forms/admin/products/fixedmargin/Updated";
-import Queries from "@/forms/admin/products/fixedmargin/Queries";
-import Rejected from "@/forms/admin/products/fixedmargin/Rejected";
+import ProductsToApprove from "@/forms/admin/products/zerocomission/ProductsToApprove";
+import Rejected from "@/forms/admin/products/zerocomission/Rejected";
+import Queries from "@/forms/admin/products/zerocomission/Queries";
+import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
+import Updated from "@/forms/admin/products/zerocomission/Updated";
+import { getAllProductsCount } from "services/admin/products";
 
-const FixedMargin = () => {
+const ZeroCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
     { label: "Products to approve", isSelected: true },
@@ -22,107 +22,39 @@ const FixedMargin = () => {
     { label: "Rejected", isSelected: false },
   ]);
 
-  const callApi = (type, payload) => {
-    // eslint-disable-next-line consistent-return
-    return getAdminProductsByFilter(payload).then((res) => {
-      if (!res.error) {
-        return { [`${type}`]: res.data };
-      }
-    });
-  };
-
-  const getTableData = async () => {
-    const status = ["INITIATED", "APPROVED", "REJECTED"];
-    const promiseArr = [];
-    status.forEach((ele) => {
-      if (ele === "INITIATED") {
-        promiseArr.push(
-          callApi("INITIATED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "FIXED_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-      if (ele === "APPROVED") {
-        promiseArr.push(
-          callApi("APPROVED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "FIXED_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-      if (ele === "REJECTED") {
-        promiseArr.push(
-          callApi("REJECTED", {
-            categoryIds: [],
-            subCategoryIds: [],
-            brandNames: [],
-            productVariationIds: [],
-            dateFrom: "",
-            dateTo: "",
-            commissionType: "FIXED_COMMISSION",
-            status: ele,
-          })
-        );
-      }
-    });
-
-    const temp = await Promise.all(promiseArr);
-    const tabs = JSON.parse(JSON.stringify(tabList));
-    temp.forEach((item) => {
-      if (Object.keys(item)[0] === "INITIATED") {
-        tabs.map((element) => {
-          if (element.label === "Products to approve")
-            return (element.label += `( ${
-              item[Object.keys(item)[0]]?.count
-                ? item[Object.keys(item)[0]]?.count
-                : 0
-            } )`);
-          return element;
-        });
-      }
-      if (Object.keys(item)[0] === "REJECTED") {
-        tabs.map((element) => {
-          if (element.label === "Rejected")
-            return (element.label += `( ${
-              item[Object.keys(item)[0]]?.count
-                ? item[Object.keys(item)[0]]?.count
-                : 0
-            } )`);
-          return element;
-        });
-      }
-      if (Object.keys(item)[0] === "APPROVED") {
-        tabs.map((element) => {
-          if (element.label === "Active")
-            return (element.label += `( ${
-              item[Object.keys(item)[0]]?.count
-                ? item[Object.keys(item)[0]]?.count
-                : 0
-            } )`);
-          return element;
-        });
-      }
-    });
-    // console.log(tabs, "tabs");
-    setTabList([...tabs]);
+  const getCount = async () => {
+    const { data } = await getAllProductsCount("FIXED_COMMISSION");
+    if (data) {
+      const tab = JSON.parse(JSON.stringify(tabList));
+      tab.map((element) => {
+        if (element.id === "Products to approve")
+          return (element.label = `${element.id}( ${
+            data?.data?.INITIATED ?? 0
+          } )`);
+        if (element.id === "Queries")
+          return (element.label = `${element.id}( ${
+            data?.data?.IN_QUERY ?? 0
+          } )`);
+        if (element.id === "Active")
+          return (element.label = `${element.id}( ${
+            data?.data?.APPROVED ?? 0
+          } )`);
+        if (element.id === "Updated")
+          return (element.label = `${element.id}( ${
+            data?.data?.UPDATED ?? 0
+          } )`);
+        if (element.id === "Rejected")
+          return (element.label = `${element.id}( ${
+            data?.data?.REJECTED ?? 0
+          } )`);
+        return element;
+      });
+      setTabList(tab);
+    }
   };
 
   useEffect(() => {
-    getTableData();
-    // setTabList([...temp]);
+    getCount();
   }, []);
 
   const handleSelect = (index) => {
@@ -144,24 +76,33 @@ const FixedMargin = () => {
 
   return (
     <>
-      {" "}
       <Box>
         <TabsCard
           tabList={tabList}
           onSelect={(index) => {
             handleSelect(index);
+            getCount();
           }}
         >
           <Box className="px-1 pt-2">
-            {activeTab === 0 && <ProductsToApprove />}
-
-            {activeTab === 4 && <Rejected />}
-
-            {activeTab === 1 && <Queries />}
-
-            {activeTab === 2 && <Active />}
-
-            {activeTab === 3 && <Updated />}
+            {activeTab === 0 && (
+              <ProductsToApprove
+                getCount={getCount}
+                commissionType="FIXED_COMMISSION"
+              />
+            )}
+            {activeTab === 1 && (
+              <Queries getCount={getCount} commissionType="FIXED_COMMISSION" />
+            )}
+            {activeTab === 2 && (
+              <Active getCount={getCount} commissionType="FIXED_COMMISSION" />
+            )}
+            {activeTab === 3 && (
+              <Updated getCount={getCount} commissionType="FIXED_COMMISSION" />
+            )}
+            {activeTab === 4 && (
+              <Rejected getCount={getCount} commissionType="FIXED_COMMISSION" />
+            )}
           </Box>
         </TabsCard>
       </Box>
@@ -169,4 +110,4 @@ const FixedMargin = () => {
   );
 };
 
-export default FixedMargin;
+export default ZeroCommission;

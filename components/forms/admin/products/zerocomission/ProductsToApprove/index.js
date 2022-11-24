@@ -1,32 +1,49 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
+import {
+  acceptOrRejectProduct,
+  getAdminProductsByFilter,
+  raiseQuery,
+} from "services/admin/products/fixedMargin";
 import {
   deleteProducts,
-  getBrands,
-  getMainCategories,
-  getProductTitles,
-  getSubCategories,
+  // getBrands,
+  // getMainCategories,
+  // getProductTitles,
+  // getSubCategories,
 } from "services/admin/products";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import toastify from "services/utils/toastUtils";
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
-import ViewProducts from "./ViewProducts";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import {
+  updateProduct,
+  adminProductView,
+  resetAdminProductView,
+} from "features/productsSlice";
+import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicket";
 import AcceptRejectModal from "./AcceptRejectmodal";
-import RaiseQueryModal from "./RaiseQueryModal";
 import MergeToModal from "./MergeToModal";
-import VisibilityRangeModal from "./VisibilityRangeModal";
-import FlagModal from "./FlagModal";
+// import RaiseQueryModal from "./RaiseQueryModal";
+// import VisibilityRangeModal from "./VisibilityRangeModal";
+// import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
+import FilterModal from "../../FilterModal";
+import ViewOrEditProducts from "../../VieworEditProducts";
 
-const ProductsToApprove = ({ getCount = () => {} }) => {
+const ProductsToApprove = ({
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
+}) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -36,11 +53,12 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
   const [openMergeToModal, setOpenMergeToModal] = useState(false);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
-  const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
-    useState(false);
-  const [showFlagModal, setShowFlagModal] = useState(false);
+  // const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
+  // const [openVisibilityRangeModal, setOpenVisibilityRangeModal] =
+  //   useState(false);
+  // const [showFlagModal, setShowFlagModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
   const [productDetails, setProductDetails] = useState({
     vendorIdOrName: "",
     images: "",
@@ -52,28 +70,45 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     salePriceAndMrp: "",
     discounts: "",
   });
-
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [categoryIds, setCategoryIds] = useState([]);
   const [subCategoryIds, setSubCategoryIds] = useState([]);
   const [brands, setBrands] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
+  const [helpSupportModal, sethelpSupportModal] = useState({
+    show: false,
+    type: "",
+    to: {},
+    productVariationId: null,
+  });
+  const [productVariationId, setProductVariationId] = useState("");
 
   const [images, setImages] = useState([]);
-  const [filterData, setFilterData] = useState([]);
 
   const deleteProduct = async (id) => {
     const { data, err } = await deleteProducts(id);
     if (data) {
       toastify(data?.message, "success");
-      getTableData();
+      getTableData(0);
+      getCount();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
 
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
+      setShowViewProducts(true);
+    }
+  };
   const onClickOfMenuItem = (ele, val) => {
+    setProductVariationId(val?.productVariationId);
     setSelectedRow(val);
     if (ele === "Accept/Reject") {
       setOpenAcceptRejectModal(true);
@@ -81,129 +116,37 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
     }
-  };
-
-  const getAllInitialFilters = () => {
-    const subCategoryPayload = [];
-    const productPayload = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      commissionType: "ZERO_COMMISSION",
-      status: "INITIATED",
-    };
-    const BrandsPayload = {
-      categoryIds: [],
-      subCategoryIds: [],
-      commissionType: "ZERO_COMMISSION",
-      status: "APPROVED",
-    };
-
-    const mainCategories = () =>
-      getMainCategories("ZERO_COMMISSION").then((res) => {
-        return { categories: res.data };
-      });
-    const subCategories = () =>
-      getSubCategories("ZERO_COMMISSION", subCategoryPayload).then((res) => {
-        return { subCategories: res.data };
-      });
-    const productTitles = () =>
-      getProductTitles(productPayload).then((res) => {
-        return {
-          Products: res.data,
-        };
-      });
-    const Brands = () =>
-      getBrands(BrandsPayload).then((res) => {
-        return {
-          brands: res.data,
-        };
-      });
-    const promiseArr = [
-      mainCategories(),
-      subCategories(),
-      productTitles(),
-      Brands(),
-    ];
-    Promise.all(promiseArr).then((data) => {
-      const temp = [
-        { name: "categories", value: [] },
-        { name: "Sub Categories", value: [] },
-        { name: "Brands", value: [] },
-        { name: "Products", value: [] },
-      ];
-      if (data) {
-        data.forEach((ele) => {
-          ele.categories?.forEach((item) => {
-            temp[0].value.push({
-              item: item.name,
-              id: item.id,
-              isSelected: false,
-            });
-          });
-          ele.subCategories?.forEach((item) => {
-            temp[1].value.push({
-              item: item.name,
-              id: item.id,
-              isSelected: false,
-            });
-          });
-          ele.brands?.forEach((item) => {
-            temp[2].value.push({
-              item: item.name,
-              isSelected: false,
-            });
-          });
-          ele.Products?.forEach((item) => {
-            temp[3].value.push({
-              item: item.name,
-              isSelected: false,
-            });
-          });
-        });
-      }
-      setFilterData([...temp]);
-    });
-  };
-
-  const getProductTitleData = async () => {
-    const payload = {
-      categoryIds,
-      subCategoryIds,
-      brandNames: brands,
-      commissionType: "ZERO_COMMISSION",
-      status: "INITIATED",
-    };
-    const { data } = await getProductTitles(payload);
-    if (data) {
-      return {
-        Products: data,
-      };
+    if (ele === "Edit") {
+      editClick([
+        {
+          masterProductId: val.masterProductId,
+          variationId: val.productVariationId,
+          flagged: false,
+        },
+      ]);
     }
-  };
-  const getBrandsDropDown = async () => {
-    const payload = {
-      categoryIds,
-      subCategoryIds,
-      commissionType: "ZERO_COMMISSION",
-      status: "APPROVED",
-    };
-    const { data } = await getBrands(payload);
-    return {
-      brands: data,
-    };
-  };
-  const getSubCategoriesData = async () => {
-    const payload = categoryIds;
-    const { data } = await getSubCategories("ZERO_COMMISSION", payload);
-    return {
-      subCategories: data,
-    };
+    if (ele === "Raise Query") {
+      sethelpSupportModal({
+        show: true,
+        type: "ACTIVE_PRODUCT",
+        to: {
+          id: val.supplierId,
+          label: val.businessName,
+          value: val.supplierId,
+        },
+        productVariationId: val?.productVariationId,
+      });
+    }
+
+    if (ele === "Merge to") {
+      setProductVariationId(val?.productVariationId);
+      setOpenMergeToModal(true);
+    }
   };
 
   useEffect(() => {
     getTableData();
-    getAllInitialFilters();
+    // getAllInitialFilters();
   }, []);
 
   const options = [
@@ -212,7 +155,6 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     "Visibility Range",
     "Accept/Reject",
     "Raise Query",
-    "Draft",
     "Merge to",
     "Flags",
   ];
@@ -255,209 +197,257 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
     { id: "col10", align: "center", label: "Action", data_align: "center" },
   ];
 
-  const getTableData = async () => {
-    const payLoad = {
-      categoryIds: [],
-      subCategoryIds: [],
-      brandNames: [],
-      productVariationIds: [],
-      dateFrom: "",
-      dateTo: "",
-      commissionType: "ZERO_COMMISSION",
-      status: "INITIATED",
+  const dispatch = useDispatch();
+  const approveOrRejectProduct = async (status, id) => {
+    const payload = {
+      productVariationId: id,
+      status,
     };
-    const { data } = await getAdminProductsByFilter(payLoad);
-    if (data) {
-      const result = [];
-      data?.forEach((val, index) => {
-        result.push({
-          id: index + 1,
-          col1: (
-            <>
-              <Typography className="fs-12 text-primary">
-                {val.supplierId}
-              </Typography>
-              <Typography className="fs-12 text-primary">
-                {val.supplierName}
-              </Typography>
-            </>
-          ),
-          col2: val.variationMedia ? (
-            <Box className="d-flex align-items-end justify-content-center">
-              <Box
-                onClick={() => {
-                  setImages([...val.variationMedia]);
-                  setImageIndexForImageModal(0);
-                  setModalId(index);
-                  setOpenImagesArrayModal(true);
-                }}
-                className="h-30 border d-flex justify-content-center"
-              >
-                <Image
-                  src={val.variationMedia[0]}
-                  width="50"
-                  height="50"
-                  className="cursor-pointer"
-                />
-              </Box>
-              <Typography className="h-5">
-                /{val.variationMedia.length}
-              </Typography>
-            </Box>
-          ) : null,
-          col3: <Typography className="h-5">{val.productTitle}</Typography>,
-          col4: <Typography className="h-5">{val.skuId}</Typography>,
-          col5: (
-            <>
-              <Typography className="h-5">{val.categoryName}</Typography>
-              <Typography className="h-5">{val.subCategoryName}</Typography>
-            </>
-          ),
-          col6: (
-            <>
-              <Typography className="h-5">
-                {val.weightInclusivePackage}
-              </Typography>
-              <Typography className="h-5">{val.volume}</Typography>
-            </>
-          ),
-          col7: val.stockQty,
-          col8: (
-            <Typography className="h-5">
-              &#8377; {val.salePrice}/ &#8377; {val.mrp}
-            </Typography>
-          ),
-          col9: val.brand,
-          col10: (
-            <Box className="d-flex justify-content-evenly align-items-center">
-              <CustomIcon
-                type="view"
-                className="fs-18"
-                onIconClick={() => setShowViewProducts(true)}
-              />
-              <MenuOption
-                getSelectedItem={(ele) => {
-                  onClickOfMenuItem(ele, val);
-                }}
-                options={options}
-                IconclassName="fs-18 color-gray"
-              />
-            </Box>
-          ),
-        });
-      });
+    const { data, err, message } = await acceptOrRejectProduct(payload);
 
-      setTableRows([...result]);
+    if (data) {
+      setShowViewProducts(false);
+      dispatch(resetAdminProductView());
+      toastify(message, "success");
+      await getTableData(0);
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
     }
   };
 
-  const getFilteredValue = (value) => {
-    const temp = JSON.parse(JSON.stringify(value));
-    const tempCategoryIds = [];
-    temp[0].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempCategoryIds.push(i.id);
-      }
-    });
-    if (JSON.stringify(categoryIds) != JSON.stringify(tempCategoryIds))
-      setCategoryIds([...tempCategoryIds]);
-    const tempSubCategoryIds = [];
-    temp[1].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempSubCategoryIds.push(i.id);
-      }
-    });
-    if (JSON.stringify(subCategoryIds) != JSON.stringify(tempSubCategoryIds))
-      setSubCategoryIds([...tempSubCategoryIds]);
-    const tempBrands = [];
-    temp[2].value?.forEach((i) => {
-      if (i.isSelected) {
-        tempBrands.push(i.item);
-      }
-    });
+  const viewClick = async (masterProductId, variationId, val) => {
+    const { data, err } = await getVariation([
+      { masterProductId, variationId },
+    ]);
+    if (data) {
+      const temp = {
+        data: data[0],
+        showExtraTabs: false,
+        list: [
+          {
+            label: "Flag",
+            callBack: () => {
+              console.log("flag");
+            },
+          },
+          {
+            label: "Merge To",
+            callBack: () => {
+              console.log("Merge");
+            },
+          },
+          {
+            label: "Raise Query",
+            callBack: () => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+              sethelpSupportModal({
+                show: true,
+                type: "ACTIVE_PRODUCT",
+                to: {
+                  id: val.supplierId,
+                  label: val.supplierName,
+                  value: val.supplierId,
+                },
+                productVariationId: val?.productVariationId,
+              });
+            },
+          },
+          {
+            label: "Approve",
+            callBack: () => {
+              approveOrRejectProduct("APPROVED", val.productVariationId);
+            },
+          },
+          {
+            label: "Reject",
+            callBack: () => {
+              approveOrRejectProduct("REJECTED", val.productVariationId);
+            },
+          },
+        ],
+      };
+      dispatch(adminProductView(temp));
+      setShowViewProducts(true);
 
-    if (JSON.stringify(brands) != JSON.stringify(tempBrands))
-      setBrands([...tempBrands]);
+      // window.open("/supplier/products&inventory/addnewproduct");
+    } else {
+      toastify(err?.response?.data?.messagea);
+    }
   };
 
-  useEffect(() => {
-    setSubCategoryIds([]);
-    setBrands([]);
-    setProducts([]);
-    const promiseArr = [
-      getSubCategoriesData(),
-      getBrandsDropDown(),
-      getProductTitleData(),
-    ];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[1].value = data[0]?.subCategories?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          temp[2].value = data[1]?.brands?.map((i) => ({
-            item: i.name,
-            isSelected: false,
-          }));
-          temp[3].value = data[2]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
+  const mapTableRows = (data) => {
+    const result = [];
+    data?.forEach((val, index) => {
+      result.push({
+        id: index + 1,
+        col1: (
+          <>
+            <Typography className="fs-12 text-primary">
+              {val.supplierId}
+            </Typography>
+            <Typography className="fs-12 text-primary">
+              {val.businessName}
+            </Typography>
+          </>
+        ),
+        col2: val.variationMedia ? (
+          <Box className="d-flex align-items-end justify-content-center">
+            <Box
+              onClick={() => {
+                setImages([...val.variationMedia]);
+                setImageIndexForImageModal(0);
+                setModalId(index);
+                setOpenImagesArrayModal(true);
+              }}
+              className="h-30 border d-flex justify-content-center"
+            >
+              <Image
+                src={val.variationMedia[0]}
+                width="50"
+                height="50"
+                className="cursor-pointer"
+              />
+            </Box>
+            <Typography className="h-5">
+              /{val.variationMedia.length}
+            </Typography>
+          </Box>
+        ) : null,
+        col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
+        col4: <Typography className="h-5">{val.skuId}</Typography>,
+        col5: (
+          <>
+            <Typography className="h-5">{val.categoryName}</Typography>
+            <Typography className="h-5">{val.subCategoryName}</Typography>
+          </>
+        ),
+        col6: (
+          <>
+            <Typography className="h-5">
+              {val.weightInclusivePackage}
+            </Typography>
+            <Typography className="h-5">{val.volume}</Typography>
+          </>
+        ),
+        col7: val.stockQty,
+        col8: (
+          <Typography className="h-5">
+            &#8377; {val.salePrice}/ &#8377; {val.mrp}
+          </Typography>
+        ),
+        col9: val.brand,
+        col10: (
+          <Box className="d-flex justify-content-evenly align-items-center">
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => {
+                viewClick(val.masterProductId, val.productVariationId, val);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                onClickOfMenuItem(ele, val);
+              }}
+              options={options}
+              IconclassName="fs-18 color-gray"
+            />
+          </Box>
+        ),
+      });
     });
-  }, [categoryIds]);
+    return result;
+  };
+  const getTableData = async (
+    page = pageNumber,
+    catIDs,
+    subcatIds,
+    brandNames,
+    productIds,
+    date
+  ) => {
+    const payLoad = {
+      categoryIds: catIDs ?? categoryIds ?? [],
+      subCategoryIds: subcatIds ?? subCategoryIds ?? [],
+      brandNames: brandNames ?? brands ?? [],
+      productVariationIds: productIds ?? products ?? [],
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
+      status: "INITIATED",
+    };
+    const { data } = await getAdminProductsByFilter(payLoad, page);
+    if (data) {
+      if (page === 0) {
+        setTableRows([...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      } else {
+        setTableRows([...tableRows, ...mapTableRows(data)]);
+        setPageNumber(pageNumber + 1);
+      }
+    }
+  };
 
-  useEffect(() => {
-    setBrands([]);
-    setProducts([]);
-    const promiseArr = [getBrandsDropDown(), getProductTitleData()];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[2].value = data[0]?.brands?.map((i) => ({
-            item: i.name,
-            isSelected: false,
-          }));
-          temp[3].value = data[1]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
-    });
-  }, [subCategoryIds]);
-
-  useEffect(() => {
-    setProducts([]);
-    const promiseArr = [getProductTitleData()];
-    Promise.all(promiseArr).then((data) => {
-      if (data) {
-        const temp = JSON.parse(JSON.stringify(filterData));
-        if (temp.length) {
-          temp[3].value = data[0]?.Products?.map((i) => ({
-            item: i.name,
-            id: i.id,
-            isSelected: false,
-          }));
-          setFilterData(temp);
-        }
-      }
-    });
-  }, [brands]);
+  const saveQuery = async (val) => {
+    const payload = {
+      issueType: "PRODUCT_RELATED_ISSUE",
+      issueSubject: val.issueSubject,
+      userFromType: "ADMIN",
+      userFromId: val.userFromId,
+      userToType: "SUPPLIER",
+      userToId: val.userToId,
+      mediaUrl: [...val.mediaUrl],
+      helpSupportMessagePojos: [...val.helpSupportMessagePojos],
+      productVariationId: helpSupportModal.productVariationId,
+    };
+    const { data, message, err } = await raiseQuery(payload);
+    if (data) {
+      getCount();
+      toastify(message, "success");
+      sethelpSupportModal({
+        show: false,
+        type: "",
+        to: {},
+        productVariationId: null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   return (
     <>
       <Box>
-        {!showViewProducts ? (
+        {helpSupportModal.show ? (
+          <CreateTicket
+            setShowCreateTicketComponent={() => {
+              sethelpSupportModal({
+                show: false,
+                type: "",
+                to: {},
+                productVariationId: null,
+              });
+            }}
+            type={helpSupportModal.type}
+            to={helpSupportModal.to}
+            submit={saveQuery}
+            getTabledata={getTableData}
+            getCount={getCount}
+          />
+        ) : !showViewProducts ? (
           <Box>
             <Paper
               sx={{ height: "78vh" }}
@@ -465,8 +455,11 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
             >
               <Box className="px-1 pt-2">
                 <TableComponent
+                  showFilterList={false}
+                  onFilterButtonClick={() => {
+                    setShowFilterModal(true);
+                  }}
                   columns={columns}
-                  getFilteredValuesOnCheckBoxClick
                   tHeadBgColor="bg-light-gray"
                   tableRows={tableRows}
                   showDateFilterBtn
@@ -476,37 +469,42 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
                   showSearchFilter={false}
                   dateFilterBtnName="+ New Product"
                   showFilterButton
-                  filterData={[]}
-                  getFilteredValues={(value) => {
-                    getFilteredValue(value);
-                    setFilterData(value);
-                  }}
                   dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
                     setImageArray([]);
                     setOpenEditModal(true);
                     setModalId(null);
+                  }}
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber,
+                    dateFilter
+                  ) => {
+                    getTableData(
+                      page,
+                      undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      dateFilter
+                    );
                   }}
                 />
               </Box>
             </Paper>
           </Box>
         ) : (
-          <ViewProducts setShowViewProduct={setShowViewProducts} />
+          <ViewOrEditProducts
+            setShowViewOrEdit={() => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+            }}
+          />
         )}
       </Box>
       {/* Edit Modal Component */}
       <AddEditProductModal
+        setOpenMergeToModal={setOpenMergeToModal}
         openEditModal={openEditModal}
         setOpenEditModal={setOpenEditModal}
         productDetails={productDetails}
@@ -517,6 +515,20 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
         modalId={modalId}
         rowsDataObjects={tableRows}
       />
+      {showFilterModal && (
+        <FilterModal
+          status="INITIATED"
+          showModal={showFilterModal}
+          setShowModal={setShowFilterModal}
+          getFilteredValues={(catIds, subcatIds, brandNames, productIds) => {
+            setCategoryIds(catIds);
+            setSubCategoryIds(subcatIds);
+            setBrands(brandNames);
+            setProducts(productIds);
+            getTableData(0, catIds, subcatIds, brandNames, productIds);
+          }}
+        />
+      )}
       {/* Images Modal Component */}
       <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
@@ -531,35 +543,43 @@ const ProductsToApprove = ({ getCount = () => {} }) => {
       {/* Accept Reject Modal */}
       {openAcceptRejectModal ? (
         <AcceptRejectModal
+          sethelpSupportModal={sethelpSupportModal}
           getCount={getCount}
           openAcceptRejectModal={openAcceptRejectModal}
           setOpenAcceptRejectModal={setOpenAcceptRejectModal}
           modalId={modalId}
           rowsDataObjects={selectedRow}
           getTableData={getTableData}
+          setOpenMergeToModal={setOpenMergeToModal}
         />
       ) : null}
       {/* Raise Query Modal */}
-      <RaiseQueryModal
+      {/* <RaiseQueryModal
         openRaiseQueryModal={openRaiseQueryModal}
         setOpenRaiseQueryModal={setOpenRaiseQueryModal}
         modalTitle="Raise Query"
         placeholder="Type your query"
-      />
+      /> */}
       {/* Merge To Modal */}
-      <MergeToModal
-        openMergeToModal={openMergeToModal}
-        setOpenMergeToModal={setOpenMergeToModal}
-      />
-      <VisibilityRangeModal
+      {openMergeToModal ? (
+        <MergeToModal
+          getTableData={getTableData}
+          productId={productVariationId}
+          openMergeToModal={openMergeToModal}
+          setOpenMergeToModal={setOpenMergeToModal}
+          viewClick={viewClick}
+          getCount={getCount}
+        />
+      ) : null}
+      {/* <VisibilityRangeModal
         openVisibilityRangeModal={openVisibilityRangeModal}
         setOpenVisibilityRangeModal={setOpenVisibilityRangeModal}
-      />
+      /> */}
       {/* Flag Modal */}
-      <FlagModal
+      {/* <FlagModal
         showFlagModal={showFlagModal}
         setShowFlagModal={setShowFlagModal}
-      />
+      /> */}
     </>
   );
 };
