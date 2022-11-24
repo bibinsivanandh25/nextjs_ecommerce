@@ -79,7 +79,7 @@ const Updated = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [queryModalOpen, setQueryModalOpen] = useState(false);
   const [tableRows, setTableRows] = useState([]);
-  const [count, setCount] = useState([]);
+  const [count, setCount] = useState(0);
   const [details, setDetails] = useState([]);
   // const [payload, setPayload] = useState({
   //   fromDate: null,
