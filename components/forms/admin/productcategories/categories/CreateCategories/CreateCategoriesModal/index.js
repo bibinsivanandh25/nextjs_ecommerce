@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -15,8 +15,12 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import ImageCard from "@/atoms/ImageCard";
-import { getBase64 } from "services/utils/functionUtils";
 import toastify from "services/utils/toastUtils";
+import {
+  addMainCategory,
+  getCategoryMediaUrl,
+  UpdateMainCategory,
+} from "services/admin/products/productCategories/category";
 
 const steps = [
   "Lower Bound Price Range",
@@ -27,6 +31,9 @@ const steps = [
 const CreateCategoriesModal = ({
   openCreateNewCategories,
   setOpenCreateCategoriesModal,
+  getTableData = () => {},
+  modalType = "Add",
+  categoryFormData = {},
 }) => {
   const [categoryDetails, setCategoryDetails] = useState({
     category: "",
@@ -37,11 +44,11 @@ const CreateCategoriesModal = ({
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState([
     {
-      minPriceRange: "1",
+      minPriceRange: "0",
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
-      supplierProfitPercentage: "",
+      // supplierProfitPercentage: "",
       resellerProfitPercentage: "",
     },
     {
@@ -49,7 +56,7 @@ const CreateCategoriesModal = ({
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
-      supplierProfitPercentage: "",
+      // supplierProfitPercentage: "",
       resellerProfitPercentage: "",
     },
     {
@@ -57,7 +64,7 @@ const CreateCategoriesModal = ({
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
-      supplierProfitPercentage: "",
+      // supplierProfitPercentage: "",
       resellerProfitPercentage: "",
     },
   ]);
@@ -71,9 +78,43 @@ const CreateCategoriesModal = ({
     maxPriceRange: "",
     comissionPercentage: "",
     mmcProfitPercentage: "",
-    supplierProfitPercentage: "",
+    // supplierProfitPercentage: "",
     resellerProfitPercentage: "",
   });
+
+  useEffect(() => {
+    const getLabel = (label) => {
+      if (label === "ZERO_COMMISSION") {
+        return "Zero Commission";
+      }
+      if (label === "FIXED_COMMISSION") {
+        return "Fixed Commission";
+      }
+      return "";
+    };
+    setCategoryDetails({
+      category: categoryFormData.mainCategoryName,
+      gst: categoryFormData.categoryGst,
+      categoryImg: categoryFormData.categoryImageUrl,
+      comissionType: {
+        label: getLabel(categoryFormData?.commissionType),
+        value: categoryFormData?.commissionType,
+      },
+    });
+    if (!categoryFormData.subCategoryPriceRangeAdded) {
+      const temp = [];
+      categoryDetails.priceRangeList?.forEach((ele) => {
+        temp.push({
+          minPriceRange: ele.priceStart,
+          maxPriceRange: ele.priceEnd,
+          comissionPercentage: ele.commissionPercentage,
+          mmcProfitPercentage: ele.adminProfitPercentage ?? "",
+          resellerProfitPercentage: ele.resellerProfitPercentage ?? "",
+        });
+      });
+      setFormData([...temp]);
+    }
+  }, [categoryFormData]);
 
   const handlFormDataChange = (e) => {
     const temp = [...formData];
@@ -88,18 +129,20 @@ const CreateCategoriesModal = ({
     });
   };
 
-  const handleCloseIconClick = () => {
+  const handleClearAll = () => {
     setCategoryDetails({
       category: "",
       comissionType: {},
+      categoryImg: null,
+      gst: "",
     });
     setFormData([
       {
-        minPriceRange: "1",
+        minPriceRange: "0",
         maxPriceRange: "",
         comissionPercentage: "",
         mmcProfitPercentage: "",
-        supplierProfitPercentage: "",
+        // supplierProfitPercentage: "",
         resellerProfitPercentage: "",
       },
       {
@@ -107,7 +150,7 @@ const CreateCategoriesModal = ({
         maxPriceRange: "",
         comissionPercentage: "",
         mmcProfitPercentage: "",
-        supplierProfitPercentage: "",
+        // supplierProfitPercentage: "",
         resellerProfitPercentage: "",
       },
       {
@@ -115,7 +158,7 @@ const CreateCategoriesModal = ({
         maxPriceRange: "",
         comissionPercentage: "",
         mmcProfitPercentage: "",
-        supplierProfitPercentage: "",
+        // supplierProfitPercentage: "",
         resellerProfitPercentage: "",
       },
     ]);
@@ -126,26 +169,84 @@ const CreateCategoriesModal = ({
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
-      supplierProfitPercentage: "",
+      // supplierProfitPercentage: "",
       resellerProfitPercentage: "",
     });
-    setOpenCreateCategoriesModal(false);
     setActiveStep(0);
+    setShowStepper(false);
   };
 
-  const handleClearAll = () => {
-    setCategoryDetails({
-      category: "",
-      comissionType: {},
-      gst: "",
-    });
+  const handleSaveBtnClick = async (priceRangeFlag = true) => {
+    const getPriceRangeList = () => {
+      const getRangeType = (ind) => {
+        if (ind === 0) {
+          return "MIN";
+        }
+        if (ind === 1) {
+          return "EQUAL";
+        }
+        if (ind === 2) {
+          return "MAX";
+        }
+        return "";
+      };
+      const temp = [];
+      formData.forEach((ele, ind) => {
+        temp.push({
+          priceStart: parseInt(ele.minPriceRange, 10),
+          priceEnd:
+            ele.maxPriceRange !== "" ? parseInt(ele.maxPriceRange, 10) : null,
+          priceRangeType: getRangeType(ind),
+          adminProfitPercentage:
+            ele.mmcProfitPercentage !== ""
+              ? parseInt(ele.mmcProfitPercentage, 10)
+              : null,
+          resellerProfitPercentage:
+            ele.resellerProfitPercentage !== ""
+              ? parseInt(ele.resellerProfitPercentage, 10)
+              : null,
+          commissionPercentage: parseInt(ele.comissionPercentage, 10),
+        });
+      });
+      return temp;
+    };
+
+    const payload = {
+      mainCategoryName: categoryDetails.category,
+      commissionType: categoryDetails.comissionType?.value,
+      categoryImageUrl: categoryDetails.categoryImg,
+      categoryGst: parseInt(categoryDetails.gst, 10),
+      priceRangeList: priceRangeFlag ? getPriceRangeList() : [],
+    };
+
+    if (modalType === "Add") {
+      const { data, err } = await addMainCategory(payload);
+      if (data) {
+        getTableData(0);
+        setOpenCreateCategoriesModal(false);
+        toastify(data?.message, "success");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, " error");
+      }
+    } else {
+      const editPayload = {
+        ...payload,
+        mainCategoryId: categoryFormData.mainCategoryId,
+      };
+      const { data, err } = await UpdateMainCategory(editPayload);
+      if (data) {
+        getTableData(0);
+        setOpenCreateCategoriesModal(false);
+        toastify(data?.message, "success");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
-  const handleSaveBtnClick = () => {
-    // console.log("submit");
-  };
-
-  const validate = () => {
+  const validate = (validatePriceRange = true) => {
     const tempErr = {
       category: "",
       commissionType: "",
@@ -153,7 +254,7 @@ const CreateCategoriesModal = ({
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
-      supplierProfitPercentage: "",
+      // supplierProfitPercentage: "",
       resellerProfitPercentage: "",
     };
     let flag = false;
@@ -161,54 +262,89 @@ const CreateCategoriesModal = ({
       tempErr.category = validateMessage.field_required;
       flag = true;
     }
-    if (
-      !categoryDetails.comissionType ||
-      !Object.keys(categoryDetails.comissionType).length
-    ) {
-      tempErr.comissionType = validateMessage.field_required;
+    if (!categoryDetails.comissionType?.value) {
+      tempErr.commissionType = validateMessage.field_required;
       flag = true;
     }
-    if (categoryDetails.gst === "") {
+    if (categoryDetails.gst?.toString().length == 0) {
       tempErr.gst = validateMessage.field_required;
+      flag = true;
+    }
+    if (categoryDetails.gst >= 100) {
+      tempErr.gst = "GST Cannot be Greater than 99%";
       flag = true;
     }
     if (!categoryDetails.categoryImg) {
       toastify("Please Upload Category Image", "error");
       flag = true;
     }
-    const tempData = { ...formData[activeStep] };
-    if (tempData.maxPriceRange === "") {
-      tempErr.maxPriceRange = validateMessage.field_required;
-      flag = true;
-    }
-    if (tempData.comissionPercentage === "") {
-      tempErr.comissionPercentage = validateMessage.field_required;
-      flag = true;
-    }
-    if (tempData.mmcProfitPercentage === "") {
-      tempErr.mmcProfitPercentage = validateMessage.field_required;
-      flag = true;
-    }
-    if (tempData.resellerProfitPercentage === "") {
-      tempErr.resellerProfitPercentage = validateMessage.field_required;
-      flag = true;
+    if (validatePriceRange) {
+      if (!categoryFormData?.subCategoryPriceRangeAdded) {
+        const tempData = { ...formData[activeStep] };
+        if (activeStep !== 2) {
+          if (tempData.maxPriceRange === "") {
+            tempErr.maxPriceRange = validateMessage.field_required;
+            flag = true;
+          }
+        }
+        if (tempData.comissionPercentage === "") {
+          tempErr.comissionPercentage = validateMessage.field_required;
+          flag = true;
+        }
+        if (selectedTab === "RESELLER") {
+          if (tempData.mmcProfitPercentage === "") {
+            tempErr.mmcProfitPercentage = validateMessage.field_required;
+            flag = true;
+          }
+          if (tempData.resellerProfitPercentage === "") {
+            tempErr.resellerProfitPercentage = validateMessage.field_required;
+            flag = true;
+          }
+        }
+      }
     }
     setErrobj(tempErr);
     return flag;
   };
 
-  const handleNextClick = () => {
-    if (validate()) return;
-    if (activeStep < 2) {
-      const temp = [...formData];
-      temp[activeStep + 1].minPriceRange =
-        parseInt(temp[activeStep].maxPriceRange, 10) + 1;
-      setFormData(temp);
-      setActiveStep(activeStep + 1);
-    } else {
-      handleSaveBtnClick();
-    }
+  const handleNextClick = (flag) => {
+    if (validate(flag ?? showStepper)) return;
+    if (showStepper && flag) {
+      if (activeStep < 2) {
+        const temp = [...formData];
+        temp[activeStep + 1].minPriceRange =
+          parseInt(temp[activeStep].maxPriceRange, 10) + 1;
+        setFormData(temp);
+        setActiveStep(activeStep + 1);
+      } else {
+        handleSaveBtnClick();
+      }
+    } else handleSaveBtnClick(false);
   };
+
+  useEffect(() => {
+    if (modalType === "Add") {
+      handleClearAll();
+      if (selectedTab === "SUPPLIER") {
+        setCategoryDetails({
+          category: "",
+          comissionType: {
+            label: "Fixed Commission",
+            value: "FIXED_COMMISSION",
+          },
+          categoryImg: null,
+          gst: "",
+        });
+      } else {
+        setCategoryDetails({
+          category: "",
+          comissionType: {},
+          categoryImg: null,
+          gst: "",
+        });
+      }
+    }
+  }, [selectedTab]);
 
   return (
     <Box>
@@ -218,14 +354,14 @@ const CreateCategoriesModal = ({
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
-        saveBtnText={activeStep === 2 ? "Submit" : "Next"}
+        saveBtnText={activeStep === 2 || !showStepper ? "Submit" : "Next"}
         saveBtnClassName="ms-1"
         ModalWidth={650}
         minHeightClassName="overflow-auto pb-2"
         onCloseIconClick={() => {
-          handleCloseIconClick();
+          setOpenCreateCategoriesModal(false);
         }}
-        onSaveBtnClick={handleNextClick}
+        onSaveBtnClick={() => handleNextClick(true)}
         onClearBtnClick={() => {
           handleClearAll();
         }}
@@ -269,7 +405,7 @@ const CreateCategoriesModal = ({
                 helperText={errorObj.category}
               />
             </Grid>
-            <Grid item md={6} container>
+            <Grid item md={6} container spacing={2}>
               <Grid item xs={12}>
                 <InputBox
                   name="gst"
@@ -300,26 +436,47 @@ const CreateCategoriesModal = ({
                       comissionType: val,
                     });
                   }}
-                  value={categoryDetails.comissionType}
-                  error={errorObj.comissionType !== ""}
-                  helperText={errorObj.comissionType}
+                  disabled={selectedTab === "SUPPLIER"}
+                  value={
+                    selectedTab === "SUPPLIER"
+                      ? {
+                          label: "Fixed Commission",
+                          value: "FIXED_COMMISSION",
+                        }
+                      : categoryDetails.comissionType
+                  }
+                  error={errorObj.commissionType !== ""}
+                  helperText={errorObj.commissionType}
                 />
               </Grid>
             </Grid>
             <Grid item md={6}>
               <Box className="d-flex justify-content-center">
                 <ImageCard
-                  showClose
+                  handleCloseClick={() => {
+                    setCategoryDetails({
+                      ...categoryDetails,
+                      categoryImg: null,
+                    });
+                  }}
+                  showClose={categoryDetails.categoryImg !== null}
                   handleImageUpload={async (e) => {
                     if (e.target.files.length) {
                       if (e.target.files[0].size <= 1000000) {
-                        const file = await getBase64(e.target.files[0]);
-                        setCategoryDetails((prev) => {
-                          return {
-                            ...prev,
-                            categoryImg: file,
-                          };
-                        });
+                        const file = new FormData();
+                        file.append("media", e.target.files[0]);
+                        const { data, err } = await getCategoryMediaUrl(file);
+                        if (data) {
+                          setCategoryDetails((prev) => {
+                            return {
+                              ...prev,
+                              categoryImg: data.data,
+                            };
+                          });
+                        }
+                        if (err) {
+                          toastify(err?.response?.data?.message, "error");
+                        }
                       } else {
                         toastify("Image size should be less than 1MB", "error");
                       }
@@ -330,31 +487,28 @@ const CreateCategoriesModal = ({
               </Box>
             </Grid>
 
-            {!showStepper ? (
-              <>
-                <Typography className="fs-12 ms-3">
-                  Do you want to enter Price Range?
-                </Typography>
-                <Typography
-                  onClick={() => {
-                    setShowStepper(true);
-                  }}
-                  className="fs-12 ms-2 cursor-pointer color-light-blue"
-                >
-                  Click Here
-                </Typography>
-              </>
-            ) : (
+            <>
+              {!showStepper &&
+                (!categoryFormData.subCategoryPriceRangeAdded ||
+                modalType === "Add" ? (
+                  <>
+                    <Typography className="fs-12 ms-3">
+                      Do you want to enter Price Range
+                    </Typography>
+                    <Typography
+                      onClick={() => {
+                        setShowStepper(true);
+                      }}
+                      className="fs-12 ms-2 cursor-pointer color-light-blue"
+                    >
+                      Click Here
+                    </Typography>
+                  </>
+                ) : null)}
+            </>
+            {showStepper ? (
               <>
                 <Grid item md={12}>
-                  <Typography
-                    className="d-inline fs-12 color-orange cursor-pointer"
-                    onClick={() => {
-                      setShowStepper(false);
-                    }}
-                  >
-                    {`< Back`}
-                  </Typography>
                   <Stepper activeStep={activeStep} alternativeLabel>
                     {steps.map((label, index) => (
                       <Step
@@ -394,7 +548,12 @@ const CreateCategoriesModal = ({
                 <Grid item md={12}>
                   <Paper elevation={5} className="my-2 p-3">
                     <Grid container spacing={2}>
-                      <Grid item md={selectedTab === "SUPPLIER" ? 4 : 6}>
+                      <Grid
+                        item
+                        md={
+                          selectedTab === "SUPPLIER" && activeStep != 2 ? 4 : 6
+                        }
+                      >
                         <InputBox
                           inputlabelshrink
                           name="minPriceRange"
@@ -404,7 +563,11 @@ const CreateCategoriesModal = ({
                           readOnly
                         />
                       </Grid>
-                      <Grid item md={selectedTab === "SUPPLIER" ? 4 : 6}>
+                      <Grid
+                        item
+                        md={selectedTab === "SUPPLIER" ? 4 : 6}
+                        className={activeStep === 2 ? "d-none" : ""}
+                      >
                         <InputBox
                           inputlabelshrink
                           name="maxPriceRange"
@@ -415,7 +578,7 @@ const CreateCategoriesModal = ({
                           helperText={errorObj.maxPriceRange}
                         />
                       </Grid>
-                      <Grid item md={4}>
+                      <Grid item md={activeStep !== 2 ? 4 : 6}>
                         <InputBox
                           inputlabelshrink
                           name="comissionPercentage"
@@ -457,8 +620,50 @@ const CreateCategoriesModal = ({
                     </Grid>
                   </Paper>
                 </Grid>
+                <Box className="d-flex align-items-center mt-2 ">
+                  <Typography className="fs-12 ms-3 ">
+                    Would you still like to continue without providing a pricing
+                    range?
+                  </Typography>
+
+                  <Typography
+                    onClick={() => {
+                      setShowStepper(false);
+                      setFormData([
+                        {
+                          minPriceRange: "0",
+                          maxPriceRange: "",
+                          comissionPercentage: "",
+                          mmcProfitPercentage: "",
+                          // supplierProfitPercentage: "",
+                          resellerProfitPercentage: "",
+                        },
+                        {
+                          minPriceRange: "",
+                          maxPriceRange: "",
+                          comissionPercentage: "",
+                          mmcProfitPercentage: "",
+                          // supplierProfitPercentage: "",
+                          resellerProfitPercentage: "",
+                        },
+                        {
+                          minPriceRange: "",
+                          maxPriceRange: "",
+                          comissionPercentage: "",
+                          mmcProfitPercentage: "",
+                          // supplierProfitPercentage: "",
+                          resellerProfitPercentage: "",
+                        },
+                      ]);
+                      handleNextClick(false);
+                    }}
+                    className="fs-12 ms-2 cursor-pointer color-light-blue"
+                  >
+                    Click Here
+                  </Typography>
+                </Box>
               </>
-            )}
+            ) : null}
           </Grid>
         </div>
       </ModalComponent>
