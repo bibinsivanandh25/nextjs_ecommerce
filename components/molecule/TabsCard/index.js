@@ -12,7 +12,7 @@ const TabsCard = ({
   return (
     <div>
       <div
-        className={`w-100 cursor-pointer hide-scrollbar pt-2 ${styles.tabContainer}`}
+        className={`w-100 hide-scrollbar pt-2 ${styles.tabContainer}`}
         style={{ overflowY: "hidden" }}
       >
         {tabList.map((item, index) => {

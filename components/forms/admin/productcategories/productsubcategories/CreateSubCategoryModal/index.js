@@ -5,7 +5,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 
-let errObj = {
+const err = {
   category: false,
   set: false,
   subCategory: false,
@@ -22,7 +22,7 @@ const CreateSubCategoryModal = ({
   formData,
   setFormData,
 }) => {
-  const [error, setError] = useState(errObj);
+  const [error, setError] = useState(err);
   const handleCloseIconClick = () => {
     setFormData({
       category: {},
@@ -55,16 +55,15 @@ const CreateSubCategoryModal = ({
   };
 
   const handleError = () => {
-    let returnError = false;
-    errObj = {
-      category: false,
-      set: false,
-      subCategory: false,
-      priceRange: false,
-      comissionType: false,
-      comissionPercentage: false,
-      mmcProfitPercentage: false,
-      resellerProfitPercentage: false,
+    const errObj = {
+      category: "",
+      set: "",
+      subCategory: "",
+      priceRange: "",
+      comissionType: "",
+      comissionPercentage: "",
+      mmcProfitPercentage: "",
+      resellerProfitPercentage: "",
     };
 
     const {
@@ -78,50 +77,38 @@ const CreateSubCategoryModal = ({
       resellerProfitPercentage,
     } = formData;
 
-    const cartegoryLength = Object.keys(category).length;
-    const priceRangeLength = Object.keys(priceRange).length;
-    const comissionLength = Object.keys(comissionType).length;
-
-    if (cartegoryLength === 0) {
-      errObj.category = true;
-      returnError = true;
+    if (category === null || Object?.values(category)?.length === 0) {
+      errObj.category = validateMessage.field_required;
     }
     if (set === "") {
-      errObj.set = true;
-      returnError = true;
+      errObj.set = validateMessage.field_required;
     }
     if (subCategory === "") {
-      errObj.subCategory = true;
-      returnError = true;
+      errObj.subCategory = validateMessage.field_required;
     }
-    if (priceRangeLength === 0) {
-      errObj.priceRange = true;
-      returnError = true;
+    if (priceRange === null || Object?.values(priceRange)?.length === 0) {
+      errObj.priceRange = validateMessage.field_required;
     }
-    if (comissionLength === 0) {
-      errObj.comissionType = true;
-      returnError = true;
+    if (comissionType === null || Object?.values(comissionType)?.length === 0) {
+      errObj.comissionType = validateMessage.field_required;
     }
     if (comissionPercentage === "") {
-      errObj.comissionPercentage = true;
-      returnError = true;
+      errObj.comissionPercentage = validateMessage.field_required;
     }
     if (mmcProfitPercentage === "") {
-      errObj.mmcProfitPercentage = true;
-      returnError = true;
+      errObj.mmcProfitPercentage = validateMessage.field_required;
     }
     if (resellerProfitPercentage === "") {
-      errObj.resellerProfitPercentage = true;
-      returnError = true;
+      errObj.resellerProfitPercentage = validateMessage.field_required;
     }
-
-    return [returnError, errObj];
+    setError(errObj);
+    const flag = Object.values(errObj).every((x) => x == "");
+    return flag;
   };
 
   const handleSaveBtnClick = () => {
-    const [errObjo] = handleError();
-    setError(errObjo);
-    // console.log(returnError);
+    const result = handleError();
+    console.log(result);
   };
 
   const handleClearAll = () => {
@@ -151,7 +138,7 @@ const CreateSubCategoryModal = ({
     <Box>
       <ModalComponent
         open={openCreateNewSubCategories}
-        ModalTitle="Create Categories"
+        ModalTitle="Create Sub-Categories"
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
@@ -177,7 +164,7 @@ const CreateSubCategoryModal = ({
               label="Category"
               value={formData.category}
               onDropdownSelect={(value) => {
-                setFormData({ ...formData, category: { label: value?.label } });
+                setFormData({ ...formData, category: value });
               }}
               helperText={error.category ? validateMessage.field_required : ""}
             />
@@ -217,7 +204,7 @@ const CreateSubCategoryModal = ({
               onDropdownSelect={(value) => {
                 setFormData({
                   ...formData,
-                  priceRange: { label: value?.label },
+                  priceRange: value,
                 });
               }}
               helperText={
@@ -235,7 +222,7 @@ const CreateSubCategoryModal = ({
               onDropdownSelect={(value) => {
                 setFormData({
                   ...formData,
-                  comissionType: { label: value?.label },
+                  comissionType: value,
                 });
               }}
               helperText={

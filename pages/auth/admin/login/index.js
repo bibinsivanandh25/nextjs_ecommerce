@@ -278,8 +278,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      providers: await getProviders(context),
-      csrfToken: await getCsrfToken(context),
+      providers: (await getProviders(context)) || null,
+      csrfToken: (await getCsrfToken(context)) || null,
     },
   };
 }
