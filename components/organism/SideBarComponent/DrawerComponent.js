@@ -165,9 +165,11 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       }
       await Promise.all(promiseArr)
         .then((res) => {
-          setNavOptionsList(() => {
-            return [...JSON.parse(JSON.stringify(res[0].nav))];
-          });
+          if (res[0].nav) {
+            setNavOptionsList(() => {
+              return [...JSON.parse(JSON.stringify(res[0].nav))];
+            });
+          }
           dispatch(updateUnlockedTools(res[1].marketingTools.unlockedTools));
         })
         .catch(() => {});
