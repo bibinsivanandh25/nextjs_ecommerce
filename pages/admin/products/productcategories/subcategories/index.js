@@ -93,6 +93,7 @@ const SubCategories = () => {
   });
 
   const changeStatus = async (id) => {
+    // eslint-disable-next-line no-unused-vars
     const { data, err } = await disableOrEnable({
       categoryType: "SUB_CATEGORY",
       categoryId: id,

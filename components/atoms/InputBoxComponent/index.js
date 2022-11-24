@@ -104,7 +104,7 @@ const InputBox = ({
               </IconButton>
             </InputAdornment>
           ),
-          readOnly: readOnly,
+          readOnly,
           ...InputProps,
         }}
         helperText={helperText}
