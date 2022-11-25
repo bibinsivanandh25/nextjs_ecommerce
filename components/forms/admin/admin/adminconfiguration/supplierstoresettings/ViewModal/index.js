@@ -132,6 +132,7 @@ const ViewModal = ({
         onClearBtnClick={() => {
           handleCloseIconClick();
         }}
+        clearBtnClassName="me-2"
       >
         <InputBox
           inputlabelshrink
