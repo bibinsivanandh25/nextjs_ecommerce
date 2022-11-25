@@ -140,8 +140,8 @@ const ScratchCardAprove = () => {
   const getTableData = async (
     page = pageNumber,
     dateFilter = {
-      fromDate: "",
-      toDate: "",
+      fromDate: null,
+      toDate: null,
     }
   ) => {
     const payload = {
