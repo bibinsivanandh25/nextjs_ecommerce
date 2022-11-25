@@ -205,6 +205,8 @@ const ViewModal = ({
         setRows((pre) => [...pre, ...returnRowsOfSingleSubs(data)]);
       }
       setOpenViewModal(true);
+    } else {
+      setRows([]);
     }
   }
 
