@@ -12,14 +12,18 @@ import Active from "@/forms/admin/products/zerocomission/ActiveProducts";
 import Updated from "@/forms/admin/products/zerocomission/Updated";
 import { getAllProductsCount } from "services/admin/products";
 
-const ZeroCommission = () => {
+const FixedCommission = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [tabList, setTabList] = useState([
-    { label: "Products to approve", isSelected: true },
-    { label: "Queries", isSelected: false },
-    { label: "Active", isSelected: false },
-    { label: "Updated", isSelected: false },
-    { label: "Rejected", isSelected: false },
+    {
+      id: "Products to approve",
+      label: "Products to approve",
+      isSelected: true,
+    },
+    { id: "Queries", label: "Queries", isSelected: false },
+    { id: "Active", label: "Active", isSelected: false },
+    { id: "Updated", label: "Updated", isSelected: false },
+    { id: "Rejected", label: "Rejected", isSelected: false },
   ]);
 
   const getCount = async () => {
@@ -57,6 +61,7 @@ const ZeroCommission = () => {
     getCount();
   }, []);
 
+  console.log(tabList);
   const handleSelect = (index) => {
     setTabList((list) => {
       const theList = list;
@@ -110,4 +115,4 @@ const ZeroCommission = () => {
   );
 };
 
-export default ZeroCommission;
+export default FixedCommission;

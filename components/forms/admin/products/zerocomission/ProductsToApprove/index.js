@@ -234,7 +234,10 @@ const ProductsToApprove = ({
           {
             label: "Merge To",
             callBack: () => {
-              console.log("Merge");
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+              setProductVariationId(val?.productVariationId);
+              setOpenMergeToModal(true);
             },
           },
           {
@@ -247,7 +250,7 @@ const ProductsToApprove = ({
                 type: "ACTIVE_PRODUCT",
                 to: {
                   id: val.supplierId,
-                  label: val.supplierName,
+                  label: val.businessName,
                   value: val.supplierId,
                 },
                 productVariationId: val?.productVariationId,

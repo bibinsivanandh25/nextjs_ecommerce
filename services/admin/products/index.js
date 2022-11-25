@@ -81,7 +81,7 @@ const mergeProducts = (payload) => {
 };
 
 const getDiscountByProductVariationId = (page, supplierId, ProductId) => {
-  const pageSize = 50;
+  const pageSize = 150;
   return serviceUtil
     .get(
       `users/admin/product-coupon/${page}/${pageSize}?productVariationId=${ProductId}&supplierId=${supplierId}`

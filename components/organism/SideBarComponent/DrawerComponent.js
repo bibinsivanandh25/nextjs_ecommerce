@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
@@ -30,6 +31,7 @@ import CustomIcon from "services/iconUtils";
 import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
+let refreshSideBar = null;
 const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   const route = useRouter();
 
@@ -350,6 +352,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
 
   useEffect(() => {
     getNavOptions();
+    refreshSideBar = getNavOptions;
     // else if(user.role === "STAFF")
   }, []);
 
@@ -527,3 +530,4 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
 };
 
 export default DrawerComponent;
+export { refreshSideBar };

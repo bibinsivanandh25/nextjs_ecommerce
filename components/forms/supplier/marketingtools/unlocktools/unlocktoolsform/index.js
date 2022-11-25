@@ -8,6 +8,7 @@ import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import { updateUnlockedTools } from "features/userSlice";
 import { getmarketingToolStatus } from "services/supplier";
+import { refreshSideBar } from "components/organism/SideBarComponent/DrawerComponent";
 
 const UnlockToolsForm = ({
   heading = "",
@@ -56,10 +57,13 @@ const UnlockToolsForm = ({
     const { data, err } = await purchaseMarketingTool(payload);
     if (data) {
       toastify(data.message, "success");
+      route.push("/supplier/marketingtools/subscriptionhistory");
       getmarketingToolStatus(supplierId).then((res) => {
         if (res.data) dispatch(updateUnlockedTools(res.data.unlockedTools));
       });
-      route.push("/supplier/marketingtools/subscriptionhistory");
+      if (refreshSideBar) {
+        refreshSideBar();
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }

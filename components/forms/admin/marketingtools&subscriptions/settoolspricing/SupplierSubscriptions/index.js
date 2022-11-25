@@ -614,11 +614,11 @@ const SupplierSubscriptions = () => {
   };
   const getToolCampaignTableData = async (page, date, filter) => {
     const getdayFilters = (days) => {
-      if (days?.value) {
-        if (days?.value === "All") {
+      if (days) {
+        if (days === "All") {
           return [];
         }
-        return [days?.value];
+        return [days];
       }
       return [];
     };

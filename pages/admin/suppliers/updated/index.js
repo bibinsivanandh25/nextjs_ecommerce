@@ -5,7 +5,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
 import ClearIcon from "@mui/icons-material/Clear";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
+// import MenuOption from "@/atoms/MenuOptions";
 import UpdateViewModal from "@/forms/admin/suppliers/updated/viewmodal";
 import UpdateRaiseQuery from "@/forms/admin/suppliers/updated/raisequery";
 import { accept, getAll, reject } from "services/admin/supplier/updated";
@@ -153,7 +153,7 @@ const Updated = () => {
       pageSize: 50,
     }
   ) => {
-    const { data, error, message } = await getAll(payloads);
+    const { data, err } = await getAll(payloads);
     if (data) {
       setCount(data.totalUpdateCount);
       const tempRows = data.supplierChangesHistoryViewPojos.map(
@@ -191,7 +191,7 @@ const Updated = () => {
                     setDetails(val);
                   }}
                 />
-                <MenuOption
+                {/* <MenuOption
                   options={["Edit", "Raise a query", "Supplier Shopping Page"]}
                   IconclassName="fs-5 cursor-pointer"
                   getSelectedItem={(ele) => {
@@ -199,7 +199,7 @@ const Updated = () => {
                       setQueryModalOpen(true);
                     }
                   }}
-                />
+                /> */}
               </Box>
             ),
             col8: val.oldValue,
@@ -208,12 +208,10 @@ const Updated = () => {
         }
       );
       setTableRows([...tempRows]);
-    } else if (error) {
-      if (message) {
-        toastify(message, "error");
-      } else if (error?.response?.data?.message) {
-        toastify(error?.response?.data?.message, "error");
-      }
+    } else if (err) {
+      setTableRows([]);
+      setCount(0);
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
