@@ -27,6 +27,8 @@ const HelpandsupportView = ({
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState([]);
 
+  console.log(selectedData);
+
   const getContent = (label, value, className) => {
     return (
       <p className="mx-3 my-2">
