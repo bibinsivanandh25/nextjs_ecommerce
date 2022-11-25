@@ -80,7 +80,7 @@ const columns = [
   },
   {
     id: "col10",
-    label: "Status",
+    label: "Tool Status",
     align: "center",
     data_align: "center",
     data_classname: "",
@@ -134,7 +134,8 @@ const CreateTodaysDeals = () => {
           col7: new Date(item.createdDate).toLocaleString(),
           col8: item.customerType,
           col9: item.adminApprovalStatus || "--",
-          col10: item.toolStatus,
+          col10:
+            item.adminApprovalStatus !== "REJECTED" ? item.toolStatus : "--",
           col11: (
             <div className="d-flex justify-content-center">
               <CustomIcon

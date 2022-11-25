@@ -337,7 +337,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
                 getSelectedItem={(ele) => {
                   onClickOfMenuItem(ele, val);
                 }}
-                options={["Edit", "Remove", "Discount", "Raise Query"]}
+                options={["Edit", "Discount", "Raise Query"]}
                 IconclassName="color-gray "
               />
             </Box>
