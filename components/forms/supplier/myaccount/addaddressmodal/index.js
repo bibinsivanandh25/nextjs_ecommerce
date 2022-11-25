@@ -14,6 +14,7 @@ import {
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
 import toastify from "services/utils/toastUtils";
+import { useRouter } from "next/router";
 
 const AddAddressModal = (props) => {
   const {
@@ -26,6 +27,7 @@ const AddAddressModal = (props) => {
     supplierId = "",
     showCloseIcon = true,
     disableCancel = false,
+    routeToLogin = false,
   } = props;
   const [formValues, setFormValues] = useState({
     name: "",
@@ -144,6 +146,8 @@ const AddAddressModal = (props) => {
     }
   }, [values, type]);
 
+  const route = useRouter();
+
   const validateForm = () => {
     const errObj = { ...error };
     inputFields.forEach((el) => {
@@ -201,6 +205,9 @@ const AddAddressModal = (props) => {
           getAllAddress();
           getUpdateUserDetails();
           setShowAddAddressModal(false);
+          if (routeToLogin) {
+            route.push("/auth/login");
+          }
         }
         if (err) {
           toastify(err?.response?.data?.message);
