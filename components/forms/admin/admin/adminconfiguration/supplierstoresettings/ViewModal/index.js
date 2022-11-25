@@ -66,7 +66,7 @@ const ViewModal = ({
   };
 
   const addUpdateSetting = async () => {
-    if (!edit) {
+    if (edit === "create") {
       const payload = {
         adminConfigurationName: configurationName,
         adminConfigurationValue: configurationLabel,
@@ -75,12 +75,14 @@ const ViewModal = ({
       if (data) {
         await getTableData(0);
         toastify(message, "success");
+        closeModal();
+        setOpenViewModal(false);
       } else if (error) {
         if (message) toastify(message, "error");
         else if (error?.response?.data?.message)
           toastify(error?.response?.data?.message, "error");
       }
-    } else if (configurationId && edit) {
+    } else if (configurationId) {
       const payload = {
         adminConfigurationId: configurationId,
         adminConfigurationValue: configurationLabel,
@@ -89,6 +91,8 @@ const ViewModal = ({
       if (data) {
         await getTableData(0);
         toastify(message, "success");
+        closeModal();
+        setOpenViewModal(false);
       } else if (error) {
         if (message) toastify(message, "error");
         else if (error?.reponse?.data?.message)
@@ -101,8 +105,6 @@ const ViewModal = ({
     const anError = handleError();
     if (!anError) {
       addUpdateSetting();
-      closeModal();
-      setOpenViewModal(false);
     }
   };
 
