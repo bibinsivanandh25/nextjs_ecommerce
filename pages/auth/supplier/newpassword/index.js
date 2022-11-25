@@ -80,6 +80,9 @@ const Newpassword = () => {
         type="add"
         showAddressModal={showAddAddressModal}
         supplierId={supplierId}
+        showCloseIcon={false}
+        routeToLogin
+        disableCancel
       />
     </Grid>
   );
