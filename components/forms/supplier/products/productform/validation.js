@@ -279,6 +279,7 @@ const validatePolicy = (productPolicyFormData) => {
   }
   if (
     productPolicyFormData.warranty &&
+    productPolicyFormData.warrantyperiod &&
     !Object.keys(productPolicyFormData.warrantyperiod).length
   ) {
     errObj.warrantyperiod = validateMessage.field_required;
