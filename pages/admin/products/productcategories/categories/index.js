@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import CustomIcon from "services/iconUtils";
 import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
@@ -7,16 +8,22 @@ import TableComponent from "@/atoms/TableComponent";
 // import CreateCategories from "@/forms/admin/productcategories/categories/CreateCategories";
 import CreateCategoriesModal from "@/forms/admin/productcategories/categories/CreateCategories/CreateCategoriesModal";
 import {
+  enableOrDisableMainCategory,
   getFilterDropDownList,
   getMainCategories,
+  getMainCategoryDetailsByCategoryId,
 } from "services/admin/products/productCategories/category";
 import Image from "next/image";
+import toastify from "services/utils/toastUtils";
 
 const Categories = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showCreateCategories, setShowCreateCategories] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [filterData, setFilterData] = useState([]);
+  const [modalType, setmodalType] = useState("Add");
+  const [categoryId, setCategoryId] = useState("");
+  const [catagoryDetails, setCategoryDetails] = useState({});
 
   const tableColumns = [
     {
@@ -40,54 +47,60 @@ const Categories = () => {
     {
       id: "col4",
       align: "center",
-      label: "Price Range",
+      label: "Comission Type",
       data_align: "center",
     },
     {
       id: "col5",
       align: "center",
-      label: "Comission Type",
+      label: "GST %",
       data_align: "center",
     },
     {
       id: "col6",
       align: "center",
-      label: "Comission Percentage",
+      label: "Created Date & Time",
       data_align: "center",
     },
     {
       id: "col7",
       align: "center",
-      label: "MrMrsCart Profit %",
+      label: "Created By",
       data_align: "center",
     },
     {
       id: "col8",
       align: "center",
-      label: "Reseller Profit %",
+      label: "Last Updated At",
       data_align: "center",
     },
     {
       id: "col9",
       align: "center",
-      label: "GST %",
+      label: "Last Updated By",
       data_align: "center",
     },
     {
       id: "col10",
-      align: "center",
-      label: "Created Date & Time",
-      data_align: "center",
-    },
-    {
-      id: "col11",
       align: "center",
       label: "Actions",
       data_align: "center",
     },
   ];
 
-  const onClickOfMenuItem = () => {};
+  const onClickOfMenuItem = async (ele, val) => {
+    setCategoryId(val.mainCategoryId);
+    if (ele === "Edit") {
+      const { data } = await getMainCategoryDetailsByCategoryId(
+        val.mainCategoryId
+      );
+      if (data) {
+        setmodalType(ele);
+        setCategoryDetails(data);
+        setShowCreateCategories(true);
+      }
+    }
+  };
 
   const getFilterValue = async () => {
     const { data } = await getFilterDropDownList();
@@ -118,32 +131,24 @@ const Categories = () => {
     setFilterData([...result]);
   };
 
-  const mapTableRows = (data) => {
-    const getPriceRangeList = (list) => {
-      if (list && list?.length) {
-        return list?.map((ele) => {
-          if (ele.priceRangeType === "MIN") {
-            return (
-              <Typography className="h-5">{`Below ${ele.priceEnd}`}</Typography>
-            );
-          }
-          if (ele.priceRangeType === "EQUAL") {
-            if (ele.priceStart && ele.priceEnd) {
-              return (
-                <Typography className="h-5">{`${ele.priceStart} to ${ele.priceEnd}`}</Typography>
-              );
-            }
-          }
-          if (ele.priceRangeType === "MAX") {
-            return (
-              <Typography className="h-5">{`Above ${ele.priceStart}`}</Typography>
-            );
-          }
-          return "--";
-        });
-      }
-      return "--";
+  const enableDisableCategory = async (status, id) => {
+    const payload = {
+      categoryType: "CATEGORY",
+      categoryId: id,
+      status,
     };
+    const { data, err } = await enableOrDisableMainCategory(payload);
+
+    if (data) {
+      toastify(data?.message, "success");
+      getTableData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message);
+    }
+  };
+
+  const mapTableRows = (data) => {
     const result = [];
     data.forEach((val, index) => {
       result.push({
@@ -160,44 +165,34 @@ const Categories = () => {
             {val.mainCategoryName}
           </Typography>
         ),
-        col4: getPriceRangeList(val.priceRangeList),
-        col5: val.commissionType.replaceAll("_", " "),
-        col6: val.priceRangeList?.some((i) => i.commissionPercentage)
-          ? val.priceRangeList?.map((i) => (
-              <Typography className="h-5">
-                {i.commissionPercentage ?? "--"}
-              </Typography>
-            ))
-          : "--",
-        col7: val.priceRangeList?.some((i) => i.adminProfitPercentage !== null)
-          ? val.priceRangeList?.map((i) => (
-              <Typography className="h-5">
-                {i.adminProfitPercentage ?? "--"}
-              </Typography>
-            ))
-          : "--",
-        col8: val.proiceRangeList?.some((i) => i.resellerProfitPercentage)
-          ? val.priceRangeList?.map((i) => (
-              <Typography className="h-5">
-                {i.resellerProfitPercentage ?? "--"}
-              </Typography>
-            ))
-          : "--",
-        col9: val?.categoryGst ?? "--",
-        col10: val?.createdAt,
-        col11: (
+        col4: val.commissionType.replaceAll("_", " "),
+        col5: val?.categoryGst ?? "--",
+        col6: val?.createdAt,
+        col7: val?.createdBy ?? "--",
+        col8: val?.lastUpdatedAt,
+        col9: val?.lastModifiedBy ?? "--",
+        col10: (
           <Box className="d-flex justify-content-end align-items-center">
             <CustomIcon type="view" className="fs-20" />
             <MenuOption
               getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
+                onClickOfMenuItem(ele, val);
               }}
               options={[
                 "Edit",
                 <Box className="d-flex align-items-center">
-                  <Typography>{val.disabled ? "Enable" : "Disable"}</Typography>
+                  <Typography>{val.disabled ? "Disable" : "Enable"}</Typography>
                   <Box className="ms-3">
-                    <SwitchComponent label="" defaultChecked={!val.disabled} />
+                    <SwitchComponent
+                      label=""
+                      defaultChecked={!val.disabled}
+                      ontoggle={() => {
+                        enableDisableCategory(
+                          !val.disabled,
+                          val.mainCategoryId
+                        );
+                      }}
+                    />
                   </Box>
                 </Box>,
               ]}
@@ -279,6 +274,7 @@ const Categories = () => {
               dateFilterBtnName="Create Categories"
               dateFilterBtnClick={() => {
                 setShowCreateCategories(true);
+                setmodalType("Add");
               }}
               handlePageEnd={(
                 searchText,
@@ -290,10 +286,16 @@ const Categories = () => {
               }}
             />
           </Paper>
-          <CreateCategoriesModal
-            openCreateNewCategories={showCreateCategories}
-            setOpenCreateCategoriesModal={setShowCreateCategories}
-          />
+          {showCreateCategories ? (
+            <CreateCategoriesModal
+              modalType={modalType}
+              categoryFormData={catagoryDetails}
+              categoryId={categoryId}
+              getTableData={getTableData}
+              openCreateNewCategories={showCreateCategories}
+              setOpenCreateCategoriesModal={setShowCreateCategories}
+            />
+          ) : null}
         </Box>
       </Box>
     </>
