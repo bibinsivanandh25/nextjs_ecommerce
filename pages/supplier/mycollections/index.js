@@ -1,40 +1,19 @@
 import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
-import {
-  getAllProductFlags,
-  getCollections,
-} from "services/supplier/mycollections";
+import { getCollections } from "services/supplier/mycollections";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import { useUserInfo } from "services/hooks";
 import AddFlag from "@/forms/supplier/mycollections/addflag";
 import ShareCollection from "@/forms/supplier/mycollections/sharecollections";
-import toastify from "services/utils/toastUtils";
-import { useSelector } from "react-redux";
 
 const MyCollections = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [defaultFormData, setDefaultFormData] = useState({
-    todaysDeals: { label: "" },
-    startDate: "",
-    discount: "",
-    endDate: "",
-  });
   const [showShareModal, setShowShareModal] = useState(false);
-  const [allFlags, setAllFlags] = useState([]);
-  const [productVariationId, setProductVariationId] = useState("");
   const [masterProduct, setmasterProduct] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);
-
-  const user = useSelector((state) => state.user);
-  const getAllTheFlags = async () => {
-    const { data, error } = await getAllProductFlags(user.supplierId);
-    if (data) setAllFlags([...data]);
-    if (error) toastify(error, "error");
-  };
-
   const { id } = useUserInfo();
 
   const filterList = [
@@ -81,10 +60,6 @@ const MyCollections = () => {
                 onIconClick={() => {
                   if (row.productVariations.every((item) => item.flagged))
                     return;
-                  getAllTheFlags();
-                  setProductVariationId(
-                    row.productVariations[0].productVariationId
-                  );
                   setmasterProduct(row);
                   setOpenModal(true);
                 }}
@@ -215,13 +190,8 @@ const MyCollections = () => {
         <AddFlag
           openModal={openModal}
           setOpenModal={setOpenModal}
-          defaultFormData={defaultFormData}
-          setDefaultFormData={setDefaultFormData}
-          allFlags={allFlags}
-          productVariationId={productVariationId}
           getMycollectionData={getMycollectionData}
           masterProduct={masterProduct}
-          user={user}
         />
       )}
       {showShareModal && (
