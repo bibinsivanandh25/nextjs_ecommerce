@@ -24,7 +24,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 import DiscountModal from "../DiscountModal";
 

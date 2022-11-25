@@ -395,4 +395,14 @@ color:#e56700
   0% { transform: rotate(0deg) }
   100% { transform: rotate(360deg) }
 }
- 
+ .activeTab {
+    font-weight: 500;
+    color: #e56700;
+    background-color: #fff;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .inActivetab {
+    background: #dbdbdb;
+    color: #9f9f9f;
+    transition: background-color 0.3s ease-in-out;
+  }

@@ -22,13 +22,13 @@ axiosInstance.interceptors.request.use(async (config) => {
     tempHeader = {
       "Access-Control-Allow-Origin": "*",
       ...config.headers,
-      userId: supplierId,
+      userId: supplierId || "",
     };
   } else {
     tempHeader = {
       "Access-Control-Allow-Origin": "*",
       ...config.headers,
-      userId: user.userId,
+      userId: user.userId || "",
     };
   }
   config.headers = tempHeader;

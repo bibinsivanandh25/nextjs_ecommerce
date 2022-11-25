@@ -1,15 +1,86 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import CreateSubCategoryModal from "@/forms/admin/productcategories/productsubcategories/CreateSubCategoryModal";
+import {
+  disableOrEnable,
+  getSubCategories,
+} from "services/admin/products/productCategories/subcategory";
+import toastify from "services/utils/toastUtils";
+import { format } from "date-fns";
+// import Image from "next/image";
+
+const tableColumns = [
+  {
+    id: "col1",
+    align: "center",
+    label: "S.No.",
+    data_align: "center",
+  },
+  {
+    id: "col7",
+    align: "center",
+    label: "Sub Category Image",
+    data_align: "center",
+  },
+  {
+    id: "col2",
+    align: "center",
+    label: "Sub Category",
+    data_align: "center",
+  },
+  {
+    id: "col3",
+    align: "center",
+    label: "Parent Category",
+    data_align: "center",
+  },
+
+  {
+    id: "col4",
+    align: "center",
+    label: "Commission type",
+    data_align: "center",
+  },
+
+  {
+    id: "col8",
+    align: "center",
+    label: "Created By",
+    data_align: "center",
+  },
+  {
+    id: "col5",
+    align: "center",
+    label: "Created Date & Time",
+    data_align: "center",
+  },
+  {
+    id: "col9",
+    align: "center",
+    label: "Last Updated By",
+    data_align: "center",
+  },
+  {
+    id: "col10",
+    align: "center",
+    label: "Last Updated Date & Time",
+    data_align: "center",
+  },
+  {
+    id: "col6",
+    align: "center",
+    label: "Actions",
+    data_align: "center",
+  },
+];
 
 const SubCategories = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openCreateNewSubCategories, setOpenCreateNewSubCategories] =
-    useState();
+    useState(false);
   const [formData, setFormData] = useState({
     category: {},
     set: "",
@@ -20,149 +91,75 @@ const SubCategories = () => {
     mmcProfitPercentage: "",
     resellerProfitPercentage: "",
   });
-  const [rowId, setRowId] = useState(null);
 
-  const rowsDataObjectsForSubCategories = [
-    {
-      id: 1,
-      col1: "1",
-      col2: "Body Wash and Scrub",
-      col3: "Beauty Product",
-      col4: "--",
-      col5: "--",
-      col6: "--",
-      col7: "--",
-      col8: "2",
-      col9: "21/6/2021-10.52",
-      col10: "Actions",
-    },
-  ];
+  const changeStatus = async (id) => {
+    // eslint-disable-next-line no-unused-vars
+    const { data, err } = await disableOrEnable({
+      categoryType: "SUB_CATEGORY",
+      categoryId: id,
+      status: false,
+    });
+  };
 
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-center">
-      <Typography>Enable</Typography>
-      <Box className="ms-3">
-        <SwitchComponent label="" />
-      </Box>
-    </Box>,
-  ];
+  const mapData = (data) => {
+    return data.map((val, index) => {
+      return {
+        col1: index + 1,
+        col2: val.subCategoryName,
+        col3: val.mainCategoryName,
+        col4: val.commissionType,
+        col5: val.createdAt
+          ? format(new Date(val.createdAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
+        col6: (
+          <Box className="d-flex justify-content-center align-items-center">
+            <Box className="d-flex align-items-center">
+              <SwitchComponent
+                label=""
+                value={false}
+                ontoggle={() => {
+                  changeStatus();
+                }}
+              />
+            </Box>
+            <CustomIcon type="edit" className="fs-20" />
+            <CustomIcon type="view" className="fs-20" />
+          </Box>
+        ),
+        col7: "--",
+        // val.mediaUrl ? (
+        //   <Image height={50} width={50} src={val.mediaUrl} />
+        // ) : (
+        //   "--"
+        // ),
+        col8: val.createdBy || "--",
+        col9: val.lastUpdatedBy || "--",
+        col10: val.lastUpdatedAt
+          ? format(new Date(val.lastUpdatedAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
+      };
+    });
+  };
 
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setRowId(index);
-      setFormData({
-        category: { label: rowsDataObjectsForSubCategories[index].col3 },
-        set: "",
-        subCategory: rowsDataObjectsForSubCategories[index].col2,
-        priceRange: { label: rowsDataObjectsForSubCategories[index].col4 },
-        comissionType: { label: rowsDataObjectsForSubCategories[index].col5 },
-        comissionPercentage: rowsDataObjectsForSubCategories[index].col6,
-        mmcProfitPercentage: rowsDataObjectsForSubCategories[index].col7,
-        resellerProfitPercentage: rowsDataObjectsForSubCategories[index].col8,
-      });
-      setOpenCreateNewSubCategories(true);
+  const getTableData = async () => {
+    const { data, err } = await getSubCategories(0, {
+      commissionModeList: ["ZERO_COMMISSION"],
+      mainCategoryList: [],
+      keyword: null,
+      fromDate: null,
+      toDate: null,
+    });
+    if (data) {
+      setTableRows(mapData(data));
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
-  const getTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForSubCategories.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: val.col8,
-        col9: val.col9,
-        col10: (
-          <Box className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" className="fs-20" />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
-        ),
-      });
-    });
-
-    setTableRows(anArray);
-  };
-
   useEffect(() => {
-    getTableRowsData();
+    getTableData();
   }, []);
 
-  const tableColumns = [
-    {
-      id: "col1",
-      align: "center",
-      label: "S.No.",
-      data_align: "center",
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Sub Category",
-      data_align: "center",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Parent Category",
-      data_align: "center",
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Price Range",
-      data_align: "center",
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Commission type",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Commission Percentage",
-      data_align: "center",
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "MrMrs Profit %",
-      data_align: "center",
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Reseller Profit %",
-      data_align: "center",
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Created Date & Time",
-      data_align: "center",
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-    },
-  ];
   return (
     <>
       <Box>
@@ -173,10 +170,9 @@ const SubCategories = () => {
               className="overflow-auto hide-scrollbar pt-3"
             >
               <TableComponent
-                table_heading="Sets"
+                table_heading="Sub-categories"
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
                 showSearchbar={false}
                 showDateFilterBtn
@@ -190,13 +186,14 @@ const SubCategories = () => {
           </Box>
         </Box>
       </Box>
-      <CreateSubCategoryModal
-        openCreateNewSubCategories={openCreateNewSubCategories}
-        setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
-        formData={formData}
-        setFormData={setFormData}
-        rowId={rowId}
-      />
+
+      {openCreateNewSubCategories && (
+        <CreateSubCategoryModal
+          setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      )}
     </>
   );
 };

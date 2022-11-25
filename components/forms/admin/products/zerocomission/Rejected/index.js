@@ -20,7 +20,7 @@ import MergeToModal from "./MergeToModal";
 import VisibilityRangeModal from "./VisibilityRangeModal";
 import FlagModal from "./FlagModal";
 import AddEditProductModal from "./AddEditProductModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Rejected = ({

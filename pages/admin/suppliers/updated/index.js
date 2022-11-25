@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DoneIcon from "@mui/icons-material/Done";
 import CustomIcon from "services/iconUtils";
@@ -24,7 +24,7 @@ const tableColumn = [
   },
   {
     id: "col2",
-    label: "Supplier ID / Name",
+    label: "Supplier ID",
     minWidth: 200,
     align: "center",
     data_align: "center",
@@ -33,7 +33,7 @@ const tableColumn = [
   },
   {
     id: "col3",
-    label: "Email / Mobile",
+    label: "Email",
     minWidth: 200,
     align: "center",
     data_align: "center",
@@ -41,10 +41,26 @@ const tableColumn = [
   },
   {
     id: "col4",
-    label: "Categories",
-    minWidth: 250,
+    label: "Changed Field",
+    minWidth: 200,
     align: "center",
-    data_align: "start",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col8",
+    label: "Previous Value",
+    minWidth: 200,
+    align: "center",
+    data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col9",
+    label: "Changed Value",
+    minWidth: 200,
+    align: "center",
+    data_align: "center",
     data_classname: "",
   },
 
@@ -79,7 +95,7 @@ const Updated = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [queryModalOpen, setQueryModalOpen] = useState(false);
   const [tableRows, setTableRows] = useState([]);
-  const [count, setCount] = useState([]);
+  const [count, setCount] = useState(0);
   const [details, setDetails] = useState([]);
   // const [payload, setPayload] = useState({
   //   fromDate: null,
@@ -145,24 +161,9 @@ const Updated = () => {
           return {
             id: val.changeHistoryId,
             col1: index < 9 ? `0${index + 1}` : index + 1,
-            col2: `${val.supplierId}/${val.businessName}`,
-            col3: (
-              <div>
-                <div>{val.emailId}/</div>
-                <div>{val.mobileNumber}</div>
-              </div>
-            ),
-            col4: (
-              <div className="mxh-100 overflow-y-scroll">
-                <ol>
-                  {val.mainCategoryWrappers.map((item) => (
-                    <li key={item.mainCategoryId}>
-                      <Typography>{item.mainCategoryName}</Typography>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ),
+            col2: `${val.supplierId}`,
+            col3: val.emailId,
+            col4: val.changedField,
             col5: format(new Date(val.createdDate), "MM-dd-yyyy hh:mm:ss"),
             col6: val.updatedAt
               ? format(new Date(val.updatedAt), "MM-dd-yyyy hh:mm:ss")
@@ -201,6 +202,8 @@ const Updated = () => {
                 />
               </Box>
             ),
+            col8: val.oldValue,
+            col9: val.changedValue,
           };
         }
       );

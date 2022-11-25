@@ -20,7 +20,7 @@ import { updateProduct, viewProduct } from "features/productsSlice";
 import { getVariation } from "services/supplier/myProducts";
 import RaiseQueryModal from "./RaiseQueryModal";
 import EditProductModalForUpdated from "./EditProductModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 import ReasonToReject from "../ProductsToApprove/AcceptRejectmodal/ReasonToReject";
 
