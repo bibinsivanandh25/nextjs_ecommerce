@@ -186,7 +186,14 @@ const CollapseList = ({
               fontSize={13}
               // color={menuList.selected && "#e56700"}
             >
-              {menuList.title}
+              <div className="d-flex justify-content-between">
+                <Box id={menuList.id} className="fs-13 cursor-pointer">
+                  {menuList.title}
+                </Box>
+                {menuList.locked && (
+                  <CustomIcon type="lock" className="fs-16" />
+                )}
+              </div>
             </Typography>
           }
           sx={{ opacity: open ? 1 : 0, display: open ? "block" : "none" }}
@@ -221,7 +228,14 @@ const CollapseList = ({
                       fontWeight={600}
                       fontSize={13}
                     >
-                      {item.title}
+                      <div className="d-flex justify-content-between">
+                        <Box id={item.id} className="fs-13 cursor-pointer">
+                          {item.title}
+                        </Box>
+                        {item.locked && (
+                          <CustomIcon type="lock" className="fs-16" />
+                        )}
+                      </div>
                     </Typography>
                   }
                   sx={{ opacity: open ? 1 : 0 }}

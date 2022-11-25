@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 import { Grid } from "@mui/material";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
@@ -5,180 +6,113 @@ import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import React, { useEffect, useState } from "react";
-import {
-  getDataOfSingleFlagSelected,
-  postAFlag,
-} from "services/supplier/mycollections";
-import validateMessage from "constants/validateMessages";
-import validationRegex from "services/utils/regexUtils";
-import { format } from "date-fns";
+import { addProductFlag, getFlags } from "services/supplier/myProducts";
 import toastify from "services/utils/toastUtils";
+import Image from "next/image";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { useSelector } from "react-redux";
+import { format, parse } from "date-fns";
 
-let errObj = {
-  todaysDeals: false,
-  discount: false,
-  startDate: false,
-  endDate: false,
-  discountNotANumber: false,
+const flagSchema = {
+  flagTitle: "",
+  imageUrl: "",
+  startDate: "",
+  endDate: "",
+  variationList: [],
+  discount: null,
+  supplierStoreId: "",
+  flagId: "",
+  supplierId: "",
+  userType: "SUPPLIER",
+  purchaseId: null,
 };
 
 const AddFlag = ({
   openModal,
   setOpenModal = () => {},
-  defaultFormData,
-  setDefaultFormData = () => {},
-  allFlags = [],
   getMycollectionData = () => {},
-  masterProduct = [],
-  user,
+  masterProduct = {},
 }) => {
-  const [allFlagsLabel, setAllFlagsLabel] = useState([]);
-  const [dataForSingleDeal, setDataForSingleDeal] = useState("noData");
-  const [error, setError] = useState(errObj);
-
-  useEffect(() => {
-    const tempArray = allFlags?.map((val) => {
-      return {
-        label: val.name,
-        id: val.id,
-        purchaseId: val.purchaseId,
-        imageUrl: val.imageUrl,
-      };
-    });
-    setAllFlagsLabel([...tempArray]);
-  }, [allFlags]);
-
-  const getSingleOptionFlag = async (value) => {
-    const { data, error } = await getDataOfSingleFlagSelected(
-      value?.id,
-      user.storeCode,
-      value?.purchaseId
-    );
-
-    if (data) {
-      setDataForSingleDeal(data);
-    }
-    if (data === null) {
-      setDataForSingleDeal(data);
-    }
-    if (error) {
-      toastify(error, "error");
-    }
-  };
-
-  const handleError = () => {
-    let theError = false;
-    errObj = {
-      todaysDeals: false,
-      discount: false,
-      startDate: false,
-      endDate: false,
-      discountNotANumber: false,
-    };
-    if (defaultFormData.todaysDeals.label === "") {
-      errObj.todaysDeals = true;
-      theError = true;
-    }
-    if (dataForSingleDeal === null) {
-      if (defaultFormData.discount === "") {
-        errObj.discount = true;
-        theError = true;
-      }
-      if (defaultFormData.startDate === "") {
-        errObj.startDate = true;
-        theError = true;
-      }
-      if (defaultFormData.endDate === "") {
-        errObj.endDate = true;
-        theError = true;
-      }
-
-      if (!validationRegex.decimal_2digit.test(defaultFormData.discount)) {
-        errObj.discountNotANumber = true;
-        theError = true;
-      }
-    }
-
-    return { errObj, theError };
-  };
-
+  const [formData, setFormData] = useState({
+    ...flagSchema,
+  });
+  const [flagsList, setFlagsList] = useState([]);
+  const [flagUrlList, setflagUrlList] = useState([]);
+  const { storeCode } = useSelector((state) => state.user);
   const handleClearBtnClick = () => {
-    errObj = {
-      todaysDeals: false,
-      discount: false,
-      startDate: false,
-      endDate: false,
-    };
     setOpenModal(false);
-    setDefaultFormData({
-      todaysDeals: { label: "" },
-      discount: "",
-      startDate: "",
-      endDate: "",
-    });
-    setError(errObj);
   };
+
+  // const validate = ()=>{
+  //   if(formData.flagTitle === )
+  // }
 
   const handleSubmit = async () => {
-    const { errObj, theError } = handleError();
-    setError(errObj);
-    if (!theError) {
-      let theVariationList = [];
+    const { data, err } = await addProductFlag({
+      ...formData,
+      flagId: formData.flagTitle.value,
+      flagTitle: formData.flagTitle.label,
+      imageUrl: flagUrlList.filter((item) => item.checked)[0].url,
+    });
+    if (data) {
+      toastify(data.message, "success");
+      getMycollectionData(0);
+      setOpenModal(false);
+      setflagUrlList([]);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
-      masterProduct.productVariations.forEach((item) => {
-        theVariationList.push(item.productVariationId);
+  const handleChanges = (val, name) => {
+    if (name === "flagTitle") {
+      setFormData((pre) => ({
+        ...pre,
+        [name]: val,
+        purchaseId: val.purchaseId,
+        discount: null,
+      }));
+      return;
+    }
+    setFormData((pre) => ({
+      ...pre,
+      [name]: val,
+    }));
+  };
+
+  const getflagList = async () => {
+    const { data, err } = await getFlags(masterProduct.supplierId);
+    if (data) {
+      setFlagsList(
+        data.map((item) => ({
+          value: item.id,
+          label: item.name,
+          purchaseId: item.purchaseId,
+          imageUrl: item.imageUrl,
+        }))
+      );
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  useEffect(() => {
+    getflagList();
+  }, []);
+
+  useEffect(() => {
+    if (masterProduct?.productVariations) {
+      const variationId = masterProduct?.productVariations.map((item) => {
+        return item.productVariationId;
       });
-      if (dataForSingleDeal) {
-        theVariationList = [
-          ...dataForSingleDeal?.variationList,
-          ...theVariationList,
-        ];
-      }
-      theVariationList = [...new Set(theVariationList)];
-      const payload = {
-        flagTitle: defaultFormData.todaysDeals.label,
-        imageUrl: defaultFormData.todaysDeals.imageUrl,
-        startDate:
-          dataForSingleDeal === null
-            ? format(defaultFormData.startDate, "MM-dd-yyyy HH:mm:ss")
-            : dataForSingleDeal.startDate,
-        endDate:
-          dataForSingleDeal === null
-            ? format(defaultFormData.endDate, "MM-dd-yyyy HH:mm:ss")
-            : dataForSingleDeal.endDate,
-        variationList: theVariationList,
-        discount:
-          dataForSingleDeal === null
-            ? defaultFormData.discount
-            : dataForSingleDeal.discount,
-        supplierStoreId: user.storeCode,
-        flagId: defaultFormData.todaysDeals.id,
-        supplierId: user.supplierId,
-        userType: "SUPPLIER",
-        purchaseId: defaultFormData.todaysDeals.purchaseId,
-      };
-
-      const { data, error } = await postAFlag(payload);
-      if (data) {
-        toastify("Flag posted successfully", "success");
-        setOpenModal(false);
-        getMycollectionData();
-        handleClearBtnClick();
-      } else if (error) {
-        toastify(error, "error");
-      }
+      setFormData((pre) => ({
+        ...pre,
+        variationList: variationId,
+        supplierId: masterProduct.supplierId,
+        supplierStoreId: storeCode,
+      }));
     }
-  };
-
-  const handleHelperTextForDiscount = () => {
-    if (error.discount) {
-      return validateMessage.field_required;
-    }
-    if (error.discountNotANumber) {
-      return validateMessage.decimal_2digits;
-    }
-    return "";
-  };
+  }, [masterProduct]);
 
   return (
     <ModalComponent
@@ -198,115 +132,90 @@ const AddFlag = ({
         <Grid item xs={12}>
           <SimpleDropdownComponent
             size="small"
-            placeholder="Todays Deal"
-            value={defaultFormData?.todaysDeals}
-            list={[...allFlagsLabel]}
-            onDropdownSelect={(value) => {
-              setDefaultFormData({
-                ...defaultFormData,
-                todaysDeals: {
-                  label: value?.label,
-                  id: value?.id,
-                  imageUrl: value?.imageUrl,
-                  purchaseId: value?.purchaseId,
-                },
+            placeholder="Flag Title"
+            value={formData.flagTitle}
+            list={flagsList}
+            onDropdownSelect={(val) => {
+              handleChanges(JSON.parse(JSON.stringify(val)), "flagTitle");
+              const temp = val?.imageUrl?.map((item) => {
+                return {
+                  checked: false,
+                  url: item,
+                  label: <Image src={item} width={400} height={50} />,
+                };
               });
-              getSingleOptionFlag(value);
+              setflagUrlList(temp);
             }}
-            helperText={error.todaysDeals ? validateMessage.field_required : ""}
           />
         </Grid>
-        <Grid item xs={6}>
-          {/* <InputBox
-            size="small"
-            placeholder="Sale Price"
-            disabled
-            value={defaultFormData.saleprice}
-            onInputChange={(e) => {
-              setDefaultFormData((prev) => ({
-                ...prev,
-                saleprice: e.target.value,
-              }));
-            }}
-          /> */}
-        </Grid>
-        <Grid item sm={6}>
-          <InputBox
-            size="small"
-            placeholder="Enter discount %"
-            value={
-              dataForSingleDeal === null
-                ? defaultFormData.discount
-                : dataForSingleDeal.discount
-            }
-            onInputChange={(e) => {
-              setDefaultFormData((prev) => ({
-                ...prev,
-                discount: e.target.value,
-              }));
-            }}
-            type="number"
-            disabled={
-              !(
-                dataForSingleDeal === null &&
-                defaultFormData.todaysDeals.label !== ""
-              )
-            }
-            error={error.discount || error.discountNotANumber}
-            helperText={handleHelperTextForDiscount()}
-          />
-        </Grid>
+
+        {formData.flagTitle.label === "Deal Of The Day" && (
+          <Grid item sm={6}>
+            <InputBox
+              size="small"
+              placeholder="Enter discount %"
+              type="number"
+              onInputChange={(e) => {
+                handleChanges(e.target.value, "discount");
+              }}
+              value={formData.discount}
+            />
+          </Grid>
+        )}
         <Grid item sm={6}>
           <DatePickerComponent
             size="small"
             label="Start Date"
             inputlabelshrink
-            value={
-              dataForSingleDeal === null
-                ? defaultFormData.startDate
-                : dataForSingleDeal.startDate
-            }
             onDateChange={(value) => {
-              setDefaultFormData((prev) => ({
-                ...prev,
-                startDate: value,
-              }));
+              handleChanges(format(value, "MM-dd-yyyy HH:mm:ss"), "startDate");
             }}
-            disabled={
-              !(
-                dataForSingleDeal === null &&
-                defaultFormData.todaysDeals.label !== ""
-              )
+            value={
+              formData.startDate
+                ? parse(formData.startDate, "MM-dd-yyyy HH:mm:ss", new Date())
+                : null
             }
-            error={error.startDate}
-            helperText={error.startDate ? validateMessage.field_required : ""}
           />
         </Grid>
         <Grid item sm={6}>
           <DatePickerComponent
+            onDateChange={(value) => {
+              handleChanges(format(value, "MM-dd-yyyy HH:mm:ss"), "endDate");
+            }}
             size="small"
             label="End Date"
-            inputlabelshrink
             value={
-              dataForSingleDeal === null
-                ? defaultFormData.endDate
-                : dataForSingleDeal.endDate
+              formData.endDate
+                ? parse(formData.endDate, "MM-dd-yyyy HH:mm:ss", new Date())
+                : null
             }
-            onDateChange={(value) => {
-              setDefaultFormData((prev) => ({
-                ...prev,
-                endDate: value,
-              }));
-            }}
-            disabled={
-              !(
-                dataForSingleDeal === null &&
-                defaultFormData.todaysDeals.label !== ""
-              )
-            }
-            error={error.endDate}
-            helperText={error.endDate ? validateMessage.field_required : ""}
+            inputlabelshrink
           />
+        </Grid>
+        <Grid item sm={12} container>
+          {flagUrlList.map((item, ind) => {
+            return (
+              <Grid item md={6}>
+                <div className="d-flex">
+                  <CheckBoxComponent
+                    isChecked={item.checked}
+                    checkBoxClick={() => {
+                      const temp = [...flagUrlList];
+                      temp.forEach((ele, index) => {
+                        if (index === ind) {
+                          ele.checked = true;
+                        } else {
+                          ele.checked = false;
+                        }
+                      });
+                      setflagUrlList(temp);
+                    }}
+                  />
+                  {item.label}
+                </div>
+              </Grid>
+            );
+          })}
         </Grid>
       </Grid>
     </ModalComponent>
