@@ -41,21 +41,4 @@ const getDataOfSingleFlagSelected = async (id, supplierId, purchaseId) => {
   return null;
 };
 
-const postAFlag = async (payload) => {
-  try {
-    const { data } = await serviceUtil.post("products/supplier-flag", payload);
-    if (data) {
-      return data;
-    }
-  } catch (error) {
-    return error;
-  }
-  return null;
-};
-
-export {
-  getCollections,
-  getAllProductFlags,
-  getDataOfSingleFlagSelected,
-  postAFlag,
-};
+export { getCollections, getAllProductFlags, getDataOfSingleFlagSelected };
