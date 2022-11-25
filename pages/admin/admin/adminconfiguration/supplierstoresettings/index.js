@@ -74,6 +74,7 @@ const SupplierStoreSettings = () => {
         col4: val.createdDate ? val.createdDate : "--",
         col5: (
           <CustomIcon
+            title="Edit"
             type="edit"
             onIconClick={() => {
               handleEdit(

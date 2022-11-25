@@ -197,16 +197,15 @@ const Active = () => {
             <span className="h-5" id="gstinnumber">
               {item.gstin}
             </span>
-            <Tooltip title="copy">
-              <CustomIcon
-                type="filecopy"
-                size="small"
-                className="fs-18"
-                onIconClick={() => {
-                  copyText();
-                }}
-              />
-            </Tooltip>
+            <CustomIcon
+              type="filecopy"
+              size="small"
+              className="fs-18"
+              onIconClick={() => {
+                copyText();
+              }}
+              title="Copy"
+            />
           </Box>
         ),
         col5: (
