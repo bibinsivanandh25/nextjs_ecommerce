@@ -376,7 +376,7 @@ const GenericForm = ({
       if (data) {
         toastify(message, "success");
         setShowGenericForm(false);
-        getTableRows(getPageName());
+        getTableRows(getPageName(), 0);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -438,7 +438,13 @@ const GenericForm = ({
             </div>
           </Box>
           <Box className=" mb-3 ms-3">
-            Whom you want to create the quiz
+            {`Whom you want to create the ${
+              pageName === "createquiz"
+                ? "Quiz"
+                : pageName === "spinwheel"
+                ? "Spin Wheel"
+                : "Scratch Card"
+            }`}
             <Box className="d-flex mt-1 ms-3">
               <RadiobuttonComponent
                 label="New Customer"
@@ -489,7 +495,13 @@ const GenericForm = ({
       </Box>
       <Box className="d-flex flex-column mx-3">
         <Typography className="h-4 mb-3">
-          How do you want to quiz amount ?
+          {`How do you want to ${
+            pageName === "createquiz"
+              ? "Quiz"
+              : pageName === "spinwheel"
+              ? "Spin Wheel"
+              : "Scratch Card"
+          } amount ?`}
         </Typography>
         <Box className="d-flex w-100">
           <Grid container spacing={2}>
@@ -684,7 +696,7 @@ const GenericForm = ({
           <Grid item md={4} lg={3} className="d-flex align-items-center">
             <InputBox
               label=""
-              placeholder="Enter Quiz / campaign name"
+              placeholder="Enter campaign name"
               onInputChange={(e) => {
                 setFormData((pre) => ({
                   ...pre,
