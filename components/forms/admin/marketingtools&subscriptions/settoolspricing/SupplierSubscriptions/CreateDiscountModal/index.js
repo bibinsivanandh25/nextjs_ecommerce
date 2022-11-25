@@ -248,6 +248,7 @@ const CreateDiscountModal = ({
         }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
+        showClearBtn={modalType !== "Edit"}
         ClearBtnText="Reset"
         saveBtnText="Save"
         saveBtnClassName="ms-1"
