@@ -30,6 +30,9 @@ const ReasonToReject = ({
       onClearBtnClick={() => {
         setRejectReason("");
       }}
+      onCloseIconClick={() => {
+        setShowModal(false);
+      }}
       clearBtnClassName="mx-2"
       footerClassName="justify-content-stand flex-row-reverse"
     >
