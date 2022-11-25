@@ -15,6 +15,7 @@ const ReasonToReject = ({
   return (
     <ModalComponent
       ModalTitle="Reason"
+      titleClassName="color-orange"
       ModalWidth="40%"
       open={showModal}
       saveBtnText="Submit"

@@ -317,15 +317,17 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
           </Typography>
         ),
         col11: `  ${val.categoryName} / ${val.subCategoryName}`,
-        col12: (
+        col12: val.activeFlag ? (
           <Image
             src={val.activeFlag?.length ? val.activeFlag : ""}
             width="100"
             height="75"
           />
+        ) : (
+          "--"
         ),
-        col13: val.createdAt,
-        col14: val.approvedAt,
+        col13: val.createdAt ?? "--",
+        col14: val.approvedAt ?? "--",
         col15: (
           <Box className="d-flex align-items-center">
             <Box className="ms-2 w-75">

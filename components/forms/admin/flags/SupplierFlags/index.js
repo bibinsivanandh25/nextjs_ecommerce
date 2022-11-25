@@ -296,7 +296,7 @@ const SupplierFlags = () => {
       {openVIew && (
         <ModalComponent
           open={openVIew}
-          ModalTitle="Falg Details"
+          ModalTitle="Flag Details"
           onCloseIconClick={() => {
             setopenVIew(false);
           }}
