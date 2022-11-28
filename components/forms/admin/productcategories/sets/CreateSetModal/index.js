@@ -160,7 +160,10 @@ const CreateSetModal = ({
     const { data } = await getSetDataById(selectedData.categorySetId);
     if (data?.data) {
       setSetDetails({
-        category: "",
+        category: {
+          label: data.data.mainCategoryName,
+          id: data.data.mainCategoryId,
+        },
         set: data.data.setName,
         setImage: data.data.categorySetImageUrl,
         imageFile: "",
