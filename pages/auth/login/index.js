@@ -99,10 +99,10 @@ const Login = () => {
               lastName: data.lastName,
               profileImageUrl: data.profileImageUrl,
               supplierId: data.supplierId,
-              storeCode: data.supplierStoreInfo.supplierStoreCode,
+              storeCode: data?.supplierStoreInfo?.supplierStoreCode || "",
               isAddressSaved: data.userAddressDetails.length,
               role,
-              storeName: data.supplierStoreInfo.supplierStoreName,
+              storeName: data?.supplierStoreInfo?.supplierStoreName || "",
             }
           : {
               emailId: data.emailId,

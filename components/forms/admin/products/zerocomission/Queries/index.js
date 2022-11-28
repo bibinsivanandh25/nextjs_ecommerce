@@ -27,7 +27,7 @@ import {
 } from "services/admin/help&support";
 import HelpandsupportView from "@/forms/admin/help&support/helpandsupportview";
 import AddEditProductModal from "./AddEditProductModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Queries = ({

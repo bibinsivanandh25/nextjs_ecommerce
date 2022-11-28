@@ -24,7 +24,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 import DiscountModal from "../DiscountModal";
 
@@ -337,7 +337,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
                 getSelectedItem={(ele) => {
                   onClickOfMenuItem(ele, val);
                 }}
-                options={["Edit", "Remove", "Discount", "Raise Query"]}
+                options={["Edit", "Discount", "Raise Query"]}
                 IconclassName="color-gray "
               />
             </Box>
