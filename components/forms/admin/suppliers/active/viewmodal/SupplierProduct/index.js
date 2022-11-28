@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import DisplayImagesModal from "@/atoms/DisplayImagesModal";
 import TableComponent from "@/atoms/TableComponent";
 import FilterModal from "@/forms/admin/products/filterModal";

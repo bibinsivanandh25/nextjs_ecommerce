@@ -17,6 +17,7 @@ import QueryModal from "@/forms/admin/suppliers/active/querymodal";
 import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
 import validateMessage from "constants/validateMessages";
+import { format } from "date-fns";
 
 const tableColumn = [
   {
@@ -232,7 +233,9 @@ const Active = () => {
         col8: item.totalOrders ? item.totalOrders : "--",
         col9: item.totalEarnings ? item.totalEarnings : "--",
         col10: item.amoutnToBePaid ? item.amoutnToBePaid : "--",
-        col11: item.registeredAt ? item.registeredAt : "--",
+        col11: item.registeredAt
+          ? format(new Date(item.registeredAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
         col12: item.changesCollected ? item.changesCollected : "--",
         col13: (
           <Box>
