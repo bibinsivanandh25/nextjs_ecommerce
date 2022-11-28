@@ -99,7 +99,15 @@ const ProductsLayout = ({
   const [longDescModal, setLongDescModal] = useState(false);
   const [shortDescModal, setShortDescModal] = useState(false);
   const [adminViewList, setadminViewList] = useState([
-    { title: "Discount", component: <Discount /> },
+    {
+      title: "Discount",
+      component: (
+        <Discount
+          productVariationId={productDetails.variationData.productVariationId}
+          supplierId={productDetails.supplierId}
+        />
+      ),
+    },
     { title: "Order Summary", component: <OrderSummary /> },
     { title: "Merged Products", component: <MergedProducts /> },
     { title: "Logs", component: <Logs /> },
@@ -1521,7 +1529,9 @@ const ProductsLayout = ({
               ) : null}
               {(!adminView
                 ? activeTab !== tabsList.length - 1
-                : activeTab !== 12) && (
+                : showExtraTabs
+                ? activeTab < 11
+                : activeTab < tabsList.length - 1) && (
                 <ButtonComponent
                   label="Next"
                   size="small"

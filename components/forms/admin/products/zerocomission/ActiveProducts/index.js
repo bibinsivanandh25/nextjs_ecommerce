@@ -204,7 +204,6 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
   };
 
   const viewClick = async (masterProductId, variationId, val) => {
-    console.log(val, "asbnkjh");
     const { data, err } = await getVariation([
       { masterProductId, variationId },
     ]);
