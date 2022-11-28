@@ -250,7 +250,7 @@ const Active = () => {
             <MenuOption
               options={[
                 <>
-                  Disable{" "}
+                  Enabled{" "}
                   <Box className="ms-4">
                     <SwitchComponent
                       label=""
@@ -300,6 +300,8 @@ const Active = () => {
         ]);
       }
     } else if (data?.data?.activeSupplierWrappers?.length === 0 && page == 0) {
+      setTableRows([]);
+    } else if (page == 0 && data?.data == null) {
       setTableRows([]);
     }
     if (err) {
