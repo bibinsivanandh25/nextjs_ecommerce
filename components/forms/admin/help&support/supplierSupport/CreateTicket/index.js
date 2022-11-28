@@ -201,6 +201,7 @@ const CreateTicket = ({
         if (err) {
           toastify(err?.response?.data?.message, "error");
           setShowCreateTicketComponent(true);
+          getCount();
         }
       }
     }
