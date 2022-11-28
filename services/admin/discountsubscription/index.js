@@ -37,8 +37,8 @@ const discountApproved = (status, id, userId) => {
       `users/admin-marketing-tool/approve-reject-campaign?status=${status}&marketingToolId=${id}&userId=${userId}`
     )
     .then((res) => {
-      const { data,message } = res && res;
-      return { data,message };
+      const { data, message } = res && res;
+      return { data, message };
     })
     .catch((err) => ({ err }));
 };

@@ -92,7 +92,7 @@ const Sets = () => {
     }
   };
   const handleViewClcik = (value) => {
-    selectedData(value);
+    setSelectedData(value);
     setViewModalOpen(true);
   };
   const getTableRowsData = (data) => {
