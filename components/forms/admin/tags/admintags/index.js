@@ -91,7 +91,8 @@ const AdminTags = () => {
   const getAllTags = async (page, searchText, searchFilter, date) => {
     const payload = {
       keyword: searchText || null,
-      status: searchFilter == "All" ? null : searchFilter || null,
+      status:
+        searchFilter?.toLowerCase() == "all" ? null : searchFilter || null,
       fromDate: date?.fromDate || null,
       toDate: date?.toDate || null,
       createdByType: "ADMIN",

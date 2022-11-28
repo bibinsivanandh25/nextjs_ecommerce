@@ -3,7 +3,7 @@ import {
   adminSaveBanner,
   adminUpdateBanner,
 } from "services/admin/banners";
-import { Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useState, useRef } from "react";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
@@ -319,103 +319,108 @@ const CreateBanner = ({
           display="flex"
           justifyContent="space-evenly"
           alignItems="center"
+          alignContent="center"
         >
-          <div>
-            <Typography className="h-5 color-secondary">
-              Image For Mobile
-            </Typography>
-            <ImageCard
-              imageRef={mobile}
-              onLoad={() => {
-                setRatio((pre) => ({
-                  ...pre,
-                  mobileWidth: mobile.current.naturalWidth,
-                  mobileHeight: mobile.current.naturalHeight,
-                }));
-              }}
-              imgSrc={
-                formData.mobileimage?.binary
-                  ? formData.mobileimage?.binary
-                  : formData.mobileimage
-              }
-              handleCloseClick={() => {
-                setFormData((prev) => ({
-                  ...prev,
-                  mobileimage: "",
-                }));
-              }}
-              showClose={!!formData.mobileimage}
-              handleImageUpload={async (e) => {
-                if (e.target.files.length) {
-                  if (e.target.files[0].size <= 1000000) {
-                    const file = await getBase64(e.target.files[0]);
-                    setFormData((prev) => ({
-                      ...prev,
-                      mobileimage: {
-                        binary: file,
-                        multipart: e.target.files[0],
-                      },
-                    }));
-                  } else {
-                    toastify("Image size should be less than 1MB", "error");
-                  }
-                }
-              }}
-            />
-            {error.mobileimage ? (
-              <Typography className="h-5 color-error">
-                {error.mobileimage}
+          <Grid item sm={6}>
+            <Box className="h-100">
+              <Typography className="h-5 color-secondary">
+                Image For Mobile
               </Typography>
-            ) : null}
-          </div>
-          <div>
-            <Typography className="h-5 color-secondary">
-              Image For Web
-            </Typography>
-            <ImageCard
-              imageRef={web}
-              onLoad={() => {
-                setRatio((pre) => ({
-                  ...pre,
-                  webWidth: web.current.naturalWidth,
-                  webHeight: web.current.naturalHeight,
-                }));
-              }}
-              imgSrc={
-                formData.webimage?.binary
-                  ? formData.webimage?.binary
-                  : formData.webimage
-              }
-              handleCloseClick={() => {
-                setFormData((prev) => ({
-                  ...prev,
-                  webimage: "",
-                }));
-              }}
-              showClose={!!formData.webimage}
-              handleImageUpload={async (e) => {
-                if (e.target.files.length) {
-                  if (e.target.files[0].size <= 1000000) {
-                    const file = await getBase64(e.target.files[0]);
-                    setFormData((prev) => ({
-                      ...prev,
-                      webimage: {
-                        binary: file,
-                        multipart: e.target.files[0],
-                      },
-                    }));
-                  } else {
-                    toastify("Image size should be less than 1MB", "error");
-                  }
+              <ImageCard
+                imageRef={mobile}
+                onLoad={() => {
+                  setRatio((pre) => ({
+                    ...pre,
+                    mobileWidth: mobile.current.naturalWidth,
+                    mobileHeight: mobile.current.naturalHeight,
+                  }));
+                }}
+                imgSrc={
+                  formData.mobileimage?.binary
+                    ? formData.mobileimage?.binary
+                    : formData.mobileimage
                 }
-              }}
-            />
-            {error.webimage ? (
-              <Typography className="h-5 color-error">
-                {error.webimage}
+                handleCloseClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    mobileimage: "",
+                  }));
+                }}
+                showClose={!!formData.mobileimage}
+                handleImageUpload={async (e) => {
+                  if (e.target.files.length) {
+                    if (e.target.files[0].size <= 1000000) {
+                      const file = await getBase64(e.target.files[0]);
+                      setFormData((prev) => ({
+                        ...prev,
+                        mobileimage: {
+                          binary: file,
+                          multipart: e.target.files[0],
+                        },
+                      }));
+                    } else {
+                      toastify("Image size should be less than 1MB", "error");
+                    }
+                  }
+                }}
+              />
+              {error.mobileimage ? (
+                <Typography className="h-5 color-error">
+                  {error.mobileimage}
+                </Typography>
+              ) : null}
+            </Box>
+          </Grid>
+          <Grid item sm={6}>
+            <Box className="h-100">
+              <Typography className="h-5 color-secondary">
+                Image For Web
               </Typography>
-            ) : null}
-          </div>
+              <ImageCard
+                imageRef={web}
+                onLoad={() => {
+                  setRatio((pre) => ({
+                    ...pre,
+                    webWidth: web.current.naturalWidth,
+                    webHeight: web.current.naturalHeight,
+                  }));
+                }}
+                imgSrc={
+                  formData.webimage?.binary
+                    ? formData.webimage?.binary
+                    : formData.webimage
+                }
+                handleCloseClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    webimage: "",
+                  }));
+                }}
+                showClose={!!formData.webimage}
+                handleImageUpload={async (e) => {
+                  if (e.target.files.length) {
+                    if (e.target.files[0].size <= 1000000) {
+                      const file = await getBase64(e.target.files[0]);
+                      setFormData((prev) => ({
+                        ...prev,
+                        webimage: {
+                          binary: file,
+                          multipart: e.target.files[0],
+                        },
+                      }));
+                    } else {
+                      toastify("Image size should be less than 1MB", "error");
+                    }
+                  }
+                }}
+              />
+              {error.webimage ? (
+                <Typography className="h-5 color-error">
+                  {error.webimage}
+                </Typography>
+              ) : null}
+            </Box>
+          </Grid>
         </Grid>
         <Grid item sm={7} container spacing={2} alignSelf="center">
           <Grid item sm={12}>
@@ -597,7 +602,7 @@ const CreateBanner = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid container className="mb-2" sx={{ marginTop: "-6px" }}>
+          <Grid container className="mb-2" sx={{ marginTop: "1px" }}>
             <Grid item sm={6}>
               {error.starttime ? (
                 <Typography className="h-5 ms-5 text-center color-error">

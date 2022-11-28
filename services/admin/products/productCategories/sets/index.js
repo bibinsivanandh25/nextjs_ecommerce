@@ -32,9 +32,9 @@ const saveSet = (payload) => {
     })
     .catch((err) => ({ err }));
 };
-const getAllCategorys = () => {
+const getAllCategorys = (payload = []) => {
   return serviceUtil
-    .get(`products/main-categories`)
+    .post(`products/main-categories`, payload)
     .then((res) => {
       const { data } = res && res;
       return { data };
@@ -68,6 +68,24 @@ const setEnableDisable = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const getCategoryFilter = (payload = []) => {
+  return serviceUtil
+    .post(`products/main-categories`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const setDropDownData = (payload) => {
+  return serviceUtil
+    .post(`products/category-set/main-category`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getAllSetData,
   uploadSetMedia,
@@ -76,4 +94,6 @@ export {
   getSetDataById,
   editSet,
   setEnableDisable,
+  getCategoryFilter,
+  setDropDownData,
 };

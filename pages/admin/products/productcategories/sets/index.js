@@ -12,6 +12,7 @@ import {
 } from "services/admin/products/productCategories/sets";
 import toastify from "services/utils/toastUtils";
 import SetFilterModal from "@/forms/admin/productcategories/sets/setfiltermodal";
+import SetsViewModal from "@/forms/admin/productcategories/sets/setsviewmodal";
 
 const Sets = () => {
   const [tableRows, setTableRows] = useState([]);
@@ -20,6 +21,9 @@ const Sets = () => {
   const [type, setType] = useState("add");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
+  const [filteredValue, setFilteredValue] = useState({});
+  const [filterDate, setFilterDate] = useState({});
+  const [viewModalopen, setViewModalOpen] = useState(false);
 
   const tableColumns = [
     {
@@ -87,6 +91,10 @@ const Sets = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const handleViewClcik = (value) => {
+    selectedData(value);
+    setViewModalOpen(true);
+  };
   const getTableRowsData = (data) => {
     const temp = [];
     data.forEach((val, index) => {
@@ -98,7 +106,13 @@ const Sets = () => {
         col4: val.createdAt,
         col5: (
           <Box className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" className="fs-20" />
+            <CustomIcon
+              type="view"
+              className="fs-20"
+              onIconClick={() => {
+                handleViewClcik(val);
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, val);
@@ -128,11 +142,11 @@ const Sets = () => {
     });
     return temp;
   };
-  const getAllSet = async (page, date) => {
+  const getAllSet = async (page, date, value) => {
     const payload = {
-      commissionType: null,
-      mainCategory: [],
-      categorySet: [],
+      commissionType: value?.commissiontype || [],
+      mainCategory: value?.categoryid || [],
+      categorySet: value?.setid || [],
       fromDate: date?.fromDate && date?.toDate ? date?.fromDate : null,
       toDate: date?.fromDate && date?.toDate ? date?.toDate : null,
     };
@@ -181,7 +195,8 @@ const Sets = () => {
               }}
               showDateFilterSearch={false}
               handlePageEnd={(searchtext, filter, page = pageNumber, date) => {
-                getAllSet(page, date);
+                setFilterDate(date);
+                getAllSet(page, date, filteredValue);
               }}
               showFilterButton
               showFilterList={false}
@@ -206,6 +221,18 @@ const Sets = () => {
         <SetFilterModal
           setShowFilterModal={setShowFilterModal}
           showFilterModal={showFilterModal}
+          getFilteredValues={(value) => {
+            setFilteredValue(value);
+            getAllSet(0, filterDate, value);
+          }}
+          filteredValue={filteredValue}
+        />
+      )}
+      {viewModalopen && (
+        <SetsViewModal
+          viewModalopen={viewModalopen}
+          setViewModalOpen={setViewModalOpen}
+          selectedData={selectedData}
         />
       )}
     </>
