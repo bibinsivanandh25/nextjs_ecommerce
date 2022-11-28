@@ -101,17 +101,31 @@ const ProductsLayout = ({
   const [adminViewList, setadminViewList] = useState([
     {
       title: "Discount",
-      component: (
-        <Discount
-          productVariationId={productDetails.variationData.productVariationId}
-          supplierId={productDetails.supplierId}
-        />
-      ),
+      component: <Discount />,
     },
     { title: "Order Summary", component: <OrderSummary /> },
     { title: "Merged Products", component: <MergedProducts /> },
     { title: "Logs", component: <Logs /> },
   ]);
+  useEffect(() => {
+    if (productDetails?.variationData)
+      setadminViewList([
+        {
+          title: "Discount",
+          component: (
+            <Discount
+              productVariationId={
+                productDetails.variationData.productVariationId
+              }
+              supplierId={productDetails.supplierId}
+            />
+          ),
+        },
+        { title: "Order Summary", component: <OrderSummary /> },
+        { title: "Merged Products", component: <MergedProducts /> },
+        { title: "Logs", component: <Logs /> },
+      ]);
+  }, [productDetails]);
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
