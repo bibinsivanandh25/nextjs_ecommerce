@@ -73,7 +73,7 @@ const VariationForm = forwardRef(
           }) || [];
         const temp = JSON.parse(JSON.stringify([...dataCopy, ...defaultList]));
         temp.forEach((item) => {
-          item.value = formData?.variation[item.id];
+          item.value = formData?.variation[item.id] ?? null;
         });
         setDropdowns([...temp]);
       }

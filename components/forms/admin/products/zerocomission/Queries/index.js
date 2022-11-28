@@ -31,7 +31,7 @@ import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
 const Queries = ({
-  // getCount = () => {},
+  getCount = () => {},
   commissionType = "ZERO_COMMISSION",
 }) => {
   const [showViewProducts, setShowViewProducts] = useState(false);
@@ -108,6 +108,10 @@ const Queries = ({
       getTicketById(id);
     }
   };
+
+  useEffect(() => {
+    getCount();
+  }, [tableRows]);
 
   useEffect(() => {
     getTableData();

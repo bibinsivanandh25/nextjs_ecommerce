@@ -1,7 +1,7 @@
 import serviceUtil from "services/utils";
 
 const getAdminProductsByFilter = (payLoad, pageNumber = 0) => {
-  const pageSize = 40;
+  const pageSize = 100;
   return serviceUtil
     .post(`products/admin/products/${pageNumber}/${pageSize}`, payLoad)
     .then((res) => {

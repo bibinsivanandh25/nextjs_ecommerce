@@ -239,6 +239,7 @@ const SupplierFlags = () => {
         setOpenCreateFlagModal={setOpenCreateFlagModal}
         setmodalDetails={setEditModalDetails}
         modalDetails={editModalDetails}
+        getTableData={getTableData}
       />
       {opendisableModal && (
         <ModalComponent

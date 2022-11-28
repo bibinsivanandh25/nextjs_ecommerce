@@ -190,6 +190,8 @@ const Reajected = () => {
       }
     } else if (data?.data?.supplierInfo?.length == 0 && page == 0) {
       setTableRows([]);
+    } else if (page == 0 && data?.data == null) {
+      setTableRows([]);
     }
     if (err) {
       setTableRows([]);
