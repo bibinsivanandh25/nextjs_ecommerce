@@ -15,6 +15,7 @@ const ReasonToReject = ({
   return (
     <ModalComponent
       ModalTitle="Reason"
+      titleClassName="color-orange"
       ModalWidth="40%"
       open={showModal}
       saveBtnText="Submit"
@@ -29,6 +30,9 @@ const ReasonToReject = ({
       ClearBtnText="Clear"
       onClearBtnClick={() => {
         setRejectReason("");
+      }}
+      onCloseIconClick={() => {
+        setShowModal(false);
       }}
       clearBtnClassName="mx-2"
       footerClassName="justify-content-stand flex-row-reverse"

@@ -22,7 +22,7 @@ import { format } from "date-fns";
 const tableColumn = [
   {
     id: "col1",
-    label: "SI NO.",
+    label: "Sl NO.",
     minWidth: 100,
     align: "center",
     data_align: "center",
@@ -56,7 +56,7 @@ const tableColumn = [
   },
   {
     id: "col5",
-    label: "Categories/Sub-categories",
+    label: "Categories",
     minWidth: 200,
     align: "center",
     data_align: "center",
@@ -170,7 +170,7 @@ const Active = () => {
   }, []);
 
   const handleActionClick = (ele, item) => {
-    if (ele == "Rasie a query") {
+    if (ele == "Raise a query") {
       setSelectedData(item);
       setShowQueryModal(true);
     }
@@ -197,23 +197,22 @@ const Active = () => {
             <span className="h-5" id="gstinnumber">
               {item.gstin}
             </span>
-            <Tooltip title="copy">
-              <CustomIcon
-                type="filecopy"
-                size="small"
-                className="fs-18"
-                onIconClick={() => {
-                  copyText();
-                }}
-              />
-            </Tooltip>
+            <CustomIcon
+              type="filecopy"
+              size="small"
+              className="fs-18"
+              onIconClick={() => {
+                copyText();
+              }}
+              title="Copy"
+            />
           </Box>
         ),
         col5: (
           <div className="d-flex justify-content-center">
             <Tooltip
-              title={item.mainCategories.map((e) => (
-                <Typography className="h-5">{e}</Typography>
+              title={item.mainCategoryWrappers.map((e) => (
+                <Typography className="h-5">{e.mainCategoryName}</Typography>
               ))}
               placement="top"
             >
@@ -262,7 +261,7 @@ const Active = () => {
                   </Box>
                 </>,
                 "Notify",
-                "Rasie a query",
+                "Raise a query",
                 "Supplier Home Page",
                 "Marketing Tools Sub",
               ]}

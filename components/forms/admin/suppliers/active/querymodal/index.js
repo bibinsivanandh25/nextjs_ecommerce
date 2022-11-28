@@ -90,12 +90,13 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
           },
         ],
       };
-      const { data, err } = await saveHelpandSupport(payload);
+      const { data, message, err } = await saveHelpandSupport(payload);
       if (data) {
         setShowQueryModal(false);
+        toastify(message, "success");
       }
       if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
       }
     }
   };

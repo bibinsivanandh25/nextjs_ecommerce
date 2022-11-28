@@ -203,7 +203,8 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
     }
   };
 
-  const viewClick = async (masterProductId, variationId) => {
+  const viewClick = async (masterProductId, variationId, val) => {
+    console.log(val, "asbnkjh");
     const { data, err } = await getVariation([
       { masterProductId, variationId },
     ]);
@@ -221,7 +222,20 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
 
           {
             label: "Raise Query",
-            callBack: () => {},
+            callBack: () => {
+              setShowViewProducts(false);
+              dispatch(resetAdminProductView());
+              sethelpSupportModal({
+                show: true,
+                type: "ACTIVE_PRODUCT",
+                to: {
+                  id: val.supplierId,
+                  label: val.businessName,
+                  value: val.supplierId,
+                },
+                productVariationId: val?.productVariationId,
+              });
+            },
           },
         ],
       };
@@ -270,8 +284,8 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
             >
               <Image
                 src={val.variationMedia?.length ? val.variationMedia[0] : ""}
-                width="50"
-                height="50"
+                width="75"
+                height="75"
                 className="cursor-pointer"
               />
             </Box>
@@ -303,9 +317,17 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
           </Typography>
         ),
         col11: `  ${val.categoryName} / ${val.subCategoryName}`,
-        col12: val.activeFlag,
-        col13: val.createdAt,
-        col14: val.approvedAt,
+        col12: val.activeFlag ? (
+          <Image
+            src={val.activeFlag?.length ? val.activeFlag : ""}
+            width="100"
+            height="75"
+          />
+        ) : (
+          "--"
+        ),
+        col13: val.createdAt ?? "--",
+        col14: val.approvedAt ?? "--",
         col15: (
           <Box className="d-flex align-items-center">
             <Box className="ms-2 w-75">
@@ -328,7 +350,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
               type="view"
               className="me-2"
               onIconClick={() => {
-                viewClick(val.masterProductId, val.productVariationId);
+                viewClick(val.masterProductId, val.productVariationId, val);
               }}
             />
 
