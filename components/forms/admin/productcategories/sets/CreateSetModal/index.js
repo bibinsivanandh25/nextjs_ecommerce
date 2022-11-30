@@ -31,6 +31,8 @@ const CreateSetModal = ({
   getAllSet = () => {},
   selectedData = {},
   type = "",
+  getAllSetById = () => {},
+  selectedId = {},
 }) => {
   const [setDetails, setSetDetails] = useState({
     category: {},
@@ -118,6 +120,7 @@ const CreateSetModal = ({
         handleClearAll();
         setOpenCreateSetModal(false);
         getAllSet(0, null);
+        getAllSetById(selectedId.categoryid);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }

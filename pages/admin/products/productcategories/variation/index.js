@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
 import { Box, Grid, Paper, Typography } from "@mui/material";
@@ -12,12 +13,18 @@ import {
   getAllSubCategory,
   getAllVariationData,
 } from "services/admin/products/productCategories/variation";
+import CreateCategoriesModal from "@/forms/admin/productcategories/categories/CreateCategories/CreateCategoriesModal";
 
 const Variation = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   // my state
+  const [selectedId, setSelectedId] = useState({
+    categoryid: "",
+    setid: "",
+    subCategoryid: "",
+  });
   const [showSetAddModal, setShowSetAddModal] = useState(false);
   const [parentCategory, setParentCategory] = useState([]);
   const [setData, setSetData] = useState([]);
@@ -25,6 +32,8 @@ const Variation = () => {
   const [masterVariation, setMasterVariation] = useState([]);
   const [variationTitleData, setVariationTitleData] = useState([]);
   const [optionsData, setOptionsData] = useState([]);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  const [catagoryDetails, setCategoryDetails] = useState({});
 
   const getAllSetById = async (id) => {
     if (id) {
@@ -47,6 +56,10 @@ const Variation = () => {
     } else {
       setSetData([]);
     }
+    setSubCategoryData([]);
+    setOptionsData([]);
+    setVariationTitleData([]);
+    setMasterVariation([]);
   };
 
   const handleParentCategoryChange = (selectedItem) => {
@@ -58,11 +71,12 @@ const Variation = () => {
         item.isSelected = false;
       }
     });
+    setSelectedId((pre) => ({
+      categoryid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
+      setid: "",
+      subCategoryid: "",
+    }));
     setParentCategory(temp);
-    setSubCategoryData([]);
-    setOptionsData([]);
-    setVariationTitleData([]);
-    setMasterVariation([]);
     getAllSetById(selectedItem[0]?.id);
   };
   const getSubCategory = async (id) => {
@@ -96,6 +110,11 @@ const Variation = () => {
         item.isSelected = false;
       }
     });
+    setSelectedId((pre) => ({
+      ...pre,
+      setid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
+      subCategoryid: "",
+    }));
     setSetData(temp);
     setOptionsData([]);
     setVariationTitleData([]);
@@ -115,6 +134,7 @@ const Variation = () => {
               label: item.variationName,
               id: item.variationId,
               isSelected: false,
+              disable: !item.disable,
             });
           });
         }
@@ -150,10 +170,15 @@ const Variation = () => {
         item.isSelected = false;
       }
     });
+    setSelectedId((pre) => ({
+      ...pre,
+      subCategoryid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
+    }));
     setSubCategoryData(temp);
     setOptionsData([]);
     getAllVariation(selectedItem[0]?.id);
   };
+  console.log(selectedId);
   const getAllOptionData = (id) => {
     const temp = [];
     if (id) {
@@ -266,7 +291,7 @@ const Variation = () => {
           </Box>
         </Box>
         <Box className="mt-4 ms-2.4">
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={2.4}>
               <ListGroupComponent
                 title="Parent Category"
@@ -274,6 +299,9 @@ const Variation = () => {
                 data={parentCategory}
                 onSelectionChange={(selectedItem) => {
                   handleParentCategoryChange(selectedItem);
+                }}
+                addBtnClick={() => {
+                  setOpenCategoryModal(true);
                 }}
               />
             </Grid>
@@ -339,6 +367,17 @@ const Variation = () => {
           openCreateSetModal={showSetAddModal}
           setOpenCreateSetModal={setShowSetAddModal}
           type="add"
+          getAllSetById={getAllSetById}
+          selectedId={selectedId}
+        />
+      )}
+      {openCategoryModal && (
+        <CreateCategoriesModal
+          modalType="Add"
+          openCreateNewCategories={openCategoryModal}
+          setOpenCreateCategoriesModal={setOpenCategoryModal}
+          getAllCategoryVariation={getAllCategoryData}
+          categoryFormData={catagoryDetails}
         />
       )}
     </Box>

@@ -2,7 +2,7 @@ import serviceUtil from "services/utils";
 
 const getAllCategory = (payload = []) => {
   return serviceUtil
-    .post(`products/main-categories`, payload)
+    .get(`products/main-category/admin`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -11,11 +11,7 @@ const getAllCategory = (payload = []) => {
 };
 const getAllSetDataById = (id) => {
   return serviceUtil
-    .get(`products/sub-category/filter/main-category?mainCategoryId=${id}`, {
-      header: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
+    .get(`products/category-set/all/${id}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -24,7 +20,7 @@ const getAllSetDataById = (id) => {
 };
 const getAllSubCategory = (id) => {
   return serviceUtil
-    .get(`products/sub-category/filter/set?setId=${id}`)
+    .get(`products/sub-category/all/${id}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
