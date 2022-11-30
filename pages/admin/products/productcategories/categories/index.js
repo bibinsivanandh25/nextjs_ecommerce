@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import CustomIcon from "services/iconUtils";
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TableComponent from "@/atoms/TableComponent";
@@ -13,6 +13,7 @@ import {
   getMainCategories,
   getMainCategoryDetailsByCategoryId,
 } from "services/admin/products/productCategories/category";
+// eslint-disable-next-line no-unused-vars
 import Image from "next/image";
 import toastify from "services/utils/toastUtils";
 
@@ -90,7 +91,7 @@ const Categories = () => {
 
   const onClickOfMenuItem = async (ele, val) => {
     setCategoryId(val.mainCategoryId);
-    if (ele === "Edit") {
+    if (ele === "Edit" || ele === "View") {
       const { data } = await getMainCategoryDetailsByCategoryId(
         val.mainCategoryId
       );
@@ -141,7 +142,7 @@ const Categories = () => {
 
     if (data) {
       toastify(data?.message, "success");
-      getTableData();
+      getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message);
@@ -156,14 +157,16 @@ const Categories = () => {
         col1: index + 1,
         col2: <Image height={50} width={50} src={val.categoryImageUrl} />,
         col3: (
-          <Typography
-            className="h-5"
-            sx={{
-              maxWidth: "100px",
-            }}
-          >
-            {val.mainCategoryName}
-          </Typography>
+          <Tooltip title={val.mainCategoryName}>
+            <Typography
+              className="h-5 text-truncate text-center"
+              sx={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.mainCategoryName}
+            </Typography>
+          </Tooltip>
         ),
         col4: val.commissionType.replaceAll("_", " "),
         col5: val?.categoryGst ?? "--",
@@ -173,7 +176,13 @@ const Categories = () => {
         col9: val?.lastModifiedBy ?? "--",
         col10: (
           <Box className="d-flex justify-content-end align-items-center">
-            <CustomIcon type="view" className="fs-20" />
+            <CustomIcon
+              type="view"
+              className="fs-20"
+              onIconClick={() => {
+                onClickOfMenuItem("View", val);
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, val);
@@ -181,7 +190,9 @@ const Categories = () => {
               options={[
                 "Edit",
                 <Box className="d-flex align-items-center">
-                  <Typography>{val.disabled ? "Disable" : "Enable"}</Typography>
+                  <Typography>
+                    {val.disabled ? "Disabled" : "Enabled"}
+                  </Typography>
                   <Box className="ms-3">
                     <SwitchComponent
                       label=""
@@ -230,7 +241,7 @@ const Categories = () => {
   };
 
   useEffect(() => {
-    getTableData();
+    getTableData(0);
     getFilterValue();
   }, []);
 
