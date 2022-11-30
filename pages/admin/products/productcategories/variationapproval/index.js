@@ -1,11 +1,23 @@
+/* eslint-disable no-use-before-define */
 import CustomIcon from "services/iconUtils";
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
+import ViewVariationApproval from "@/forms/admin/productcategories/VariationApproval";
+import {
+  getAllVariations,
+  acceptOrRejectVariation,
+} from "services/admin/products/variationapprovals";
+import toastify from "services/utils/toastUtils";
 
 const VariationApproval = () => {
   const [tableRows, setTableRows] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [viewModal, setViewModal] = useState({
+    show: false,
+    data: {},
+  });
   const tableColumns = [
     {
       id: "col1",
@@ -16,37 +28,38 @@ const VariationApproval = () => {
     {
       id: "col2",
       align: "center",
-      label: "Parent Category",
+      label: "Variation Name",
       data_align: "center",
     },
     {
       id: "col3",
       align: "center",
-      label: "Sets",
+      label: "Parent Category",
       data_align: "center",
     },
     {
       id: "col4",
       align: "center",
-      label: "Sub-Category",
+      label: "Sets",
       data_align: "center",
     },
     {
       id: "col5",
       align: "center",
-      label: "Supplier ID",
+      label: "Sub-Category",
       data_align: "center",
     },
     {
       id: "col6",
       align: "center",
-      label: "Variations",
+      label: "Supplier ID",
       data_align: "center",
     },
+
     {
       id: "col7",
       align: "center",
-      label: "Craeted Date & Time",
+      label: "Created Date & Time",
       data_align: "center",
     },
     {
@@ -57,64 +70,118 @@ const VariationApproval = () => {
     },
   ];
 
-  const rowsDataObjectsForVariationApproval = [
-    {
-      id: 1,
-      col1: "1",
-      col2: "Body Wash and Scrub",
-      col3: "--",
-      col4: "--",
-      col5: "--",
-      col6: "2",
-      col7: "21/06/2021-10.52",
-      col8: "Actions",
-    },
-  ];
-
   const options = ["Notify"];
 
   const onClickOfMenuItem = () => {};
 
-  const getTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForVariationApproval.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
+  const aprroveRejectVariation = async (val, approvalStatus) => {
+    const {
+      variationOptionId,
+      mainCategoryId,
+      setId,
+      subCategoryId,
+      supplierId,
+      variationId,
+      variationName,
+      optionName,
+      variationType,
+    } = val;
+    const payload = {
+      variationOptionId,
+      mainCategoryId,
+      setId,
+      subCategoryId,
+      supplierId,
+      variationId,
+      variationName,
+      optionName,
+      variationType,
+      approvalStatus,
+    };
+    const { data, message, err } = await acceptOrRejectVariation(payload);
+    if (data) {
+      getTableData(0);
+      toastify(message, "success");
+    }
+    if (err) {
+      getTableData(0);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const mapTableRows = (data) => {
+    const result = [];
+    data.forEach((val, index) => {
+      result.push({
+        col1: index + 1,
+        col2: val.variationName,
+        col3: val.mainCategoryName ?? "--",
+        col4: val.setName ?? "--",
+        col5: val.subCategoryName ?? "--",
+        col6: val.supplierId ?? "--",
+        col7: val.createdAt,
         col8: (
-          <Box className="d-flex justify-content-evenly align-items-center">
+          <Box className="d-flex justify-content-between align-items-center">
             <CustomIcon
-              className="bg-success color-white rounded fs-20"
+              className="bg-success color-white rounded h-4"
               type="doneIcon"
+              title="Approve"
+              onIconClick={() => {
+                aprroveRejectVariation(val, "APPROVED");
+              }}
             />
             <CustomIcon
-              className="bg-danger color-white rounded fs-20"
+              className="bg-danger color-white rounded h-4"
               type="close"
+              title="Reject"
+              onIconClick={() => {
+                aprroveRejectVariation(val, "REJECTED");
+              }}
             />
-            <CustomIcon className="fs-20" type="view" />
+            <CustomIcon
+              className="h-4"
+              type="view"
+              title="View"
+              onIconClick={() => {
+                setViewModal({
+                  show: true,
+                  data: val,
+                });
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
                 onClickOfMenuItem(ele, index);
               }}
               options={options}
-              IconclassName="fs-18 color-gray"
+              IconclassName="h-4 color-gray"
             />
           </Box>
         ),
       });
     });
 
-    setTableRows(anArray);
+    return result;
+  };
+  const getTableData = async (page = pageNumber, dateObj) => {
+    const payload = {
+      dateFrom: dateObj?.fromDate ?? null,
+      dateTo: dateObj?.toDate ?? null,
+    };
+    const { data } = await getAllVariations(page, payload);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapTableRows(data));
+        setPageNumber(1);
+      } else {
+        setPageNumber(pageNumber + 1);
+        setTableRows([...tableRows, ...data]);
+      }
+    }
   };
 
   useEffect(() => {
-    getTableRowsData();
+    getTableData(0);
   }, []);
 
   return (
@@ -129,19 +196,24 @@ const VariationApproval = () => {
               table_heading="Variation Approval"
               columns={tableColumns}
               tHeadBgColor="bg-light-gray"
-              showPagination={false}
               tableRows={tableRows}
               showSearchbar={false}
-              showDateFilterBtn
               showDateFilter
-              dateFilterBtnName="Create Sub-categories"
-              dateFilterBtnClick={() => {
-                // setOpenCreateNewSubCategories(true);
+              showDateFilterSearch={false}
+              handlePageEnd={(searchText, searchFilter, page, dateFilter) => {
+                getTableData(page, dateFilter);
               }}
             />
           </Paper>
         </Box>
       </Box>
+      {viewModal.show ? (
+        <ViewVariationApproval
+          showModal={viewModal.show}
+          setShowModal={setViewModal}
+          variationApprovalData={viewModal.data}
+        />
+      ) : null}
     </Box>
   );
 };
