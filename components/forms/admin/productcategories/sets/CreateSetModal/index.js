@@ -180,10 +180,11 @@ const CreateSetModal = ({
     <Box>
       <ModalComponent
         open={openCreateSetModal}
-        ModalTitle="Create Set"
+        ModalTitle={type == "add" ? "Create Set" : "Edit Set"}
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
+        saveBtnText={type == "add" ? "Save" : "Edit"}
         saveBtnClassName="ms-1"
         ModalWidth={600}
         minHeightClassName="overflow-auto"

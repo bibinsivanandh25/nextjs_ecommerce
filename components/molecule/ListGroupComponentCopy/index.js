@@ -23,13 +23,14 @@ const ListGroupComponentCopy = ({
   showCheckBox = false,
   id = "",
   onSelectionChange = () => {},
+  handleDelete = () => {},
   addBtnClick = () => {},
   editBtnClick = () => {},
+  handleSwitchToggle = () => {},
   showSwitchComponent = false,
   showDeleteButton = false,
 }) => {
   const [list, setList] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     setList([...data]);
@@ -46,27 +47,8 @@ const ListGroupComponentCopy = ({
       temp[index].isSelected = val;
     }
     setList([...temp]);
+    onSelectionChange(temp.filter((ele) => ele.isSelected));
   };
-
-  const handleSwitchToggle = () => {};
-  const handleDelete = (index) => {
-    list.splice(index, 1);
-    setList([...list]);
-  };
-
-  useEffect(() => {
-    if (list.length) {
-      setSelectedItems(() => {
-        const temp = list.filter((item) => {
-          return item.isSelected;
-        });
-        return temp;
-      });
-    }
-  }, [list]);
-  useEffect(() => {
-    onSelectionChange([...selectedItems]);
-  }, [selectedItems]);
 
   return (
     <div className="w-100 border border-bottom-0">
@@ -132,8 +114,9 @@ const ListGroupComponentCopy = ({
             <Box className="d-flex align-items-center">
               {showSwitchComponent ? (
                 <SwitchComponent
+                  defaultChecked={item?.disable}
                   ontoggle={() => {
-                    handleSwitchToggle(item, index);
+                    handleSwitchToggle();
                   }}
                   label=""
                 />
@@ -141,7 +124,7 @@ const ListGroupComponentCopy = ({
               {showDeleteButton ? (
                 <CustomIcon
                   onIconClick={() => {
-                    handleDelete(index);
+                    handleDelete();
                   }}
                   type="delete"
                 />

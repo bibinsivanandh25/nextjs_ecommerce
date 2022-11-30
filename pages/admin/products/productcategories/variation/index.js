@@ -1,180 +1,189 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-param-reassign */
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
 import ListGroupComponentCopy from "components/molecule/ListGroupComponentCopy";
 import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
+import CreateSetModal from "@/forms/admin/productcategories/sets/CreateSetModal";
+import { useEffect, useState } from "react";
+import {
+  getAllCategory,
+  getAllSetDataById,
+  getAllSubCategory,
+  getAllVariationData,
+} from "services/admin/products/productCategories/variation";
 
 const Variation = () => {
-  const [setData, setSetData] = useState([]);
-  const [subCategoryData, setSubCategoryData] = useState([]);
-  const [variationTitleData, setVariationTitleData] = useState([]);
-  const [optionsData, setOptionsData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const [parentCategory /* , setParentCategory */] = useState([
-    { label: "Apparel - Sarees and Dress Materials", id: 1, isSelected: false },
-    { label: "Kitchen Items", id: 2, isSelected: false },
-    { label: "Groceries", id: 2.4, isSelected: false },
-    { label: "Daily use", id: 4, isSelected: false },
-    { label: "Crockery", id: 5, isSelected: false },
-    { label: "Fun snacks", id: 6, isSelected: false },
-  ]);
+  // my state
+  const [showSetAddModal, setShowSetAddModal] = useState(false);
+  const [parentCategory, setParentCategory] = useState([]);
+  const [setData, setSetData] = useState([]);
+  const [subCategoryData, setSubCategoryData] = useState([]);
+  const [masterVariation, setMasterVariation] = useState([]);
+  const [variationTitleData, setVariationTitleData] = useState([]);
+  const [optionsData, setOptionsData] = useState([]);
 
-  const setApparel = [
-    { label: "Saree", id: 1, isSelected: false },
-    { label: "Woman Jeans", id: 2, isSelected: false },
-    { label: "Tops", id: 2.4, isSelected: false },
-    { label: "Slim fit jeans", id: 4, isSelected: false },
-    { label: "Skirts", id: 5, isSelected: false },
-    { label: "Gym wear", id: 5, isSelected: false },
-  ];
-  const subCatSaree = [
-    { label: "Red Saree", id: 1, isSelected: false },
-    { label: "Yellow Saree", id: 2, isSelected: false },
-  ];
-
-  const variationTitle = [
-    {
-      label: "Material 1",
-      id: 1,
-      isSelected: false,
-    },
-    {
-      label: "Material 2",
-      id: 2,
-      isSelected: false,
-    },
-    {
-      label: "Material 3",
-      id: 2.4,
-      isSelected: false,
-    },
-  ];
-
-  const options = [
-    {
-      label: "Material 1",
-      id: 1,
-      isSelected: false,
-    },
-    {
-      label: "Material 2",
-      id: 2,
-      isSelected: false,
-    },
-    {
-      label: "Material 3",
-      id: 3,
-      isSelected: false,
-    },
-  ];
-
-  const subCatJeans = [
-    { label: "Levis Jeans", id: 1, isSelected: false },
-    { label: "Net Play Jeans", id: 2, isSelected: false },
-    { label: "Peter England Jeans", id: 2, isSelected: false },
-  ];
-  const subCatTops = [
-    { label: "Black Top", id: 1, isSelected: false },
-    { label: "Yellow Tops", id: 2, isSelected: false },
-    { label: "Red Top", id: 2, isSelected: false },
-    { label: "Voilet Top", id: 2, isSelected: false },
-    { label: "Blue Top", id: 2, isSelected: false },
-  ];
-  const subCatSkirt = [
-    { label: "Skirt One", id: 1, isSelected: false },
-    { label: "Skirt Two", id: 2, isSelected: false },
-    { label: "Skirt Three", id: 2, isSelected: false },
-    { label: "Skirt Four", id: 2, isSelected: false },
-    { label: "Skirt Five", id: 2, isSelected: false },
-  ];
-  const subCatGymWear = [
-    { label: "Wear One", id: 1, isSelected: false },
-    { label: "Wear Two", id: 2, isSelected: false },
-  ];
-
-  const setGroceries = [
-    { label: "Milk Products", id: 1, isSelected: false },
-    { label: "Vegetables", id: 2, isSelected: false },
-    { label: "Breads", id: 2.4, isSelected: false },
-    { label: "Fruits", id: 4, isSelected: false },
-    { label: "Edible oils", id: 5, isSelected: false },
-    { label: "Creams", id: 5, isSelected: false },
-  ];
-
-  const setCrockery = [
-    { label: "Plates", id: 1, isSelected: false },
-    { label: "Glasses", id: 2, isSelected: false },
-    { label: "Bowls", id: 2.4, isSelected: false },
-    { label: "Spoons", id: 4, isSelected: false },
-  ];
-
-  const setFunSnacks = [
-    { label: "Bingo", id: 1, isSelected: false },
-    { label: "Kukure", id: 2, isSelected: false },
-    { label: "Cheetos", id: 2.4, isSelected: false },
-    { label: "Cornitos", id: 4, isSelected: false },
-  ];
-
-  const handleParentCategoryChange = (selectedItem) => {
-    if (selectedItem[0]?.id === 1) {
-      setSetData(setApparel);
-    }
-    if (selectedItem[0]?.id === 2) {
-      setSetData(setGroceries);
-    }
-    if (selectedItem[0]?.id === 2.4) {
-      setSetData(setGroceries);
-    }
-    if (selectedItem[0]?.id === 4) {
-      setSetData(setGroceries);
-    }
-    if (selectedItem[0]?.id === 5) {
-      setSetData(setCrockery);
-    }
-    if (selectedItem[0]?.id === 6) {
-      setSetData(setFunSnacks);
+  const getAllSetById = async (id) => {
+    if (id) {
+      const { data, err } = await getAllSetDataById(id);
+      if (data?.length) {
+        const temp = [];
+        data.forEach((item) => {
+          temp.push({
+            label: item.setName,
+            id: item.categorySetId,
+            isSelected: false,
+          });
+        });
+        setSetData(temp);
+      } else if (err) {
+        setSetData([]);
+      } else {
+        setSetData([]);
+      }
+    } else {
+      setSetData([]);
     }
   };
 
+  const handleParentCategoryChange = (selectedItem) => {
+    const temp = [...parentCategory];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setParentCategory(temp);
+    setSubCategoryData([]);
+    setOptionsData([]);
+    setVariationTitleData([]);
+    setMasterVariation([]);
+    getAllSetById(selectedItem[0]?.id);
+  };
+  const getSubCategory = async (id) => {
+    if (id) {
+      const { data, err } = await getAllSubCategory(id);
+      if (data?.length) {
+        const temp = [];
+        data.forEach((item) => {
+          temp.push({
+            label: item.subCategoryName,
+            id: item.subCategoryId,
+            isSelected: false,
+          });
+        });
+        setSubCategoryData(temp);
+      } else if (err) {
+        setSubCategoryData([]);
+      } else {
+        setSubCategoryData([]);
+      }
+    } else {
+      setSubCategoryData([]);
+    }
+  };
   const handleSetChange = (selectedItem) => {
-    if (selectedItem[0]?.id === 1) {
-      setSubCategoryData(subCatSaree);
-    }
-    if (selectedItem[0]?.id === 2) {
-      setSubCategoryData(subCatJeans);
-    }
-    if (selectedItem[0]?.id === 2.4) {
-      setSubCategoryData(subCatTops);
-    }
-    if (selectedItem[0]?.id === 4) {
-      setSubCategoryData(subCatSkirt);
-    }
-    if (selectedItem[0]?.id === 4) {
-      setSubCategoryData(subCatGymWear);
+    const temp = [...setData];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setSetData(temp);
+    setOptionsData([]);
+    setVariationTitleData([]);
+    setMasterVariation([]);
+    getSubCategory(selectedItem[0]?.id);
+  };
+  const getAllVariation = async (id) => {
+    if (id) {
+      const { data, err } = await getAllVariationData(id);
+      if (data) {
+        const temp = [];
+        const variationlist = [];
+        if (data?.standardVariationList?.length) {
+          variationlist.push(...data.standardVariationList);
+          data.standardVariationList.forEach((item) => {
+            temp.push({
+              label: item.variationName,
+              id: item.variationId,
+              isSelected: false,
+            });
+          });
+        }
+        if (data?.othersVariationList?.length) {
+          variationlist.push(...data.othersVariationList);
+          data.othersVariationList.forEach((item) => {
+            temp.push({
+              label: item.variationName,
+              id: item.otherVariationId,
+              isSelected: false,
+              disable: !item.disable,
+            });
+          });
+        }
+        setVariationTitleData(temp);
+        setMasterVariation(variationlist);
+      } else if (err) {
+        setVariationTitleData([]);
+        setMasterVariation([]);
+      }
+    } else {
+      setVariationTitleData([]);
+      setMasterVariation([]);
     }
   };
 
   const handleSubCategoryChange = (selectedItem) => {
-    if (selectedItem[0]?.id === 1) {
-      setVariationTitleData(variationTitle);
-    }
-    if (selectedItem[0]?.id === 2) {
-      setVariationTitleData(variationTitle);
-    }
+    const temp = [...subCategoryData];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setSubCategoryData(temp);
+    setOptionsData([]);
+    getAllVariation(selectedItem[0]?.id);
   };
-
+  const getAllOptionData = (id) => {
+    const temp = [];
+    if (id) {
+      masterVariation.forEach((item) => {
+        if (item.otherVariationId === id || item.variationId === id) {
+          item.optionList?.length &&
+            item.optionList.forEach((val) => {
+              temp.push({
+                label: val.optionName,
+                id: val.optionId,
+                isSelected: false,
+                disable: !item.disable,
+              });
+            });
+        }
+      });
+    }
+    setOptionsData(temp);
+  };
   const handleVariationTitleDataChange = (selectedItem) => {
-    if (selectedItem[0]?.id === 1) {
-      setOptionsData(options);
-    }
-    if (selectedItem[0]?.id === 2) {
-      setOptionsData(options);
-    }
-    if (selectedItem[0]?.id === 2.4) {
-      setOptionsData(options);
-    }
+    const temp = [...variationTitleData];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setVariationTitleData(temp);
+    getAllOptionData(selectedItem[0]?.id);
   };
 
   const handleStartDate = (val) => {
@@ -191,7 +200,6 @@ const Variation = () => {
       setStartDate(val);
     }
   };
-
   const handleEndDate = (val) => {
     const theEndDateValue = new Date(val);
     if (startDate) {
@@ -206,7 +214,29 @@ const Variation = () => {
       setEndDate(val);
     }
   };
-
+  // my code
+  const handleSetAddClick = () => {
+    setShowSetAddModal(true);
+  };
+  const getAllCategoryData = async () => {
+    const { data, err } = await getAllCategory([]);
+    if (data?.length) {
+      const temp = [];
+      data.forEach((item) => {
+        temp.push({
+          label: item.name,
+          id: item.id,
+          isSelected: false,
+        });
+      });
+      setParentCategory(temp);
+    } else if (err) {
+      setParentCategory([]);
+    }
+  };
+  useEffect(() => {
+    getAllCategoryData();
+  }, []);
   return (
     <Box>
       <Paper className="overflow-auto hide-scrollbar p-3 mnh-85vh mxh-85vh">
@@ -256,6 +286,9 @@ const Variation = () => {
                   onSelectionChange={(selectedItem) => {
                     handleSetChange(selectedItem);
                   }}
+                  addBtnClick={() => {
+                    handleSetAddClick();
+                  }}
                 />
               </Grid>
             )}
@@ -301,6 +334,13 @@ const Variation = () => {
           </Grid>
         </Box>
       </Paper>
+      {showSetAddModal && (
+        <CreateSetModal
+          openCreateSetModal={showSetAddModal}
+          setOpenCreateSetModal={setShowSetAddModal}
+          type="add"
+        />
+      )}
     </Box>
   );
 };

@@ -28,7 +28,7 @@ const ListGroupComponent = ({
   // const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    setList([...data]);
+    setList([...JSON.parse(JSON.stringify(data))]);
   }, [data]);
 
   const handleItemClick = (index, val) => {
@@ -61,13 +61,21 @@ const ListGroupComponent = ({
     <div className="w-100 border border-bottom-0">
       {showTitle ? (
         <div className="w-100 bg-gray-1 d-flex justify-content-between p-2 align-items-center">
-          <Typography className={`${titleClassName}`}>{title}</Typography>
-          <div>
+          <Typography className={`${titleClassName} text-truncate`}>
+            {title}
+          </Typography>
+          <div className="d-flex">
             {showAddIcon ? (
-              <AddIcon className="color-orange" onClick={addBtnClick} />
+              <AddIcon
+                className="color-orange cursor-pointer"
+                onClick={addBtnClick}
+              />
             ) : null}
             {showEditIcon ? (
-              <EditIcon className="fs-20 ms-1" onClick={editBtnClick} />
+              <EditIcon
+                className="fs-20 ms-1 cursor-pointer"
+                onClick={editBtnClick}
+              />
             ) : null}
           </div>
         </div>

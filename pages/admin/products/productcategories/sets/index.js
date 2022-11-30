@@ -108,7 +108,7 @@ const Sets = () => {
           <Box className="d-flex justify-content-center align-items-center">
             <CustomIcon
               type="view"
-              className="fs-20"
+              className="fs-18"
               onIconClick={() => {
                 handleViewClcik(val);
               }}

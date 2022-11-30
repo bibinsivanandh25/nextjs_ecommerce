@@ -212,8 +212,8 @@ const Active = () => {
         col5: (
           <div className="d-flex justify-content-center">
             <Tooltip
-              title={item.mainCategories.map((e) => (
-                <Typography className="h-5">{e}</Typography>
+              title={item.mainCategoryWrappers.map((e) => (
+                <Typography className="h-5">{e.mainCategoryName}</Typography>
               ))}
               placement="top"
             >
@@ -223,7 +223,7 @@ const Active = () => {
                   maxWidth: "100px",
                 }}
               >
-                {item.mainCategories}
+                {item.mainCategoryWrappers.map((val) => val.mainCategoryName)}
               </Typography>
             </Tooltip>
           </div>
