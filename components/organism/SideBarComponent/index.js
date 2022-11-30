@@ -45,7 +45,7 @@ const SideBarComponent = ({ children }) => {
       <DrawerComponent open={open} setOpen={setOpen} />
       <Box
         id="main-layout"
-        tabindex={0}
+        tabIndex={0}
         ref={constraintsRef}
         // component="main"
         sx={{

@@ -37,6 +37,7 @@ const CreateFlagModal = ({
   setOpenCreateFlagModal = () => {},
   modalDetails = {},
   setmodalDetails = () => {},
+  getTableData = () => {},
 }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
@@ -205,9 +206,10 @@ const CreateFlagModal = ({
       flagImageUrl: [formData?.themeSelection[0].url],
       userType: "SUPPLIER",
     };
-    const { data, err } = await saveAdminFlag(payload);
+    const { data, message, err } = await saveAdminFlag(payload);
     if (data) {
-      toastify(data.data.message, "success");
+      toastify(message, "success");
+      getTableData();
       handleClearAll();
       setOpenCreateFlagModal(false);
     } else if (err) {
@@ -300,7 +302,7 @@ const CreateFlagModal = ({
     }`;
     const endDate = `${format(new Date(formData.endDate), "MM-dd-yyyy")} ${
       formData.endTime
-    }`;
+    }:00`;
     const payload = {
       flagId: formData.flagId,
       flagTitle: formData.flagTitle.label,
@@ -345,8 +347,10 @@ const CreateFlagModal = ({
       }
       titleClassName="fw-bold fs-14 color-orange"
       footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
+      showClearBtn={modalDetails.type === "create"}
       ClearBtnText="Reset"
       saveBtnText="Save"
+      clearBtnClassName="me-2"
       saveBtnClassName="ms-1"
       ModalWidth={650}
       onCloseIconClick={() => {

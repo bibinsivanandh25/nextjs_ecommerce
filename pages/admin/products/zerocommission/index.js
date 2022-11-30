@@ -56,7 +56,6 @@ const ZeroCommission = () => {
       setTabList(tab);
     }
   };
-
   useEffect(() => {
     getCount();
   }, []);

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
@@ -18,6 +19,7 @@ const TabsCard = ({
         {tabList.map((item, index) => {
           return (
             <div
+              key={index}
               className={`${
                 item.isSelected
                   ? index === 0

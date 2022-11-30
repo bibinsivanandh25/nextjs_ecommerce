@@ -71,6 +71,7 @@ const SupplierFlags = () => {
       });
       setRows(temp);
     } else if (err) {
+      setRows([]);
       toastify(err?.response?.data?.message, "error");
     }
   };
@@ -100,7 +101,7 @@ const SupplierFlags = () => {
         setopenDeleteModal(true);
       }
       setdeleteMessage(err?.response?.data?.message);
-      toastify(err?.response?.data?.message, "error");
+      // toastify(err?.response?.data?.message, "error");
     }
   };
   const getFlagByID = async (id) => {
@@ -238,6 +239,7 @@ const SupplierFlags = () => {
         setOpenCreateFlagModal={setOpenCreateFlagModal}
         setmodalDetails={setEditModalDetails}
         modalDetails={editModalDetails}
+        getTableData={getTableData}
       />
       {opendisableModal && (
         <ModalComponent
@@ -296,7 +298,7 @@ const SupplierFlags = () => {
       {openVIew && (
         <ModalComponent
           open={openVIew}
-          ModalTitle="Falg Details"
+          ModalTitle="Flag Details"
           onCloseIconClick={() => {
             setopenVIew(false);
           }}

@@ -388,6 +388,26 @@ const MyProfile = () => {
                   error={errorObj.lastName !== ""}
                 />
               </Grid>
+              {showUpdate && (
+                <Grid item md={6} sm={12}>
+                  <InputBox
+                    placeholder="Enter Business Name"
+                    value={formValues.businessName}
+                    label="Business Name"
+                    className="w-100"
+                    size="small"
+                    onInputChange={(e) => {
+                      setFormValues((prev) => ({
+                        ...prev,
+                        businessName: e.target.value,
+                      }));
+                    }}
+                    inputlabelshrink
+                    helperText={errorObj.businessName}
+                    error={errorObj.businessName !== ""}
+                  />
+                </Grid>
+              )}
 
               <Grid item md={6} sm={12}>
                 <InputBox
@@ -607,16 +627,18 @@ const MyProfile = () => {
                 </div>
               </Grid>
             </Grid>
-            <Grid className="mt-2">
-              <ButtonComponent
-                disabled={!formValues.approved}
-                bgColor={formValues.approved ? "bg-orange" : "bg-gray"}
-                label="Update profile"
-                onBtnClick={() => {
-                  handleUpdateProfile();
-                }}
-              />
-            </Grid>
+            {showUpdate && (
+              <Grid className="mt-2">
+                <ButtonComponent
+                  disabled={!formValues.approved}
+                  bgColor={formValues.approved ? "bg-orange" : "bg-gray"}
+                  label="Update profile"
+                  onBtnClick={() => {
+                    handleUpdateProfile();
+                  }}
+                />
+              </Grid>
+            )}
           </div>
         </div>
       ) : (
