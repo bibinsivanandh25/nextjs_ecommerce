@@ -333,12 +333,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         temp.push(...getCapabilityPathList(item.child));
       }
     });
-    temp.push(
-      ...[
-        "/supplier/products&inventory/myproducts/viewModal",
-        "/supplier/myaccount",
-      ]
-    );
+    const defaultSupplierPaths = [
+      "/supplier/products&inventory/myproducts/viewModal",
+      "/supplier/myaccount",
+    ];
+    if (user.role === "SUPPLIER") {
+      temp.push(...defaultSupplierPaths, "/supplier/staff/addstaff");
+    } else if (user.role === "STAFF") {
+      temp.push(...defaultSupplierPaths);
+      if (temp.includes("supplier/staff"))
+        temp.push("/supplier/staff/addstaff");
+    }
     return temp;
   };
 

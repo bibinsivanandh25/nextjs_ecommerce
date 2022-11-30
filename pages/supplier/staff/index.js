@@ -152,12 +152,16 @@ const Staff = () => {
       <ModalComponent
         open={viewStaffId !== null}
         ModalWidth="90vw"
-        minHeightClassName="mxh-90vh mnh-90vh d-flex align-items-center justify-content-center"
+        minHeightClassName=" d-flex align-items-center justify-content-center"
         showFooter={false}
-        showHeader={false}
         modalClose={() => {
           setviewStaffId(null);
         }}
+        onCloseIconClick={() => {
+          setviewStaffId(null);
+        }}
+        ModalTitle="View"
+        titleClassName="fs-16 color-orange fw-bold"
       >
         <StaffForm
           type="view"
