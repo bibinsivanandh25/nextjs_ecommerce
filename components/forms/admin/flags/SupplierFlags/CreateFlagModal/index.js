@@ -37,6 +37,7 @@ const CreateFlagModal = ({
   setOpenCreateFlagModal = () => {},
   modalDetails = {},
   setmodalDetails = () => {},
+  getTableData = () => {},
 }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
@@ -208,6 +209,7 @@ const CreateFlagModal = ({
     const { data, message, err } = await saveAdminFlag(payload);
     if (data) {
       toastify(message, "success");
+      getTableData();
       handleClearAll();
       setOpenCreateFlagModal(false);
     } else if (err) {
@@ -300,7 +302,7 @@ const CreateFlagModal = ({
     }`;
     const endDate = `${format(new Date(formData.endDate), "MM-dd-yyyy")} ${
       formData.endTime
-    }`;
+    }:00`;
     const payload = {
       flagId: formData.flagId,
       flagTitle: formData.flagTitle.label,

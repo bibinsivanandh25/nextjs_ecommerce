@@ -243,7 +243,7 @@ const SupplierApproval = () => {
       }
     } else if (
       (data?.data?.supplierInfo?.length == 0 && page == 0) ||
-      data.data === null
+      data?.data === null
     ) {
       setTableRows([]);
     }

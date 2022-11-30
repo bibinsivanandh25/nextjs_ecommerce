@@ -142,7 +142,7 @@ const Disabled = () => {
       temp.push({
         id: index + 1,
         col1: index + 1,
-        col2: item.businessName,
+        col2: item.supplierId,
         col3: item.emailId,
         // col4: "--",
         // col5: "--",
@@ -172,7 +172,7 @@ const Disabled = () => {
             <MenuOption
               options={[
                 <>
-                  Enable{" "}
+                  Disabled{" "}
                   <Box className="ms-4">
                     <SwitchComponent
                       label=""
@@ -221,6 +221,8 @@ const Disabled = () => {
         ]);
       }
     } else if (data?.data?.disableSupplierWrappers?.length === 0 && page == 0) {
+      setTableRows([]);
+    } else if (page == 0 && data?.data == null) {
       setTableRows([]);
     }
     if (err) {

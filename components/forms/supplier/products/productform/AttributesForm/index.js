@@ -70,7 +70,7 @@ const AttributesForm = forwardRef(
                 label={ele.attribute}
                 isChecked={ele.selected}
                 isDisabled={editProduct || viewFlag}
-                id={ele.id}
+                id={ele.id ?? ele.variationId}
                 checkBoxClick={(id, checked) => {
                   if (!checked) {
                     setFormData((pre) => {
@@ -267,19 +267,19 @@ const AttributesForm = forwardRef(
         }),
         ...data?.standardVariationList?.map((item) => {
           return {
-            id: item.standardVariationId,
+            id: item.variationId,
             attribute: item.variationName,
             selected: Object.keys(pre?.attribute).length
-              ? pre?.attribute[`${item.standardVariationId}`]?.length
+              ? pre?.attribute[`${item.variationId}`]?.length
               : false,
             visibleOnProduct: false,
             variationType: "STANDARD_VARIATION",
             options: item.optionList.map((ele) => {
               return {
-                id: ele.standardOptionId,
+                id: ele.optionId,
                 label: ele.optionName,
                 variationName: item.variationName,
-                variationId: item.standardVariationId,
+                variationId: item.variationId,
               };
             }),
           };
@@ -343,6 +343,9 @@ const AttributesForm = forwardRef(
             ? modalType.attribute
             : formValues.attributeName,
           optionName: formValues.values,
+          variationType: modalType
+            ? modalType.variationType
+            : "STANDARD_VARIATION",
         };
         const { data, err } = await createAttributes(payload);
         if (data) {

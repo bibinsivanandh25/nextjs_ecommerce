@@ -26,7 +26,7 @@ const TagsViewModal = ({ viewModalOpen, setViewModalOpen, viewData }) => {
               </Typography>
             </Grid>
           </Grid>
-          <Grid container className="py-2" alignItems="center">
+          {/* <Grid container className="py-2" alignItems="center">
             <Grid item sm={5} display="flex" justifyContent="end">
               <Typography className="h-5">Tag Id</Typography>
             </Grid>
@@ -34,7 +34,7 @@ const TagsViewModal = ({ viewModalOpen, setViewModalOpen, viewData }) => {
             <Grid item sm={6} display="flex" justifyContent="start">
               <Typography className="fw-bold h-5">{viewData?.tagId}</Typography>
             </Grid>
-          </Grid>
+          </Grid> */}
           <Grid container className="py-2" alignItems="center">
             <Grid item sm={5} display="flex" justifyContent="end">
               <Typography className="h-5">Created by ID</Typography>
