@@ -36,10 +36,49 @@ const getAllVariationData = (id) => {
     })
     .catch((err) => ({ err }));
 };
-
+const enableDisableVariation = (payload) => {
+  return serviceUtil
+    .put(`products/category/variation/status`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const deleteVariation = (payload) => {
+  return serviceUtil
+    .deleteAll(`products/sub-category/variation`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const enableDisableOptions = (payload) => {
+  return serviceUtil
+    .put(`products/category/variation/option/status`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const deleteOption = (payload) => {
+  return serviceUtil
+    .deleteAll(`products/sub-category/variation/option`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getAllCategory,
   getAllSetDataById,
   getAllSubCategory,
   getAllVariationData,
+  enableDisableVariation,
+  deleteVariation,
+  enableDisableOptions,
+  deleteOption,
 };

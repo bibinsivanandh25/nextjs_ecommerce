@@ -36,6 +36,7 @@ const CreateCategoriesModal = ({
   getTableData = () => {},
   modalType = "Add",
   categoryFormData = {},
+  getAllCategoryVariation = () => {},
 }) => {
   const [categoryDetails, setCategoryDetails] = useState({
     category: "",
@@ -251,6 +252,7 @@ const CreateCategoriesModal = ({
       if (addPayload) {
         const { data, err } = await addMainCategory(addPayload);
         if (data) {
+          getAllCategoryVariation();
           getTableData(0);
           setOpenCreateCategoriesModal(false);
           toastify(data?.message, "success");
@@ -278,6 +280,7 @@ const CreateCategoriesModal = ({
 
       const { data, err } = await UpdateMainCategory(editPayload);
       if (data) {
+        getAllCategoryVariation();
         getTableData(0);
         setOpenCreateCategoriesModal(false);
         toastify(data?.message, "success");

@@ -75,7 +75,7 @@ const ListGroupComponentCopy = ({
           </div>
         </div>
       ) : null}
-      <div className="mxh-200 overflow-y-scroll hide-scrollbar">
+      <div className="mxh-200 overflow-y-scroll hide-scrollbar bg-light-grey">
         {list.map((item, index) => (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events
           <div
@@ -129,7 +129,7 @@ const ListGroupComponentCopy = ({
                 <SwitchComponent
                   defaultChecked={item.disable}
                   ontoggle={() => {
-                    handleSwitchToggle();
+                    handleSwitchToggle(item);
                   }}
                   label=""
                 />
@@ -137,7 +137,7 @@ const ListGroupComponentCopy = ({
               {showDeleteButton ? (
                 <CustomIcon
                   onIconClick={() => {
-                    handleDelete();
+                    handleDelete(item);
                   }}
                   type="delete"
                 />

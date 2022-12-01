@@ -24,6 +24,13 @@ const Sets = () => {
   const [filteredValue, setFilteredValue] = useState({});
   const [filterDate, setFilterDate] = useState({});
   const [viewModalopen, setViewModalOpen] = useState(false);
+  const [setDetails, setSetDetails] = useState({
+    category: {},
+    set: "",
+    setImage: "",
+    imageFile: "",
+    editsetid: "",
+  });
 
   const tableColumns = [
     {
@@ -58,18 +65,8 @@ const Sets = () => {
     },
   ];
 
-  const rowsDataObjectsForSets = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "--",
-      col3: "--",
-      col4: "21/06/2021-10.52",
-      col5: "Action",
-    },
-  ];
-
   const onClickOfMenuItem = (ele, value) => {
+    console.log(value);
     if (ele === "Edit") {
       setType("edit");
       setSelectedData(value);
@@ -211,10 +208,11 @@ const Sets = () => {
         <CreateSetModal
           openCreateSetModal={openCreateSetModal}
           setOpenCreateSetModal={setOpenCreateSetModal}
-          rowsDataObjectsForSets={rowsDataObjectsForSets}
           getAllSet={getAllSet}
           selectedData={selectedData}
           type={type}
+          setSetDetails={setSetDetails}
+          setDetails={setDetails}
         />
       )}
       {showFilterModal && (

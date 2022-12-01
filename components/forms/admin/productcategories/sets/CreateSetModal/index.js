@@ -33,14 +33,10 @@ const CreateSetModal = ({
   type = "",
   getAllSetById = () => {},
   selectedId = {},
+  setSetDetails = () => {},
+  setDetails = {},
+  fromType = "",
 }) => {
-  const [setDetails, setSetDetails] = useState({
-    category: {},
-    set: "",
-    setImage: "",
-    imageFile: "",
-    editsetid: "",
-  });
   const [error, setError] = useState(err);
   const [categoryList, setCategoryList] = useState([]);
   const handleCloseIconClick = () => {
@@ -205,7 +201,7 @@ const CreateSetModal = ({
           <Grid item sm={8}>
             <Box>
               <SimpleDropdownComponent
-                disabled={type == "edit"}
+                disabled={type == "edit" || fromType === "addVariation"}
                 list={categoryList}
                 label="Category"
                 inputlabelshrink
