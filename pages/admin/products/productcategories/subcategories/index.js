@@ -12,6 +12,7 @@ import {
 } from "services/admin/products/productCategories/subcategory";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
+import { getFilterDropDownList } from "services/admin/products/productCategories/category";
 // import Image from "next/image";
 
 const tableColumns = [
@@ -86,6 +87,36 @@ const SubCategories = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [subCategoryData, setSubcategoryData] = useState(null);
   const [showView, setShowView] = useState(false);
+  const [filterData, setFilterData] = useState([]);
+
+  const getFilterValue = async () => {
+    const { data } = await getFilterDropDownList();
+    const result = [
+      {
+        name: "Main Categories",
+        value: [],
+      },
+      {
+        name: "Commission Type",
+        value: [],
+      },
+    ];
+    if (data) {
+      result[0].value = data?.mainCategory.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
+      });
+      result[1].value = data?.commissionType.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
+      });
+    }
+    setFilterData([...result]);
+  };
 
   const changeStatus = async (id, status) => {
     // eslint-disable-next-line no-unused-vars
@@ -189,6 +220,7 @@ const SubCategories = () => {
   };
 
   useEffect(() => {
+    getFilterValue();
     getTableData();
   }, []);
 
@@ -220,6 +252,33 @@ const SubCategories = () => {
                     keyword: searchText,
                     fromDate: date.fromDate,
                     toDate: date.toDate,
+                  });
+                }}
+                showFilterButton
+                filterData={[...filterData]}
+                getFilteredValues={(value) => {
+                  const categories = [];
+                  const commissionType = [];
+                  value.forEach((ele) => {
+                    ele?.value.forEach((i) => {
+                      if (ele.name === "Main Categories") {
+                        if (i.isSelected) {
+                          categories.push(i.item);
+                        }
+                      }
+                      if (ele.name === "Commission Type") {
+                        if (i.isSelected) {
+                          commissionType.push(i.item);
+                        }
+                      }
+                    });
+                  });
+                  getTableData(0, {
+                    mainCategoryList: categories,
+                    commissionModeList: commissionType,
+                    keyword: null,
+                    fromDate: null,
+                    toDate: null,
                   });
                 }}
               />
