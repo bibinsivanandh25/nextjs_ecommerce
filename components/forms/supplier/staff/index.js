@@ -220,7 +220,9 @@ const StaffForm = ({
         MobileNo: data.mobileNumber,
         email: data.emailId,
       });
-      setCapabilities(orginizeCapabilites(data.staffCapabilityList));
+      setCapabilities(
+        orginizeCapabilites(data.staffCapabilityList || suppliercapability)
+      );
     } else {
       toastify(err?.response?.data?.message);
       setviewStaffId(null);
@@ -237,8 +239,11 @@ const StaffForm = ({
   }, [viewStaffId, type]);
 
   return (
-    <Paper className="p-3 h-100 overflow-y-scroll ">
-      <Grid container className="mt-3">
+    <Paper
+      className="p-3 h-100 overflow-y-scroll "
+      elevation={type === "view" ? 0 : 4}
+    >
+      <Grid container className={type === "view" ? "p-2" : "mt-3"}>
         <Grid
           container
           item
