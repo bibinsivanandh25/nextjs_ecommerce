@@ -128,7 +128,7 @@ const Home = () => {
       data.forEach((variations) => {
         variations.productVariations.forEach((product) => {
           result.push({
-            image: product.variationMedia[0],
+            image: product.variationMedia ? product.variationMedia[0] : "",
             title: product.productTitle,
             price: product.salePrice,
             rating: 4,

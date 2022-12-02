@@ -23,12 +23,14 @@ import SwitchProfile from "@/forms/customer/switchprofile";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
+import CustomDrawer from "@/atoms/CustomDrawer";
 
 const Header = () => {
   const route = useRouter();
   const [isSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -104,12 +106,22 @@ const Header = () => {
           <Typography
             className="color-orange fs-14 cursor-pointer"
             onClick={() => {
+              setOpen(true);
+            }}
+          >
+            More Options
+          </Typography>
+        </Box>
+        {/* <Box className="d-flex justify-content-end pe-4 ">
+          <Typography
+            className="color-orange fs-14 cursor-pointer"
+            onClick={() => {
               setShowStoreModal(true);
             }}
           >
             Add new store <Add className="fs-16" />
           </Typography>
-        </Box>
+        </Box> */}
       </>
     );
   };
@@ -403,6 +415,13 @@ const Header = () => {
       <ChooseAddress
         showModal={showSelectAddress}
         setShowModal={setShowSelectAddress}
+      />
+      <CustomDrawer
+        open={open}
+        position="right"
+        handleClose={() => {
+          setOpen(false);
+        }}
       />
     </div>
   );
