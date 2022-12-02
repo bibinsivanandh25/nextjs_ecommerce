@@ -222,7 +222,7 @@ const Active = () => {
                   maxWidth: "100px",
                 }}
               >
-                {item.mainCategories}
+                {item.mainCategoryWrappers.map((val) => val.mainCategoryName)}
               </Typography>
             </Tooltip>
           </div>
