@@ -5,6 +5,7 @@ import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { registerCustomer } from "services/customer/auth";
 import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
@@ -36,20 +37,33 @@ const VerifyOTP = ({
         .post(`users/registration/verify-otp`, formData, config)
         .then(async (data) => {
           if (data) {
-            await serviceUtil
-              .post(`users/supplier/register-supplier`, {
-                ...payLoad,
-              })
-              .then((res) => {
-                if (res) {
-                  // setShowVerifyOTP(false);
-                  setShowModal(true);
-                }
-              })
-              .catch((errRes) => {
-                toastify(errRes.response.data.message, "error");
-                setShowVerifyOTP(false);
-              });
+            if (router.pathname.split("/")[2].toUpperCase() === "SUPPLIER") {
+              await serviceUtil
+                .post(`users/supplier/register-supplier`, {
+                  ...payLoad,
+                })
+                .then((res) => {
+                  if (res) {
+                    // setShowVerifyOTP(false);
+                    setShowModal(true);
+                  }
+                })
+                .catch((errRes) => {
+                  toastify(errRes.response.data.message, "error");
+                  setShowVerifyOTP(false);
+                });
+            } else if (
+              router.pathname.split("/")[2].toUpperCase() === "CUSTOMER"
+            ) {
+              const { message, err } = await registerCustomer(payLoad);
+              if (message) {
+                toastify(message, "success");
+                router.push("/auth/customer/signin");
+              } else if (err) {
+                toastify(err?.response?.data?.message, "error");
+              }
+              setShowVerifyOTP(false);
+            }
           }
           return null;
         })

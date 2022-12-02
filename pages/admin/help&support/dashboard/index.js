@@ -244,7 +244,11 @@ const Dashboard = () => {
               </Grid>
               <Grid item xs={8} justifyContent="start" display="flex">
                 <Typography className="h-5 fw-bold cursor-pointer">
-                  Pending Customer Tickets
+                  Pending{" "}
+                  {`${val.cardHeading[0]}${val.cardHeading
+                    .slice(1)
+                    .toLocaleLowerCase()}`}{" "}
+                  Tickets
                 </Typography>
               </Grid>
               <Grid item xs={1} justifyContent="center" display="flex">
@@ -259,7 +263,11 @@ const Dashboard = () => {
               </Grid>
               <Grid item xs={8} justifyContent="start" display="flex">
                 <Typography className="h-5 fw-bold fw-bold cursor-pointer ">
-                  Resolved Customer Tickets
+                  Resolved{" "}
+                  {`${val.cardHeading[0]}${val.cardHeading
+                    .slice(1)
+                    .toLocaleLowerCase()}`}{" "}
+                  Tickets
                 </Typography>
               </Grid>
               <Grid item xs={1} justifyContent="center" display="flex">

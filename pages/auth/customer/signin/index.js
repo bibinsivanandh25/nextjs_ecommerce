@@ -1,20 +1,29 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
-import { signIn } from "next-auth/react";
+import {
+  getCsrfToken,
+  getProviders,
+  getSession,
+  signIn,
+} from "next-auth/react";
 import { assetsJson } from "public/assets";
 import { useRouter } from "next/router";
 import { login } from "services/customer/auth";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import styles from "./signin.module.css";
+import Link from "next/link";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
+import styles from "./signin.module.css";
 
 const SignIn = () => {
   const formObj = {
@@ -53,6 +62,28 @@ const SignIn = () => {
     return flag;
   };
 
+  const dispatch = useDispatch();
+
+  const storedatatoRedux = async (storeCode, customerID) => {
+    const { data, err } = await getStoreByStoreCode(storeCode);
+    if (data) {
+      const userInfo = {
+        userId: customerID,
+        supplierId: data?.supplierId,
+        supplierStoreLogo: data?.supplierStoreLogo,
+        supplierStoreName: data?.supplierStoreName,
+        storeCode: data?.supplierStoreCode,
+        storeThemes: data?.storeThemes,
+        shopDescription: data?.shopDescription,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+      };
+      dispatch(storeUserInfo(userInfo));
+    }
+    if (err) {
+      toastify(err.response?.data?.message, "error");
+    }
+  };
+
   const handleSubmit = async () => {
     const flag = validateForm();
     if (!flag) {
@@ -60,26 +91,34 @@ const SignIn = () => {
         userName: formValues.mobileNoOrEmail,
         password: formValues.password,
         userType: "CUSTOMER",
-      }).then(async (res) => {
-        const { data } = res;
-        const decoded = JSON.parse(atob(data.token.split(".")[1].toString()));
-        const userData = decoded.sub.split(",");
-        const respo = signIn("credentials", {
-          id: userData[0],
-          email: userData[1],
-          role: decoded.roles[0],
-          token: data.token,
-          redirect: false,
-          callbackUrl: "/customer/home",
-        });
-        if (respo?.error) {
-          toastify("Invalid credentials", "error");
+      })
+        .then(async (res) => {
+          if (res) {
+            const { data } = res;
+            if (data) {
+              const decoded = JSON.parse(
+                atob(data.token.split(".")[1].toString())
+              );
+              const userData = decoded.sub.split(",");
+              const respo = await signIn("credentials", {
+                id: userData[0],
+                email: userData[1],
+                role: decoded.roles[0],
+                token: data.token,
+                redirect: false,
+                callbackUrl: "/customer/home",
+              });
+              if (respo?.error) {
+                toastify("Invalid credentials", "error");
+                return null;
+              }
+              router.push(`/customer/home`);
+              await storedatatoRedux(data?.defaultStoreCode, userData[0]);
+            }
+          }
           return null;
-        }
-        // await storedatatoRedux(userData[0]);
-        router.push(`/customer/home`);
-        return null;
-      });
+        })
+        .catch((err) => ({ err }));
     }
   };
 
@@ -92,19 +131,6 @@ const SignIn = () => {
     >
       <Paper className="w-400px rounded-1" elevation={24}>
         <Box className="w-100 p-4 rounded-1">
-          <Box className="d-flex justify-content-end align-items-center">
-            <Typography className=" fs-14">New Customer</Typography>
-            <Box className="ps-2">
-              <ButtonComponent
-                label="Sign Up"
-                variant="outlined"
-                muiProps="bg-transparent  fs-12"
-                onBtnClick={() => {
-                  router.push("/auth/customer/register");
-                }}
-              />
-            </Box>
-          </Box>
           <Box
             style={{ height: "75px" }}
             className="d-flex justify-content-center align-items-center"
@@ -151,6 +177,29 @@ const SignIn = () => {
             helperText={errorObj.password}
             error={errorObj.password !== ""}
           />
+          <Grid item md={12} className="w-100 my-1">
+            <div className="d-flex justify-content-between">
+              <Link href="/auth/customer/signin/otplogin" passHref>
+                <span className="color-orange fs-12 cursor-pointer fw-bold">
+                  Login with OTP
+                </span>
+              </Link>
+              <Link
+                href={{
+                  pathname: `/auth/forgotpassword`,
+                  query: {
+                    role: "CUSTOMER",
+                  },
+                }}
+                as="/auth/forgotpassword"
+                passHref
+              >
+                <span className="color-orange fs-12 cursor-pointer fw-bold">
+                  Forgot password?
+                </span>
+              </Link>
+            </div>
+          </Grid>
           <Box className="mt-3 d-flex justify-content-center">
             <ButtonComponent
               label="Sign In"
@@ -177,3 +226,23 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  if (session) {
+    const { role } = session.user;
+    if (role === "CUSTOMER") {
+      return {
+        redirect: { destination: "/customer/home" },
+      };
+    }
+  }
+
+  return {
+    props: {
+      providers: await getProviders(context),
+      csrfToken: (await getCsrfToken(context)) || null,
+    },
+  };
+}

@@ -47,7 +47,7 @@ const ShopCode = () => {
       const { data, err } = await getStoreByStoreCode(formValues.shopCode);
       if (data) {
         const userInfo = {
-          customerId: "",
+          userId: "",
           firstName: "",
           lastName: "",
           supplierId: data?.supplierId,
@@ -55,6 +55,8 @@ const ShopCode = () => {
           supplierStoreName: data?.supplierStoreName,
           storeCode: data?.supplierStoreCode,
           storeThemes: data?.storeThemes,
+          shopDescription: data?.shopDescription,
+          shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         };
         dispatch(storeUserInfo(userInfo));
         route.push({
