@@ -70,7 +70,7 @@ const articleData = [
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [bannerImages, setBannerImages] = useState([]);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -128,7 +128,7 @@ const Home = () => {
       data.forEach((variations) => {
         variations.productVariations.forEach((product) => {
           result.push({
-            image: product.variationMedia[0],
+            image: product.variationMedia ? product.variationMedia[0] : "",
             title: product.productTitle,
             price: product.salePrice,
             rating: 4,

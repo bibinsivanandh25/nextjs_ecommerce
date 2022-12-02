@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
@@ -13,6 +13,7 @@ import { login } from "services/customer/auth";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import Link from "next/link";
 import styles from "./signin.module.css";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 
@@ -92,19 +93,6 @@ const SignIn = () => {
     >
       <Paper className="w-400px rounded-1" elevation={24}>
         <Box className="w-100 p-4 rounded-1">
-          <Box className="d-flex justify-content-end align-items-center">
-            <Typography className=" fs-14">New Customer</Typography>
-            <Box className="ps-2">
-              <ButtonComponent
-                label="Sign Up"
-                variant="outlined"
-                muiProps="bg-transparent  fs-12"
-                onBtnClick={() => {
-                  router.push("/auth/customer/register");
-                }}
-              />
-            </Box>
-          </Box>
           <Box
             style={{ height: "75px" }}
             className="d-flex justify-content-center align-items-center"
@@ -151,6 +139,29 @@ const SignIn = () => {
             helperText={errorObj.password}
             error={errorObj.password !== ""}
           />
+          <Grid item md={12} className="w-100 my-1">
+            <div className="d-flex justify-content-between">
+              <Link href="/auth/customer/signin/otplogin" passHref>
+                <span className="color-orange fs-12 cursor-pointer fw-bold">
+                  Login with OTP
+                </span>
+              </Link>
+              <Link
+                href={{
+                  pathname: `/auth/forgotpassword`,
+                  query: {
+                    role: "CUSTOMER",
+                  },
+                }}
+                as="/auth/forgotpassword"
+                passHref
+              >
+                <span className="color-orange fs-12 cursor-pointer fw-bold">
+                  Forgot password?
+                </span>
+              </Link>
+            </div>
+          </Grid>
           <Box className="mt-3 d-flex justify-content-center">
             <ButtonComponent
               label="Sign In"
