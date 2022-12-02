@@ -416,7 +416,13 @@ const CreateCategoriesModal = ({
         showClearBtn={modalType === "Add" && modalType !== "view"}
         showSaveBtn={modalType !== "View"}
       >
-        <Box className="d-flex align-items-center ms-2 mt-2">
+        <Box
+          className={
+            modalType === "View"
+              ? "d-none"
+              : "d-flex align-items-center ms-2 mt-2"
+          }
+        >
           <Typography
             className={`rounded-pill p-2 px-4  h-5  cursor-pointer ${
               selectedTab === "SUPPLIER"
