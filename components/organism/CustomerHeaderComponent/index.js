@@ -11,7 +11,7 @@ import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
 import { useState, useEffect } from "react";
-import { Add, ArrowForward } from "@mui/icons-material";
+import { ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import { assetsJson } from "public/assets";
@@ -24,6 +24,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
+import StoreList from "@/forms/customer/storeList";
 
 const Header = () => {
   const { status } = useSession();
@@ -445,7 +446,9 @@ const Header = () => {
         handleClose={() => {
           setOpen(false);
         }}
-      />
+      >
+        <StoreList />
+      </CustomDrawer>
     </div>
   );
 };
