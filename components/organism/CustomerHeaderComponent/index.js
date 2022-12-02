@@ -10,10 +10,10 @@ import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Add, ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { assetsJson } from "public/assets";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import MenuwithArrow from "@/atoms/MenuwithArrow";
@@ -25,8 +25,10 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 
 const Header = () => {
+  const { status } = useSession();
+
   const route = useRouter();
-  const [isSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [stores, setStores] = useState([
@@ -58,6 +60,22 @@ const Header = () => {
   ]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
+    }
+  }, [status]);
+
+  const handleRouting = (path) => {
+    if (isSignedIn) {
+      route.push(path);
+    } else {
+      route.replace("/auth/customer/signin");
+    }
+  };
 
   const getStores = () => {
     return (
@@ -135,7 +153,7 @@ const Header = () => {
         <div className="d-flex align-items-center">
           <div
             className="px-4"
-            onClick={() => route.push("/customer/helpcenter")}
+            onClick={() => handleRouting("/customer/helpcenter")}
           >
             <Typography className="h-5 fw-bold ps-1">Help Center</Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
@@ -267,7 +285,7 @@ const Header = () => {
         </div>
         <FiShoppingCart
           className="fs-2 cursor-pointer"
-          onClick={() => route.push("/customer/cart")}
+          onClick={() => handleRouting("/customer/cart")}
         />
         <div className="cursor-pointer position-ralative">
           <MenuwithArrow subHeader="Hello, sign In" Header="Account & Lists">
@@ -286,7 +304,12 @@ const Header = () => {
                   <Typography className="h-5 cursor-pointer me-2">
                     New Customer?
                   </Typography>
-                  <Typography className="color-orange h-5 cursor-pointer">
+                  <Typography
+                    className="color-orange h-5 cursor-pointer"
+                    onClick={() => {
+                      route.push("/auth/customer/register");
+                    }}
+                  >
                     SignUp here
                   </Typography>
                 </div>
@@ -308,7 +331,7 @@ const Header = () => {
                 </Box>
                 <MenuItem
                   onClick={() => {
-                    route.push("/customer/accountdetails");
+                    handleRouting("/customer/accountdetails");
                   }}
                 >
                   <Typography className="h-5 cursor-pointer">
@@ -317,14 +340,14 @@ const Header = () => {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    route.push("/customer/orders");
+                    handleRouting("/customer/orders");
                   }}
                 >
                   <Typography className="h-5 cursor-pointer">
                     Your Orders
                   </Typography>
                 </MenuItem>
-                <MenuItem onClick={() => route.push("/customer/wishlist")}>
+                <MenuItem onClick={() => handleRouting("/customer/wishlist")}>
                   <Typography className="h-5 cursor-pointer">
                     Your Wishlist
                   </Typography>
@@ -335,14 +358,14 @@ const Header = () => {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => route.push("/customer/helpandsupport")}
+                  onClick={() => handleRouting("/customer/helpandsupport")}
                 >
                   <Typography className="h-5 cursor-pointer">
                     Help & Support
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => route.push("/customer/mynotification")}
+                  onClick={() => handleRouting("/customer/mynotification")}
                 >
                   <Typography className="h-5 cursor-pointer">
                     Notification center

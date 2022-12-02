@@ -13,6 +13,9 @@ import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
 import serviceUtil from "services/utils";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 // import { getSupplierDetailsById } from "services/supplier";
 // import { storeUserInfo } from "features/userSlice";
 // import { store } from "store";
@@ -30,48 +33,28 @@ const OtpLogIn = () => {
     };
   }, []);
 
-  const route = useRouter();
-  // const storedatatoRedux = async (id, role, staffDetails) => {
-  //   const { data, err } = await getSupplierDetailsById(
-  //     role === "SUPPLIER" ? id : staffDetails.supplierId
-  //   );
+  const dispatch = useDispatch();
 
-  //   if (!err) {
-  //     const supplierDetails =
-  //       role === "SUPPLIER"
-  //         ? {
-  //             emailId: data.emailId,
-  //             firstName: data.firstName,
-  //             lastName: data.lastName,
-  //             profileImageUrl: data.profileImageUrl,
-  //             supplierId: data.supplierId,
-  //             storeCode: data.supplierStoreInfo.supplierStoreCode,
-  //             isAddressSaved: data.userAddressDetails.length,
-  //             role,
-  //             storeName: data.supplierStoreInfo.supplierStoreName,
-  //           }
-  //         : {
-  //             emailId: data.emailId,
-  //             firstName: data.firstName,
-  //             lastName: data.lastName,
-  //             profileImageUrl: data.profileImageUrl,
-  //             supplierId: data.supplierId,
-  //             storeCode: data.supplierStoreInfo.supplierStoreCode,
-  //             isAddressSaved: data.userAddressDetails.length,
-  //             role,
-  //             staffDetails: {
-  //               email: staffDetails.emailId,
-  //               firstName: staffDetails.firstName,
-  //               lastName: staffDetails.lastName,
-  //               mobileNumber: staffDetails.mobileNumber,
-  //               staffId: staffDetails.staffId,
-  //               staffCapabilityList: staffDetails.staffCapabilityList,
-  //             },
-  //             storeName: data.supplierStoreInfo.supplierStoreName,
-  //           };
-  //     store.dispatch(storeUserInfo(supplierDetails));
-  //   }
-  // };
+  const route = useRouter();
+  const storedatatoRedux = async (storeCode, customerID) => {
+    const { data, err } = await getStoreByStoreCode(storeCode);
+    if (data) {
+      const userInfo = {
+        userId: customerID,
+        supplierId: data?.supplierId,
+        supplierStoreLogo: data?.supplierStoreLogo,
+        supplierStoreName: data?.supplierStoreName,
+        storeCode: data?.supplierStoreCode,
+        storeThemes: data?.storeThemes,
+        shopDescription: data?.shopDescription,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+      };
+      dispatch(storeUserInfo(userInfo));
+    }
+    if (err) {
+      toastify(err.response?.data?.message, "error");
+    }
+  };
 
   const handleSubmit = async () => {
     const formdata = new FormData();
@@ -101,11 +84,7 @@ const OtpLogIn = () => {
         toastify("Invalid credentials", "error");
         return null;
       }
-      // await storedatatoRedux(
-      //   userData[0],
-      //   decoded.roles[0],
-      //   data.data.staffDetails
-      // );
+      await storedatatoRedux(data?.defaultStoreCode, userData[0]);
       route.push(`/customer/home`);
     }
   };

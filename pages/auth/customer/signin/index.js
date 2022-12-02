@@ -6,7 +6,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
 import validationRegex from "services/utils/regexUtils";
-import { signIn } from "next-auth/react";
+import {
+  getCsrfToken,
+  getProviders,
+  getSession,
+  signIn,
+} from "next-auth/react";
 import { assetsJson } from "public/assets";
 import { useRouter } from "next/router";
 import { login } from "services/customer/auth";
@@ -14,8 +19,11 @@ import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import Link from "next/link";
-import styles from "./signin.module.css";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
+import styles from "./signin.module.css";
 
 const SignIn = () => {
   const formObj = {
@@ -54,6 +62,28 @@ const SignIn = () => {
     return flag;
   };
 
+  const dispatch = useDispatch();
+
+  const storedatatoRedux = async (storeCode, customerID) => {
+    const { data, err } = await getStoreByStoreCode(storeCode);
+    if (data) {
+      const userInfo = {
+        userId: customerID,
+        supplierId: data?.supplierId,
+        supplierStoreLogo: data?.supplierStoreLogo,
+        supplierStoreName: data?.supplierStoreName,
+        storeCode: data?.supplierStoreCode,
+        storeThemes: data?.storeThemes,
+        shopDescription: data?.shopDescription,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+      };
+      dispatch(storeUserInfo(userInfo));
+    }
+    if (err) {
+      toastify(err.response?.data?.message, "error");
+    }
+  };
+
   const handleSubmit = async () => {
     const flag = validateForm();
     if (!flag) {
@@ -61,26 +91,34 @@ const SignIn = () => {
         userName: formValues.mobileNoOrEmail,
         password: formValues.password,
         userType: "CUSTOMER",
-      }).then(async (res) => {
-        const { data } = res;
-        const decoded = JSON.parse(atob(data.token.split(".")[1].toString()));
-        const userData = decoded.sub.split(",");
-        const respo = signIn("credentials", {
-          id: userData[0],
-          email: userData[1],
-          role: decoded.roles[0],
-          token: data.token,
-          redirect: false,
-          callbackUrl: "/customer/home",
-        });
-        if (respo?.error) {
-          toastify("Invalid credentials", "error");
+      })
+        .then(async (res) => {
+          if (res) {
+            const { data } = res;
+            if (data) {
+              const decoded = JSON.parse(
+                atob(data.token.split(".")[1].toString())
+              );
+              const userData = decoded.sub.split(",");
+              const respo = await signIn("credentials", {
+                id: userData[0],
+                email: userData[1],
+                role: decoded.roles[0],
+                token: data.token,
+                redirect: false,
+                callbackUrl: "/customer/home",
+              });
+              if (respo?.error) {
+                toastify("Invalid credentials", "error");
+                return null;
+              }
+              router.push(`/customer/home`);
+              await storedatatoRedux(data?.defaultStoreCode, userData[0]);
+            }
+          }
           return null;
-        }
-        // await storedatatoRedux(userData[0]);
-        router.push(`/customer/home`);
-        return null;
-      });
+        })
+        .catch((err) => ({ err }));
     }
   };
 
@@ -188,3 +226,23 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  if (session) {
+    const { role } = session.user;
+    if (role === "CUSTOMER") {
+      return {
+        redirect: { destination: "/customer/home" },
+      };
+    }
+  }
+
+  return {
+    props: {
+      providers: await getProviders(context),
+      csrfToken: (await getCsrfToken(context)) || null,
+    },
+  };
+}

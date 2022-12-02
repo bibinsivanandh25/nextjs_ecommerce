@@ -19,6 +19,7 @@ import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 import HomeComponent from "@/forms/customer/homecomponent";
+import { useSession } from "next-auth/react";
 import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
@@ -76,10 +77,16 @@ const Home = () => {
   const [products, setProducts] = useState([]);
 
   const route = useRouter();
-  const storeDetails = useSelector((state) => ({
-    supplierId: state.customer.supplierId,
-    storeCode: state.customer.storeCode,
-  }));
+  const storeDetails = useSelector((state) => state.customer);
+
+  const userInfo = useSession();
+  useEffect(() => {
+    if (userInfo.status === "authenticated") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     if (storeDetails.storeCode === "" || storeDetails.supplierId === "") {
