@@ -280,12 +280,25 @@ const Header = () => {
         <div className="cursor-pointer">
           <MenuwithArrow subHeader="Store" Header="List">
             <MenuItem>
-              <input
-                id="store"
-                style={{
-                  outline: "none",
-                }}
-              />
+              <div className="d-flex align-items-center">
+                <input
+                  id="store"
+                  style={{
+                    outline: "none",
+                  }}
+                  placeholder="Search store"
+                />
+                <Typography className="ms-2 cursor-pointer color-light-blue fs-14">
+                  <CustomIcon
+                    showColorOnHover={false}
+                    type="add"
+                    color="color-light-blue "
+                    className="color-light-blue fs-14"
+                    onIconClick={() => {}}
+                  />
+                  Add
+                </Typography>
+              </div>
             </MenuItem>
             {getStores()}
           </MenuwithArrow>
@@ -446,6 +459,8 @@ const Header = () => {
         handleClose={() => {
           setOpen(false);
         }}
+        title="Store List"
+        titleClassName="color-orange fs-16"
       >
         <StoreList />
       </CustomDrawer>
