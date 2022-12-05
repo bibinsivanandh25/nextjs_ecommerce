@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-param-reassign */
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 // import Image from "next/image";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,13 +23,14 @@ const ListGroupComponentCopy = ({
   showCheckBox = false,
   id = "",
   onSelectionChange = () => {},
+  handleDelete = () => {},
   addBtnClick = () => {},
   editBtnClick = () => {},
+  handleSwitchToggle = () => {},
   showSwitchComponent = false,
   showDeleteButton = false,
 }) => {
   const [list, setList] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     setList([...data]);
@@ -46,44 +47,35 @@ const ListGroupComponentCopy = ({
       temp[index].isSelected = val;
     }
     setList([...temp]);
+    onSelectionChange(temp.filter((ele) => ele.isSelected));
   };
-
-  const handleSwitchToggle = () => {};
-  const handleDelete = (index) => {
-    list.splice(index, 1);
-    setList([...list]);
-  };
-
-  useEffect(() => {
-    if (list.length) {
-      setSelectedItems(() => {
-        const temp = list.filter((item) => {
-          return item.isSelected;
-        });
-        return temp;
-      });
-    }
-  }, [list]);
-  useEffect(() => {
-    onSelectionChange([...selectedItems]);
-  }, [selectedItems]);
 
   return (
     <div className="w-100 border border-bottom-0">
       {showTitle ? (
         <div className="w-100 bg-gray-1 d-flex justify-content-between p-2 align-items-center">
-          <Typography className={`${titleClassName}`}>{title}</Typography>
+          <Tooltip title={title}>
+            <Typography className={`${titleClassName} text-truncate`}>
+              {title}
+            </Typography>
+          </Tooltip>
           <div>
             {showAddIcon ? (
-              <AddIcon className="color-orange" onClick={addBtnClick} />
+              <AddIcon
+                className="color-orange cursor-pointer"
+                onClick={addBtnClick}
+              />
             ) : null}
             {showEditIcon ? (
-              <EditIcon className="fs-20 ms-1" onClick={editBtnClick} />
+              <EditIcon
+                className="fs-20 ms-1 cursor-pointer"
+                onClick={editBtnClick}
+              />
             ) : null}
           </div>
         </div>
       ) : null}
-      <div className="mxh-200 overflow-y-scroll hide-scrollbar">
+      <div className="mxh-200 overflow-y-scroll hide-scrollbar bg-light-grey">
         {list.map((item, index) => (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events
           <div
@@ -116,24 +108,28 @@ const ListGroupComponentCopy = ({
               />
             ) : null}
 
-            <Typography
-              onClick={() => {
-                // if (!showCheckBox && !showRadioBtn)
-                handleItemClick(index, !item.isSelected);
-              }}
-              className={`${labelClassName} ${
-                !showRadioBtn && !showCheckBox && item.isSelected
-                  ? "color-orange fw-bold"
-                  : ""
-              }`}
-            >
-              {item.label}
-            </Typography>
+            <Box>
+              <Tooltip title={item.label}>
+                <Typography
+                  onClick={() => {
+                    handleItemClick(index, !item.isSelected);
+                  }}
+                  className={`text-truncate ${labelClassName} ${
+                    !showRadioBtn && !showCheckBox && item.isSelected
+                      ? "color-orange"
+                      : ""
+                  }`}
+                >
+                  {item.label}
+                </Typography>
+              </Tooltip>
+            </Box>
             <Box className="d-flex align-items-center">
               {showSwitchComponent ? (
                 <SwitchComponent
+                  defaultChecked={item.disable}
                   ontoggle={() => {
-                    handleSwitchToggle(item, index);
+                    handleSwitchToggle(item);
                   }}
                   label=""
                 />
@@ -141,7 +137,7 @@ const ListGroupComponentCopy = ({
               {showDeleteButton ? (
                 <CustomIcon
                   onIconClick={() => {
-                    handleDelete(index);
+                    handleDelete(item);
                   }}
                   type="delete"
                 />

@@ -343,6 +343,9 @@ const AttributesForm = forwardRef(
             ? modalType.attribute
             : formValues.attributeName,
           optionName: formValues.values,
+          variationType: modalType
+            ? modalType.variationType
+            : "STANDARD_VARIATION",
         };
         const { data, err } = await createAttributes(payload);
         if (data) {

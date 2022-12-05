@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 import React, { useState, useEffect } from "react";
@@ -21,6 +22,7 @@ import {
   getCategoryMediaUrl,
   UpdateMainCategory,
 } from "services/admin/products/productCategories/category";
+import { getBase64 } from "services/utils/functionUtils";
 
 const steps = [
   "Lower Bound Price Range",
@@ -34,6 +36,7 @@ const CreateCategoriesModal = ({
   getTableData = () => {},
   modalType = "Add",
   categoryFormData = {},
+  getAllCategoryVariation = () => {},
 }) => {
   const [categoryDetails, setCategoryDetails] = useState({
     category: "",
@@ -44,7 +47,7 @@ const CreateCategoriesModal = ({
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState([
     {
-      minPriceRange: "0",
+      minPriceRange: "1",
       maxPriceRange: "",
       comissionPercentage: "",
       mmcProfitPercentage: "",
@@ -102,17 +105,20 @@ const CreateCategoriesModal = ({
       },
     });
     if (!categoryFormData.subCategoryPriceRangeAdded) {
-      const temp = [];
-      categoryDetails.priceRangeList?.forEach((ele) => {
-        temp.push({
-          minPriceRange: ele.priceStart,
-          maxPriceRange: ele.priceEnd,
-          comissionPercentage: ele.commissionPercentage,
-          mmcProfitPercentage: ele.adminProfitPercentage ?? "",
-          resellerProfitPercentage: ele.resellerProfitPercentage ?? "",
+      if (categoryFormData.priceRangeList !== null) {
+        setShowStepper(true);
+        const temp = [];
+        categoryFormData.priceRangeList?.forEach((ele) => {
+          temp.push({
+            minPriceRange: ele.priceStart,
+            maxPriceRange: ele.priceEnd,
+            comissionPercentage: ele.commissionPercentage,
+            mmcProfitPercentage: ele.adminProfitPercentage ?? "",
+            resellerProfitPercentage: ele.resellerProfitPercentage ?? "",
+          });
         });
-      });
-      setFormData([...temp]);
+        setFormData([...temp]);
+      }
     }
   }, [categoryFormData]);
 
@@ -138,7 +144,7 @@ const CreateCategoriesModal = ({
     });
     setFormData([
       {
-        minPriceRange: "0",
+        minPriceRange: "1",
         maxPriceRange: "",
         comissionPercentage: "",
         mmcProfitPercentage: "",
@@ -211,31 +217,70 @@ const CreateCategoriesModal = ({
       return temp;
     };
 
-    const payload = {
+    let payload = {
       mainCategoryName: categoryDetails.category,
       commissionType: categoryDetails.comissionType?.value,
-      categoryImageUrl: categoryDetails.categoryImg,
       categoryGst: parseInt(categoryDetails.gst, 10),
       priceRangeList: priceRangeFlag ? getPriceRangeList() : [],
     };
 
-    if (modalType === "Add") {
-      const { data, err } = await addMainCategory(payload);
+    const getImageUrl = async () => {
+      const file = new FormData();
+      file.append("media", categoryDetails.categoryImg);
+      const { data, err } = await getCategoryMediaUrl(file);
       if (data) {
-        getTableData(0);
-        setOpenCreateCategoriesModal(false);
-        toastify(data?.message, "success");
+        payload = {
+          ...payload,
+          categoryImageUrl: data?.data,
+        };
+        setCategoryDetails((prev) => {
+          return {
+            ...prev,
+            categoryImg: data.data,
+          };
+        });
+        return payload;
       }
       if (err) {
-        toastify(err?.response?.data?.message, " error");
+        toastify(err?.response?.data?.message, "error");
+      }
+      return null;
+    };
+
+    if (modalType === "Add") {
+      const addPayload = await getImageUrl();
+      if (addPayload) {
+        const { data, err } = await addMainCategory(addPayload);
+        if (data) {
+          getAllCategoryVariation();
+          getTableData(0);
+          setOpenCreateCategoriesModal(false);
+          toastify(data?.message, "success");
+        }
+        if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
       }
     } else {
-      const editPayload = {
-        ...payload,
-        mainCategoryId: categoryFormData.mainCategoryId,
-      };
+      let editPayload = {};
+      if (typeof categoryDetails.categoryImg === "object") {
+        const { categoryImageUrl } = await getImageUrl();
+        editPayload = {
+          ...payload,
+          categoryImageUrl,
+          mainCategoryId: categoryFormData.mainCategoryId,
+        };
+      } else {
+        editPayload = {
+          ...payload,
+          categoryImageUrl: categoryDetails.categoryImg,
+          mainCategoryId: categoryFormData.mainCategoryId,
+        };
+      }
+
       const { data, err } = await UpdateMainCategory(editPayload);
       if (data) {
+        getAllCategoryVariation();
         getTableData(0);
         setOpenCreateCategoriesModal(false);
         toastify(data?.message, "success");
@@ -309,7 +354,7 @@ const CreateCategoriesModal = ({
 
   const handleNextClick = (flag) => {
     if (validate(flag ?? showStepper)) return;
-    if (showStepper && flag) {
+    if (showStepper) {
       if (activeStep < 2) {
         const temp = [...formData];
         temp[activeStep + 1].minPriceRange =
@@ -350,7 +395,13 @@ const CreateCategoriesModal = ({
     <Box>
       <ModalComponent
         open={openCreateNewCategories}
-        ModalTitle="Create Categories"
+        ModalTitle={
+          modalType === "Add"
+            ? "Create Categories"
+            : modalType === "Edit"
+            ? "Edit Categories"
+            : "View Categories"
+        }
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
@@ -361,12 +412,20 @@ const CreateCategoriesModal = ({
         onCloseIconClick={() => {
           setOpenCreateCategoriesModal(false);
         }}
-        onSaveBtnClick={() => handleNextClick(true)}
+        onSaveBtnClick={() => handleNextClick()}
         onClearBtnClick={() => {
           handleClearAll();
         }}
+        showClearBtn={modalType === "Add" && modalType !== "view"}
+        showSaveBtn={modalType !== "View"}
       >
-        <Box className="d-flex align-items-center ms-2 mt-2">
+        <Box
+          className={
+            modalType === "View"
+              ? "d-none"
+              : "d-flex align-items-center ms-2 mt-2"
+          }
+        >
           <Typography
             className={`rounded-pill p-2 px-4  h-5  cursor-pointer ${
               selectedTab === "SUPPLIER"
@@ -396,6 +455,7 @@ const CreateCategoriesModal = ({
           <Grid container columnSpacing={2} rowSpacing={2} className="mt-2">
             <Grid item xs={12}>
               <InputBox
+                disabled={modalType === "View"}
                 name="category"
                 value={categoryDetails.category}
                 inputlabelshrink
@@ -409,6 +469,7 @@ const CreateCategoriesModal = ({
               <Grid item xs={12}>
                 <InputBox
                   name="gst"
+                  disabled={modalType === "View"}
                   value={categoryDetails.gst}
                   inputlabelshrink
                   label="GST in %"
@@ -436,7 +497,7 @@ const CreateCategoriesModal = ({
                       comissionType: val,
                     });
                   }}
-                  disabled={selectedTab === "SUPPLIER"}
+                  disabled={selectedTab === "SUPPLIER" || modalType === "View"}
                   value={
                     selectedTab === "SUPPLIER"
                       ? {
@@ -459,30 +520,32 @@ const CreateCategoriesModal = ({
                       categoryImg: null,
                     });
                   }}
-                  showClose={categoryDetails.categoryImg !== null}
+                  showClose={
+                    categoryDetails.categoryImg !== null && modalType !== "View"
+                  }
                   handleImageUpload={async (e) => {
                     if (e.target.files.length) {
                       if (e.target.files[0].size <= 1000000) {
                         const file = new FormData();
                         file.append("media", e.target.files[0]);
-                        const { data, err } = await getCategoryMediaUrl(file);
-                        if (data) {
-                          setCategoryDetails((prev) => {
-                            return {
-                              ...prev,
-                              categoryImg: data.data,
-                            };
-                          });
-                        }
-                        if (err) {
-                          toastify(err?.response?.data?.message, "error");
-                        }
+                        const base64 = await getBase64(e.target.files[0]);
+                        setCategoryDetails((prev) => {
+                          return {
+                            ...prev,
+                            categoryImg: e.target.files[0],
+                            base64URL: base64,
+                          };
+                        });
                       } else {
                         toastify("Image size should be less than 1MB", "error");
                       }
                     }
                   }}
-                  imgSrc={categoryDetails.categoryImg || ""}
+                  imgSrc={
+                    categoryDetails.base64URL ??
+                    categoryDetails.categoryImg ??
+                    ""
+                  }
                 />
               </Box>
             </Grid>
@@ -492,14 +555,20 @@ const CreateCategoriesModal = ({
                 (!categoryFormData.subCategoryPriceRangeAdded ||
                 modalType === "Add" ? (
                   <>
-                    <Typography className="fs-12 ms-3">
+                    <Typography
+                      className={modalType === "View" ? "d-none" : "fs-12 ms-3"}
+                    >
                       Do you want to enter Price Range
                     </Typography>
                     <Typography
                       onClick={() => {
                         setShowStepper(true);
                       }}
-                      className="fs-12 ms-2 cursor-pointer color-light-blue"
+                      className={
+                        modalType === "View"
+                          ? "d-none"
+                          : "fs-12 ms-2 cursor-pointer color-light-blue"
+                      }
                     >
                       Click Here
                     </Typography>
@@ -535,7 +604,7 @@ const CreateCategoriesModal = ({
                         }}
                         key={label}
                         onClick={() => {
-                          if (index < activeStep) {
+                          if (index < activeStep || modalType === "View") {
                             setActiveStep(index);
                           }
                         }}
@@ -558,7 +627,11 @@ const CreateCategoriesModal = ({
                           inputlabelshrink
                           name="minPriceRange"
                           label="Min. Price Range"
-                          value={formData[activeStep].minPriceRange}
+                          value={
+                            activeStep === 0
+                              ? 1
+                              : formData[activeStep]?.minPriceRange
+                          }
                           onInputChange={handlFormDataChange}
                           readOnly
                         />
@@ -572,7 +645,7 @@ const CreateCategoriesModal = ({
                           inputlabelshrink
                           name="maxPriceRange"
                           label="Max. Price Range"
-                          value={formData[activeStep].maxPriceRange}
+                          value={formData[activeStep]?.maxPriceRange}
                           onInputChange={handlFormDataChange}
                           error={errorObj.maxPriceRange !== ""}
                           helperText={errorObj.maxPriceRange}
@@ -583,7 +656,7 @@ const CreateCategoriesModal = ({
                           inputlabelshrink
                           name="comissionPercentage"
                           label="Comission Percentage"
-                          value={formData[activeStep].comissionPercentage}
+                          value={formData[activeStep]?.comissionPercentage}
                           onInputChange={handlFormDataChange}
                           error={errorObj.comissionPercentage !== ""}
                           helperText={errorObj.comissionPercentage}
@@ -596,7 +669,7 @@ const CreateCategoriesModal = ({
                               inputlabelshrink
                               name="mmcProfitPercentage"
                               label="MMC Profit % Percentage"
-                              value={formData[activeStep].mmcProfitPercentage}
+                              value={formData[activeStep]?.mmcProfitPercentage}
                               onInputChange={handlFormDataChange}
                               error={errorObj.mmcProfitPercentage !== ""}
                               helperText={errorObj.mmcProfitPercentage}
@@ -608,7 +681,7 @@ const CreateCategoriesModal = ({
                               name="resellerProfitPercentage"
                               label="Reseller Profit % Percentage"
                               value={
-                                formData[activeStep].resellerProfitPercentage
+                                formData[activeStep]?.resellerProfitPercentage
                               }
                               onInputChange={handlFormDataChange}
                               error={errorObj.resellerProfitPercentage !== ""}
@@ -621,7 +694,9 @@ const CreateCategoriesModal = ({
                   </Paper>
                 </Grid>
                 <Box className="d-flex align-items-center mt-2 ">
-                  <Typography className="fs-12 ms-3 ">
+                  <Typography
+                    className={modalType === "View" ? "d-none" : "fs-12 ms-3 "}
+                  >
                     Would you still like to continue without providing a pricing
                     range?
                   </Typography>
@@ -631,7 +706,7 @@ const CreateCategoriesModal = ({
                       setShowStepper(false);
                       setFormData([
                         {
-                          minPriceRange: "0",
+                          minPriceRange: "1",
                           maxPriceRange: "",
                           comissionPercentage: "",
                           mmcProfitPercentage: "",
@@ -657,7 +732,11 @@ const CreateCategoriesModal = ({
                       ]);
                       handleNextClick(false);
                     }}
-                    className="fs-12 ms-2 cursor-pointer color-light-blue"
+                    className={
+                      modalType === "View"
+                        ? "d-none"
+                        : "fs-12 ms-2 cursor-pointer color-light-blue"
+                    }
                   >
                     Click Here
                   </Typography>

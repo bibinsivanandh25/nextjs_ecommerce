@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-use-before-define */
 import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -6,10 +8,12 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import CreateSubCategoryModal from "@/forms/admin/productcategories/productsubcategories/CreateSubCategoryModal";
 import {
   disableOrEnable,
+  getCategoryById,
   getSubCategories,
 } from "services/admin/products/productCategories/subcategory";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
+import { getFilterDropDownList } from "services/admin/products/productCategories/category";
 // import Image from "next/image";
 
 const tableColumns = [
@@ -81,24 +85,61 @@ const SubCategories = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openCreateNewSubCategories, setOpenCreateNewSubCategories] =
     useState(false);
-  const [formData, setFormData] = useState({
-    category: {},
-    set: "",
-    subCategory: "",
-    priceRange: {},
-    comissionType: {},
-    comissionPercentage: "",
-    mmcProfitPercentage: "",
-    resellerProfitPercentage: "",
-  });
+  const [pageNumber, setpageNumber] = useState(0);
+  const [subCategoryData, setSubcategoryData] = useState(null);
+  const [showView, setShowView] = useState(false);
+  const [filterData, setFilterData] = useState([]);
 
-  const changeStatus = async (id) => {
+  const getFilterValue = async () => {
+    const { data } = await getFilterDropDownList();
+    const result = [
+      {
+        name: "Main Categories",
+        value: [],
+      },
+      {
+        name: "Commission Type",
+        value: [],
+      },
+    ];
+    if (data) {
+      result[0].value = data?.mainCategory.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
+      });
+      result[1].value = data?.commissionType.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
+      });
+    }
+    setFilterData([...result]);
+  };
+
+  const changeStatus = async (id, status) => {
     // eslint-disable-next-line no-unused-vars
     const { data, err } = await disableOrEnable({
       categoryType: "SUB_CATEGORY",
       categoryId: id,
-      status: false,
+      status,
     });
+    if (data === null) {
+      getTableData(0);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const getSubCatagoryDetails = async (subCategoryId, cb = () => {}) => {
+    const { data, err } = await getCategoryById(subCategoryId);
+    if (data) {
+      setSubcategoryData(data);
+      cb();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   const mapData = (data) => {
@@ -116,14 +157,34 @@ const SubCategories = () => {
             <Box className="d-flex align-items-center">
               <SwitchComponent
                 label=""
-                value={false}
+                defaultChecked={!val.disable}
                 ontoggle={() => {
-                  changeStatus();
+                  changeStatus(val.subCategoryId, !val.disable);
                 }}
               />
             </Box>
-            <CustomIcon type="edit" className="fs-20" />
-            <CustomIcon type="view" className="fs-20" />
+            <CustomIcon
+              type="edit"
+              className="fs-20"
+              onIconClick={() => {
+                getSubCatagoryDetails(val.subCategoryId, () => {
+                  setOpenCreateNewSubCategories(true);
+                });
+                // setSubcategoryData(val);
+                // setOpenCreateNewSubCategories(true);
+              }}
+            />
+            <CustomIcon
+              type="view"
+              className="fs-20"
+              onIconClick={() => {
+                getSubCatagoryDetails(val.subCategoryId, () => {
+                  console.log("view");
+                  setOpenCreateNewSubCategories(true);
+                  setShowView(true);
+                });
+              }}
+            />
           </Box>
         ),
         col7: "--",
@@ -141,14 +202,17 @@ const SubCategories = () => {
     });
   };
 
-  const getTableData = async () => {
-    const { data, err } = await getSubCategories(0, {
-      commissionModeList: ["ZERO_COMMISSION"],
+  const getTableData = async (
+    page = pageNumber,
+    payload = {
+      commissionModeList: [],
       mainCategoryList: [],
       keyword: null,
       fromDate: null,
       toDate: null,
-    });
+    }
+  ) => {
+    const { data, err } = await getSubCategories(page, payload);
     if (data) {
       setTableRows(mapData(data));
     } else if (err) {
@@ -157,6 +221,7 @@ const SubCategories = () => {
   };
 
   useEffect(() => {
+    getFilterValue();
     getTableData();
   }, []);
 
@@ -181,6 +246,42 @@ const SubCategories = () => {
                 dateFilterBtnClick={() => {
                   setOpenCreateNewSubCategories(true);
                 }}
+                handlePageEnd={(searchText, searchFilter, page, date) => {
+                  getTableData(page, {
+                    commissionModeList: [],
+                    mainCategoryList: [],
+                    keyword: searchText,
+                    fromDate: date.fromDate,
+                    toDate: date.toDate,
+                  });
+                }}
+                showFilterButton
+                filterData={[...filterData]}
+                getFilteredValues={(value) => {
+                  const categories = [];
+                  const commissionType = [];
+                  value.forEach((ele) => {
+                    ele?.value.forEach((i) => {
+                      if (ele.name === "Main Categories") {
+                        if (i.isSelected) {
+                          categories.push(i.item);
+                        }
+                      }
+                      if (ele.name === "Commission Type") {
+                        if (i.isSelected) {
+                          commissionType.push(i.item);
+                        }
+                      }
+                    });
+                  });
+                  getTableData(0, {
+                    mainCategoryList: categories,
+                    commissionModeList: commissionType,
+                    keyword: null,
+                    fromDate: null,
+                    toDate: null,
+                  });
+                }}
               />
             </Paper>
           </Box>
@@ -190,8 +291,11 @@ const SubCategories = () => {
       {openCreateNewSubCategories && (
         <CreateSubCategoryModal
           setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
-          formData={formData}
-          setFormData={setFormData}
+          getTableData={getTableData}
+          subCategoryData={subCategoryData}
+          setSubcategoryData={setSubcategoryData}
+          showView={showView}
+          setShowView={setShowView}
         />
       )}
     </>
