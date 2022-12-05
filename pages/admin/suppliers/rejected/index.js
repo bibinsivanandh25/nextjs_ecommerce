@@ -176,9 +176,9 @@ const Reajected = () => {
       status: "REJECTED",
     };
     const { data, err } = await getSuppliers(page, payload);
-    if (data?.data) {
-      setMasterData(data.data.count);
-      if (page == 0 && data?.data?.supplierInfo?.length) {
+    if (data?.data) setMasterData(data?.data?.count);
+    if (data?.data?.supplierInfo?.length) {
+      if (page == 0) {
         setTableRows(getTableRows(data.data.supplierInfo));
         setPageNumber(1);
       } else {
@@ -189,6 +189,8 @@ const Reajected = () => {
         ]);
       }
     } else if (data?.data?.supplierInfo?.length == 0 && page == 0) {
+      setTableRows([]);
+    } else if (page == 0 && data?.data == null) {
       setTableRows([]);
     }
     if (err) {

@@ -20,12 +20,14 @@ const HelpandsupportView = ({
   setShowModal = () => {},
   user = {},
   acceptedTypes = ["png", "jpg", "pdf"],
-  getTabledata,
+  getTabledata = () => {},
 }) => {
   const inputField = useRef();
   const [formValue, setFormValue] = useState("");
   const [error, setError] = useState("");
   const [selectedFile, setSelectedFile] = useState([]);
+
+  console.log(selectedData);
 
   const getContent = (label, value, className) => {
     return (

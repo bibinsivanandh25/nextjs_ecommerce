@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -5,14 +6,30 @@ import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import CreateSetModal from "@/forms/admin/productcategories/sets/CreateSetModal";
+import {
+  getAllSetData,
+  setEnableDisable,
+} from "services/admin/products/productCategories/sets";
+import toastify from "services/utils/toastUtils";
+import SetFilterModal from "@/forms/admin/productcategories/sets/setfiltermodal";
+import SetsViewModal from "@/forms/admin/productcategories/sets/setsviewmodal";
 
 const Sets = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openCreateSetModal, setOpenCreateSetModal] = useState(false);
-  const [rowId, setRowId] = useState(null);
+  const [selectedData, setSelectedData] = useState({});
+  const [type, setType] = useState("add");
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [filteredValue, setFilteredValue] = useState({});
+  const [filterDate, setFilterDate] = useState({});
+  const [viewModalopen, setViewModalOpen] = useState(false);
   const [setDetails, setSetDetails] = useState({
     category: {},
     set: "",
+    setImage: "",
+    imageFile: "",
+    editsetid: "",
   });
 
   const tableColumns = [
@@ -48,67 +65,107 @@ const Sets = () => {
     },
   ];
 
-  const rowsDataObjectsForSets = [
-    {
-      id: 1,
-      col1: "01",
-      col2: "--",
-      col3: "--",
-      col4: "21/06/2021-10.52",
-      col5: "Action",
-    },
-  ];
-
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-center">
-      <Typography>Enable</Typography>
-      <Box className="ms-3">
-        <SwitchComponent label="" />
-      </Box>
-    </Box>,
-  ];
-
-  const onClickOfMenuItem = (ele, index) => {
+  const onClickOfMenuItem = (ele, value) => {
+    console.log(value);
     if (ele === "Edit") {
-      setRowId(index);
-      setSetDetails({
-        category: { label: rowsDataObjectsForSets[index].col2 },
-        set: rowsDataObjectsForSets[index].col3,
-      });
+      setType("edit");
+      setSelectedData(value);
       setOpenCreateSetModal(true);
     }
   };
-
-  const getTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForSets.forEach((val, index) => {
-      anArray.push({
+  const handleSwitchClick = async (value) => {
+    const payload = {
+      categoryType: "SET",
+      categoryId: value.categorySetId,
+      status: !value.disabled,
+    };
+    const { data, err } = await setEnableDisable(payload);
+    if (data) {
+      toastify(data.message, "success");
+      getAllSet(0, null);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const handleViewClcik = (value) => {
+    setSelectedData(value);
+    setViewModalOpen(true);
+  };
+  const getTableRowsData = (data) => {
+    const temp = [];
+    data.forEach((val, index) => {
+      temp.push({
         id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
+        col1: index + 1,
+        col2: val.mainCategoryName,
+        col3: val.setName,
+        col4: val.createdAt,
         col5: (
           <Box className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" className="fs-20" />
+            <CustomIcon
+              type="view"
+              className="fs-18"
+              onIconClick={() => {
+                handleViewClcik(val);
+              }}
+            />
             <MenuOption
               getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
+                onClickOfMenuItem(ele, val);
               }}
-              options={options}
+              options={[
+                "Edit",
+                <Box className="d-flex align-items-center">
+                  <Typography>
+                    {val.disabled ? "Disabled" : "Enabled"}
+                  </Typography>
+                  <Box className="ms-3">
+                    <SwitchComponent
+                      label=""
+                      defaultChecked={!val.disabled}
+                      ontoggle={() => {
+                        handleSwitchClick(val);
+                      }}
+                    />
+                  </Box>
+                </Box>,
+              ]}
               IconclassName="fs-18 color-gray"
             />
           </Box>
         ),
       });
     });
-
-    setTableRows(anArray);
+    return temp;
   };
-
+  const getAllSet = async (page, date, value) => {
+    const payload = {
+      commissionType: value?.commissiontype || [],
+      mainCategory: value?.categoryid || [],
+      categorySet: value?.setid || [],
+      fromDate: date?.fromDate && date?.toDate ? date?.fromDate : null,
+      toDate: date?.fromDate && date?.toDate ? date?.toDate : null,
+    };
+    const { data, err } = await getAllSetData(page, payload);
+    if (data?.data?.length) {
+      if (page == 0) {
+        setTableRows(getTableRowsData(data.data));
+        setPageNumber(1);
+      } else {
+        setPageNumber((prev) => prev + 1);
+        setTableRows((pre) => [...pre, ...getTableRowsData(data?.data)]);
+      }
+    } else if (data?.length === 0 && page == 0) {
+      setTableRows([]);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      setTableRows([]);
+    }
+  };
   useEffect(() => {
-    getTableRowsData();
+    getAllSet(0, null);
   }, []);
 
   return (
@@ -130,20 +187,52 @@ const Sets = () => {
               showDateFilter
               dateFilterBtnName="Create Set"
               dateFilterBtnClick={() => {
+                setType("add");
                 setOpenCreateSetModal(true);
+              }}
+              showDateFilterSearch={false}
+              handlePageEnd={(searchtext, filter, page = pageNumber, date) => {
+                setFilterDate(date);
+                getAllSet(page, date, filteredValue);
+              }}
+              showFilterButton
+              showFilterList={false}
+              onFilterButtonClick={() => {
+                setShowFilterModal(true);
               }}
             />
           </Paper>
         </Box>
       </Box>
-      <CreateSetModal
-        openCreateSetModal={openCreateSetModal}
-        setOpenCreateSetModal={setOpenCreateSetModal}
-        rowId={rowId}
-        rowsDataObjectsForSets={rowsDataObjectsForSets}
-        setDetails={setDetails}
-        setSetDetails={setSetDetails}
-      />
+      {openCreateSetModal && (
+        <CreateSetModal
+          openCreateSetModal={openCreateSetModal}
+          setOpenCreateSetModal={setOpenCreateSetModal}
+          getAllSet={getAllSet}
+          selectedData={selectedData}
+          type={type}
+          setSetDetails={setSetDetails}
+          setDetails={setDetails}
+        />
+      )}
+      {showFilterModal && (
+        <SetFilterModal
+          setShowFilterModal={setShowFilterModal}
+          showFilterModal={showFilterModal}
+          getFilteredValues={(value) => {
+            setFilteredValue(value);
+            getAllSet(0, filterDate, value);
+          }}
+          filteredValue={filteredValue}
+        />
+      )}
+      {viewModalopen && (
+        <SetsViewModal
+          viewModalopen={viewModalopen}
+          setViewModalOpen={setViewModalOpen}
+          selectedData={selectedData}
+        />
+      )}
     </>
   );
 };

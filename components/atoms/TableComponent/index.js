@@ -387,8 +387,8 @@ const FilterMenu = ({
           iconName="filter"
           iconColorClass="color-orange"
           variant="outlined"
-          onBtnClick={() => {
-            if (showFilterList) handleClick();
+          onBtnClick={(e) => {
+            if (showFilterList) handleClick(e);
             else onFilterButtonClick();
           }}
         />
@@ -875,6 +875,27 @@ export default function TableComponent({
                     size="small"
                     onInputChange={(e) => {
                       setsearchText(e.target.value);
+                      if (e.target.value === "") {
+                        handlePageEnd(
+                          e?.target?.value,
+                          searchFilter?.value,
+                          0,
+                          {
+                            fromDate: filteredDates.fromDate
+                              ? `${format(
+                                  new Date(filteredDates.fromDate),
+                                  "MM-dd-yyyy"
+                                )} 00:00:00`
+                              : "",
+                            toDate: filteredDates.toDate
+                              ? `${format(
+                                  new Date(filteredDates.toDate),
+                                  "MM-dd-yyyy"
+                                )} 23:59:59`
+                              : "",
+                          }
+                        );
+                      }
                     }}
                   />
                 </Grid>

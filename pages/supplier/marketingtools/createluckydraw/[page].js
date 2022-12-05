@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -82,7 +83,7 @@ const CreateQuiz = ({ pageName }) => {
     },
     {
       id: "col10",
-      label: "Status",
+      label: "Tool Status",
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -108,7 +109,7 @@ const CreateQuiz = ({ pageName }) => {
     if (data) {
       toastify(message, "success");
       const pagename = getPageName();
-      getTableRows(pagename);
+      getTableRows(pagename, 0);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -129,7 +130,8 @@ const CreateQuiz = ({ pageName }) => {
           col7: new Date(item.createdDate).toLocaleString(),
           col8: item.customerType,
           col9: item.adminApprovalStatus || "--",
-          col10: item.toolStatus,
+          col10:
+            item.adminApprovalStatus !== "REJECTED" ? item.toolStatus : "--",
           col11: (
             <div className="d-flex justify-content-center">
               <CustomIcon
@@ -154,11 +156,11 @@ const CreateQuiz = ({ pageName }) => {
     }
     return temp;
   };
-  const getTableRows = async (pagename) => {
+  const getTableRows = async (pagename, pageNumber) => {
     const { data, err } = await getUserMarketingTool(
       user.supplierId,
       pagename,
-      0
+      pageNumber
     );
     if (data) {
       setMasterData(data);
@@ -184,7 +186,7 @@ const CreateQuiz = ({ pageName }) => {
   };
   useEffect(() => {
     const pagename = getPageName();
-    getTableRows(pagename);
+    getTableRows(pagename, 0);
   }, [pageName]);
 
   return (
@@ -245,6 +247,14 @@ const CreateQuiz = ({ pageName }) => {
               showCheckbox
               showSearchFilter={false}
               showSearchbar={false}
+              handlePageEnd={(searchText, searchFilter, page) => {
+                const pagename = getPageName();
+                getTableRows(pagename, page);
+              }}
+              handleRowsPerPageChange={() => {
+                const pagename = getPageName();
+                getTableRows(pagename, 0);
+              }}
             />
           </Grid>
           <ModalComponent
@@ -265,7 +275,13 @@ const CreateQuiz = ({ pageName }) => {
                 </Box>
 
                 <Typography className="h-4 text-center">
-                  Be cautious that creating quiz does not create any loss to you
+                  {`Be cautious that creating ${
+                    pageName === "createquiz"
+                      ? "Quiz"
+                      : pageName === "spinwheel"
+                      ? "Spin Wheel"
+                      : "Scratch Card"
+                  } does not create any loss to you`}
                 </Typography>
                 <ButtonComponent
                   label="Proceed"

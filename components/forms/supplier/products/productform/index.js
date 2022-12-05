@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
@@ -44,12 +45,17 @@ import TextEditor from "@/atoms/TextEditor";
 import { GrClose } from "react-icons/gr";
 import GroupVariationForm from "../newCollections/VariationForm/groupvariations";
 import { validateMainForm, validateProductImg } from "./validation";
+import Discount from "./Discount";
+import OrderSummary from "./OrderSummary";
+import MergedProducts from "./MergedProducts";
+import Logs from "./Logs";
 
 const ProductsLayout = ({
   zonepagetabs = [], // Zone Charges page
   formData = {},
   setFormData = () => {},
   setShowGroupVariant = () => {},
+  closeModal = () => {},
   tabsList = [],
   formsRef = null,
   showGroupVariant = false,
@@ -58,7 +64,9 @@ const ProductsLayout = ({
 }) => {
   const router = useRouter();
   const userInfo = useUserInfo();
-  const { editProduct, viewFlag } = useSelector((state) => state.product);
+  const { editProduct, viewFlag, adminView, list, showExtraTabs } = useSelector(
+    (state) => state.product
+  );
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
@@ -90,7 +98,34 @@ const ProductsLayout = ({
   );
   const [longDescModal, setLongDescModal] = useState(false);
   const [shortDescModal, setShortDescModal] = useState(false);
-
+  const [adminViewList, setadminViewList] = useState([
+    {
+      title: "Discount",
+      component: <Discount />,
+    },
+    { title: "Order Summary", component: <OrderSummary /> },
+    { title: "Merged Products", component: <MergedProducts /> },
+    { title: "Logs", component: <Logs /> },
+  ]);
+  useEffect(() => {
+    if (productDetails?.variationData)
+      setadminViewList([
+        {
+          title: "Discount",
+          component: (
+            <Discount
+              productVariationId={
+                productDetails.variationData.productVariationId
+              }
+              supplierId={productDetails.supplierId}
+            />
+          ),
+        },
+        { title: "Order Summary", component: <OrderSummary /> },
+        { title: "Merged Products", component: <MergedProducts /> },
+        { title: "Logs", component: <Logs /> },
+      ]);
+  }, [productDetails]);
   useEffect(() => {
     if (formData?.mainForm?.category?.value === "electronics") {
       setTabsLists([...tabsList, ...zonepagetabs]);
@@ -401,7 +436,7 @@ const ProductsLayout = ({
       const temp = ["countryOfOrigin", "others", "expiryDate"];
       const variationProperty = [];
       Object.keys(formData.variation).forEach((item) => {
-        if (!temp.includes(item)) {
+        if (!temp.includes(item) && formData.attribute.hasOwnProperty(item)) {
           variationProperty.push({
             variationId: item,
             optionId: formData.variation[item],
@@ -419,7 +454,7 @@ const ProductsLayout = ({
       brand: formData.mainForm.brand,
       longDescription: formData.mainForm.long_description.text,
       longDescriptionFileUrls: imgdata.long_description
-        ? formData?.mainForm?.long_description?.media?.filter.length
+        ? formData?.mainForm?.long_description?.media?.length
           ? [
               ...imgdata.long_description,
               ...formData?.mainForm?.long_description?.media?.filter((item) => {
@@ -582,7 +617,22 @@ const ProductsLayout = ({
           stockStatus: formData.inventory.stock_status.label,
           allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
           backOrders: parseInt(formData.inventory.back_Orders, 10) || 0,
-          variationMedia: imgdata.productImage,
+          variationMedia: imgdata?.productImage
+            ? formData.productImage.length
+              ? [
+                  ...imgdata?.productImage,
+                  ...formData.productImage.filter((item) => {
+                    if (item.includes("https://")) {
+                      return item;
+                    }
+                  }),
+                ]
+              : [...imgdata?.productImage]
+            : formData?.productImage?.filter((item) => {
+                if (item.includes("https://")) {
+                  return item;
+                }
+              }) ?? [],
           variationProperty: getvariationProperty(),
         },
       ],
@@ -590,12 +640,14 @@ const ProductsLayout = ({
       otherInformation,
       zoneChargeInfo: {},
       countryOfOrigin: formData.variation.countryOfOrigin,
-      expiryDate: format(
-        new Date(formData.variation.expiryDate),
-        "MM-dd-yyyy HH:mm:ss"
-      ),
+      expiryDate: formData.variation.expiryDate
+        ? format(new Date(formData.variation.expiryDate), "MM-dd-yyyy HH:mm:ss")
+        : null,
       productType: editProduct ? productDetails.productType : "SIMPLE_PRODUCT",
-      supplierId: userInfo.id,
+      supplierId:
+        userInfo.role === "SUPPLIER" || userInfo.role === "STAFF"
+          ? userInfo.id
+          : productDetails.supplierId,
     };
     if (duplicateFlag) {
       const { data, err } = await saveDuplicateProduct(
@@ -625,12 +677,17 @@ const ProductsLayout = ({
       } else if (data) {
         toastify(data.message, "success");
         dispatch(clearProduct());
-        router.replace({
-          pathname: "/supplier/products&inventory/myproducts",
-          query: {
-            active: "2",
-          },
-        });
+        // router.pathname.includes("admin")
+        if (!user.role.includes("ADMIN")) {
+          router.replace({
+            pathname: "/supplier/products&inventory/myproducts",
+            query: {
+              active: "2",
+            },
+          });
+        } else {
+          closeModal();
+        }
       }
     } else {
       const { data, err } = await saveProduct(payload);
@@ -1031,42 +1088,6 @@ const ProductsLayout = ({
                   />
                 </Grid>
                 <Grid item md={12}>
-                  {/* <TextAreaComponent
-                    showExpandIcon
-                    legend="Short Description*"
-                    placeholder="Enter short description"
-                    id="short_description"
-                    onChange={(e) => {
-                      setFormData((prev) => {
-                        return {
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            short_description: {
-                              ...prev.mainForm.short_description.media,
-                              text: e.target.value.replace(/\s\s+/g, " "),
-                            },
-                          },
-                        };
-                      });
-                    }}
-                    value={formData?.mainForm?.short_description?.text}
-                    onBtnClick={() => {
-                      setShowFileUploadModal("short_description");
-                    }}
-                    btnLabel="Add Media"
-                    btnSize="small"
-                    btnVariant="outlined"
-                    widthClassName="w-100 mt-0"
-                    rows={2}
-                    muiProps="m-0 p-0 fs-10"
-                    error={
-                      errorObj?.short_description?.text &&
-                      errorObj?.short_description?.text !== ""
-                    }
-                    helperText={errorObj?.short_description?.text ?? ""}
-                    disabled={viewFlag}
-                  /> */}
                   <div className="w-100 d-flex justify-content-between">
                     <Typography>Short Description*</Typography>
                     <ButtonComponent
@@ -1220,42 +1241,6 @@ const ProductsLayout = ({
                       </div>
                     )}
                   </div>
-                  {/* <TextAreaComponent
-                    showExpandIcon
-                    id="long_description"
-                    legend="Long Description*"
-                    value={formData?.mainForm?.long_description?.text}
-                    placeholder="Enter long description"
-                    onChange={(e) => {
-                      setFormData((prev) => {
-                        return {
-                          ...prev,
-                          mainForm: {
-                            ...prev.mainForm,
-                            long_description: {
-                              ...prev.mainForm.long_description.media,
-                              text: e.target.value.replace(/\s\s+/g, " "),
-                            },
-                          },
-                        };
-                      });
-                    }}
-                    onBtnClick={() => {
-                      setShowFileUploadModal("long_description");
-                    }}
-                    btnLabel="Add Media"
-                    btnSize="small"
-                    btnVariant="outlined"
-                    widthClassName="w-100 mt-0"
-                    rows={3}
-                    muiProps="m-0 p-0 fs-10"
-                    error={
-                      errorObj?.long_description?.text &&
-                      errorObj?.long_description?.text !== ""
-                    }
-                    helperText={errorObj?.long_description?.text}
-                    disabled={viewFlag}
-                  /> */}
                 </Grid>
 
                 <Grid item md={12}>
@@ -1438,31 +1423,64 @@ const ProductsLayout = ({
             <Box className="d-flex w-100 ">
               <Box className="w-200px p-2">
                 <Grid container className="">
-                  {tabsLists.map((item, index) => {
-                    return (
-                      <Grid
-                        item
-                        key={index}
-                        md={12}
-                        className={`text-center py-1 rounded my-1 fs-14 ${
-                          activeTab === index
-                            ? "bg-orange color-white"
-                            : "bg-light-gray"
-                        }`}
-                      >
-                        {item.title}
-                      </Grid>
-                    );
-                  })}
+                  {adminView && showExtraTabs
+                    ? [...tabsLists, ...adminViewList].map((item, index) => {
+                        return (
+                          <Grid
+                            item
+                            key={index}
+                            md={12}
+                            className={`text-center py-1 rounded my-1 fs-14 ${
+                              activeTab === index
+                                ? "bg-orange color-white"
+                                : "bg-light-gray"
+                            }`}
+                          >
+                            {item.title}
+                          </Grid>
+                        );
+                      })
+                    : tabsLists.map((item, index) => {
+                        return (
+                          <Grid
+                            item
+                            key={index}
+                            md={12}
+                            className={`text-center py-1 rounded my-1 fs-14 ${
+                              activeTab === index
+                                ? "bg-orange color-white"
+                                : "bg-light-gray"
+                            }`}
+                          >
+                            {item.title}
+                          </Grid>
+                        );
+                      })}
                 </Grid>
               </Box>
               <Box className="p-3 w-100 mnh-75vh mxh-75vh overflow-y-scroll">
-                {tabsLists.map((item, ind) => {
-                  return activeTab === ind ? item.component : null;
-                })}
+                {adminView && showExtraTabs
+                  ? [...tabsLists, ...adminViewList].map((item, ind) => {
+                      return activeTab === ind ? item.component : null;
+                    })
+                  : tabsLists.map((item, ind) => {
+                      return activeTab === ind ? item.component : null;
+                    })}
               </Box>
             </Box>
             <Box className="d-flex justify-content-end me-3 mb-1">
+              {adminView &&
+                list.map((item) => {
+                  return (
+                    <ButtonComponent
+                      label={item.label}
+                      size="small"
+                      variant="text"
+                      muiProps="text-secondary bnt-hover-class mx-2"
+                      onBtnClick={item.callBack}
+                    />
+                  );
+                })}
               {!viewFlag && (
                 <ButtonComponent
                   label="Clear"
@@ -1523,7 +1541,11 @@ const ProductsLayout = ({
                   muiProps="me-2"
                 />
               ) : null}
-              {activeTab !== tabsList.length - 1 && (
+              {(!adminView
+                ? activeTab !== tabsList.length - 1
+                : showExtraTabs
+                ? activeTab < 11
+                : activeTab < tabsList.length - 1) && (
                 <ButtonComponent
                   label="Next"
                   size="small"

@@ -7,6 +7,9 @@ const initialState = {
   duplicateFlag: false,
   productDetails: {},
   viewFlag: false,
+  adminView: false,
+  list: [],
+  showExtraTabs: false,
 };
 
 export const productSlice = createSlice({
@@ -54,11 +57,32 @@ export const productSlice = createSlice({
         productDetails: { ...action.payload },
       };
     },
+
     resetAfterView: (state) => {
       return {
         ...state,
         viewFlag: false,
         productDetails: {},
+      };
+    },
+    adminProductView: (state, action) => {
+      return {
+        ...state,
+        viewFlag: true,
+        adminView: true,
+        productDetails: { ...action.payload.data },
+        list: [...action.payload.list],
+        showExtraTabs: action.payload.showExtraTabs,
+      };
+    },
+    resetAdminProductView: (state) => {
+      return {
+        ...state,
+        viewFlag: false,
+        adminView: false,
+        productDetails: {},
+        list: [],
+        showExtraTabs: false,
       };
     },
   },
@@ -73,6 +97,8 @@ export const {
   resetAfterDuplicate,
   viewProduct,
   resetAfterView,
+  adminProductView,
+  resetAdminProductView,
 } = productSlice.actions;
 
 export default productSlice.reducer;

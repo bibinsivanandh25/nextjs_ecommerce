@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
@@ -26,9 +27,11 @@ import { getmarketingToolStatus, getNavBarItems } from "services/supplier";
 import { setAllowedPaths, updateUnlockedTools } from "features/userSlice";
 import adminNav from "constants/adminNav";
 import Image from "next/image";
+import CustomIcon from "services/iconUtils";
 import CollapseList from "./CollapseList";
 
 const drawerWidth = 245;
+let refreshSideBar = null;
 const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
   const route = useRouter();
 
@@ -165,9 +168,11 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
       }
       await Promise.all(promiseArr)
         .then((res) => {
-          setNavOptionsList(() => {
-            return [...JSON.parse(JSON.stringify(res[0].nav))];
-          });
+          if (res[0].nav) {
+            setNavOptionsList(() => {
+              return [...JSON.parse(JSON.stringify(res[0].nav))];
+            });
+          }
           dispatch(updateUnlockedTools(res[1].marketingTools.unlockedTools));
         })
         .catch(() => {});
@@ -328,12 +333,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
         temp.push(...getCapabilityPathList(item.child));
       }
     });
-    temp.push(
-      ...[
-        "/supplier/products&inventory/myproducts/viewModal",
-        "/supplier/myaccount",
-      ]
-    );
+    const defaultSupplierPaths = [
+      "/supplier/products&inventory/myproducts/viewModal",
+      "/supplier/myaccount",
+    ];
+    if (user.role === "SUPPLIER") {
+      temp.push(...defaultSupplierPaths, "/supplier/staff/addstaff");
+    } else if (user.role === "STAFF") {
+      temp.push(...defaultSupplierPaths);
+      if (temp.includes("supplier/staff"))
+        temp.push("/supplier/staff/addstaff");
+    }
     return temp;
   };
 
@@ -347,6 +357,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
 
   useEffect(() => {
     getNavOptions();
+    refreshSideBar = getNavOptions;
     // else if(user.role === "STAFF")
   }, []);
 
@@ -481,7 +492,17 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                             fontSize={13}
                             // color={item.selected && "#e56700"}
                           >
-                            {item.title}
+                            <div className="d-flex justify-content-between">
+                              <Box
+                                id={item.id}
+                                className="fs-13 cursor-pointer"
+                              >
+                                {item.title}
+                              </Box>
+                              {item.locked && (
+                                <CustomIcon type="lock" className="fs-16" />
+                              )}
+                            </div>
                           </Typography>
                         }
                         sx={{
@@ -514,3 +535,4 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
 };
 
 export default DrawerComponent;
+export { refreshSideBar };

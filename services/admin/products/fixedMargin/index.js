@@ -1,7 +1,7 @@
 import serviceUtil from "services/utils";
 
-const getAdminProductsByFilter = (payLoad, pageNumber) => {
-  const pageSize = 40;
+const getAdminProductsByFilter = (payLoad, pageNumber = 0) => {
+  const pageSize = 100;
   return serviceUtil
     .post(`products/admin/products/${pageNumber}/${pageSize}`, payLoad)
     .then((res) => {
@@ -35,4 +35,19 @@ const raiseQuery = (payLoad) => {
     .catch((err) => ({ err }));
 };
 
-export { getAdminProductsByFilter, acceptOrRejectProduct, raiseQuery };
+const disableActiveProduct = (productID, disable) => {
+  return serviceUtil
+    .put(`products/product-variation/${productID}/${disable}`)
+    .then((res) => {
+      const data = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export {
+  getAdminProductsByFilter,
+  acceptOrRejectProduct,
+  raiseQuery,
+  disableActiveProduct,
+};

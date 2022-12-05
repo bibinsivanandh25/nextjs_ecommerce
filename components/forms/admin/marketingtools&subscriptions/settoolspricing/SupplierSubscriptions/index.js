@@ -394,7 +394,7 @@ const SupplierSubscriptions = () => {
           <div className="d-flex justify-content-center align-items-center">
             <CustomIcon
               type="view"
-              title="view"
+              title="View Change History"
               className="mx-4"
               onIconClick={() => {
                 setToolIDs(toolIds.filter((i) => i));
@@ -529,6 +529,7 @@ const SupplierSubscriptions = () => {
             <CustomIcon
               className={`h-4 ${getStatus() === "EXPIRED" ? "d-none" : ""}`}
               type="edit"
+              title="Edit"
               onIconClick={() => {
                 setCreateDiscountModalType("Edit");
                 setOpenCreateDiscountModal(true);
@@ -566,6 +567,7 @@ const SupplierSubscriptions = () => {
             </Box>
             <CustomIcon
               type="view"
+              title="View Change History"
               className="h-4"
               onIconClick={() => {
                 setToolIDs([ele.adminMarketingToolsCampaignId]);
@@ -614,11 +616,11 @@ const SupplierSubscriptions = () => {
   };
   const getToolCampaignTableData = async (page, date, filter) => {
     const getdayFilters = (days) => {
-      if (days?.value) {
-        if (days?.value === "All") {
+      if (days) {
+        if (days === "All") {
           return [];
         }
-        return [days?.value];
+        return [days];
       }
       return [];
     };

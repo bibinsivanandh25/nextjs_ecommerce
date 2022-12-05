@@ -17,8 +17,8 @@ const saveHelpandSupport = (payload) => {
   return serviceUtil
     .post(`help-and-support/ticket`, payload)
     .then((res) => {
-      const { data } = res && res.data;
-      return { data };
+      const { data, message } = res && res.data;
+      return { data, message };
     })
     .catch((err) => ({ err }));
 };

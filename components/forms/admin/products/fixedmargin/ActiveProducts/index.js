@@ -196,7 +196,7 @@ const Active = () => {
     const { data, err } = await getAdminProductsByFilter(payLoad);
     if (data) {
       const result = [];
-      data.products.forEach((val, index) => {
+      data.forEach((val, index) => {
         result.push({
           id: index + 1,
           col1: (

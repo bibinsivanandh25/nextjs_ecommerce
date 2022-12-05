@@ -150,8 +150,8 @@ const ApprovedTools = () => {
   const getTableData = async (
     page = pageNumber ?? 0,
     dateFilter = {
-      fromDate: "",
-      toDate: "",
+      fromDate: null,
+      toDate: null,
     }
   ) => {
     const payload = {

@@ -19,6 +19,7 @@ const CreateTicket = ({
   getTabledata = () => {},
   type = "",
   to = {},
+  getCount = () => {},
   submit = () => {},
 }) => {
   const [mediaConverted, setMediaConverted] = useState([]);
@@ -195,10 +196,12 @@ const CreateTicket = ({
           toastify(data.message, "success");
           setShowCreateTicketComponent(false);
           getTabledata(0);
+          getCount();
         }
         if (err) {
           toastify(err?.response?.data?.message, "error");
           setShowCreateTicketComponent(true);
+          getCount();
         }
       }
     }

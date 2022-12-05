@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-nested-ternary */
@@ -12,12 +13,13 @@ const TabsCard = ({
   return (
     <div>
       <div
-        className={`w-100  hide-scrollbar pt-2 ${styles.tabContainer}`}
+        className={`w-100 hide-scrollbar pt-2 ${styles.tabContainer}`}
         style={{ overflowY: "hidden" }}
       >
         {tabList.map((item, index) => {
           return (
             <div
+              key={index}
               className={`${
                 item.isSelected
                   ? index === 0
@@ -34,7 +36,9 @@ const TabsCard = ({
                 backgroundColor: item.isSelected ? "white" : tabBackground,
               }}
             >
-              <span style={{ zIndex: 1000 }}>{item.label}</span>
+              <span style={{ zIndex: 1000 }} className="cursor-pointer">
+                {item.label}
+              </span>
             </div>
           );
         })}

@@ -230,8 +230,8 @@ const SupplierApproval = () => {
     };
     const { data, err } = await getSuppliers(page, payload);
     if (data?.data) {
-      setMasterData(data.data.count);
-      if (page == 0 && data?.data?.supplierInfo?.length) {
+      setMasterData(data?.data?.count);
+      if (page == 0) {
         setTableRows(getTableRows(data.data.supplierInfo));
         setPageNumber(1);
       } else {
@@ -241,7 +241,10 @@ const SupplierApproval = () => {
           ...getTableRows(data.data.supplierInfo),
         ]);
       }
-    } else if (data?.data?.supplierInfo?.length == 0 && page == 0) {
+    } else if (
+      (data?.data?.supplierInfo?.length == 0 && page == 0) ||
+      data?.data === null
+    ) {
       setTableRows([]);
     }
     if (err) {

@@ -9,7 +9,13 @@ import toastify from "services/utils/toastUtils";
 import { getMediaUrl } from "services/admin/help&support";
 import { useSelector } from "react-redux";
 import { saveHelpandSupport } from "services/supplier/helpandsupport";
+import validateMessage from "constants/validateMessages";
 
+const errorObj = {
+  subject: "",
+  content: "",
+  file: "",
+};
 const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
   const [defaultFormData, setDefaultFormData] = useState({
     issuetype: "",
@@ -17,6 +23,7 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
     subject: "",
     content: "",
   });
+  const [error, setError] = useState(errorObj);
   const user = useSelector((state) => state.user);
   const [contentFile, setContentFile] = useState({});
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -39,8 +46,32 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
     }
     return [];
   };
+  const validation = () => {
+    const errorobj = {
+      subject: "",
+      content: "",
+      file: "",
+    };
+    if (defaultFormData.subject == "") {
+      errorobj.subject = validateMessage.field_required;
+    }
+    if (defaultFormData.content == "") {
+      errorobj.content = validateMessage.field_required;
+    } else if (defaultFormData?.content?.length > 255) {
+      errorobj.content = validateMessage.alpha_numeric_max_255;
+    }
+    if (
+      Object.values(contentFile)?.length == 0 ||
+      contentFile?.binaryStr?.length == 0
+    ) {
+      errorobj.file = validateMessage.field_required;
+    }
+    setError(errorobj);
+    const flag = Object.values(errorobj).every((x) => x == "");
+    return flag;
+  };
   const handleCreateClick = async () => {
-    if (true) {
+    if (validation()) {
       const { datas } = await handleFileUpload();
       const payload = {
         issueType: defaultFormData.issuetype,
@@ -59,12 +90,13 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
           },
         ],
       };
-      const { data, err } = await saveHelpandSupport(payload);
+      const { data, message, err } = await saveHelpandSupport(payload);
       if (data) {
         setShowQueryModal(false);
+        toastify(message, "success");
       }
       if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
       }
     }
   };
@@ -96,21 +128,7 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
             Issue type :
           </Grid>
           <Grid item xs={8}>
-            <InputBox
-              size="small"
-              value={defaultFormData.issuetype}
-              // helperText={errorObj.issueType}
-              // error={errorObj.issueType.length}
-              // list={[...issueTypes]}
-              // onDropdownSelect={(value) => {
-              //   // setSelectedIssue({ ...value });
-              //   setFormValue((pre) => ({
-              //     ...pre,
-              //     issueType: { ...value },
-              //   }));
-              // }}
-              disabled
-            />
+            <InputBox size="small" value={defaultFormData.issuetype} disabled />
           </Grid>
         </Grid>
         <Grid container className="d-flex align-items-center my-3">
@@ -122,15 +140,6 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
               className="w-100"
               size="small"
               value={defaultFormData.to}
-              // value={formValue.OrderID}
-              // onInputChange={(e) => {
-              //   setFormValue((pre) => ({
-              //     ...pre,
-              //     OrderID: e.target.value,
-              //   }));
-              // }}
-              // error={errorObj.OrderID !== ""}
-              // helperText={errorObj.OrderID}
               disabled
             />
           </Grid>
@@ -141,8 +150,8 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
           </Grid>
           <Grid item xs={8}>
             <InputBox
-              // helperText={errorObj.subject}
-              // error={errorObj.subject.length}
+              helperText={error?.subject}
+              error={error?.subject?.length}
               className="w-100"
               size="small"
               value={defaultFormData.subject}
@@ -167,11 +176,11 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
                 }));
               }}
             />
-            {/* {errorObj.content && (
-                <p className="error" id="textbox-helper-text">
-                  {errorObj.content}
-                </p>
-              )} */}
+            {error.content && (
+              <p className="error" id="textbox-helper-text">
+                {error.content}
+              </p>
+            )}
           </Grid>
         </Grid>
         <Grid container className="my-3">
@@ -202,6 +211,11 @@ const QueryModal = ({ selectedData, setShowQueryModal = () => {} }) => {
         setShowModal={setShowUploadModal}
         type=""
       />
+      {error.file && (
+        <p className="error ms-5" id="textbox-helper-text">
+          {error.file}
+        </p>
+      )}
     </Box>
   );
 };

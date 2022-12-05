@@ -1,168 +1,229 @@
-import { Box, Paper, Typography } from "@mui/material";
+/* eslint-disable no-use-before-define */
+import { Box, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
-import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import CreateSubCategoryModal from "@/forms/admin/productcategories/productsubcategories/CreateSubCategoryModal";
+import {
+  disableOrEnable,
+  getCategoryById,
+  getSubCategories,
+} from "services/admin/products/productCategories/subcategory";
+import toastify from "services/utils/toastUtils";
+import { format } from "date-fns";
+import { getFilterDropDownList } from "services/admin/products/productCategories/category";
+// import Image from "next/image";
+
+const tableColumns = [
+  {
+    id: "col1",
+    align: "center",
+    label: "S.No.",
+    data_align: "center",
+  },
+  {
+    id: "col7",
+    align: "center",
+    label: "Sub Category Image",
+    data_align: "center",
+  },
+  {
+    id: "col2",
+    align: "center",
+    label: "Sub Category",
+    data_align: "center",
+  },
+  {
+    id: "col3",
+    align: "center",
+    label: "Parent Category",
+    data_align: "center",
+  },
+
+  {
+    id: "col4",
+    align: "center",
+    label: "Commission type",
+    data_align: "center",
+  },
+
+  {
+    id: "col8",
+    align: "center",
+    label: "Created By",
+    data_align: "center",
+  },
+  {
+    id: "col5",
+    align: "center",
+    label: "Created Date & Time",
+    data_align: "center",
+  },
+  {
+    id: "col9",
+    align: "center",
+    label: "Last Updated By",
+    data_align: "center",
+  },
+  {
+    id: "col10",
+    align: "center",
+    label: "Last Updated Date & Time",
+    data_align: "center",
+  },
+  {
+    id: "col6",
+    align: "center",
+    label: "Actions",
+    data_align: "center",
+  },
+];
 
 const SubCategories = () => {
   const [tableRows, setTableRows] = useState([]);
   const [openCreateNewSubCategories, setOpenCreateNewSubCategories] =
-    useState();
-  const [formData, setFormData] = useState({
-    category: {},
-    set: "",
-    subCategory: "",
-    priceRange: {},
-    comissionType: {},
-    comissionPercentage: "",
-    mmcProfitPercentage: "",
-    resellerProfitPercentage: "",
-  });
-  const [rowId, setRowId] = useState(null);
+    useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [subCategoryData, setSubcategoryData] = useState(null);
+  const [showView, setShowView] = useState(false);
+  const [filterData, setFilterData] = useState([]);
 
-  const rowsDataObjectsForSubCategories = [
-    {
-      id: 1,
-      col1: "1",
-      col2: "Body Wash and Scrub",
-      col3: "Beauty Product",
-      col4: "--",
-      col5: "--",
-      col6: "--",
-      col7: "--",
-      col8: "2",
-      col9: "21/6/2021-10.52",
-      col10: "Actions",
-    },
-  ];
-
-  const options = [
-    "Edit",
-    <Box className="d-flex align-items-center">
-      <Typography>Enable</Typography>
-      <Box className="ms-3">
-        <SwitchComponent label="" />
-      </Box>
-    </Box>,
-  ];
-
-  const onClickOfMenuItem = (ele, index) => {
-    if (ele === "Edit") {
-      setRowId(index);
-      setFormData({
-        category: { label: rowsDataObjectsForSubCategories[index].col3 },
-        set: "",
-        subCategory: rowsDataObjectsForSubCategories[index].col2,
-        priceRange: { label: rowsDataObjectsForSubCategories[index].col4 },
-        comissionType: { label: rowsDataObjectsForSubCategories[index].col5 },
-        comissionPercentage: rowsDataObjectsForSubCategories[index].col6,
-        mmcProfitPercentage: rowsDataObjectsForSubCategories[index].col7,
-        resellerProfitPercentage: rowsDataObjectsForSubCategories[index].col8,
+  const getFilterValue = async () => {
+    const { data } = await getFilterDropDownList();
+    const result = [
+      {
+        name: "Main Categories",
+        value: [],
+      },
+      {
+        name: "Commission Type",
+        value: [],
+      },
+    ];
+    if (data) {
+      result[0].value = data?.mainCategory.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
       });
-      setOpenCreateNewSubCategories(true);
+      result[1].value = data?.commissionType.map((ele) => {
+        return {
+          item: ele,
+          isSelected: false,
+        };
+      });
+    }
+    setFilterData([...result]);
+  };
+
+  const changeStatus = async (id, status) => {
+    // eslint-disable-next-line no-unused-vars
+    const { data, err } = await disableOrEnable({
+      categoryType: "SUB_CATEGORY",
+      categoryId: id,
+      status,
+    });
+    if (data === null) {
+      getTableData(0);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const getSubCatagoryDetails = async (subCategoryId, cb = () => {}) => {
+    const { data, err } = await getCategoryById(subCategoryId);
+    if (data) {
+      setSubcategoryData(data);
+      cb();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
-  const getTableRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForSubCategories.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: val.col3,
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: val.col8,
-        col9: val.col9,
-        col10: (
+  const mapData = (data) => {
+    return data.map((val, index) => {
+      return {
+        col1: index + 1,
+        col2: val.subCategoryName,
+        col3: val.mainCategoryName,
+        col4: val.commissionType,
+        col5: val.createdAt
+          ? format(new Date(val.createdAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
+        col6: (
           <Box className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" className="fs-20" />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
+            <Box className="d-flex align-items-center">
+              <SwitchComponent
+                label=""
+                defaultChecked={!val.disable}
+                ontoggle={() => {
+                  changeStatus(val.subCategoryId, !val.disable);
+                }}
+              />
+            </Box>
+            <CustomIcon
+              type="edit"
+              className="fs-20"
+              onIconClick={() => {
+                getSubCatagoryDetails(val.subCategoryId, () => {
+                  setOpenCreateNewSubCategories(true);
+                });
+                // setSubcategoryData(val);
+                // setOpenCreateNewSubCategories(true);
               }}
-              options={options}
-              IconclassName="fs-18 color-gray"
+            />
+            <CustomIcon
+              type="view"
+              className="fs-20"
+              onIconClick={() => {
+                getSubCatagoryDetails(val.subCategoryId, () => {
+                  console.log("view");
+                  setOpenCreateNewSubCategories(true);
+                  setShowView(true);
+                });
+              }}
             />
           </Box>
         ),
-      });
+        col7: "--",
+        // val.mediaUrl ? (
+        //   <Image height={50} width={50} src={val.mediaUrl} />
+        // ) : (
+        //   "--"
+        // ),
+        col8: val.createdBy || "--",
+        col9: val.lastUpdatedBy || "--",
+        col10: val.lastUpdatedAt
+          ? format(new Date(val.lastUpdatedAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
+      };
     });
+  };
 
-    setTableRows(anArray);
+  const getTableData = async (
+    page = pageNumber,
+    payload = {
+      commissionModeList: [],
+      mainCategoryList: [],
+      keyword: null,
+      fromDate: null,
+      toDate: null,
+    }
+  ) => {
+    const { data, err } = await getSubCategories(page, payload);
+    if (data) {
+      setTableRows(mapData(data));
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   useEffect(() => {
-    getTableRowsData();
+    getFilterValue();
+    getTableData();
   }, []);
 
-  const tableColumns = [
-    {
-      id: "col1",
-      align: "center",
-      label: "S.No.",
-      data_align: "center",
-    },
-    {
-      id: "col2",
-      align: "center",
-      label: "Sub Category",
-      data_align: "center",
-    },
-    {
-      id: "col3",
-      align: "center",
-      label: "Parent Category",
-      data_align: "center",
-    },
-    {
-      id: "col4",
-      align: "center",
-      label: "Price Range",
-      data_align: "center",
-    },
-    {
-      id: "col5",
-      align: "center",
-      label: "Commission type",
-      data_align: "center",
-    },
-    {
-      id: "col6",
-      align: "center",
-      label: "Commission Percentage",
-      data_align: "center",
-    },
-    {
-      id: "col7",
-      align: "center",
-      label: "MrMrs Profit %",
-      data_align: "center",
-    },
-    {
-      id: "col8",
-      align: "center",
-      label: "Reseller Profit %",
-      data_align: "center",
-    },
-    {
-      id: "col9",
-      align: "center",
-      label: "Created Date & Time",
-      data_align: "center",
-    },
-    {
-      id: "col10",
-      align: "center",
-      label: "Actions",
-      data_align: "center",
-    },
-  ];
   return (
     <>
       <Box>
@@ -173,10 +234,9 @@ const SubCategories = () => {
               className="overflow-auto hide-scrollbar pt-3"
             >
               <TableComponent
-                table_heading="Sets"
+                table_heading="Sub-categories"
                 columns={tableColumns}
                 tHeadBgColor="bg-light-gray"
-                // showPagination={false}
                 tableRows={tableRows}
                 showSearchbar={false}
                 showDateFilterBtn
@@ -185,18 +245,58 @@ const SubCategories = () => {
                 dateFilterBtnClick={() => {
                   setOpenCreateNewSubCategories(true);
                 }}
+                handlePageEnd={(searchText, searchFilter, page, date) => {
+                  getTableData(page, {
+                    commissionModeList: [],
+                    mainCategoryList: [],
+                    keyword: searchText,
+                    fromDate: date.fromDate,
+                    toDate: date.toDate,
+                  });
+                }}
+                showFilterButton
+                filterData={[...filterData]}
+                getFilteredValues={(value) => {
+                  const categories = [];
+                  const commissionType = [];
+                  value.forEach((ele) => {
+                    ele?.value.forEach((i) => {
+                      if (ele.name === "Main Categories") {
+                        if (i.isSelected) {
+                          categories.push(i.item);
+                        }
+                      }
+                      if (ele.name === "Commission Type") {
+                        if (i.isSelected) {
+                          commissionType.push(i.item);
+                        }
+                      }
+                    });
+                  });
+                  getTableData(0, {
+                    mainCategoryList: categories,
+                    commissionModeList: commissionType,
+                    keyword: null,
+                    fromDate: null,
+                    toDate: null,
+                  });
+                }}
               />
             </Paper>
           </Box>
         </Box>
       </Box>
-      <CreateSubCategoryModal
-        openCreateNewSubCategories={openCreateNewSubCategories}
-        setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
-        formData={formData}
-        setFormData={setFormData}
-        rowId={rowId}
-      />
+
+      {openCreateNewSubCategories && (
+        <CreateSubCategoryModal
+          setOpenCreateNewSubCategories={setOpenCreateNewSubCategories}
+          getTableData={getTableData}
+          subCategoryData={subCategoryData}
+          setSubcategoryData={setSubcategoryData}
+          showView={showView}
+          setShowView={setShowView}
+        />
+      )}
     </>
   );
 };

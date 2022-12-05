@@ -2,22 +2,23 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import BreadCrumb from "components/atoms/BreadCrumb";
 import { useSelector } from "react-redux";
 import FallbackComponent from "@/atoms/FallbackComponent";
+import SideDrawer from "@/atoms/SideDrawer";
 import DrawerComponent from "./DrawerComponent";
 
 const SideBarComponent = ({ children }) => {
   const route = useRouter();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { allowedPath } = useSelector((state) => state.user);
+  const { allowedPath, role } = useSelector((state) => state.user);
   const [showFallBack, setShowFallBack] = useState(false);
-
+  const constraintsRef = useRef(null);
   useEffect(() => {
     if (allowedPath) {
       setShowFallBack(!allowedPath.includes(route.asPath.split("?")[0]));
@@ -44,7 +45,8 @@ const SideBarComponent = ({ children }) => {
       <DrawerComponent open={open} setOpen={setOpen} />
       <Box
         id="main-layout"
-        tabindex={0}
+        tabIndex={0}
+        ref={constraintsRef}
         // component="main"
         sx={{
           maxWidth: ` ${open ? "calc(100vw - 245px)" : "calc(100vw - 60px)"}`,
@@ -65,6 +67,9 @@ const SideBarComponent = ({ children }) => {
           }
         }}
       >
+        {["SUPPLIER", "STAFF"].includes(role) && (
+          <SideDrawer ref={constraintsRef} />
+        )}
         {showFallBack ? (
           <div
             style={{
@@ -72,11 +77,6 @@ const SideBarComponent = ({ children }) => {
                 ? "calc(100vh - 60px)"
                 : "calc(100vh - 130px)",
               overflowY: "scroll",
-              // background:
-              //   "url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/401.jpg)",
-              // backgroundPosition: "center",
-              // backgroundSize: "auto",
-              // height: "88vh",
             }}
             className="hide-scrollbar "
           >

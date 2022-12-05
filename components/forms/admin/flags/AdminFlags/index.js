@@ -289,7 +289,7 @@ const AdminFlags = () => {
       {openVIew && (
         <ModalComponent
           open={openVIew}
-          ModalTitle="Falg Details"
+          ModalTitle="Flag Details"
           onCloseIconClick={() => {
             setopenVIew(false);
           }}

@@ -1,14 +1,13 @@
 import serviceUtil from "services/utils";
 
-const getAll = async () => {
-  try {
-    const { data } = await serviceUtil.get(
-      `notification/supplier-changes-history`
-    );
-    return data;
-  } catch (error) {
-    return { error };
-  }
+const getAll = (payload) => {
+  return serviceUtil
+    .post(`notification/supplier-changes-history-filter`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
 };
 
 const accept = async (changeHistoryId) => {

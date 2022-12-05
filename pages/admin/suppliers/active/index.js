@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -8,13 +9,20 @@ import SwitchComponent from "@/atoms/SwitchComponent";
 import ViewModal from "@/forms/admin/suppliers/active/viewmodal";
 import { getCategoryFilterData } from "services/admin/supplier/supplierapproval";
 import toastify from "services/utils/toastUtils";
-import { getActiveSuppliers } from "services/admin/supplier/active";
+import {
+  enableDisableSupplier,
+  getActiveSuppliers,
+} from "services/admin/supplier/active";
 import QueryModal from "@/forms/admin/suppliers/active/querymodal";
+import ModalComponent from "@/atoms/ModalComponent";
+import TextArea from "@/atoms/SimpleTextArea";
+import validateMessage from "constants/validateMessages";
+import { format } from "date-fns";
 
 const tableColumn = [
   {
     id: "col1",
-    label: "SI NO.",
+    label: "Sl NO.",
     minWidth: 100,
     align: "center",
     data_align: "center",
@@ -48,7 +56,7 @@ const tableColumn = [
   },
   {
     id: "col5",
-    label: "Categories/Sub-categories",
+    label: "Categories",
     minWidth: 200,
     align: "center",
     data_align: "center",
@@ -121,7 +129,7 @@ const tableColumn = [
   },
 ];
 const Active = () => {
-  const [viewModalOpen, setViewModaOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [filterData, setFilterData] = useState([]);
   const [selectedFilterData, setSelectedFilterData] = useState([]);
   const [masterData, setMasterData] = useState("");
@@ -134,15 +142,6 @@ const Active = () => {
   const [selectedData, setSelectedData] = useState({});
   const [showQueryModal, setShowQueryModal] = useState(false);
 
-  useEffect(() => {
-    const selected = [];
-    filterData[0]?.value?.forEach((item) => {
-      if (item.isSelected) {
-        selected.push(item.id);
-      }
-    });
-    // getAllTableData(0, selected);
-  }, [selectedFilterData]);
   const copyText = () => {
     const copyTexts = document.getElementById("gstinnumber").innerHTML;
     navigator.clipboard.writeText(copyTexts);
@@ -171,11 +170,14 @@ const Active = () => {
   }, []);
 
   const handleActionClick = (ele, item) => {
-    console.log(ele, item);
-    if (ele == "Rasie a query") {
+    if (ele == "Raise a query") {
       setSelectedData(item);
       setShowQueryModal(true);
     }
+  };
+  const handleDisableSupplier = (item) => {
+    setSelectedData(item);
+    setDisableModal(true);
   };
   const getTableRows = (data) => {
     const rowDatas = [];
@@ -183,34 +185,34 @@ const Active = () => {
       rowDatas.push({
         id: index + 1,
         col1: index + 1,
-        col2: (
-          <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
-            {item.businessName}
-          </Typography>
-        ),
+        // col2: (
+        //   <Typography className="h-5 color-light-blue cursor-pointer text-decoration-underline">
+        //     {item.businessName}
+        //   </Typography>
+        // ),
+        col2: `${item?.supplierId} / ${item.businessName}`,
         col3: item.city,
         col4: (
           <Box className="d-flex justify-content-around ">
             <span className="h-5" id="gstinnumber">
               {item.gstin}
             </span>
-            <Tooltip title="copy">
-              <CustomIcon
-                type="filecopy"
-                size="small"
-                className="fs-18"
-                onIconClick={() => {
-                  copyText();
-                }}
-              />
-            </Tooltip>
+            <CustomIcon
+              type="filecopy"
+              size="small"
+              className="fs-18"
+              onIconClick={() => {
+                copyText();
+              }}
+              title="Copy"
+            />
           </Box>
         ),
         col5: (
           <div className="d-flex justify-content-center">
             <Tooltip
-              title={item.mainCategories.map((e) => (
-                <Typography className="h-5">{e}</Typography>
+              title={item.mainCategoryWrappers.map((e) => (
+                <Typography className="h-5">{e.mainCategoryName}</Typography>
               ))}
               placement="top"
             >
@@ -220,7 +222,7 @@ const Active = () => {
                   maxWidth: "100px",
                 }}
               >
-                {item.mainCategories}
+                {item.mainCategoryWrappers.map((val) => val.mainCategoryName)}
               </Typography>
             </Tooltip>
           </div>
@@ -230,7 +232,9 @@ const Active = () => {
         col8: item.totalOrders ? item.totalOrders : "--",
         col9: item.totalEarnings ? item.totalEarnings : "--",
         col10: item.amoutnToBePaid ? item.amoutnToBePaid : "--",
-        col11: item.registeredAt ? item.registeredAt : "--",
+        col11: item.registeredAt
+          ? format(new Date(item.registeredAt), "MM-dd-yyyy HH:mm:ss")
+          : "--",
         col12: item.changesCollected ? item.changesCollected : "--",
         col13: (
           <Box>
@@ -239,19 +243,25 @@ const Active = () => {
               className="fs-18 me-2"
               onIconClick={() => {
                 setSelectedData(item);
-                setViewModaOpen(true);
+                setViewModalOpen(true);
               }}
             />
             <MenuOption
               options={[
                 <>
-                  Enable{" "}
+                  Enabled{" "}
                   <Box className="ms-4">
-                    <SwitchComponent label="" />
+                    <SwitchComponent
+                      label=""
+                      defaultChecked
+                      ontoggle={() => {
+                        handleDisableSupplier(item);
+                      }}
+                    />
                   </Box>
                 </>,
                 "Notify",
-                "Rasie a query",
+                "Raise a query",
                 "Supplier Home Page",
                 "Marketing Tools Sub",
               ]}
@@ -276,8 +286,8 @@ const Active = () => {
       pageSize: 50,
     };
     const { data, err } = await getActiveSuppliers(payload);
-    setMasterData(data?.data?.totalcount);
-    if (data?.data?.activeSupplierWrappers.length) {
+    if (data?.data) setMasterData(data?.data?.totalcount);
+    if (data?.data?.activeSupplierWrappers?.length) {
       if (page == 0) {
         setTableRows(getTableRows(data.data.activeSupplierWrappers));
         setPageNumber(1);
@@ -288,7 +298,9 @@ const Active = () => {
           ...getTableRows(data?.data?.activeSupplierWrappers),
         ]);
       }
-    } else if (data?.data?.length === 0 && page == 0) {
+    } else if (data?.data?.activeSupplierWrappers?.length === 0 && page == 0) {
+      setTableRows([]);
+    } else if (page == 0 && data?.data == null) {
       setTableRows([]);
     }
     if (err) {
@@ -306,6 +318,63 @@ const Active = () => {
     setPageNumber(0);
     getAllTableData(0, selected, filterValues.searchvalue, filterValues.date);
   }, [selectedFilterData]);
+
+  // disable
+  const [disableModal, setDisableModal] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const [disableError, setDisableError] = useState({
+    text: "",
+  });
+  const disableValidate = () => {
+    const disableErrorObj = {
+      text: "",
+    };
+    let flag = true;
+    if (comment == "") {
+      disableErrorObj.text = validateMessage.field_required;
+      flag = false;
+    } else {
+      disableErrorObj.text = "";
+      flag = true;
+    }
+    setDisableError(disableErrorObj);
+    return flag;
+  };
+  const handleDisableSaveClick = async () => {
+    if (disableValidate()) {
+      const payload = {
+        supplierId: selectedData.supplierId,
+        disable: true,
+        reason: comment,
+      };
+      const { data, err } = await enableDisableSupplier(payload);
+      if (data) {
+        setComment("");
+        setDisableModal(false);
+        const selected = [];
+        filterData[0]?.value?.forEach((item) => {
+          if (item.isSelected) {
+            selected.push(item.id);
+          }
+        });
+        getAllTableData(
+          0,
+          selected,
+          filterValues.searchvalue,
+          filterValues.date
+        );
+        toastify(data?.message, "success");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
+  const handleDisableClose = () => {
+    setDisableModal(false);
+    setDisableError({ text: "" });
+  };
   return (
     <Paper
       className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar"
@@ -314,8 +383,9 @@ const Active = () => {
       {viewModalOpen ? (
         <ViewModal
           viewModalOpen={viewModalOpen}
-          setViewModaOpen={setViewModaOpen}
+          setViewModalOpen={setViewModalOpen}
           selectedData={selectedData}
+          type="APPROVED"
         />
       ) : showQueryModal ? (
         <QueryModal
@@ -359,6 +429,27 @@ const Active = () => {
           />
         </Box>
       )}
+      {disableModal ? (
+        <ModalComponent
+          open={disableModal}
+          onCloseIconClick={() => handleDisableClose()}
+          onClearBtnClick={() => handleDisableClose()}
+          ModalTitle="Disable"
+          titleClassName="fs-16 color-orange"
+          onSaveBtnClick={() => handleDisableSaveClick()}
+        >
+          <Box className="my-2">
+            <TextArea
+              onInputChange={(e) => {
+                setComment(e.target.value);
+              }}
+              value={comment}
+              error={disableError.text !== ""}
+              helperText={disableError.text}
+            />
+          </Box>
+        </ModalComponent>
+      ) : null}
     </Paper>
   );
 };

@@ -1,5 +1,6 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -10,46 +11,38 @@ import CreateTicket from "@/forms/admin/help&support/supplierSupport/CreateTicke
 import toastify from "services/utils/toastUtils";
 import { deleteProducts } from "services/admin/products";
 import {
+  acceptOrRejectProduct,
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
 import { useDispatch } from "react-redux";
 import { updateProduct, viewProduct } from "features/productsSlice";
 import { getVariation } from "services/supplier/myProducts";
-import AddEditProductModal from "./AddEditProductModal";
 import RaiseQueryModal from "./RaiseQueryModal";
 import EditProductModalForUpdated from "./EditProductModal";
-import FilterModal from "../../FilterModal";
+import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
+import ReasonToReject from "../ProductsToApprove/AcceptRejectmodal/ReasonToReject";
 
 const Updated = ({
   rowsDataObjectsForUpdated,
-  setRowsDataObjectsForUpdated,
+  getCount = () => {},
+  commissionType = "ZERO_COMMISSION",
 }) => {
   // eslint-disable-next-line no-unused-vars
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
   const [openEditModalForUpdated, setOpenEditModalForUpdated] = useState(false);
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [productDetails, setProductDetails] = useState({
-    productId: "",
-    images: "",
-    vendorIdBuisnessName: "",
-    categorySubcategory: "",
-    change: "",
-    updatedDateAndTime: "",
-  });
+
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [categoryIds, setCategoryIds] = useState([]);
   const [subCategoryIds, setSubCategoryIds] = useState([]);
   const [brands, setBrands] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [showViewProducts, setShowViewProducts] = useState(false);
+  const [productId, setProductId] = useState("");
 
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
-
-  const [imageArray, setImageArray] = useState([]);
-
   const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
 
@@ -63,6 +56,8 @@ const Updated = ({
   const [modalId, setModalId] = useState(null);
   const [tableRows, setTableRows] = useState([]);
   const [images, setImages] = useState([]);
+  const [rejectReason, setRejectReason] = useState("");
+  const [showReasonModal, setShowReasonModal] = useState(false);
   const tableColumnsForProductsToUpdated = [
     {
       id: "col1",
@@ -79,29 +74,35 @@ const Updated = ({
     {
       id: "col3",
       align: "center",
+      label: "Product Title",
+      data_align: "center",
+    },
+    {
+      id: "col4",
+      align: "center",
       label: "Vendor ID/Business Name",
       data_align: "center",
     },
 
     {
-      id: "col4",
+      id: "col5",
       align: "center",
       label: "Category/Subcategory",
       data_align: "center",
     },
     {
-      id: "col5",
+      id: "col6",
       align: "center",
       label: "Change",
       data_align: "center",
     },
     {
-      id: "col6",
+      id: "col7",
       align: "center",
       label: "Updated Date & time",
       data_align: "center",
     },
-    { id: "col7", align: "center", label: "Action", data_align: "center" },
+    { id: "col8", align: "center", label: "Action", data_align: "center" },
   ];
   const options = ["Edit", "Delete", "Raise Query", "Approve", "Reject"];
 
@@ -127,9 +128,32 @@ const Updated = ({
       setShowViewProducts(true);
     }
   };
+
+  const approveOrRejectProduct = async (status, id) => {
+    const payload = {
+      productVariationId: id ?? productId,
+      status,
+      rejectedReason: status === "APPROVED" ? null : rejectReason,
+    };
+    const { data, err, message } = await acceptOrRejectProduct(payload);
+
+    if (data) {
+      setOpenAcceptRejectModal(false);
+      toastify(message, "success");
+      getTableData(0);
+      getCount();
+    }
+    if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   const onClickOfMenuItem = (ele, val) => {
-    if (ele === "Accept/Reject") {
-      setOpenAcceptRejectModal(true);
+    setProductId(val.productVariationId);
+    if (ele === "Approve") {
+      approveOrRejectProduct("APPROVED", val?.productVariationId);
+    }
+    if (ele === "Reject") {
+      setShowReasonModal(true);
     }
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
@@ -149,7 +173,7 @@ const Updated = ({
         type: "ACTIVE_PRODUCT",
         to: {
           id: val.supplierId,
-          label: val.supplierName,
+          label: val.businessName,
           value: val.supplierId,
         },
         productVariationId: val?.productVariationId,
@@ -200,24 +224,36 @@ const Updated = ({
           </Box>
         ) : null,
         col3: (
+          <Tooltip title={val.productTitle} placement="top">
+            <Typography
+              className="h-5 text-truncate"
+              style={{
+                maxWidth: "100px",
+              }}
+            >
+              {val.productTitle}
+            </Typography>
+          </Tooltip>
+        ),
+        col4: (
           <>
             <Typography className="fs-12 text-primary">
               {val.supplierId}
             </Typography>
             <Typography className="fs-12 text-primary">
-              {val.supplierName}
+              {val.businessName}
             </Typography>
           </>
         ),
-        col4: (
+        col5: (
           <>
             <Typography className="h-5">{val.categoryName}</Typography>
             <Typography className="h-5">{val.subCategoryName}</Typography>
           </>
         ),
-        col5: val.changes ?? "--",
-        col6: val.lastUpdatedAt,
-        col7: (
+        col6: val.changes ?? "--",
+        col7: val.lastUpdatedAt,
+        col8: (
           <Box className="d-flex justify-content-evenly align-items-center">
             <CustomIcon
               type="view"
@@ -252,9 +288,9 @@ const Updated = ({
       subCategoryIds: subcatIds ?? subCategoryIds ?? [],
       brandNames: brandNames ?? brands ?? [],
       productVariationIds: productIds ?? products ?? [],
-      dateFrom: date?.fromDate ?? "",
-      dateTo: date?.toDate ?? "",
-      commissionType: "ZERO_COMMISSION",
+      dateFrom: date?.fromDate ?? null,
+      dateTo: date?.toDate ?? null,
+      commissionType,
       status: "UPDATED",
     };
     const { data } = await getAdminProductsByFilter(payLoad, page);
@@ -333,18 +369,6 @@ const Updated = ({
                   showDateFilter
                   showDateFilterSearch={false}
                   dateFilterBtnClick={() => {
-                    setProductDetails({
-                      vendorIdOrName: "",
-                      images: "",
-                      productTitle: "",
-                      sku: "",
-                      categorySubcategory: "",
-                      weightOrVolume: "",
-                      totalStock: "",
-                      salePriceAndMrp: "",
-                      discounts: "",
-                    });
-                    setOpenEditModal(true);
                     setModalId(null);
                   }}
                   showSearchbar={false}
@@ -383,16 +407,14 @@ const Updated = ({
         modalId={modalId}
         images={images}
       />
-      <AddEditProductModal
-        openEditModal={openEditModal}
-        setOpenEditModal={setOpenEditModal}
-        productDetails={productDetails}
-        setImageArray={setImageArray}
-        setProductDetails={setProductDetails}
-        imageArray={imageArray}
-        setRowDataObjects={setRowsDataObjectsForUpdated}
-        modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForUpdated}
+      <ReasonToReject
+        rejectReason={rejectReason}
+        setRejectReason={setRejectReason}
+        showModal={showReasonModal}
+        setShowModal={setShowReasonModal}
+        onSaveClick={() => {
+          approveOrRejectProduct("REJECTED");
+        }}
       />
       {/* Edit */}
       <EditProductModalForUpdated
