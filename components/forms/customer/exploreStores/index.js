@@ -5,11 +5,12 @@ import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { Grid, Box, Paper, Typography } from "@mui/material";
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useStoreList } from "services/hooks";
 import { City, State } from "country-state-city";
 import { getCategory } from "services/admin/products/productCategories/assignVariation";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getStore } from "services/admin/explorestore";
+import toastify from "services/utils/toastUtils";
 
 const cb = () => {
   return new Promise((resolve) => {
@@ -32,10 +33,12 @@ const ExploreStores = () => {
     district: {},
     city: "",
   });
+  const [storesList, setStoresList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [stateList, setStateList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
-  const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
+  // const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
   const observer = useRef();
 
   const lastStore = useCallback(
@@ -84,18 +87,22 @@ const ExploreStores = () => {
     setStateList(temp);
   }, []);
 
-  //   useEffect(() => {
-  //     if (formData.state?.id) {
-  //       const temp = [];
-  //       City.getCitiesOfState("IN", formData.state?.id)?.forEach((item) => {
-  //         temp.push({
-  //           id: item.name,
-  //           label: item.name,
-  //         });
-  //       });
-  //       setCityList(temp);
-  //     }
-  //   }, [formData.state]);
+  const handleSubmit = async () => {
+    const payload = {
+      mainCategoryId: formData.category?.id ?? null,
+      keyword: formData.storeName || null,
+      city: formData.city || null,
+    };
+    setLoading(true);
+    const { data, err } = await getStore(payload);
+    if (data) {
+      setLoading(false);
+      setStoresList(data);
+    } else if (err) {
+      setLoading(false);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   return (
     <Box className="w-100">
@@ -161,7 +168,7 @@ const ExploreStores = () => {
           />
         </Grid>
         <Grid item md={12} className="mb-3 d-flex justify-content-center">
-          <ButtonComponent label="submit" />
+          <ButtonComponent label="Search" onBtnClick={handleSubmit} />
         </Grid>
       </Grid>
 
@@ -171,18 +178,18 @@ const ExploreStores = () => {
           maxHeight: "calc(100vh - 450px)",
         }}
       >
-        {list.map((item, index) => {
-          if (list.length - 1 === index) {
-            return (
-              <div
-                ref={lastStore}
-                style={{ height: "30px" }}
-                className="border my-2"
-              >
-                {item}
-              </div>
-            );
-          }
+        {storesList.map((item, index) => {
+          // if (list.length - 1 === index) {
+          //   return (
+          //     <div
+          //       ref={lastStore}
+          //       style={{ height: "30px" }}
+          //       className="border my-2"
+          //     >
+          //       {item}
+          //     </div>
+          //   );
+          // }
           return (
             <motion.div
               whileHover={{

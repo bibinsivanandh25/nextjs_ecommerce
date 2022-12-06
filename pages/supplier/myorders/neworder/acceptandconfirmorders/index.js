@@ -386,6 +386,7 @@ const AcceptandConfirmOrder = () => {
               OnSelectionChange={(item) => {
                 getModeOfOrder(item);
               }}
+              showCheckbox
             />
           </Paper>
         </div>

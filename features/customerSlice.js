@@ -9,6 +9,7 @@ const initialState = {
   storeCode: "",
   shopDescription: "",
   shopDescriptionImageUrl: "",
+  role: "",
 };
 
 export const customerSlice = createSlice({
