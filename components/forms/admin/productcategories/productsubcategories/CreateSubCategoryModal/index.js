@@ -40,6 +40,10 @@ const CreateSubCategoryModal = ({
   setShowView = () => {},
   subCategoryData = null,
   showView = false,
+  getSubCategory = () => {},
+  subCategoryid = "",
+  subCategoryValue = {},
+  fromType = "",
 }) => {
   const [subCategoryDetails, setSubCategoryDetails] = useState({
     category: {},
@@ -91,6 +95,12 @@ const CreateSubCategoryModal = ({
     resellerProfitPercentage: "",
     subcategory: "",
   });
+
+  useEffect(() => {
+    if (fromType == "addVariation") {
+      setSubCategoryDetails(subCategoryValue);
+    }
+  }, [subCategoryValue]);
 
   const handlFormDataChange = (e) => {
     const temp = [...formData];
@@ -262,6 +272,7 @@ const CreateSubCategoryModal = ({
         };
         const { data, message, err } = await createSubCategory(payload);
         if (data) {
+          getSubCategory(subCategoryid);
           getTableData(0);
           toastify(message, "success");
           setOpenCreateNewSubCategories(false);
@@ -288,6 +299,7 @@ const CreateSubCategoryModal = ({
         };
         const { data, message, err } = await updateSubCategory(payload);
         if (data) {
+          getSubCategory(subCategoryid);
           getTableData(0);
           toastify(message, "success");
           setSubcategoryData(null);
@@ -500,7 +512,9 @@ const CreateSubCategoryModal = ({
                 value={subCategoryDetails.category}
                 error={errorObj.category !== ""}
                 helperText={errorObj.category}
-                disabled={!showView && subCategoryData}
+                disabled={
+                  (!showView && subCategoryData) || fromType == "addVariation"
+                }
                 readOnly={showView}
               />
             </Grid>
@@ -516,7 +530,9 @@ const CreateSubCategoryModal = ({
                 value={subCategoryDetails.set}
                 error={errorObj.set !== ""}
                 helperText={errorObj.set}
-                disabled={!showView && subCategoryData}
+                disabled={
+                  (!showView && subCategoryData) || fromType == "addVariation"
+                }
                 readOnly={showView}
               />
             </Grid>
