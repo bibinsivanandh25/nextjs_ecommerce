@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  customerId: "",
+  userId: "",
   name: "",
   supplierId: "",
   supplierStoreLogo: "",
   supplierStoreName: "",
   storeCode: "",
+  shopDescription: "",
+  shopDescriptionImageUrl: "",
 };
 
 export const customerSlice = createSlice({
