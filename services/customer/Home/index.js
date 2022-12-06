@@ -34,4 +34,21 @@ const getMainCategories = () => {
 
     .catch((err) => ({ err }));
 };
-export { getBannersBySupplierId, getMainCategories, getTopProducts };
+
+const getNewArrivalProducts = (filterType, supplierId) => {
+  return serviceUtil
+    .get(
+      `/users/customer/popular-department/popular-product?filterType=${filterType}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getBannersBySupplierId,
+  getMainCategories,
+  getTopProducts,
+  getNewArrivalProducts,
+};

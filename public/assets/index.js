@@ -27,4 +27,13 @@ const productImageGuidLines = {
     "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Artboard%20%E2%80%93%2010.png",
 };
 
-export { assetsJson, productImageGuidLines };
+const customerHome = {
+  coupon:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Icon%20awesome-ticket-alt.png",
+  help: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Icon%20ionic-md-chatbubbles.png",
+  file: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/schedule.png",
+  shop: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/shop%20%281%29.png",
+  tax: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/tax.png",
+};
+
+export { assetsJson, productImageGuidLines, customerHome };
