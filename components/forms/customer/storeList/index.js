@@ -7,7 +7,6 @@ import InputBox from "@/atoms/InputBoxComponent";
 import { Box } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { registerCustomer } from "services/customer/auth";
 import { useStoreList } from "services/hooks";
 import AddStore from "./AddStore";
 import StoresTab from "./StoresTab";
@@ -41,7 +40,10 @@ const StoreList = () => {
       isSelected: false,
     },
   ]);
-
+  const [defaultData, setDefaultData] = useState({
+    storeCode: "",
+    storeListName: null,
+  });
   const [pageNum, setPageNum] = useState(1);
   const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
   const observer = useRef();
@@ -58,14 +60,24 @@ const StoreList = () => {
     },
     [loading]
   );
+  const switchTabs = (tab, data) => {
+    setSelectedTab(tab);
+    setDefaultData(data);
+    const temp = [...tabList];
+    temp.forEach((item) => {
+      item.isSelected = false;
+    });
+    temp[temp.findIndex((item) => item.label === tab)].isSelected = true;
+    setTabList(temp);
+  };
 
   const getTabUI = () => {
     return selectedTab === "Store List" ? (
-      <StoresTab />
+      <StoresTab switchTabs={switchTabs} />
     ) : selectedTab === "Add Store" ? (
-      <AddStore />
+      <AddStore switchTabs={switchTabs} defaultData={defaultData} />
     ) : (
-      <ViewAllStore />
+      <ViewAllStore switchTabs={switchTabs} />
     );
   };
 

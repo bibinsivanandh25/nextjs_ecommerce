@@ -1,29 +1,88 @@
 /* eslint-disable no-unused-vars */
 import InputBox from "@/atoms/InputBoxComponent";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import { addStore, getStoreList } from "services/admin/storeList";
+import { useSelector } from "react-redux";
+import validateMessage from "constants/validateMessages";
+import toastify from "services/utils/toastUtils";
 
 const filter = createFilterOptions();
-const AddStore = () => {
+const AddStore = ({
+  defaultData = { storeCode: "", storeListName: null },
+  switchTabs = () => {},
+}) => {
   const [formData, setFormData] = useState({
     storeCode: "",
     storeListName: null,
   });
-  const [options, setOptions] = useState([
-    { title: "Amadeus", year: 1984 },
-    { title: "To Kill a Mockingbird", year: 1962 },
-    { title: "Toy Story 3", year: 2010 },
-    { title: "Logan", year: 2017 },
-    { title: "Full Metal Jacket", year: 1987 },
-    { title: "Dangal", year: 2016 },
-    { title: "The Sting", year: 1973 },
-    { title: "2001: A Space Odyssey", year: 1968 },
-    { title: "Singin' in the Rain", year: 1952 },
-  ]);
+  const [error, setError] = useState({
+    storeCode: "",
+    storeListName: "",
+  });
+  // const [storelist, setStoreList] = useState([]);
+  const { userId } = useSelector((state) => state.customer);
+  const [options, setOptions] = useState([]);
 
-  const handleSubmit = () => {};
+  const getStoresList = async () => {
+    const { data } = await getStoreList(userId, "");
+    if (data) {
+      setOptions(
+        data.map((item) => ({
+          title: item.customerStoreListName ?? "--",
+          id: item.customerStoreListId,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    getStoresList();
+  }, []);
+
+  useEffect(() => {
+    if (options.length) {
+      setFormData({ ...defaultData });
+    }
+  }, [defaultData, options]);
+
+  const validate = () => {
+    const errObj = {
+      storeCode: "",
+      storeListName: "",
+    };
+    let flag = false;
+    if (formData.storeCode === "") {
+      errObj.storeCode = validateMessage.field_required;
+      flag = true;
+    }
+    // if (!formData.storeListName?.title) {
+    //   errObj.storeListName = validateMessage.field_required;
+    //   flag = true;
+    // }
+    setError(errObj);
+    return flag;
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) {
+      const { data, err, message } = await addStore({
+        customerId: userId,
+        storeListId: formData.storeListName?.id ?? null,
+        storeListName: formData.storeListName?.title ?? null,
+        storeType: "SUPPLIER",
+        storeCode: formData.storeCode,
+      });
+      if (data) {
+        toastify(message, "success");
+        switchTabs("Store List", { storeCode: "", storeListName: null });
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
 
   return (
     <Box className="w-100 p-2 py-4">
@@ -33,6 +92,8 @@ const AddStore = () => {
         onInputChange={(e) => {
           setFormData((pre) => ({ ...pre, storeCode: e.target.value }));
         }}
+        helperText={error.storeCode}
+        error={error.storeCode}
       />
       <Autocomplete
         className="mt-3"
@@ -43,7 +104,7 @@ const AddStore = () => {
           } else if (newValue && newValue.inputValue) {
             setFormData((pre) => ({
               ...pre,
-              storeListName: newValue.inputValue,
+              storeListName: { title: newValue.inputValue },
             }));
           } else {
             setFormData((pre) => ({ ...pre, storeListName: newValue }));
@@ -82,7 +143,13 @@ const AddStore = () => {
         freeSolo
         fullWidth
         renderInput={(params) => (
-          <TextField {...params} fullWidth label="Store List" />
+          <TextField
+            {...params}
+            fullWidth
+            label="Store List"
+            error={Boolean(error.storeListName)}
+            helperText={error.storeListName}
+          />
         )}
         size="small"
       />

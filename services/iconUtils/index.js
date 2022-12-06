@@ -51,6 +51,7 @@ import MessageIcon from "@mui/icons-material/Message";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import LockIcon from "@mui/icons-material/Lock";
 import BlockIcon from "@mui/icons-material/Block";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const CustomIcon = ({
   title = "",
@@ -120,6 +121,7 @@ const CustomIcon = ({
     calendar: CalendarMonthIcon,
     message: MessageIcon,
     block: BlockIcon,
+    heart: FavoriteIcon,
   };
 
   const [hover, setHover] = useState(false);
