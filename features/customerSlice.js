@@ -10,6 +10,7 @@ const initialState = {
   shopDescription: "",
   shopDescriptionImageUrl: "",
   role: "",
+  addStoreFlag: false,
 };
 
 export const customerSlice = createSlice({
@@ -19,12 +20,19 @@ export const customerSlice = createSlice({
     storeUserInfo: (state, action) => {
       return { ...state, ...action.payload };
     },
+    setAddStoreFlag: (state, action) => {
+      return {
+        ...state,
+        addStoreFlag: action.payload.addStoreFlag,
+      };
+    },
     clearUser: () => {
       return initialState;
     },
   },
 });
 
-export const { storeUserInfo, clearUser } = customerSlice.actions;
+export const { storeUserInfo, clearUser, setAddStoreFlag } =
+  customerSlice.actions;
 
 export default customerSlice.reducer;

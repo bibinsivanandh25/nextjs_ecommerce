@@ -25,8 +25,8 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
-import { useDispatch } from "react-redux";
-import { storeUserInfo } from "features/customerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setAddStoreFlag, clearUser } from "features/customerSlice";
 
 const Header = () => {
   const { status } = useSession();
@@ -66,6 +66,9 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
+  const { supplierStoreName, supplierStoreLogo } = useSelector(
+    (state) => state.customer
+  );
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -200,14 +203,14 @@ const Header = () => {
         >
           <Box className="pe-2">
             <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile/1661760335745-Balu_Logo.png "
+              src={supplierStoreLogo ?? ""}
               layout="fixed"
               height={30}
               width={80}
             />
           </Box>
           <Typography className="h-5 fw-bold cursor-pointer">
-            Balu Enterprises pvt ltd
+            {supplierStoreName}
           </Typography>
         </div>
         <div className="d-flex align-items-center rounded w-30p">
@@ -295,7 +298,7 @@ const Header = () => {
                   className="ms-2 cursor-pointer color-light-blue fs-14"
                   onClick={() => {
                     setOpen(true);
-                    dispatch(storeUserInfo({ addStore: true }));
+                    dispatch(setAddStoreFlag({ addStoreFlag: true }));
                   }}
                 >
                   <CustomIcon
@@ -357,6 +360,7 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
+                      dispatch(clearUser);
                       signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >
@@ -470,7 +474,11 @@ const Header = () => {
         title="Store List"
         titleClassName="color-orange fs-16"
       >
-        <StoreList />
+        <StoreList
+          close={() => {
+            setOpen(false);
+          }}
+        />
       </CustomDrawer>
     </div>
   );

@@ -60,7 +60,28 @@ const deleteStore = (customerStoreId, userId) => {
   return serviceUtil
     .deleteById(`users/customers/store/${customerStoreId}/${userId}`)
     .then((res) => {
-      console.log(res);
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+const switchStore = (storeCode, userId) => {
+  return serviceUtil
+    .put(
+      `users/customer/store/default?storeCode=${storeCode}&customerId=${userId}`
+    )
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+const addStoreToStoreList = (storeCode, storeListId, listName, userId) => {
+  return serviceUtil
+    .put(
+      `users/customer/store-list?storeCode=${storeCode}&storeListId=${storeListId}&listName=${listName}&customerId=${userId}`
+    )
+    .then((res) => {
       const { data, message } = res.data;
       return { data, message };
     })
@@ -75,4 +96,6 @@ export {
   addStore,
   favouriteStore,
   deleteStore,
+  switchStore,
+  addStoreToStoreList,
 };

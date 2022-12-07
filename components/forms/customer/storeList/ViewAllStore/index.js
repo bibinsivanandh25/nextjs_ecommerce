@@ -5,18 +5,31 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Box, Paper, Typography } from "@mui/material";
 import CustomIcon from "services/iconUtils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import {
   deleteStore,
   favouriteStore,
   getAllCustomerStores,
+  switchStore,
 } from "services/admin/storeList";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { storeUserInfo } from "features/customerSlice";
+import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
+import ModalComponent from "@/atoms/ModalComponent";
 
-const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
-  const { userId } = useSelector((state) => state.customer);
+const ViewAllStore = ({
+  switchTabs = () => {},
+  close = () => {},
+  searchText = "",
+}) => {
+  const customer = useSelector((state) => state.customer);
+  const { userId } = customer;
   const [storelist, setStoreList] = useState([]);
+  const [storeDetails, setstoreDetails] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pageNum, setPageNum] = useState(0);
+  const dispatch = useDispatch();
   // const { loading, list } = useStoreList(cb, pageNum);
   // const observer = useRef();
   // const lastStore = useCallback(
@@ -49,22 +62,6 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
           favourite: item.favourite,
           storeLogo: item.storeLogo || "",
         })),
-        // ...data.map((item) => ({
-        //   id: item.customerStoreId,
-        //   label: item.supplierStoreName ?? "--",
-        //   storeCode: item.storeCode,
-        //   defaultStore: item.defaultStore,
-        //   favourite: item.favourite,
-        //   storeLogo: item.storeLogo || "",
-        // })),
-        // ...data.map((item) => ({
-        //   id: item.customerStoreId,
-        //   label: item.supplierStoreName ?? "--",
-        //   storeCode: item.storeCode,
-        //   defaultStore: item.defaultStore,
-        //   favourite: item.favourite,
-        //   storeLogo: item.storeLogo || "",
-        // })),
       ]);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -93,6 +90,40 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
     getAllStores();
   }, [searchText]);
 
+  const handleSwitchStore = async () => {
+    const { data, err } = await switchStore(storeDetails.storeCode, userId);
+    if (data) {
+      const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+        storeDetails.storeCode
+      );
+      if (storeData) {
+        close();
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            supplierStoreLogo: storeData.supplierStoreLogo,
+            supplierStoreName: storeData.supplierStoreName,
+            storeCode: storeData.supplierStoreCode,
+            storeThemes: storeData.storeThemes,
+            shopDescription: storeData.shopDescription ?? "",
+            shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+            addStoreFlag: false,
+            supplierId: storeData.supplierId,
+          })
+        );
+        dispatch(
+          storeInfoUserSlice({
+            supplierId: storeData.supplierId,
+          })
+        );
+      } else if (storeErr) {
+        toastify(storeErr?.response?.data?.message, "error");
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   return (
     <Box
       className="overflow-y-scroll overflow-x-hide"
@@ -107,12 +138,20 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
               scale: 1.05,
               transition: { duration: 0.5 },
             }}
-            whileTap={{ scale: 0.9 }}
+            // whileTap={{ scale: 0.9 }}
             // ref={list.length - 1 === index ? lastStore : null}
           >
             <Paper
-              className="w-80p mx-auto d-flex justify-content-between m-2"
+              className={`w-80p rounded mx-auto d-flex justify-content-between m-2 ${
+                item.defaultStore ? "border border-primary border-2" : ""
+              }`}
               elevation={4}
+              onClick={() => {
+                // handleSwitchStore(item);
+                if (item.defaultStore) return;
+                setstoreDetails(item);
+                setShowConfirmModal(true);
+              }}
             >
               <Box className="d-flex">
                 <Box elevation={4} className="d-flex">
@@ -134,7 +173,7 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
                     type="heart"
                     className="fs-20 m-1 cursor-pointer color-orange"
                     onIconClick={(e) => {
-                      e.preventDefault();
+                      e.stopPropagation();
                       makefavouriteStore(item.id);
                     }}
                   />
@@ -143,7 +182,7 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
                     type="favoriteBorderIcon"
                     className="fs-20 m-1 cursor-pointer"
                     onIconClick={(e) => {
-                      e.preventDefault();
+                      e.stopPropagation();
                       makefavouriteStore(item.id);
                     }}
                   />
@@ -151,6 +190,7 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
                 <CustomIcon
                   type="delete"
                   onIconClick={(e) => {
+                    e.stopPropagation();
                     e.preventDefault();
                     deleteStores(item.id);
                   }}
@@ -160,6 +200,7 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
                   type="add"
                   className=""
                   onIconClick={(e) => {
+                    e.stopPropagation();
                     e.preventDefault();
                     switchTabs("Add Store", {
                       storeCode: item.storeCode,
@@ -167,6 +208,7 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
                         title: "",
                         id: "",
                       },
+                      type: "addToList",
                     });
                   }}
                 />
@@ -178,6 +220,22 @@ const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
         <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
       )}
       {/* {loading && <div>Loading</div>} */}
+      <ModalComponent
+        open={showConfirmModal}
+        showHeader={false}
+        saveBtnText="Confirm"
+        ClearBtnText="Cancle"
+        onSaveBtnClick={handleSwitchStore}
+        onClearBtnClick={() => {
+          setstoreDetails(null);
+          setShowConfirmModal(false);
+        }}
+        ModalWidth={400}
+      >
+        <Typography className="fs-16 w-100 text-center fw-bold my-4">
+          Are you sure you want to switch store?
+        </Typography>
+      </ModalComponent>
     </Box>
   );
 };
