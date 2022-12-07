@@ -6,7 +6,7 @@
 import InputBox from "@/atoms/InputBoxComponent";
 import { Box } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
-import { storeUserInfo } from "features/customerSlice";
+import { setAddStoreFlag } from "features/customerSlice";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useStoreList } from "services/hooks";
@@ -25,7 +25,7 @@ const cb = () => {
     }, 2000);
   });
 };
-const StoreList = () => {
+const StoreList = ({ close = () => {} }) => {
   const [storeSearchext, setStoreSearchText] = useState("");
   const [selectedTab, setSelectedTab] = useState("Store List");
   const [tabList, setTabList] = useState([
@@ -46,7 +46,7 @@ const StoreList = () => {
     storeCode: "",
     storeListName: null,
   });
-  const { addStore } = useSelector((state) => state.customer);
+  const { addStoreFlag } = useSelector((state) => state.customer);
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
@@ -72,6 +72,12 @@ const StoreList = () => {
       item.isSelected = false;
     });
     temp[temp.findIndex((item) => item.label === tab)].isSelected = true;
+    if (tab !== "Add Store") {
+      setDefaultData({
+        storeCode: "",
+        storeListName: null,
+      });
+    }
     setTabList(temp);
   };
 
@@ -79,18 +85,26 @@ const StoreList = () => {
     return selectedTab === "Store List" ? (
       <StoresTab switchTabs={switchTabs} searchText={storeSearchext} />
     ) : selectedTab === "Add Store" ? (
-      <AddStore switchTabs={switchTabs} defaultData={defaultData} />
+      <AddStore
+        switchTabs={switchTabs}
+        defaultData={defaultData}
+        setDefaultData={setDefaultData}
+      />
     ) : (
-      <ViewAllStore switchTabs={switchTabs} searchText={storeSearchext} />
+      <ViewAllStore
+        switchTabs={switchTabs}
+        searchText={storeSearchext}
+        close={close}
+      />
     );
   };
 
   useEffect(() => {
-    if (addStore) {
+    if (addStoreFlag) {
       switchTabs("Add Store", {});
-      dispatch(storeUserInfo({ addStore: false }));
+      dispatch(setAddStoreFlag({ addStoreFlag: false }));
     }
-  }, [addStore]);
+  }, [addStoreFlag]);
 
   return (
     <Box className="w-100 px-2">
@@ -111,6 +125,10 @@ const StoreList = () => {
             item.isSelected = false;
           });
           temp[index].isSelected = true;
+          setDefaultData({
+            storeCode: "",
+            storeListName: null,
+          });
           setTabList(temp);
           setSelectedTab(temp[index].label);
         }}

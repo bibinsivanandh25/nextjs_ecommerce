@@ -4,7 +4,11 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import { addStore, getStoreList } from "services/admin/storeList";
+import {
+  addStore,
+  addStoreToStoreList,
+  getStoreList,
+} from "services/admin/storeList";
 import { useSelector } from "react-redux";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
@@ -46,6 +50,7 @@ const AddStore = ({
   useEffect(() => {
     // if (options.length) {
     setFormData({ ...defaultData });
+    console.log(defaultData);
     // }
   }, [defaultData, options]);
 
@@ -59,28 +64,48 @@ const AddStore = ({
       errObj.storeCode = validateMessage.field_required;
       flag = true;
     }
-    // if (!formData.storeListName?.title) {
-    //   errObj.storeListName = validateMessage.field_required;
-    //   flag = true;
-    // }
+    if (defaultData?.type && !formData.storeListName?.title) {
+      errObj.storeListName = validateMessage.field_required;
+      flag = true;
+    }
     setError(errObj);
     return flag;
   };
 
   const handleSubmit = async () => {
     if (!validate()) {
-      const { data, err, message } = await addStore({
-        customerId: userId,
-        storeListId: formData.storeListName?.id ?? null,
-        storeListName: formData.storeListName?.title ?? formData.storeListName,
-        storeType: "SUPPLIER",
-        storeCode: formData.storeCode,
-      });
-      if (data) {
-        toastify(message, "success");
-        // switchTabs("Store List", { storeCode: "", storeListName: null });
-      } else if (err) {
-        toastify(err?.response?.data?.message, "error");
+      if (defaultData?.type) {
+        const { data, err, message } = await addStoreToStoreList(
+          formData.storeCode,
+          formData.storeListName?.id ?? 0,
+          formData.storeListName?.title ?? formData.storeListName,
+          userId
+        );
+        if (data) {
+          toastify(message, "success");
+          switchTabs("Store List", { storeCode: "", storeListName: null });
+        } else if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
+      } else {
+        const { data, err, message } = await addStore({
+          customerId: userId,
+          storeListId: formData.storeListName?.id ?? null,
+          storeListName:
+            formData.storeListName?.title ?? formData.storeListName,
+          storeType: "SUPPLIER",
+          storeCode: formData.storeCode,
+        });
+        if (data) {
+          toastify(message, "success");
+          if (formData.storeListName?.id) {
+            switchTabs("Store List", { storeCode: "", storeListName: null });
+          } else {
+            switchTabs("View All", { storeCode: "", storeListName: null });
+          }
+        } else if (err) {
+          toastify(err?.response?.data?.message, "error");
+        }
       }
     }
   };
