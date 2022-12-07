@@ -28,11 +28,14 @@ import StoreList from "@/forms/customer/storeList";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAddStoreFlag,
-  clearUser,
+  clearCustomerSlice,
   storeUserInfo,
 } from "features/customerSlice";
 import { getRecentStoreList, switchStore } from "services/admin/storeList";
-import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
+import {
+  clearUser,
+  storeUserInfo as storeInfoUserSlice,
+} from "features/userSlice";
 import toastify from "services/utils/toastUtils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 
@@ -386,7 +389,8 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
-                      dispatch(clearUser);
+                      dispatch(clearUser());
+                      dispatch(clearCustomerSlice());
                       signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >

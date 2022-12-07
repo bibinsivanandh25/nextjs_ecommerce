@@ -68,6 +68,7 @@ const SignIn = () => {
   const storedatatoRedux = async (storeCode, customerID, email) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
+      console.log(data);
       const userInfo = {
         userId: customerID,
         supplierId: data?.supplierId,

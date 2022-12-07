@@ -26,13 +26,25 @@ export const customerSlice = createSlice({
         addStoreFlag: action.payload.addStoreFlag,
       };
     },
-    clearUser: () => {
-      return initialState;
+    clearCustomerSlice: (state) => {
+      return {
+        ...state,
+        userId: "",
+        name: "",
+        supplierId: "",
+        supplierStoreLogo: "",
+        supplierStoreName: "",
+        storeCode: "",
+        shopDescription: "",
+        shopDescriptionImageUrl: "",
+        role: "",
+        addStoreFlag: false,
+      };
     },
   },
 });
 
-export const { storeUserInfo, clearUser, setAddStoreFlag } =
+export const { storeUserInfo, clearCustomerSlice, setAddStoreFlag } =
   customerSlice.actions;
 
 export default customerSlice.reducer;
