@@ -26,7 +26,15 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
 import { useDispatch, useSelector } from "react-redux";
-import { setAddStoreFlag, clearUser } from "features/customerSlice";
+import {
+  setAddStoreFlag,
+  clearUser,
+  storeUserInfo,
+} from "features/customerSlice";
+import { getRecentStoreList, switchStore } from "services/admin/storeList";
+import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
+import toastify from "services/utils/toastUtils";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
 
 const Header = () => {
   const { status } = useSession();
@@ -35,40 +43,32 @@ const Header = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const customer = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
-  const [stores, setStores] = useState([
-    {
-      id: 1,
-      label: "Store Name1",
-      checked: false,
-    },
-    {
-      id: 2,
-      label: "Store Name2",
-      checked: false,
-    },
-    {
-      id: 3,
-      label: "Store Name3",
-      checked: false,
-    },
-    {
-      id: 4,
-      label: "Store Name4",
-      checked: false,
-    },
-    {
-      id: 5,
-      label: "Store Name5",
-      checked: false,
-    },
-  ]);
+  const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
-  const { supplierStoreName, supplierStoreLogo } = useSelector(
+  const { supplierStoreName, supplierStoreLogo, userId } = useSelector(
     (state) => state.customer
   );
+  const [storeDetails, setstoreDetails] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const recentStore = async () => {
+    const { data } = await getRecentStoreList(userId);
+    if (data) {
+      setStores(
+        data.map((item) => ({
+          id: item.customerStoreId,
+          label: item.supplierStoreName,
+          checked: item.defaultStore,
+          favourite: item.favourite,
+          storeCode: item.storeCode,
+        }))
+      );
+    }
+  };
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -83,6 +83,39 @@ const Header = () => {
       route.push(path);
     } else {
       route.replace("/auth/customer/signin");
+    }
+  };
+
+  const handleSwitchStore = async () => {
+    const { data, err } = await switchStore(storeDetails.storeCode, userId);
+    if (data) {
+      const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+        storeDetails.storeCode
+      );
+      if (storeData) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            supplierStoreLogo: storeData.supplierStoreLogo,
+            supplierStoreName: storeData.supplierStoreName,
+            storeCode: storeData.supplierStoreCode,
+            storeThemes: storeData.storeThemes,
+            shopDescription: storeData.shopDescription ?? "",
+            shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+            addStoreFlag: false,
+            supplierId: storeData.supplierId,
+          })
+        );
+        dispatch(
+          storeInfoUserSlice({
+            supplierId: storeData.supplierId,
+          })
+        );
+      } else if (storeErr) {
+        toastify(storeErr?.response?.data?.message, "error");
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -106,27 +139,20 @@ const Header = () => {
                   </Typography>
                 }
                 isChecked={ele.checked}
-                checkBoxClick={(id) => {
-                  const arr = [...stores];
-                  setStores((pre) => {
-                    if (pre.id == id) {
-                      return (pre.checked = true);
-                    }
-                    return (pre.checked = false);
-                  });
-                  arr.map((item) => {
-                    if (item.id == id) {
-                      return (item.checked = true);
-                    }
-                    return (item.checked = false);
-                  });
-                  setStores([...arr]);
+                checkBoxClick={() => {
+                  setShowConfirmModal(true);
+                  setstoreDetails(ele);
                 }}
               />
               <CustomIcon type="delete" />
             </MenuItem>
           );
         })}
+        {!stores.length && (
+          <Typography className="fs-14 color-gray text-center p-2">
+            No Stores found
+          </Typography>
+        )}
         <Box className="d-flex justify-content-end pe-4 ">
           <Typography
             className="color-orange fs-14 cursor-pointer"
@@ -284,7 +310,7 @@ const Header = () => {
         </div>
         <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Store" Header="List">
+          <MenuwithArrow subHeader="Store" Header="List" onOpen={recentStore}>
             <MenuItem>
               <div className="d-flex align-items-center">
                 <input
@@ -480,6 +506,25 @@ const Header = () => {
           }}
         />
       </CustomDrawer>
+      <ModalComponent
+        open={showConfirmModal}
+        showHeader={false}
+        saveBtnText="Confirm"
+        ClearBtnText="Cancel"
+        onSaveBtnClick={() => {
+          handleSwitchStore();
+          setShowConfirmModal(false);
+        }}
+        onClearBtnClick={() => {
+          setstoreDetails(null);
+          setShowConfirmModal(false);
+        }}
+        ModalWidth={400}
+      >
+        <Typography className="fs-16 w-100 text-center fw-bold my-4">
+          Are you sure you want to switch store?
+        </Typography>
+      </ModalComponent>
     </div>
   );
 };

@@ -224,7 +224,7 @@ const ViewAllStore = ({
         open={showConfirmModal}
         showHeader={false}
         saveBtnText="Confirm"
-        ClearBtnText="Cancle"
+        ClearBtnText="Cancel"
         onSaveBtnClick={handleSwitchStore}
         onClearBtnClick={() => {
           setstoreDetails(null);
