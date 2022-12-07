@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -99,6 +100,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         <Box>
           {addressData.map((item, index) => (
             <Box
+              key={index}
               className="rounded mt-3 mnh-150 p-2"
               style={{
                 border:

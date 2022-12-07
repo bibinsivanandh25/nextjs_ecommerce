@@ -80,6 +80,7 @@ const Home = () => {
   // const [products, setProducts] = useState([]);
 
   const route = useRouter();
+
   const storeDetails = useSelector((state) => state.customer);
 
   const userInfo = useSession();
@@ -93,6 +94,7 @@ const Home = () => {
 
   const getStoreData = async () => {
     const { data } = await getStoreByStoreCode(storeDetails.storeCode);
+    console.log("reached", data);
     if (data) {
       const days = [
         "Sunday",
@@ -109,21 +111,23 @@ const Home = () => {
         holidays: days.filter((day) => {
           return !data.shopOpeningDays?.includes(day);
         }),
-        shopTimings: `${format(
-          new Date(
-            `Tue Aug 03 2021 ${data.shopTimings?.split("-")[0]?.trim()}:00`
-          ),
-          "hh:mm a"
-        )} to ${format(
-          new Date(
-            `Tue Aug 03 2021 ${data.shopTimings?.split("-")[1]?.trim()}:00`
-          ),
-          "hh:mm a"
-        )}`,
-        shoplogo: data.shopDescriptionImageUrl,
-        shopDescriptionImageUrl: data.shopDescriptionImageUrl,
-        shopDescription: data.shopDescription,
-        maxOrderProcessingTime: data.maxOrderProcessingTime,
+        shopTimings: data.shopTimings
+          ? `${format(
+              new Date(
+                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[0]?.trim()}:00`
+              ),
+              "hh:mm a"
+            )} to ${format(
+              new Date(
+                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[1]?.trim()}:00`
+              ),
+              "hh:mm a"
+            )}`
+          : null,
+        shoplogo: data?.shopDescriptionImageUrl,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+        shopDescription: data?.shopDescription,
+        maxOrderProcessingTime: data?.maxOrderProcessingTime,
       });
     }
   };

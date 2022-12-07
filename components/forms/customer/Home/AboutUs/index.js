@@ -14,7 +14,7 @@ const AboutUs = ({ imageUrl = "", description = "" }) => {
         className="mxh-400 mnh-400 overflow-auto hide-scrollbar p-2"
       >
         <Grid item sm={3}>
-          <Image width={175} height={175} src={imageUrl} />
+          {imageUrl ? <Image width={175} height={175} src={imageUrl} /> : null}
         </Grid>
         <Grid item sm={9}>
           <div

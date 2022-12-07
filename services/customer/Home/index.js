@@ -38,8 +38,28 @@ const getMainCategories = () => {
 const getNewArrivalProducts = (filterType, supplierId) => {
   return serviceUtil
     .get(
-      `/users/customer/popular-department/popular-product?filterType=${filterType}&supplierId=${supplierId}`
+      `/products/customer/popular-department/new-arrival?filterType=${filterType}&supplierId=${supplierId}`
     )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const getMostPopularProducts = (filterType, supplierId) => {
+  return serviceUtil
+    .get(
+      `/products/customer/popular-department/popular-product?filterType=${filterType}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const getRecentlyViewedProducts = (customerId) => {
+  return serviceUtil
+    .get(`/products/recent-product/${customerId}`)
     .then((res) => {
       const { data } = res?.data;
       return { data };
@@ -51,4 +71,6 @@ export {
   getMainCategories,
   getTopProducts,
   getNewArrivalProducts,
+  getMostPopularProducts,
+  getRecentlyViewedProducts,
 };

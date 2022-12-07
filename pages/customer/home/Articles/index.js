@@ -11,6 +11,7 @@ const Articles = ({ articleData = [] }) => {
             style={{
               width: "30vw",
             }}
+            key={ind}
           >
             <Card
               sx={{

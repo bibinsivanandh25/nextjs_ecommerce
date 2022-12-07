@@ -4,7 +4,10 @@ import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import { getNewArrivalProducts } from "services/customer/Home";
+import {
+  getMostPopularProducts,
+  getNewArrivalProducts,
+} from "services/customer/Home";
 import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
@@ -32,7 +35,6 @@ const comparProductData = [
 ];
 
 const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
-  // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -54,13 +56,56 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         storeDetails?.supplierId
       );
       if (data) {
-        console.log(data);
+        const temp = [];
+        data.forEach((ele) => {
+          temp.push({
+            id: ele.productId,
+            title: ele.productTitle,
+            price: ele.salePrice,
+            salePriceWithLogistics: ele.salePriceWithLogistics,
+            image: ele.variationMedia,
+            rating: {
+              rate: ele.averageRatings,
+              count: ele.totalRatings,
+            },
+          });
+        });
+        setProducts([...temp]);
+      }
+    }
+    if (popularDepartments === "Most Popular") {
+      const { data } = await getMostPopularProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        const temp = [];
+        data.forEach((ele) => {
+          temp.push({
+            id: ele.productId,
+            title: ele.productTitle,
+            price: ele.salePrice,
+            salePriceWithLogistics: ele.salePriceWithLogistics,
+            image: ele.variationMedia,
+            rating: {
+              rate: ele.averageRatings,
+              count: ele.totalRatings,
+            },
+          });
+        });
+        setProducts([...temp]);
       }
     }
   };
   useEffect(() => {
     getProducts();
+    setProducts([]);
+  }, [popularDepartments, filterType]);
+
+  useEffect(() => {
+    setFilterType("WEEK");
   }, [popularDepartments]);
+
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
     const final = comparedProductCopy.map((item) => {
@@ -165,6 +210,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         {products.map((ele) => {
           return (
             <ProductCard
+              key={ele.id}
               item={ele}
               handleIconClick={(icon) => {
                 if (icon === "viewCarouselOutlinedIcon") {
@@ -226,7 +272,10 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Box>
           {comparedProduct &&
             comparedProduct.map((item) => (
-              <Box className="d-flex justify-content-center border rounded mnw-150">
+              <Box
+                className="d-flex justify-content-center border rounded mnw-150"
+                key={item.id}
+              >
                 {item.imageLink ? (
                   <>
                     <Image
