@@ -24,6 +24,7 @@ const AddStore = ({
   });
   // const [storelist, setStoreList] = useState([]);
   const { userId } = useSelector((state) => state.customer);
+  const customer = useSelector((state) => state.customer);
   const [options, setOptions] = useState([]);
 
   const getStoresList = async () => {
@@ -43,9 +44,9 @@ const AddStore = ({
   }, []);
 
   useEffect(() => {
-    if (options.length) {
-      setFormData({ ...defaultData });
-    }
+    // if (options.length) {
+    setFormData({ ...defaultData });
+    // }
   }, [defaultData, options]);
 
   const validate = () => {
@@ -71,13 +72,13 @@ const AddStore = ({
       const { data, err, message } = await addStore({
         customerId: userId,
         storeListId: formData.storeListName?.id ?? null,
-        storeListName: formData.storeListName?.title ?? null,
+        storeListName: formData.storeListName?.title ?? formData.storeListName,
         storeType: "SUPPLIER",
         storeCode: formData.storeCode,
       });
       if (data) {
         toastify(message, "success");
-        switchTabs("Store List", { storeCode: "", storeListName: null });
+        // switchTabs("Store List", { storeCode: "", storeListName: null });
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -104,7 +105,7 @@ const AddStore = ({
           } else if (newValue && newValue.inputValue) {
             setFormData((pre) => ({
               ...pre,
-              storeListName: { title: newValue.inputValue },
+              storeListName: newValue.inputValue,
             }));
           } else {
             setFormData((pre) => ({ ...pre, storeListName: newValue }));

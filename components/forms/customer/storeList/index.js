@@ -6,7 +6,9 @@
 import InputBox from "@/atoms/InputBoxComponent";
 import { Box } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
+import { storeUserInfo } from "features/customerSlice";
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useStoreList } from "services/hooks";
 import AddStore from "./AddStore";
 import StoresTab from "./StoresTab";
@@ -44,6 +46,8 @@ const StoreList = () => {
     storeCode: "",
     storeListName: null,
   });
+  const { addStore } = useSelector((state) => state.customer);
+  const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
   const observer = useRef();
@@ -73,23 +77,32 @@ const StoreList = () => {
 
   const getTabUI = () => {
     return selectedTab === "Store List" ? (
-      <StoresTab switchTabs={switchTabs} />
+      <StoresTab switchTabs={switchTabs} searchText={storeSearchext} />
     ) : selectedTab === "Add Store" ? (
       <AddStore switchTabs={switchTabs} defaultData={defaultData} />
     ) : (
-      <ViewAllStore switchTabs={switchTabs} />
+      <ViewAllStore switchTabs={switchTabs} searchText={storeSearchext} />
     );
   };
 
+  useEffect(() => {
+    if (addStore) {
+      switchTabs("Add Store", {});
+      dispatch(storeUserInfo({ addStore: false }));
+    }
+  }, [addStore]);
+
   return (
     <Box className="w-100 px-2">
-      <InputBox
-        placeholder="Search store"
-        value={storeSearchext}
-        onInputChange={(e) => {
-          setStoreSearchText(e.target.value);
-        }}
-      />
+      {selectedTab !== "Add Store" && (
+        <InputBox
+          placeholder="Search store"
+          value={storeSearchext}
+          onInputChange={(e) => {
+            setStoreSearchText(e.target.value);
+          }}
+        />
+      )}
       <TabsCard
         tabList={tabList}
         onSelect={(index) => {

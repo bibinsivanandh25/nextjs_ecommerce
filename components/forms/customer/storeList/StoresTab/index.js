@@ -95,28 +95,34 @@ const StoresTab = ({ switchTabs = () => {} }) => {
         sx={{ maxHeight: "calc(100vh - 200px)" }}
         className="w-100 p-2 overflow-y-scroll overflow-x-hide d-flex flex-column align-items-center mb-3"
       >
-        {storelist.map((item) => {
-          return (
-            <motion.div
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.5 },
-              }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Paper
-                key={item.id}
-                onClick={() => {
-                  getAllStoreOfStoreList(item.id);
-                  setSelectedStoreList(item);
+        {storelist.length ? (
+          storelist.map((item) => {
+            return (
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.5 },
                 }}
-                className="p-2 my-2 w-300px cursor-pointer"
+                whileTap={{ scale: 0.9 }}
               >
-                {item.label}
-              </Paper>
-            </motion.div>
-          );
-        })}
+                <Paper
+                  key={item.id}
+                  onClick={() => {
+                    getAllStoreOfStoreList(item.id);
+                    setSelectedStoreList(item);
+                  }}
+                  className="p-2 my-2 w-300px cursor-pointer"
+                >
+                  {item.label}
+                </Paper>
+              </motion.div>
+            );
+          })
+        ) : (
+          <Typography className="fs-14 color-gray">
+            Store Lists not found
+          </Typography>
+        )}
       </Box>
       {/* <Box className="w-100 p-2 border-top">
         <Typography className="fs-18 fw-500">

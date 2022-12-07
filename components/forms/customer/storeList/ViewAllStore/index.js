@@ -13,7 +13,7 @@ import {
   getAllCustomerStores,
 } from "services/admin/storeList";
 
-const ViewAllStore = () => {
+const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
   const { userId } = useSelector((state) => state.customer);
   const [storelist, setStoreList] = useState([]);
   const [pageNum, setPageNum] = useState(0);
@@ -34,17 +34,38 @@ const ViewAllStore = () => {
   // );
 
   const getAllStores = async () => {
-    const { data, err } = await getAllCustomerStores(userId, pageNum);
+    const { data, err } = await getAllCustomerStores(
+      userId,
+      pageNum,
+      searchText
+    );
     if (data) {
-      setStoreList(
-        data.map((item) => ({
+      setStoreList([
+        ...data.map((item) => ({
           id: item.customerStoreId,
           label: item.supplierStoreName ?? "--",
           storeCode: item.storeCode,
           defaultStore: item.defaultStore,
           favourite: item.favourite,
-        }))
-      );
+          storeLogo: item.storeLogo || "",
+        })),
+        // ...data.map((item) => ({
+        //   id: item.customerStoreId,
+        //   label: item.supplierStoreName ?? "--",
+        //   storeCode: item.storeCode,
+        //   defaultStore: item.defaultStore,
+        //   favourite: item.favourite,
+        //   storeLogo: item.storeLogo || "",
+        // })),
+        // ...data.map((item) => ({
+        //   id: item.customerStoreId,
+        //   label: item.supplierStoreName ?? "--",
+        //   storeCode: item.storeCode,
+        //   defaultStore: item.defaultStore,
+        //   favourite: item.favourite,
+        //   storeLogo: item.storeLogo || "",
+        // })),
+      ]);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -70,7 +91,7 @@ const ViewAllStore = () => {
 
   useEffect(() => {
     getAllStores();
-  }, []);
+  }, [searchText]);
 
   return (
     <Box
@@ -79,68 +100,83 @@ const ViewAllStore = () => {
         maxHeight: "calc(100vh - 150px)",
       }}
     >
-      {storelist.map((item) => (
-        <motion.div
-          whileHover={{
-            scale: 1.05,
-            transition: { duration: 0.5 },
-          }}
-          whileTap={{ scale: 0.9 }}
-          // ref={list.length - 1 === index ? lastStore : null}
-        >
-          <Paper
-            className="w-80p mx-auto p-2 d-flex justify-content-between m-2"
-            elevation={4}
+      {storelist.length ? (
+        storelist.map((item) => (
+          <motion.div
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.5 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            // ref={list.length - 1 === index ? lastStore : null}
           >
-            <Box className="d-flex">
-              <Box elevation={4}>
-                <Image
-                  className="rounded-circle"
-                  src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000068/product/image/09012022093009214"
-                  width={50}
-                  height={50}
-                />
+            <Paper
+              className="w-80p mx-auto d-flex justify-content-between m-2"
+              elevation={4}
+            >
+              <Box className="d-flex">
+                <Box elevation={4} className="d-flex">
+                  <Image
+                    className="rounded"
+                    src={item.storeLogo}
+                    width={70}
+                    height={50}
+                  />
+                </Box>
+                <Box className="d-flex flex-column ms-1 p-2">
+                  <Typography className="">{item.label}</Typography>
+                  <Typography className="fs-12">{item.storeCode}</Typography>
+                </Box>
               </Box>
-              <Box className="d-flex flex-column ms-1">
-                <Typography className="">{item.label}</Typography>
-                <Typography className="fs-12">
-                  Store code: {item.storeCode}
-                </Typography>
-              </Box>
-            </Box>
-            <Box className="d-flex flex-column">
-              {item.favourite ? (
+              <Box className="d-flex flex-column">
+                {item.favourite ? (
+                  <CustomIcon
+                    type="heart"
+                    className="fs-20 m-1 cursor-pointer color-orange"
+                    onIconClick={(e) => {
+                      e.preventDefault();
+                      makefavouriteStore(item.id);
+                    }}
+                  />
+                ) : (
+                  <CustomIcon
+                    type="favoriteBorderIcon"
+                    className="fs-20 m-1 cursor-pointer"
+                    onIconClick={(e) => {
+                      e.preventDefault();
+                      makefavouriteStore(item.id);
+                    }}
+                  />
+                )}
                 <CustomIcon
-                  type="heart"
-                  className="fs-20 m-1 cursor-pointer color-orange"
+                  type="delete"
                   onIconClick={(e) => {
                     e.preventDefault();
-                    makefavouriteStore(item.id);
+                    deleteStores(item.id);
                   }}
+                  className=""
                 />
-              ) : (
                 <CustomIcon
-                  type="favoriteBorderIcon"
-                  className="fs-20 m-1 cursor-pointer"
+                  type="add"
+                  className=""
                   onIconClick={(e) => {
                     e.preventDefault();
-                    makefavouriteStore(item.id);
+                    switchTabs("Add Store", {
+                      storeCode: item.storeCode,
+                      storeListName: {
+                        title: "",
+                        id: "",
+                      },
+                    });
                   }}
                 />
-              )}
-              <CustomIcon
-                type="delete"
-                onIconClick={(e) => {
-                  e.preventDefault();
-                  deleteStores(item.id);
-                }}
-                className=""
-              />
-              <CustomIcon type="add" className="" />
-            </Box>
-          </Paper>
-        </motion.div>
-      ))}
+              </Box>
+            </Paper>
+          </motion.div>
+        ))
+      ) : (
+        <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
+      )}
       {/* {loading && <div>Loading</div>} */}
     </Box>
   );
