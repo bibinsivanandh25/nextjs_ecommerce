@@ -83,7 +83,11 @@ const StoreList = ({ close = () => {} }) => {
 
   const getTabUI = () => {
     return selectedTab === "Store List" ? (
-      <StoresTab switchTabs={switchTabs} searchText={storeSearchext} />
+      <StoresTab
+        switchTabs={switchTabs}
+        close={close}
+        searchText={storeSearchext}
+      />
     ) : selectedTab === "Add Store" ? (
       <AddStore
         switchTabs={switchTabs}

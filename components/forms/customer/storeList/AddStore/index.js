@@ -50,7 +50,6 @@ const AddStore = ({
   useEffect(() => {
     // if (options.length) {
     setFormData({ ...defaultData });
-    console.log(defaultData);
     // }
   }, [defaultData, options]);
 
@@ -64,7 +63,10 @@ const AddStore = ({
       errObj.storeCode = validateMessage.field_required;
       flag = true;
     }
-    if (defaultData?.type && !formData.storeListName?.title) {
+    if (
+      defaultData?.type &&
+      !(formData.storeListName?.title || formData.storeListName)
+    ) {
       errObj.storeListName = validateMessage.field_required;
       flag = true;
     }
