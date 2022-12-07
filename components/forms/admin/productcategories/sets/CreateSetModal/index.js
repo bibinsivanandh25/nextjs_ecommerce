@@ -31,14 +31,12 @@ const CreateSetModal = ({
   getAllSet = () => {},
   selectedData = {},
   type = "",
+  getAllSetById = () => {},
+  selectedId = {},
+  setSetDetails = () => {},
+  setDetails = {},
+  fromType = "",
 }) => {
-  const [setDetails, setSetDetails] = useState({
-    category: {},
-    set: "",
-    setImage: "",
-    imageFile: "",
-    editsetid: "",
-  });
   const [error, setError] = useState(err);
   const [categoryList, setCategoryList] = useState([]);
   const handleCloseIconClick = () => {
@@ -118,6 +116,7 @@ const CreateSetModal = ({
         handleClearAll();
         setOpenCreateSetModal(false);
         getAllSet(0, null);
+        getAllSetById(selectedId.categoryid);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -180,10 +179,11 @@ const CreateSetModal = ({
     <Box>
       <ModalComponent
         open={openCreateSetModal}
-        ModalTitle="Create Set"
+        ModalTitle={type == "add" ? "Create Set" : "Edit Set"}
         titleClassName="fw-bold fs-14 color-orange"
         footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
         ClearBtnText="Reset"
+        saveBtnText={type == "add" ? "Save" : "Edit"}
         saveBtnClassName="ms-1"
         ModalWidth={600}
         minHeightClassName="overflow-auto"
@@ -201,7 +201,7 @@ const CreateSetModal = ({
           <Grid item sm={8}>
             <Box>
               <SimpleDropdownComponent
-                disabled={type == "edit"}
+                disabled={type == "edit" || fromType === "addVariation"}
                 list={categoryList}
                 label="Category"
                 inputlabelshrink

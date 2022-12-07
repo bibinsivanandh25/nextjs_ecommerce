@@ -20,6 +20,7 @@ const SimpleDropdownComponent = ({
   disabled = false,
   removeRadius = false,
   freeSolo = false,
+  readOnly = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -55,6 +56,9 @@ const SimpleDropdownComponent = ({
         isOptionEqualToValue={(option, val) =>
           option?.id === val?.id || option.value === val.value
         }
+        InputProps={{
+          readOnly,
+        }}
         sx={
           !removeRadius
             ? {

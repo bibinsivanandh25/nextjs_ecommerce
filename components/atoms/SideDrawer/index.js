@@ -4,10 +4,14 @@ import { motion } from "framer-motion";
 import { VscChromeMinimize } from "react-icons/vsc";
 import { BiCopyAlt } from "react-icons/bi";
 import { BsShop } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 import InputBox from "../InputBoxComponent";
 
 const SideDrawer = forwardRef((_, ref = null) => {
   const [open, setOpen] = useState(false);
+  const { storeCode, storeName } = useSelector((state) => state.user);
+
   return (
     <>
       <motion.div
@@ -41,13 +45,22 @@ const SideDrawer = forwardRef((_, ref = null) => {
             Shop Name :
           </Grid>
           <Grid item md={7} className="fw-bold">
-            MY SHOP
+            {storeName ?? "--"}
           </Grid>
           <Grid item md={5} className="fw-bold">
             Shop Code :
           </Grid>
           <Grid item md={7} className="fw-bold">
-            #1234 <BiCopyAlt fill="blue" className="fs-18" />
+            {storeCode ?? "--"}{" "}
+            {storeCode && (
+              <BiCopyAlt
+                className="fs-18 cursor-pointer color-light-blue"
+                onClick={() => {
+                  navigator.clipboard.writeText(storeCode);
+                  toastify("Store Code Copied Successfully!", "success");
+                }}
+              />
+            )}
           </Grid>
           <Grid item md={12} className="fw-bold">
             Shop Link :

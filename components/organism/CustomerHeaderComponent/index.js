@@ -11,7 +11,7 @@ import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CustomIcon from "services/iconUtils";
 import { useState, useEffect } from "react";
-import { Add, ArrowForward } from "@mui/icons-material";
+import { ArrowForward } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import { assetsJson } from "public/assets";
@@ -23,6 +23,10 @@ import SwitchProfile from "@/forms/customer/switchprofile";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
+import CustomDrawer from "@/atoms/CustomDrawer";
+import StoreList from "@/forms/customer/storeList";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 
 const Header = () => {
   const { status } = useSession();
@@ -31,6 +35,7 @@ const Header = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([
     {
       id: 1,
@@ -60,6 +65,7 @@ const Header = () => {
   ]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -122,12 +128,22 @@ const Header = () => {
           <Typography
             className="color-orange fs-14 cursor-pointer"
             onClick={() => {
+              setOpen(true);
+            }}
+          >
+            More Options
+          </Typography>
+        </Box>
+        {/* <Box className="d-flex justify-content-end pe-4 ">
+          <Typography
+            className="color-orange fs-14 cursor-pointer"
+            onClick={() => {
               setShowStoreModal(true);
             }}
           >
             Add new store <Add className="fs-16" />
           </Typography>
-        </Box>
+        </Box> */}
       </>
     );
   };
@@ -267,12 +283,30 @@ const Header = () => {
         <div className="cursor-pointer">
           <MenuwithArrow subHeader="Store" Header="List">
             <MenuItem>
-              <input
-                id="store"
-                style={{
-                  outline: "none",
-                }}
-              />
+              <div className="d-flex align-items-center">
+                <input
+                  id="store"
+                  style={{
+                    outline: "none",
+                  }}
+                  placeholder="Search store"
+                />
+                <Typography
+                  className="ms-2 cursor-pointer color-light-blue fs-14"
+                  onClick={() => {
+                    setOpen(true);
+                    dispatch(storeUserInfo({ addStore: true }));
+                  }}
+                >
+                  <CustomIcon
+                    showColorOnHover={false}
+                    type="add"
+                    color="color-light-blue "
+                    className="color-light-blue fs-14"
+                  />
+                  Add
+                </Typography>
+              </div>
             </MenuItem>
             {getStores()}
           </MenuwithArrow>
@@ -427,6 +461,17 @@ const Header = () => {
         showModal={showSelectAddress}
         setShowModal={setShowSelectAddress}
       />
+      <CustomDrawer
+        open={open}
+        position="right"
+        handleClose={() => {
+          setOpen(false);
+        }}
+        title="Store List"
+        titleClassName="color-orange fs-16"
+      >
+        <StoreList />
+      </CustomDrawer>
     </div>
   );
 };

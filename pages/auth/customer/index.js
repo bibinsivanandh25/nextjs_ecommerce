@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+import { FaArrowAltCircleRight } from "react-icons/fa";
+import CustomDrawer from "@/atoms/CustomDrawer";
+import ExploreStores from "@/forms/customer/exploreStores";
 import styles from "./shopcode.module.css";
 
 const ShopCode = () => {
@@ -19,7 +22,7 @@ const ShopCode = () => {
   };
 
   const route = useRouter();
-
+  const [openExplore, setOpenExplore] = useState(false);
   const [formValues, setFormValues] = useState({
     shopCode: "",
   });
@@ -142,12 +145,30 @@ const ShopCode = () => {
               onBtnClick={handleSubmit}
             />
           </Box>
-          <Typography className="fs-12 text-center  mt-2">
-            You will get access to all products category
-            <span className="color-orange cursor-pointer ms-2">Click Here</span>
-          </Typography>
+          <Box className="d-flex flex-column justify-content-center">
+            <Typography className="fs-16 fw-500 text-center mt-4">
+              Explore Stores
+            </Typography>
+            <FaArrowAltCircleRight
+              onClick={() => {
+                setOpenExplore(true);
+              }}
+              className="mx-auto h2 cursor-pointer"
+            />
+          </Box>
         </Box>
       </Paper>
+      <CustomDrawer
+        open={openExplore}
+        position="right"
+        handleClose={() => {
+          setOpenExplore(false);
+        }}
+        title="Explore Stores"
+        titleClassName="color-orange"
+      >
+        <ExploreStores />
+      </CustomDrawer>
     </Box>
   );
 };

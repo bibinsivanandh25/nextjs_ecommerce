@@ -50,6 +50,9 @@ const NotificationSuggestion = () => {
         toastify(message, "success");
         setShowModal("");
         getSuggestion();
+        setKeyData([]);
+        setError("");
+        setInputValue("");
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
