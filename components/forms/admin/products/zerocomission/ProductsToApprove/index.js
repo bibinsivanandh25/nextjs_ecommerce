@@ -36,7 +36,6 @@ import MergeToModal from "./MergeToModal";
 // import RaiseQueryModal from "./RaiseQueryModal";
 // import VisibilityRangeModal from "./VisibilityRangeModal";
 // import FlagModal from "./FlagModal";
-import AddEditProductModal from "./AddEditProductModal";
 import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 
@@ -48,9 +47,7 @@ const ProductsToApprove = ({
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
   const [modalId, setModalId] = useState(null);
-  const [imageArray, setImageArray] = useState([]);
   const [tableRows, setTableRows] = useState([]);
-  const [openEditModal, setOpenEditModal] = useState(false);
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
   const [openMergeToModal, setOpenMergeToModal] = useState(false);
   // const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
@@ -59,17 +56,7 @@ const ProductsToApprove = ({
   // const [showFlagModal, setShowFlagModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-  const [productDetails, setProductDetails] = useState({
-    vendorIdOrName: "",
-    images: "",
-    productTitle: "",
-    sku: "",
-    categorySubcategory: "",
-    weightOrVolume: "",
-    totalStock: "",
-    salePriceAndMrp: "",
-    discounts: "",
-  });
+
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [categoryIds, setCategoryIds] = useState([]);
   const [subCategoryIds, setSubCategoryIds] = useState([]);
@@ -473,8 +460,6 @@ const ProductsToApprove = ({
                   dateFilterBtnName="+ New Product"
                   showFilterButton
                   dateFilterBtnClick={() => {
-                    setImageArray([]);
-                    setOpenEditModal(true);
                     setModalId(null);
                   }}
                   handlePageEnd={(
@@ -506,18 +491,7 @@ const ProductsToApprove = ({
         )}
       </Box>
       {/* Edit Modal Component */}
-      <AddEditProductModal
-        setOpenMergeToModal={setOpenMergeToModal}
-        openEditModal={openEditModal}
-        setOpenEditModal={setOpenEditModal}
-        productDetails={productDetails}
-        setImageArray={setImageArray}
-        setProductDetails={setProductDetails}
-        imageArray={imageArray}
-        setRowDataObjects={setTableRows}
-        modalId={modalId}
-        rowsDataObjects={tableRows}
-      />
+
       {showFilterModal && (
         <FilterModal
           status="INITIATED"
@@ -540,7 +514,6 @@ const ProductsToApprove = ({
         setImageIndexForImageModal={setImageIndexForImageModal}
         rowsDataObjects={tableRows}
         modalId={modalId}
-        productDetails={productDetails}
         images={images}
       />
       {/* Accept Reject Modal */}

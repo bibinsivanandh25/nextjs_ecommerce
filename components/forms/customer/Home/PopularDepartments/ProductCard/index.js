@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -37,26 +37,26 @@ const ProductCard = ({ item, handleIconClick = () => {} }) => {
   };
   return (
     <Box
-      className="position-relative"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      maxWidth={165}
+      className="position-relative"
     >
-      {" "}
       <Paper
         elevation={hover ? 6 : 3}
-        className="mx-2"
-        sx={{
-          position: "relative",
+        className="mx-2 position-relative"
+        style={{
+          minHeight: 150,
+          minWidth: 150,
         }}
       >
-        <Image src={item.image} height={150} width={150} layout="fixed" />
+        <Image src={item.image} height={150} width={150} layout="responsive" />
       </Paper>
-      <Typography
-        className="h-5 fw-bold text-center text-truncate my-1"
-        sx={{ width: 150 }}
-      >
-        {item.title}
-      </Typography>
+      <Tooltip title={item.title}>
+        <Typography className="h-5 fw-bold text-center text-truncate my-1 px-2">
+          {item.title}
+        </Typography>
+      </Tooltip>
       <Box className="d-flex justify-content-center align-items-center mb-1">
         <StarRatingComponentReceivingRating
           rating={item.rating.rate}
@@ -64,7 +64,24 @@ const ProductCard = ({ item, handleIconClick = () => {} }) => {
         />
         <Typography className="h-6">{item.rating.count} ratings</Typography>
       </Box>
-      <Typography className="fw-bold text-center">Rs. {item.price}</Typography>
+      <Box className="">
+        <Box className="">
+          <Typography className="fw-bold h-5 text-center">
+            Rs. {item.price}
+          </Typography>
+          <Typography className="fw-bold h-6 text-center">
+            (Actual Product Cost)
+          </Typography>
+        </Box>
+        <Box className={!item.salePriceWithLogistics ? "d-none" : ""}>
+          <Typography className="fw-bold h-5 text-center">
+            Rs. {item.salePriceWithLogistics}
+          </Typography>
+          <Typography className="fw-bold h-6 text-center">
+            (with free delivery & Return)
+          </Typography>
+        </Box>
+      </Box>
       <Box
         className={
           hover ? "d-flex flex-row-reverse p-2 position-absolute" : "d-none"
