@@ -25,6 +25,8 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
+import { useDispatch } from "react-redux";
+import { storeUserInfo } from "features/customerSlice";
 
 const Header = () => {
   const { status } = useSession();
@@ -63,6 +65,7 @@ const Header = () => {
   ]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -288,13 +291,18 @@ const Header = () => {
                   }}
                   placeholder="Search store"
                 />
-                <Typography className="ms-2 cursor-pointer color-light-blue fs-14">
+                <Typography
+                  className="ms-2 cursor-pointer color-light-blue fs-14"
+                  onClick={() => {
+                    setOpen(true);
+                    dispatch(storeUserInfo({ addStore: true }));
+                  }}
+                >
                   <CustomIcon
                     showColorOnHover={false}
                     type="add"
                     color="color-light-blue "
                     className="color-light-blue fs-14"
-                    onIconClick={() => {}}
                   />
                   Add
                 </Typography>

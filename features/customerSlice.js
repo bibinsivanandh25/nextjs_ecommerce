@@ -9,6 +9,7 @@ const initialState = {
   storeCode: "",
   shopDescription: "",
   shopDescriptionImageUrl: "",
+  role: "",
 };
 
 export const customerSlice = createSlice({
@@ -16,7 +17,7 @@ export const customerSlice = createSlice({
   initialState,
   reducers: {
     storeUserInfo: (state, action) => {
-      return action.payload;
+      return { ...state, ...action.payload };
     },
     clearUser: () => {
       return initialState;

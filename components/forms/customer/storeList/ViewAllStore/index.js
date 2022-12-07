@@ -1,41 +1,97 @@
 /* eslint-disable no-plusplus */
-import { useState, useCallback, useRef } from "react";
-import { useStoreList } from "services/hooks";
+import { useState, useEffect } from "react";
+// import { useStoreList } from "services/hooks";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Box, Paper, Typography } from "@mui/material";
-import { AiOutlineHeart } from "react-icons/ai";
 import CustomIcon from "services/iconUtils";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
+import {
+  deleteStore,
+  favouriteStore,
+  getAllCustomerStores,
+} from "services/admin/storeList";
 
-const cb = () => {
-  return new Promise((resolve) => {
-    const temp = [];
-    for (let i = 0; i < 30; i++) {
-      temp.push(Math.floor(Math.random() * 10));
+const ViewAllStore = ({ switchTabs = () => {}, searchText = "" }) => {
+  const { userId } = useSelector((state) => state.customer);
+  const [storelist, setStoreList] = useState([]);
+  const [pageNum, setPageNum] = useState(0);
+  // const { loading, list } = useStoreList(cb, pageNum);
+  // const observer = useRef();
+  // const lastStore = useCallback(
+  //   (node) => {
+  //     if (loading) return;
+  //     if (observer.current) observer.current.disconnect();
+  //     observer.current = new IntersectionObserver((entries) => {
+  //       if (entries[0].isIntersecting) {
+  //         setPageNum((prev) => prev + 1);
+  //       }
+  //     });
+  //     if (node) observer.current.observe(node);
+  //   },
+  //   [loading]
+  // );
+
+  const getAllStores = async () => {
+    const { data, err } = await getAllCustomerStores(
+      userId,
+      pageNum,
+      searchText
+    );
+    if (data) {
+      setStoreList([
+        ...data.map((item) => ({
+          id: item.customerStoreId,
+          label: item.supplierStoreName ?? "--",
+          storeCode: item.storeCode,
+          defaultStore: item.defaultStore,
+          favourite: item.favourite,
+          storeLogo: item.storeLogo || "",
+        })),
+        // ...data.map((item) => ({
+        //   id: item.customerStoreId,
+        //   label: item.supplierStoreName ?? "--",
+        //   storeCode: item.storeCode,
+        //   defaultStore: item.defaultStore,
+        //   favourite: item.favourite,
+        //   storeLogo: item.storeLogo || "",
+        // })),
+        // ...data.map((item) => ({
+        //   id: item.customerStoreId,
+        //   label: item.supplierStoreName ?? "--",
+        //   storeCode: item.storeCode,
+        //   defaultStore: item.defaultStore,
+        //   favourite: item.favourite,
+        //   storeLogo: item.storeLogo || "",
+        // })),
+      ]);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
-    setTimeout(() => {
-      resolve(temp);
-    }, 2000);
-  });
-};
+  };
+  const makefavouriteStore = async (id) => {
+    const { data, err, message } = await favouriteStore(id);
+    if (data === null) {
+      getAllStores();
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const deleteStores = async (id) => {
+    const { data, err, message } = await deleteStore(id, userId);
+    if (data === null) {
+      getAllStores();
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
-const ViewAllStore = () => {
-  const [pageNum, setPageNum] = useState(1);
-  const { loading, list } = useStoreList(cb, pageNum);
-  const observer = useRef();
-  const lastStore = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          setPageNum((prev) => prev + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading]
-  );
+  useEffect(() => {
+    getAllStores();
+  }, [searchText]);
 
   return (
     <Box
@@ -44,42 +100,84 @@ const ViewAllStore = () => {
         maxHeight: "calc(100vh - 150px)",
       }}
     >
-      {list.map((item, index) => (
-        <motion.div
-          whileHover={{
-            scale: 1.05,
-            transition: { duration: 0.5 },
-          }}
-          whileTap={{ scale: 0.9 }}
-          ref={list.length - 1 === index ? lastStore : null}
-        >
-          <Paper
-            className="w-80p mx-auto p-2 d-flex justify-content-between m-2"
-            elevation={4}
+      {storelist.length ? (
+        storelist.map((item) => (
+          <motion.div
+            whileHover={{
+              scale: 1.05,
+              transition: { duration: 0.5 },
+            }}
+            whileTap={{ scale: 0.9 }}
+            // ref={list.length - 1 === index ? lastStore : null}
           >
-            <Box className="d-flex">
-              <Box elevation={4}>
-                <Image
-                  className="rounded-circle"
-                  src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000068/product/image/09012022093009214"
-                  width={50}
-                  height={50}
+            <Paper
+              className="w-80p mx-auto d-flex justify-content-between m-2"
+              elevation={4}
+            >
+              <Box className="d-flex">
+                <Box elevation={4} className="d-flex">
+                  <Image
+                    className="rounded"
+                    src={item.storeLogo}
+                    width={70}
+                    height={50}
+                  />
+                </Box>
+                <Box className="d-flex flex-column ms-1 p-2">
+                  <Typography className="">{item.label}</Typography>
+                  <Typography className="fs-12">{item.storeCode}</Typography>
+                </Box>
+              </Box>
+              <Box className="d-flex flex-column">
+                {item.favourite ? (
+                  <CustomIcon
+                    type="heart"
+                    className="fs-20 m-1 cursor-pointer color-orange"
+                    onIconClick={(e) => {
+                      e.preventDefault();
+                      makefavouriteStore(item.id);
+                    }}
+                  />
+                ) : (
+                  <CustomIcon
+                    type="favoriteBorderIcon"
+                    className="fs-20 m-1 cursor-pointer"
+                    onIconClick={(e) => {
+                      e.preventDefault();
+                      makefavouriteStore(item.id);
+                    }}
+                  />
+                )}
+                <CustomIcon
+                  type="delete"
+                  onIconClick={(e) => {
+                    e.preventDefault();
+                    deleteStores(item.id);
+                  }}
+                  className=""
+                />
+                <CustomIcon
+                  type="add"
+                  className=""
+                  onIconClick={(e) => {
+                    e.preventDefault();
+                    switchTabs("Add Store", {
+                      storeCode: item.storeCode,
+                      storeListName: {
+                        title: "",
+                        id: "",
+                      },
+                    });
+                  }}
                 />
               </Box>
-              <Box className="d-flex flex-column ms-1">
-                <Typography className="">Store {item}</Typography>
-                <Typography className="">Description or category</Typography>
-              </Box>
-            </Box>
-            <Box className="d-flex flex-column">
-              <AiOutlineHeart className="fs-20 cursor-pointer" />
-              <CustomIcon type="delete" className="" />
-              <CustomIcon type="add" className="" />
-            </Box>
-          </Paper>
-        </motion.div>
-      ))}
-      {loading && <div>Loading</div>}
+            </Paper>
+          </motion.div>
+        ))
+      ) : (
+        <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
+      )}
+      {/* {loading && <div>Loading</div>} */}
     </Box>
   );
 };

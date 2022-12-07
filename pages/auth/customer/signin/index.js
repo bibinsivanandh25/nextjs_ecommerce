@@ -22,6 +22,7 @@ import Link from "next/link";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
+import { storeUserInfo as userCustomerInfo } from "features/userSlice";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import styles from "./signin.module.css";
 
@@ -64,7 +65,7 @@ const SignIn = () => {
 
   const dispatch = useDispatch();
 
-  const storedatatoRedux = async (storeCode, customerID) => {
+  const storedatatoRedux = async (storeCode, customerID, email) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
       const userInfo = {
@@ -76,8 +77,11 @@ const SignIn = () => {
         storeThemes: data?.storeThemes,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+        role: "CUSTOMER",
+        emailId: email,
       };
       dispatch(storeUserInfo(userInfo));
+      dispatch(userCustomerInfo(userInfo));
     }
     if (err) {
       toastify(err.response?.data?.message, "error");
@@ -103,7 +107,7 @@ const SignIn = () => {
               const respo = await signIn("credentials", {
                 id: userData[0],
                 email: userData[1],
-                role: decoded.roles[0],
+                role: "CUSTOMER",
                 token: data.token,
                 redirect: false,
                 callbackUrl: "/customer/home",
@@ -113,7 +117,11 @@ const SignIn = () => {
                 return null;
               }
               router.push(`/customer/home`);
-              await storedatatoRedux(data?.defaultStoreCode, userData[0]);
+              await storedatatoRedux(
+                data?.defaultStoreCode,
+                userData[0],
+                userData[1]
+              );
             }
           }
           return null;
