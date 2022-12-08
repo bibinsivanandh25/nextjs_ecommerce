@@ -121,7 +121,7 @@ const saveDuplicateProduct = (payload, oldSupplierId, oldVariationId) => {
 
 const updateProduct = (payload) => {
   return serviceUtil
-    .post(`products/master-product`, payload)
+    .put(`products/master-product`, payload)
     .then((res) => {
       const { data } = res;
       return { data };

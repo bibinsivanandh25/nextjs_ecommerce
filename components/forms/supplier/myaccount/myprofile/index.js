@@ -465,7 +465,7 @@ const MyProfile = () => {
               </Grid>
               <Grid item md={6} sm={12}>
                 <InputBox
-                  disabled={!showUpdate}
+                  disabled
                   placeholder="Enter your GSTIN"
                   value={formValues.gstin}
                   label="GSTIN"

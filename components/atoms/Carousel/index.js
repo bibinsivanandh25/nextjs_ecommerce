@@ -29,22 +29,23 @@ function CarousalComponent({
       stopOnHover={stopOnHover}
       showIndicators={showIndicators}
     >
-      {list &&
-        list.map((value) => {
-          return (
-            <div>
-              <img
-                src={value.src}
-                alt=""
-                style={{
-                  maxHeight: carouselImageMaxHeight,
-                  minHeight: carouselImageMinHeight,
-                  minWidth: carouselImageMinWidth,
-                }}
-              />
-            </div>
-          );
-        })}
+      {list.length > 0
+        ? list.map((value) => {
+            return (
+              <div>
+                <img
+                  src={value.src}
+                  alt=""
+                  style={{
+                    maxHeight: carouselImageMaxHeight,
+                    minHeight: carouselImageMinHeight,
+                    minWidth: carouselImageMinWidth,
+                  }}
+                />
+              </div>
+            );
+          })
+        : null}
     </Carousel>
   );
 }
