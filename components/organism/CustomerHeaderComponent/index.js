@@ -31,7 +31,11 @@ import {
   clearCustomerSlice,
   storeUserInfo,
 } from "features/customerSlice";
-import { getRecentStoreList, switchStore } from "services/admin/storeList";
+import {
+  addStore,
+  getRecentStoreList,
+  switchStore,
+} from "services/admin/storeList";
 import {
   clearUser,
   storeUserInfo as storeInfoUserSlice,
@@ -57,6 +61,7 @@ const Header = () => {
   );
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [storeCode, setStoreCode] = useState("");
 
   const recentStore = async () => {
     const { data } = await getRecentStoreList(userId);
@@ -89,11 +94,11 @@ const Header = () => {
     }
   };
 
-  const handleSwitchStore = async () => {
-    const { data, err } = await switchStore(storeDetails.storeCode, userId);
+  const handleSwitchStore = async (storecode) => {
+    const { data, err } = await switchStore(storecode, userId);
     if (data) {
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
-        storeDetails.storeCode
+        storecode
       );
       if (storeData) {
         dispatch(
@@ -109,6 +114,8 @@ const Header = () => {
             supplierId: storeData.supplierId,
           })
         );
+        setStoreCode("");
+        setstoreDetails(null);
         dispatch(
           storeInfoUserSlice({
             supplierId: storeData.supplierId,
@@ -178,6 +185,21 @@ const Header = () => {
         </Box> */}
       </>
     );
+  };
+
+  const addStoreToCustomer = async () => {
+    const { data, err } = await addStore({
+      customerId: userId,
+      storeListId: null,
+      storeListName: null,
+      storeType: "SUPPLIER",
+      storeCode,
+    });
+    if (data) {
+      await handleSwitchStore(storeCode);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
   return (
     <div
@@ -301,12 +323,21 @@ const Header = () => {
               outline: "none",
               border: "none",
             }}
+            onChange={(e) => {
+              setStoreCode(e.target.value.toUpperCase());
+            }}
+            value={storeCode}
           />
           <Box
             sx={{
               m: "0.08rem",
             }}
-            className=" d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
+            className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer ${
+              storeCode !== "" ? "" : "invisible"
+            }`}
+            onClick={() => {
+              setShowConfirmModal(true);
+            }}
           >
             <ArrowForward className="color-orange fs-4" />
           </Box>
@@ -516,8 +547,13 @@ const Header = () => {
         saveBtnText="Confirm"
         ClearBtnText="Cancel"
         onSaveBtnClick={() => {
-          handleSwitchStore();
-          setShowConfirmModal(false);
+          if (storeDetails) {
+            handleSwitchStore(storeDetails.storeCode);
+            setShowConfirmModal(false);
+          } else {
+            setShowConfirmModal(false);
+            addStoreToCustomer();
+          }
         }}
         onClearBtnClick={() => {
           setstoreDetails(null);
