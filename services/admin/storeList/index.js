@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getRecentStoreList = (userId) => {
+const getRecentStoreList = (userId, keyword = "") => {
   return serviceUtil
-    .get(`users/customers/visited-store/${userId}`)
+    .get(`users/customers/visited-store/${userId}?keyword=${keyword}`)
     .then((res) => {
       const { data } = res.data;
       return { data };
@@ -27,7 +27,7 @@ const getAllStoresOfStoreListByStoreId = (customerStoreListId) => {
     })
     .catch((err) => ({ err }));
 };
-const getAllCustomerStores = (customerId, page = 1, keyword = "") => {
+const getAllCustomerStores = (customerId, page = 0, keyword = "") => {
   return serviceUtil
     .get(
       `users/customers/customer-store/${page}/30?customerId=${customerId}&keyword=${keyword}`
@@ -88,6 +88,16 @@ const addStoreToStoreList = (storeCode, storeListId, listName, userId) => {
     .catch((err) => ({ err }));
 };
 
+const getFavoriteList = (customerId) => {
+  return serviceUtil
+    .get(`users/customer/favourite-store?customerId=${customerId}`)
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getRecentStoreList,
   getStoreList,
@@ -98,4 +108,5 @@ export {
   deleteStore,
   switchStore,
   addStoreToStoreList,
+  getFavoriteList,
 };

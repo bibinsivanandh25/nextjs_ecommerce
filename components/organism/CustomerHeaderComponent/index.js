@@ -26,13 +26,10 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setAddStoreFlag,
-  clearCustomerSlice,
-  storeUserInfo,
-} from "features/customerSlice";
+import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import {
   addStore,
+  deleteStore,
   getRecentStoreList,
   switchStore,
 } from "services/admin/storeList";
@@ -42,6 +39,7 @@ import {
 } from "features/userSlice";
 import toastify from "services/utils/toastUtils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
+import FavoriteList from "@/forms/customer/favoriteList";
 
 const Header = () => {
   const { status } = useSession();
@@ -50,6 +48,7 @@ const Header = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const [showFavoriteList, setShowFavoriteList] = useState(false);
   const customer = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([]);
@@ -129,6 +128,16 @@ const Header = () => {
     }
   };
 
+  const deleteStores = async (id) => {
+    const { data, err, message } = await deleteStore(id, userId);
+    if (data === null) {
+      // getAllStores();
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
   const getStores = () => {
     return (
       <>
@@ -154,7 +163,12 @@ const Header = () => {
                   setstoreDetails(ele);
                 }}
               />
-              <CustomIcon type="delete" />
+              <CustomIcon
+                type="delete"
+                onIconClick={() => {
+                  deleteStores(ele.id);
+                }}
+              />
             </MenuItem>
           );
         })}
@@ -317,7 +331,7 @@ const Header = () => {
         >
           <input
             className="p-2 bg-white rounded inputPlaceHolder"
-            placeholder="Enter store code"
+            placeholder="Switch To New Store"
             style={{
               background: "#fae1cc",
               outline: "none",
@@ -342,9 +356,12 @@ const Header = () => {
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Store" Header="List" onOpen={recentStore}>
+          <MenuwithArrow
+            subHeader=""
+            Header="Recent Stores"
+            onOpen={recentStore}
+          >
             <MenuItem>
               <div className="d-flex align-items-center">
                 <input
@@ -359,6 +376,13 @@ const Header = () => {
             {getStores()}
           </MenuwithArrow>
         </div>
+        <FaStore
+          className="fs-2 cursor-pointer"
+          onClick={() => {
+            setShowFavoriteList(true);
+            setOpen(true);
+          }}
+        />
         <div className="cursor-pointer">
           <Typography className="h-5 cursor-pointer">Returns</Typography>
           <Typography className="fs-14 fw-bold cursor-pointer">
@@ -516,15 +540,25 @@ const Header = () => {
         position="right"
         handleClose={() => {
           setOpen(false);
+          setShowFavoriteList(false);
         }}
-        title="Store List"
+        title={showFavoriteList ? "Favorite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
-        <StoreList
-          close={() => {
-            setOpen(false);
-          }}
-        />
+        {showFavoriteList ? (
+          <FavoriteList
+            close={() => {
+              setOpen(false);
+              setShowFavoriteList(false);
+            }}
+          />
+        ) : (
+          <StoreList
+            close={() => {
+              setOpen(false);
+            }}
+          />
+        )}
       </CustomDrawer>
       <ModalComponent
         open={showConfirmModal}
