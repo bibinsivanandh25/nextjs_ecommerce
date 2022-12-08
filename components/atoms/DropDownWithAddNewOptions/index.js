@@ -15,6 +15,7 @@ const DropDownWithAddNewOptions = ({
   multiSelect = false,
   helperText = "",
   error = false,
+  handlelabelClose = () => {},
 }) => {
   const [showOptions, setshowOptions] = useState(false);
   const [list, setList] = useState([]);
@@ -135,6 +136,7 @@ const DropDownWithAddNewOptions = ({
                 type="close"
                 className="fs-20 mt-1 me-3"
                 showColorOnHover={false}
+                onIconClick={() => handlelabelClose()}
               />
             </Box>
           ) : null}
