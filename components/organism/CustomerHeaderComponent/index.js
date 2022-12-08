@@ -170,7 +170,7 @@ const Header = () => {
               setOpen(true);
             }}
           >
-            More Options
+            See More
           </Typography>
         </Box>
         {/* <Box className="d-flex justify-content-end pe-4 ">
@@ -354,21 +354,6 @@ const Header = () => {
                   }}
                   placeholder="Search store"
                 />
-                <Typography
-                  className="ms-2 cursor-pointer color-light-blue fs-14"
-                  onClick={() => {
-                    setOpen(true);
-                    dispatch(setAddStoreFlag({ addStoreFlag: true }));
-                  }}
-                >
-                  <CustomIcon
-                    showColorOnHover={false}
-                    type="add"
-                    color="color-light-blue "
-                    className="color-light-blue fs-14"
-                  />
-                  Add
-                </Typography>
               </div>
             </MenuItem>
             {getStores()}

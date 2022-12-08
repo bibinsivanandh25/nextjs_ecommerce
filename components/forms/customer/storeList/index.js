@@ -27,11 +27,11 @@ const cb = () => {
 };
 const StoreList = ({ close = () => {} }) => {
   const [storeSearchext, setStoreSearchText] = useState("");
-  const [selectedTab, setSelectedTab] = useState("Store List");
+  const [selectedTab, setSelectedTab] = useState("View All");
   const [tabList, setTabList] = useState([
     {
-      label: "Store List",
-      isSelected: true,
+      label: "Store Category",
+      isSelected: false,
     },
     {
       label: "Add Store",
@@ -39,7 +39,7 @@ const StoreList = ({ close = () => {} }) => {
     },
     {
       label: "View All",
-      isSelected: false,
+      isSelected: true,
     },
   ]);
   const [defaultData, setDefaultData] = useState({
@@ -82,7 +82,7 @@ const StoreList = ({ close = () => {} }) => {
   };
 
   const getTabUI = () => {
-    return selectedTab === "Store List" ? (
+    return selectedTab === "Store Category" ? (
       <StoresTab
         switchTabs={switchTabs}
         close={close}

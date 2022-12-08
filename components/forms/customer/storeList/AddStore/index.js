@@ -85,7 +85,7 @@ const AddStore = ({
         );
         if (data) {
           toastify(message, "success");
-          switchTabs("Store List", { storeCode: "", storeListName: null });
+          switchTabs("Store Category", { storeCode: "", storeListName: null });
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }
@@ -101,7 +101,10 @@ const AddStore = ({
         if (data) {
           toastify(message, "success");
           if (formData.storeListName?.id) {
-            switchTabs("Store List", { storeCode: "", storeListName: null });
+            switchTabs("Store Category", {
+              storeCode: "",
+              storeListName: null,
+            });
           } else {
             switchTabs("View All", { storeCode: "", storeListName: null });
           }
