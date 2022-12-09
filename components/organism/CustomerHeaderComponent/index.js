@@ -42,7 +42,7 @@ import { getStoreByStoreCode } from "services/customer/ShopNow";
 import FavoriteList from "@/forms/customer/favoriteList";
 
 const Header = () => {
-  const { status, data } = useSession();
+  const session = useSession();
 
   const route = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -78,12 +78,15 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (status === "authenticated" && data?.user?.role === "CUSTOMER") {
+    if (
+      session?.status === "authenticated" &&
+      session?.data?.user?.role === "CUSTOMER"
+    ) {
       setIsSignedIn(true);
     } else {
       setIsSignedIn(false);
     }
-  }, [status]);
+  }, [session]);
 
   const handleRouting = (path) => {
     if (isSignedIn) {
