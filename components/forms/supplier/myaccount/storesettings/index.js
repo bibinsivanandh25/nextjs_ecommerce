@@ -224,8 +224,8 @@ const StoreSettings = () => {
           data.shopOpeningDays?.map((value) => {
             return daysList.filter((ele) => ele.value === value)[0];
           }) ?? [],
-        shopOpenTimings: data.shopTimings.split("-")[0].trim(),
-        shopCloseTimings: data.shopTimings.split("-")[1].trim(),
+        shopOpenTimings: data.shopTimings?.split("-")[0].trim(),
+        shopCloseTimings: data.shopTimings?.split("-")[1].trim(),
         description: data.shopDescription,
         supplierStoreInfoId: data.supplierStoreInfoId,
       }));

@@ -25,8 +25,21 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
-import { useDispatch } from "react-redux";
-import { storeUserInfo } from "features/customerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
+import {
+  addStore,
+  deleteStore,
+  getRecentStoreList,
+  switchStore,
+} from "services/admin/storeList";
+import {
+  clearUser,
+  storeUserInfo as storeInfoUserSlice,
+} from "features/userSlice";
+import toastify from "services/utils/toastUtils";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import FavoriteList from "@/forms/customer/favoriteList";
 
 const Header = () => {
   const { status, data } = useSession();
@@ -35,37 +48,34 @@ const Header = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const [showFavoriteList, setShowFavoriteList] = useState(false);
+  const customer = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
-  const [stores, setStores] = useState([
-    {
-      id: 1,
-      label: "Store Name1",
-      checked: false,
-    },
-    {
-      id: 2,
-      label: "Store Name2",
-      checked: false,
-    },
-    {
-      id: 3,
-      label: "Store Name3",
-      checked: false,
-    },
-    {
-      id: 4,
-      label: "Store Name4",
-      checked: false,
-    },
-    {
-      id: 5,
-      label: "Store Name5",
-      checked: false,
-    },
-  ]);
+  const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
+  const { supplierStoreName, supplierStoreLogo, userId } = useSelector(
+    (state) => state.customer
+  );
+  const [storeDetails, setstoreDetails] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [storeCode, setStoreCode] = useState("");
+
+  const recentStore = async () => {
+    const { data } = await getRecentStoreList(userId);
+    if (data) {
+      setStores(
+        data.map((item) => ({
+          id: item.customerStoreId,
+          label: item.supplierStoreName,
+          checked: item.defaultStore,
+          favourite: item.favourite,
+          storeCode: item.storeCode,
+        }))
+      );
+    }
+  };
 
   useEffect(() => {
     if (status === "authenticated" && data?.user?.role === "CUSTOMER") {
@@ -80,6 +90,51 @@ const Header = () => {
       route.push(path);
     } else {
       route.replace("/auth/customer/signin");
+    }
+  };
+
+  const handleSwitchStore = async (storecode) => {
+    const { data, err } = await switchStore(storecode, userId);
+    if (data) {
+      const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+        storecode
+      );
+      if (storeData) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            supplierStoreLogo: storeData.supplierStoreLogo,
+            supplierStoreName: storeData.supplierStoreName,
+            storeCode: storeData.supplierStoreCode,
+            storeThemes: storeData.storeThemes,
+            shopDescription: storeData.shopDescription ?? "",
+            shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+            addStoreFlag: false,
+            supplierId: storeData.supplierId,
+          })
+        );
+        setStoreCode("");
+        setstoreDetails(null);
+        dispatch(
+          storeInfoUserSlice({
+            supplierId: storeData.supplierId,
+          })
+        );
+      } else if (storeErr) {
+        toastify(storeErr?.response?.data?.message, "error");
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const deleteStores = async (id) => {
+    const { data, err, message } = await deleteStore(id, userId);
+    if (data === null) {
+      // getAllStores();
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -103,27 +158,25 @@ const Header = () => {
                   </Typography>
                 }
                 isChecked={ele.checked}
-                checkBoxClick={(id) => {
-                  const arr = [...stores];
-                  setStores((pre) => {
-                    if (pre.id == id) {
-                      return (pre.checked = true);
-                    }
-                    return (pre.checked = false);
-                  });
-                  arr.map((item) => {
-                    if (item.id == id) {
-                      return (item.checked = true);
-                    }
-                    return (item.checked = false);
-                  });
-                  setStores([...arr]);
+                checkBoxClick={() => {
+                  setShowConfirmModal(true);
+                  setstoreDetails(ele);
                 }}
               />
-              <CustomIcon type="delete" />
+              <CustomIcon
+                type="delete"
+                onIconClick={() => {
+                  deleteStores(ele.id);
+                }}
+              />
             </MenuItem>
           );
         })}
+        {!stores.length && (
+          <Typography className="fs-14 color-gray text-center p-2">
+            No Stores found
+          </Typography>
+        )}
         <Box className="d-flex justify-content-end pe-4 ">
           <Typography
             className="color-orange fs-14 cursor-pointer"
@@ -131,7 +184,7 @@ const Header = () => {
               setOpen(true);
             }}
           >
-            More Options
+            See More
           </Typography>
         </Box>
         {/* <Box className="d-flex justify-content-end pe-4 ">
@@ -146,6 +199,21 @@ const Header = () => {
         </Box> */}
       </>
     );
+  };
+
+  const addStoreToCustomer = async () => {
+    const { data, err } = await addStore({
+      customerId: userId,
+      storeListId: null,
+      storeListName: null,
+      storeType: "SUPPLIER",
+      storeCode,
+    });
+    if (data) {
+      await handleSwitchStore(storeCode);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
   return (
     <div
@@ -200,14 +268,14 @@ const Header = () => {
         >
           <Box className="pe-2">
             <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile/1661760335745-Balu_Logo.png "
+              src={supplierStoreLogo ?? ""}
               layout="fixed"
               height={30}
               width={80}
             />
           </Box>
           <Typography className="h-5 fw-bold cursor-pointer">
-            Balu Enterprises pvt ltd
+            {supplierStoreName}
           </Typography>
         </div>
         <div className="d-flex align-items-center rounded w-30p">
@@ -263,25 +331,37 @@ const Header = () => {
         >
           <input
             className="p-2 bg-white rounded inputPlaceHolder"
-            placeholder="Enter store code"
+            placeholder="Switch To New Store"
             style={{
               background: "#fae1cc",
               outline: "none",
               border: "none",
             }}
+            onChange={(e) => {
+              setStoreCode(e.target.value.toUpperCase());
+            }}
+            value={storeCode}
           />
           <Box
             sx={{
               m: "0.08rem",
             }}
-            className=" d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
+            className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer ${
+              storeCode !== "" ? "" : "invisible"
+            }`}
+            onClick={() => {
+              setShowConfirmModal(true);
+            }}
           >
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Store" Header="List">
+          <MenuwithArrow
+            subHeader=""
+            Header="Recent Stores"
+            onOpen={recentStore}
+          >
             <MenuItem>
               <div className="d-flex align-items-center">
                 <input
@@ -291,26 +371,18 @@ const Header = () => {
                   }}
                   placeholder="Search store"
                 />
-                <Typography
-                  className="ms-2 cursor-pointer color-light-blue fs-14"
-                  onClick={() => {
-                    setOpen(true);
-                    dispatch(storeUserInfo({ addStore: true }));
-                  }}
-                >
-                  <CustomIcon
-                    showColorOnHover={false}
-                    type="add"
-                    color="color-light-blue "
-                    className="color-light-blue fs-14"
-                  />
-                  Add
-                </Typography>
               </div>
             </MenuItem>
             {getStores()}
           </MenuwithArrow>
         </div>
+        <FaStore
+          className="fs-2 cursor-pointer"
+          onClick={() => {
+            setShowFavoriteList(true);
+            setOpen(true);
+          }}
+        />
         <div className="cursor-pointer">
           <Typography className="h-5 cursor-pointer">Returns</Typography>
           <Typography className="fs-14 fw-bold cursor-pointer">
@@ -357,6 +429,8 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
+                      dispatch(clearUser());
+                      dispatch(clearCustomerSlice());
                       signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >
@@ -466,12 +540,50 @@ const Header = () => {
         position="right"
         handleClose={() => {
           setOpen(false);
+          setShowFavoriteList(false);
         }}
-        title="Store List"
+        title={showFavoriteList ? "Favorite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
-        <StoreList />
+        {showFavoriteList ? (
+          <FavoriteList
+            close={() => {
+              setOpen(false);
+              setShowFavoriteList(false);
+            }}
+          />
+        ) : (
+          <StoreList
+            close={() => {
+              setOpen(false);
+            }}
+          />
+        )}
       </CustomDrawer>
+      <ModalComponent
+        open={showConfirmModal}
+        showHeader={false}
+        saveBtnText="Confirm"
+        ClearBtnText="Cancel"
+        onSaveBtnClick={() => {
+          if (storeDetails) {
+            handleSwitchStore(storeDetails.storeCode);
+            setShowConfirmModal(false);
+          } else {
+            setShowConfirmModal(false);
+            addStoreToCustomer();
+          }
+        }}
+        onClearBtnClick={() => {
+          setstoreDetails(null);
+          setShowConfirmModal(false);
+        }}
+        ModalWidth={400}
+      >
+        <Typography className="fs-16 w-100 text-center fw-bold my-4">
+          Are you sure you want to switch store?
+        </Typography>
+      </ModalComponent>
     </div>
   );
 };

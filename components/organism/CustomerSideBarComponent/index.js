@@ -17,7 +17,7 @@ import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
 // import { useSession } from "next-auth/react";
 // import { MenuItem, MenuList } from "@mui/material";
 // import { useRouter } from "next/router";
-import BreadCrumb from "components/atoms/BreadCrumb";
+// import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Grid, Paper, Popper, Tooltip } from "@mui/material";
 import Footer from "components/customer/Footer";
 import { useRouter } from "next/router";
@@ -29,17 +29,17 @@ import {
 // const drawerWidth = 245;
 
 const CustomerSideBarComponent = ({ children }) => {
-  const [showBreadCrumb, setShowBreadCrumb] = useState(true);
+  // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
   const [customerMenu, setCustomerMenu] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
   const [setsandSubCategoryData, setSetsandSubCategoryData] = useState([]);
-  const updatedChildren = { ...children };
-  updatedChildren.props = {
-    ...children.props,
-    showBreadCrumb: (val = true) => {
-      setShowBreadCrumb(val);
-    },
-  };
+  // const updatedChildren = { ...children };
+  // updatedChildren.props = {
+  //   ...children.props,
+  //   showBreadCrumb: (val = true) => {
+  //     setShowBreadCrumb(val);
+  //   },
+  // };
   const router = useRouter();
   // const mapList = () => {
   //   const addId = (id, item, path) => {
@@ -289,11 +289,11 @@ const CustomerSideBarComponent = ({ children }) => {
         }}
         className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
-        {showBreadCrumb && (
+        {/* {showBreadCrumb && (
           <Box className="mb-2">
             <BreadCrumb />
           </Box>
-        )}
+        )} */}
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
@@ -308,7 +308,7 @@ const CustomerSideBarComponent = ({ children }) => {
             }}
             key={router.route}
           >
-            {updatedChildren}
+            {children}
             <Footer />
           </motion.div>
         </AnimatePresence>

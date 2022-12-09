@@ -11,15 +11,24 @@ import {
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
+  switchStore,
 } from "services/admin/storeList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { storeUserInfo } from "features/customerSlice";
+import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
+import ModalComponent from "@/atoms/ModalComponent";
 
-const StoresTab = ({ switchTabs = () => {} }) => {
+const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
   const [storelist, setStoreList] = useState([]);
   const [stores, setStores] = useState([]);
   const [selectedStoreList, setSelectedStoreList] = useState(null);
   const { userId } = useSelector((state) => state.customer);
+  const dispatch = useDispatch();
+  const customer = useSelector((state) => state.customer);
+  const [storeDetails, setstoreDetails] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [pageNum, setPageNum] = useState(1);
   const observer = useRef();
@@ -59,6 +68,7 @@ const StoresTab = ({ switchTabs = () => {} }) => {
           storeCode: item.storeCode,
           defaultStore: item.defaultStore,
           favourite: item.favourite,
+          storeLogo: item.storeLogo || "",
         }))
       );
     } else if (err) {
@@ -88,6 +98,42 @@ const StoresTab = ({ switchTabs = () => {} }) => {
   useEffect(() => {
     getStoresList();
   }, []);
+
+  const handleSwitchStore = async () => {
+    const { data, err } = await switchStore(storeDetails.storeCode, userId);
+    if (data) {
+      const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+        storeDetails.storeCode
+      );
+      if (storeData) {
+        close();
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            supplierStoreLogo: storeData.supplierStoreLogo,
+            supplierStoreName: storeData.supplierStoreName,
+            storeCode: storeData.supplierStoreCode,
+            storeThemes: storeData.storeThemes,
+            shopDescription: storeData.shopDescription ?? "",
+            shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+            addStoreFlag: false,
+            supplierId: storeData.supplierId,
+          })
+        );
+        dispatch(
+          storeInfoUserSlice({
+            supplierId: storeData.supplierId,
+          })
+        );
+        setShowConfirmModal(false);
+      } else if (storeErr) {
+        toastify(storeErr?.response?.data?.message, "error");
+      }
+    } else if (err) {
+      setShowConfirmModal(false);
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   return selectedStoreList === null ? (
     <>
@@ -120,7 +166,7 @@ const StoresTab = ({ switchTabs = () => {} }) => {
           })
         ) : (
           <Typography className="fs-14 color-gray">
-            Store Lists not found
+            Store Categorys not found
           </Typography>
         )}
       </Box>
@@ -216,22 +262,29 @@ const StoresTab = ({ switchTabs = () => {} }) => {
               whileTap={{ scale: 0.9 }}
             >
               <Paper
-                className="w-80p mx-auto p-2 d-flex m-2 justify-content-between"
+                className={`w-80p rounded mx-auto d-flex justify-content-between m-2 ${
+                  item.defaultStore ? "border border-primary border-2" : ""
+                }`}
+                sx={{ height: "80px" }}
                 elevation={4}
+                onClick={() => {
+                  // handleSwitchStore(item);
+                  if (item.defaultStore) return;
+                  setstoreDetails(item);
+                  setShowConfirmModal(true);
+                }}
               >
                 <Box elevation={4}>
                   <Image
-                    className="rounded-circle"
-                    src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000068/product/image/09012022093009214"
+                    className="rounded"
+                    src={item.storeLogo}
                     width={50}
                     height={50}
                   />
                 </Box>
-                <Box className="d-flex flex-column ms-1">
+                <Box className="d-flex flex-column ms-1 p-2">
                   <Typography className="">{item.label}</Typography>
-                  <Typography className="fs-12">
-                    Store code: {item.storeCode}
-                  </Typography>
+                  <Typography className="fs-12">{item.storeCode}</Typography>
                 </Box>
                 <Box className="d-flex flex-column">
                   {item.favourite ? (
@@ -267,6 +320,22 @@ const StoresTab = ({ switchTabs = () => {} }) => {
           );
         })}
         {/* {loading && <div>Loading</div>} */}
+        <ModalComponent
+          open={showConfirmModal}
+          showHeader={false}
+          saveBtnText="Confirm"
+          ClearBtnText="Cancel"
+          onSaveBtnClick={handleSwitchStore}
+          onClearBtnClick={() => {
+            setstoreDetails(null);
+            setShowConfirmModal(false);
+          }}
+          ModalWidth={400}
+        >
+          <Typography className="fs-16 w-100 text-center fw-bold my-4">
+            Are you sure you want to switch store?
+          </Typography>
+        </ModalComponent>
       </Box>
     </Box>
   );

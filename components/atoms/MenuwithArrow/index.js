@@ -3,11 +3,13 @@ import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import Typography from "@mui/material/Typography";
 import { ArrowDropDown } from "@mui/icons-material";
+import { useEffect } from "react";
 
 export default function MenuwithArrow({
   children,
   subHeader = "Favourite",
   Header = "List",
+  onOpen = () => {},
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -19,6 +21,11 @@ export default function MenuwithArrow({
       setAnchorEl(null);
     }
   };
+  useEffect(() => {
+    if (open) {
+      onOpen();
+    }
+  }, [open]);
   return (
     <div className="cursor-pointer">
       <Box onClick={handleClick} className="cursor-pointer">

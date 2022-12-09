@@ -1,59 +1,35 @@
-/* eslint-disable no-plusplus */
-import { useState, useEffect } from "react";
-// import { useStoreList } from "services/hooks";
-import { motion } from "framer-motion";
-import Image from "next/image";
+/* eslint-disable no-nested-ternary */
+
 import { Box, Paper, Typography } from "@mui/material";
+import Image from "next/image";
+import { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
+import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import toastify from "services/utils/toastUtils";
 import {
   deleteStore,
   favouriteStore,
-  getAllCustomerStores,
   switchStore,
+  getFavoriteList,
 } from "services/admin/storeList";
+import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
-import ModalComponent from "@/atoms/ModalComponent";
 
-const ViewAllStore = ({
-  switchTabs = () => {},
-  close = () => {},
-  searchText = "",
-}) => {
-  const customer = useSelector((state) => state.customer);
-  const { userId } = customer;
-  const [storelist, setStoreList] = useState([]);
+const FavoriteList = ({ close = () => {} }) => {
+  const [favStores, setFavStores] = useState([]);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [pageNum, setPageNum] = useState(0);
+  const customer = useSelector((state) => state.customer);
+  const { userId } = customer;
   const dispatch = useDispatch();
-  // const { loading, list } = useStoreList(cb, pageNum);
-  // const observer = useRef();
-  // const lastStore = useCallback(
-  //   (node) => {
-  //     if (loading) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         setPageNum((prev) => prev + 1);
-  //       }
-  //     });
-  //     if (node) observer.current.observe(node);
-  //   },
-  //   [loading]
-  // );
 
   const getAllStores = async () => {
-    const { data, err } = await getAllCustomerStores(
-      userId,
-      pageNum,
-      searchText
-    );
+    const { data, err } = await getFavoriteList(userId);
     if (data) {
-      setStoreList([
+      setFavStores([
         ...data.map((item) => ({
           id: item.customerStoreId,
           label: item.supplierStoreName ?? "--",
@@ -67,6 +43,7 @@ const ViewAllStore = ({
       toastify(err?.response?.data?.message, "error");
     }
   };
+
   const makefavouriteStore = async (id) => {
     const { data, err, message } = await favouriteStore(id);
     if (data === null) {
@@ -85,10 +62,6 @@ const ViewAllStore = ({
       toastify(err?.response?.data?.message, "error");
     }
   };
-
-  useEffect(() => {
-    getAllStores();
-  }, [searchText]);
 
   const handleSwitchStore = async () => {
     const { data, err } = await switchStore(storeDetails.storeCode, userId);
@@ -124,15 +97,14 @@ const ViewAllStore = ({
     }
   };
 
+  useEffect(() => {
+    getAllStores();
+  }, []);
+
   return (
-    <Box
-      className="overflow-y-scroll overflow-x-hide"
-      sx={{
-        maxHeight: "calc(100vh - 150px)",
-      }}
-    >
-      {storelist.length ? (
-        storelist.map((item) => (
+    <Box className="w-100 px-2">
+      {favStores.length ? (
+        favStores.map((item) => (
           <motion.div
             whileHover={{
               scale: 1.05,
@@ -147,7 +119,6 @@ const ViewAllStore = ({
               }`}
               elevation={4}
               onClick={() => {
-                // handleSwitchStore(item);
                 if (item.defaultStore) return;
                 setstoreDetails(item);
                 setShowConfirmModal(true);
@@ -168,25 +139,15 @@ const ViewAllStore = ({
                 </Box>
               </Box>
               <Box className="d-flex flex-column">
-                {item.favourite ? (
-                  <CustomIcon
-                    type="heart"
-                    className="fs-20 m-1 cursor-pointer color-orange"
-                    onIconClick={(e) => {
-                      e.stopPropagation();
-                      makefavouriteStore(item.id);
-                    }}
-                  />
-                ) : (
-                  <CustomIcon
-                    type="favoriteBorderIcon"
-                    className="fs-20 m-1 cursor-pointer"
-                    onIconClick={(e) => {
-                      e.stopPropagation();
-                      makefavouriteStore(item.id);
-                    }}
-                  />
-                )}
+                <CustomIcon
+                  type="heart"
+                  className="fs-20 m-1 cursor-pointer color-orange"
+                  onIconClick={(e) => {
+                    e.stopPropagation();
+                    makefavouriteStore(item.id);
+                  }}
+                />
+
                 <CustomIcon
                   type="delete"
                   onIconClick={(e) => {
@@ -196,22 +157,6 @@ const ViewAllStore = ({
                   }}
                   className=""
                 />
-                <CustomIcon
-                  type="add"
-                  className=""
-                  onIconClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    switchTabs("Add Store", {
-                      storeCode: item.storeCode,
-                      storeListName: {
-                        title: "",
-                        id: "",
-                      },
-                      type: "addToList",
-                    });
-                  }}
-                />
               </Box>
             </Paper>
           </motion.div>
@@ -219,7 +164,6 @@ const ViewAllStore = ({
       ) : (
         <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
       )}
-      {/* {loading && <div>Loading</div>} */}
       <ModalComponent
         open={showConfirmModal}
         showHeader={false}
@@ -239,4 +183,4 @@ const ViewAllStore = ({
     </Box>
   );
 };
-export default ViewAllStore;
+export default FavoriteList;

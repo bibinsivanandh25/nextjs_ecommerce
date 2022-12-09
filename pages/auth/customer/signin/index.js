@@ -68,6 +68,7 @@ const SignIn = () => {
   const storedatatoRedux = async (storeCode, customerID, email) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
+      console.log(data);
       const userInfo = {
         userId: customerID,
         supplierId: data?.supplierId,
@@ -81,7 +82,14 @@ const SignIn = () => {
         emailId: email,
       };
       dispatch(storeUserInfo(userInfo));
-      dispatch(userCustomerInfo(userInfo));
+      dispatch(
+        userCustomerInfo({
+          userId: customerID,
+          supplierId: data?.supplierId,
+          role: "CUSTOMER",
+          emailId: email,
+        })
+      );
     }
     if (err) {
       toastify(err.response?.data?.message, "error");
