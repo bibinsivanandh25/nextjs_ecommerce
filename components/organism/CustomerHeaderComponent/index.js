@@ -43,7 +43,7 @@ import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
 
 const Header = () => {
-  const { status } = useSession();
+  const session = useSession();
 
   const route = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -79,12 +79,15 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (
+      session?.status === "authenticated" &&
+      session?.data?.user?.role === "CUSTOMER"
+    ) {
       setIsSignedIn(true);
     } else {
       setIsSignedIn(false);
     }
-  }, [status]);
+  }, [session]);
 
   const handleRouting = (path) => {
     if (isSignedIn) {

@@ -66,6 +66,15 @@ const getRecentlyViewedProducts = (customerId) => {
     })
     .catch((err) => ({ err }));
 };
+const getArticles = () => {
+  return serviceUtil
+    .get(`/users/customer/article`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getBannersBySupplierId,
   getMainCategories,
@@ -73,4 +82,5 @@ export {
   getNewArrivalProducts,
   getMostPopularProducts,
   getRecentlyViewedProducts,
+  getArticles,
 };
