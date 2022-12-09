@@ -29,7 +29,7 @@ import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
 
 const Header = () => {
-  const { status } = useSession();
+  const { status, data } = useSession();
 
   const route = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -68,7 +68,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && data?.user?.role === "CUSTOMER") {
       setIsSignedIn(true);
     } else {
       setIsSignedIn(false);

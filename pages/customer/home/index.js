@@ -3,6 +3,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import {
+  getArticles,
   getBannersBySupplierId,
   getMainCategories,
   getTopProducts,
@@ -27,49 +28,6 @@ import Articles from "./Articles";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 
-const articleData = [
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-];
-
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -77,6 +35,8 @@ const Home = () => {
   const [bannerImages, setBannerImages] = useState([]);
   // const [categories, setCategories] = useSta te([]);
   const [storeInformation, setStoreInformation] = useState([]);
+  const [articleData, setArticleData] = useState([]);
+
   // const [products, setProducts] = useState([]);
 
   const route = useRouter();
@@ -85,7 +45,10 @@ const Home = () => {
 
   const userInfo = useSession();
   useEffect(() => {
-    if (userInfo.status === "authenticated") {
+    if (
+      userInfo.status === "authenticated" &&
+      userInfo?.data?.user?.role === "CUSTOMER"
+    ) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
@@ -94,7 +57,6 @@ const Home = () => {
 
   const getStoreData = async () => {
     const { data } = await getStoreByStoreCode(storeDetails.storeCode);
-    console.log("reached", data);
     if (data) {
       const days = [
         "Sunday",
@@ -128,6 +90,7 @@ const Home = () => {
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         shopDescription: data?.shopDescription,
         maxOrderProcessingTime: data?.maxOrderProcessingTime,
+        gstIn: data?.gstIn,
       });
     }
   };
@@ -195,10 +158,24 @@ const Home = () => {
       // console.log(err);
     }
   };
+
+  const getArticlesData = async () => {
+    const { data } = await getArticles();
+    if (data) {
+      setArticleData(() => {
+        return data.map((ele) => ({
+          image: ele.articlesMedia[0]?.mediaUrl,
+          content: ele.longDescription,
+          id: ele.articleId,
+        }));
+      });
+    }
+  };
   useEffect(() => {
     getCategories();
     getBanners();
     getProducts();
+    getArticlesData();
   }, []);
 
   return (
@@ -263,7 +240,7 @@ const Home = () => {
                   <Image src={customerHome.file} height={50} width={50} />
                   <Box>
                     <Typography className="fw-bold h-5">GSTIN No.</Typography>
-                    <span className="h-5">1276351243123</span>
+                    <span className="h-5">{storeInformation?.gstIn}</span>
                   </Box>
                 </Grid>
                 <Grid
@@ -323,13 +300,12 @@ const Home = () => {
             <Box className="my-2">
               <FlashDeals />
             </Box>
-            <Box className="my-2">
+            <Box className={isLoggedIn ? "" : "d-none"}>
               <RecentlyViewed setShowCompareProducts={setShowCompareProducts} />
             </Box>
-            <Box className="my-3 d-flex justify-content-center">
-              <Typography className="h-4 fw-bold mx-auto">Articles</Typography>
+            <Box className={articleData?.length ? "" : "d-none"}>
+              <Articles articleData={articleData} />
             </Box>
-            <Articles articleData={articleData} />
           </Box>
         ) : (
           <ComapareProducts
