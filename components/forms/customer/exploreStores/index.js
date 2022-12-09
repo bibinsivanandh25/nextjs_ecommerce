@@ -1,30 +1,17 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-plusplus */
 import ButtonComponent from "@/atoms/ButtonComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { Grid, Box, Paper, Typography } from "@mui/material";
 import { useRef, useEffect, useState, useCallback } from "react";
-import { City, State } from "country-state-city";
+import { State } from "country-state-city";
 import { getCategory } from "services/admin/products/productCategories/assignVariation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { getStore } from "services/admin/explorestore";
 import toastify from "services/utils/toastUtils";
 
-const cb = () => {
-  return new Promise((resolve) => {
-    const temp = [];
-    for (let i = 0; i < 100; i++) {
-      temp.push(Math.floor(Math.random() * 10));
-    }
-    setTimeout(() => {
-      resolve(temp);
-    }, 2000);
-  });
-};
-
-const ExploreStores = () => {
+const ExploreStores = ({ handleStoreSelection = () => {} }) => {
   const [formData, setFormData] = useState({
     location: null,
     category: {},
@@ -54,7 +41,6 @@ const ExploreStores = () => {
     },
     [loading]
   );
-
   const handleChange = (val, name) => {
     setFormData((pre) => ({
       ...pre,
@@ -97,7 +83,15 @@ const ExploreStores = () => {
     const { data, err } = await getStore(payload);
     if (data) {
       setLoading(false);
-      setStoresList(data);
+      setStoresList(
+        data.map((item) => ({
+          label: item.supplierStoreName ?? "--",
+          storeCode: item.supplierStoreCode,
+          storeLogo: item.storeLogo || "",
+          shopDescription: item.shopDescription,
+          city: item.city,
+        }))
+      );
     } else if (err) {
       setLoading(false);
       toastify(err?.response?.data?.message, "error");
@@ -137,7 +131,7 @@ const ExploreStores = () => {
             value={formData.storeName}
           />
         </Grid>
-        <Grid item md={12} className="mb-3">
+        {/* <Grid item md={12} className="mb-3">
           <SimpleDropdownComponent
             onDropdownSelect={(val) => {
               handleChange(val, "state");
@@ -157,7 +151,7 @@ const ExploreStores = () => {
             label="District"
             value={formData.district}
           />
-        </Grid>
+        </Grid> */}
         <Grid item md={12} className="mb-3">
           <InputBox
             onInputChange={(e) => {
@@ -173,23 +167,12 @@ const ExploreStores = () => {
       </Grid>
 
       <Box
-        className="overflow-y-scroll"
+        className="overflow-y-scroll overflow-x-hide"
         sx={{
-          maxHeight: "calc(100vh - 450px)",
+          maxHeight: "calc(100vh - 400px)",
         }}
       >
         {storesList.map((item, index) => {
-          // if (list.length - 1 === index) {
-          //   return (
-          //     <div
-          //       ref={lastStore}
-          //       style={{ height: "30px" }}
-          //       className="border my-2"
-          //     >
-          //       {item}
-          //     </div>
-          //   );
-          // }
           return (
             <motion.div
               whileHover={{
@@ -197,19 +180,29 @@ const ExploreStores = () => {
                 transition: { duration: 0.5 },
               }}
               whileTap={{ scale: 0.9 }}
+              ref={index === storesList.length - 1 ? lastStore : null}
             >
-              <Paper className="w-80p mx-auto p-2 d-flex m-2" elevation={4}>
-                <Box elevation={4}>
-                  <Image
-                    className="rounded-circle"
-                    src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000068/product/image/09012022093009214"
-                    width={50}
-                    height={50}
-                  />
-                </Box>
-                <Box className="d-flex flex-column ms-1">
-                  <Typography className="">Store {item}</Typography>
-                  <Typography className="">Description or category</Typography>
+              <Paper
+                className="w-80p mx-auto p-2 d-flex m-2"
+                elevation={4}
+                onClick={() => {
+                  handleStoreSelection(item);
+                }}
+              >
+                <Box className="d-flex">
+                  <Box elevation={4} className="d-flex">
+                    <Image
+                      className="rounded"
+                      src={item.storeLogo || ""}
+                      width={70}
+                      height={50}
+                    />
+                  </Box>
+                  <Box className="d-flex flex-column ms-1 p-2">
+                    <Typography className="">{item.label}</Typography>
+                    <Typography className="fs-12">{item.storeCode}</Typography>
+                    <Typography className="fs-12">{item.city}</Typography>
+                  </Box>
                 </Box>
               </Paper>
             </motion.div>
