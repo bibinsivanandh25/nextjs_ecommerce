@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   getArticles,
   getBannersBySupplierId,
-  getMainCategories,
   getTopProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
@@ -13,7 +12,6 @@ import { useSelector } from "react-redux";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
 import TopCategories from "@/forms/customer/Home/TopCategories";
-import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
@@ -24,6 +22,7 @@ import Image from "next/image";
 import { FaInfoCircle } from "react-icons/fa";
 import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
+import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
@@ -109,23 +108,6 @@ const Home = () => {
     getStoreData();
   }, [storeDetails]);
 
-  const getCategories = async () => {
-    const { data, err } = await getMainCategories();
-    if (data) {
-      const results = [];
-      data.forEach((ele) => {
-        results.push({
-          id: ele.mainCategoryId,
-          name: ele.mainCategoryName,
-          image: ele.categoryImageUrl,
-        });
-        // setCategories([...results]);
-      });
-    } else if (err) {
-      // console.log(err);
-    }
-  };
-
   const getBanners = async () => {
     const { data, err } = await getBannersBySupplierId(storeDetails.supplierId);
     if (data) {
@@ -180,7 +162,7 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    getCategories();
+    getBanners();
     getProducts();
     getArticlesData();
   }, []);

@@ -1,37 +1,47 @@
 import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
 import CategoryCards from "@/atoms/CategoryCards";
+import { getTopCategoriesOfMonth } from "services/customer/Home";
+import { useSelector } from "react-redux";
 
 const TopCategories = () => {
   const [categories, setCategories] = useState([]);
 
-  const getproducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products/categories")
-      .then((data) => {
-        // console.log(data.data);
-        setCategories([...data.data, ...data.data, ...data.data, ...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
-      });
+  const { supplierId } = useSelector((state) => state.customer);
+
+  const getCategories = async () => {
+    const { data } = await getTopCategoriesOfMonth(supplierId);
+    if (data) {
+      setCategories(
+        data?.map((ele) => ({
+          id: ele.mainCategoryId,
+          categoryTitle: ele.mainCategoryName,
+          image: ele.categoryImageUrl,
+        }))
+      );
+    }
   };
   useEffect(() => {
-    getproducts();
+    getCategories();
   }, []);
   const route = useRouter();
-  const getProducts = () => {
+  const renderCategories = () => {
     return categories.map((ele) => {
       return (
         <Box
           className="mx-1"
+          key={ele.id}
           onClick={() => {
             route.push("/customer/searchedproduct");
           }}
         >
-          <CategoryCards categoryTitle={ele} height={150} width={150} />
+          <CategoryCards
+            categoryTitle={ele.categoryTitle}
+            src={ele.image}
+            height={150}
+            width={150}
+          />
         </Box>
       );
     });
@@ -42,7 +52,7 @@ const TopCategories = () => {
         Top Categories of the Month
       </Typography>
       <Box className="w-100 overflow-auto hide-scrollbar d-flex">
-        {getProducts()}
+        {renderCategories()}
       </Box>
     </Box>
   );

@@ -75,6 +75,38 @@ const getArticles = () => {
     })
     .catch((err) => ({ err }));
 };
+const getTopCategoriesOfMonth = (supplierId) => {
+  return serviceUtil
+    .get(`/products/customer/categories?supplierId=${supplierId}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getFeaturedProducts = (filterType, supplierId) => {
+  return serviceUtil
+    .get(
+      `/products/customer/popular-department/featured-product?filterType=${filterType}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const getBestSoldProducts = (filterType, supplierId) => {
+  return serviceUtil
+    .get(
+      `/products/customer/popular-department/best-seller?filterType=${filterType}&supplierId=${supplierId}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getBannersBySupplierId,
   getMainCategories,
@@ -83,4 +115,7 @@ export {
   getMostPopularProducts,
   getRecentlyViewedProducts,
   getArticles,
+  getTopCategoriesOfMonth,
+  getFeaturedProducts,
+  getBestSoldProducts,
 };
