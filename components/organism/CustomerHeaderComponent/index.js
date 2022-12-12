@@ -40,6 +40,7 @@ import {
 import toastify from "services/utils/toastUtils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import FavoriteList from "@/forms/customer/favoriteList";
+import { makeStyles } from "@mui/styles";
 
 const Header = () => {
   const session = useSession();
@@ -218,6 +219,33 @@ const Header = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+
+  const useStyles = makeStyles((theme) => ({
+    newStoreTheme: {
+      [theme.breakpoints.down("1400")]: {
+        width: "100px",
+      },
+      [theme.breakpoints.up("1400")]: {
+        width: "150px",
+      },
+    },
+    storeName: {
+      [theme.breakpoints.up("1080")]: {
+        maxWidth: "150px !important",
+        overflowWrap: "anywhere",
+      },
+    },
+    productSearch: {
+      [theme.breakpoints.up("1300")]: {
+        width: "500px",
+      },
+      [theme.breakpoints.down("1300")]: {
+        width: "30%",
+      },
+    },
+  }));
+  const styles = useStyles();
+
   return (
     <div
       className="position-fixed top-0 left-0 h-5 mnw-100vh"
@@ -277,11 +305,17 @@ const Header = () => {
               width={80}
             />
           </Box>
-          <Typography className="h-5 fw-bold cursor-pointer">
-            {supplierStoreName}
+          <Typography
+            className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px`}
+          >
+            {supplierStoreName.length <= 40
+              ? supplierStoreName
+              : `${supplierStoreName.substr(0, 38)}...`}
           </Typography>
         </div>
-        <div className="d-flex align-items-center rounded w-30p">
+        <div
+          className={`${styles.productSearch} d-flex align-items-center rounded w-30p`}
+        >
           <div
             className="rounded"
             style={{
@@ -295,6 +329,8 @@ const Header = () => {
               className="bg-white rounded"
               list={[{ label: "All Categories", value: "all" }]}
               value={{ label: "All Categories", value: "all" }}
+              freeSolo
+              placeholder="Category"
             />
           </div>
           <div
@@ -305,7 +341,7 @@ const Header = () => {
             }}
           >
             <input
-              className="p-2 bg-white inputPlaceHolder"
+              className="w-100 p-2 bg-white inputPlaceHolder"
               placeholder="Search"
               style={{
                 background: "#fae1cc",
@@ -333,8 +369,8 @@ const Header = () => {
           }}
         >
           <input
-            className="p-2 bg-white rounded inputPlaceHolder"
-            placeholder="Switch To New Store"
+            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store"
             style={{
               background: "#fae1cc",
               outline: "none",

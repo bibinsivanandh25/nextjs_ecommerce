@@ -114,6 +114,7 @@ const Home = () => {
       setBannerImages([...temp]);
     }
     if (err) {
+      setBannerImages([]);
       // console.log(err);
     }
   };
@@ -158,6 +159,9 @@ const Home = () => {
     getProducts();
     getArticlesData();
   }, []);
+  useEffect(() => {
+    getBanners();
+  }, [storeDetails?.storeCode]);
 
   return (
     <>

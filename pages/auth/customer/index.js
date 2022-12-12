@@ -167,7 +167,15 @@ const ShopCode = () => {
         title="Explore Stores"
         titleClassName="color-orange"
       >
-        <ExploreStores />
+        <ExploreStores
+          handleStoreSelection={(storeData) => {
+            setFormValues((prev) => ({
+              ...prev,
+              shopCode: storeData.storeCode,
+            }));
+            setOpenExplore(false);
+          }}
+        />
       </CustomDrawer>
     </Box>
   );
