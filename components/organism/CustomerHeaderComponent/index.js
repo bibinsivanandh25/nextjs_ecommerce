@@ -27,6 +27,7 @@ import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
+import { getAllMainCategories } from "services/customer/sidebar";
 import {
   addStore,
   deleteStore,
@@ -44,7 +45,6 @@ import { makeStyles } from "@mui/styles";
 
 const Header = () => {
   const session = useSession();
-
   const route = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
@@ -66,6 +66,8 @@ const Header = () => {
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [category, setCategory] = useState({});
 
   const recentStore = async () => {
     const { data } = await getRecentStoreList(userId);
@@ -81,6 +83,29 @@ const Header = () => {
       );
     }
   };
+
+  const getMainCategoriesList = async () => {
+    const { data } = await getAllMainCategories();
+    if (data) {
+      const temp = data?.map((ele) => {
+        return {
+          id: ele.mainCategoryId,
+          label: ele.mainCategoryName,
+          value: ele.mainCategoryName,
+        };
+      });
+      temp.push({
+        id: "All",
+        label: "All Categories",
+        value: "All Categories",
+      });
+      setCategoriesList([...temp]);
+    }
+  };
+
+  useEffect(() => {
+    getMainCategoriesList();
+  }, []);
 
   useEffect(() => {
     if (
@@ -340,10 +365,15 @@ const Header = () => {
               removeRadius
               fullWidth
               className="bg-white rounded"
-              list={[{ label: "All Categories", value: "all" }]}
-              value={{ label: "All Categories", value: "all" }}
+              list={categoriesList}
+              value={category}
               freeSolo
               placeholder="Category"
+              onDropdownSelect={(value) => {
+                if (value) {
+                  setCategory(value);
+                } else setCategory({});
+              }}
             />
           </div>
           <div
