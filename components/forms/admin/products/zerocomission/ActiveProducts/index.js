@@ -22,26 +22,11 @@ import {
   updateProduct,
 } from "features/productsSlice";
 import toastify from "services/utils/toastUtils";
-import AddEditProductModal from "./AddEditProductModal";
-import RaiseQueryModal from "./RaiseQueryModal";
 import FilterModal from "../../filterModal";
 import ViewOrEditProducts from "../../VieworEditProducts";
 import DiscountModal from "../DiscountModal";
 
 const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
-  const [rowsDataObjectsForActive, setRowsDataObjectsForActive] = useState([]);
-  const [openEditModal, setOpenEditModal] = useState(false);
-  const [productDetails, setProductDetails] = useState({
-    vendorIdOrName: "",
-    images: "",
-    sku: "",
-    categorySubcategory: "",
-    weightOrVolume: "",
-    totalStock: "",
-    salePriceAndMrp: "",
-    discounts: "",
-  });
-  const [imageArray, setImageArray] = useState([]);
   const [modalId, setModalId] = useState(null);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -52,8 +37,6 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
   const [supplierId, setSupplierId] = useState("");
   //   const [first, setfirst] = useState(second);
 
-  const [openRemoveModal, setOpenRemoveModal] = useState(false);
-  const [openRejectModal, setOpenRejectModal] = useState(false);
   const [openDiscountModal, setOpenDiscountModal] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [images, setImages] = useState([]);
@@ -214,9 +197,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
         list: [
           {
             label: "Flag",
-            callBack: () => {
-              console.log("flag");
-            },
+            callBack: () => {},
           },
 
           {
@@ -466,19 +447,6 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
                 showSearchbar={false}
                 dateFilterBtnName="+ New Product"
                 dateFilterBtnClick={() => {
-                  // setProductDetails({
-                  //   vendorIdOrName: "",
-                  //   images: "",
-                  //   productTitle: "",
-                  //   sku: "",
-                  //   categorySubcategory: "",
-                  //   weightOrVolume: "",
-                  //   totalStock: "",
-                  //   salePriceAndMrp: "",
-                  //   discounts: "",
-                  // });
-                  setImageArray([]);
-                  setOpenEditModal(true);
                   setModalId(null);
                 }}
                 onFilterButtonClick={() => {
@@ -511,18 +479,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
           }}
         />
       )}
-      {/* Edit Modal Component */}
-      <AddEditProductModal
-        openEditModal={openEditModal}
-        setOpenEditModal={setOpenEditModal}
-        productDetails={productDetails}
-        setImageArray={setImageArray}
-        setProductDetails={setProductDetails}
-        imageArray={imageArray}
-        setRowDataObjects={setRowsDataObjectsForActive}
-        modalId={modalId}
-        rowsDataObjects={rowsDataObjectsForActive}
-      />
+
       {showFilterModal && (
         <FilterModal
           status="APPROVED"
@@ -547,20 +504,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
         modalId={modalId}
         images={images}
       />
-      {/* Reasons for remove modal */}
-      <RaiseQueryModal
-        openRaiseQueryModal={openRemoveModal}
-        setOpenRaiseQueryModal={setOpenRemoveModal}
-        modalTitle="Reason for Remove"
-        placeholder="Type your Reason"
-      />
-      {/* Resons for reject modal */}
-      <RaiseQueryModal
-        openRaiseQueryModal={openRejectModal}
-        setOpenRaiseQueryModal={setOpenRejectModal}
-        modalTitle="Reason for Reject"
-        placeholder="Type your Reason"
-      />
+
       {/* Discount Modal */}
       {openDiscountModal ? (
         <DiscountModal

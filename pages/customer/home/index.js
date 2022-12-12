@@ -1,115 +1,112 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Grid, Paper, Typography } from "@mui/material";
-// import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { useEffect, useState } from "react";
-import { FaTicketAlt } from "react-icons/fa";
 
 import {
+  getArticles,
   getBannersBySupplierId,
-  getMainCategories,
   getTopProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import HotDealsOfTheDay from "@/forms/customer/Home/HotDealsOfTheDay";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
 import TopCategories from "@/forms/customer/Home/TopCategories";
-import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
-import HomeComponent from "@/forms/customer/homecomponent";
 import { useSession } from "next-auth/react";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import { format } from "date-fns";
+import Image from "next/image";
+import { FaInfoCircle } from "react-icons/fa";
+import { customerHome } from "public/assets";
+import AboutUs from "@/forms/customer/Home/AboutUs";
+import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
 // import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
-
-const articleData = [
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-  {
-    content:
-      "Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica",
-    image: "",
-  },
-];
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [bannerImages, setBannerImages] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  // const [categories, setCategories] = useSta te([]);
+  const [storeInformation, setStoreInformation] = useState([]);
+  const [articleData, setArticleData] = useState([]);
+  const [leaveDate, setleaveDate] = useState({ start: null, end: null });
+
+  // const [products, setProducts] = useState([]);
 
   const route = useRouter();
+
   const storeDetails = useSelector((state) => state.customer);
 
   const userInfo = useSession();
   useEffect(() => {
-    if (userInfo.status === "authenticated") {
+    if (
+      userInfo.status === "authenticated" &&
+      userInfo?.data?.user?.role === "CUSTOMER"
+    ) {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
   }, [userInfo]);
 
+  const getStoreData = async () => {
+    const { data } = await getStoreByStoreCode(storeDetails.storeCode);
+    if (data) {
+      if (data.leaveStartDate && data.leaveEndDate)
+        setleaveDate({
+          start: format(new Date(data.leaveStartDate), "dd MMM yyyy"),
+          end: format(new Date(data.leaveEndDate), "dd MMM yyyy"),
+        });
+      const days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+
+      setStoreInformation({
+        storeCode: data.storeCode,
+        holidays: days.filter((day) => {
+          return !data.shopOpeningDays?.includes(day);
+        }),
+        shopTimings: data.shopTimings
+          ? `${format(
+              new Date(
+                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[0]?.trim()}:00`
+              ),
+              "hh:mm a"
+            )} to ${format(
+              new Date(
+                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[1]?.trim()}:00`
+              ),
+              "hh:mm a"
+            )}`
+          : null,
+        shoplogo: data?.shopDescriptionImageUrl,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+        shopDescription: data?.shopDescription,
+        maxOrderProcessingTime: data?.maxOrderProcessingTime,
+        gstIn: data?.gstIn,
+      });
+    }
+  };
+
   useEffect(() => {
     if (storeDetails.storeCode === "" || storeDetails.supplierId === "") {
       route.push("/auth/customer");
     }
+    getStoreData();
   }, [storeDetails]);
-
-  const getCategories = async () => {
-    const { data, err } = await getMainCategories();
-    if (data) {
-      const results = [];
-      data.forEach((ele) => {
-        results.push({
-          id: ele.mainCategoryId,
-          name: ele.mainCategoryName,
-          image: ele.categoryImageUrl,
-        });
-        setCategories([...results]);
-      });
-    } else if (err) {
-      // console.log(err);
-    }
-  };
 
   const getBanners = async () => {
     const { data, err } = await getBannersBySupplierId(storeDetails.supplierId);
@@ -124,6 +121,7 @@ const Home = () => {
       setBannerImages([...temp]);
     }
     if (err) {
+      setBannerImages([]);
       // console.log(err);
     }
   };
@@ -144,107 +142,180 @@ const Home = () => {
           });
         });
       });
-      setProducts([...result]);
+      // setProducts([...result]);
     }
     if (err) {
       // console.log(err);
     }
   };
+
+  const getArticlesData = async () => {
+    const { data } = await getArticles();
+    if (data) {
+      setArticleData(() => {
+        return data.map((ele) => ({
+          image: ele.articlesMedia[0]?.mediaUrl,
+          content: ele.longDescription,
+          id: ele.articleId,
+        }));
+      });
+    }
+  };
   useEffect(() => {
-    getCategories();
     getBanners();
     getProducts();
+    getArticlesData();
   }, []);
+  useEffect(() => {
+    getBanners();
+  }, [storeDetails?.storeCode]);
 
   return (
     <>
-      {isLoggedIn ? (
-        <div className="px-3">
-          {!showCompareProducts ? (
-            <Box>
-              <CarousalComponent />
-              <Paper className="d-flex p-1 mt-2 justify-content-between">
-                <Box className="border-end border-2 d-flex justify-content-between p-3 align-items-center">
-                  <FaTicketAlt className="h-1 mx-2 color-orange" />
+      {/* {isLoggedIn ? ( */}
+      <div className="px-3">
+        {!showCompareProducts ? (
+          <Box>
+            <CarousalComponent
+              list={[...bannerImages]}
+              interval={2000}
+              autoPlay
+              stopOnHover={false}
+            />
+            <Paper className="p-1 mt-2">
+              <Grid container columnSpacing={1}>
+                <Grid
+                  item
+                  md={2.6}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
+                >
+                  <Image src={customerHome.coupon} height={40} width={60} />
                   <Typography className="fw-bold h-5">
                     Coupons Applicable Products
                   </Typography>
-                </Box>
-                <Box className="border-end border-2 d-flex justify-content-between p-3  align-items-center">
-                  <FaTicketAlt className="h-1 mx-2 color-orange" />
-                  <Typography className="fw-bold h-5">
-                    Free Shipping & Returns
-                  </Typography>
-                </Box>
-                <Box className="border-end border-2 d-flex justify-content-between p-3  align-items-center">
-                  <FaTicketAlt className="h-1 mx-2 color-orange" />
-                  <Box>
-                    <Typography className="fw-bold h-5">
-                      Secure Payment
+                </Grid>
+                <Grid
+                  item
+                  md={3.1}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.shop} height={50} width={50} />
+                  <div>
+                    <Typography className="fw-bold h-5 d-flex align-items-center">
+                      <div className="d-flex">
+                        <Typography className="fw-bold h-5 d-flex">
+                          Holiday :&nbsp;
+                          {storeInformation?.holidays?.map((ele, ind) => {
+                            return storeInformation?.holidays?.length === 1
+                              ? ele.substr(0, 3)
+                              : ind === storeInformation?.holidays.length - 1
+                              ? `${ele.substr(0, 3)}. `
+                              : `${ele.substr(0, 3)}, `;
+                          })}
+                        </Typography>
+                      </div>
                     </Typography>
-                    <span className="h-5">COD Available</span>
+
+                    <Typography className="h-5">
+                      Shop Timings : {storeInformation?.shopTimings}
+                    </Typography>
+                  </div>
+                </Grid>
+                <Grid
+                  item
+                  md={2}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.file} height={50} width={50} />
+                  <Box>
+                    <Typography className="fw-bold h-5">GSTIN No.</Typography>
+                    <span className="h-5">{storeInformation?.gstIn}</span>
                   </Box>
-                </Box>
-                <Box className="border-end border-2 d-flex justify-content-between p-3  align-items-center">
-                  <FaTicketAlt className="h-1 mx-2 color-orange" />
+                </Grid>
+                <Grid
+                  item
+                  md={2.5}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.tax} height={50} width={50} />
                   <Box>
                     {" "}
                     <Typography className="fw-bold h-5">
-                      Money Back Gaurantee
+                      Business Processing Time
                     </Typography>
-                    <span className="h-5">Any bank within 7 working days</span>
+                    <span className="h-5">
+                      {storeInformation?.maxOrderProcessingTime}
+                    </span>
                   </Box>
-                </Box>
-                <Box className="d-flex justify-content-between p-3  align-items-center">
-                  <FaTicketAlt className="h-1 color-orange mx-2" />
+                </Grid>
+                <Grid
+                  item
+                  md={1.8}
+                  sm={3}
+                  className="d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.help} height={50} width={55} />
+
                   <Box>
                     <Typography className="fw-bold h-5">
                       Help & Support
                     </Typography>
                     <span className="h-5">Available</span>
                   </Box>
-                </Box>
-              </Paper>
-              <Grid container>
-                <Grid item sm={8} className="py-3 pe-1">
-                  <Paper>
-                    <HotDealsOfTheDay />
-                  </Paper>
-                </Grid>
-                <Grid item sm={4} className="py-3 ps-1">
-                  <TopTrending />
                 </Grid>
               </Grid>
-              <Box className="p-2">
-                <TopCategories />
-              </Box>
-              <Box>
-                <PopularDepartments
-                  setShowCompareProducts={setShowCompareProducts}
-                />
-              </Box>
-              <Box className="my-2">
-                <FlashDeals />
-              </Box>
-              <Box className="my-2">
-                <RecentlyViewed
-                  setShowCompareProducts={setShowCompareProducts}
-                />
-              </Box>
-              <Box className="my-3 d-flex justify-content-center">
-                <Typography className="h-4 fw-bold mx-auto">
-                  Articles
+            </Paper>
+            {leaveDate.start && leaveDate.end && (
+              <Paper className="bg-light-yellow border border-orange rounded mt-3">
+                <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
+                  <FaInfoCircle className="mx-2 fs-20 color-orange" />
+                  Shop will be on leave from {leaveDate.start} to{" "}
+                  {leaveDate.end} , Your orders may be processed after{" "}
+                  {new Date(leaveDate.end).getDate()}th.
                 </Typography>
-              </Box>
+              </Paper>
+            )}
+            <Grid container className="">
+              <Grid item sm={8} className="py-3 pe-1 h-100">
+                {/* <HotDealsOfTheDay /> */}
+                <AboutUs
+                  description={storeInformation?.shopDescription}
+                  imageUrl={storeInformation?.shopDescriptionImageUrl}
+                />
+              </Grid>
+              <Grid item sm={4} className="py-3 ps-1 h-100">
+                <TopTrending />
+              </Grid>
+            </Grid>
+            <Box className="p-2">
+              <TopCategories />
+            </Box>
+            <Box>
+              <PopularDepartments
+                setShowCompareProducts={setShowCompareProducts}
+              />
+            </Box>
+            <Box className="my-2">
+              <FlashDeals />
+            </Box>
+            <Box className={isLoggedIn ? "" : "d-none"}>
+              <RecentlyViewed setShowCompareProducts={setShowCompareProducts} />
+            </Box>
+            <Box className={articleData?.length ? "" : "d-none"}>
               <Articles articleData={articleData} />
             </Box>
-          ) : (
-            <ComapareProducts
-              handleBackclick={() => setShowCompareProducts(false)}
-            />
-          )}
-        </div>
-      ) : (
+          </Box>
+        ) : (
+          <ComapareProducts
+            handleBackclick={() => setShowCompareProducts(false)}
+          />
+        )}
+      </div>
+      {/* ) : (
         <>
           {bannerImages.length > 0 ? (
             <CarousalComponent
@@ -276,7 +347,7 @@ const Home = () => {
             />
           </Box>
         </>
-      )}
+      )} */}
     </>
   );
 };

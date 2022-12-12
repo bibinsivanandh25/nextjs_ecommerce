@@ -14,7 +14,7 @@ import {
 } from "next-auth/react";
 import { assetsJson } from "public/assets";
 import { useRouter } from "next/router";
-import { login } from "services/customer/auth";
+import { getCustomerById, login } from "services/customer/auth";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -22,6 +22,7 @@ import Link from "next/link";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
+import { storeUserInfo as userCustomerInfo } from "features/userSlice";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import styles from "./signin.module.css";
 
@@ -64,7 +65,7 @@ const SignIn = () => {
 
   const dispatch = useDispatch();
 
-  const storedatatoRedux = async (storeCode, customerID) => {
+  const storedatatoRedux = async (storeCode, customerID, email, details) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
       const userInfo = {
@@ -76,12 +77,35 @@ const SignIn = () => {
         storeThemes: data?.storeThemes,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+        role: "CUSTOMER",
+        emailId: email,
+        profileImg: details.profileImage,
+        gender: details.gender,
+        mobileNumber: details.mobileNumber,
+        addressDetails: details.addressDetails,
+        customerName: details.customerName,
       };
       dispatch(storeUserInfo(userInfo));
+      dispatch(
+        userCustomerInfo({
+          userId: customerID,
+          supplierId: data?.supplierId,
+          role: "CUSTOMER",
+          emailId: email,
+        })
+      );
     }
     if (err) {
       toastify(err.response?.data?.message, "error");
     }
+  };
+
+  const getDetails = async (id) => {
+    const { data } = await getCustomerById(id);
+    if (data) {
+      return data;
+    }
+    return null;
   };
 
   const handleSubmit = async () => {
@@ -103,7 +127,7 @@ const SignIn = () => {
               const respo = await signIn("credentials", {
                 id: userData[0],
                 email: userData[1],
-                role: decoded.roles[0],
+                role: "CUSTOMER",
                 token: data.token,
                 redirect: false,
                 callbackUrl: "/customer/home",
@@ -112,8 +136,16 @@ const SignIn = () => {
                 toastify("Invalid credentials", "error");
                 return null;
               }
-              router.push(`/customer/home`);
-              await storedatatoRedux(data?.defaultStoreCode, userData[0]);
+              const details = await getDetails(userData[0]);
+              if (details) {
+                router.push(`/customer/home`);
+                await storedatatoRedux(
+                  data?.defaultStoreCode,
+                  userData[0],
+                  userData[1],
+                  details
+                );
+              }
             }
           }
           return null;

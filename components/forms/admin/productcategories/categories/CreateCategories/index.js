@@ -20,32 +20,6 @@ import CreateCategoriesModal from "./CreateCategoriesModal";
 import CreateVariationModal from "./CreateVariationModal";
 
 const CreateCategories = () => {
-  const [variations, setVariations] = useState([
-    {
-      variationName: "Variation 1",
-      variationAttributes: ["Attribute 1", "Attribute 2", "Attribute 3"],
-    },
-    {
-      variationName: "Variation 2",
-      variationAttributes: ["Attribute 1", "Attribute 2", "Attribute 3"],
-    },
-    {
-      variationName: "Variation 3",
-      variationAttributes: [
-        "Attribute 1",
-        "Attribute 2",
-        "Attribute 3",
-        "Attribute 4",
-        "Attribute 4",
-        "Attribute 4",
-      ],
-    },
-  ]);
-
-  const [attributesArray, setAttributesArray] = useState([]);
-  const [variationId, setVariationId] = useState(null);
-  const [variationName, setVariationName] = useState("");
-
   const [openCreateCategoriesModal, setOpenCreateCategoriesModal] =
     useState(false);
 
@@ -90,32 +64,38 @@ const CreateCategories = () => {
   };
 
   const getOptionsList = async (val) => {
-    const { data } = await getOptions(val.id);
-    if (data) {
-      setVariationOptionList((pre) => {
-        return [
-          ...pre,
-          {
-            id: val.id,
-            label: val.label,
-            options: data.map((item) => ({
-              id: item.standardOptionId,
-              label: item.optionName,
-              isChecked: false,
-            })),
-          },
-        ];
-      });
+    if (val.id !== "") {
+      const { data } = await getOptions(val.id);
+      if (data) {
+        setVariationOptionList((pre) => {
+          return [
+            ...pre,
+            {
+              id: val.id,
+              label: val.label,
+              options: data.map((item) => ({
+                id: item.standardOptionId,
+                label: item.optionName,
+                isChecked: false,
+              })),
+            },
+          ];
+        });
+      } else {
+        setVariationOptionList((pre) => {
+          return [
+            ...pre,
+            {
+              id: val.id,
+              label: val.label,
+              options: [],
+            },
+          ];
+        });
+      }
     } else {
       setVariationOptionList((pre) => {
-        return [
-          ...pre,
-          {
-            id: val.id,
-            label: val.label,
-            options: [],
-          },
-        ];
+        return [...pre, val];
       });
     }
   };
@@ -264,7 +244,7 @@ const CreateCategories = () => {
   useEffect(() => {
     getCategoriesList();
     getAllVariation();
-  }, [variations]);
+  }, []);
 
   const getSetsData = async (id) => {
     const { data } = await getSetsList(id);
@@ -278,6 +258,7 @@ const CreateCategories = () => {
     } else {
       setSetsList([]);
     }
+    setSubCategoryList([]);
   };
   const getSubCategoryData = async (id) => {
     const { data } = await getSubCategory(id);
@@ -294,10 +275,19 @@ const CreateCategories = () => {
   };
 
   useEffect(() => {
-    if (primaryForm.category?.id) getSetsData(primaryForm.category?.id);
+    if (primaryForm.category?.id) {
+      getSetsData(primaryForm.category?.id);
+    } else {
+      setSetsList([]);
+      setSubCategoryList([]);
+    }
   }, [primaryForm.category]);
   useEffect(() => {
-    if (primaryForm.set?.id) getSubCategoryData(primaryForm.set?.id);
+    if (primaryForm.set?.id) {
+      getSubCategoryData(primaryForm.set?.id);
+    } else {
+      setSubCategoryList([]);
+    }
   }, [primaryForm.set]);
 
   const validate = () => {
@@ -345,7 +335,6 @@ const CreateCategories = () => {
       }
     }
   };
-
   return (
     <>
       <Box>
@@ -367,11 +356,19 @@ const CreateCategories = () => {
                   onAddClick={() => {}}
                   inputLabelShrink
                   value={primaryForm.category}
+                  handlelabelClose={() => {
+                    setprimaryForm({
+                      category: {},
+                      set: {},
+                      subCategory: {},
+                    });
+                  }}
                   onSelectionChange={(val) => {
-                    setprimaryForm((pre) => ({
-                      ...pre,
+                    setprimaryForm({
                       category: val,
-                    }));
+                      set: {},
+                      subCategory: {},
+                    });
                   }}
                   helperText={errorObj.category}
                   error={errorObj.category !== ""}
@@ -385,10 +382,18 @@ const CreateCategories = () => {
                   onAddClick={() => {}}
                   inputLabelShrink
                   value={primaryForm.set}
+                  handlelabelClose={() => {
+                    setprimaryForm((pre) => ({
+                      ...pre,
+                      set: {},
+                      subCategory: {},
+                    }));
+                  }}
                   onSelectionChange={(val) => {
                     setprimaryForm((pre) => ({
                       ...pre,
                       set: val,
+                      subCategory: {},
                     }));
                   }}
                   helperText={errorObj.set}
@@ -401,6 +406,12 @@ const CreateCategories = () => {
                   onAddClick={() => {}}
                   inputLabelShrink
                   value={primaryForm.subCategory}
+                  handlelabelClose={() => {
+                    setprimaryForm((pre) => ({
+                      ...pre,
+                      subCategory: {},
+                    }));
+                  }}
                   onSelectionChange={(val) => {
                     setprimaryForm((pre) => ({
                       ...pre,
@@ -435,10 +446,7 @@ const CreateCategories = () => {
                     sx={{ border: "1px dashed #e56700" }}
                     className="color-orange cursor-pointer w-50 m-auto text-center mt-4 border-orange py-2"
                     onClick={() => {
-                      setAttributesArray([]);
-                      setVariationName("");
                       setOpenVariationModal(true);
-                      setVariationId(null);
                     }}
                   >
                     Add New Variations
@@ -468,16 +476,10 @@ const CreateCategories = () => {
       <CreateVariationModal
         openVariationModal={openVariationModal}
         setOpenVariationModal={setOpenVariationModal}
-        attributesArray={attributesArray}
-        variationId={variationId}
-        variations={variations}
-        setVariations={setVariations}
-        variationName={variationName}
-        setVariationName={(e) => {
-          setVariationName(e?.target?.value);
-        }}
         newVariationData={newVariationData}
         setNewVariationData={setNewVariationData}
+        setvariationList={setvariationList}
+        variationList={variationList}
       />
     </>
   );

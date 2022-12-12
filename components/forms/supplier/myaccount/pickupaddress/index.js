@@ -3,60 +3,112 @@ import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddAddressModal from "components/forms/supplier/myaccount/addaddressmodal";
-import {
-  changePrimaryAddress,
-  deleteAddress,
-  getAllAddressofSupplier,
-} from "services/supplier/myaccount/pickupaddress";
+
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
+import {
+  changePrimaryAddress,
+  deleteCustomerAddress,
+  getAllCustomerAddress,
+} from "services/customer/Home/address";
+import NewAddress from "@/forms/customer/address/AddNewAddress";
 
 const PickUpAddress = () => {
-  const [addressList, setAddressList] = useState([]);
-  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
-  const [selectId, setSelectId] = useState({ type: null, id: null });
-  const [selectedAddress, setSelectedAddress] = useState(null);
+  const customer = useSelector((state) => state.customer);
+  const [newAddressModal, setNewAddressModal] = useState(false);
+  const [modalType, setModalType] = useState("add");
+  const [defaultFormData, setDefaultFormData] = useState({
+    id: "",
+    name: "",
+    mobilenumber: "",
+    pincode: "",
+    location: "",
+    address: "",
+    city: "",
+    state: {},
+    landmark: "",
+    alternatenumber: "",
+    latitudvalue: "",
+    longitudevalue: "",
+    addresstype: "",
+  });
+  const [masterAddress, setMasterAddress] = useState([]);
 
-  const user = useSelector((state) => state.user?.supplierId);
-
-  const getAllAddress = async () => {
-    const { data, err } = await getAllAddressofSupplier(user);
-    if (data) {
-      const result = JSON.parse(JSON.stringify(data));
-      const temp = result.filter((ele) => !ele.primary);
-      temp.unshift(data.find((ele) => ele.primary));
-      setAddressList([...temp]);
-      temp.forEach((item) => {
-        if (item?.primary) {
-          setSelectedAddress(item.addressId);
-        }
-      });
-    }
-    if (err) {
-      setAddressList([]);
+  const getAllData = async (id) => {
+    if (id) {
+      const { data } = await getAllCustomerAddress(id);
+      if (data?.length) {
+        const temp = [];
+        data.forEach((item) => {
+          if (item.primary) {
+            temp.unshift(item);
+          } else {
+            temp.push(item);
+          }
+        });
+        // console.log(temp, "temp");
+        setMasterAddress(temp);
+      } else {
+        setMasterAddress([]);
+      }
     }
   };
+  useEffect(() => {
+    getAllData(customer.userId);
+  }, [customer]);
 
-  const setPrimaryAddress = async (id) => {
-    await changePrimaryAddress(user, id);
+  useEffect(() => {
+    getAllData();
+  }, []);
+  const handleAddressSelect = async (item) => {
+    if (item) {
+      const { data, err } = await changePrimaryAddress(
+        customer.userId,
+        item.addressId
+      );
+      if (data) {
+        toastify(data?.message, "success");
+        getAllData(customer.userId);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
-
-  const deletedSelectedAddress = async (id) => {
-    const { data, err } = await deleteAddress(user, id);
+  const handleDeleteClick = async (item) => {
+    const { data, err } = await deleteCustomerAddress(
+      customer.userId,
+      item.addressId
+    );
     if (data) {
-      toastify(data, "success");
-      getAllAddress();
+      toastify(data?.message, "success");
+      getAllData(customer.userId);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
-  useEffect(() => {
-    getAllAddress();
-  }, []);
-
+  const handleEditClick = (item) => {
+    if (item) {
+      setModalType("edit");
+      setDefaultFormData({
+        id: item.addressId,
+        name: item.name,
+        mobilenumber: item.mobileNumber,
+        pincode: item.pinCode,
+        location: item.location,
+        address: item.address,
+        city: item.cityDistrictTown,
+        state: { id: item.state, label: item.state },
+        landmark: item.landmark,
+        alternatenumber: item.alternativeMobileNumber,
+        latitudvalue: item.latitudeValue,
+        longitudevalue: item.longitudeValue,
+        addresstype: item?.addressType,
+      });
+      setNewAddressModal(true);
+    }
+  };
   return (
     <div className="mnh-70vh overflow-auto hide-scrollbar bg-white p-2 rounded">
       <Grid container item xs={12} sx={{ p: 3 }} spacing={3}>
@@ -65,16 +117,16 @@ const PickUpAddress = () => {
             sx={{ py: 1.5, px: 3, border: "1px solid lightgray" }}
             className="fs-12 bg-white rounded color-orange cursor-pointer"
             onClick={() => {
-              setSelectId({ type: "add", id: selectedAddress });
-              setShowAddAddressModal(true);
+              setModalType("add");
+              setNewAddressModal(true);
             }}
           >
             + Add new Address{" "}
           </Paper>
         </Grid>
         <Grid xs={6} item />
-        {addressList.length
-          ? addressList.map((add) => (
+        {masterAddress.length
+          ? masterAddress.map((add) => (
               <Grid xs={6} item key={add?.addressId}>
                 <Grid
                   container
@@ -82,9 +134,7 @@ const PickUpAddress = () => {
                     py: 1.5,
                     px: 3,
                     border: "1px solid lightgray",
-                    backgroundColor:
-                      add?.addressId === selectedAddress &&
-                      "#F5E4D7 !important",
+                    backgroundColor: add?.primary ? "#F5E4D7 !important" : "",
                   }}
                   className="fs-16 bg-white rounded h-100"
                 >
@@ -92,11 +142,10 @@ const PickUpAddress = () => {
                     <Grid item xs={12} className="cursor-pointer d-inline">
                       <CheckBoxComponent
                         label={add?.name}
-                        isChecked={add?.addressId === selectedAddress}
+                        isChecked={add?.primary}
                         showIcon
                         checkBoxClick={() => {
-                          setPrimaryAddress(add?.addressId);
-                          setSelectedAddress(add?.addressId);
+                          handleAddressSelect(add);
                         }}
                         iconType="circled"
                       />
@@ -126,15 +175,13 @@ const PickUpAddress = () => {
                       className="cursor-pointer"
                       sx={{ mb: 2 }}
                       onClick={() => {
-                        deletedSelectedAddress(add.addressId);
-                        setSelectId({ type: "delete", id: add.addressId });
+                        handleDeleteClick(add);
                       }}
                     />
                     <EditIcon
                       className="cursor-pointer"
                       onClick={() => {
-                        setShowAddAddressModal(true);
-                        setSelectId({ type: "edit", id: add.addressId });
+                        handleEditClick(add);
                       }}
                     />
                   </Grid>
@@ -143,7 +190,7 @@ const PickUpAddress = () => {
             ))
           : null}
       </Grid>
-      {showAddAddressModal && (
+      {/* {showAddAddressModal && (
         <AddAddressModal
           showAddressModal={showAddAddressModal}
           setShowAddAddressModal={setShowAddAddressModal}
@@ -151,6 +198,17 @@ const PickUpAddress = () => {
           type={selectId.type}
           setSelectId={setSelectId}
           getAllAddress={getAllAddress}
+        />
+      )} */}
+      {newAddressModal && (
+        <NewAddress
+          setNewAddressModal={setNewAddressModal}
+          newAddressModal={newAddressModal}
+          defaultFormData={defaultFormData}
+          setDefaultFormData={setDefaultFormData}
+          getAllData={getAllData}
+          customer={customer}
+          modalType={modalType}
         />
       )}
     </div>

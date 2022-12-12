@@ -1,16 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-                
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 .overflow-y-scroll {
   overflow-y: auto;
 }
 
-p,div,span{
+p,
+div,
+span {
   // font-family: 'Poppins', sans-serif;
   // font-family: 'Montserrat', sans-serif;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .overflow-x-scroll {
@@ -26,7 +27,7 @@ p,div,span{
 }
 
 .word-break {
-  word-break: break-all
+  word-break: break-all;
 }
 
 //font weight
@@ -62,7 +63,6 @@ p,div,span{
 .fs-18 {
   font-size: 18px;
 }
-
 
 // scrollbar styles
 
@@ -107,7 +107,6 @@ p,div,span{
   z-index: 1101;
 }
 
-
 .se-btn-tray {
   display: block !important;
   display: flex !important;
@@ -115,7 +114,7 @@ p,div,span{
 }
 
 .se-btn-module-border {
-  border: none !important
+  border: none !important;
 }
 
 .loadContainer {
@@ -135,7 +134,6 @@ p,div,span{
   color: #e56700 !important;
   border-bottom: 1px solid #e56700;
   padding: 3px 0px;
-
 }
 
 // .spinner {
@@ -182,14 +180,13 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
 .cursor-pointer {
   cursor: pointer;
 }
-
 
 #menuitem span {
   display: none;
@@ -212,7 +209,6 @@ input[type=number] {
 p {
   margin-bottom: 0 !important;
 }
-
 
 //hide scrollbar
 .hide-scrollbar::-webkit-scrollbar {
@@ -256,7 +252,7 @@ fieldset {
 }
 
 .border-dashed {
-  border-bottom: 1px dashed #6c757d !important
+  border-bottom: 1px dashed #6c757d !important;
 }
 
 .rounded-5 {
@@ -277,8 +273,8 @@ p {
   width: 500px !important;
 }
 
-.opacity-point8{
-opacity: 0.8;
+.opacity-point8 {
+  opacity: 0.8;
 }
 
 .compareProductTop {
@@ -310,10 +306,10 @@ opacity: 0.8;
   border: 1px solid #3a3a3a !important;
 }
 
-.inputPlaceHolder::placeholder{
-  color:#9d9d9d
+.inputPlaceHolder::placeholder {
+  color: #9d9d9d;
 }
-.textArea{
+.textArea {
   resize: none;
   height: auto;
   border: 1px solid #d9d9d9;
@@ -323,29 +319,31 @@ textarea::placeholder {
   color: #a2a2a2;
   font-weight: 400;
   font-size: 16px;
-  // font-family: inherit;  
+  // font-family: inherit;
 }
 
 .zIndex-100 {
   z-index: 100 !important;
 }
-div, p, span {
+div,
+p,
+span {
   -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }
 
-.bnt-hover-class:hover{
+.bnt-hover-class:hover {
   background-color: #e3f0ff !important;
-  color: rgb(89, 89, 248) !important
+  color: rgb(89, 89, 248) !important;
 }
 
-.hover-class :hover{
-color:#e56700
+.hover-class :hover {
+  color: #e56700;
 }
 .loader {
   color: #ffffff;
@@ -362,50 +360,56 @@ color:#e56700
 
 @keyframes mltShdSpin {
   0% {
-    box-shadow: 0 -0.83em 0 -0.4em,
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
   5%,
   95% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
   10%,
   59% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, 
-    -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em,
+      -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em,
+      -0.297em -0.775em 0 -0.477em;
   }
   20% {
     box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
-     -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, 
-     -0.749em -0.34em 0 -0.477em;
+      -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em,
+      -0.749em -0.34em 0 -0.477em;
   }
   38% {
     box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
-     -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, 
-     -0.82em -0.09em 0 -0.477em;
+      -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em,
+      -0.82em -0.09em 0 -0.477em;
   }
   100% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 
-    0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
 }
 
 @keyframes round {
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
- .activeTab {
-    font-weight: 500;
-    color: #e56700;
-    background-color: #fff;
-    transition: background-color 0.3s ease-in-out;
-  }
-  .inActivetab {
-    background: #dbdbdb;
-    color: #9f9f9f;
-    transition: background-color 0.3s ease-in-out;
-  }
+.activeTab {
+  font-weight: 500;
+  color: #e56700;
+  background-color: #fff;
+  transition: background-color 0.3s ease-in-out;
+}
+.inActivetab {
+  background: #dbdbdb;
+  color: #9f9f9f;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.border-orange {
+  border-color: #e56700;
+}

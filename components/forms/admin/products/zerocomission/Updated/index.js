@@ -15,23 +15,16 @@ import {
   getAdminProductsByFilter,
   raiseQuery,
 } from "services/admin/products/fixedMargin";
-import { useDispatch } from "react-redux";
-import { updateProduct, viewProduct } from "features/productsSlice";
-import { getVariation } from "services/supplier/myProducts";
-import RaiseQueryModal from "./RaiseQueryModal";
-import EditProductModalForUpdated from "./EditProductModal";
 import FilterModal from "../../filterModal";
-import ViewOrEditProducts from "../../VieworEditProducts";
 import ReasonToReject from "../ProductsToApprove/AcceptRejectmodal/ReasonToReject";
+import ViewUpdatedProducts from "./ViewModal";
 
 const Updated = ({
-  rowsDataObjectsForUpdated,
   getCount = () => {},
   commissionType = "ZERO_COMMISSION",
 }) => {
   // eslint-disable-next-line no-unused-vars
   const [openAcceptRejectModal, setOpenAcceptRejectModal] = useState(false);
-  const [openEditModalForUpdated, setOpenEditModalForUpdated] = useState(false);
 
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [categoryIds, setCategoryIds] = useState([]);
@@ -43,7 +36,6 @@ const Updated = ({
 
   // eslint-disable-next-line no-unused-vars
   const [products, setProducts] = useState([]);
-  const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
   const [openImagesArrayModal, setOpenImagesArrayModal] = useState(false);
 
   const [imageIndexForImageModal, setImageIndexForImageModal] = useState(0);
@@ -58,6 +50,7 @@ const Updated = ({
   const [images, setImages] = useState([]);
   const [rejectReason, setRejectReason] = useState("");
   const [showReasonModal, setShowReasonModal] = useState(false);
+  const [productDetails, setProductDetails] = useState({});
   const tableColumnsForProductsToUpdated = [
     {
       id: "col1",
@@ -104,28 +97,16 @@ const Updated = ({
     },
     { id: "col8", align: "center", label: "Action", data_align: "center" },
   ];
-  const options = ["Edit", "Delete", "Raise Query", "Approve", "Reject"];
+  const options = ["Delete", "Raise Query", "Approve", "Reject"];
 
   const deleteProduct = async (id) => {
     const { data, err } = await deleteProducts(id);
     if (data) {
       toastify(data?.message, "success");
-      // eslint-disable-next-line no-use-before-define
       getTableData(0);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
-    }
-  };
-
-  const dispatch = useDispatch();
-  const editClick = async (payload) => {
-    const { data, err } = await getVariation(payload);
-    if (err) {
-      toastify(err?.response?.data?.messagea);
-    } else {
-      dispatch(updateProduct(data[0]));
-      setShowViewProducts(true);
     }
   };
 
@@ -158,15 +139,7 @@ const Updated = ({
     if (ele === "Delete") {
       deleteProduct(val.productVariationId);
     }
-    if (ele === "Edit") {
-      editClick([
-        {
-          masterProductId: val.masterProductId,
-          variationId: val.productVariationId,
-          flagged: false,
-        },
-      ]);
-    }
+
     if (ele === "Raise Query") {
       sethelpSupportModal({
         show: true,
@@ -181,18 +154,9 @@ const Updated = ({
     }
   };
 
-  const viewClick = async (masterProductId, variationId) => {
-    const { data, err } = await getVariation([
-      { masterProductId, variationId },
-    ]);
-    if (data) {
-      dispatch(viewProduct(data[0]));
-      setShowViewProducts(true);
-
-      // window.open("/supplier/products&inventory/addnewproduct");
-    } else {
-      toastify(err?.response?.data?.messagea);
-    }
+  const viewClick = async (val) => {
+    setShowViewProducts(true);
+    setProductDetails(val);
   };
   const mapTableRows = (data) => {
     const result = [];
@@ -259,7 +223,7 @@ const Updated = ({
               type="view"
               className="fs-18"
               onIconClick={() => {
-                viewClick(val.masterProductId, val.productVariationId);
+                viewClick(val);
               }}
             />
             <MenuOption
@@ -350,7 +314,7 @@ const Updated = ({
           to={helpSupportModal.to}
           submit={saveQuery}
         />
-      ) : !showViewProducts ? (
+      ) : (
         <Box>
           <Box>
             <Paper
@@ -396,8 +360,6 @@ const Updated = ({
             </Paper>
           </Box>
         </Box>
-      ) : (
-        <ViewOrEditProducts setShowViewOrEdit={setShowViewProducts} />
       )}
       <DisplayImagesModal
         openImagesArrayModal={openImagesArrayModal}
@@ -416,13 +378,16 @@ const Updated = ({
           approveOrRejectProduct("REJECTED");
         }}
       />
-      {/* Edit */}
-      <EditProductModalForUpdated
-        openEditModalForUpdated={openEditModalForUpdated}
-        setOpenEditModalForUpdated={setOpenEditModalForUpdated}
-        rowsDataObjectsForUpdated={rowsDataObjectsForUpdated}
-        modalId={modalId}
-      />
+      {showViewProducts && (
+        <ViewUpdatedProducts
+          showModal={showViewProducts}
+          setShowModal={setShowViewProducts}
+          productDetails={productDetails}
+          getCount={getCount}
+          getTableData={getTableData}
+          sethelpSupportModal={sethelpSupportModal}
+        />
+      )}
       {showFilterModal && (
         <FilterModal
           status="UPDATED"
@@ -437,13 +402,6 @@ const Updated = ({
           }}
         />
       )}
-      {/* Reasons for remove modal */}
-      <RaiseQueryModal
-        openRaiseQueryModal={openRaiseQueryModal}
-        setOpenRaiseQueryModal={setOpenRaiseQueryModal}
-        modalTitle="Raise Query"
-        placeholder="Type your Query"
-      />{" "}
     </>
   );
 };

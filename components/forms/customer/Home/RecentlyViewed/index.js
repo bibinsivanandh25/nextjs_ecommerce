@@ -2,9 +2,10 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import serviceUtil from "services/utils";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import { getRecentlyViewedProducts } from "services/customer/Home";
+import { useSession } from "next-auth/react";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 import ProductCard from "../PopularDepartments/ProductCard";
@@ -50,29 +51,41 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
     });
     setCompredProduct(final);
   };
+  const userInfo = useSession();
 
-  const getproducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setProducts([...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
+  const getRecentViewedProducts = async () => {
+    const { data } = await getRecentlyViewedProducts(userInfo?.data?.user?.id);
+    if (data) {
+      const temp = [];
+      data.forEach((ele) => {
+        temp.push({
+          id: ele.productId,
+          title: ele.productTitle,
+          price: ele.salePrice,
+          salePriceWithLogistics: ele.salePriceWithLogistics,
+          image: ele.variationMedia,
+          rating: {
+            rate: ele.averageRatings,
+            count: ele.totalRatings,
+          },
+        });
       });
+      setProducts([...temp]);
+    }
   };
   useEffect(() => {
-    getproducts();
-  }, []);
+    if (userInfo?.data) {
+      getRecentViewedProducts();
+    }
+  }, [userInfo]);
 
   return (
-    <Box>
+    <Box className={products?.length ? "" : "d-none"}>
       <Typography className="fw-bold text-center my-2">
         Your Recently Viewed Products
       </Typography>
 
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {/* {getProducts()} */}
         {products.map((ele) => {
           return (
             <ProductCard

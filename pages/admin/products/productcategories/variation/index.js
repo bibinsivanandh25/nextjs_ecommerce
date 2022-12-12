@@ -19,8 +19,15 @@ import CreateCategoriesModal from "@/forms/admin/productcategories/categories/Cr
 import CreateSubCategoryModal from "@/forms/admin/productcategories/productsubcategories/CreateSubCategoryModal";
 import toastify from "services/utils/toastUtils";
 import { getMainCategoryDetailsByCategoryId } from "services/admin/products/productCategories/category";
+import { getCategoryById } from "services/admin/products/productCategories/subcategory";
 
 const Variation = () => {
+  const [showHeader, setShowHeaders] = useState({
+    showset: false,
+    showsubcategory: false,
+    showVariation: false,
+    showoption: false,
+  });
   const [selectedId, setSelectedId] = useState({
     categoryid: "",
     setid: "",
@@ -48,7 +55,37 @@ const Variation = () => {
   const [openSubCategory, setOpenSubCategory] = useState(false);
   const [modaltype, setmodalType] = useState("");
   const [selectedData, setSelectedData] = useState({});
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [subCategoryValue, setSubCategoryValue] = useState({
+    category: {},
+    comissionType: "Fixed Commission",
+    subcategoryImg: null,
+    set: {},
+    subcategory: "",
+  });
 
+  // get all dropdown data
+  const getAllCategoryData = async () => {
+    const { data, err } = await getAllCategory([]);
+    if (data?.length) {
+      const temp = [];
+      data.forEach((item) => {
+        temp.push({
+          label: item.name,
+          id: item.id,
+          isSelected: false,
+        });
+      });
+      setParentCategory(temp);
+    } else if (err) {
+      setParentCategory([]);
+    }
+    setSetData([]);
+    setSubCategoryData([]);
+    setOptionsData([]);
+    setVariationTitleData([]);
+    setMasterVariation([]);
+  };
   const getAllSetById = async (id) => {
     if (id) {
       const { data, err } = await getAllSetDataById(id);
@@ -75,29 +112,6 @@ const Variation = () => {
     setVariationTitleData([]);
     setMasterVariation([]);
   };
-  const handleParentCategoryChange = (selectedItem) => {
-    if (selectedItem.length) {
-      setSelectedCategory(selectedItem[0]);
-    } else {
-      setSelectedCategory({});
-    }
-    const temp = [...parentCategory];
-    temp.forEach((item) => {
-      if (item.id === selectedItem[0]?.id) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    setSelectedId({
-      categoryid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
-      setid: "",
-      subCategoryid: "",
-      variation: [],
-    });
-    setParentCategory(temp);
-    getAllSetById(selectedItem[0]?.id);
-  };
   const getSubCategory = async (id) => {
     if (id) {
       const { data, err } = await getAllSubCategory(id);
@@ -119,27 +133,9 @@ const Variation = () => {
     } else {
       setSubCategoryData([]);
     }
-  };
-  const handleSetChange = (selectedItem) => {
-    const temp = [...setData];
-    temp.forEach((item) => {
-      if (item.id === selectedItem[0]?.id) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    setSelectedId((pre) => ({
-      ...pre,
-      setid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
-      subCategoryid: "",
-      variation: [],
-    }));
-    setSetData(temp);
     setOptionsData([]);
     setVariationTitleData([]);
     setMasterVariation([]);
-    getSubCategory(selectedItem[0]?.id);
   };
   const getAllVariation = async (id) => {
     if (id) {
@@ -171,20 +167,129 @@ const Variation = () => {
         }
         setVariationTitleData(temp);
         setMasterVariation(variationlist);
-        setOptionsData([]);
       } else if (err) {
         setVariationTitleData([]);
         setMasterVariation([]);
-        setOptionsData([]);
       }
     } else {
       setVariationTitleData([]);
       setMasterVariation([]);
-      setOptionsData([]);
     }
+    setOptionsData([]);
+  };
+  const getAllOptionData = (id) => {
+    const temp = [];
+    if (id) {
+      masterVariation.forEach((item) => {
+        if (item.otherVariationId === id || item.variationId === id) {
+          item.optionList?.length &&
+            item.optionList.forEach((val) => {
+              temp.push({
+                label: val.optionName,
+                id: val?.optionId || val?.otherVariationOptionId,
+                isSelected: false,
+                disable: !val.disable,
+              });
+            });
+        }
+      });
+    }
+    setOptionsData(temp);
   };
 
+  // dropdownClick
+  const handleParentCategoryChange = (selectedItem) => {
+    if (selectedItem?.length) {
+      setSelectedCategory(selectedItem[0]);
+      setSubCategoryValue((pre) => ({
+        ...pre,
+        category: { label: selectedItem[0].label, id: selectedItem[0].id },
+      }));
+      setShowHeaders({
+        showset: true,
+        showsubcategory: false,
+        showVariation: false,
+        showoption: false,
+      });
+    } else {
+      setSelectedCategory({});
+      setShowHeaders({
+        showset: false,
+        showsubcategory: false,
+        showVariation: false,
+        showoption: false,
+      });
+    }
+    const temp = [...parentCategory];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setSelectedId({
+      categoryid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
+      setid: "",
+      subCategoryid: "",
+      variation: [],
+    });
+    setParentCategory(temp);
+    getAllSetById(selectedItem[0]?.id);
+  };
+  const handleSetChange = (selectedItem) => {
+    if (selectedItem.length) {
+      setSubCategoryValue((pre) => ({
+        ...pre,
+        set: { label: selectedItem[0].label, id: selectedItem[0].id },
+      }));
+      setShowHeaders({
+        showset: true,
+        showsubcategory: true,
+        showVariation: false,
+        showoption: false,
+      });
+    } else {
+      setShowHeaders({
+        showset: true,
+        showsubcategory: false,
+        showVariation: false,
+        showoption: false,
+      });
+    }
+    const temp = [...setData];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setSelectedId((pre) => ({
+      ...pre,
+      setid: selectedItem[0]?.id ? selectedItem[0]?.id : "",
+      subCategoryid: "",
+      variation: [],
+    }));
+    setSetData(temp);
+    getSubCategory(selectedItem[0]?.id);
+  };
   const handleSubCategoryChange = (selectedItem) => {
+    if (selectedItem.length) {
+      setShowHeaders({
+        showset: true,
+        showsubcategory: true,
+        showVariation: true,
+        showoption: false,
+      });
+    } else {
+      setShowHeaders({
+        showset: true,
+        showsubcategory: true,
+        showVariation: false,
+        showoption: false,
+      });
+    }
     const temp = [...subCategoryData];
     temp.forEach((item) => {
       if (item.id === selectedItem[0]?.id) {
@@ -202,26 +307,24 @@ const Variation = () => {
     setOptionsData([]);
     getAllVariation(selectedItem[0]?.id);
   };
-  const getAllOptionData = (id) => {
-    const temp = [];
-    if (id) {
-      masterVariation.forEach((item) => {
-        if (item.otherVariationId === id || item.variationId === id) {
-          item.optionList?.length &&
-            item.optionList.forEach((val) => {
-              temp.push({
-                label: val.optionName,
-                id: val.optionId,
-                isSelected: false,
-                disable: !item.disable,
-              });
-            });
-        }
+
+  const handleVariationTitleDataChange = (selectedItem) => {
+    if (selectedItem.length) {
+      setShowHeaders({
+        showset: true,
+        showsubcategory: true,
+        showVariation: true,
+        showoption: true,
+      });
+    } else {
+      setShowHeaders({
+        showset: true,
+        showsubcategory: true,
+        showVariation: true,
+        showoption: false,
       });
     }
-    setOptionsData(temp);
-  };
-  const handleVariationTitleDataChange = (selectedItem) => {
+
     let variationtemp = [];
     if (selectedItem?.length) {
       variationtemp = masterVariation.filter(
@@ -246,45 +349,40 @@ const Variation = () => {
       variation: variationtemp,
     }));
   };
+  const handleOptionChange = (selectedItem) => {
+    const temp = [...optionsData];
+    temp.forEach((item) => {
+      if (item.id === selectedItem[0]?.id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    });
+    setOptionsData(temp);
+  };
 
-  const handleSetAddClick = () => {
-    setFromType("addVariation");
-    setSetDetails((pre) => ({
-      ...pre,
-      category: {
-        id: selectedCategory.id ? selectedCategory.id : "",
-        label: selectedCategory.label ? selectedCategory.label : "",
-      },
-    }));
-    setShowSetAddModal(true);
-  };
-  const getAllCategoryData = async () => {
-    const { data, err } = await getAllCategory([]);
-    if (data?.length) {
-      const temp = [];
-      data.forEach((item) => {
-        temp.push({
-          label: item.name,
-          id: item.id,
-          isSelected: false,
-        });
-      });
-      setParentCategory(temp);
-    } else if (err) {
-      setParentCategory([]);
-    }
-    setSetData([]);
-    setSubCategoryData([]);
-    setOptionsData([]);
-    setVariationTitleData([]);
-    setMasterVariation([]);
-  };
   useEffect(() => {
     getAllCategoryData();
   }, []);
+  // subcategory add and edit
   const handleSubCategoryAddClick = () => {
     setOpenSubCategory(true);
+    setFromType("addVariation");
   };
+  const handleSubCategoryEdit = async () => {
+    if (selectedId.subCategoryid !== "") {
+      const { data, err } = await getCategoryById(selectedId.subCategoryid);
+      if (data) {
+        setSelectedSubCategory(data);
+        setOpenSubCategory(true);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    } else {
+      toastify("please select subcategory", "error");
+    }
+  };
+  // variation enable and delete
   const handleVariationSwitchClick = async (value) => {
     const temp = masterVariation.filter(
       (x) => x.variationId === value.id || x.otherVariationId === value.id
@@ -325,17 +423,7 @@ const Variation = () => {
       }
     }
   };
-  const handleOptionChange = (selectedItem) => {
-    const temp = [...optionsData];
-    temp.forEach((item) => {
-      if (item.id === selectedItem[0]?.id) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    setOptionsData(temp);
-  };
+  // option disable and delete
   const handleOptionSwitchClick = async (value) => {
     const payload = {
       variationId: selectedId?.variation[0]?.variationId,
@@ -370,6 +458,7 @@ const Variation = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  // category
   const handleCategoryEdit = async () => {
     if (selectedId.categoryid !== "") {
       const { data } = await getMainCategoryDetailsByCategoryId(
@@ -383,6 +472,19 @@ const Variation = () => {
     } else {
       toastify("please select category", "error");
     }
+  };
+  // set Add and edit
+  const handleSetAddClick = () => {
+    setFromType("addVariation");
+    setmodalType("add");
+    setSetDetails((pre) => ({
+      ...pre,
+      category: {
+        id: selectedCategory.id ? selectedCategory.id : "",
+        label: selectedCategory.label ? selectedCategory.label : "",
+      },
+    }));
+    setShowSetAddModal(true);
   };
   const handleSetEdit = () => {
     if (selectedId.setid !== "") {
@@ -420,9 +522,10 @@ const Variation = () => {
                 editBtnClick={() => handleCategoryEdit()}
               />
             </Grid>
-            {setData.length !== 0 && (
-              <Grid item xs={2.4}>
+            <Grid item xs={2.4}>
+              {showHeader.showset && (
                 <ListGroupComponent
+                  showTitle={showHeader.showset}
                   title="Sets"
                   titleClassName="fw-bold"
                   data={setData}
@@ -434,11 +537,12 @@ const Variation = () => {
                   }}
                   editBtnClick={() => handleSetEdit()}
                 />
-              </Grid>
-            )}
-            {subCategoryData.length !== 0 && (
-              <Grid item xs={2.4}>
+              )}
+            </Grid>
+            <Grid item xs={2.4}>
+              {showHeader.showsubcategory && (
                 <ListGroupComponent
+                  showTitle={showHeader.showsubcategory}
                   title="Sub Category"
                   titleClassName="fw-bold"
                   data={subCategoryData}
@@ -448,12 +552,16 @@ const Variation = () => {
                   addBtnClick={() => {
                     handleSubCategoryAddClick();
                   }}
+                  editBtnClick={() => {
+                    handleSubCategoryEdit();
+                  }}
                 />
-              </Grid>
-            )}
-            {variationTitleData.length !== 0 && (
-              <Grid item xs={2.4}>
+              )}
+            </Grid>
+            <Grid item xs={2.4}>
+              {showHeader.showVariation && (
                 <ListGroupComponentCopy
+                  showTitle={showHeader.showVariation}
                   title="Variation Title"
                   titleClassName="fw-bold"
                   data={variationTitleData}
@@ -468,13 +576,13 @@ const Variation = () => {
                   handleDelete={(item) => {
                     handleVariationDelete(item);
                   }}
-                  // showRadioBtn
                 />
-              </Grid>
-            )}
-            {optionsData.length !== 0 && (
-              <Grid item xs={2.4}>
+              )}
+            </Grid>
+            <Grid item xs={2.4}>
+              {showHeader.showoption && (
                 <ListGroupComponentCopy
+                  showTitle={showHeader.showoption}
                   showAddIcon={false}
                   showEditIcon={false}
                   title="Options"
@@ -491,10 +599,9 @@ const Variation = () => {
                   handleDelete={(item) => {
                     handleOptionDelete(item);
                   }}
-                  // showCheckBox
                 />
-              </Grid>
-            )}
+              )}
+            </Grid>
           </Grid>
         </Box>
       </Paper>
@@ -524,6 +631,12 @@ const Variation = () => {
       {openSubCategory && (
         <CreateSubCategoryModal
           setOpenCreateNewSubCategories={setOpenSubCategory}
+          subCategoryData={selectedSubCategory}
+          setSubcategoryData={setSelectedSubCategory}
+          getSubCategory={getSubCategory}
+          subCategoryid={selectedId.setid}
+          subCategoryValue={subCategoryValue}
+          fromType={fromType}
         />
       )}
     </Box>

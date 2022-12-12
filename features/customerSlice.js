@@ -9,6 +9,8 @@ const initialState = {
   storeCode: "",
   shopDescription: "",
   shopDescriptionImageUrl: "",
+  role: "",
+  addStoreFlag: false,
 };
 
 export const customerSlice = createSlice({
@@ -16,14 +18,33 @@ export const customerSlice = createSlice({
   initialState,
   reducers: {
     storeUserInfo: (state, action) => {
-      return action.payload;
+      return { ...state, ...action.payload };
     },
-    clearUser: () => {
-      return initialState;
+    setAddStoreFlag: (state, action) => {
+      return {
+        ...state,
+        addStoreFlag: action.payload.addStoreFlag,
+      };
+    },
+    clearCustomerSlice: (state) => {
+      return {
+        ...state,
+        userId: "",
+        name: "",
+        supplierId: "",
+        supplierStoreLogo: "",
+        supplierStoreName: "",
+        storeCode: "",
+        shopDescription: "",
+        shopDescriptionImageUrl: "",
+        role: "",
+        addStoreFlag: false,
+      };
     },
   },
 });
 
-export const { storeUserInfo, clearUser } = customerSlice.actions;
+export const { storeUserInfo, clearCustomerSlice, setAddStoreFlag } =
+  customerSlice.actions;
 
 export default customerSlice.reducer;

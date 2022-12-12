@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Typography } from "@mui/material";
+import { Box, MenuItem, Paper, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -25,58 +25,149 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
+import { getAllMainCategories } from "services/customer/sidebar";
+import {
+  addStore,
+  deleteStore,
+  getRecentStoreList,
+  switchStore,
+} from "services/admin/storeList";
+import {
+  clearUser,
+  storeUserInfo as storeInfoUserSlice,
+} from "features/userSlice";
+import toastify from "services/utils/toastUtils";
+import { getStoreByStoreCode } from "services/customer/ShopNow";
+import FavoriteList from "@/forms/customer/favoriteList";
+import { makeStyles } from "@mui/styles";
 
 const Header = () => {
-  const { status } = useSession();
-
+  const session = useSession();
   const route = useRouter();
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSwitchProfile, setShowSwitchProfile] = useState(false);
   const [showSelectAddress, setShowSelectAddress] = useState(false);
+  const [showFavoriteList, setShowFavoriteList] = useState(false);
+  const customer = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
-  const [stores, setStores] = useState([
-    {
-      id: 1,
-      label: "Store Name1",
-      checked: false,
-    },
-    {
-      id: 2,
-      label: "Store Name2",
-      checked: false,
-    },
-    {
-      id: 3,
-      label: "Store Name3",
-      checked: false,
-    },
-    {
-      id: 4,
-      label: "Store Name4",
-      checked: false,
-    },
-    {
-      id: 5,
-      label: "Store Name5",
-      checked: false,
-    },
-  ]);
+  const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
+  const dispatch = useDispatch();
+  const {
+    supplierStoreName,
+    supplierStoreLogo,
+    profileImg,
+    userId,
+    addressDetails,
+  } = useSelector((state) => state.customer);
+  const [storeDetails, setstoreDetails] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [storeCode, setStoreCode] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [category, setCategory] = useState({});
+
+  const recentStore = async () => {
+    const { data } = await getRecentStoreList(userId);
+    if (data) {
+      setStores(
+        data.map((item) => ({
+          id: item.customerStoreId,
+          label: item.supplierStoreName,
+          checked: item.defaultStore,
+          favourite: item.favourite,
+          storeCode: item.storeCode,
+        }))
+      );
+    }
+  };
+
+  const getMainCategoriesList = async () => {
+    const { data } = await getAllMainCategories();
+    if (data) {
+      const temp = data?.map((ele) => {
+        return {
+          id: ele.mainCategoryId,
+          label: ele.mainCategoryName,
+          value: ele.mainCategoryName,
+        };
+      });
+      temp.push({
+        id: "All",
+        label: "All Categories",
+        value: "All Categories",
+      });
+      setCategoriesList([...temp]);
+    }
+  };
 
   useEffect(() => {
-    if (status === "authenticated") {
+    getMainCategoriesList();
+  }, []);
+
+  useEffect(() => {
+    if (
+      session?.status === "authenticated" &&
+      session?.data?.user?.role === "CUSTOMER"
+    ) {
       setIsSignedIn(true);
     } else {
       setIsSignedIn(false);
     }
-  }, [status]);
+  }, [session]);
 
   const handleRouting = (path) => {
     if (isSignedIn) {
       route.push(path);
     } else {
       route.replace("/auth/customer/signin");
+    }
+  };
+
+  const handleSwitchStore = async (storecode) => {
+    const { data, err } = await switchStore(storecode, userId);
+    if (data) {
+      const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+        storecode
+      );
+      if (storeData) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            supplierStoreLogo: storeData.supplierStoreLogo,
+            supplierStoreName: storeData.supplierStoreName,
+            storeCode: storeData.supplierStoreCode,
+            storeThemes: storeData.storeThemes,
+            shopDescription: storeData.shopDescription ?? "",
+            shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+            addStoreFlag: false,
+            supplierId: storeData.supplierId,
+          })
+        );
+        setStoreCode("");
+        setstoreDetails(null);
+        dispatch(
+          storeInfoUserSlice({
+            supplierId: storeData.supplierId,
+          })
+        );
+      } else if (storeErr) {
+        toastify(storeErr?.response?.data?.message, "error");
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const deleteStores = async (id) => {
+    const { data, err, message } = await deleteStore(id, userId);
+    if (data === null) {
+      // getAllStores();
+      toastify(message, "success");
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -100,27 +191,25 @@ const Header = () => {
                   </Typography>
                 }
                 isChecked={ele.checked}
-                checkBoxClick={(id) => {
-                  const arr = [...stores];
-                  setStores((pre) => {
-                    if (pre.id == id) {
-                      return (pre.checked = true);
-                    }
-                    return (pre.checked = false);
-                  });
-                  arr.map((item) => {
-                    if (item.id == id) {
-                      return (item.checked = true);
-                    }
-                    return (item.checked = false);
-                  });
-                  setStores([...arr]);
+                checkBoxClick={() => {
+                  setShowConfirmModal(true);
+                  setstoreDetails(ele);
                 }}
               />
-              <CustomIcon type="delete" />
+              <CustomIcon
+                type="delete"
+                onIconClick={() => {
+                  deleteStores(ele.id);
+                }}
+              />
             </MenuItem>
           );
         })}
+        {!stores.length && (
+          <Typography className="fs-14 color-gray text-center p-2">
+            No Stores found
+          </Typography>
+        )}
         <Box className="d-flex justify-content-end pe-4 ">
           <Typography
             className="color-orange fs-14 cursor-pointer"
@@ -128,7 +217,7 @@ const Header = () => {
               setOpen(true);
             }}
           >
-            More Options
+            See More
           </Typography>
         </Box>
         {/* <Box className="d-flex justify-content-end pe-4 ">
@@ -144,6 +233,48 @@ const Header = () => {
       </>
     );
   };
+
+  const addStoreToCustomer = async () => {
+    const { data, err } = await addStore({
+      customerId: userId,
+      storeListId: null,
+      storeListName: null,
+      storeType: "SUPPLIER",
+      storeCode,
+    });
+    if (data) {
+      await handleSwitchStore(storeCode);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const useStyles = makeStyles((theme) => ({
+    newStoreTheme: {
+      [theme.breakpoints.down("1400")]: {
+        width: "100px",
+      },
+      [theme.breakpoints.up("1400")]: {
+        width: "150px",
+      },
+    },
+    storeName: {
+      [theme.breakpoints.up("1080")]: {
+        maxWidth: "150px !important",
+        overflowWrap: "anywhere",
+      },
+    },
+    productSearch: {
+      [theme.breakpoints.up("1300")]: {
+        width: "500px",
+      },
+      [theme.breakpoints.down("1300")]: {
+        width: "30%",
+      },
+    },
+  }));
+  const styles = useStyles();
+
   return (
     <div
       className="position-fixed top-0 left-0 h-5 mnw-100vh"
@@ -153,16 +284,25 @@ const Header = () => {
     >
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-3">
         <div className="d-flex align-items-center">
-          <p className="h-5">Hello Customer</p>
+          <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
+          {/* <p className="h-5">Hello Customer</p> */}
           <p
-            className="ps-2 cursor-pointer d-flex align-items-center"
+            className="ps-4 cursor-pointer d-flex align-items-center"
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
-            Select Your Address
+            {isSignedIn === "" ? (
+              "Select Your Address"
+            ) : (
+              <div className="ms-2">
+                <Typography className="fs-10">{addressDetails.name}</Typography>
+                <Typography className="fs-12">
+                  {addressDetails.cityDistrictTown},{addressDetails.pinCode}
+                </Typography>
+              </div>
+            )}
           </p>
         </div>
-        <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -197,17 +337,23 @@ const Header = () => {
         >
           <Box className="pe-2">
             <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/profile/1661760335745-Balu_Logo.png "
+              src={supplierStoreLogo ?? ""}
               layout="fixed"
               height={30}
               width={80}
             />
           </Box>
-          <Typography className="h-5 fw-bold cursor-pointer">
-            Balu Enterprises pvt ltd
+          <Typography
+            className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px`}
+          >
+            {supplierStoreName.length <= 40
+              ? supplierStoreName
+              : `${supplierStoreName.substr(0, 38)}...`}
           </Typography>
         </div>
-        <div className="d-flex align-items-center rounded w-30p">
+        <div
+          className={`${styles.productSearch} d-flex align-items-center rounded w-30p`}
+        >
           <div
             className="rounded"
             style={{
@@ -219,8 +365,15 @@ const Header = () => {
               removeRadius
               fullWidth
               className="bg-white rounded"
-              list={[{ label: "All Categories", value: "all" }]}
-              value={{ label: "All Categories", value: "all" }}
+              list={categoriesList}
+              value={category}
+              freeSolo
+              placeholder="Category"
+              onDropdownSelect={(value) => {
+                if (value) {
+                  setCategory(value);
+                } else setCategory({});
+              }}
             />
           </div>
           <div
@@ -231,7 +384,7 @@ const Header = () => {
             }}
           >
             <input
-              className="p-2 bg-white inputPlaceHolder"
+              className="w-100 p-2 bg-white inputPlaceHolder"
               placeholder="Search"
               style={{
                 background: "#fae1cc",
@@ -259,26 +412,44 @@ const Header = () => {
           }}
         >
           <input
-            className="p-2 bg-white rounded inputPlaceHolder"
-            placeholder="Enter store code"
+            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store"
             style={{
               background: "#fae1cc",
               outline: "none",
               border: "none",
             }}
+            onChange={(e) => {
+              setStoreCode(e.target.value.toUpperCase());
+            }}
+            value={storeCode}
           />
           <Box
             sx={{
               m: "0.08rem",
             }}
-            className=" d-flex justify-content-center p-1 rounded align-items-center cursor-pointer"
+            className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer ${
+              storeCode !== "" ? "" : "invisible"
+            }`}
+            onClick={() => {
+              setShowConfirmModal(true);
+            }}
           >
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        <FaStore className="fs-2 cursor-pointer" />
         <div className="cursor-pointer">
-          <MenuwithArrow subHeader="Store" Header="List">
+          <MenuwithArrow
+            subHeader=""
+            Header="Recent Stores"
+            onOpen={() => {
+              if (userId === "") {
+                route.push("/auth/customer/signin");
+                return;
+              }
+              recentStore();
+            }}
+          >
             <MenuItem>
               <div className="d-flex align-items-center">
                 <input
@@ -288,22 +459,30 @@ const Header = () => {
                   }}
                   placeholder="Search store"
                 />
-                <Typography className="ms-2 cursor-pointer color-light-blue fs-14">
-                  <CustomIcon
-                    showColorOnHover={false}
-                    type="add"
-                    color="color-light-blue "
-                    className="color-light-blue fs-14"
-                    onIconClick={() => {}}
-                  />
-                  Add
-                </Typography>
               </div>
             </MenuItem>
             {getStores()}
           </MenuwithArrow>
         </div>
-        <div className="cursor-pointer">
+        <FaStore
+          className="fs-2 cursor-pointer"
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+              return;
+            }
+            setShowFavoriteList(true);
+            setOpen(true);
+          }}
+        />
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+            }
+          }}
+        >
           <Typography className="h-5 cursor-pointer">Returns</Typography>
           <Typography className="fs-14 fw-bold cursor-pointer">
             & Orders
@@ -311,10 +490,37 @@ const Header = () => {
         </div>
         <FiShoppingCart
           className="fs-2 cursor-pointer"
-          onClick={() => handleRouting("/customer/cart")}
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+              return;
+            }
+            handleRouting("/customer/cart");
+          }}
         />
-        <div className="cursor-pointer position-ralative">
-          <MenuwithArrow subHeader="Hello, sign In" Header="Account & Lists">
+        <div className="cursor-pointer position-ralative pe-3">
+          <MenuwithArrow
+            arrowPosition="end"
+            subHeader=""
+            Header={
+              userId === "" ? (
+                "Hello Customer, sign In"
+              ) : (
+                <Paper
+                  elevation={4}
+                  className="rounded-circle"
+                  sx={{ height: "35px" }}
+                >
+                  <Image
+                    width={35}
+                    height={35}
+                    src={profileImg ?? ""}
+                    className="rounded-circle "
+                  />
+                </Paper>
+              )
+            }
+          >
             {!isSignedIn ? (
               <div className="px-2">
                 <div className="d-flex justify-content-center w-100 my-2">
@@ -349,6 +555,8 @@ const Header = () => {
                   <Typography
                     className="color-orange fs-14"
                     onClick={() => {
+                      dispatch(clearUser());
+                      dispatch(clearCustomerSlice());
                       signOut({ callbackUrl: "/auth/customer" });
                     }}
                   >
@@ -449,21 +657,61 @@ const Header = () => {
           </Box>
         </ModalComponent>
       )}
-      <ChooseAddress
-        showModal={showSelectAddress}
-        setShowModal={setShowSelectAddress}
-      />
+      {showSelectAddress && (
+        <ChooseAddress
+          showModal={showSelectAddress}
+          setShowModal={setShowSelectAddress}
+        />
+      )}
       <CustomDrawer
         open={open}
         position="right"
         handleClose={() => {
           setOpen(false);
+          setShowFavoriteList(false);
         }}
-        title="Store List"
+        title={showFavoriteList ? "Favorite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
-        <StoreList />
+        {showFavoriteList ? (
+          <FavoriteList
+            close={() => {
+              setOpen(false);
+              setShowFavoriteList(false);
+            }}
+          />
+        ) : (
+          <StoreList
+            close={() => {
+              setOpen(false);
+            }}
+          />
+        )}
       </CustomDrawer>
+      <ModalComponent
+        open={showConfirmModal}
+        showHeader={false}
+        saveBtnText="Confirm"
+        ClearBtnText="Cancel"
+        onSaveBtnClick={() => {
+          if (storeDetails) {
+            handleSwitchStore(storeDetails.storeCode);
+            setShowConfirmModal(false);
+          } else {
+            setShowConfirmModal(false);
+            addStoreToCustomer();
+          }
+        }}
+        onClearBtnClick={() => {
+          setstoreDetails(null);
+          setShowConfirmModal(false);
+        }}
+        ModalWidth={400}
+      >
+        <Typography className="fs-16 w-100 text-center fw-bold my-4">
+          Are you sure you want to switch store?
+        </Typography>
+      </ModalComponent>
     </div>
   );
 };

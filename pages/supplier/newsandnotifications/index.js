@@ -18,22 +18,22 @@ const notificationData = [
   {
     id: 2,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
   {
     id: 3,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
   {
     id: 4,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
   {
     id: 1,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
   {
     id: 2,
@@ -42,12 +42,12 @@ const notificationData = [
   {
     id: 3,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
   {
     id: 4,
     imagesrc:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
+      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
 ];
 const NewsandNotifications = () => {
@@ -60,7 +60,7 @@ const NewsandNotifications = () => {
         className="px-3 border-bottom pb-3"
       >
         <Grid item sm={4} className="d-flex align-self-center">
-          <Typography className="h-4 fw-bold">Notification&apos;s</Typography>
+          <Typography className="h-4 fw-bold">Notifications</Typography>
         </Grid>
         <Grid item lg={2} md={3} sm={6} className="me-2">
           <SimpleDropdownComponent placeholder="Filter by type" size="small" />

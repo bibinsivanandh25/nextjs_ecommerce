@@ -424,16 +424,19 @@ const SupplierFlags = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Grid item>
-                <Typography className="fw-600 fs-14">Flag Image:</Typography>
-                <Image
-                  src={flagData?.flagImageUrl?.toString()}
-                  height={100}
-                  width={300}
-                  alt="flag"
-                  layout="intrinsic"
-                  className="d-flex justify-content-center align-items-center"
-                />
+              <Grid style={{ maxHeight: "20vh", overflowY: "scroll" }}>
+                {flagData?.flagImageUrl?.map((item) => {
+                  return (
+                    <Image
+                      src={item?.toString()}
+                      height={100}
+                      width={300}
+                      alt="flag"
+                      layout="intrinsic"
+                      className="d-flex justify-content-center align-items-center"
+                    />
+                  );
+                })}
               </Grid>
             </Grid>
           </Box>

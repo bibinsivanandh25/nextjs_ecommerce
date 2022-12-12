@@ -2,9 +2,15 @@ import { Box, Card, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
-import serviceUtil from "services/utils";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import {
+  getFeaturedProducts,
+  getMostPopularProducts,
+  getNewArrivalProducts,
+  getBestSoldProducts,
+} from "services/customer/Home";
+import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
@@ -36,10 +42,81 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
   const [comparedProduct, setCompredProduct] = useState([]);
+  const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
+  const [filterType, setFilterType] = useState("WEEK");
 
   useEffect(() => {
     setCompredProduct(comparProductData);
   }, []);
+
+  const storeDetails = useSelector((state) => state.customer);
+
+  const setAllProducts = (data) => {
+    const temp = [];
+    data.forEach((ele) => {
+      temp.push({
+        id: ele.productId,
+        title: ele.productTitle,
+        price: ele.salePrice,
+        salePriceWithLogistics: ele.salePriceWithLogistics,
+        image: ele.variationMedia,
+        rating: {
+          rate: ele.averageRatings,
+          count: ele.totalRatings,
+        },
+      });
+    });
+    setProducts([...temp]);
+  };
+
+  const getProducts = async () => {
+    if (popularDepartments === "New Arrivals") {
+      const { data } = await getNewArrivalProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
+      }
+    }
+    if (popularDepartments === "Most Popular") {
+      const { data } = await getMostPopularProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
+      }
+    }
+    if (popularDepartments === "Best Seller") {
+      const { data } = await getBestSoldProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
+      }
+    }
+
+    if (popularDepartments === "Featured") {
+      const { data } = await getFeaturedProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
+      }
+    }
+  };
+  useEffect(() => {
+    getProducts();
+    setProducts([]);
+  }, [popularDepartments, filterType]);
+
+  useEffect(() => {
+    setFilterType("WEEK");
+  }, [popularDepartments]);
+
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
     const final = comparedProductCopy.map((item) => {
@@ -51,20 +128,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
     setCompredProduct(final);
   };
 
-  const getproducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setProducts([...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
-      });
-  };
-  useEffect(() => {
-    getproducts();
-  }, []);
-
   return (
     <Box>
       <Typography className="fw-bold text-center my-2">
@@ -72,27 +135,92 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
       </Typography>
       <Box className="row">
         <Box className="col-3" />
-        <Box className="col-5 d-flex justify-content-around">
-          <Card className="px-3 py-1 border border-orange bg-light-pink">
+        <Box className="col-5 d-flex justify-content-around  h-5 pb-1">
+          <Card
+            onClick={() => {
+              if (popularDepartments !== "New Arrivals")
+                setPopularDepartments("New Arrivals");
+            }}
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
+              popularDepartments === "New Arrivals"
+                ? "border-orange bg-orange-1 fw-bold"
+                : ""
+            }`}
+          >
             New Arrivals
           </Card>
-          <Card className="px-3 py-1 border ">Best Seller</Card>
-          <Card className="px-3 py-1 border">Most Popular</Card>
-          <Card className="px-3 py-1 border">Featured</Card>
-        </Box>
-        <Box className="col-4 d-flex justify-content-end">
-          <Card className="px-3 py-1 bg-light-pink border border-orange">
-            D
+          <Card
+            onClick={() => {
+              if (popularDepartments !== "Best Seller")
+                setPopularDepartments("Best Seller");
+            }}
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
+              popularDepartments === "Best Seller"
+                ? "border-orange bg-orange-1 fw-bold"
+                : ""
+            }`}
+          >
+            Best Seller
           </Card>
-          <Card className="px-3 py-1 border mx-3">M</Card>
-          <Card className="px-3 py-1 border">W</Card>
+          <Card
+            onClick={() => {
+              if (popularDepartments !== "Most Popular")
+                setPopularDepartments("Most Popular");
+            }}
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
+              popularDepartments === "Most Popular"
+                ? "border-orange bg-orange-1 fw-bold"
+                : ""
+            }`}
+          >
+            Most Popular
+          </Card>
+          <Card
+            onClick={() => {
+              if (popularDepartments !== "Featured")
+                setPopularDepartments("Featured");
+            }}
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
+              popularDepartments === "Featured"
+                ? "border-orange bg-orange-1 fw-bold"
+                : ""
+            }`}
+          >
+            Featured
+          </Card>
+        </Box>
+        <Box className="col-4 d-flex justify-content-end pb-1">
+          <Card
+            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
+              filterType === "WEEK" ? "border-orange bg-orange-1 fw-bold" : ""
+            }`}
+            onClick={() => {
+              if (filterType !== "WEEK") {
+                setFilterType("WEEK");
+              }
+            }}
+          >
+            W
+          </Card>
+          <Card
+            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
+              filterType === "MONTH" ? "border-orange bg-orange-1 fw-bold" : ""
+            }`}
+            onClick={() => {
+              if (filterType !== "MONTH") {
+                setFilterType("MONTH");
+              }
+            }}
+          >
+            M
+          </Card>
         </Box>
       </Box>
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {/* {getProducts()} */}
         {products.map((ele) => {
           return (
             <ProductCard
+              key={ele.id}
               item={ele}
               handleIconClick={(icon) => {
                 if (icon === "viewCarouselOutlinedIcon") {
@@ -154,7 +282,10 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Box>
           {comparedProduct &&
             comparedProduct.map((item) => (
-              <Box className="d-flex justify-content-center border rounded mnw-150">
+              <Box
+                className="d-flex justify-content-center border rounded mnw-150"
+                key={item.id}
+              >
                 {item.imageLink ? (
                   <>
                     <Image

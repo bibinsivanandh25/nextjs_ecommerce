@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import ModalComponent from "@/atoms/ModalComponent";
 import { Box, Typography } from "@mui/material";
 import React from "react";
@@ -7,7 +8,6 @@ const PolicyModal = ({
   setShowPolicyModal = () => {},
   policyData = [],
 }) => {
-  console.log(policyData[0], "policyData");
   return (
     <ModalComponent
       open={showPolicyModal}

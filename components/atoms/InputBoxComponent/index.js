@@ -35,6 +35,7 @@ const InputBox = ({
   onFocus = () => {},
   onEnter = () => {},
   readOnly = false,
+  showAutoFill = "off",
 }) => {
   const getIcons = () => {
     if (iconName === "visible") {
@@ -114,9 +115,9 @@ const InputBox = ({
         // eslint-disable-next-line react/jsx-no-duplicate-props
         inputProps={{
           ...textInputProps,
-          autoComplete: "off",
+          autoComplete: showAutoFill,
           form: {
-            autoComplete: "off",
+            autoComplete: showAutoFill,
           },
         }}
         required={required}

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
@@ -192,9 +192,16 @@ const Banners = () => {
           col3: item.displayPage,
           // col4: item.navigationUrl,
           col4: item.navigationUrl ? (
-            <a href={item.navigationUrl} target="_blank" rel="noreferrer">
-              {item.navigationUrl}
-            </a>
+            <Tooltip title={item.navigationUrl}>
+              <Typography
+                className="text-truncate h-5"
+                style={{ minWidth: "200px", maxWidth: "200px" }}
+              >
+                <a href={item.navigationUrl} target="_blank" rel="noreferrer">
+                  {item.navigationUrl}
+                </a>
+              </Typography>
+            </Tooltip>
           ) : (
             "--------"
           ),
