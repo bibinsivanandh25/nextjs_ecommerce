@@ -61,7 +61,6 @@ const FixedCommission = () => {
     getCount();
   }, []);
 
-  console.log(tabList);
   const handleSelect = (index) => {
     setTabList((list) => {
       const theList = list;
