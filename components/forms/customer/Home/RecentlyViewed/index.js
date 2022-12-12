@@ -80,7 +80,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
   }, [userInfo]);
 
   return (
-    <Box>
+    <Box className={products?.length ? "" : "d-none"}>
       <Typography className="fw-bold text-center my-2">
         Your Recently Viewed Products
       </Typography>

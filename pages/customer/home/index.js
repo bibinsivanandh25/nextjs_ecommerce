@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   getArticles,
   getBannersBySupplierId,
-  getMainCategories,
   getTopProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
@@ -13,7 +12,6 @@ import { useSelector } from "react-redux";
 import CarousalComponent from "@/atoms/Carousel";
 import TopTrending from "@/forms/customer/Home/TopTrending";
 import TopCategories from "@/forms/customer/Home/TopCategories";
-import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import ComapareProducts from "@/forms/customer/searchedproduct/compareproducts";
 import FlashDeals from "@/forms/customer/Home/FlashDeals";
 import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
@@ -21,8 +19,10 @@ import { useSession } from "next-auth/react";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { format } from "date-fns";
 import Image from "next/image";
+import { FaInfoCircle } from "react-icons/fa";
 import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
+import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import Articles from "./Articles";
 // import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
 // import InputBox from "@/atoms/InputBoxComponent";
@@ -36,6 +36,7 @@ const Home = () => {
   // const [categories, setCategories] = useSta te([]);
   const [storeInformation, setStoreInformation] = useState([]);
   const [articleData, setArticleData] = useState([]);
+  const [leaveDate, setleaveDate] = useState({ start: null, end: null });
 
   // const [products, setProducts] = useState([]);
 
@@ -58,6 +59,11 @@ const Home = () => {
   const getStoreData = async () => {
     const { data } = await getStoreByStoreCode(storeDetails.storeCode);
     if (data) {
+      if (data.leaveStartDate && data.leaveEndDate)
+        setleaveDate({
+          start: format(new Date(data.leaveStartDate), "dd MMM yyyy"),
+          end: format(new Date(data.leaveEndDate), "dd MMM yyyy"),
+        });
       const days = [
         "Sunday",
         "Monday",
@@ -101,23 +107,6 @@ const Home = () => {
     }
     getStoreData();
   }, [storeDetails]);
-
-  const getCategories = async () => {
-    const { data, err } = await getMainCategories();
-    if (data) {
-      const results = [];
-      data.forEach((ele) => {
-        results.push({
-          id: ele.mainCategoryId,
-          name: ele.mainCategoryName,
-          image: ele.categoryImageUrl,
-        });
-        // setCategories([...results]);
-      });
-    } else if (err) {
-      // console.log(err);
-    }
-  };
 
   const getBanners = async () => {
     const { data, err } = await getBannersBySupplierId(storeDetails.supplierId);
@@ -173,7 +162,7 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    getCategories();
+    getBanners();
     getProducts();
     getArticlesData();
   }, []);
@@ -199,7 +188,7 @@ const Home = () => {
                   item
                   md={2.6}
                   sm={3}
-                  className="border-end border-2 d-flex justify-content-between p-3 align-items-center"
+                  className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
                 >
                   <Image src={customerHome.coupon} height={40} width={60} />
                   <Typography className="fw-bold h-5">
@@ -210,7 +199,7 @@ const Home = () => {
                   item
                   md={3.1}
                   sm={3}
-                  className="border-end border-2 d-flex justify-content-between p-3  align-items-center"
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
                   <Image src={customerHome.shop} height={50} width={50} />
                   <div>
@@ -238,7 +227,7 @@ const Home = () => {
                   item
                   md={2}
                   sm={3}
-                  className="border-end border-2 d-flex justify-content-between p-3  align-items-center"
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
                   <Image src={customerHome.file} height={50} width={50} />
                   <Box>
@@ -250,7 +239,7 @@ const Home = () => {
                   item
                   md={2.5}
                   sm={3}
-                  className="border-end border-2 d-flex justify-content-between p-3  align-items-center"
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
                   <Image src={customerHome.tax} height={50} width={50} />
                   <Box>
@@ -267,7 +256,7 @@ const Home = () => {
                   item
                   md={1.8}
                   sm={3}
-                  className="d-flex justify-content-between p-3  align-items-center"
+                  className="d-flex justify-content-evenly p-3  align-items-center"
                 >
                   <Image src={customerHome.help} height={50} width={55} />
 
@@ -280,6 +269,16 @@ const Home = () => {
                 </Grid>
               </Grid>
             </Paper>
+            {leaveDate.start && leaveDate.end && (
+              <Paper className="bg-light-yellow border border-orange rounded mt-3">
+                <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
+                  <FaInfoCircle className="mx-2 fs-20 color-orange" />
+                  Shop will be on leave from {leaveDate.start} to{" "}
+                  {leaveDate.end} , Your orders may be processed after{" "}
+                  {new Date(leaveDate.end).getDate()}th.
+                </Typography>
+              </Paper>
+            )}
             <Grid container className="">
               <Grid item sm={8} className="py-3 pe-1 h-100">
                 {/* <HotDealsOfTheDay /> */}

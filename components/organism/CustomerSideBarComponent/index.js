@@ -1,23 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
-// import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-// import MuiDrawer from "@mui/material/Drawer";
 import { useState, useEffect } from "react";
 import List from "@mui/material/List";
 import { motion, AnimatePresence } from "framer-motion";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ListItemButton from "@mui/material/ListItemButton";
-import MenuOpenOutlinedIcon from "@mui/icons-material/MenuOpenOutlined";
-// import { customerMenu } from "constants/navConstants";
-// import { useSession } from "next-auth/react";
-// import { MenuItem, MenuList } from "@mui/material";
-// import { useRouter } from "next/router";
-// import BreadCrumb from "components/atoms/BreadCrumb";
 import { Fade, Grid, Paper, Popper, Tooltip } from "@mui/material";
 import Footer from "components/customer/Footer";
 import { useRouter } from "next/router";
@@ -25,8 +15,8 @@ import {
   getAllMainCategories,
   getAllSetandSubCategoriesByMainCategory,
 } from "services/customer/sidebar";
-
-// const drawerWidth = 245;
+import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 
 const CustomerSideBarComponent = ({ children }) => {
   // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
@@ -41,38 +31,15 @@ const CustomerSideBarComponent = ({ children }) => {
   //   },
   // };
   const router = useRouter();
-  // const mapList = () => {
-  //   const addId = (id, item, path) => {
-  //     return {
-  //       ...item,
-  //       id,
-  //       selected: false,
-  //       path_name: `${path}/${item.path_name}`,
-  //     };
-  //   };
-  //   const tempList = customerMenu;
-  //   const list = [...tempList].map((item, index) => {
-  //     return addId(index, item, "customer");
-  //   });
-  //   return [...list];
-  // };
 
   const [open, setOpen] = useState(false);
-  // const [menuList, setMenuList] = useState([...mapList("customer")]);
   const [hover, setHover] = useState(false);
+  const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  //   const [selectedItem, setSelectedItem] = useState();
+
   const handleClick = (event) => {
     setHover(true);
     setAnchorEl(event.target);
-  };
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
   };
 
   const getCategoriesForSideMenu = async () => {
@@ -157,18 +124,45 @@ const CustomerSideBarComponent = ({ children }) => {
     >
       <CssBaseline />
 
+      {!open && (
+        <Paper
+          sx={{
+            marginTop: "5px",
+            padding: "8px",
+            borderRadius: "0% 50% 50% 0%",
+            zIndex: "100",
+          }}
+          className="position-absolute cursor-pointer"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          <FaAngleDoubleRight className="fs-20" />
+        </Paper>
+      )}
       <Box className="shadow position-fixed overflow-auto">
         <Box
           className="hide-scrollbar"
           sx={{
             maxHeight: `calc(100vh - 88px)`,
             minHeight: `calc(100vh - 88px)`,
-            maxWidth: open ? "225px" : "65px",
-            minWidth: open ? "195px" : "65px",
+            maxWidth: open ? "225px" : "0px",
+            minWidth: open ? "195px" : "0px",
             overflow: "auto",
           }}
         >
-          <Box
+          <Box className=" position-relative d-flex justify-content-end bg-info">
+            <Box className={` position-absolute rounded-circle cursor-pointer`}>
+              <FaAngleDoubleLeft
+                className="fs-20 m-2"
+                onClick={() => {
+                  if (pin) return;
+                  setOpen(false);
+                }}
+              />
+            </Box>
+          </Box>
+          {/* <Box
             className={`d-flex ${
               open ? "justify-content-end" : "justify-content-center"
             }`}
@@ -194,8 +188,9 @@ const CustomerSideBarComponent = ({ children }) => {
             >
               <ChevronLeftIcon />
             </IconButton>
-          </Box>
-          <Box className="overflow-y-scroll  hide-scrollbar">
+          </Box> */}
+
+          <Box className="overflow-y-scroll  hide-scrollbar mt-4 ">
             <List className="pb-1">
               {customerMenu.map((item, index) => {
                 return (
@@ -277,13 +272,24 @@ const CustomerSideBarComponent = ({ children }) => {
               })}
             </List>
           </Box>
+          <Box
+            className="position-absolute bottom-0 w-100 d-flex justify-content-center p-2 border-top"
+            onClick={() => {
+              setPin(!pin);
+            }}
+          >
+            <Typography className={`${pin ? "color-light-blue" : ""} fs-14`}>
+              {pin ? <BsPinFill /> : <BsFillPinAngleFill />}
+              Pin Menu
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 65px)"}`,
-          marginLeft: ` ${open ? "235px" : "70px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 20px)"}`,
+          marginLeft: ` ${open ? "235px" : "10px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}

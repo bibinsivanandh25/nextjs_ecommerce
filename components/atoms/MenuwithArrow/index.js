@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
@@ -10,6 +11,7 @@ export default function MenuwithArrow({
   subHeader = "Favourite",
   Header = "List",
   onOpen = () => {},
+  arrowPosition = "center",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -55,7 +57,13 @@ export default function MenuwithArrow({
               display: "block",
               position: "absolute",
               top: 0,
-              right: 100,
+              right:
+                arrowPosition === "center"
+                  ? 100
+                  : arrowPosition === "end"
+                  ? 30
+                  : "",
+              left: arrowPosition === "start" ? 20 : "",
               width: 15,
               height: 20,
               bgcolor: "background.paper",

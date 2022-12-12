@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-plusplus */
 import { useState, useEffect } from "react";
 // import { useStoreList } from "services/hooks";
