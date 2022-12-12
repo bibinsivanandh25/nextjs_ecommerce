@@ -16,6 +16,7 @@ import {
   getAllSetandSubCategoriesByMainCategory,
 } from "services/customer/sidebar";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 
 const CustomerSideBarComponent = ({ children }) => {
   // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
@@ -33,6 +34,7 @@ const CustomerSideBarComponent = ({ children }) => {
 
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
+  const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -154,6 +156,7 @@ const CustomerSideBarComponent = ({ children }) => {
               <FaAngleDoubleLeft
                 className="fs-20 m-2"
                 onClick={() => {
+                  if (pin) return;
                   setOpen(false);
                 }}
               />
@@ -187,7 +190,7 @@ const CustomerSideBarComponent = ({ children }) => {
             </IconButton>
           </Box> */}
 
-          <Box className="overflow-y-scroll  hide-scrollbar mt-4">
+          <Box className="overflow-y-scroll  hide-scrollbar mt-4 ">
             <List className="pb-1">
               {customerMenu.map((item, index) => {
                 return (
@@ -268,6 +271,17 @@ const CustomerSideBarComponent = ({ children }) => {
                 );
               })}
             </List>
+          </Box>
+          <Box
+            className="position-absolute bottom-0 w-100 d-flex justify-content-center p-2 border-top"
+            onClick={() => {
+              setPin(!pin);
+            }}
+          >
+            <Typography className={`${pin ? "color-light-blue" : ""} fs-14`}>
+              {pin ? <BsPinFill /> : <BsFillPinAngleFill />}
+              Pin Menu
+            </Typography>
           </Box>
         </Box>
       </Box>

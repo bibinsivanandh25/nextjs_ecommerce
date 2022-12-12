@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Typography } from "@mui/material";
+import { Box, MenuItem, Paper, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -255,16 +255,16 @@ const Header = () => {
     >
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-3">
         <div className="d-flex align-items-center">
-          <p className="h-5">Hello Customer</p>
+          <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
+          {/* <p className="h-5">Hello Customer</p> */}
           <p
-            className="ps-2 cursor-pointer d-flex align-items-center"
+            className="ps-4 cursor-pointer d-flex align-items-center"
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
             Select Your Address
           </p>
         </div>
-        <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -399,7 +399,13 @@ const Header = () => {
           <MenuwithArrow
             subHeader=""
             Header="Recent Stores"
-            onOpen={recentStore}
+            onOpen={() => {
+              if (userId === "") {
+                route.push("/auth/customer/signin");
+                return;
+              }
+              recentStore();
+            }}
           >
             <MenuItem>
               <div className="d-flex align-items-center">
@@ -418,11 +424,22 @@ const Header = () => {
         <FaStore
           className="fs-2 cursor-pointer"
           onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+              return;
+            }
             setShowFavoriteList(true);
             setOpen(true);
           }}
         />
-        <div className="cursor-pointer">
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+            }
+          }}
+        >
           <Typography className="h-5 cursor-pointer">Returns</Typography>
           <Typography className="fs-14 fw-bold cursor-pointer">
             & Orders
@@ -430,10 +447,37 @@ const Header = () => {
         </div>
         <FiShoppingCart
           className="fs-2 cursor-pointer"
-          onClick={() => handleRouting("/customer/cart")}
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+              return;
+            }
+            handleRouting("/customer/cart");
+          }}
         />
-        <div className="cursor-pointer position-ralative">
-          <MenuwithArrow subHeader="Hello, sign In" Header="Account & Lists">
+        <div className="cursor-pointer position-ralative pe-3">
+          <MenuwithArrow
+            arrowPosition="end"
+            subHeader=""
+            Header={
+              userId === "" ? (
+                "Hello Customer, sign In"
+              ) : (
+                <Paper
+                  elevation={4}
+                  className="rounded-circle"
+                  sx={{ height: "35px" }}
+                >
+                  <Image
+                    width={35}
+                    height={35}
+                    src=""
+                    className="rounded-circle "
+                  />
+                </Paper>
+              )
+            }
+          >
             {!isSignedIn ? (
               <div className="px-2">
                 <div className="d-flex justify-content-center w-100 my-2">
