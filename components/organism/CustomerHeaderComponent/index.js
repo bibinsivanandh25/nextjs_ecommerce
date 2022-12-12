@@ -56,9 +56,13 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
-  const { supplierStoreName, supplierStoreLogo, userId } = useSelector(
-    (state) => state.customer
-  );
+  const {
+    supplierStoreName,
+    supplierStoreLogo,
+    profileImg,
+    userId,
+    addressDetails,
+  } = useSelector((state) => state.customer);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
@@ -262,7 +266,16 @@ const Header = () => {
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
-            Select Your Address
+            {isSignedIn === "" ? (
+              "Select Your Address"
+            ) : (
+              <div className="ms-2">
+                <Typography className="fs-10">{addressDetails.name}</Typography>
+                <Typography className="fs-12">
+                  {addressDetails.cityDistrictTown},{addressDetails.pinCode}
+                </Typography>
+              </div>
+            )}
           </p>
         </div>
         <div className="d-flex align-items-center">
@@ -471,7 +484,7 @@ const Header = () => {
                   <Image
                     width={35}
                     height={35}
-                    src=""
+                    src={profileImg ?? ""}
                     className="rounded-circle "
                   />
                 </Paper>

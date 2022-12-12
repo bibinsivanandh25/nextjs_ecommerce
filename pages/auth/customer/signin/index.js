@@ -14,7 +14,7 @@ import {
 } from "next-auth/react";
 import { assetsJson } from "public/assets";
 import { useRouter } from "next/router";
-import { login } from "services/customer/auth";
+import { getCustomerById, login } from "services/customer/auth";
 import atob from "atob";
 import toastify from "services/utils/toastUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -65,10 +65,9 @@ const SignIn = () => {
 
   const dispatch = useDispatch();
 
-  const storedatatoRedux = async (storeCode, customerID, email) => {
+  const storedatatoRedux = async (storeCode, customerID, email, details) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
-      console.log(data);
       const userInfo = {
         userId: customerID,
         supplierId: data?.supplierId,
@@ -80,6 +79,11 @@ const SignIn = () => {
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         role: "CUSTOMER",
         emailId: email,
+        profileImg: details.profileImage,
+        gender: details.gender,
+        mobileNumber: details.mobileNumber,
+        addressDetails: details.addressDetails,
+        customerName: details.customerName,
       };
       dispatch(storeUserInfo(userInfo));
       dispatch(
@@ -94,6 +98,14 @@ const SignIn = () => {
     if (err) {
       toastify(err.response?.data?.message, "error");
     }
+  };
+
+  const getDetails = async (id) => {
+    const { data } = await getCustomerById(id);
+    if (data) {
+      return data;
+    }
+    return null;
   };
 
   const handleSubmit = async () => {
@@ -124,12 +136,16 @@ const SignIn = () => {
                 toastify("Invalid credentials", "error");
                 return null;
               }
-              router.push(`/customer/home`);
-              await storedatatoRedux(
-                data?.defaultStoreCode,
-                userData[0],
-                userData[1]
-              );
+              const details = await getDetails(userData[0]);
+              if (details) {
+                router.push(`/customer/home`);
+                await storedatatoRedux(
+                  data?.defaultStoreCode,
+                  userData[0],
+                  userData[1],
+                  details
+                );
+              }
             }
           }
           return null;

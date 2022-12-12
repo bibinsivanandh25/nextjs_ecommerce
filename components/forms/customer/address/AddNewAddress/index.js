@@ -12,6 +12,8 @@ import {
 } from "services/customer/Home/address";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
+import { storeUserInfo } from "features/customerSlice";
+import { useDispatch } from "react-redux";
 
 const options = [
   {
@@ -41,6 +43,8 @@ const NewAddress = ({
   modalType,
 }) => {
   const [error, setError] = useState(errorObj);
+  const dispatch = useDispatch();
+
   const handleInputChange = (e, value) => {
     if (value === "state") {
       setDefaultFormData((prev) => {
@@ -169,6 +173,14 @@ const NewAddress = ({
           ? await saveCustomerAddress(customer.userId, payload)
           : await editCustomerAddress(payload);
       if (data) {
+        if (modalType !== "add") {
+          dispatch(
+            storeUserInfo({
+              ...customer,
+              addressDetails: { ...payload },
+            })
+          );
+        }
         toastify(data.message, "success");
         getAllData(customer.userId);
         handleClearAll();

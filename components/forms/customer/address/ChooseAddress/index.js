@@ -6,13 +6,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import NewAddress from "@/forms/customer/address/AddNewAddress";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   changePrimaryAddress,
   deleteCustomerAddress,
   getAllCustomerAddress,
 } from "services/customer/Home/address";
 import toastify from "services/utils/toastUtils";
+import { storeUserInfo } from "features/customerSlice";
 
 const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
   const customer = useSelector((state) => state.customer);
@@ -34,6 +35,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
     addresstype: "",
   });
   const [masterAddress, setMasterAddress] = useState([]);
+  const dispatch = useDispatch();
 
   const getAllData = async (id) => {
     if (id) {
@@ -85,6 +87,12 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         item.addressId
       );
       if (data) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            addressDetails: { ...data.data },
+          })
+        );
         toastify(data?.message, "success");
         getAllData(customer.userId);
       }
