@@ -1,10 +1,17 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, FormHelperText, Grid, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import {
+  editCustomerAddress,
+  saveCustomerAddress,
+} from "services/customer/Home/address";
+import toastify from "services/utils/toastUtils";
+import validationRegex from "services/utils/regexUtils";
 
 const options = [
   {
@@ -21,12 +28,17 @@ const errorObj = {
   address: false,
   city: false,
   state: false,
+  addresstype: false,
+  mobileValidate: false,
 };
 const NewAddress = ({
   newAddressModal,
   setNewAddressModal,
   setDefaultFormData,
   defaultFormData,
+  getAllData = () => {},
+  customer,
+  modalType,
 }) => {
   const [error, setError] = useState(errorObj);
   const handleInputChange = (e, value) => {
@@ -56,6 +68,7 @@ const NewAddress = ({
 
   const handleClearAll = () => {
     setDefaultFormData({
+      id: "",
       name: "",
       mobilenumber: "",
       pincode: "",
@@ -77,6 +90,8 @@ const NewAddress = ({
       address: false,
       city: false,
       state: false,
+      addresstype: false,
+      mobileValidate: false,
     });
   };
   const handleError = () => {
@@ -88,14 +103,26 @@ const NewAddress = ({
       address: false,
       city: false,
       state: false,
+      addresstype: false,
+      mobileValidate: false,
     };
-    const { name, mobilenumber, pincode, location, address, city, state } =
-      defaultFormData;
+    const {
+      name,
+      mobilenumber,
+      pincode,
+      location,
+      address,
+      city,
+      state,
+      addresstype,
+    } = defaultFormData;
     if (name == "") {
       errorobj.name = true;
     }
     if (mobilenumber == "") {
       errorobj.mobilenumber = true;
+    } else if (!validationRegex.mobile.test(mobilenumber)) {
+      errorobj.mobileValidate = true;
     }
     if (pincode == "") {
       errorobj.pincode = true;
@@ -109,24 +136,48 @@ const NewAddress = ({
     if (city == "") {
       errorobj.city = true;
     }
-    if (Object.keys(state).length === 0) {
+    if (state == null || Object.keys(state)?.length === 0) {
       errorobj.state = true;
     }
-    // Object.entries(errorobj).forEach(([key, value]) => {
-    //   Object.entries(defaultFormData).map(([keys, values]) => {
-    //     if (key === keys) {
-    //       if (values === "") {
-    //         errorobj[values] = false;
-    //       }
-    //     }
-    //   });
-    // });
-    return errorobj;
+    if (addresstype == "") {
+      errorobj.addresstype = true;
+    }
+    setError(errorobj);
+    const result = Object.values(errorobj).every((x) => x === false);
+    return result;
   };
-  const handleSaveClick = () => {
-    const errorData = handleError();
-    // console.log(errorData);
-    setError(errorData);
+  const handleSaveClick = async () => {
+    const result = handleError();
+    if (result) {
+      const payload = {
+        name: defaultFormData.name,
+        mobileNumber: defaultFormData.mobilenumber,
+        pinCode: defaultFormData.pincode,
+        location: defaultFormData.location,
+        address: defaultFormData.address,
+        cityDistrictTown: defaultFormData.city,
+        state: defaultFormData.state.label,
+        landmark: defaultFormData.landmark,
+        latitudeValue: defaultFormData.latitudvalue,
+        longitudeValue: defaultFormData.longitudevalue,
+        alternativeMobileNumber: defaultFormData.alternatenumber,
+        addressType: defaultFormData.addresstype,
+      };
+      if (modalType === "edit") payload.addressId = defaultFormData.id;
+      const { data, err } =
+        modalType === "add"
+          ? await saveCustomerAddress(customer.userId, payload)
+          : await editCustomerAddress(payload);
+      if (data) {
+        toastify(data.message, "success");
+        getAllData(customer.userId);
+        handleClearAll();
+        setNewAddressModal(false);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
   return (
     <div>
@@ -138,7 +189,7 @@ const NewAddress = ({
         }}
         minHeightClassName="mnh-400"
         ModalWidth={800}
-        ModalTitle="Add New Address"
+        ModalTitle={modalType == "add" ? "Add New Address" : "Edit Address"}
         titleClassName="fs-18 fw-600"
         footerClassName="d-flex justify-content-end border-top mt-2 border-dark-gray mb-1"
         onClearBtnClick={() => {
@@ -147,6 +198,7 @@ const NewAddress = ({
         onSaveBtnClick={() => {
           handleSaveClick();
         }}
+        saveBtnText={modalType == "add" ? "Save" : "Edit"}
       >
         <Box>
           <Grid container my={2} spacing={2}>
@@ -170,9 +222,13 @@ const NewAddress = ({
                 onInputChange={(e) => {
                   handleInputChange(e, "mobilenumber");
                 }}
-                error={error.mobilenumber}
+                error={error.mobilenumber || error.mobileValidate}
                 helperText={
-                  error.mobilenumber ? validateMessage.field_required : ""
+                  error.mobilenumber
+                    ? validateMessage.field_required
+                    : error.mobileValidate
+                    ? validateMessage.mobile
+                    : ""
                 }
               />
             </Grid>{" "}
@@ -300,6 +356,11 @@ const NewAddress = ({
               }}
             />
           </Grid>
+          {error.addresstype ? (
+            <FormHelperText error={error.addresstype} className="ps-4 h-5">
+              {validateMessage.field_required}
+            </FormHelperText>
+          ) : null}
         </Box>
       </ModalComponent>
     </div>

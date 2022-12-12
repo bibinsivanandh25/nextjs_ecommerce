@@ -570,10 +570,12 @@ const Header = () => {
           </Box>
         </ModalComponent>
       )}
-      <ChooseAddress
-        showModal={showSelectAddress}
-        setShowModal={setShowSelectAddress}
-      />
+      {showSelectAddress && (
+        <ChooseAddress
+          showModal={showSelectAddress}
+          setShowModal={setShowSelectAddress}
+        />
+      )}
       <CustomDrawer
         open={open}
         position="right"
