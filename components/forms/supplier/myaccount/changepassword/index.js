@@ -8,7 +8,7 @@ import { changeSupplierPassword } from "services/supplier/myaccount/changepasswo
 import toastify from "services/utils/toastUtils";
 import { useSelector } from "react-redux";
 
-const ChangePassword = () => {
+const ChangePassword = ({ usertype = "SUPPLIER" }) => {
   const [error, setError] = useState({});
   const user = useSelector((state) => state.user);
   const [formValues, setFormValues] = useState({ emailId: user.emailId });
@@ -56,10 +56,16 @@ const ChangePassword = () => {
     if (isValid) {
       const payload = {
         ...formValues,
-        userType: "SUPPLIER",
+        userType: usertype,
       };
       const { data, err } = await changeSupplierPassword(payload);
       if (data) {
+        setFormValues({
+          emailId: user.emailId,
+          oldPassword: "",
+          newPassword: "",
+          reEnterPassword: "",
+        });
         toastify(data.message, "success");
       } else if (err) {
         toastify(err.response.data.message, "error");
@@ -112,6 +118,7 @@ const ChangePassword = () => {
             error={Boolean(error?.oldPassword)}
             helperText={error?.oldPassword}
             inputlabelshrink
+            showAutoFill="new-password"
           />
         </Grid>
         <Grid item xs={12}>

@@ -17,7 +17,7 @@ const MyAccount = () => {
       return <MyProfile />;
     }
     if (selectedMenu === 1) return <BankDetails />;
-    if (selectedMenu === 2) return <ChangePassword />;
+    if (selectedMenu === 2) return <ChangePassword usertype="CUSTOMER" />;
     if (selectedMenu === 3) return <PickUpAddress />;
     return null;
   };
