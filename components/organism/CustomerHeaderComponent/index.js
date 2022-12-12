@@ -291,7 +291,7 @@ const Header = () => {
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
-            {isSignedIn === "" ? (
+            {!isSignedIn ? (
               "Select Your Address"
             ) : (
               <div className="ms-2">
