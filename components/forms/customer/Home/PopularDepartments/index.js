@@ -5,8 +5,10 @@ import CustomIcon from "services/iconUtils";
 import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import {
+  getFeaturedProducts,
   getMostPopularProducts,
   getNewArrivalProducts,
+  getBestSoldProducts,
 } from "services/customer/Home";
 import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
@@ -49,6 +51,24 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
 
   const storeDetails = useSelector((state) => state.customer);
 
+  const setAllProducts = (data) => {
+    const temp = [];
+    data.forEach((ele) => {
+      temp.push({
+        id: ele.productId,
+        title: ele.productTitle,
+        price: ele.salePrice,
+        salePriceWithLogistics: ele.salePriceWithLogistics,
+        image: ele.variationMedia,
+        rating: {
+          rate: ele.averageRatings,
+          count: ele.totalRatings,
+        },
+      });
+    });
+    setProducts([...temp]);
+  };
+
   const getProducts = async () => {
     if (popularDepartments === "New Arrivals") {
       const { data } = await getNewArrivalProducts(
@@ -56,21 +76,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         storeDetails?.supplierId
       );
       if (data) {
-        const temp = [];
-        data.forEach((ele) => {
-          temp.push({
-            id: ele.productId,
-            title: ele.productTitle,
-            price: ele.salePrice,
-            salePriceWithLogistics: ele.salePriceWithLogistics,
-            image: ele.variationMedia,
-            rating: {
-              rate: ele.averageRatings,
-              count: ele.totalRatings,
-            },
-          });
-        });
-        setProducts([...temp]);
+        setAllProducts(data);
       }
     }
     if (popularDepartments === "Most Popular") {
@@ -79,21 +85,26 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         storeDetails?.supplierId
       );
       if (data) {
-        const temp = [];
-        data.forEach((ele) => {
-          temp.push({
-            id: ele.productId,
-            title: ele.productTitle,
-            price: ele.salePrice,
-            salePriceWithLogistics: ele.salePriceWithLogistics,
-            image: ele.variationMedia,
-            rating: {
-              rate: ele.averageRatings,
-              count: ele.totalRatings,
-            },
-          });
-        });
-        setProducts([...temp]);
+        setAllProducts(data);
+      }
+    }
+    if (popularDepartments === "Best Seller") {
+      const { data } = await getBestSoldProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
+      }
+    }
+
+    if (popularDepartments === "Featured") {
+      const { data } = await getFeaturedProducts(
+        filterType,
+        storeDetails?.supplierId
+      );
+      if (data) {
+        setAllProducts(data);
       }
     }
   };
@@ -130,7 +141,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
               if (popularDepartments !== "New Arrivals")
                 setPopularDepartments("New Arrivals");
             }}
-            className={`px-3 py-1 border d-flex align-items-center text-center ${
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "New Arrivals"
                 ? "border-orange bg-orange-1 fw-bold"
                 : ""
@@ -143,7 +154,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
               if (popularDepartments !== "Best Seller")
                 setPopularDepartments("Best Seller");
             }}
-            className={`px-3 py-1 border d-flex align-items-center text-center ${
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Best Seller"
                 ? "border-orange bg-orange-1 fw-bold"
                 : ""
@@ -156,7 +167,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
               if (popularDepartments !== "Most Popular")
                 setPopularDepartments("Most Popular");
             }}
-            className={`px-3 py-1 border d-flex align-items-center text-center ${
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Most Popular"
                 ? "border-orange bg-orange-1 fw-bold"
                 : ""
@@ -169,7 +180,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
               if (popularDepartments !== "Featured")
                 setPopularDepartments("Featured");
             }}
-            className={`px-3 py-1 border d-flex align-items-center text-center ${
+            className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Featured"
                 ? "border-orange bg-orange-1 fw-bold"
                 : ""
@@ -180,7 +191,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         </Box>
         <Box className="col-4 d-flex justify-content-end pb-1">
           <Card
-            className={`px-3 py-1 d-flex align-items-center text-center h-5 border  ${
+            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
               filterType === "WEEK" ? "border-orange bg-orange-1 fw-bold" : ""
             }`}
             onClick={() => {
@@ -192,7 +203,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             W
           </Card>
           <Card
-            className={`px-3 py-1 d-flex align-items-center text-center h-5 border mx-3 ${
+            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
               filterType === "MONTH" ? "border-orange bg-orange-1 fw-bold" : ""
             }`}
             onClick={() => {
@@ -206,7 +217,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         </Box>
       </Box>
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {/* {getProducts()} */}
         {products.map((ele) => {
           return (
             <ProductCard
