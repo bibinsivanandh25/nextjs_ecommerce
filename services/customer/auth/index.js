@@ -5,8 +5,8 @@ const registerCustomer = (payload) => {
   return serviceUtil
     .post(`users/customer-registration`, payload)
     .then((res) => {
-      const { data, message } = res && res.data;
-      return { data, message };
+      const { data, message, registeredUser } = res && res.data;
+      return { data, message, registeredUser };
     })
     .catch((err) => ({
       err,
