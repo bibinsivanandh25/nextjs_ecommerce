@@ -66,7 +66,6 @@ const Sets = () => {
   ];
 
   const onClickOfMenuItem = (ele, value) => {
-    console.log(value);
     if (ele === "Edit") {
       setType("edit");
       setSelectedData(value);

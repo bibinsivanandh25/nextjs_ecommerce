@@ -179,7 +179,6 @@ const SubCategories = () => {
               className="fs-20"
               onIconClick={() => {
                 getSubCatagoryDetails(val.subCategoryId, () => {
-                  console.log("view");
                   setOpenCreateNewSubCategories(true);
                   setShowView(true);
                 });

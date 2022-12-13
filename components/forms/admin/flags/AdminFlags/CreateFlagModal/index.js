@@ -25,7 +25,7 @@ const tempObj = {
   flagTitle: {},
   visibilityPlace: [],
   themeSelection: [],
-  colorSelection: {},
+  colorSelection: [],
   startDate: "",
   endDate: "",
   startTime: "",
@@ -95,7 +95,7 @@ const CreateFlagModal = ({
       data.forEach((ele) => {
         result.push({
           id: ele.flagThemeId,
-          label: <Image src={ele.flagThemeImageUrl} width={400} height={80} />,
+          title: <Image src={ele.flagThemeImageUrl} width={400} height={80} />,
           visibilityPlace: ele.visibilityPlace,
           url: ele.flagThemeImageUrl,
         });
@@ -163,7 +163,7 @@ const CreateFlagModal = ({
       flagTitle: {},
       visibilityPlace: [],
       themeSelection: [],
-      colorSelection: {},
+      colorSelection: [],
       startDate: "",
       endDate: "",
       startTime: "",
@@ -202,13 +202,18 @@ const CreateFlagModal = ({
       ],
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [formData?.themeSelection[0].url],
+      flagImageUrl: [
+        ...formData?.colorSelection?.map((item) => {
+          return item.url;
+        }),
+      ],
+
       userType: "ADMIN",
     };
 
-    const { data, err } = await saveAdminFlag(payload);
+    const { data, err, message } = await saveAdminFlag(payload);
     if (data) {
-      toastify(data.data.message, "success");
+      toastify(message, "success");
       handleClearAll();
       setOpen(false);
     } else if (err) {
@@ -226,12 +231,12 @@ const CreateFlagModal = ({
         ...val,
         visibilityPlace: [],
         themeSelection: [],
-        colorSelection: {},
+        colorSelection: [],
       }));
     } else if (name === "visibilityPlace" || name === "themeSelection") {
       setFormDate((item) => ({
         ...item,
-        colorSelection: {},
+        colorSelection: [],
       }));
     }
   };
@@ -259,11 +264,12 @@ const CreateFlagModal = ({
       const temp = colorList?.data.map((item) => {
         return {
           id: item.flagThemeId,
-          label: (
+          title: (
             <Image src={item?.flagThemeImageUrl} width={400} height={80} />
           ),
           visibilityPlace: item?.visibilityPlace,
           url: item?.flagThemeImageUrl,
+          flagLayoutId: item.flagLayoutId,
         };
       });
       setcolorTheme([...temp]);
@@ -277,8 +283,8 @@ const CreateFlagModal = ({
           if (data?.flagLayoutId?.includes(item.id)) return item;
         }),
         colorSelection: temp?.filter((item) => {
-          if (item?.url === data?.flagImageUrl[0]) return item;
-        })[0],
+          if (data.flagImageUrl.includes(item.url)) return item;
+        }),
         startDate: data.startDateTime.split(" ")[0],
         endDate: data.endDateTime.split(" ")[0],
         startTime: data.startDateTime.split(" ")[1],
@@ -316,7 +322,11 @@ const CreateFlagModal = ({
       ],
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [formData?.themeSelection[0].url],
+      flagImageUrl: [
+        ...formData.colorSelection.map((item) => {
+          return item.url;
+        }),
+      ],
       userType: "ADMIN",
     };
     const { data, message, err } = await editFlag(payload);
@@ -356,7 +366,7 @@ const CreateFlagModal = ({
           flagTitle: {},
           visibilityPlace: [],
           themeSelection: [],
-          colorSelection: {},
+          colorSelection: [],
           startDate: "",
           endDate: "",
           startTime: "",
@@ -433,7 +443,21 @@ const CreateFlagModal = ({
           />
         </Grid>
         <Grid item md={6}>
-          <SimpleDropdownComponent
+          <MultiSelectComponent
+            size="small"
+            inputlabelshrink
+            list={colorTheme}
+            onSelectionChange={(e, val) => {
+              handleChange([...val] ?? [], "colorSelection");
+            }}
+            label="Color Selection"
+            id="colorSelection"
+            value={formData?.colorSelection}
+            helperText={errorObj?.colorSelection}
+            error={errorObj?.colorSelection}
+          />
+          {/* comment */}
+          {/* <SimpleDropdownComponent
             size="small"
             label="Color Selection"
             inputlabelshrink
@@ -444,7 +468,7 @@ const CreateFlagModal = ({
             id="colorSelection"
             value={formData.colorSelection}
             helperText={errorObj.colorSelection}
-          />
+          /> */}
         </Grid>
 
         <Grid item md={6}>

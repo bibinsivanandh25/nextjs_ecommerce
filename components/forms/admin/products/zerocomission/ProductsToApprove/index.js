@@ -214,9 +214,7 @@ const ProductsToApprove = ({
         list: [
           {
             label: "Flag",
-            callBack: () => {
-              console.log("flag");
-            },
+            callBack: () => {},
           },
           {
             label: "Merge To",

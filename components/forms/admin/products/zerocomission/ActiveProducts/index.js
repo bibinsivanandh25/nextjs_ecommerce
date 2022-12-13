@@ -197,9 +197,7 @@ const Active = ({ commissionType = "ZERO_COMMISSION" }) => {
         list: [
           {
             label: "Flag",
-            callBack: () => {
-              console.log("flag");
-            },
+            callBack: () => {},
           },
 
           {

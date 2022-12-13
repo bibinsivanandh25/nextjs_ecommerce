@@ -24,5 +24,16 @@ const login = (payload) => {
       toastify(errRes, "error");
     });
 };
+const getCustomerById = (payload) => {
+  return serviceUtil
+    .get(`users/customer-info?customerId=${payload}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
 
-export { registerCustomer, login };
+export { registerCustomer, login, getCustomerById };

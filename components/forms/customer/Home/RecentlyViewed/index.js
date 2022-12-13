@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -32,7 +32,7 @@ const comparProductData = [
 ];
 
 const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState();
   const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
@@ -86,24 +86,28 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
       </Typography>
 
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {products.map((ele) => {
-          return (
-            <ProductCard
-              item={ele}
-              handleIconClick={(icon) => {
-                if (icon === "viewCarouselOutlinedIcon") {
-                  setShowDrawer(true);
-                }
-                if (icon === "balanceIcon") {
-                  setComparDrawer(true);
-                }
-                if (icon === "visibilityOutlinedIcon") {
-                  setViewModalOpen(true);
-                }
-              }}
-            />
-          );
-        })}
+        {products ? (
+          products?.map((ele) => {
+            return (
+              <ProductCard
+                item={ele}
+                handleIconClick={(icon) => {
+                  if (icon === "viewCarouselOutlinedIcon") {
+                    setShowDrawer(true);
+                  }
+                  if (icon === "balanceIcon") {
+                    setComparDrawer(true);
+                  }
+                  if (icon === "visibilityOutlinedIcon") {
+                    setViewModalOpen(true);
+                  }
+                }}
+              />
+            );
+          })
+        ) : (
+          <Skeleton variant="rectangular" width={150} height={150} />
+        )}
       </Box>
       <DrawerComponent
         openDrawer={showDrawer}
@@ -119,7 +123,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
             width: `calc(100% - 10px)`,
           }}
         >
-          {products.map((item) => (
+          {products?.map((item) => (
             <Grid item md={6} sm={6} key={item.id}>
               <SimilarProducts data={item} handleIconClick={() => {}} />
             </Grid>

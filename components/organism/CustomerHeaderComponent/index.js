@@ -56,9 +56,13 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
-  const { supplierStoreName, supplierStoreLogo, userId } = useSelector(
-    (state) => state.customer
-  );
+  const {
+    supplierStoreName,
+    supplierStoreLogo,
+    profileImg,
+    userId,
+    addressDetails,
+  } = useSelector((state) => state.customer);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
@@ -280,14 +284,33 @@ const Header = () => {
     >
       <div className="d-flex justify-content-between align-items-center bg-orange text-white px-3">
         <div className="d-flex align-items-center">
-          <Image src={assetsJson.logo} alt="" width="100px" height="30px" />
+          <Image
+            src={assetsJson.logo}
+            alt=""
+            width="100px"
+            height="30px"
+            style={{
+              zIndex: 1000,
+            }}
+          />
           {/* <p className="h-5">Hello Customer</p> */}
           <p
             className="ps-4 cursor-pointer d-flex align-items-center"
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
-            Select Your Address
+            {!isSignedIn ? (
+              "Select Your Address"
+            ) : (
+              <div className="ms-2">
+                <Typography className="fs-10">
+                  {addressDetails?.name}
+                </Typography>
+                <Typography className="fs-12">
+                  {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
+                </Typography>
+              </div>
+            )}
           </p>
         </div>
         <div className="d-flex align-items-center">
@@ -501,7 +524,7 @@ const Header = () => {
                   <Image
                     width={35}
                     height={35}
-                    src=""
+                    src={profileImg ?? ""}
                     className="rounded-circle "
                   />
                 </Paper>
