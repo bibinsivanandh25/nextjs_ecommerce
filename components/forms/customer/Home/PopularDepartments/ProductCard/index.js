@@ -47,7 +47,6 @@ const ProductCard = ({
         pathname: "/customer/productdetails",
         query: { id: item?.id },
       }}
-      as="/customer/productdetails"
       passHref
     >
       <Box
