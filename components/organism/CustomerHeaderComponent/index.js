@@ -299,7 +299,8 @@ const Header = () => {
             onClick={() => setShowSelectAddress(true)}
           >
             <LocationOnIcon />
-            {!isSignedIn ? (
+            {(!isSignedIn && !addressDetails?.name) ||
+            !addressDetails?.cityDistrictTown ? (
               "Select Your Address"
             ) : (
               <div className="ms-2">

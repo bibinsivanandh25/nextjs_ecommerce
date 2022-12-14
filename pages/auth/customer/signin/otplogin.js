@@ -118,7 +118,7 @@ const OtpLogIn = () => {
       if (details) {
         route.push(`/customer/home`);
         await storedatatoRedux(
-          data?.defaultStoreCode,
+          data?.data?.defaultStoreCode,
           userData[0],
           userData[1],
           details
