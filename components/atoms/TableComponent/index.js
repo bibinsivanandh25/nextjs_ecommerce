@@ -1061,20 +1061,25 @@ export default function TableComponent({
                     size="small"
                     onInputChange={(e) => {
                       if (e.target.value === "") {
-                        handlePageEnd(searchText, searchFilter?.value, 0, {
-                          fromDate: filteredDates.fromDate
-                            ? `${format(
-                                new Date(filteredDates.fromDate),
-                                "MM-dd-yyyy"
-                              )} 00:00:00`
-                            : "",
-                          toDate: filteredDates.toDate
-                            ? `${format(
-                                new Date(filteredDates.toDate),
-                                "MM-dd-yyyy"
-                              )} 23:59:59`
-                            : "",
-                        });
+                        handlePageEnd(
+                          e?.target?.value,
+                          searchFilter?.value,
+                          0,
+                          {
+                            fromDate: filteredDates.fromDate
+                              ? `${format(
+                                  new Date(filteredDates.fromDate),
+                                  "MM-dd-yyyy"
+                                )} 00:00:00`
+                              : "",
+                            toDate: filteredDates.toDate
+                              ? `${format(
+                                  new Date(filteredDates.toDate),
+                                  "MM-dd-yyyy"
+                                )} 23:59:59`
+                              : "",
+                          }
+                        );
                       }
                       setsearchText(e.target.value);
                     }}

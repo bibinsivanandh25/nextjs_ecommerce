@@ -1,21 +1,90 @@
+/* eslint-disable no-use-before-define */
 import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import HelpandsupportCreate from "@/forms/customer/helpandsupport/CreateTicket";
 import HelpandsupportView from "@/forms/customer/helpandsupport/helpandsupportview";
-import ModalComponent from "@/atoms/ModalComponent";
+import { getCustomerHelp } from "services/customer/helpAndSupport";
+import toastify from "services/utils/toastUtils";
+import { viewHelpandSupport } from "services/supplier/helpandsupport";
+import { useSelector } from "react-redux";
+import HelpAndSupportNotification from "@/forms/customer/helpandsupport/HelpAndSupportNotification";
 
 const HelpAndSupport = () => {
+  const user = useSelector((state) => state.customer);
   const [tableRows, setTableRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState(null);
   const [showModal, setShowModal] = useState({
     show: false,
     id: null,
   });
-
+  const filterData = [
+    {
+      name: "issue type",
+      value: [
+        {
+          item: "ORDER_RELATED_ISSUE",
+          isSelected: false,
+          value: "ORDER_RELATED_ISSUE",
+        },
+        {
+          item: "RETURN_AND_REFUND",
+          isSelected: false,
+          value: "RETURN_AND_REFUND",
+        },
+        {
+          item: "LOGISTICS_RELATED_ISSUE",
+          isSelected: false,
+          value: "LOGISTICS_RELATED_ISSUE",
+        },
+        {
+          item: "CANCELLATION_AND_REFUND",
+          isSelected: false,
+          value: "CANCELLATION_AND_REFUND",
+        },
+        {
+          item: "PROFILE_RELATED_ISSUE",
+          isSelected: false,
+          value: "PROFILE_RELATED_ISSUE",
+        },
+        {
+          item: "PAYMENT_SETTLEMENT_ISSUE",
+          isSelected: false,
+          value: "PAYMENT_SETTLEMENT_ISSUE",
+        },
+        {
+          item: "OTHERS",
+          isSelected: false,
+          value: "OTHERS",
+        },
+      ],
+    },
+    // { name: "All", value: "ALL" },
+    {
+      name: "status",
+      value: [
+        {
+          item: "OPEN",
+          isSelected: false,
+          value: "OPEN",
+        },
+        {
+          item: "PENDING",
+          isSelected: false,
+          value: "PENDING",
+        },
+        {
+          item: "CLOSED",
+          isSelected: false,
+          value: "CLOSED",
+        },
+      ],
+    },
+    // { name: "TICKET ID", value:tableData.map((val)=>{item:{val.ticketId} })  },
+  ];
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -71,46 +140,59 @@ const HelpAndSupport = () => {
     }
     return "";
   };
+  const handleViewClick = async (value, type) => {
+    if (value) {
+      const payload = {
+        ticketId: value.ticketId,
+        viewedByType: "CUSTOMER",
+        viewedById: user.userId,
+      };
+      const { data, err } = await viewHelpandSupport(payload);
+      if (data) {
+        setShowModal({
+          show: true,
+          id: value.ticketId,
+          type,
+        });
+        setSelectedData(value);
 
-  const getParagraph = (param1, param2) => {
-    return (
-      <Grid container my={1}>
-        <Grid item xs={2}>
-          {param1}
-        </Grid>
-        <Grid item xs={1}>
-          :
-        </Grid>
-        <Grid item xs={9}>
-          {param2}
-        </Grid>
-      </Grid>
-    );
+        getTabledata(0, null, "");
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
   };
 
   const mapRowsToTable = (data) => {
     const result = [];
-    data.forEach((row, index) => {
+
+    data.forEach((row) => {
+      const flag = row.helpSupportMessages?.map((item) => {
+        return item.helpSupportMessageViews.some(
+          (value) => value.viewedById == user.userId
+        );
+      });
       result.push({
-        id: index + 1,
-        col1: row.date,
+        id: row.ticketId,
+        col1: new Date(row.createdDate).toLocaleString(),
         col2: row.ticketId,
-        col3: row.subject,
-        col4: <div className={getClassnames(row.status)}>{row.status}</div>,
+        col3: row.issueSubject,
+        col4: (
+          <div className={getClassnames(row.ticketStatus)}>
+            {row.ticketStatus}
+          </div>
+        ),
         col5: (
           <Grid className="d-flex justify-content-center">
             <Grid>
               <CustomIcon
                 type="view"
-                title="View"
-                className="me-2"
+                title="View & Reply"
                 onIconClick={() => {
-                  setShowModal({
-                    show: true,
-                    type: "view",
-                  });
-                  setSelectedData(row);
+                  handleViewClick(row, "view");
                 }}
+                className="fs-18 me-2 fit-content"
               />
             </Grid>
             <Grid classNamw="mx-2">
@@ -118,20 +200,15 @@ const HelpAndSupport = () => {
                 variant="dot"
                 sx={{
                   "& .MuiBadge-badge": {
-                    color: "red",
-                    backgroundColor: "red",
+                    color: flag.every((val) => val) ? "white" : "red",
+                    backgroundColor: flag.every((val) => val) ? "white" : "red",
                   },
                 }}
               >
                 <CustomIcon
                   type="notification"
                   onIconClick={() => {
-                    setShowModal({
-                      show: true,
-                      id: row.ticketId,
-                      type: "notification",
-                    });
-                    setSelectedData(row);
+                    handleViewClick(row, "notification");
                   }}
                 />
               </Badge>
@@ -140,10 +217,8 @@ const HelpAndSupport = () => {
               <Typography
                 className="h-5 color-orange ms-2"
                 onClick={() => {
-                  setShowModal({
-                    show: true,
+                  setShowCreateComponent({
                     id: row.ticketId,
-                    type: "reply",
                   });
                   setSelectedData(row);
                 }}
@@ -158,48 +233,76 @@ const HelpAndSupport = () => {
     return result;
   };
 
+  const getTabledata = async (
+    page = pageNumber,
+    filters = [],
+    keyword = null
+  ) => {
+    const payload = {
+      issueType: [],
+      ticketStatus: [],
+      keyword,
+    };
+    filters?.forEach((ele) => {
+      Object.entries(ele).forEach(([key, value]) => {
+        payload[key] = value;
+      });
+    });
+    const { data, err } = await getCustomerHelp(page, payload);
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapRowsToTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setTableRows((pre) => [...pre, ...mapRowsToTable(data)]);
+        setpageNumber((pre) => pre + 1);
+      }
+      // setTableData(data);
+    } else {
+      toastify(err, "error");
+      setTableRows([]);
+    }
+  };
   useEffect(() => {
-    const rows = [
-      {
-        date: "24 jun 2020",
-        ticketId: "#23324234",
-        subject: "lorem ipsum...",
-        status: "open",
-        col5: (
-          <div className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" />
-            <CustomIcon type="notification" className="mx-2" />
-            <Typography className="h-5 color-orange">Reply</Typography>
-          </div>
-        ),
-      },
-      {
-        date: "24 jun 2020",
-        ticketId: "#23324234",
-        subject: "lorem ipsum...",
-        status: "pending",
-        col5: (
-          <div className="d-flex justify-content-center align-items-center">
-            <CustomIcon type="view" />
-            <CustomIcon type="notification" className="mx-2" />
-            <Typography className="h-5 color-orange">Reply</Typography>
-          </div>
-        ),
-      },
-    ];
-    setTableData(rows);
+    getTabledata(0);
   }, []);
-
-  useEffect(() => {
-    setTableRows(mapRowsToTable(tableData));
-  }, [tableData]);
-
+  const getFilteredValues = (val) => {
+    if (val.length) {
+      const result = [];
+      val.forEach((item) => {
+        if (item.name === "status") {
+          result.push({
+            ticketStatus: item?.value
+              ?.map((ele) => {
+                if (ele.isSelected) return ele.value;
+                return null;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+        if (item.name === "issue type") {
+          result.push({
+            issueType: item.value
+              .map((ele) => {
+                if (ele.isSelected) return ele.value;
+                return null;
+              })
+              .filter((ele) => !!ele),
+          });
+        }
+      });
+      getTabledata(0, result);
+    }
+  };
   return (
     <>
       {/* eslint-disable-next-line no-nested-ternary */}
       {showCreateComponent ? (
-        <HelpandsupportCreate setShowCreateComponent={setShowCreateComponent} />
-      ) : showModal.show && showModal.type === "reply" ? (
+        <HelpandsupportCreate
+          setShowCreateComponent={setShowCreateComponent}
+          getTabledata={getTabledata}
+        />
+      ) : showModal.show && showModal.type === "view" ? (
         <HelpandsupportView
           selectedData={selectedData}
           setShowView={setShowModal}
@@ -238,35 +341,34 @@ const HelpAndSupport = () => {
                 <TableComponent
                   table_heading=""
                   columns={columns}
+                  filterData={filterData}
                   tableRows={tableRows}
                   showCheckbox={false}
                   showSearchFilter={false}
+                  showFilterButton
+                  handlePageEnd={(
+                    searchText,
+                    searchFilter,
+                    page = pageNumber
+                  ) => {
+                    getTabledata(page, [], searchText);
+                  }}
+                  handleRowsPerPageChange={() => {
+                    setpageNumber(0);
+                  }}
+                  showFilterList
+                  getFilteredValues={(val) => getFilteredValues(val)}
                 />
               </Paper>
             </Grid>
-
-            <ModalComponent
-              open={showModal.show && showModal.type === "view"}
-              ModalTitle="Admin Reply"
-              showFooter={false}
-              onCloseIconClick={() => setShowModal({ show: false, id: null })}
-              minHeightClassName="mnh-300 mxh-300"
-              ModalWidth={800}
-            >
-              <Grid container my={2}>
-                <Grid xs={12} item className="fs-15 fw-500">
-                  {getParagraph("Date & Time", "12-03-2021, 04:23 AM")}
-                  {getParagraph("Ticket ID", "#12445")}
-                  {getParagraph(
-                    "Subject",
-                    "Request for refund has not approved yet"
-                  )}
-                  {getParagraph("Reply from admin", "12-03-2021, 04:23 AM")}
-                  {getParagraph("Attached File", "12-03-2021, 04:23 AM")}
-                </Grid>
-              </Grid>
-            </ModalComponent>
           </Grid>
+          {showModal.show && showModal.type === "notification" && (
+            <HelpAndSupportNotification
+              show={showModal.show}
+              setShowModal={setShowModal}
+              selectedData={selectedData}
+            />
+          )}
         </Paper>
       )}
     </>
