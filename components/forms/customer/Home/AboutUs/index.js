@@ -17,10 +17,11 @@ const AboutUs = ({ imageUrl = "", description = "" }) => {
           {imageUrl ? (
             <Image width={175} height={175} src={imageUrl} />
           ) : (
-            <Skeleton variant="rectangular" width={175} height={175} />
+            <Skeleton variant="rectangular" height={175} />
           )}
         </Grid>
         <Grid item sm={9}>
+          {" "}
           {description?.length ? (
             <div
               dangerouslySetInnerHTML={{

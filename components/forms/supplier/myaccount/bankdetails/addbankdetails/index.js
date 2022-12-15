@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 import {
   AddBankDetails,
   EditBankDetails,
-} from "services/supplier/myaccount/bankdetails";
+} from "services/customer/accountdetails/bankdetails";
+import toastify from "services/utils/toastUtils";
 
 const AddBankDetailsModal = ({
   BankDetails,
@@ -20,7 +21,7 @@ const AddBankDetailsModal = ({
 }) => {
   const [errorObj, setErrorObj] = useState({});
 
-  const user = useSelector((state) => state.user?.supplierId);
+  const { userId } = useSelector((state) => state.customer);
 
   const validateFields = () => {
     let flag = false;
@@ -85,7 +86,7 @@ const AddBankDetailsModal = ({
       accountNumber: BankDetails["Account Number"],
       accountHolderName: BankDetails["Account Holder Name"],
       ifscCode: BankDetails["IFSC code"],
-      supplierId: user,
+      customerId: userId,
     };
     const { data } = await AddBankDetails(payload);
     if (data) {
@@ -101,12 +102,17 @@ const AddBankDetailsModal = ({
       accountNumber: BankDetails["Account Number"],
       accountHolderName: BankDetails["Account Holder Name"],
       ifscCode: BankDetails["IFSC code"],
+      customerId: userId,
     };
     // console.log(BankDetails);
-    const { data } = await EditBankDetails(payload);
+    const { data, err } = await EditBankDetails(payload);
     if (data) {
+      toastify(data?.message, "success");
       setShowModal(false);
       getAllBankData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "success");
     }
   };
 
