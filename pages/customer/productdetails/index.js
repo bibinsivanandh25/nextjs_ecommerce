@@ -32,6 +32,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -72,7 +73,19 @@ function useWindowSize() {
 //     validity: "",
 //   },
 //   {
-//     id: 1,
+//     id: 2,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 2,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 2,
 //     toolName: "Scratch Card",
 //     campaign: "",
 //     validity: "",
@@ -129,7 +142,7 @@ const ProductDetails = ({ productId }) => {
   const size = useWindowSize();
 
   const router = useRouter();
-  const [imageSize, setImageSize] = useState({ width: 300, height: 300 });
+  const [imageSize, setImageSize] = useState({ width: 250, height: 250 });
   const [selectedImage, setSelectedImage] = useState("");
   // Product Details
   const [masterData, setMasterData] = useState([]);
@@ -226,7 +239,6 @@ const ProductDetails = ({ productId }) => {
         setfrequentProduct(res.data.data);
       })
       .catch(() => {
-        // console.log(err);
         setfrequentProduct([]);
       });
   };
@@ -271,14 +283,14 @@ const ProductDetails = ({ productId }) => {
   };
   useEffect(() => {
     getProductDetails();
-    getCouponsData();
     getfrequentProduct();
+    getCouponsData();
     getMinimumCart();
 
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
-  }, [router.query]);
+  }, [router?.query]);
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
     setSelectedImageId(ind);
@@ -320,18 +332,27 @@ const ProductDetails = ({ productId }) => {
   };
   return masterData ? (
     <Paper id="MainBox">
+      <Box className="d-flex justify-content-end">
+        <Box className="d-flex me-3">
+          <RemoveRedEye className="fs-18 color-gray" />
+          <Typography className="mx-1 h-5 color-gray">2138</Typography>
+        </Box>
+        <Box className="d-flex">
+          <AirportShuttle className="fs-18 color-gray" />
+          <Typography className="mx-1 h-5 color-gray">1238</Typography>
+        </Box>
+      </Box>
       <Grid container spacing={2}>
         <Grid
           item
           md={3.5}
-          sm={6}
+          sm={4}
           // sx={{ position: "sticky", top: 0, height: "100%" }}
         >
           <Grid container spacing={1}>
             <Grid
               item
               md={2}
-              sm={4}
               display="flex"
               direction="column"
               mt={0.5}
@@ -342,6 +363,7 @@ const ProductDetails = ({ productId }) => {
                   : "space-evenly"
               }
               pb={1}
+              sm={2}
             >
               {selectedMasterData.variationMedia &&
                 selectedMasterData?.variationMedia?.map((item, index) => (
@@ -359,73 +381,80 @@ const ProductDetails = ({ productId }) => {
                   />
                 ))}
             </Grid>
-            <Grid item md={10} sm={7} className="">
+            <Grid item md={10} sm={9} className="">
               {selectedImage !== "" && (
-                // <Image
-                //   height="100%"
-                //   width="100%"
-                //   src={selectedImage}
-                //   layout="responsive"
-                //   className="border rounded p-1"
-                // />
-                <ReactImageMagnify
-                  {...{
-                    smallImage: {
-                      alt: "No Images",
-                      height: imageSize.height,
-                      width: imageSize.width,
-                      src: selectedImage,
-                    },
-                    largeImage: {
-                      src: selectedImage,
-                      width: 1200,
-                      height: 1800,
-                    },
-                    enlargedImageContainerDimensions: {
-                      width: "250%",
-                      height: "130%",
-                    },
-                  }}
-                  className="bg-white zIndex-100"
-                  shouldUsePositiveSpaceLens
-                  imageClassName="border rounded p-1 zIndex-100"
-                  // lensStyle={{
-                  //   background: "hsla(0, 0%, 100%, .3)",
-                  //   border: "1px solid #fff",
-                  // }}
-                  enlargedImageClassName="zIndex-100"
-                />
+                <Box position="relative">
+                  <ReactImageMagnify
+                    {...{
+                      smallImage: {
+                        alt: "No Images",
+                        height: imageSize.height,
+                        width: imageSize.width,
+                        src: selectedImage,
+                      },
+                      largeImage: {
+                        src: selectedImage,
+                        width: 1200,
+                        height: 1800,
+                      },
+                      enlargedImageContainerDimensions: {
+                        width: "250%",
+                        height: "130%",
+                      },
+                    }}
+                    className="bg-white zIndex-100"
+                    shouldUsePositiveSpaceLens
+                    imageClassName="border rounded p-1 zIndex-100"
+                    // lensStyle={{
+                    //   background: "hsla(0, 0%, 100%, .3)",
+                    //   border: "1px solid #fff",
+                    // }}
+                    enlargedImageClassName="zIndex-100"
+                    style={{ position: "relative" }}
+                  />
+                  <FavoriteBorderIcon
+                    style={{
+                      position: "absolute",
+                      top: "2%",
+                      zIndex: 1000,
+                      right: "6%",
+                    }}
+                    className="color-gray cursor-pointer"
+                  />
+                </Box>
               )}
             </Grid>
           </Grid>
           {couponMasterData.length ? (
-            <Grid container>
+            <Grid container marginTop={1}>
               <Grid item md={2} />
               <Grid item md={10}>
                 <Typography className="h-4 fw-bold">
                   Coupon Available For This Product
                 </Typography>
-                {couponMasterData.map((item) => (
-                  <Box className="border rounded p-2 my-2">
-                    <Typography className="h-5">
-                      {item.couponAmount} Rs Discount Applicable For This
-                      Product Your Coupon Code - &nbsp;
-                      <span className="color-blue">
-                        {item.storeCouponCode}
-                      </span>{" "}
-                      <Tooltip placement="right-start" title="Copy Coupon">
-                        <CopyAllSharp
-                          className="fs-16"
-                          sx={{ cursor: "pointer" }}
-                        />
-                      </Tooltip>
-                    </Typography>
-                  </Box>
-                ))}
+                <Box className="mxh-300 overflow-auto hide-scrollbar">
+                  {couponMasterData.map((item) => (
+                    <Box className="border rounded p-2 my-2">
+                      <Typography className="h-5">
+                        {item.couponAmount} Rs Discount Applicable For This
+                        Product Your Coupon Code - &nbsp;
+                        <span className="color-blue">
+                          {item.storeCouponCode}
+                        </span>{" "}
+                        <Tooltip placement="right-start" title="Copy Coupon">
+                          <CopyAllSharp
+                            className="fs-16"
+                            sx={{ cursor: "pointer" }}
+                          />
+                        </Tooltip>
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
               </Grid>
             </Grid>
           ) : null}
-          <Grid container>
+          <Grid container marginTop={1.5}>
             <Grid item md={2} />
             <Grid item md={10}>
               <InputBox
@@ -443,43 +472,60 @@ const ProductDetails = ({ productId }) => {
               <Typography className="h-4 fw-bold">
                 Store Owners Coupon Available
               </Typography>
-              {ownersCoupons.map((item) => (
-                <Box className="border bg-light-orange1 rounded p-2 my-2 border-orange">
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Tool Name </Typography>
+              <Box className="mxh-300 overflow-auto hide-scrollbar">
+                {ownersCoupons.map((item) => (
+                  <Box className="border bg-light-orange1 rounded p-2 my-2 border-orange">
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5"> Tool Name </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.toolName}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5">
+                          {" "}
+                          Campaign Title{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.campaign}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.toolName}</Typography>
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5">
+                          {" "}
+                          Validity Period{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.validity}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Campaign Title </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.campaign}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Validity Period </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.validity}</Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-              ))}
+                  </Box>
+                ))}
+              </Box>
             </Grid>
           </Grid> */}
           {/* <Grid container>
@@ -530,21 +576,11 @@ const ProductDetails = ({ productId }) => {
             </Grid>
           </Grid> */}
         </Grid>
-        <Grid item md={8.5}>
+        <Grid item md={8.5} sm={8}>
           <Box className="d-flex justify-content-between me-3">
             <Typography className="h-5 color-light-green">
               We Get You To The Product Exact Price - No Indirect Charges
             </Typography>
-            <Box className="d-flex justify-content-end">
-              <Box className="d-flex me-3">
-                <RemoveRedEye className="fs-18 color-gray" />
-                <Typography className="mx-1 h-5 color-gray">2138</Typography>
-              </Box>
-              <Box className="d-flex">
-                <AirportShuttle className="fs-18 color-gray" />
-                <Typography className="mx-1 h-5 color-gray">1238</Typography>
-              </Box>
-            </Box>
           </Box>
           <Grid container>
             <Grid item md={12}>
@@ -563,7 +599,7 @@ const ProductDetails = ({ productId }) => {
             </span>
           </Box>
           <Grid container spacing={2}>
-            <Grid item md={6}>
+            <Grid item md={6} sm={5}>
               <Box>
                 <Typography className="h-4 fw-bold color-orange">
                   Choose Delivery Options
@@ -783,7 +819,7 @@ const ProductDetails = ({ productId }) => {
                         sx={{
                           m: "0.08rem",
                         }}
-                        className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
+                        className="d-flex bg-gray px-2 rounded justify-content-center align-items-center cursor-pointer w-40p"
                       >
                         <Typography className="d-flex justify-content-center h-5">
                           Apply Coupon
@@ -875,100 +911,15 @@ const ProductDetails = ({ productId }) => {
                 </Grid>
               </Grid> */}
             </Grid>
-            <Grid item md={6}>
-              {selectedMasterData.rtoAccepted && (
-                <>
-                  <Box>
-                    <RadiobuttonComponent
-                      size="small"
-                      label={`${selectedMasterData.salePrice} (With Free Delivery & Return)`}
-                      isChecked={defaultFormData.freeDelivery}
-                      onRadioChange={() => {
-                        setDefaultFormData((prev) => ({
-                          ...prev,
-                          normalDelivery: false,
-                          freeDelivery: true,
-                          normal: false,
-                          fast: false,
-                          shipmemtamount: "0",
-                          optionDeliver: true,
-                          optionFastDeliver: false,
-                          fdrDeliverAmount: "0",
-                          cashondelivery: false,
-                        }));
-                      }}
-                    />
-                    <Typography className="h-5" marginLeft={3.5}>
-                      MRP :{" "}
-                      <span className="text-decoration-line-through">
-                        {selectedMasterData.mrp}
-                      </span>
-                    </Typography>
-                    <Box className="d-flex">
-                      <Box>
-                        <Typography className="h-5">
-                          You Save : &nbsp;
-                        </Typography>
-                      </Box>
-                      <Box>
-                        <Typography className="h-5">
-                          {selectedMasterData.mrp -
-                            selectedMasterData.salePrice}{" "}
-                          (
-                          {(
-                            ((selectedMasterData.mrp -
-                              selectedMasterData.salePrice) /
-                              selectedMasterData.mrp) *
-                            100
-                          ).toFixed(2)}
-                          % )
-                        </Typography>
-                        <Typography className="h-5">
-                          Inclusive Of All Taxes
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Grid container className="mt-2">
-                      <Grid item xs={10}>
-                        <div
-                          className="d-flex bg-white rounded justify-content-between"
-                          style={{
-                            border: "1px solid #c0ad9d",
-                          }}
-                        >
-                          <input
-                            className="p-2 w-100 bg-white"
-                            placeholder="Enter Coupon Code"
-                            style={{
-                              background: "#fae1cc",
-                              outline: "none",
-                              border: "none",
-                              borderRadius: "5px",
-                            }}
-                          />
-                          <Box
-                            sx={{
-                              m: "0.08rem",
-                            }}
-                            className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
-                          >
-                            <Typography className="d-flex justify-content-center h-5">
-                              Apply Coupon
-                            </Typography>
-                          </Box>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Box className="mt-2">
-                    <Typography className="h-4 color-blue">
-                      Choose Delivery Options
-                    </Typography>
+            <Grid item md={6} sm={5}>
+              <Box minHeight={selectedMasterData.rtoAccepted ? "" : "80%"}>
+                {selectedMasterData.rtoAccepted && (
+                  <>
                     <Box>
                       <RadiobuttonComponent
                         size="small"
-                        label="Free Delivery By Wed, Sep 22"
-                        isChecked={defaultFormData.optionDeliver}
+                        label={`${selectedMasterData.salePrice} (With Free Delivery & Return)`}
+                        isChecked={defaultFormData.freeDelivery}
                         onRadioChange={() => {
                           setDefaultFormData((prev) => ({
                             ...prev,
@@ -980,103 +931,190 @@ const ProductDetails = ({ productId }) => {
                             optionDeliver: true,
                             optionFastDeliver: false,
                             fdrDeliverAmount: "0",
+                            cashondelivery: false,
                           }));
                         }}
                       />
-                    </Box>
-                    <Box>
-                      <RadiobuttonComponent
-                        size="small"
-                        label="₹185 - Fastest Delivery By Sunday, Sep 17"
-                        isChecked={defaultFormData.optionFastDeliver}
-                        onRadioChange={() => {
-                          setDefaultFormData((prev) => ({
-                            ...prev,
-                            normalDelivery: false,
-                            freeDelivery: true,
-                            normal: false,
-                            fast: false,
-                            shipmemtamount: "0",
-                            optionDeliver: false,
-                            optionFastDeliver: true,
-                            fdrDeliverAmount: "185",
-                          }));
-                        }}
-                      />
-                    </Box>
-                    <Box>
-                      <CheckBoxComponent
-                        label="COD Delivery By Wed, sep27"
-                        size="medium"
-                        showIcon
-                        varient="filled"
-                        isDisabled={!selectedMasterData.codAvailable}
-                        checkBoxClick={() => {
-                          setDefaultFormData((pre) => ({
-                            ...pre,
-                            cashondelivery: !defaultFormData.cashondelivery,
-                          }));
-                        }}
-                        isChecked={defaultFormData.cashondelivery}
-                      />
-                    </Box>
-                  </Box>
-                  <Box className="mt-2">
-                    <Typography className="h-5 ms-2 color-blue">
-                      Enter Pincode & Check If Its Deliverable/Not
-                    </Typography>
-                    <Grid container className="mt-2">
-                      <Grid item xs={10}>
-                        <div
-                          className="d-flex bg-white rounded justify-content-between"
-                          style={{
-                            border: "1px solid #c0ad9d",
-                          }}
-                        >
-                          <input
-                            className="p-2 w-100 bg-white"
-                            placeholder="Enter Pincode"
+                      <Typography className="h-5" marginLeft={3.5}>
+                        MRP :{" "}
+                        <span className="text-decoration-line-through">
+                          {selectedMasterData.mrp}
+                        </span>
+                      </Typography>
+                      <Box className="d-flex">
+                        <Box>
+                          <Typography className="h-5">
+                            You Save : &nbsp;
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography className="h-5">
+                            {selectedMasterData.mrp -
+                              selectedMasterData.salePrice}{" "}
+                            (
+                            {(
+                              ((selectedMasterData.mrp -
+                                selectedMasterData.salePrice) /
+                                selectedMasterData.mrp) *
+                              100
+                            ).toFixed(2)}
+                            % )
+                          </Typography>
+                          <Typography className="h-5">
+                            Inclusive Of All Taxes
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Grid container className="mt-2">
+                        <Grid item xs={10}>
+                          <div
+                            className="d-flex bg-white rounded justify-content-between"
                             style={{
-                              background: "#fae1cc",
-                              outline: "none",
-                              border: "none",
-                              borderRadius: "5px",
+                              border: "1px solid #c0ad9d",
                             }}
-                          />
-                          <Box
-                            sx={{
-                              m: "0.08rem",
-                            }}
-                            className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
                           >
-                            <Typography className="h-5">Check</Typography>
-                          </Box>
-                        </div>
+                            <input
+                              className="p-2 w-100 bg-white"
+                              placeholder="Enter Coupon Code"
+                              style={{
+                                background: "#fae1cc",
+                                outline: "none",
+                                border: "none",
+                                borderRadius: "5px",
+                              }}
+                            />
+                            <Box
+                              sx={{
+                                m: "0.08rem",
+                              }}
+                              className="d-flex bg-gray px-2 rounded justify-content-center align-items-center cursor-pointer w-40p"
+                            >
+                              <Typography className="d-flex justify-content-center h-5">
+                                Apply Coupon
+                              </Typography>
+                            </Box>
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                    {defaultFormData.freeDelivery && (
-                      <>
-                        <Typography className="mt-3">
-                          <span className="fw-bold">
-                            {" "}
-                            ₹{" "}
-                            {selectedMasterData.salePrice +
-                              parseInt(defaultFormData.fdrDeliverAmount, 10)}
-                          </span>{" "}
-                          - Final Price Including Transaction Charge
-                        </Typography>
-                        <Typography className="h-6 color-red">
-                          Pay Through UPI TO Avoid Deduction Of Transaction
-                          Charges In Case Of RTO Happens
-                        </Typography>
-                      </>
-                    )}
-                  </Box>
-                </>
-              )}
-              <Box className="my-4  w-75 d-flex justify-content-end">
+                    </Box>
+                    <Box className="mt-2">
+                      <Typography className="h-4 color-blue">
+                        Choose Delivery Options
+                      </Typography>
+                      <Box>
+                        <RadiobuttonComponent
+                          size="small"
+                          label="Free Delivery By Wed, Sep 22"
+                          isChecked={defaultFormData.optionDeliver}
+                          onRadioChange={() => {
+                            setDefaultFormData((prev) => ({
+                              ...prev,
+                              normalDelivery: false,
+                              freeDelivery: true,
+                              normal: false,
+                              fast: false,
+                              shipmemtamount: "0",
+                              optionDeliver: true,
+                              optionFastDeliver: false,
+                              fdrDeliverAmount: "0",
+                            }));
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <RadiobuttonComponent
+                          size="small"
+                          label="₹185 - Fastest Delivery By Sunday, Sep 17"
+                          isChecked={defaultFormData.optionFastDeliver}
+                          onRadioChange={() => {
+                            setDefaultFormData((prev) => ({
+                              ...prev,
+                              normalDelivery: false,
+                              freeDelivery: true,
+                              normal: false,
+                              fast: false,
+                              shipmemtamount: "0",
+                              optionDeliver: false,
+                              optionFastDeliver: true,
+                              fdrDeliverAmount: "185",
+                            }));
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <CheckBoxComponent
+                          label="COD Delivery By Wed, sep27"
+                          size="medium"
+                          showIcon
+                          varient="filled"
+                          isDisabled={!selectedMasterData.codAvailable}
+                          checkBoxClick={() => {
+                            setDefaultFormData((pre) => ({
+                              ...pre,
+                              cashondelivery: !defaultFormData.cashondelivery,
+                            }));
+                          }}
+                          isChecked={defaultFormData.cashondelivery}
+                        />
+                      </Box>
+                    </Box>
+                    <Box className="mt-2">
+                      <Typography className="h-5 ms-2 color-blue">
+                        Enter Pincode & Check If Its Deliverable/Not
+                      </Typography>
+                      <Grid container className="mt-2">
+                        <Grid item xs={10}>
+                          <div
+                            className="d-flex bg-white rounded justify-content-between"
+                            style={{
+                              border: "1px solid #c0ad9d",
+                            }}
+                          >
+                            <input
+                              className="p-2 w-100 bg-white"
+                              placeholder="Enter Pincode"
+                              style={{
+                                background: "#fae1cc",
+                                outline: "none",
+                                border: "none",
+                                borderRadius: "5px",
+                              }}
+                            />
+                            <Box
+                              sx={{
+                                m: "0.08rem",
+                              }}
+                              className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
+                            >
+                              <Typography className="h-5">Check</Typography>
+                            </Box>
+                          </div>
+                        </Grid>
+                      </Grid>
+                      {defaultFormData.freeDelivery && (
+                        <>
+                          <Typography className="mt-3">
+                            <span className="fw-bold">
+                              {" "}
+                              ₹{" "}
+                              {selectedMasterData.salePrice +
+                                parseInt(defaultFormData.fdrDeliverAmount, 10)}
+                            </span>{" "}
+                            - Final Price Including Transaction Charge
+                          </Typography>
+                          <Typography className="h-6 color-red">
+                            Pay Through UPI TO Avoid Deduction Of Transaction
+                            Charges In Case Of RTO Happens
+                          </Typography>
+                        </>
+                      )}
+                    </Box>
+                  </>
+                )}
+              </Box>
+              <Box className="my-4 d-flex justify-content-center">
                 <Box
-                  className=" d-flex w-33p justify-content-center align-items-center px-2 py-2 rounded"
+                  className=" d-flex justify-content-center align-items-center px-2 py-2 rounded"
                   style={{ border: "1px solid #292929" }}
                 >
                   <div className="me-3" onClick={() => handleMinusClick()}>
@@ -1096,15 +1134,18 @@ const ProductDetails = ({ productId }) => {
                   </div>
                 </Box>
               </Box>
-
-              <Box className="mb-3 d-flex justify-content-center">
-                <ButtonComponent
-                  label="Add To Cart"
-                  variant="outlined"
-                  muiProps="w-25 me-3 py-2"
-                />
-                <ButtonComponent label="Buy Now" muiProps="w-25 me-3 py-2" />
-              </Box>
+              <Grid container spacing={2}>
+                <Grid item md={6} display="flex" justifyContent="end">
+                  <ButtonComponent
+                    label="Add To Cart"
+                    variant="outlined"
+                    muiProps="py-1"
+                  />
+                </Grid>
+                <Grid item md={6} display="flex">
+                  <ButtonComponent label="Buy Now" muiProps="py-1" />
+                </Grid>
+              </Grid>
               <Box>
                 <Typography className="color-light-green h-5 fw-bold">
                   In Stock
@@ -1158,7 +1199,7 @@ const ProductDetails = ({ productId }) => {
           </Grid>
           {masterData?.productVariations ? (
             <Grid container gap={1} mt={2}>
-              <Grid item md={12}>
+              <Grid item md={12} xs={12}>
                 <Typography className="fw-bold">Variations (Color)</Typography>
               </Grid>
               {masterData?.productVariations.map((item) => (
@@ -1460,7 +1501,7 @@ const ProductDetails = ({ productId }) => {
           </Box>
         </Paper>
       </Box>
-      <Grid container className="ps-4">
+      <Grid container className="ps-4 pb-2">
         <Grid item sm={12}>
           <Typography className="h-4 fw-bold my-2">
             Product Information
@@ -1469,13 +1510,13 @@ const ProductDetails = ({ productId }) => {
             Color : <span className="fw-bold">Black</span>
           </Typography>
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={6} sm={6}>
           <Typography className="fw-bold h-4">Technical Details</Typography>
-          <Grid container>
-            <Grid item md={6} className="bg-gray">
+          <Grid container className="border">
+            <Grid item sm={6} className="bg-gray text-break py-1 px-2 fw-bold">
               Brand
             </Grid>
-            <Grid item md={6}>
+            <Grid item sm={6} className="text-break py-1 px-2">
               {masterData.brand}
             </Grid>
           </Grid>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import {
   changePrimaryAddress,
@@ -12,8 +12,9 @@ import {
   getAllCustomerAddress,
 } from "services/customer/Home/address";
 import NewAddress from "@/forms/customer/address/AddNewAddress";
+import { storeUserInfo } from "features/customerSlice";
 
-const PickUpAddress = () => {
+const PickUpAddress = ({ pageType = "supplier" }) => {
   const customer = useSelector((state) => state.customer);
   const [newAddressModal, setNewAddressModal] = useState(false);
   const [modalType, setModalType] = useState("add");
@@ -24,7 +25,7 @@ const PickUpAddress = () => {
     pincode: "",
     location: "",
     address: "",
-    city: "",
+    city: {},
     state: {},
     landmark: "",
     alternatenumber: "",
@@ -33,6 +34,7 @@ const PickUpAddress = () => {
     addresstype: "",
   });
   const [masterAddress, setMasterAddress] = useState([]);
+  const dispatch = useDispatch();
 
   const getAllData = async (id) => {
     if (id) {
@@ -57,9 +59,6 @@ const PickUpAddress = () => {
     getAllData(customer.userId);
   }, [customer]);
 
-  useEffect(() => {
-    getAllData();
-  }, []);
   const handleAddressSelect = async (item) => {
     if (item) {
       const { data, err } = await changePrimaryAddress(
@@ -67,6 +66,12 @@ const PickUpAddress = () => {
         item.addressId
       );
       if (data) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            addressDetails: { ...data.data },
+          })
+        );
         toastify(data?.message, "success");
         getAllData(customer.userId);
       }
@@ -98,7 +103,7 @@ const PickUpAddress = () => {
         pincode: item.pinCode,
         location: item.location,
         address: item.address,
-        city: item.cityDistrictTown,
+        city: { id: item.cityDistrictTown, label: item.cityDistrictTown },
         state: { id: item.state, label: item.state },
         landmark: item.landmark,
         alternatenumber: item.alternativeMobileNumber,
@@ -171,13 +176,15 @@ const PickUpAddress = () => {
                     container
                     alignItems="center"
                   >
-                    <DeleteIcon
-                      className="cursor-pointer"
-                      sx={{ mb: 2 }}
-                      onClick={() => {
-                        handleDeleteClick(add);
-                      }}
-                    />
+                    {!add.primary ? (
+                      <DeleteIcon
+                        className="cursor-pointer"
+                        sx={{ mb: 2 }}
+                        onClick={() => {
+                          handleDeleteClick(add);
+                        }}
+                      />
+                    ) : null}
                     <EditIcon
                       className="cursor-pointer"
                       onClick={() => {
@@ -209,6 +216,7 @@ const PickUpAddress = () => {
           getAllData={getAllData}
           customer={customer}
           modalType={modalType}
+          pageType={pageType}
         />
       )}
     </div>
