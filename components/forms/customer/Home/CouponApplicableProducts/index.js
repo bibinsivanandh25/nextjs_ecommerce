@@ -1,4 +1,4 @@
 const CouponApplicableProducts = () => {
-  return <>coupon Applicable Products</>;
+  return <></>;
 };
 export default CouponApplicableProducts;

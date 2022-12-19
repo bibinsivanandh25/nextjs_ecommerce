@@ -1,9 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import BankDetails from "@/forms/customer/accountDetails/bankdetails";
 import { Box, Grid, Typography } from "@mui/material";
 import MyProfile from "components/customer/accountdetails/myprofile";
-import BankDetails from "components/forms/supplier/myaccount/bankdetails";
 import ChangePassword from "components/forms/supplier/myaccount/changepassword";
 import PickUpAddress from "components/forms/supplier/myaccount/pickupaddress";
 import React, { useState } from "react";
