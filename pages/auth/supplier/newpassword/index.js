@@ -6,6 +6,7 @@ import toastify from "services/utils/toastUtils";
 import atob from "atob";
 import serviceUtil from "services/utils";
 import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
+import { assetsJson } from "public/assets";
 import styles from "./Newpassword.module.css";
 
 const Newpassword = () => {
@@ -59,6 +60,9 @@ const Newpassword = () => {
     <Grid container spacing={2} className="">
       <Grid item sm={12} className="mt-2">
         <div
+          style={{
+            backgroundImage: `url(${assetsJson.login_background})`,
+          }}
           className={`${styles.imgContainer} mx-2 d-flex justify-content-center align-items-center`}
         >
           <Typography variant="h3" className="color-orange">
