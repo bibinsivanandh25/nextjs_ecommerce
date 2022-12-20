@@ -60,7 +60,7 @@ const Answered = () => {
     }
   };
 
-  const options = ["Edit", "Delete"];
+  const options = ["Edit Reply", "Delete Reply"];
 
   const columns = [
     {
