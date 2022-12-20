@@ -175,7 +175,7 @@ const AddAddressModal = (props) => {
   };
   const user = useSelector((state) => state.user.supplierId);
   const getUpdateUserDetails = async () => {
-    const { data } = await getSupplierDetailsBySupplierId(supplierId);
+    const { data } = await getSupplierDetailsBySupplierId(user);
     if (data) {
       const supplierDetails = {
         emailId: data.emailId,

@@ -4,7 +4,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-inner-declarations */
 import {
-  Add,
+  // Add,
   AirportShuttle,
   CopyAllSharp,
   RemoveRedEye,
@@ -14,9 +14,9 @@ import {
 import {
   Box,
   Grid,
+  MenuItem,
   Paper,
   Rating,
-  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -27,12 +27,20 @@ import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
-import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FrequentBuyProduct from "@/forms/customer/productdetails/frequentproduct";
+import ProductList from "@/forms/customer/productdetails/productlist";
+import {
+  getAllCouponsData,
+  getAllMinumCart,
+  getAllProductDetails,
+} from "services/customer/productdetails";
+import MenuwithArrow from "@/atoms/MenuwithArrow";
+import LinearProgressBar from "@/atoms/LinearProgressBar";
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -142,7 +150,7 @@ const ProductDetails = ({ productId }) => {
   const size = useWindowSize();
 
   const router = useRouter();
-  const [imageSize, setImageSize] = useState({ width: 250, height: 250 });
+  const [imageSize, setImageSize] = useState({ width: 250, height: 200 });
   const [selectedImage, setSelectedImage] = useState("");
   // Product Details
   const [masterData, setMasterData] = useState([]);
@@ -165,6 +173,10 @@ const ProductDetails = ({ productId }) => {
   });
   const [count, setCount] = useState(1);
   const [showLongDescription, setShowLongDescription] = useState(false);
+  const [selectedImageId, setSelectedImageId] = useState("1");
+  const [couponMasterData, setCouponsMasterData] = useState([]);
+  const [minCartValue, setMinCartValue] = useState("");
+
   const storeDetails = useSelector((state) => ({
     supplierId: state.customer.supplierId,
     storeCode: state.customer.storeCode,
@@ -173,81 +185,38 @@ const ProductDetails = ({ productId }) => {
   useEffect(() => {
     if (size.width > 800) {
       setImageSize({
-        width: parseInt(size.width, 10) / 4.5,
-        height: parseInt(size.width, 10) / 4,
+        width: parseInt(size.width, 10) / 4.3,
+        height: parseInt(size.width, 10) / 4.3,
       });
     }
   }, [size]);
-  const getProductDetails = async () => {
+  const getProductDetails = async (id) => {
     const status = "APPROVED";
-    await serviceUtil
-      .get(
-        `products/master-product/product-variations?id=${
-          router.query.id ?? productId
-        }&status=${status}`
-      )
-      .then((res) => {
-        setMasterData(res.data.data);
-        res.data?.data?.productVariations.forEach((item) => {
-          if (
-            item.productVariationId === router.query.id ||
-            item.productVariationId === productId
-          ) {
-            setSelectedMasterData(item);
-            setSelectedImage(item.variationMedia[0]);
-          }
-        });
-      })
-      .catch(() => {
-        // console.log(err.response);
+    const { data, err } = await getAllProductDetails(id ?? productId, status);
+    if (data) {
+      setMasterData(data);
+      data?.productVariations.forEach((item) => {
+        if (
+          item.productVariationId === router.query.id ||
+          item.productVariationId === productId
+        ) {
+          setSelectedMasterData(item);
+          setSelectedImage(item.variationMedia[0]);
+        }
       });
+    }
+    if (err) {
+      setMasterData([]);
+      setSelectedMasterData({});
+      setSelectedImage("");
+    }
   };
-  const [selectedImageId, setSelectedImageId] = useState("1");
-  // frequentproduct
-  const [frequentProduct, setfrequentProduct] = useState([]);
-  const [formFrequentData, setFormFrequentData] = useState({
-    actualCost: "",
-    fd: "",
-    handpick: "",
-    storeowner: "",
-  });
-  const getfrequentProduct = async (id) => {
-    const ids = (router.query.id ? router.query.id : id) ?? productId;
-    await serviceUtil
-      .get(`products/grouped-product/${ids}`)
-      .then((res) => {
-        let actualCost = 0;
-        let fd = 0;
-        let handPicks = 0;
-        res.data.data.forEach((item) => {
-          if (item.mrp) {
-            actualCost += item.mrp;
-          }
-          if (item.salePriceWithLogistics) {
-            fd += item.salePriceWithLogistics;
-          }
-          if (item.salePrice) {
-            handPicks += item.salePrice;
-          }
-        });
-        setFormFrequentData({
-          actualCost,
-          fd,
-          handpick: handPicks,
-          storeowner: handPicks,
-        });
-        setfrequentProduct(res.data.data);
-      })
-      .catch(() => {
-        setfrequentProduct([]);
-      });
-  };
+
   const handleVariationClick = (id) => {
     masterData.productVariations.forEach((item) => {
       if (item.productVariationId === id) {
         setSelectedMasterData(item);
         setSelectedImage(item.variationMedia[0]);
-        getfrequentProduct(item.productVariationId);
         const element = document.getElementById("MainBox");
         element.scrollIntoView();
         setSelectedImageId("1");
@@ -255,42 +224,38 @@ const ProductDetails = ({ productId }) => {
     });
   };
   // coupons api
-  const [couponMasterData, setCouponsMasterData] = useState([]);
+
   const getCouponsData = async () => {
-    await serviceUtil
-      .get(`users/customer/store-coupon?supplierId=${storeDetails.supplierId}`)
-      .then((res) => {
-        setCouponsMasterData(res.data.data);
-      })
-      .catch((err) => {
-        const error = { err };
-        if (error) setCouponsMasterData([]);
-      });
+    const { data, err } = await getAllCouponsData(storeDetails.supplierId);
+    if (data?.length) {
+      setCouponsMasterData(data);
+    }
+    if (err) {
+      setCouponsMasterData([]);
+    }
   };
   // minimum cart value
-  const [minCartValue, setMinCartValue] = useState("");
+
   const getMinimumCart = async () => {
-    await serviceUtil
-      .get(
-        `users/supplier/supplier-store-configuration?storeCode=${storeDetails.storeCode}`
-      )
-      .then((res) => {
-        setMinCartValue(res.data?.data?.minimumOrderAmount);
-      })
-      .catch(() => {
-        // console.log(err);
-      });
+    const { data, err } = await getAllMinumCart(storeDetails.storeCode);
+    if (data) {
+      setMinCartValue(data?.minimumOrderAmount);
+    }
+    if (err) {
+      setMinCartValue("");
+    }
   };
   useEffect(() => {
-    getProductDetails();
-    getfrequentProduct();
+    if (router?.query.id) {
+      getProductDetails(router?.query?.id);
+    }
     getCouponsData();
     getMinimumCart();
-
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
   }, [router?.query]);
+
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
     setSelectedImageId(ind);
@@ -347,7 +312,7 @@ const ProductDetails = ({ productId }) => {
           item
           md={3.5}
           sm={4}
-          // sx={{ position: "sticky", top: 0, height: "100%" }}
+          sx={{ position: "sticky", top: 0, height: "100%", zIndex: 10 }}
         >
           <Grid container spacing={1}>
             <Grid
@@ -356,14 +321,15 @@ const ProductDetails = ({ productId }) => {
               display="flex"
               direction="column"
               mt={0.5}
-              justifyContent={
-                selectedMasterData?.variationMedia?.length > 4 ||
-                selectedMasterData?.variationMedia?.length < 2
-                  ? "space-between"
-                  : "space-evenly"
-              }
+              // justifyContent={
+              //   selectedMasterData?.variationMedia?.length > 4 ||
+              //   selectedMasterData?.variationMedia?.length < 2
+              //     ? "space-between"
+              //     : "space-evenly"
+              // }
               pb={1}
               sm={2}
+              rowGap={1.5}
             >
               {selectedMasterData.variationMedia &&
                 selectedMasterData?.variationMedia?.map((item, index) => (
@@ -402,22 +368,22 @@ const ProductDetails = ({ productId }) => {
                         height: "130%",
                       },
                     }}
-                    className="bg-white zIndex-100"
+                    className="bg-white "
                     shouldUsePositiveSpaceLens
-                    imageClassName="border rounded p-1 zIndex-100"
+                    imageClassName="border rounded p-1 "
                     // lensStyle={{
                     //   background: "hsla(0, 0%, 100%, .3)",
                     //   border: "1px solid #fff",
                     // }}
-                    enlargedImageClassName="zIndex-100"
+                    enlargedImageClassName=""
                     style={{ position: "relative" }}
                   />
                   <FavoriteBorderIcon
                     style={{
                       position: "absolute",
                       top: "2%",
-                      zIndex: 1000,
-                      right: "6%",
+                      zIndex: 10,
+                      right: "2%",
                     }}
                     className="color-gray cursor-pointer"
                   />
@@ -590,15 +556,32 @@ const ProductDetails = ({ productId }) => {
             </Grid>
           </Grid>
           <Box className="d-flex mt-1">
-            <Rating value={4} readOnly sx={{ color: "#e56700" }} />
+            <Box>
+              <MenuwithArrow
+                subHeader=""
+                Header={<Rating value={4} readOnly sx={{ color: "#e56700" }} />}
+                onOpen={() => {}}
+                arrowPosition="center"
+              >
+                <MenuItem>
+                  <Box className="mnw-300">
+                    <LinearProgressBar
+                      height={15}
+                      leftTitle="1 Star"
+                      rightTitle="20%"
+                      value={20}
+                    />
+                  </Box>
+                </MenuItem>
+              </MenuwithArrow>
+            </Box>
             <span className="fs-12 mt-1 fw-bold"> 192 Rating | &nbsp;</span>
             <span className="fs-12 mt-1 fw-bold"> 22 Answered Questions</span>
             <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
-              {" "}
               Want To Sell With Us?
             </span>
           </Box>
-          <Grid container spacing={2}>
+          <Grid container columnSpacing={2}>
             <Grid item md={6} sm={5}>
               <Box>
                 <Typography className="h-4 fw-bold color-orange">
@@ -1305,201 +1288,19 @@ const ProductDetails = ({ productId }) => {
         </Grid>
       </Grid>
       <Box>
-        {frequentProduct.length ? (
-          <Grid item md={12} className="my-2 mx-4">
-            <Paper elevation={3}>
-              <Box className="p-2">
-                <Typography className="h-4 fw-bold">
-                  Frequently Bought Together
-                </Typography>
-                <Grid container>
-                  <Grid item md={6}>
-                    <Grid container>
-                      {frequentProduct.map((item, index) => (
-                        <>
-                          <Grid item md={3}>
-                            <Image
-                              height={150}
-                              width={150}
-                              src={item.variationMedia[0]}
-                              layout="intrinsic"
-                              alt="alt"
-                              className="border rounded"
-                            />
-                          </Grid>
-                          {frequentProduct.length - 1 > index && (
-                            <Grid item md={1} className="d-center">
-                              <Add sx={{ fontSize: "40px" }} />
-                            </Grid>
-                          )}
-                        </>
-                      ))}
-                    </Grid>
-                  </Grid>
-                  <Grid item md={6}>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent
-                          size="small"
-                          // label="Actual Price (Excl.Delivery & Return Charge)"
-                        />
-                        <Typography className="h-5">
-                          Actual Price (Excl.Delivery & Return Charge)
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.actualCost}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">
-                          Price For Free Delivery & Return
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.fd}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">Hand Pick</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.handpick}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">
-                          Store Owner Delivery
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.storeowner}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Typography className="h-5 color-orange cursor-pointer">
-                      Add All These To Cart
-                    </Typography>
-                  </Grid>
-                  <Grid container>
-                    <Grid item md={8}>
-                      {frequentProduct.map((item) => (
-                        <Grid item md={12} display="flex" alignItems="center">
-                          <CheckBoxComponent
-                            // label={`${item.productTitle} - AC ${item.mrp} / FD ${item.salePriceWithLogistics}`}
-                            showIcon
-                            varient="filled"
-                            label=""
-                          />
-                          <Typography>
-                            {item.productTitle}{" "}
-                            <span className="color-blue">- AC</span>{" "}
-                            <span className="color-light-green">
-                              {" "}
-                              Rs.{item.mrp}
-                            </span>{" "}
-                            / <span className="color-blue">FD</span>{" "}
-                            <span className="color-light-green">
-                              Rs.{item.salePriceWithLogistics}
-                            </span>
-                          </Typography>
-                        </Grid>
-                      ))}
-                    </Grid>
-                    <Grid
-                      item
-                      md={4}
-                      display="flex"
-                      alignItems="end"
-                      justifyContent="end"
-                    >
-                      <Box>
-                        <Typography className="h-5">
-                          AC - Actual Cost
-                        </Typography>
-                        <Typography className="h-5">
-                          FD - Free Delivery & Return
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Paper>
-          </Grid>
-        ) : null}
+        <FrequentBuyProduct
+          router={router}
+          productId={selectedMasterData.productVariationId}
+        />
       </Box>
       <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">Similar Products</Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
-      </Box>{" "}
+        <ProductList title="Similar Products" />
+      </Box>
       <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">Recently Viewed</Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
-      </Box>{" "}
+        <ProductList title="Recently Viewed" />
+      </Box>
       <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">
-            Products Related To This Item
-          </Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
+        <ProductList title=" Products Related To This Item" />
       </Box>
       <Grid container className="ps-4 pb-2">
         <Grid item sm={12}>
