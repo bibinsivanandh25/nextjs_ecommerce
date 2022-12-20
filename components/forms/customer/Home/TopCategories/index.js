@@ -47,7 +47,7 @@ const TopCategories = () => {
     });
   };
   return (
-    <Box>
+    <Box className={categories?.length ? "" : "d-none"}>
       <Typography className="fw-bold text-center">
         Top Categories of the Month
       </Typography>
