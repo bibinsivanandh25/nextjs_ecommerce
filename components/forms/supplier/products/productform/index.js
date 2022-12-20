@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import InputBox from "components/atoms/InputBoxComponent";
-import TextAreaComponent from "components/atoms/TextAreaComponent";
+// import TextAreaComponent from "components/atoms/TextAreaComponent";
 import FileUploadModal from "components/atoms/FileUpload";
 import { useRouter } from "next/router";
 import EditIcon from "@mui/icons-material/Edit";
@@ -30,6 +30,7 @@ import {
   saveMediaFile,
   saveProduct,
   updateProduct,
+  updateProductByAdmin,
 } from "services/supplier/AddProducts";
 import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
@@ -580,7 +581,6 @@ const ProductsLayout = ({
           ? parseInt(formData.policy.warrantyperiod.value, 10) * 30
           : null,
       },
-
       productVariations: [
         {
           productTitle: formData.inventory.product_title,
@@ -612,7 +612,8 @@ const ProductsLayout = ({
           mrmrscartSalePriceWithOutFDR:
             formData.mrMrsCartFormData.paid_delivery,
           mrmrscartRtoAccepted: formData.mrMrsCartFormData.return,
-          mrmrscartRtoDays: formData.mrMrsCartFormData.returnorder.value,
+          mrmrscartRtoDays:
+            formData.mrMrsCartFormData.returnorder.value ?? null,
           mrmrscartCodAvailable: formData.mrMrsCartFormData.cashondelivery,
           stockStatus: formData.inventory.stock_status.label,
           allowBackOrders: formData.inventory?.allow_backorders?.label ?? "",
@@ -637,7 +638,8 @@ const ProductsLayout = ({
         },
       ],
 
-      otherInformation,
+      otherInformation:
+        Object.keys(otherInformation)[0] === "" ? {} : otherInformation,
       zoneChargeInfo: {},
       countryOfOrigin: formData.variation.countryOfOrigin,
       expiryDate: formData.variation.expiryDate
@@ -669,24 +671,46 @@ const ProductsLayout = ({
       }
     } else if (editProduct) {
       payload.masterProductId = masterProductId;
+      payload.countryOfOrigin = formData.variation.countryOfOrigin.value ?? "";
+
+      payload.productVariations[0].masterProductId =
+        productDetails.variationData.masterProductId;
+      payload.productVariations[0].skuId = productDetails.variationData.skuId;
+      payload.productVariations[0].productCode =
+        productDetails.variationData.productCode;
+      payload.productVariations[0].mergeProductId =
+        productDetails.variationData.mergeProductId;
+      payload.productVariations[0].flagId = productDetails.variationData.flagId;
+      payload.productStatus = productDetails.productStatus;
+      payload.productVariations[0].status = productDetails.variationData.status;
+      payload.productVariations[0].flagged =
+        productDetails.variationData.flagged;
+
       payload.productVariations[0].productVariationId =
         productDetails.variationData.productVariationId;
-      const { data, err } = await updateProduct(payload);
-      if (err) {
-        toastify(err.response.data.message, "error");
-      } else if (data) {
-        toastify(data.message, "success");
-        dispatch(clearProduct());
-        // router.pathname.includes("admin")
-        if (!user.role.includes("ADMIN")) {
+      if (userInfo === "ADMIN") {
+        const { data, err } = await updateProductByAdmin(payload);
+        if (err) {
+          toastify(err.response.data.message, "error");
+        } else if (data) {
+          toastify(data.message, "success");
+          dispatch(clearProduct());
+          closeModal();
+        }
+      } else {
+        const { data, err } = await updateProduct(payload);
+        if (err) {
+          toastify(err.response.data.message, "error");
+        } else if (data) {
+          toastify(data.message, "success");
+          dispatch(clearProduct());
+          // router.pathname.includes("admin")
           router.replace({
             pathname: "/supplier/products&inventory/myproducts",
             query: {
               active: "2",
             },
           });
-        } else {
-          closeModal();
         }
       }
     } else {
