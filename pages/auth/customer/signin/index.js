@@ -140,13 +140,13 @@ const SignIn = () => {
               }
               const details = await getDetails(userData[0]);
               if (details) {
-                router.push(`/customer/home`);
                 await storedatatoRedux(
                   data?.defaultStoreCode,
                   userData[0],
                   userData[1],
                   details
                 );
+                router.push(`/customer/home`);
               }
             }
           }
