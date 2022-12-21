@@ -160,6 +160,35 @@ const Header = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const switchStoreWOLogin = async (storecode) => {
+    const { data: storeData, err: storeErr } = await getStoreByStoreCode(
+      storecode
+    );
+    if (storeData) {
+      dispatch(
+        storeUserInfo({
+          ...customer,
+          supplierStoreLogo: storeData.supplierStoreLogo,
+          supplierStoreName: storeData.supplierStoreName,
+          storeCode: storeData.supplierStoreCode,
+          storeThemes: storeData.storeThemes,
+          shopDescription: storeData.shopDescription ?? "",
+          shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
+          addStoreFlag: false,
+          supplierId: storeData.supplierId,
+        })
+      );
+      setStoreCode("");
+      setstoreDetails(null);
+      dispatch(
+        storeInfoUserSlice({
+          supplierId: storeData.supplierId,
+        })
+      );
+    } else if (storeErr) {
+      toastify(storeErr?.response?.data?.message, "error");
+    }
+  };
 
   const deleteStores = async (id) => {
     const { data, err, message } = await deleteStore(id, userId);
@@ -707,6 +736,9 @@ const Header = () => {
         onSaveBtnClick={() => {
           if (storeDetails) {
             handleSwitchStore(storeDetails.storeCode);
+            setShowConfirmModal(false);
+          } else if (userId === "") {
+            switchStoreWOLogin(storeCode);
             setShowConfirmModal(false);
           } else {
             setShowConfirmModal(false);
