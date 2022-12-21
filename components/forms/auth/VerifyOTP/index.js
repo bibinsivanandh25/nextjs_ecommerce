@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import ModalComponent from "@/atoms/ModalComponent";
+import { Box, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
@@ -16,6 +18,7 @@ const VerifyOTP = ({
 }) => {
   const [otp, setotp] = useState("xxxx");
   const router = useRouter();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -23,6 +26,24 @@ const VerifyOTP = ({
     };
   }, []);
 
+  const customerRegistration = async (wished = false) => {
+    const { message, registeredUser, err } = await registerCustomer({
+      ...payLoad,
+      wished,
+    });
+    if (registeredUser === "NO") {
+      toastify(message, "success");
+      router.push("/auth/customer/signin");
+      setShowVerifyOTP(false);
+    }
+    if (registeredUser === "YES") {
+      setShowConfirmModal(true);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+      setShowVerifyOTP(false);
+    }
+  };
   const handleSubmit = async () => {
     if (otp.includes("x")) {
       toastify("Invalid OTP", "error");
@@ -55,14 +76,7 @@ const VerifyOTP = ({
             } else if (
               router.pathname.split("/")[2].toUpperCase() === "CUSTOMER"
             ) {
-              const { message, err } = await registerCustomer(payLoad);
-              if (message) {
-                toastify(message, "success");
-                router.push("/auth/customer/signin");
-              } else if (err) {
-                toastify(err?.response?.data?.message, "error");
-              }
-              setShowVerifyOTP(false);
+              customerRegistration(false);
             }
           }
           return null;
@@ -102,6 +116,40 @@ const VerifyOTP = ({
           </div>
         </div>
       </div>
+      {showConfirmModal ? (
+        <ModalComponent
+          headerClassName="d-none"
+          open={showConfirmModal}
+          showCloseIcon={false}
+          ModalTitle=""
+          footerClassName="d-none"
+          ModalWidth="60%"
+          minHeightClassName="mnh-200"
+        >
+          <Box className="mt-5 mb-1">
+            <Typography className="text-center mb-5">
+              Account Already Exist For Supplier, Do You Wish To Continue?
+            </Typography>
+            <Box className="d-flex justify-content-center align-items-center">
+              <ButtonComponent
+                label="No"
+                muiProps="me-3"
+                variant="outlined"
+                onBtnClick={() => {
+                  setShowVerifyOTP(false);
+                  setShowConfirmModal(false);
+                }}
+              />
+              <ButtonComponent
+                label="Yes"
+                onBtnClick={() => {
+                  customerRegistration(true);
+                }}
+              />
+            </Box>
+          </Box>
+        </ModalComponent>
+      ) : null}
     </AuthLayout>
   );
 };

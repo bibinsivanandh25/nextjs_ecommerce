@@ -5,7 +5,12 @@ import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import Link from "next/link";
 
-const ProductCard = ({ item, handleIconClick = () => {} }) => {
+const ProductCard = ({
+  item,
+  handleIconClick = () => {},
+  height = 150,
+  width = 150,
+}) => {
   const iconListData = [
     {
       iconName: "viewCarouselOutlinedIcon",
@@ -42,7 +47,6 @@ const ProductCard = ({ item, handleIconClick = () => {} }) => {
         pathname: "/customer/productdetails",
         query: { id: item?.id },
       }}
-      as="/customer/productdetails"
       passHref
     >
       <Box
@@ -61,8 +65,8 @@ const ProductCard = ({ item, handleIconClick = () => {} }) => {
         >
           <Image
             src={item.image}
-            height={150}
-            width={150}
+            height={height}
+            width={width}
             layout="responsive"
           />
         </Paper>

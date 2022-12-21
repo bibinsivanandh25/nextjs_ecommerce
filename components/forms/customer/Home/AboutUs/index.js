@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import Image from "next/image";
 
 const AboutUs = ({ imageUrl = "", description = "" }) => {
@@ -14,14 +14,28 @@ const AboutUs = ({ imageUrl = "", description = "" }) => {
         className="mxh-400 mnh-400 overflow-auto hide-scrollbar p-2"
       >
         <Grid item sm={3}>
-          {imageUrl ? <Image width={175} height={175} src={imageUrl} /> : null}
+          {imageUrl ? (
+            <Image width={175} height={175} src={imageUrl} />
+          ) : (
+            <Skeleton variant="rectangular" height={175} />
+          )}
         </Grid>
         <Grid item sm={9}>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: description,
-            }}
-          />
+          {" "}
+          {description?.length ? (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: description,
+              }}
+            />
+          ) : (
+            <>
+              <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+              <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+            </>
+          )}
         </Grid>
       </Grid>
     </Paper>

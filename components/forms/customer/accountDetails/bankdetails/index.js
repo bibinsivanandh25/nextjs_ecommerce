@@ -6,12 +6,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Grid } from "@mui/material";
 import { useSelector } from "react-redux";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+
+import toastify from "services/utils/toastUtils";
 import {
   deleteBankDetails,
   getAllBankDetails,
-  setPrimaryBank,
-} from "services/supplier/myaccount/bankdetails";
-import toastify from "services/utils/toastUtils";
+} from "services/customer/accountdetails/bankdetails";
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import AddBankDetailsModal from "./addbankdetails";
 
@@ -20,16 +20,17 @@ const BankDetails = () => {
   const [selectedBankDetails, setSelectedBankDetails] = useState([]);
   const [bankDetails, setbankDetails] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const user = useSelector((state) => state.user?.supplierId);
+  const { userId } = useSelector((state) => state.customer);
 
   const getAllBankData = async () => {
-    const { data } = await getAllBankDetails(user);
+    const { data } = await getAllBankDetails(userId);
     const result = [];
     if (data) {
-      const temp = JSON.parse(JSON.stringify(data)).filter(
-        (ele) => !ele.primary
-      );
-      temp.unshift(data.find((ele) => ele.primary));
+      const temp = JSON.parse(JSON.stringify(data));
+      // .filter(
+      //   (ele) => !ele.primary
+      // );
+      // temp.unshift(data.find((ele) => ele.primary));
       temp.forEach((item) => {
         result.push({
           "Bank Name": item.bankName,
@@ -61,7 +62,7 @@ const BankDetails = () => {
   };
 
   const deleteBankData = async (id) => {
-    const { data, err } = await deleteBankDetails(user, id);
+    const { data, err } = await deleteBankDetails(userId, id);
     if (data) {
       getAllBankData();
     }
@@ -69,22 +70,22 @@ const BankDetails = () => {
       toastify(err?.response?.data?.message);
     }
   };
-  const updatePrimaryAccount = async (e, id) => {
-    const { data, err } = await setPrimaryBank(user, id);
-    if (data) {
-      setbankDetails((prev) => {
-        const temp = prev.map((item) => {
-          item.isChecked = false;
-          return item;
-        });
-        temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
-        return [...temp];
-      });
-      toastify(data, "success");
-    } else {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
+  // const updatePrimaryAccount = async (e, id) => {
+  //   // const { data, err } = await setPrimaryBank(user, id);
+  //   // if (data) {
+  //   //   setbankDetails((prev) => {
+  //   //     const temp = prev.map((item) => {
+  //   //       item.isChecked = false;
+  //   //       return item;
+  //   //     });
+  //   //     temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
+  //   //     return [...temp];
+  //   //   });
+  //   //   toastify(data, "success");
+  //   // } else {
+  //   //   toastify(err?.response?.data?.message, "error");
+  //   // }
+  // };
   const renderBankDetails = () => {
     return bankDetails.map((ele, index) => {
       return (
@@ -100,8 +101,8 @@ const BankDetails = () => {
               <RadiobuttonComponent
                 id={index}
                 isChecked={ele.isChecked}
-                onRadioChange={(e) => {
-                  updatePrimaryAccount(e, bankDetails[index].id);
+                onRadioChange={() => {
+                  // updatePrimaryAccount(e, bankDetails[index].id);
                 }}
               />
             </Grid>
@@ -137,7 +138,7 @@ const BankDetails = () => {
   };
   return (
     // <Paper className="h-95p overflow-auto">
-    <div className="mnh-70vh mxh-70vh overflow-auto hide-scrollbar bg-white rounded">
+    <div className="bg-white rounded mnh-70vh mxh-70vh overflow-auto hide-scrollbar">
       <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
       <Grid container>
         {renderBankDetails()}

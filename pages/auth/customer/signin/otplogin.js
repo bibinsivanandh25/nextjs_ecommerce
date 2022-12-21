@@ -6,7 +6,12 @@ import InputBox from "components/atoms/InputBoxComponent";
 import OtpForm from "components/forms/auth/OtpForm";
 import AuthLayout from "components/organism/Layout/AuthLayout";
 import validateMessage from "constants/validateMessages";
-import { signIn } from "next-auth/react";
+import {
+  getCsrfToken,
+  getProviders,
+  getSession,
+  signIn,
+} from "next-auth/react";
 import { useEffect, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
 import atob from "atob";
@@ -16,6 +21,9 @@ import serviceUtil from "services/utils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
+import { getCustomerById } from "services/customer/auth";
+import { storeUserInfo as userCustomerInfo } from "features/userSlice";
+
 // import { getSupplierDetailsById } from "services/supplier";
 // import { storeUserInfo } from "features/userSlice";
 // import { store } from "store";
@@ -36,7 +44,7 @@ const OtpLogIn = () => {
   const dispatch = useDispatch();
 
   const route = useRouter();
-  const storedatatoRedux = async (storeCode, customerID) => {
+  const storedatatoRedux = async (storeCode, customerID, email, details) => {
     const { data, err } = await getStoreByStoreCode(storeCode);
     if (data) {
       const userInfo = {
@@ -48,12 +56,35 @@ const OtpLogIn = () => {
         storeThemes: data?.storeThemes,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+        role: "CUSTOMER",
+        emailId: email,
+        profileImg: details.profileImage,
+        gender: details.gender,
+        mobileNumber: details.mobileNumber,
+        addressDetails: details.addressDetails,
+        customerName: details.customerName,
+        profileId: details.profileId,
       };
       dispatch(storeUserInfo(userInfo));
+      dispatch(
+        userCustomerInfo({
+          userId: customerID,
+          supplierId: data?.supplierId,
+          role: "CUSTOMER",
+          emailId: email,
+        })
+      );
     }
     if (err) {
       toastify(err.response?.data?.message, "error");
     }
+  };
+  const getDetails = async (id) => {
+    const { data } = await getCustomerById(id);
+    if (data) {
+      return data;
+    }
+    return null;
   };
 
   const handleSubmit = async () => {
@@ -84,8 +115,16 @@ const OtpLogIn = () => {
         toastify("Invalid credentials", "error");
         return null;
       }
-      await storedatatoRedux(data?.defaultStoreCode, userData[0]);
-      route.push(`/customer/home`);
+      const details = await getDetails(userData[0]);
+      if (details) {
+        route.push(`/customer/home`);
+        await storedatatoRedux(
+          data?.data?.defaultStoreCode,
+          userData[0],
+          userData[1],
+          details
+        );
+      }
     }
   };
   const validateForm = () => {
@@ -190,3 +229,22 @@ const OtpLogIn = () => {
   );
 };
 export default OtpLogIn;
+export async function getServerSideProps(context) {
+  const { req } = context;
+  const session = await getSession({ req });
+  if (session) {
+    const { role } = session.user;
+    if (role === "CUSTOMER") {
+      return {
+        redirect: { destination: "/customer/home" },
+      };
+    }
+  }
+
+  return {
+    props: {
+      providers: await getProviders(context),
+      csrfToken: (await getCsrfToken(context)) || null,
+    },
+  };
+}
