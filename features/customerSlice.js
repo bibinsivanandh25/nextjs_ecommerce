@@ -26,19 +26,9 @@ export const customerSlice = createSlice({
         addStoreFlag: action.payload.addStoreFlag,
       };
     },
-    clearCustomerSlice: (state) => {
+    clearCustomerSlice: () => {
       return {
-        ...state,
-        userId: "",
-        name: "",
-        supplierId: "",
-        supplierStoreLogo: "",
-        supplierStoreName: "",
-        storeCode: "",
-        shopDescription: "",
-        shopDescriptionImageUrl: "",
-        role: "",
-        addStoreFlag: false,
+        ...initialState,
       };
     },
   },
