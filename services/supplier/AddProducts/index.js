@@ -130,6 +130,17 @@ const updateProduct = (payload) => {
       return err;
     });
 };
+const updateProductByAdmin = (payload) => {
+  return serviceUtil
+    .put(`products/admin/product`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
 
 const upsellsProduct = (supplierId, mainCatgoryId) => {
   return serviceUtil
@@ -181,4 +192,5 @@ export {
   upsellsProduct,
   crossSellsProduct,
   getMergeproduct,
+  updateProductByAdmin,
 };

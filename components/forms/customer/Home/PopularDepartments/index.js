@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
+import BuyNowModal from "../buynowmodal";
 
 const comparProductData = [
   {
@@ -44,6 +45,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   const [comparedProduct, setCompredProduct] = useState([]);
   const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
   const [filterType, setFilterType] = useState("WEEK");
+  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     setCompredProduct(comparProductData);
@@ -232,6 +234,9 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
                 if (icon === "visibilityOutlinedIcon") {
                   setViewModalOpen(true);
                 }
+                if (icon === "localMallIcon") {
+                  setShowCartModal(true);
+                }
               }}
             />
           );
@@ -331,6 +336,12 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Box>
         </Box>
       </DrawerComponent>
+      {showCartModal && (
+        <BuyNowModal
+          modalOpen={showCartModal}
+          setModalOpen={setShowCartModal}
+        />
+      )}
     </Box>
   );
 };
