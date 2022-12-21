@@ -46,7 +46,7 @@ const FrequentBuyProduct = ({ productId }) => {
     }
   };
   useEffect(() => {
-    console.log(router.query.id, "router.query.id");
+    // console.log(router.query.id, "router.query.id");
     if (router.query.id ?? productId) {
       const id = router.query.id ?? productId;
       getfrequentProduct(id);
