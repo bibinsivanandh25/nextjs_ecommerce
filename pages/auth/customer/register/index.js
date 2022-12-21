@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -12,6 +14,9 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import VerifyOTP from "@/forms/auth/VerifyOTP";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import serviceUtil from "services/utils";
+import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import CustomDrawer from "@/atoms/CustomDrawer";
+import ExploreStores from "@/forms/customer/exploreStores";
 import styles from "./customerregister.module.css";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 
@@ -24,6 +29,7 @@ const CustomerRegistration = () => {
     password: "",
     renterPassword: "",
     storeCode: "",
+    gender: "",
   };
 
   const [formValues, setFormValues] = useState({
@@ -34,11 +40,13 @@ const CustomerRegistration = () => {
     mobileNo: "",
     password: "",
     renterPassword: "",
+    gender: "",
   });
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmNewPassword] = useState(false);
   const [registrationPayLoad, setRegistrationPayLoad] = useState({});
   const [showVerifyOTP, setShowVerifyOTP] = useState(false);
+  const [openExplore, setOpenExplore] = useState(false);
 
   const [errorObj, setErrorObj] = useState({
     ...formObj,
@@ -66,6 +74,10 @@ const CustomerRegistration = () => {
     } else if (!validationRegex.email.test(formValues.email)) {
       flag = true;
       errObj.email = validateMessage.email;
+    }
+    if (formValues.gender === "") {
+      flag = true;
+      errObj.gender = validateMessage.field_required;
     }
     if (formValues.dateOfBirth === "") {
       flag = true;
@@ -116,6 +128,7 @@ const CustomerRegistration = () => {
         dob: format(formValues.dateOfBirth, "yyyy-MM-dd"),
         storeCode: formValues.storeCode,
         password: formValues.password,
+        gender: formValues.gender,
         wished: false,
       };
       await serviceUtil
@@ -146,7 +159,7 @@ const CustomerRegistration = () => {
           }}
           className={`w-100 mnh-100vh d-flex justify-content-center align-items-center ${styles.container}`}
         >
-          <Paper className="w-400px rounded-1" elevation={24}>
+          <Paper className="w-75 rounded-1" elevation={24}>
             <Box className="w-100 p-2 rounded-1">
               <Box className="d-flex justify-content-end align-items-center">
                 <Typography className=" fs-14 cursor-pointer">
@@ -178,8 +191,8 @@ const CustomerRegistration = () => {
               <Typography variant="h6" className="mt-3 text-center fs-16">
                 A Multi Ecommerece Store
               </Typography>
-              <Grid container spacing={2} className="mt-1 px-3">
-                <Grid item sm={12}>
+              <Grid container spacing={3} className="mt-1 px-3">
+                <Grid item sm={6}>
                   <InputBoxComponent
                     label="Enter Store Code"
                     id="Enter Store Code"
@@ -196,7 +209,7 @@ const CustomerRegistration = () => {
                     error={errorObj.storeCode !== ""}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <InputBoxComponent
                     label="Name"
                     id="Name"
@@ -213,8 +226,9 @@ const CustomerRegistration = () => {
                     error={errorObj.pName !== ""}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <InputBoxComponent
+                    showAutoFill="new-password"
                     label="E-Mail"
                     id="E-Mail"
                     placeholder="E-Mail"
@@ -231,7 +245,7 @@ const CustomerRegistration = () => {
                     error={errorObj.email !== ""}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <DatePickerComponent
                     label="Date of Birth"
                     id="Date of Birth"
@@ -246,7 +260,52 @@ const CustomerRegistration = () => {
                     error={errorObj.dateOfBirth !== ""}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid
+                  container
+                  item
+                  sm={6}
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Grid item sm={4}>
+                    <RadiobuttonComponent
+                      isChecked={formValues.gender === "Male"}
+                      label="Male"
+                      onRadioChange={() => {
+                        setFormValues({
+                          ...formValues,
+                          gender: "Male",
+                        });
+                      }}
+                    />
+                  </Grid>
+                  <Grid item sm={4}>
+                    <RadiobuttonComponent
+                      label="Female"
+                      isChecked={formValues.gender === "Female"}
+                      onRadioChange={() => {
+                        setFormValues({
+                          ...formValues,
+                          gender: "Female",
+                        });
+                      }}
+                    />
+                  </Grid>
+                  <Grid item sm={4}>
+                    <RadiobuttonComponent
+                      isChecked={formValues.gender === "Others"}
+                      label="Others"
+                      onRadioChange={() => {
+                        setFormValues({
+                          ...formValues,
+                          gender: "Others",
+                        });
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid item sm={6}>
                   <InputBoxComponent
                     label="Mobile No."
                     id="Mobile No."
@@ -264,10 +323,11 @@ const CustomerRegistration = () => {
                     error={errorObj.mobileNo !== ""}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <InputBoxComponent
                     label="Password"
                     id="Password"
+                    showAutoFill="new-password"
                     placeholder="Password"
                     inputlabelshrink
                     onInputChange={(e) => {
@@ -284,9 +344,10 @@ const CustomerRegistration = () => {
                     onIconClick={() => setShowNewPassword(!showNewPassword)}
                   />
                 </Grid>
-                <Grid item sm={12}>
+                <Grid item sm={6}>
                   <InputBoxComponent
                     label="Re-Enter Password"
+                    showAutoFill="new-password"
                     id="Re-Enter Password"
                     placeholder="Re-Enter Password"
                     inputlabelshrink
@@ -321,13 +382,35 @@ const CustomerRegistration = () => {
               <Box className="mb-3">
                 <Typography className="fs-12 text-center  mt-2">
                   Dont have a store code?{" "}
-                  <span className="color-orange cursor-pointer">
+                  <span
+                    className="color-orange cursor-pointer"
+                    onClick={() => setOpenExplore(true)}
+                  >
                     click here
                   </span>
                 </Typography>
               </Box>
             </Box>
           </Paper>
+          <CustomDrawer
+            open={openExplore}
+            position="right"
+            handleClose={() => {
+              setOpenExplore(false);
+            }}
+            title="Explore Stores"
+            titleClassName="color-orange"
+          >
+            <ExploreStores
+              handleStoreSelection={(storeData) => {
+                setFormValues((prev) => ({
+                  ...prev,
+                  storeCode: storeData.storeCode,
+                }));
+                setOpenExplore(false);
+              }}
+            />
+          </CustomDrawer>
         </Box>
       ) : (
         <VerifyOTP

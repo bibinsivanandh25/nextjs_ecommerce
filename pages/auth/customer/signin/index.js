@@ -36,6 +36,7 @@ const SignIn = () => {
     mobileNoOrEmail: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const [errorObj, setErrorObj] = useState({
     ...formObj,
@@ -195,11 +196,15 @@ const SignIn = () => {
             error={errorObj.mobileNoOrEmail !== ""}
           />
           <InputBoxComponent
+            iconName={showPassword ? "visible" : "visibleOff"}
+            type={showPassword ? "text" : "password"}
             label="Password"
             placeholder="Password"
             inputlabelshrink
             className="mt-3"
-            type="password"
+            onIconClick={() => {
+              setShowPassword(!showPassword);
+            }}
             onInputChange={(e) => {
               setFormValues((prev) => ({
                 ...prev,
