@@ -386,9 +386,10 @@ const Header = () => {
           <Typography
             className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px`}
           >
-            {supplierStoreName.length <= 40
-              ? supplierStoreName
-              : `${supplierStoreName.substr(0, 38)}...`}
+            {supplierStoreName &&
+              (supplierStoreName.length <= 40
+                ? supplierStoreName
+                : `${supplierStoreName.substr(0, 38)}...`)}
           </Typography>
         </div>
         <div
@@ -568,7 +569,12 @@ const Header = () => {
                     label="Sign In"
                     muiProps="px-5"
                     onBtnClick={() => {
-                      route.replace("/auth/customer/signin");
+                      route.replace({
+                        pathname: "/auth/customer/signin",
+                        query: {
+                          storeCode: customer.storeCode,
+                        },
+                      });
                     }}
                   />
                 </div>
