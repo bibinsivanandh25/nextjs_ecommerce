@@ -274,7 +274,12 @@ const Header = () => {
     if (data) {
       await handleSwitchStore(storeCode);
     } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      if (
+        err?.response?.data?.message ===
+        "This Store Already Added By The Customer"
+      ) {
+        await handleSwitchStore(storeCode);
+      } else toastify(err?.response?.data?.message, "error");
     }
   };
 
