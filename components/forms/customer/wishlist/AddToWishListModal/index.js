@@ -1,59 +1,34 @@
-/* eslint-disable react/no-array-index-key */
-import { Box, Paper, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import ButtonTabsList from "@/atoms/ButtonTabsList";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
+import ButtonTabsList from "@/atoms/ButtonTabsList";
 import InputBox from "@/atoms/InputBoxComponent";
+import ModalComponent from "@/atoms/ModalComponent";
+import { Box, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   addNewWishList,
+  addProductToWishList,
   deleteWishListName,
-  fetchProductsFromWishListId,
   getAllWishListsByProfileId,
-  removeProductFromWishList,
   updateWishListName,
 } from "services/customer/wishlist";
-import ModalComponent from "@/atoms/ModalComponent";
 import toastify from "services/utils/toastUtils";
-import { format } from "date-fns";
 
-const WishList = () => {
-  const { userId, profileId, supplierId } = useSelector(
-    (state) => state?.customer
-  );
+const AddToWishListModal = ({
+  showModal = false,
+  setShowModal = () => {},
+  productId = "",
+}) => {
+  const { userId, profileId } = useSelector((state) => state?.customer);
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
   const [newWishListName, setNewWishListName] = useState("");
   const [modalType, setModalType] = useState("Add");
-  const [searchText, setSearchText] = useState("");
 
-  const [products, setProducts] = useState([]);
   const [wishListNames, setWishListNames] = useState([]);
   const [selectedList, setSelectedList] = useState({
     id: "",
     index: 0,
   });
-
-  const getProducts = async (keyword) => {
-    const payload = {
-      customerId: userId,
-      profileId,
-      supplierId,
-      wishlistId: selectedList.id,
-      keyword: keyword ?? "",
-    };
-    const { data } = await fetchProductsFromWishListId(payload);
-    if (data) {
-      setProducts([...data]);
-    }
-  };
-
-  useEffect(() => {
-    getProducts();
-  }, [selectedList?.id]);
-
   const getAllWishLists = async () => {
     const { data } = await getAllWishListsByProfileId(userId, profileId);
     if (data) {
@@ -74,11 +49,9 @@ const WishList = () => {
       );
     }
   };
-
   useEffect(() => {
     getAllWishLists();
   }, []);
-
   const createNewWishList = async () => {
     const payload = {
       customerId: userId,
@@ -130,97 +103,39 @@ const WishList = () => {
     }
   };
 
-  const removeProductFromList = async (id) => {
-    const { data, err } = await removeProductFromWishList(selectedList?.id, id);
+  const addproducttolist = async () => {
+    const payload = {
+      profileId,
+      wishlistId: selectedList?.id,
+      productVariationId: productId,
+    };
+    const { data, err } = await addProductToWishList(payload);
     if (data) {
       toastify(data?.message, "success");
-      getProducts();
+      setShowModal(false);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
+      setShowModal(false);
     }
   };
 
-  const getList = () => {
-    return products.map((ele) => {
-      return (
-        <Paper
-          className="d-flex justify-content-between ms-3 mb-2 p-2 rounded-1 align-items-center"
-          key={ele.productVariationId}
-        >
-          <Box className="d-flex">
-            <Box>
-              <Image src={ele.productImageUrl} height={100} width={100} />
-            </Box>
-            <Box className="ps-2">
-              <Typography className="fw-bold h-5">
-                {ele.productTitle}
-              </Typography>
-              <StarRatingComponentReceivingRating
-                rating={ele.rating ?? 0}
-                className="h-4"
-              />
-              <Typography className="h-5">{ele.reviews} Reviews</Typography>
-            </Box>
-          </Box>
-          <Box className="">
-            <Typography className="mb-1 text-center h-5">
-              Item added on {format(new Date(ele.addedAt), "dd MMM yyyy")}
-            </Typography>
-            <Box className="mb-1">
-              <ButtonComponent
-                label="Add to cart"
-                muiProps="fw-bold fs-10 bg-primary w-100 px-5"
-                textColor="color-black"
-              />
-            </Box>
-            <Box className="mb-1">
-              <ButtonComponent
-                label="Remove from list"
-                muiProps="fw-bold fs-10 w-100 text-dark px-5"
-                textColor="text-dark"
-                bgColor="bg-white"
-                onBtnClick={() => {
-                  removeProductFromList(ele.productVariationId);
-                }}
-              />
-            </Box>
-          </Box>
-        </Paper>
-      );
-    });
-  };
-
   return (
-    <Box>
-      <Box className="d-flex justify-content-between align-items-center mb-2">
-        <Typography variant="h-3" className="fw-bold">
-          Your Lists
-        </Typography>
-        <Box className="d-flex align-items-center w-25">
-          <InputBox
-            size="small"
-            placeholder="Search this list"
-            value={searchText}
-            onInputChange={(e) => {
-              if (e.target.value === "") {
-                getProducts();
-              }
-              setSearchText(e.target.value);
-            }}
-          />
-          <Box
-            className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
-            onClick={() => {
-              getProducts(searchText);
-            }}
-          >
-            <SearchOutlinedIcon className="text-white p-1 fs-1" />
-          </Box>
-        </Box>
-      </Box>
-      <Box className="d-flex justify-content-between">
-        <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
+    <ModalComponent
+      open={showModal}
+      onCloseIconClick={() => {
+        setShowModal(false);
+      }}
+      showClearBtn={false}
+      saveBtnText="Add"
+      ModalWidth="25%"
+      ModalTitle="Choose WishList"
+      footerClassName="justify-content-end"
+      saveBtnClassName="fs-10"
+      onSaveBtnClick={addproducttolist}
+    >
+      <Grid container justifyContent="center" my={2}>
+        <Grid item sm={7} className="w-75 ">
           <ButtonTabsList
             tabsList={[...wishListNames]}
             showEditDelete
@@ -240,6 +155,8 @@ const WishList = () => {
               deleteList(item?.id);
             }}
           />
+        </Grid>
+        <Grid item sm={7} className="w-75 ">
           <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3"}>
             <ButtonComponent
               label="Add new wishlist"
@@ -254,16 +171,8 @@ const WishList = () => {
               }}
             />
           </Box>
-        </Paper>
-        <Box
-          className="w-100 overflow-y-scroll hide-scrollbar"
-          sx={{
-            maxHeight: "72vh !important",
-          }}
-        >
-          {getList()}
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
       <ModalComponent
         open={showAddNewWishList}
         onCloseIconClick={() => {
@@ -298,8 +207,7 @@ const WishList = () => {
           />
         </Box>
       </ModalComponent>
-    </Box>
+    </ModalComponent>
   );
 };
-
-export default WishList;
+export default AddToWishListModal;
