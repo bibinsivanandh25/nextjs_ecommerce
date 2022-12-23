@@ -51,7 +51,9 @@ const WishList = () => {
   };
 
   useEffect(() => {
-    getProducts();
+    if (selectedList?.id?.toString()?.length) {
+      getProducts();
+    }
   }, [selectedList?.id]);
 
   const getAllWishLists = async () => {
