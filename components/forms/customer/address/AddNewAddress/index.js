@@ -14,14 +14,8 @@ import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/customerSlice";
 import { useDispatch } from "react-redux";
+import { State, City } from "country-state-city";
 
-const options = [
-  {
-    id: "karnataka",
-    label: "Karnataka",
-  },
-  { id: "delhi", label: "Delhi" },
-];
 const errorObj = {
   name: false,
   mobilenumber: false,
@@ -41,12 +35,25 @@ const NewAddress = ({
   getAllData = () => {},
   customer,
   modalType,
+  pageType = "",
 }) => {
+  const states = State.getStatesOfCountry("IN");
+  const statesList = states.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+    id: ele.name,
+  }));
+  const cities = City.getCitiesOfCountry("IN");
+  const citiesList = cities.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+    id: ele.name,
+  }));
   const [error, setError] = useState(errorObj);
   const dispatch = useDispatch();
 
   const handleInputChange = (e, value) => {
-    if (value === "state") {
+    if (value === "state" || value === "city") {
       setDefaultFormData((prev) => {
         return {
           ...prev,
@@ -78,7 +85,7 @@ const NewAddress = ({
       pincode: "",
       location: "",
       address: "",
-      city: "",
+      city: {},
       state: {},
       landmark: "",
       alternatenumber: "",
@@ -137,13 +144,13 @@ const NewAddress = ({
     if (address == "") {
       errorobj.address = true;
     }
-    if (city == "") {
+    if (city == null || Object.keys(city)?.length === 0) {
       errorobj.city = true;
     }
     if (state == null || Object.keys(state)?.length === 0) {
       errorobj.state = true;
     }
-    if (addresstype == "") {
+    if (addresstype == "" && pageType == "customer") {
       errorobj.addresstype = true;
     }
     setError(errorobj);
@@ -159,7 +166,7 @@ const NewAddress = ({
         pinCode: defaultFormData.pincode,
         location: defaultFormData.location,
         address: defaultFormData.address,
-        cityDistrictTown: defaultFormData.city,
+        cityDistrictTown: defaultFormData.city.label,
         state: defaultFormData.state.label,
         landmark: defaultFormData.landmark,
         latitudeValue: defaultFormData.latitudvalue,
@@ -284,12 +291,13 @@ const NewAddress = ({
               />
             </Grid>
             <Grid item lg={6} md={6} xs={6}>
-              <InputBox
+              <SimpleDropdownComponent
                 size="small"
                 label="City / District / Town"
+                list={[...citiesList]}
                 value={defaultFormData?.city}
-                onInputChange={(e) => {
-                  handleInputChange(e, "city");
+                onDropdownSelect={(val) => {
+                  handleInputChange(val, "city");
                 }}
                 error={error.city}
                 helperText={error.city ? validateMessage.field_required : ""}
@@ -298,7 +306,7 @@ const NewAddress = ({
             <Grid item lg={6} md={6} xs={6}>
               <SimpleDropdownComponent
                 size="small"
-                list={options}
+                list={[...statesList]}
                 label="State"
                 value={defaultFormData?.state}
                 onDropdownSelect={(val) => {
@@ -348,26 +356,28 @@ const NewAddress = ({
               />
             </Grid>
           </Grid>
-          <Grid className="mt-2 ms-4">
-            <Typography className="fs-16 fw-600">Address Type</Typography>
-            <RadiobuttonComponent
-              size="small"
-              label="Home"
-              isChecked={defaultFormData?.addresstype === "home"}
-              onRadioChange={() => {
-                handleInputChange("home", "addresstype");
-              }}
-            />
-            <RadiobuttonComponent
-              size="small"
-              label="Office"
-              className="ms-4"
-              isChecked={defaultFormData?.addresstype === "office"}
-              onRadioChange={() => {
-                handleInputChange("office", "addresstype");
-              }}
-            />
-          </Grid>
+          {pageType !== "supplier" ? (
+            <Grid className="mt-2 ms-4">
+              <Typography className="fs-16 fw-600">Address Type</Typography>
+              <RadiobuttonComponent
+                size="small"
+                label="Home"
+                isChecked={defaultFormData?.addresstype === "home"}
+                onRadioChange={() => {
+                  handleInputChange("home", "addresstype");
+                }}
+              />
+              <RadiobuttonComponent
+                size="small"
+                label="Office"
+                className="ms-4"
+                isChecked={defaultFormData?.addresstype === "office"}
+                onRadioChange={() => {
+                  handleInputChange("office", "addresstype");
+                }}
+              />
+            </Grid>
+          ) : null}
           {error.addresstype ? (
             <FormHelperText error={error.addresstype} className="ps-4 h-5">
               {validateMessage.field_required}

@@ -278,8 +278,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                   <Image
                     className="rounded"
                     src={item.storeLogo}
-                    width={50}
-                    height={50}
+                    width={70}
+                    height={80}
                   />
                 </Box>
                 <Box className="d-flex flex-column ms-1 p-2">

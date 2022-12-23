@@ -145,8 +145,8 @@ const MyNotification = () => {
     },
     { label: "Queries & Replies", isSelected: false },
   ]);
-  const [myQueriesRows, setMyQueriesRows] = useState([]);
-  const [productQueriesRows, setProductQueriesRows] = useState([]);
+  // const [myQueriesRows, setMyQueriesRows] = useState([]);
+  // const [productQueriesRows, setProductQueriesRows] = useState([]);
 
   const [value, setValue] = useState(null);
   const handleSelect = (index) => {

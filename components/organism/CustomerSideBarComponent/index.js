@@ -3,25 +3,24 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { useState, useEffect } from "react";
-import List from "@mui/material/List";
 import { motion, AnimatePresence } from "framer-motion";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import ListItemButton from "@mui/material/ListItemButton";
-import { Fade, Grid, Paper, Popper, Tooltip } from "@mui/material";
+import { Fade, Paper, Popper } from "@mui/material";
 import Footer from "components/customer/Footer";
 import { useRouter } from "next/router";
 import {
   getAllMainCategories,
-  getAllSetandSubCategoriesByMainCategory,
+  // getAllSetandSubCategoriesByMainCategory,
 } from "services/customer/sidebar";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
+import axios from "axios";
 
 const CustomerSideBarComponent = ({ children }) => {
   // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
   const [customerMenu, setCustomerMenu] = useState([]);
-  const [categoryId, setCategoryId] = useState(null);
+  const [category, setCategory] = useState(null);
   const [setsandSubCategoryData, setSetsandSubCategoryData] = useState([]);
   // const updatedChildren = { ...children };
   // updatedChildren.props = {
@@ -44,7 +43,7 @@ const CustomerSideBarComponent = ({ children }) => {
 
   const getCategoriesForSideMenu = async () => {
     const { data } = await getAllMainCategories();
-    let temp = [
+    const temp = [
       {
         id: 0,
         title: "Home",
@@ -52,7 +51,8 @@ const CustomerSideBarComponent = ({ children }) => {
       },
     ];
     if (data) {
-      data?.forEach((ele) => {
+      const dataCopy = JSON.parse(JSON.stringify(data.splice(0, 20)));
+      dataCopy?.forEach((ele) => {
         temp.push({
           id: ele.mainCategoryId,
           title: ele.mainCategoryName,
@@ -60,7 +60,7 @@ const CustomerSideBarComponent = ({ children }) => {
         });
       });
     }
-    temp = [...temp.splice(0, 10)];
+    // temp = [...temp.splice(0, 10)];
     temp.push({
       id: 0,
       title: "See All",
@@ -69,47 +69,66 @@ const CustomerSideBarComponent = ({ children }) => {
     setCustomerMenu(temp);
   };
 
-  const getSetandSubCategory = async () => {
-    const { data } = await getAllSetandSubCategoriesByMainCategory(categoryId);
+  const getSetandSubCategory = async (e, item) => {
+    handleClick(e, item.title);
+    const { data } = await axios.get(
+      `${process.env.DOMAIN}products/main-category/set/sub-category/${item.id}`
+    );
     if (data) {
-      setSetsandSubCategoryData([...data]);
+      setCategory(item);
+      // setSetsandSubCategoryData([...data.data]);
+      const temp = [];
+      data.data.forEach((ele) => {
+        temp.push({
+          label: ele.setName,
+          id: ele.categorySetId,
+          isSet: true,
+        });
+        ele.subCategoryList.forEach((el) => {
+          temp.push({
+            label: el.subCategoryName,
+            id: el.subCategoryId,
+            isSet: false,
+          });
+        });
+      });
+      setSetsandSubCategoryData([...temp]);
     }
   };
-
-  useEffect(() => {
-    if (categoryId) {
-      getSetandSubCategory();
-    }
-  }, [categoryId]);
+  const createlist = () => {
+    const colCount = Math.ceil(setsandSubCategoryData.length / 10);
+    return (
+      <ul
+        style={{
+          columns: colCount,
+          height: "200px",
+          maxWidth: "450px",
+          overflowX: "auto",
+          columnWidth: "100px",
+        }}
+      >
+        {setsandSubCategoryData?.map((ele) => {
+          return (
+            <li
+              // style={{
+              //   columnSpan: "all",
+              // }}
+              style={{ width: "125px" }}
+              className={`d-block p-1 fs-14 text-truncate ${
+                ele.isSet ? "color-orange" : ""
+              }`}
+            >
+              {ele.label}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
 
   useEffect(() => {
     getCategoriesForSideMenu();
   }, []);
-
-  const getPoperContent = () => {
-    return (
-      <Grid container columnSpacing={1}>
-        {setsandSubCategoryData?.map((ele) => {
-          return (
-            <Grid item sm={3}>
-              <Typography className="color-orange h-5 fw-bold my-1">
-                {ele.setName}
-              </Typography>
-              <Box className="ps-2 h-5 d-flex flex-column">
-                {ele.subCategoryList.map((subCat) => {
-                  return (
-                    <Typography className="h-5" key={subCat.subCategoryId}>
-                      {subCat.subCategoryName}
-                    </Typography>
-                  );
-                })}
-              </Box>
-            </Grid>
-          );
-        })}
-      </Grid>
-    );
-  };
 
   return (
     <Box
@@ -162,118 +181,47 @@ const CustomerSideBarComponent = ({ children }) => {
               />
             </Box>
           </Box>
-          {/* <Box
-            className={`d-flex ${
-              open ? "justify-content-end" : "justify-content-center"
-            }`}
+          <Box
+            className="overflow-y-scroll  hide-scrollbar mt-4 "
+            sx={{ height: "calc(100vh - 150px)" }}
           >
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                ...(open && { display: "none" }),
-              }}
-              className="mx-auto "
-            >
-              <MenuOpenOutlinedIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleDrawerClose}
-              sx={{
-                paddingBottom: 0,
-                ...(!open && { display: "none" }),
-              }}
-            >
-              <ChevronLeftIcon />
-            </IconButton>
-          </Box> */}
-
-          <Box className="overflow-y-scroll  hide-scrollbar mt-4 ">
-            <List className="pb-1">
-              {customerMenu.map((item, index) => {
-                return (
+            {customerMenu.map((item) => {
+              return (
+                <Box className="p-2 pe-0">
                   <Box
-                    onMouseEnter={() => {
-                      setCustomerMenu((pre) => {
-                        const setSelectedToFalse = (data) => {
-                          data.forEach((element) => {
-                            element.selected = false;
-                          });
-                          return data;
-                        };
-                        const temp = setSelectedToFalse(
-                          JSON.parse(JSON.stringify([...pre]))
-                        );
-                        temp[index].selected = true;
-                        return [...temp];
-                      });
-                    }}
-                    key={item?.id}
-                    disablePadding
+                    className="w-100 ps-3 text-truncate"
                     sx={{
-                      display: "block",
+                      width: "200px",
                     }}
-                    className="cursor-pointer"
-                    onMouseOver={(e) => {
-                      if (e.target.role === "button")
-                        handleClick(e, item.title);
+                    key={item.title}
+                    onMouseEnter={(e) => {
+                      if (e.target.id === category?.id) {
+                        setSetsandSubCategoryData([]);
+                      }
+                      if (e.target.id === item.id) {
+                        getSetandSubCategory(e, item);
+                      }
                     }}
-                    onMouseLeave={() => setHover(false)}
+                    id={item.id}
                   >
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: open ? 1.5 : 2.5,
-                      }}
-                      className="cursor-pointer"
-                      onClick={() => {
-                        // console.log(item.path_name);
-                        // route.push(`${item.path_name}`);
-                        setCustomerMenu((pre) => {
-                          const setSelectedToFalse = (data) => {
-                            data.forEach((element) => {
-                              element.selected = false;
-                            });
-                            return data;
-                          };
-                          const temp = setSelectedToFalse(
-                            JSON.parse(JSON.stringify([...pre]))
-                          );
-                          temp[index].selected = true;
-                          return [...temp];
-                        });
-                      }}
+                    {/* <Tooltip title={item.title}> */}
+                    <Typography
+                      className="cursor-pointer "
+                      variant="text"
+                      fontWeight={600}
+                      fontSize={13}
+                      color={item.selected && "#e56700"}
                     >
-                      {open ? (
-                        <Tooltip title={item.title}>
-                          <Typography
-                            onMouseOver={() => {
-                              if (item.id && item.id !== categoryId) {
-                                setSetsandSubCategoryData([]);
-                                setCategoryId(item.id);
-                              }
-                            }}
-                            className="cursor-pointer text-truncate"
-                            variant="text"
-                            fontWeight={600}
-                            fontSize={13}
-                            color={item.selected && "#e56700"}
-                          >
-                            {item.title}
-                          </Typography>
-                        </Tooltip>
-                      ) : null}
-                    </ListItemButton>
+                      {item.title}
+                    </Typography>
+                    {/* </Tooltip> */}
                   </Box>
-                );
-              })}
-            </List>
+                </Box>
+              );
+            })}
           </Box>
           <Box
-            className="position-absolute bottom-0 w-100 d-flex justify-content-center p-2 border-top"
+            className="position-absolute bottom-0 w-100 d-flex justify-content-center p-2 border-top bg-light"
             onClick={() => {
               setPin(!pin);
             }}
@@ -295,11 +243,6 @@ const CustomerSideBarComponent = ({ children }) => {
         }}
         className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
-        {/* {showBreadCrumb && (
-          <Box className="mb-2">
-            <BreadCrumb />
-          </Box>
-        )} */}
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
@@ -319,7 +262,6 @@ const CustomerSideBarComponent = ({ children }) => {
           </motion.div>
         </AnimatePresence>
       </Box>
-
       {setsandSubCategoryData?.length ? (
         <Popper
           open={hover}
@@ -337,13 +279,17 @@ const CustomerSideBarComponent = ({ children }) => {
               <Paper
                 sx={{
                   p: 2,
-                  maxHeight: 400,
+                  maxHeight: "380px",
                   overflow: "auto",
-                  width: 800,
+                  maxWidth: "800px",
                 }}
                 className="hide-scrollbar"
               >
-                {getPoperContent()}
+                <Typography className="color-orange fs-16">
+                  {category?.title}
+                </Typography>
+                {/* {getPoperContent()} */}
+                {createlist()}
               </Paper>
             </Fade>
           )}

@@ -106,7 +106,7 @@ const OtpLogIn = () => {
       const res = await signIn("credentials", {
         id: userData[0],
         email: userData[1],
-        role: decoded.roles[0],
+        role: "CUSTOMER",
         token,
         callbackUrl: `/customer/home`,
         redirect: false,

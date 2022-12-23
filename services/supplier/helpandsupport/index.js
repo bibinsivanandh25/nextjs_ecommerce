@@ -44,8 +44,8 @@ const replyHelpandSupport = (payload) => {
   return serviceUtil
     .put(`help-and-support/ticket-reply`, payload)
     .then((res) => {
-      const { data } = res && res.data;
-      return { data };
+      const { message, data } = res && res.data;
+      return { data, message };
     })
     .catch((err) => ({ err }));
 };
