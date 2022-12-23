@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
   const [tabList, setTabList] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
-  const [showGeneralModal, setShowGeneralModal] = useState(false);
   const [noFreeRetunModal, setNoFreeReturnModal] = useState(false);
   const getAllTabList = () => {
     const data = [
@@ -30,13 +29,13 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
         label: "Hand Pick",
       },
     ];
+    setTabList(data);
     setSelectedTab(data[0].id);
     if (data[0].label === "No Free Delivery Returns") {
       setNoFreeReturnModal(true);
     } else {
-      setShowGeneralModal(true);
+      setNoFreeReturnModal(false);
     }
-    setTabList(data);
   };
   useEffect(() => {
     getAllTabList();
@@ -44,10 +43,8 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
   const handleChangeTab = (item) => {
     setSelectedTab(item.id);
     if (item.label == "No Free Delivery Returns") {
-      setShowGeneralModal(false);
       setNoFreeReturnModal(true);
     } else {
-      setShowGeneralModal(true);
       setNoFreeReturnModal(false);
     }
   };
@@ -154,8 +151,9 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
     >
       <Box>{tabList.length ? renderTabList() : null}</Box>
       <Box className="border-top border-bottom border-dark-gray mb-1">
-        <Box>{showGeneralModal && renderGeneralModal()}</Box>
-        <Box>{noFreeRetunModal && renderNoFreeRetunModal()}</Box>
+        <Box>
+          {noFreeRetunModal ? renderNoFreeRetunModal() : renderGeneralModal()}
+        </Box>
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Box marginLeft={2}>
