@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -8,7 +10,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
 import TableComponent from "@/atoms/TableComponent";
 import Notification from "@/forms/customer/mynotification/notification";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import SubTabComponent from "components/molecule/SubTabComponent";
 import TabsCard from "components/molecule/TabsCard";
 import validateMessage from "constants/validateMessages";
