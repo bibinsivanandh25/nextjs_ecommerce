@@ -24,7 +24,7 @@ const MyAccount = () => {
     }
     if (selectedMenu === 1) return <BankDetails />;
     if (selectedMenu === 2) return <ChangePassword />;
-    if (selectedMenu === 3) return <PickUpAddress />;
+    if (selectedMenu === 3) return <PickUpAddress pageType="supplier" />;
     if (selectedMenu === 4) return <StoreSettings />;
   };
   return (

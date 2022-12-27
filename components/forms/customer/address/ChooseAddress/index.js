@@ -69,7 +69,11 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         pincode: item.pinCode,
         location: item.location,
         address: item.address,
-        city: item.cityDistrictTown,
+        city: {
+          label: item.cityDistrictTown,
+          value: item.cityDistrictTown,
+          id: item.cityDistrictTown,
+        },
         state: { id: item.state, label: item.state },
         landmark: item.landmark,
         alternatenumber: item.alternativeMobileNumber,

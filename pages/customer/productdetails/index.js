@@ -5,7 +5,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-inner-declarations */
 import {
-  Add,
+  // Add,
   AirportShuttle,
   CopyAllSharp,
   RemoveRedEye,
@@ -15,9 +15,9 @@ import {
 import {
   Box,
   Grid,
+  MenuItem,
   Paper,
   Rating,
-  Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -28,11 +28,20 @@ import ReactImageMagnify from "react-image-magnify";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
-import serviceUtil from "services/utils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FrequentBuyProduct from "@/forms/customer/productdetails/frequentproduct";
+import ProductList from "@/forms/customer/productdetails/productlist";
+import {
+  getAllCouponsData,
+  getAllMinumCart,
+  getAllProductDetails,
+} from "services/customer/productdetails";
+import MenuwithArrow from "@/atoms/MenuwithArrow";
+import LinearProgressBar from "@/atoms/LinearProgressBar";
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -73,7 +82,19 @@ function useWindowSize() {
 //     validity: "",
 //   },
 //   {
-//     id: 1,
+//     id: 2,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 2,
+//     toolName: "Scratch Card",
+//     campaign: "",
+//     validity: "",
+//   },
+//   {
+//     id: 2,
 //     toolName: "Scratch Card",
 //     campaign: "",
 //     validity: "",
@@ -130,7 +151,7 @@ const ProductDetails = ({ productId }) => {
   const size = useWindowSize();
 
   const router = useRouter();
-  const [imageSize, setImageSize] = useState({ width: 300, height: 300 });
+  const [imageSize, setImageSize] = useState({ width: 250, height: 200 });
   const [selectedImage, setSelectedImage] = useState("");
   // Product Details
   const [masterData, setMasterData] = useState([]);
@@ -153,6 +174,10 @@ const ProductDetails = ({ productId }) => {
   });
   const [count, setCount] = useState(1);
   const [showLongDescription, setShowLongDescription] = useState(false);
+  const [selectedImageId, setSelectedImageId] = useState("1");
+  const [couponMasterData, setCouponsMasterData] = useState([]);
+  const [minCartValue, setMinCartValue] = useState("");
+
   const storeDetails = useSelector((state) => ({
     supplierId: state.customer.supplierId,
     storeCode: state.customer.storeCode,
@@ -161,82 +186,38 @@ const ProductDetails = ({ productId }) => {
   useEffect(() => {
     if (size.width > 800) {
       setImageSize({
-        width: parseInt(size.width, 10) / 4.5,
-        height: parseInt(size.width, 10) / 4,
+        width: parseInt(size.width, 10) / 4.3,
+        height: parseInt(size.width, 10) / 4.3,
       });
     }
   }, [size]);
-  const getProductDetails = async () => {
+  const getProductDetails = async (id) => {
     const status = "APPROVED";
-    await serviceUtil
-      .get(
-        `products/master-product/product-variations?id=${
-          router.query.id ?? productId
-        }&status=${status}`
-      )
-      .then((res) => {
-        setMasterData(res.data.data);
-        res.data?.data?.productVariations.forEach((item) => {
-          if (
-            item.productVariationId === router.query.id ||
-            item.productVariationId === productId
-          ) {
-            setSelectedMasterData(item);
-            setSelectedImage(item.variationMedia[0]);
-          }
-        });
-      })
-      .catch(() => {
-        // console.log(err.response);
+    const { data, err } = await getAllProductDetails(id ?? productId, status);
+    if (data) {
+      setMasterData(data);
+      data?.productVariations.forEach((item) => {
+        if (
+          item.productVariationId === router.query.id ||
+          item.productVariationId === productId
+        ) {
+          setSelectedMasterData(item);
+          setSelectedImage(item.variationMedia[0]);
+        }
       });
+    }
+    if (err) {
+      setMasterData([]);
+      setSelectedMasterData({});
+      setSelectedImage("");
+    }
   };
-  const [selectedImageId, setSelectedImageId] = useState("1");
-  // frequentproduct
-  const [frequentProduct, setfrequentProduct] = useState([]);
-  const [formFrequentData, setFormFrequentData] = useState({
-    actualCost: "",
-    fd: "",
-    handpick: "",
-    storeowner: "",
-  });
-  const getfrequentProduct = async (id) => {
-    const ids = (router.query.id ? router.query.id : id) ?? productId;
-    await serviceUtil
-      .get(`products/grouped-product/${ids}`)
-      .then((res) => {
-        let actualCost = 0;
-        let fd = 0;
-        let handPicks = 0;
-        res.data.data.forEach((item) => {
-          if (item.mrp) {
-            actualCost += item.mrp;
-          }
-          if (item.salePriceWithLogistics) {
-            fd += item.salePriceWithLogistics;
-          }
-          if (item.salePrice) {
-            handPicks += item.salePrice;
-          }
-        });
-        setFormFrequentData({
-          actualCost,
-          fd,
-          handpick: handPicks,
-          storeowner: handPicks,
-        });
-        setfrequentProduct(res.data.data);
-      })
-      .catch(() => {
-        // console.log(err);
-        setfrequentProduct([]);
-      });
-  };
+
   const handleVariationClick = (id) => {
     masterData.productVariations.forEach((item) => {
       if (item.productVariationId === id) {
         setSelectedMasterData(item);
         setSelectedImage(item.variationMedia[0]);
-        getfrequentProduct(item.productVariationId);
         const element = document.getElementById("MainBox");
         element.scrollIntoView();
         setSelectedImageId("1");
@@ -244,42 +225,38 @@ const ProductDetails = ({ productId }) => {
     });
   };
   // coupons api
-  const [couponMasterData, setCouponsMasterData] = useState([]);
+
   const getCouponsData = async () => {
-    await serviceUtil
-      .get(`users/customer/store-coupon?supplierId=${storeDetails.supplierId}`)
-      .then((res) => {
-        setCouponsMasterData(res.data.data);
-      })
-      .catch((err) => {
-        const error = { err };
-        if (error) setCouponsMasterData([]);
-      });
+    const { data, err } = await getAllCouponsData(storeDetails.supplierId);
+    if (data?.length) {
+      setCouponsMasterData(data);
+    }
+    if (err) {
+      setCouponsMasterData([]);
+    }
   };
   // minimum cart value
-  const [minCartValue, setMinCartValue] = useState("");
+
   const getMinimumCart = async () => {
-    await serviceUtil
-      .get(
-        `users/supplier/supplier-store-configuration?storeCode=${storeDetails.storeCode}`
-      )
-      .then((res) => {
-        setMinCartValue(res.data?.data?.minimumOrderAmount);
-      })
-      .catch(() => {
-        // console.log(err);
-      });
+    const { data, err } = await getAllMinumCart(storeDetails.storeCode);
+    if (data) {
+      setMinCartValue(data?.minimumOrderAmount);
+    }
+    if (err) {
+      setMinCartValue("");
+    }
   };
   useEffect(() => {
-    getProductDetails();
+    if (router?.query.id) {
+      getProductDetails(router?.query?.id);
+    }
     getCouponsData();
-    getfrequentProduct();
     getMinimumCart();
-
     // Scroll the Screen to top....
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
-  }, [router.query]);
+  }, [router?.query]);
+
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
     setSelectedImageId(ind);
@@ -321,12 +298,22 @@ const ProductDetails = ({ productId }) => {
   };
   return masterData ? (
     <Paper id="MainBox">
+      <Box className="d-flex justify-content-end">
+        <Box className="d-flex me-3">
+          <RemoveRedEye className="fs-18 color-gray" />
+          <Typography className="mx-1 h-5 color-gray">2138</Typography>
+        </Box>
+        <Box className="d-flex">
+          <AirportShuttle className="fs-18 color-gray" />
+          <Typography className="mx-1 h-5 color-gray">1238</Typography>
+        </Box>
+      </Box>
       <Grid container spacing={2}>
         <Grid
           item
           md={3.5}
-          sm={6}
-          // sx={{ position: "sticky", top: 0, height: "100%" }}
+          sm={4}
+          sx={{ position: "sticky", top: 0, height: "100%", zIndex: 10 }}
         >
           <Grid container spacing={1}>
             <Grid
@@ -337,13 +324,14 @@ const ProductDetails = ({ productId }) => {
               display="flex"
               direction="column"
               mt={0.5}
-              justifyContent={
-                selectedMasterData?.variationMedia?.length > 4 ||
-                selectedMasterData?.variationMedia?.length < 2
-                  ? "space-between"
-                  : "space-evenly"
-              }
+              // justifyContent={
+              //   selectedMasterData?.variationMedia?.length > 4 ||
+              //   selectedMasterData?.variationMedia?.length < 2
+              //     ? "space-between"
+              //     : "space-evenly"
+              // }
               pb={1}
+              rowGap={1.5}
             >
               {selectedMasterData.variationMedia &&
                 selectedMasterData?.variationMedia?.map((item, index) => (
@@ -361,73 +349,80 @@ const ProductDetails = ({ productId }) => {
                   />
                 ))}
             </Grid>
-            <Grid item md={10} sm={7} className="">
+            <Grid item md={10} sm={9} className="">
               {selectedImage !== "" && (
-                // <Image
-                //   height="100%"
-                //   width="100%"
-                //   src={selectedImage}
-                //   layout="responsive"
-                //   className="border rounded p-1"
-                // />
-                <ReactImageMagnify
-                  {...{
-                    smallImage: {
-                      alt: "No Images",
-                      height: imageSize.height,
-                      width: imageSize.width,
-                      src: selectedImage,
-                    },
-                    largeImage: {
-                      src: selectedImage,
-                      width: 1200,
-                      height: 1800,
-                    },
-                    enlargedImageContainerDimensions: {
-                      width: "250%",
-                      height: "130%",
-                    },
-                  }}
-                  className="bg-white zIndex-100"
-                  shouldUsePositiveSpaceLens
-                  imageClassName="border rounded p-1 zIndex-100"
-                  // lensStyle={{
-                  //   background: "hsla(0, 0%, 100%, .3)",
-                  //   border: "1px solid #fff",
-                  // }}
-                  enlargedImageClassName="zIndex-100"
-                />
+                <Box position="relative">
+                  <ReactImageMagnify
+                    {...{
+                      smallImage: {
+                        alt: "No Images",
+                        height: imageSize.height,
+                        width: imageSize.width,
+                        src: selectedImage,
+                      },
+                      largeImage: {
+                        src: selectedImage,
+                        width: 1200,
+                        height: 1800,
+                      },
+                      enlargedImageContainerDimensions: {
+                        width: "250%",
+                        height: "130%",
+                      },
+                    }}
+                    className="bg-white "
+                    shouldUsePositiveSpaceLens
+                    imageClassName="border rounded p-1 "
+                    // lensStyle={{
+                    //   background: "hsla(0, 0%, 100%, .3)",
+                    //   border: "1px solid #fff",
+                    // }}
+                    enlargedImageClassName=""
+                    style={{ position: "relative" }}
+                  />
+                  <FavoriteBorderIcon
+                    style={{
+                      position: "absolute",
+                      top: "2%",
+                      zIndex: 10,
+                      right: "2%",
+                    }}
+                    className="color-gray cursor-pointer"
+                  />
+                </Box>
               )}
             </Grid>
           </Grid>
           {couponMasterData.length ? (
-            <Grid container>
+            <Grid container marginTop={1}>
               <Grid item md={2} />
               <Grid item md={10}>
                 <Typography className="h-4 fw-bold">
                   Coupon Available For This Product
                 </Typography>
-                {couponMasterData.map((item) => (
-                  <Box className="border rounded p-2 my-2">
-                    <Typography className="h-5">
-                      {item.couponAmount} Rs Discount Applicable For This
-                      Product Your Coupon Code - &nbsp;
-                      <span className="color-blue">
-                        {item.storeCouponCode}
-                      </span>{" "}
-                      <Tooltip placement="right-start" title="Copy Coupon">
-                        <CopyAllSharp
-                          className="fs-16"
-                          sx={{ cursor: "pointer" }}
-                        />
-                      </Tooltip>
-                    </Typography>
-                  </Box>
-                ))}
+                <Box className="mxh-300 overflow-auto hide-scrollbar">
+                  {couponMasterData.map((item) => (
+                    <Box className="border rounded p-2 my-2">
+                      <Typography className="h-5">
+                        {item.couponAmount} Rs Discount Applicable For This
+                        Product Your Coupon Code - &nbsp;
+                        <span className="color-blue">
+                          {item.storeCouponCode}
+                        </span>{" "}
+                        <Tooltip placement="right-start" title="Copy Coupon">
+                          <CopyAllSharp
+                            className="fs-16"
+                            sx={{ cursor: "pointer" }}
+                          />
+                        </Tooltip>
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
               </Grid>
             </Grid>
           ) : null}
-          <Grid container>
+          <Grid container marginTop={1.5}>
             <Grid item md={2} />
             <Grid item md={10}>
               <InputBox
@@ -445,43 +440,60 @@ const ProductDetails = ({ productId }) => {
               <Typography className="h-4 fw-bold">
                 Store Owners Coupon Available
               </Typography>
-              {ownersCoupons.map((item) => (
-                <Box className="border bg-light-orange1 rounded p-2 my-2 border-orange">
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Tool Name </Typography>
+              <Box className="mxh-300 overflow-auto hide-scrollbar">
+                {ownersCoupons.map((item) => (
+                  <Box className="border bg-light-orange1 rounded p-2 my-2 border-orange">
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5"> Tool Name </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.toolName}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5">
+                          {" "}
+                          Campaign Title{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.campaign}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.toolName}</Typography>
+                    <Grid container>
+                      <Grid item xs={5}>
+                        <Typography className="h-5">
+                          {" "}
+                          Validity Period{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1}>
+                        <Typography>:</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography className="h-5">
+                          {" "}
+                          {item.validity}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Campaign Title </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.campaign}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <Typography className="h-5"> Validity Period </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <Typography>:</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography className="h-5"> {item.validity}</Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-              ))}
+                  </Box>
+                ))}
+              </Box>
             </Grid>
           </Grid> */}
           {/* <Grid container>
@@ -532,21 +544,11 @@ const ProductDetails = ({ productId }) => {
             </Grid>
           </Grid> */}
         </Grid>
-        <Grid item md={8.5}>
+        <Grid item md={8.5} sm={8}>
           <Box className="d-flex justify-content-between me-3">
             <Typography className="h-5 color-light-green">
               We Get You To The Product Exact Price - No Indirect Charges
             </Typography>
-            <Box className="d-flex justify-content-end">
-              <Box className="d-flex me-3">
-                <RemoveRedEye className="fs-18 color-gray" />
-                <Typography className="mx-1 h-5 color-gray">2138</Typography>
-              </Box>
-              <Box className="d-flex">
-                <AirportShuttle className="fs-18 color-gray" />
-                <Typography className="mx-1 h-5 color-gray">1238</Typography>
-              </Box>
-            </Box>
           </Box>
           <Grid container>
             <Grid item md={12}>
@@ -556,16 +558,33 @@ const ProductDetails = ({ productId }) => {
             </Grid>
           </Grid>
           <Box className="d-flex mt-1">
-            <Rating value={4} readOnly sx={{ color: "#e56700" }} />
+            <Box>
+              <MenuwithArrow
+                subHeader=""
+                Header={<Rating value={4} readOnly sx={{ color: "#e56700" }} />}
+                onOpen={() => {}}
+                arrowPosition="center"
+              >
+                <MenuItem>
+                  <Box className="mnw-300">
+                    <LinearProgressBar
+                      height={15}
+                      leftTitle="1 Star"
+                      rightTitle="20%"
+                      value={20}
+                    />
+                  </Box>
+                </MenuItem>
+              </MenuwithArrow>
+            </Box>
             <span className="fs-12 mt-1 fw-bold"> 192 Rating | &nbsp;</span>
             <span className="fs-12 mt-1 fw-bold"> 22 Answered Questions</span>
             <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
-              {" "}
               Want To Sell With Us?
             </span>
           </Box>
-          <Grid container spacing={2}>
-            <Grid item md={6}>
+          <Grid container columnSpacing={2}>
+            <Grid item md={6} sm={5}>
               <Box>
                 <Typography className="h-4 fw-bold color-orange">
                   Choose Delivery Options
@@ -785,7 +804,7 @@ const ProductDetails = ({ productId }) => {
                         sx={{
                           m: "0.08rem",
                         }}
-                        className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
+                        className="d-flex bg-gray px-2 rounded justify-content-center align-items-center cursor-pointer w-40p"
                       >
                         <Typography className="d-flex justify-content-center h-5">
                           Apply Coupon
@@ -877,100 +896,15 @@ const ProductDetails = ({ productId }) => {
                 </Grid>
               </Grid> */}
             </Grid>
-            <Grid item md={6}>
-              {selectedMasterData.rtoAccepted && (
-                <>
-                  <Box>
-                    <RadiobuttonComponent
-                      size="small"
-                      label={`${selectedMasterData.salePrice} (With Free Delivery & Return)`}
-                      isChecked={defaultFormData.freeDelivery}
-                      onRadioChange={() => {
-                        setDefaultFormData((prev) => ({
-                          ...prev,
-                          normalDelivery: false,
-                          freeDelivery: true,
-                          normal: false,
-                          fast: false,
-                          shipmemtamount: "0",
-                          optionDeliver: true,
-                          optionFastDeliver: false,
-                          fdrDeliverAmount: "0",
-                          cashondelivery: false,
-                        }));
-                      }}
-                    />
-                    <Typography className="h-5" marginLeft={3.5}>
-                      MRP :{" "}
-                      <span className="text-decoration-line-through">
-                        {selectedMasterData.mrp}
-                      </span>
-                    </Typography>
-                    <Box className="d-flex">
-                      <Box>
-                        <Typography className="h-5">
-                          You Save : &nbsp;
-                        </Typography>
-                      </Box>
-                      <Box>
-                        <Typography className="h-5">
-                          {selectedMasterData.mrp -
-                            selectedMasterData.salePrice}{" "}
-                          (
-                          {(
-                            ((selectedMasterData.mrp -
-                              selectedMasterData.salePrice) /
-                              selectedMasterData.mrp) *
-                            100
-                          ).toFixed(2)}
-                          % )
-                        </Typography>
-                        <Typography className="h-5">
-                          Inclusive Of All Taxes
-                        </Typography>
-                      </Box>
-                    </Box>
-                    <Grid container className="mt-2">
-                      <Grid item xs={10}>
-                        <div
-                          className="d-flex bg-white rounded justify-content-between"
-                          style={{
-                            border: "1px solid #c0ad9d",
-                          }}
-                        >
-                          <input
-                            className="p-2 w-100 bg-white"
-                            placeholder="Enter Coupon Code"
-                            style={{
-                              background: "#fae1cc",
-                              outline: "none",
-                              border: "none",
-                              borderRadius: "5px",
-                            }}
-                          />
-                          <Box
-                            sx={{
-                              m: "0.08rem",
-                            }}
-                            className="d-flex bg-gray px-2 rounded align-items-center cursor-pointer w-40p"
-                          >
-                            <Typography className="d-flex justify-content-center h-5">
-                              Apply Coupon
-                            </Typography>
-                          </Box>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Box className="mt-2">
-                    <Typography className="h-4 color-blue">
-                      Choose Delivery Options
-                    </Typography>
+            <Grid item md={6} sm={5}>
+              <Box minHeight={selectedMasterData.rtoAccepted ? "" : "80%"}>
+                {selectedMasterData.rtoAccepted && (
+                  <>
                     <Box>
                       <RadiobuttonComponent
                         size="small"
-                        label="Free Delivery By Wed, Sep 22"
-                        isChecked={defaultFormData.optionDeliver}
+                        label={`${selectedMasterData.salePrice} (With Free Delivery & Return)`}
+                        isChecked={defaultFormData.freeDelivery}
                         onRadioChange={() => {
                           setDefaultFormData((prev) => ({
                             ...prev,
@@ -982,103 +916,190 @@ const ProductDetails = ({ productId }) => {
                             optionDeliver: true,
                             optionFastDeliver: false,
                             fdrDeliverAmount: "0",
+                            cashondelivery: false,
                           }));
                         }}
                       />
-                    </Box>
-                    <Box>
-                      <RadiobuttonComponent
-                        size="small"
-                        label="₹185 - Fastest Delivery By Sunday, Sep 17"
-                        isChecked={defaultFormData.optionFastDeliver}
-                        onRadioChange={() => {
-                          setDefaultFormData((prev) => ({
-                            ...prev,
-                            normalDelivery: false,
-                            freeDelivery: true,
-                            normal: false,
-                            fast: false,
-                            shipmemtamount: "0",
-                            optionDeliver: false,
-                            optionFastDeliver: true,
-                            fdrDeliverAmount: "185",
-                          }));
-                        }}
-                      />
-                    </Box>
-                    <Box>
-                      <CheckBoxComponent
-                        label="COD Delivery By Wed, sep27"
-                        size="medium"
-                        showIcon
-                        varient="filled"
-                        isDisabled={!selectedMasterData.codAvailable}
-                        checkBoxClick={() => {
-                          setDefaultFormData((pre) => ({
-                            ...pre,
-                            cashondelivery: !defaultFormData.cashondelivery,
-                          }));
-                        }}
-                        isChecked={defaultFormData.cashondelivery}
-                      />
-                    </Box>
-                  </Box>
-                  <Box className="mt-2">
-                    <Typography className="h-5 ms-2 color-blue">
-                      Enter Pincode & Check If Its Deliverable/Not
-                    </Typography>
-                    <Grid container className="mt-2">
-                      <Grid item xs={10}>
-                        <div
-                          className="d-flex bg-white rounded justify-content-between"
-                          style={{
-                            border: "1px solid #c0ad9d",
-                          }}
-                        >
-                          <input
-                            className="p-2 w-100 bg-white"
-                            placeholder="Enter Pincode"
+                      <Typography className="h-5" marginLeft={3.5}>
+                        MRP :{" "}
+                        <span className="text-decoration-line-through">
+                          {selectedMasterData.mrp}
+                        </span>
+                      </Typography>
+                      <Box className="d-flex">
+                        <Box>
+                          <Typography className="h-5">
+                            You Save : &nbsp;
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography className="h-5">
+                            {selectedMasterData.mrp -
+                              selectedMasterData.salePrice}{" "}
+                            (
+                            {(
+                              ((selectedMasterData.mrp -
+                                selectedMasterData.salePrice) /
+                                selectedMasterData.mrp) *
+                              100
+                            ).toFixed(2)}
+                            % )
+                          </Typography>
+                          <Typography className="h-5">
+                            Inclusive Of All Taxes
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Grid container className="mt-2">
+                        <Grid item xs={10}>
+                          <div
+                            className="d-flex bg-white rounded justify-content-between"
                             style={{
-                              background: "#fae1cc",
-                              outline: "none",
-                              border: "none",
-                              borderRadius: "5px",
+                              border: "1px solid #c0ad9d",
                             }}
-                          />
-                          <Box
-                            sx={{
-                              m: "0.08rem",
-                            }}
-                            className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
                           >
-                            <Typography className="h-5">Check</Typography>
-                          </Box>
-                        </div>
+                            <input
+                              className="p-2 w-100 bg-white"
+                              placeholder="Enter Coupon Code"
+                              style={{
+                                background: "#fae1cc",
+                                outline: "none",
+                                border: "none",
+                                borderRadius: "5px",
+                              }}
+                            />
+                            <Box
+                              sx={{
+                                m: "0.08rem",
+                              }}
+                              className="d-flex bg-gray px-2 rounded justify-content-center align-items-center cursor-pointer w-40p"
+                            >
+                              <Typography className="d-flex justify-content-center h-5">
+                                Apply Coupon
+                              </Typography>
+                            </Box>
+                          </div>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                    {defaultFormData.freeDelivery && (
-                      <>
-                        <Typography className="mt-3">
-                          <span className="fw-bold">
-                            {" "}
-                            ₹{" "}
-                            {selectedMasterData.salePrice +
-                              parseInt(defaultFormData.fdrDeliverAmount, 10)}
-                          </span>{" "}
-                          - Final Price Including Transaction Charge
-                        </Typography>
-                        <Typography className="h-6 color-red">
-                          Pay Through UPI TO Avoid Deduction Of Transaction
-                          Charges In Case Of RTO Happens
-                        </Typography>
-                      </>
-                    )}
-                  </Box>
-                </>
-              )}
-              <Box className="my-4  w-75 d-flex justify-content-end">
+                    </Box>
+                    <Box className="mt-2">
+                      <Typography className="h-4 color-blue">
+                        Choose Delivery Options
+                      </Typography>
+                      <Box>
+                        <RadiobuttonComponent
+                          size="small"
+                          label="Free Delivery By Wed, Sep 22"
+                          isChecked={defaultFormData.optionDeliver}
+                          onRadioChange={() => {
+                            setDefaultFormData((prev) => ({
+                              ...prev,
+                              normalDelivery: false,
+                              freeDelivery: true,
+                              normal: false,
+                              fast: false,
+                              shipmemtamount: "0",
+                              optionDeliver: true,
+                              optionFastDeliver: false,
+                              fdrDeliverAmount: "0",
+                            }));
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <RadiobuttonComponent
+                          size="small"
+                          label="₹185 - Fastest Delivery By Sunday, Sep 17"
+                          isChecked={defaultFormData.optionFastDeliver}
+                          onRadioChange={() => {
+                            setDefaultFormData((prev) => ({
+                              ...prev,
+                              normalDelivery: false,
+                              freeDelivery: true,
+                              normal: false,
+                              fast: false,
+                              shipmemtamount: "0",
+                              optionDeliver: false,
+                              optionFastDeliver: true,
+                              fdrDeliverAmount: "185",
+                            }));
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <CheckBoxComponent
+                          label="COD Delivery By Wed, sep27"
+                          size="medium"
+                          showIcon
+                          varient="filled"
+                          isDisabled={!selectedMasterData.codAvailable}
+                          checkBoxClick={() => {
+                            setDefaultFormData((pre) => ({
+                              ...pre,
+                              cashondelivery: !defaultFormData.cashondelivery,
+                            }));
+                          }}
+                          isChecked={defaultFormData.cashondelivery}
+                        />
+                      </Box>
+                    </Box>
+                    <Box className="mt-2">
+                      <Typography className="h-5 ms-2 color-blue">
+                        Enter Pincode & Check If Its Deliverable/Not
+                      </Typography>
+                      <Grid container className="mt-2">
+                        <Grid item xs={10}>
+                          <div
+                            className="d-flex bg-white rounded justify-content-between"
+                            style={{
+                              border: "1px solid #c0ad9d",
+                            }}
+                          >
+                            <input
+                              className="p-2 w-100 bg-white"
+                              placeholder="Enter Pincode"
+                              style={{
+                                background: "#fae1cc",
+                                outline: "none",
+                                border: "none",
+                                borderRadius: "5px",
+                              }}
+                            />
+                            <Box
+                              sx={{
+                                m: "0.08rem",
+                              }}
+                              className="d-flex bg-gray px-3 rounded align-items-center cursor-pointer h-5"
+                            >
+                              <Typography className="h-5">Check</Typography>
+                            </Box>
+                          </div>
+                        </Grid>
+                      </Grid>
+                      {defaultFormData.freeDelivery && (
+                        <>
+                          <Typography className="mt-3">
+                            <span className="fw-bold">
+                              {" "}
+                              ₹{" "}
+                              {selectedMasterData.salePrice +
+                                parseInt(defaultFormData.fdrDeliverAmount, 10)}
+                            </span>{" "}
+                            - Final Price Including Transaction Charge
+                          </Typography>
+                          <Typography className="h-6 color-red">
+                            Pay Through UPI TO Avoid Deduction Of Transaction
+                            Charges In Case Of RTO Happens
+                          </Typography>
+                        </>
+                      )}
+                    </Box>
+                  </>
+                )}
+              </Box>
+              <Box className="my-4 d-flex justify-content-center">
                 <Box
-                  className=" d-flex w-33p justify-content-center align-items-center px-2 py-2 rounded"
+                  className=" d-flex justify-content-center align-items-center px-2 py-2 rounded"
                   style={{ border: "1px solid #292929" }}
                 >
                   <div className="me-3" onClick={() => handleMinusClick()}>
@@ -1098,15 +1119,18 @@ const ProductDetails = ({ productId }) => {
                   </div>
                 </Box>
               </Box>
-
-              <Box className="mb-3 d-flex justify-content-center">
-                <ButtonComponent
-                  label="Add To Cart"
-                  variant="outlined"
-                  muiProps="w-25 me-3 py-2"
-                />
-                <ButtonComponent label="Buy Now" muiProps="w-25 me-3 py-2" />
-              </Box>
+              <Grid container spacing={2}>
+                <Grid item md={6} display="flex" justifyContent="end">
+                  <ButtonComponent
+                    label="Add To Cart"
+                    variant="outlined"
+                    muiProps="py-1"
+                  />
+                </Grid>
+                <Grid item md={6} display="flex">
+                  <ButtonComponent label="Buy Now" muiProps="py-1" />
+                </Grid>
+              </Grid>
               <Box>
                 <Typography className="color-light-green h-5 fw-bold">
                   In Stock
@@ -1160,7 +1184,7 @@ const ProductDetails = ({ productId }) => {
           </Grid>
           {masterData?.productVariations ? (
             <Grid container gap={1} mt={2}>
-              <Grid item md={12}>
+              <Grid item md={12} xs={12}>
                 <Typography className="fw-bold">Variations (Color)</Typography>
               </Grid>
               {masterData?.productVariations.map((item) => (
@@ -1274,203 +1298,21 @@ const ProductDetails = ({ productId }) => {
         </Grid>
       </Grid>
       <Box>
-        {frequentProduct.length ? (
-          <Grid item md={12} className="my-2 mx-4">
-            <Paper elevation={3}>
-              <Box className="p-2">
-                <Typography className="h-4 fw-bold">
-                  Frequently Bought Together
-                </Typography>
-                <Grid container>
-                  <Grid item md={6}>
-                    <Grid container>
-                      {frequentProduct.map((item, index) => (
-                        <>
-                          <Grid item md={3}>
-                            <Image
-                              height={150}
-                              width={150}
-                              src={item.variationMedia[0]}
-                              layout="intrinsic"
-                              alt="alt"
-                              className="border rounded"
-                            />
-                          </Grid>
-                          {frequentProduct.length - 1 > index && (
-                            <Grid item md={1} className="d-center">
-                              <Add sx={{ fontSize: "40px" }} />
-                            </Grid>
-                          )}
-                        </>
-                      ))}
-                    </Grid>
-                  </Grid>
-                  <Grid item md={6}>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent
-                          size="small"
-                          // label="Actual Price (Excl.Delivery & Return Charge)"
-                        />
-                        <Typography className="h-5">
-                          Actual Price (Excl.Delivery & Return Charge)
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.actualCost}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">
-                          Price For Free Delivery & Return
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.fd}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">Hand Pick</Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.handpick}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Grid container display="flex" alignItems="center">
-                      <Grid item md={6} display="flex" alignItems="center">
-                        <RadiobuttonComponent size="small" />
-                        <Typography className="h-5">
-                          Store Owner Delivery
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        <Typography>:&nbsp;</Typography>
-                      </Grid>
-                      <Grid item md={3}>
-                        <Typography className="fw-bold">
-                          ₹ {formFrequentData.storeowner}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                    <Typography className="h-5 color-orange cursor-pointer">
-                      Add All These To Cart
-                    </Typography>
-                  </Grid>
-                  <Grid container>
-                    <Grid item md={8}>
-                      {frequentProduct.map((item) => (
-                        <Grid item md={12} display="flex" alignItems="center">
-                          <CheckBoxComponent
-                            // label={`${item.productTitle} - AC ${item.mrp} / FD ${item.salePriceWithLogistics}`}
-                            showIcon
-                            varient="filled"
-                            label=""
-                          />
-                          <Typography>
-                            {item.productTitle}{" "}
-                            <span className="color-blue">- AC</span>{" "}
-                            <span className="color-light-green">
-                              {" "}
-                              Rs.{item.mrp}
-                            </span>{" "}
-                            / <span className="color-blue">FD</span>{" "}
-                            <span className="color-light-green">
-                              Rs.{item.salePriceWithLogistics}
-                            </span>
-                          </Typography>
-                        </Grid>
-                      ))}
-                    </Grid>
-                    <Grid
-                      item
-                      md={4}
-                      display="flex"
-                      alignItems="end"
-                      justifyContent="end"
-                    >
-                      <Box>
-                        <Typography className="h-5">
-                          AC - Actual Cost
-                        </Typography>
-                        <Typography className="h-5">
-                          FD - Free Delivery & Return
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Paper>
-          </Grid>
-        ) : null}
+        <FrequentBuyProduct
+          router={router}
+          productId={selectedMasterData.productVariationId}
+        />
       </Box>
       <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">Similar Products</Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
-      </Box>{" "}
-      <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">Recently Viewed</Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
-      </Box>{" "}
-      <Box className="mt-2" paddingX={3}>
-        <Paper elevation={3} className="" sx={{ height: "180px" }}>
-          <Typography className="h-4 fw-bold ps-2">
-            Products Related To This Item
-          </Typography>
-          <Box className="ms-2 d-flex justify-content-between">
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-            <Skeleton variant="rectangular" width={150} height={150} />
-          </Box>
-        </Paper>
+        <ProductList title="Similar Products" />
       </Box>
-      <Grid container className="ps-4">
+      <Box className="mt-2" paddingX={3}>
+        <ProductList title="Recently Viewed" />
+      </Box>
+      <Box className="mt-2" paddingX={3}>
+        <ProductList title=" Products Related To This Item" />
+      </Box>
+      <Grid container className="ps-4 pb-2">
         <Grid item sm={12}>
           <Typography className="h-4 fw-bold my-2">
             Product Information
@@ -1479,13 +1321,13 @@ const ProductDetails = ({ productId }) => {
             Color : <span className="fw-bold">Black</span>
           </Typography>
         </Grid>
-        <Grid item md={6}>
+        <Grid item md={6} sm={6}>
           <Typography className="fw-bold h-4">Technical Details</Typography>
-          <Grid container>
-            <Grid item md={6} className="bg-gray">
+          <Grid container className="border">
+            <Grid item sm={6} className="bg-gray text-break py-1 px-2 fw-bold">
               Brand
             </Grid>
-            <Grid item md={6}>
+            <Grid item sm={6} className="text-break py-1 px-2">
               {masterData.brand}
             </Grid>
           </Grid>

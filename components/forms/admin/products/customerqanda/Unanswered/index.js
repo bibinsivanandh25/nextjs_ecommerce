@@ -5,7 +5,7 @@ import CustomIcon from "services/iconUtils";
 import { getAdminProductsByFilter } from "services/admin/products/fixedMargin";
 import TableComponent from "@/atoms/TableComponent";
 // import ViewProducts from "./ViewProducts";
-import MenuOption from "@/atoms/MenuOptions";
+// import MenuOption from "@/atoms/MenuOptions";
 // import AcceptRejectModal from "./AcceptRejectModal";
 // import RaiseQueryModal from "./RaiseQueryModal";
 // import MergeToModal from "./MergeToModal";
@@ -54,9 +54,7 @@ const Unanswered = () => {
     "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
   ];
 
-  const onClickOfMenuItem = () => {};
-
-  const options = ["Edit", "Delete"];
+  // const onClickOfMenuItem = () => {};
 
   const columns = [
     {
@@ -149,13 +147,13 @@ const Unanswered = () => {
             }}
             className="h-4"
           />
-          <MenuOption
+          {/* <MenuOption
             getSelectedItem={(ele) => {
               onClickOfMenuItem(ele);
             }}
             options={options}
             IconclassName="fs-18 color-gray"
-          />
+          /> */}
         </Box>
       ),
     },
@@ -235,13 +233,13 @@ const Unanswered = () => {
           col10: (
             <Box className="d-flex justify-content-evenly align-items-center">
               <CustomIcon type="view" className="fs-18" />
-              <MenuOption
+              {/* <MenuOption
                 getSelectedItem={(ele) => {
                   onClickOfMenuItem(ele, val);
                 }}
-                options={options}
+                // options={options}
                 IconclassName="fs-18 color-gray"
-              />
+              /> */}
             </Box>
           ),
         });

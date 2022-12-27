@@ -238,7 +238,6 @@ const FlagsSubscription = () => {
                 );
               }}
               options={[
-                "Notify",
                 "Add Note",
                 <Box className="d-flex align-items-center">
                   <Typography>

@@ -202,19 +202,19 @@ const ProductDetailsPlusTrackDetails = ({
                         ? "1px solid #E56700"
                         : "1px solid gray",
                       top: "-1px",
-                      left: 6,
+                      left: 7,
                     }}
                   ></div>
                 )}
                 <div className="d-flex ">
                   <div
                     style={{
-                      height: "15px",
-                      width: "15px",
+                      height: "16px",
+                      width: "16px",
                       border: item.flag
                         ? "1px solid #E56700"
                         : "1px solid gray",
-                      borderRadius: "50%",
+                      // borderRadius: "50%",
                       backgroundColor: item.flag ? "#E56700" : "gray",
                     }}
                     className="mt-1"
@@ -235,7 +235,7 @@ const ProductDetailsPlusTrackDetails = ({
                         ? "1px solid #E56700"
                         : "1px solid gray",
                       top: 18,
-                      left: 6,
+                      left: 7,
                     }}
                   ></div>
                 )}
@@ -248,10 +248,10 @@ const ProductDetailsPlusTrackDetails = ({
                             ? "2px solid #E56700"
                             : "2px solid gray"
                           : "",
-                      marginLeft: "6px",
+                      marginLeft: "7px",
                       paddingLeft: "2.1rem",
                     }}
-                    className="py-2"
+                    className="py-2 "
                   >
                     <p className="text-bold fw-600 fs-14">{val.value}</p>
                     <p className="fs-12 color-dark-gray ">{val.date}</p>
