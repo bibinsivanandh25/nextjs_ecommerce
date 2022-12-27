@@ -198,7 +198,7 @@ const SignIn = () => {
             />
           </Box>
           <Typography variant="h6" className="mt-3 text-center fs-16">
-            A Multi Ecommrece Store
+            A Multi Ecommerce Store
           </Typography>
           <InputBoxComponent
             label="Mobile No./E-mail"

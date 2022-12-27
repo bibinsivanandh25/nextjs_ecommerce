@@ -140,6 +140,7 @@ const FavoriteList = ({ close = () => {} }) => {
               </Box>
               <Box className="d-flex flex-column">
                 <CustomIcon
+                  title="Remove from favourite"
                   type="heart"
                   className="fs-20 m-1 cursor-pointer color-orange"
                   onIconClick={(e) => {
@@ -150,6 +151,7 @@ const FavoriteList = ({ close = () => {} }) => {
 
                 <CustomIcon
                   type="delete"
+                  title="Delete"
                   onIconClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
