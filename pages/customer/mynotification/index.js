@@ -178,48 +178,7 @@ const MyNotification = () => {
   const [value, setValue] = useState(null);
   const [openEdit, setopenEdit] = useState({ open: false, qid: "", type: "" });
   const userName = useSelector((state) => state.customer.customerName);
-  const [dummyProductQueryData, setdummyProductQueryData] = useState([
-    {
-      customerQuestionId: "639c16bd1ff4a614d7057125",
-      customerQuestion: "Does it come in pair or single?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      productImages: [
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-      ],
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-    },
-    {
-      customerQuestionId: "639c16bd1ff4a614d7057126",
-      customerQuestion: "Can i use this for sports",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      productImages: [
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778064-71Mh4zz74ZL._UL1500_.jpg",
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778375-71s9knabsOL._UL1500_.jpg",
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-      ],
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-    },
-  ]);
+  const [productQueryData, setproductQueryData] = useState([]);
   const [selectedQuestion, setselectedQuestion] = useState([]);
   const [viewQuertData, setviewQuertData] = useState({
     customerId: "CST1122000046",
@@ -235,98 +194,7 @@ const MyNotification = () => {
     replay: null,
     replayBy: null,
   });
-  const [viewProductQueryData, setviewProductQueryData] = useState([
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-      customerQuestionId: "639c16bd1ff4a614d7057125",
-      customerQuestion: "Does it come in pair or single?",
-      profileId: "CST1122000046",
-      userAnswer: "It will come in a pair",
-      answerFromType: null,
-      answerFromTypeId: "12345",
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: "12-16-2022 12:27:01",
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-  ]);
+  const [viewProductQueryData, setviewProductQueryData] = useState([]);
   const [openView, setopenView] = useState({ open: false, type: "" });
 
   const [replyInput, setreplyInput] = useState("");
@@ -439,8 +307,8 @@ const MyNotification = () => {
     return result;
   };
   const getQueriesByQuestionId = (id) => {
-    dummyProductQueryData.filter((item) => {
-      if (item.customerQuestionId === id) {
+    productQueryData?.filter((item) => {
+      if (item?.customerQuestionId === id) {
         setselectedQuestion(item);
         return item;
       }
@@ -452,65 +320,28 @@ const MyNotification = () => {
 
   const mapProductQueryToTable = (data) => {
     const result = [];
-    const demo = [
-      {
-        customerQuestionId: "639c16bd1ff4a614d7057125",
-        customerQuestion: "Does it come in pair or single?",
-        profileId: "CST1122000046",
-        userAnswer: null,
-        answerFromType: null,
-        answerFromTypeId: null,
-        variationId: "62fa5d55e5d1f7265bb58cdc",
-        productImages: [
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        ],
-        questionAnsweredAt: null,
-        createdAt: "12-16-2022 12:27:01",
-        lastModifiedAt: "12-16-2022 12:27:01",
-        createdBy: "CST1122000046",
-        lastModifiedBy: "CST1122000046",
-      },
-      {
-        customerQuestionId: "639c16bd1ff4a614d7057126",
-        customerQuestion: "Can i use this for sports",
-        profileId: "CST1122000046",
-        userAnswer: null,
-        answerFromType: null,
-        answerFromTypeId: null,
-        variationId: "62fa5d55e5d1f7265bb58cdc",
-        productImages: [
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778064-71Mh4zz74ZL._UL1500_.jpg",
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778375-71s9knabsOL._UL1500_.jpg",
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-        ],
-        questionAnsweredAt: null,
-        createdAt: "12-16-2022 12:27:01",
-        lastModifiedAt: "12-16-2022 12:27:01",
-        createdBy: "CST1122000046",
-        lastModifiedBy: "CST1122000046",
-      },
-    ];
-    demo?.forEach((row, ind) => {
+
+    data?.forEach((row, ind) => {
       result.push({
         id: row.customerQuestionId,
         col1: ind + 1,
         col2: row.profileId,
         col3: (
           <div className="d-flex justify-content-center">
-            <ImageCard
-              className="d-inline me-1 my-0"
-              imgSrc={row.productImages[0] || ""}
-              showClose={false}
-              height={40}
-              width={70}
-            />
-            <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-              / {row.productImages.length}
-            </Typography>
+            {row?.productImages && (
+              <ImageCard
+                className="d-inline me-1 my-0"
+                imgSrc={row?.productImages || ""}
+                showClose={false}
+                height={40}
+                width={70}
+              />
+            )}{" "}
+            {row?.productImages?.length && (
+              <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
+                / {row?.productImages?.length}
+              </Typography>
+            )}
           </div>
         ),
         col4: row.customerQuestion,
@@ -520,16 +351,18 @@ const MyNotification = () => {
         col8: (
           <Grid className="d-flex justify-content-center">
             <Grid>
-              <CustomIcon
-                type="view"
-                title="View "
-                onIconClick={() => {
-                  setopenView({ open: true, type: "productview" });
-                  getProductQueryData(row.customerQuestionId);
-                  getQueriesByQuestionId(row.customerQuestionId);
-                }}
-                className="fs-18 me-2 fit-content"
-              />
+              {row.customerQuestionId && (
+                <CustomIcon
+                  type="view"
+                  title="View "
+                  onIconClick={() => {
+                    setopenView({ open: true, type: "productview" });
+                    getProductQueryData(row.customerQuestionId);
+                    getQueriesByQuestionId(row.customerQuestionId);
+                  }}
+                  className="fs-18 me-2 fit-content"
+                />
+              )}
             </Grid>
           </Grid>
         ),
@@ -583,6 +416,7 @@ const MyNotification = () => {
         setProductQueriesRows(
           mapProductQueryToTable(data?.data?.questionAnswerViewPojo)
         );
+        setproductQueryData(data?.data?.questionAnswerViewPojo);
         setpageNumberProduct((pre) => pre + 1);
       } else {
         setProductQueriesRows((pre) => [
@@ -766,7 +600,7 @@ const MyNotification = () => {
               Questions related to this product
             </Typography>
             <Grid style={{ maxHeight: "70vh", overflowY: "scroll" }}>
-              {viewProductQueryData.map((item, ind) => {
+              {viewProductQueryData?.map((item, ind) => {
                 return (
                   item.createdBy,
                   (
