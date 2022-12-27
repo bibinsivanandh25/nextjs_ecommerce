@@ -8,6 +8,8 @@ const ButtonTabsList = ({
   tabsList = [],
   getActiveTab = () => {},
   showEditDelete = false,
+  onEditClick = () => {},
+  onDeleteClick = () => {},
 }) => {
   return (
     <Box className={`${className}`}>
@@ -19,17 +21,23 @@ const ButtonTabsList = ({
               activeTab === index ? "bg-orange color-white" : "bg-light-gray"
             }`}
             onClick={() => {
-              getActiveTab(index);
+              getActiveTab(index, item);
             }}
           >
-            <div className="d-flex justify-content-between">
-              <div className="d-flex justify-content-center  w-100">
+            <div className="d-flex justify-content-between cursor-pointer">
+              <div className="d-flex justify-content-center cursor-pointer w-100">
                 {item.title}
               </div>
               {showEditDelete && activeTab === index ? (
                 <div className="position-absolute end-0 top-2">
-                  <Edit className="fs-14 cursor-pointer" />
-                  <Delete className="fs-14 cursor-pointer" />
+                  <Edit
+                    className="fs-14 cursor-pointer"
+                    onClick={() => onEditClick(item)}
+                  />
+                  <Delete
+                    className="fs-14 cursor-pointer"
+                    onClick={() => onDeleteClick(item)}
+                  />
                 </div>
               ) : null}
             </div>
