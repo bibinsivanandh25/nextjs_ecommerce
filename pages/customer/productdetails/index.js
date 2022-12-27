@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -332,6 +333,7 @@ const ProductDetails = ({ productId }) => {
               item
               md={2}
               sm={4}
+              style={{ border: "1px", color: "red" }}
               display="flex"
               direction="column"
               mt={0.5}
@@ -1200,7 +1202,11 @@ const ProductDetails = ({ productId }) => {
                 <Box className="p-2">
                   <Typography className="h-4 fw-bold">Description</Typography>
                   <Typography className="h-5 text-break" lineHeight="1.3rem">
-                    {masterData?.shortDescription}{" "}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: masterData?.shortDescription,
+                      }}
+                    />
                     <span
                       className={`h-5 color-blue cursor-pointer ${
                         showLongDescription && `d-none`
@@ -1229,7 +1235,11 @@ const ProductDetails = ({ productId }) => {
                       <Box>
                         {masterData?.longDescription && (
                           <Typography className="h-5">
-                            {masterData?.longDescription}
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: masterData?.longDescription,
+                              }}
+                            />
                           </Typography>
                         )}
                         <Box className="h-5">

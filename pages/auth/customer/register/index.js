@@ -47,6 +47,9 @@ const CustomerRegistration = () => {
   const router = useRouter();
 
   const validateForm = () => {
+    const maxDate = new Date();
+    maxDate.setHours(0, 0, 0, 0);
+    maxDate.setDate(maxDate.getDate());
     let flag = false;
     const errObj = { ...formObj };
     if (formValues.storeCode === "") {
@@ -70,6 +73,10 @@ const CustomerRegistration = () => {
     if (formValues.dateOfBirth === "") {
       flag = true;
       errObj.dateOfBirth = validateMessage.field_required;
+    }
+    if (!(formValues.dateOfBirth < maxDate)) {
+      flag = true;
+      errObj.dateOfBirth = validateMessage.brforeDate;
     }
     if (formValues.mobileNo === "") {
       flag = true;
@@ -123,7 +130,7 @@ const CustomerRegistration = () => {
           `users/registration/send-otp?mobileNumber=${formValues.mobileNo}&userType=CUSTOMER`
         )
         .then((data) => {
-          toastify(data.message, "success");
+          toastify(data.data.message, "success");
           setShowVerifyOTP(true);
           setRegistrationPayLoad({ ...payload });
         })
@@ -149,9 +156,7 @@ const CustomerRegistration = () => {
           <Paper className="w-400px rounded-1" elevation={24}>
             <Box className="w-100 p-2 rounded-1">
               <Box className="d-flex justify-content-end align-items-center">
-                <Typography className=" fs-14 cursor-pointer">
-                  Existing Customer
-                </Typography>
+                <Typography className=" fs-14">Existing Customer</Typography>
                 <Box className="ps-2">
                   <ButtonComponent
                     label="Sign in"
@@ -176,7 +181,7 @@ const CustomerRegistration = () => {
                 />
               </Box>
               <Typography variant="h6" className="mt-3 text-center fs-16">
-                A Multi Ecommerece Store
+                A Multi Ecommerce Store
               </Typography>
               <Grid container spacing={2} className="mt-1 px-3">
                 <Grid item sm={12}>
