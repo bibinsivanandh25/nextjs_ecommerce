@@ -23,6 +23,7 @@ const validateMessage = {
   alphabets: "Only alphabets are allowed",
   alphabets_50: "Max 50 alphabets can be entered",
   alphabets_3: "At least 3 alphabets required",
-  startDateValid:"From date can't be more than To date"
+  startDateValid: "From date can't be more than To date",
+  brforeDate: "Selected date should be before current date",
 };
 export default validateMessage;

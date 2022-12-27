@@ -180,6 +180,7 @@ const ViewAllStore = ({
                   />
                 ) : (
                   <CustomIcon
+                    title="Add to favourite"
                     type="favoriteBorderIcon"
                     className="fs-20 m-1 cursor-pointer"
                     onIconClick={(e) => {
@@ -190,6 +191,7 @@ const ViewAllStore = ({
                 )}
                 <CustomIcon
                   type="delete"
+                  title="Delete"
                   onIconClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -198,6 +200,7 @@ const ViewAllStore = ({
                   className=""
                 />
                 <CustomIcon
+                  title="Add store"
                   type="add"
                   className=""
                   onIconClick={(e) => {

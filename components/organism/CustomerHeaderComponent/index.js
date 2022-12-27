@@ -63,6 +63,7 @@ const Header = () => {
     userId,
     addressDetails,
   } = useSelector((state) => state.customer);
+
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
@@ -274,7 +275,12 @@ const Header = () => {
     if (data) {
       await handleSwitchStore(storeCode);
     } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      if (
+        err?.response?.data?.message ===
+        "This Store Already Added By The Customer"
+      ) {
+        await handleSwitchStore(storeCode);
+      } else toastify(err?.response?.data?.message, "error");
     }
   };
 
