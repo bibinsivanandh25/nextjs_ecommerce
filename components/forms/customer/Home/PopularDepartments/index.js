@@ -109,8 +109,8 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
     }
   };
   useEffect(() => {
-    getProducts();
     setProducts([]);
+    getProducts();
   }, [popularDepartments, filterType]);
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
-import BuyNowModal from "../../buynowmodal";
+import DeliveryOptionsModal from "../../buynowmodal";
 // import Link from "next/link";
 
 const ProductCard = ({
@@ -170,9 +170,10 @@ const ProductCard = ({
         />
       ) : null}
       {setshowAddToCardModal && (
-        <BuyNowModal
+        <DeliveryOptionsModal
           modalOpen={setshowAddToCardModal}
           setModalOpen={setsetshowAddToCardModal}
+          productId={item?.id}
         />
       )}
     </Box>

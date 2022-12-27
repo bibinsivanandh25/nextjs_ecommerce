@@ -6,7 +6,7 @@ function CarousalComponent({
   onChange = () => {},
   onClickItem = () => {},
   autoPlay = true,
-  interval = 2000,
+  interval = 4000,
   stopOnHover = true,
   dynamicHeight = true,
   carouselImageMaxHeight = "55vh",

@@ -178,7 +178,6 @@ const Home = () => {
           <Box>
             <CarousalComponent
               list={[...bannerImages]}
-              interval={2000}
               autoPlay
               stopOnHover={false}
             />
