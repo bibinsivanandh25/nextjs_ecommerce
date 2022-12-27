@@ -259,7 +259,6 @@ const TodaysDealSubscription = () => {
                 );
               }}
               options={[
-                "Notify",
                 "Add Note",
                 <Tooltip title={val.disabled ? "Disabled" : "Enabled"}>
                   <Box className="d-flex align-items-center">

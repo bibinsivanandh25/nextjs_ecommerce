@@ -218,7 +218,6 @@ const NotificationSubscription = () => {
                   onClickOfMenuItem(ele, item);
                 }}
                 options={[
-                  "Notify",
                   "Add Note",
                   <Box className="d-flex align-items-center">
                     <Typography>
