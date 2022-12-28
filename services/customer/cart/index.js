@@ -19,4 +19,31 @@ const getCartProducts = (profileId) => {
     })
     .catch((err) => ({ err }));
 };
-export { getDeliveryOptions, getCartProducts };
+
+const updateCartQuantity = (reqObj) => {
+  return serviceUtil
+    .put(`products/product/cart/count`, reqObj)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const removeProductFromCart = (productId, profileId) => {
+  return serviceUtil
+    .deleteById(
+      `products/product/cart?productVariationId=${productId}&profileId=${profileId}`
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getDeliveryOptions,
+  getCartProducts,
+  updateCartQuantity,
+  removeProductFromCart,
+};
