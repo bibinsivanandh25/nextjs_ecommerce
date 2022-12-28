@@ -94,9 +94,7 @@ const ShopCode = () => {
       <Paper className="w-400px rounded-1 pb-5" elevation={24}>
         <Box className="w-100 p-4 rounded-1 py-3">
           <Box className="d-flex justify-content-end align-items-center">
-            <Typography className=" fs-14 cursor-pointer">
-              Existing Customer
-            </Typography>
+            <Typography className=" fs-14 ">Existing Customer</Typography>
             <Box className="ps-2">
               <ButtonComponent
                 label="Sign In"
