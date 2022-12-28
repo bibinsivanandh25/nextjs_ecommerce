@@ -63,6 +63,7 @@ const Header = () => {
     userId,
     addressDetails,
   } = useSelector((state) => state.customer);
+
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
@@ -274,7 +275,12 @@ const Header = () => {
     if (data) {
       await handleSwitchStore(storeCode);
     } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      if (
+        err?.response?.data?.message ===
+        "This Store Already Added By The Customer"
+      ) {
+        await handleSwitchStore(storeCode);
+      } else toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -386,9 +392,10 @@ const Header = () => {
           <Typography
             className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px`}
           >
-            {supplierStoreName.length <= 40
-              ? supplierStoreName
-              : `${supplierStoreName.substr(0, 38)}...`}
+            {supplierStoreName &&
+              (supplierStoreName.length <= 40
+                ? supplierStoreName
+                : `${supplierStoreName.substr(0, 38)}...`)}
           </Typography>
         </div>
         <div
@@ -402,7 +409,6 @@ const Header = () => {
           >
             <SimpleDropdownComponent
               size="small"
-              removeRadius
               fullWidth
               className="bg-white rounded"
               list={categoriesList}
@@ -417,14 +423,13 @@ const Header = () => {
             />
           </div>
           <div
-            className="d-flex bg-white rounded-end w-100 justify-content-between "
+            className="d-flex bg-white ms-1 rounded w-100 justify-content-between "
             style={{
               border: "0.5px solid #c0ad9d",
-              borderLeft: "none",
             }}
           >
             <input
-              className="w-100 p-2 bg-white inputPlaceHolder"
+              className="w-100 p-2 rounded bg-white inputPlaceHolder"
               placeholder="Search"
               style={{
                 background: "#fae1cc",
@@ -568,7 +573,12 @@ const Header = () => {
                     label="Sign In"
                     muiProps="px-5"
                     onBtnClick={() => {
-                      route.replace("/auth/customer/signin");
+                      route.replace({
+                        pathname: "/auth/customer/signin",
+                        query: {
+                          storeCode: customer.storeCode,
+                        },
+                      });
                     }}
                   />
                 </div>
