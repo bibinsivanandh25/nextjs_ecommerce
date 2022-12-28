@@ -408,7 +408,6 @@ const Header = () => {
           >
             <SimpleDropdownComponent
               size="small"
-              removeRadius
               fullWidth
               className="bg-white rounded"
               list={categoriesList}
@@ -423,14 +422,13 @@ const Header = () => {
             />
           </div>
           <div
-            className="d-flex bg-white rounded-end w-100 justify-content-between "
+            className="d-flex bg-white ms-1 rounded w-100 justify-content-between "
             style={{
               border: "0.5px solid #c0ad9d",
-              borderLeft: "none",
             }}
           >
             <input
-              className="w-100 p-2 bg-white inputPlaceHolder"
+              className="w-100 p-2 rounded bg-white inputPlaceHolder"
               placeholder="Search"
               style={{
                 background: "#fae1cc",
