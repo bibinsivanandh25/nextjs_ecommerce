@@ -5,6 +5,7 @@ import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
+import DeliveryOptionsModal from "../../buynowmodal";
 // import Link from "next/link";
 
 const ProductCard = ({
@@ -37,6 +38,7 @@ const ProductCard = ({
   ];
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
+  const [setshowAddToCardModal, setsetshowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -49,6 +51,9 @@ const ProductCard = ({
   const handleCardIconClick = (iconName) => {
     if (iconName === "favoriteBorderIcon") {
       setShowWishListModal(true);
+    }
+    if (iconName === "localMallIcon") {
+      setsetshowAddToCardModal(true);
     }
   };
 
@@ -164,6 +169,13 @@ const ProductCard = ({
           productId={item?.id}
         />
       ) : null}
+      {setshowAddToCardModal && (
+        <DeliveryOptionsModal
+          modalOpen={setshowAddToCardModal}
+          setModalOpen={setsetshowAddToCardModal}
+          productId={item?.id}
+        />
+      )}
     </Box>
   );
 };

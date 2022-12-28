@@ -2,24 +2,40 @@
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
+import { getCartProducts } from "services/customer/cart";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
   const [products, setProducts] = useState([]);
   const [showChooseAddress, setShowChooseAddress] = useState(false);
 
+  const { profileId } = useSelector((state) => state?.customer);
+
   const getproducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setProducts([...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
+    const { data } = await getCartProducts(profileId);
+    if (data) {
+      const result = [];
+      data?.userCartProductPojos?.forEach((ele) => {
+        result.push({
+          id: ele.productId,
+          businessName: ele.businessName,
+          image: ele.variationMedia,
+          title: ele.productTitle,
+          mrp: ele.mrp,
+          salePrice: ele.salePrice,
+          cartQty: ele.cartQty,
+          stockQty: ele.stockQty,
+          deliveryCharge: ele.deliveryCharge,
+          orderType: ele.orderType,
+          returnType: ele.returnType,
+          returnCharge: ele.returnCharge || null,
+        });
       });
+      setProducts([...result]);
+    }
   };
   useEffect(() => {
     getproducts();
@@ -28,7 +44,7 @@ const Cart = () => {
   const getCartList = () => {
     return products.map((ele, ind) => {
       return (
-        <Box className="mx-2 py-1">
+        <Box className="mx-2 py-1 ">
           <Grid container key={ind + 1}>
             <Grid item sm={2} className="">
               <Image src={ele.image} height={85} width={85} />
@@ -41,17 +57,17 @@ const Cart = () => {
             </Grid>
             <Grid item sm={7}>
               <Typography className="color-orange">
-                Supplier Name: Business Name
+                Business Name: {ele.businessName}
               </Typography>
-              <Typography className="h-5  my-2">{ele.title}</Typography>
+              <Typography className="h-5  my-2">{ele?.title}</Typography>
               <Typography component="span" className="fw-bold me-2">
-                ₹{ele.price}
+                ₹{ele?.salePrice}
               </Typography>
               <Typography
                 component="span"
                 className="h-5 text-decoration-line-through"
               >
-                ₹ {ele.price * 4}
+                ₹ {ele?.mrp}
               </Typography>
               <div className="mt-3">
                 <Typography
@@ -75,13 +91,13 @@ const Cart = () => {
                 Delivery in 6-7 Days
               </Typography>
               <Typography className="h-5 fw-bold">
-                Order Type : Free Delivery & Return
+                Order Type : {ele.orderType}
               </Typography>
               <Typography className="h-5 fw-bold">
-                Delivery Charge : Free{" "}
+                Delivery Charge : {ele.deliveryCharge}
               </Typography>
               <Typography className="h-5 fw-bold">
-                Return Charge : Free
+                Return Charge : {ele.returnCharge}
               </Typography>
             </Grid>
           </Grid>
@@ -103,7 +119,7 @@ const Cart = () => {
     <Grid container>
       <Grid item sm={9}>
         <Paper className="w-100">
-          <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2">
+          <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2 w-100">
             <Typography className="h-5 text-secondary">My Cart</Typography>
             <ButtonComponent
               muiProps="p-0"
@@ -111,7 +127,7 @@ const Cart = () => {
               onBtnClick={() => setShowChooseAddress(true)}
             />
           </Box>
-          {getCartList()}
+          <Box className="mxh-79vh oveflow-auto">{getCartList()}</Box>
         </Paper>
       </Grid>
       {products.length ? (

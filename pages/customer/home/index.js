@@ -161,13 +161,11 @@ const Home = () => {
       });
     }
   };
+
   useEffect(() => {
     getBanners();
     getProducts();
     getArticlesData();
-  }, []);
-  useEffect(() => {
-    getBanners();
   }, [storeDetails?.storeCode]);
 
   return (
@@ -178,7 +176,6 @@ const Home = () => {
           <Box>
             <CarousalComponent
               list={[...bannerImages]}
-              interval={2000}
               autoPlay
               stopOnHover={false}
             />

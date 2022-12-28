@@ -14,7 +14,6 @@ import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
-import BuyNowModal from "../buynowmodal";
 
 const comparProductData = [
   {
@@ -45,7 +44,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   const [comparedProduct, setCompredProduct] = useState([]);
   const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
   const [filterType, setFilterType] = useState("WEEK");
-  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     setCompredProduct(comparProductData);
@@ -71,53 +69,59 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
     setProducts([...temp]);
   };
 
-  const getProducts = async () => {
+  const getProducts = async (filter) => {
     if (popularDepartments === "New Arrivals") {
-      const { data } = await getNewArrivalProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getNewArrivalProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Most Popular") {
-      const { data } = await getMostPopularProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getMostPopularProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Best Seller") {
-      const { data } = await getBestSoldProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getBestSoldProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
 
     if (popularDepartments === "Featured") {
-      const { data } = await getFeaturedProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getFeaturedProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
   };
-  useEffect(() => {
-    getProducts();
-    setProducts([]);
-  }, [popularDepartments, filterType]);
 
   useEffect(() => {
+    setProducts([]);
+    getProducts("WEEK");
     setFilterType("WEEK");
-  }, [popularDepartments]);
+  }, [popularDepartments, storeDetails]);
 
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
@@ -199,6 +203,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "WEEK") {
                 setFilterType("WEEK");
+                getProducts("WEEK");
               }
             }}
           >
@@ -211,6 +216,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "MONTH") {
                 setFilterType("MONTH");
+                getProducts("MONTH");
               }
             }}
           >
@@ -233,9 +239,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
                 }
                 if (icon === "visibilityOutlinedIcon") {
                   setViewModalOpen(true);
-                }
-                if (icon === "localMallIcon") {
-                  setShowCartModal(true);
                 }
               }}
             />
@@ -336,12 +339,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Box>
         </Box>
       </DrawerComponent>
-      {showCartModal && (
-        <BuyNowModal
-          modalOpen={showCartModal}
-          setModalOpen={setShowCartModal}
-        />
-      )}
     </Box>
   );
 };
