@@ -18,20 +18,18 @@ import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 import axios from "axios";
 
 const CustomerSideBarComponent = ({ children }) => {
-  // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
   const [customerMenu, setCustomerMenu] = useState([]);
   const [category, setCategory] = useState(null);
   const [setsandSubCategoryData, setSetsandSubCategoryData] = useState([]);
-  // const updatedChildren = { ...children };
-  // updatedChildren.props = {
-  //   ...children.props,
-  //   showBreadCrumb: (val = true) => {
-  //     setShowBreadCrumb(val);
-  //   },
-  // };
+  const [open, setOpen] = useState(false);
+
+  const updatedChildren = { ...children };
+  updatedChildren.props = {
+    ...children.props,
+    isSideBarOpen: open,
+  };
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -257,7 +255,8 @@ const CustomerSideBarComponent = ({ children }) => {
             }}
             key={router.route}
           >
-            {children}
+            {/* {children} */}
+            {updatedChildren}
             <Footer />
           </motion.div>
         </AnimatePresence>

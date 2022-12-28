@@ -145,7 +145,7 @@ const handPick = true;
 // ];
 
 // const sizeData = ["S", "M", "L", "XL", "XXL"];
-const ProductDetails = ({ productId }) => {
+const ProductDetails = ({ isSideBarOpen, productId }) => {
   // Windos Size
   const size = useWindowSize();
 
@@ -183,13 +183,18 @@ const ProductDetails = ({ productId }) => {
   }));
 
   useEffect(() => {
-    if (size.width > 800) {
+    if (size.width > 800 && isSideBarOpen) {
+      setImageSize({
+        width: parseInt(size.width - 253, 10) / 4.3,
+        height: parseInt(size.width, 10) / 4,
+      });
+    } else {
       setImageSize({
         width: parseInt(size.width, 10) / 4.3,
-        height: parseInt(size.width, 10) / 4.3,
+        height: parseInt(size.width, 10) / 4,
       });
     }
-  }, [size]);
+  }, [size, isSideBarOpen]);
   const getProductDetails = async (id) => {
     const status = "APPROVED";
     const { data, err } = await getAllProductDetails(id ?? productId, status);
@@ -321,12 +326,6 @@ const ProductDetails = ({ productId }) => {
               display="flex"
               direction="column"
               mt={0.5}
-              // justifyContent={
-              //   selectedMasterData?.variationMedia?.length > 4 ||
-              //   selectedMasterData?.variationMedia?.length < 2
-              //     ? "space-between"
-              //     : "space-evenly"
-              // }
               pb={1}
               sm={2}
               rowGap={1.5}
@@ -370,7 +369,7 @@ const ProductDetails = ({ productId }) => {
                     }}
                     className="bg-white "
                     shouldUsePositiveSpaceLens
-                    imageClassName="border rounded p-1 "
+                    imageClassName="border rounded p-1"
                     // lensStyle={{
                     //   background: "hsla(0, 0%, 100%, .3)",
                     //   border: "1px solid #fff",
@@ -383,7 +382,7 @@ const ProductDetails = ({ productId }) => {
                       position: "absolute",
                       top: "2%",
                       zIndex: 10,
-                      right: "2%",
+                      right: isSideBarOpen ? "4%" : "2%",
                     }}
                     className="color-gray cursor-pointer"
                   />
