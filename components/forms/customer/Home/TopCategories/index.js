@@ -8,10 +8,10 @@ import { useSelector } from "react-redux";
 const TopCategories = () => {
   const [categories, setCategories] = useState([]);
 
-  const { supplierId } = useSelector((state) => state.customer);
+  const storeDetails = useSelector((state) => state.customer);
 
   const getCategories = async () => {
-    const { data } = await getTopCategoriesOfMonth(supplierId);
+    const { data } = await getTopCategoriesOfMonth(storeDetails?.supplierId);
     if (data) {
       setCategories(
         data?.map((ele) => ({
@@ -24,7 +24,8 @@ const TopCategories = () => {
   };
   useEffect(() => {
     getCategories();
-  }, []);
+  }, [storeDetails]);
+
   const route = useRouter();
   const renderCategories = () => {
     return categories.map((ele) => {
