@@ -227,12 +227,16 @@ const Header = () => {
                   setstoreDetails(ele);
                 }}
               />
-              <CustomIcon
-                type="delete"
-                onIconClick={() => {
-                  deleteStores(ele.id);
-                }}
-              />
+              {ele.checked ? (
+                <></>
+              ) : (
+                <CustomIcon
+                  type="delete"
+                  onIconClick={() => {
+                    deleteStores(ele.id);
+                  }}
+                />
+              )}
             </MenuItem>
           );
         })}

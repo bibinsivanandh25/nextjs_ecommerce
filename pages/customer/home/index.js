@@ -182,91 +182,95 @@ const Home = () => {
               stopOnHover={false}
             />
             <Paper className="p-1 mt-2">
-              <Grid container columnSpacing={1}>
-                <Grid
-                  item
-                  md={2.6}
-                  sm={3}
-                  className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
-                >
-                  <Image src={customerHome.coupon} height={40} width={60} />
-                  <Typography className="fw-bold h-5">
-                    Coupons Applicable Products
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  md={3.1}
-                  sm={3}
-                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                >
-                  <Image src={customerHome.shop} height={50} width={50} />
-                  <div>
-                    <Typography className="fw-bold h-5 d-flex align-items-center">
-                      <div className="d-flex">
-                        <Typography className="fw-bold h-5 d-flex">
-                          Holiday :&nbsp;
-                          {storeInformation?.holidays?.map((ele, ind) => {
-                            return storeInformation?.holidays?.length === 1
-                              ? ele.substr(0, 3)
-                              : ind === storeInformation?.holidays.length - 1
-                              ? `${ele.substr(0, 3)}. `
-                              : `${ele.substr(0, 3)}, `;
-                          })}
-                        </Typography>
-                      </div>
-                    </Typography>
-
-                    <Typography className="h-5">
-                      Shop Timings : {storeInformation?.shopTimings}
-                    </Typography>
-                  </div>
-                </Grid>
-                <Grid
-                  item
-                  md={2}
-                  sm={3}
-                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                >
-                  <Image src={customerHome.file} height={50} width={50} />
-                  <Box>
-                    <Typography className="fw-bold h-5">GSTIN No.</Typography>
-                    <span className="h-5">{storeInformation?.gstIn}</span>
-                  </Box>
-                </Grid>
-                <Grid
-                  item
-                  md={2.5}
-                  sm={3}
-                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                >
-                  <Image src={customerHome.tax} height={50} width={50} />
-                  <Box>
-                    {" "}
+              {isLoggedIn ? (
+                <Grid container columnSpacing={1}>
+                  <Grid
+                    item
+                    md={2.6}
+                    sm={3}
+                    className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
+                  >
+                    <Image src={customerHome.coupon} height={40} width={60} />
                     <Typography className="fw-bold h-5">
-                      Business Processing Time
+                      Coupons Applicable Products
                     </Typography>
-                    <span className="h-5">
-                      {storeInformation?.maxOrderProcessingTime}
-                    </span>
-                  </Box>
-                </Grid>
-                <Grid
-                  item
-                  md={1.8}
-                  sm={3}
-                  className="d-flex justify-content-evenly p-3  align-items-center"
-                >
-                  <Image src={customerHome.help} height={50} width={55} />
+                  </Grid>
+                  <Grid
+                    item
+                    md={3.1}
+                    sm={3}
+                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                  >
+                    <Image src={customerHome.shop} height={50} width={50} />
+                    <div>
+                      <Typography className="fw-bold h-5 d-flex align-items-center">
+                        <div className="d-flex">
+                          <Typography className="fw-bold h-5 d-flex">
+                            Holiday :&nbsp;
+                            {storeInformation?.holidays?.map((ele, ind) => {
+                              return storeInformation?.holidays?.length === 1
+                                ? ele.substr(0, 3)
+                                : ind === storeInformation?.holidays.length - 1
+                                ? `${ele.substr(0, 3)}. `
+                                : `${ele.substr(0, 3)}, `;
+                            })}
+                          </Typography>
+                        </div>
+                      </Typography>
 
-                  <Box>
-                    <Typography className="fw-bold h-5">
-                      Help & Support
-                    </Typography>
-                    <span className="h-5">Available</span>
-                  </Box>
+                      <Typography className="h-5">
+                        Shop Timings : {storeInformation?.shopTimings}
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid
+                    item
+                    md={2}
+                    sm={3}
+                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                  >
+                    <Image src={customerHome.file} height={50} width={50} />
+                    <Box>
+                      <Typography className="fw-bold h-5">GSTIN No.</Typography>
+                      <span className="h-5">{storeInformation?.gstIn}</span>
+                    </Box>
+                  </Grid>
+                  <Grid
+                    item
+                    md={2.5}
+                    sm={3}
+                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                  >
+                    <Image src={customerHome.tax} height={50} width={50} />
+                    <Box>
+                      {" "}
+                      <Typography className="fw-bold h-5">
+                        Business Processing Time
+                      </Typography>
+                      <span className="h-5">
+                        {storeInformation?.maxOrderProcessingTime}
+                      </span>
+                    </Box>
+                  </Grid>
+                  <Grid
+                    item
+                    md={1.8}
+                    sm={3}
+                    className="d-flex justify-content-evenly p-3  align-items-center"
+                  >
+                    <Image src={customerHome.help} height={50} width={55} />
+
+                    <Box>
+                      <Typography className="fw-bold h-5">
+                        Help & Support
+                      </Typography>
+                      <span className="h-5">Available</span>
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
+              ) : (
+                <></>
+              )}
             </Paper>
             {leaveDate.start && leaveDate.end && (
               <Paper className="bg-light-yellow border border-orange rounded mt-3">

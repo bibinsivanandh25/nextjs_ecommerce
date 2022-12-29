@@ -20,7 +20,7 @@ import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 
-const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
+const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const [storelist, setStoreList] = useState([]);
   const [stores, setStores] = useState([]);
   const [selectedStoreList, setSelectedStoreList] = useState(null);
@@ -270,7 +270,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                   // handleSwitchStore(item);
                   if (item.defaultStore) return;
                   setstoreDetails(item);
-                  setShowConfirmModal(true);
+                  // setShowConfirmModal(true);
                 }}
               >
                 <Box elevation={4}>
