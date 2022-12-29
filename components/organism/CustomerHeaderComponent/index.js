@@ -29,10 +29,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
-  addStore,
+  // addStore,
   deleteStore,
   getRecentStoreList,
-  getStoreListOfCustomer,
+  // getStoreListOfCustomer,
   switchStore,
 } from "services/admin/storeList";
 // import { FaArrowRight } from "react-icons/fa";
@@ -258,24 +258,24 @@ const Header = () => {
     );
   };
 
-  const addStoreToCustomer = async (code) => {
-    const storeList = await getStoreListOfCustomer(userId);
-    if (storeList.data && storeList.data.includes(code)) {
-      await handleSwitchStore(code);
-    } else {
-      const { data, err } = await addStore({
-        customerId: userId,
-        storeListId: null,
-        storeListName: null,
-        storeType: "SUPPLIER",
-        storeCode: code,
-      });
-      if (data) {
-        await handleSwitchStore(code);
-      } else if (err) {
-        toastify(err?.response?.data?.message, "error");
-      }
-    }
+  const addStoreToCustomer = async () => {
+    // const storeList = await getStoreListOfCustomer(userId);
+    // if (storeList.data && storeList.data.includes(code)) {
+    //   await handleSwitchStore(code);
+    // } else {
+    //   const { data, err } = await addStore({
+    //     customerId: userId,
+    //     storeListId: null,
+    //     storeListName: null,
+    //     storeType: "SUPPLIER",
+    //     storeCode: code,
+    //   });
+    //   if (data) {
+    //     await handleSwitchStore(code);
+    //   } else if (err) {
+    //     toastify(err?.response?.data?.message, "error");
+    //   }
+    // }
   };
 
   const useStyles = makeStyles((theme) => ({
