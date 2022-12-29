@@ -23,6 +23,7 @@ import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { useDispatch } from "react-redux";
 import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as userCustomerInfo } from "features/userSlice";
+import { addStore, switchStore } from "services/admin/storeList";
 import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import styles from "./signin.module.css";
 
@@ -140,13 +141,32 @@ const SignIn = () => {
               }
               const details = await getDetails(userData[0]);
               if (details) {
+                if (router?.query?.storeCode) {
+                  await storedatatoRedux(
+                    router?.query?.storeCode,
+                    userData[0],
+                    userData[1],
+                    details
+                  );
+                  const { data: addStoreData } = await addStore({
+                    customerId: details.customerId,
+                    storeListId: null,
+                    storeListName: null,
+                    storeType: "SUPPLIER",
+                    storeCode: router?.query?.storeCode,
+                  });
+                  if (addStoreData) {
+                    switchStore(router.query.storeCode, details.customerId);
+                  }
+                } else {
+                  await storedatatoRedux(
+                    data?.defaultStoreCode,
+                    userData[0],
+                    userData[1],
+                    details
+                  );
+                }
                 router.push(`/customer/home`);
-                await storedatatoRedux(
-                  data?.defaultStoreCode,
-                  userData[0],
-                  userData[1],
-                  details
-                );
               }
             }
           }

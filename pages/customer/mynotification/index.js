@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
 import ButtonComponent from "@/atoms/ButtonComponent";

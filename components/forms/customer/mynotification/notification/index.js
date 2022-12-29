@@ -53,7 +53,7 @@ const notificationData = [
       "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/banner/1661753672760-PO9I9S0.jpg",
   },
 ];
-const Notification = ({ data = {} }) => {
+const Notification = () => {
   return (
     <Box className="bg-white p-2 rounded">
       <Grid

@@ -117,13 +117,13 @@ const OtpLogIn = () => {
       }
       const details = await getDetails(userData[0]);
       if (details) {
-        route.push(`/customer/home`);
         await storedatatoRedux(
           data?.data?.defaultStoreCode,
           userData[0],
           userData[1],
           details
         );
+        route.push(`/customer/home`);
       }
     }
   };

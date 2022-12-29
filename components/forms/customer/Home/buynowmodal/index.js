@@ -5,13 +5,21 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { getDeliveryOptions } from "services/customer/cart";
 
-const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
+const DeliveryOptionsModal = ({
+  modalOpen = false,
+  setModalOpen = () => {},
+  productId = "",
+}) => {
   const [tabList, setTabList] = useState([]);
   const [selectedTab, setSelectedTab] = useState();
   const [noFreeRetunModal, setNoFreeReturnModal] = useState(false);
-  const getAllTabList = () => {
-    const data = [
+  const getAllTabList = async () => {
+    // eslint-disable-next-line no-unused-vars
+    const { data } = await getDeliveryOptions(productId);
+
+    const list = [
       {
         id: 1,
         label: "Free Delivery Returns",
@@ -29,9 +37,9 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
         label: "Hand Pick",
       },
     ];
-    setTabList(data);
-    setSelectedTab(data[0].id);
-    if (data[0].label === "No Free Delivery Returns") {
+    setTabList(list);
+    setSelectedTab(list[0].id);
+    if (list[0].label === "No Free Delivery Returns") {
       setNoFreeReturnModal(true);
     } else {
       setNoFreeReturnModal(false);
@@ -123,14 +131,14 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
             <Box>
               <RadiobuttonComponent label="83 - Delivery by wed, sep 22" />
             </Box>
-            <RadiobuttonComponent label="90 - Delivery by wed, sep 22" />
+            <RadiobuttonComponent label="90 - Fastest Delivery by wed, sep 22" />
           </Box>
           <Box className="border-top border-dark-gray ps-4">
-            <CheckBoxComponent label="Choose Delivery options" size="medium" />
+            <CheckBoxComponent label="Choose Return options" size="medium" />
             <Box>
-              <RadiobuttonComponent label="83 - Delivery by wed, sep 22" />
+              <RadiobuttonComponent label="83 - Return by wed, sep 22" />
             </Box>
-            <RadiobuttonComponent label="90 - Delivery by wed, sep 22" />
+            <RadiobuttonComponent label="90 - Fastest Return by mon, sep 22" />
           </Box>
         </Grid>
       </Grid>
@@ -175,4 +183,4 @@ const BuyNowModal = ({ modalOpen = false, setModalOpen = () => {} }) => {
   );
 };
 
-export default BuyNowModal;
+export default DeliveryOptionsModal;
