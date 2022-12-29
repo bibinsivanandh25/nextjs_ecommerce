@@ -76,7 +76,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
     }
   };
   useEffect(() => {
-    if (userInfo?.data) {
+    if (userInfo?.data && storeDetails) {
       getRecentViewedProducts();
     }
   }, [userInfo, storeDetails]);

@@ -41,9 +41,22 @@ const removeProductFromCart = (productId, profileId) => {
     })
     .catch((err) => ({ err }));
 };
+
+const getProductDetailsByDeliveryType = (productId, deliveryType) => {
+  return serviceUtil
+    .get(
+      `products/product/view?productVariationId=${productId}&deliveryType=${deliveryType}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getDeliveryOptions,
   getCartProducts,
   updateCartQuantity,
   removeProductFromCart,
+  getProductDetailsByDeliveryType,
 };
