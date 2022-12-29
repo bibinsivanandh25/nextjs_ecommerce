@@ -128,7 +128,7 @@ const Header = () => {
   };
 
   const handleSwitchStore = async (storecode) => {
-    const { data, err } = await switchStore(storecode, userId);
+    const { data, err, message } = await switchStore(storecode, userId);
     if (data) {
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
         storecode
@@ -147,6 +147,7 @@ const Header = () => {
             supplierId: storeData.supplierId,
           })
         );
+        toastify(message, "success");
         setStoreCode("");
         setstoreDetails(null);
         dispatch(
@@ -453,8 +454,8 @@ const Header = () => {
           }}
         >
           <input
-            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
-            placeholder="New Store"
+            className={`${styles.newStoreTheme} p-1 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store Code"
             style={{
               background: "#fae1cc",
               outline: "none",
@@ -480,42 +481,50 @@ const Header = () => {
           </Box>
         </div>
         <div className="cursor-pointer">
-          <MenuwithArrow
-            subHeader=""
-            Header="Recent Stores"
-            onOpen={() => {
+          {userId === "" ? (
+            <></>
+          ) : (
+            <MenuwithArrow
+              subHeader=""
+              Header="Recent Stores"
+              onOpen={() => {
+                if (userId === "") {
+                  route.push("/auth/customer/signin");
+                  return;
+                }
+                recentStore();
+              }}
+            >
+              <MenuItem>
+                <div className="d-flex align-items-center">
+                  <input
+                    id="store"
+                    style={{
+                      outline: "none",
+                    }}
+                    placeholder="Search store"
+                  />
+                </div>
+              </MenuItem>
+              {getStores()}
+            </MenuwithArrow>
+          )}
+        </div>
+        {userId === "" ? (
+          <></>
+        ) : (
+          <FaStore
+            className="fs-2 cursor-pointer"
+            onClick={() => {
               if (userId === "") {
                 route.push("/auth/customer/signin");
                 return;
               }
-              recentStore();
+              setShowFavoriteList(true);
+              setOpen(true);
             }}
-          >
-            <MenuItem>
-              <div className="d-flex align-items-center">
-                <input
-                  id="store"
-                  style={{
-                    outline: "none",
-                  }}
-                  placeholder="Search store"
-                />
-              </div>
-            </MenuItem>
-            {getStores()}
-          </MenuwithArrow>
-        </div>
-        <FaStore
-          className="fs-2 cursor-pointer"
-          onClick={() => {
-            if (userId === "") {
-              route.push("/auth/customer/signin");
-              return;
-            }
-            setShowFavoriteList(true);
-            setOpen(true);
-          }}
-        />
+          />
+        )}
         <div
           className="cursor-pointer"
           onClick={() => {
@@ -711,7 +720,7 @@ const Header = () => {
           setOpen(false);
           setShowFavoriteList(false);
         }}
-        title={showFavoriteList ? "Favorite Stores" : "Store List"}
+        title={showFavoriteList ? "Favourite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
         {showFavoriteList ? (

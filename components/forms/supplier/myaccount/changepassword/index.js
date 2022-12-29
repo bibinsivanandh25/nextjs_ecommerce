@@ -17,7 +17,6 @@ const ChangePassword = ({ usertype = "SUPPLIER" }) => {
     newPassword: false,
     confirmPassword: false,
   });
-
   const validateForm = () => {
     const errObj = { ...error };
 
@@ -41,6 +40,9 @@ const ChangePassword = ({ usertype = "SUPPLIER" }) => {
     validatePassword("oldPassword");
     validatePassword("newPassword");
     validatePassword("reEnterPassword");
+    if (formValues.newPassword !== formValues.reEnterPassword) {
+      errObj.reEnterPassword = validateMessage.samePassword;
+    }
     setError({ ...errObj });
     let valid = true;
     Object.values(errObj).forEach((i) => {

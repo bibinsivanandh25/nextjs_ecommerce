@@ -31,7 +31,7 @@ const deleteQuary = (id) => {
   return serviceUtil
     .deleteById(`/products/customer-question-answer/${id}`)
     .then((res) => {
-      const { message } = res && res.message;
+      const { message } = res && res.data;
       return { message };
     })
     .catch((err) => {
@@ -45,7 +45,7 @@ const editQuestion = (payload) => {
       `/products/customer-update-query/${payload.userid}/${payload.questionid}?question=${payload.question}`
     )
     .then((res) => {
-      const { data } = res && res.data;
+      const data = res && res.data && res.data.message;
       return { data };
     })
     .catch((err) => {
@@ -85,7 +85,7 @@ const replyProductQuery = (payload) => {
       `/products/customer-replay-query/${payload.questionId}/${payload.userName}?answer=${payload.answer}`
     )
     .then((res) => {
-      const data = res && res.data && res.message;
+      const data = res && res.data && res.data.message;
       return { data };
     })
     .catch((err) => {

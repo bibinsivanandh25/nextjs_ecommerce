@@ -149,7 +149,6 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                   scale: 1.05,
                   transition: { duration: 0.5 },
                 }}
-                whileTap={{ scale: 0.9 }}
               >
                 <Paper
                   key={item.id}
@@ -259,7 +258,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                 scale: 1.05,
                 transition: { duration: 0.5 },
               }}
-              whileTap={{ scale: 0.9 }}
+              // whileTap={{ scale: 0.9 }}
             >
               <Paper
                 className={`w-80p rounded mx-auto d-flex justify-content-between m-2 ${
