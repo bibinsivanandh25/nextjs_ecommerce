@@ -194,12 +194,6 @@ const DeliveryOptionsModal = ({
     );
   };
   const renderNoFreeRetunModal = () => {
-    console.log(
-      deliveryOptions.includes(selectedTab),
-      selectedTab,
-      deliveryOptions,
-      "oombu"
-    );
     return (
       <Grid container marginY={2} marginLeft={2}>
         <Grid item xs={4}>
