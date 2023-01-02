@@ -19,4 +19,44 @@ const getCartProducts = (profileId) => {
     })
     .catch((err) => ({ err }));
 };
-export { getDeliveryOptions, getCartProducts };
+
+const updateCartQuantity = (reqObj) => {
+  return serviceUtil
+    .put(`products/product/cart/count`, reqObj)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const removeProductFromCart = (productId, profileId) => {
+  return serviceUtil
+    .deleteById(
+      `products/product/cart?productVariationId=${productId}&profileId=${profileId}`
+    )
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getProductDetailsByDeliveryType = (productId, deliveryType) => {
+  return serviceUtil
+    .get(
+      `products/product/view?productVariationId=${productId}&deliveryType=${deliveryType}`
+    )
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getDeliveryOptions,
+  getCartProducts,
+  updateCartQuantity,
+  removeProductFromCart,
+  getProductDetailsByDeliveryType,
+};

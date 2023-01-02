@@ -6,6 +6,7 @@ import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 import ProductCard from "../PopularDepartments/ProductCard";
@@ -52,6 +53,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
     setCompredProduct(final);
   };
   const userInfo = useSession();
+  const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
     const { data } = await getRecentlyViewedProducts(userInfo?.data?.user?.id);
@@ -74,10 +76,10 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
     }
   };
   useEffect(() => {
-    if (userInfo?.data) {
+    if (userInfo?.data && storeDetails) {
       getRecentViewedProducts();
     }
-  }, [userInfo]);
+  }, [userInfo, storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>

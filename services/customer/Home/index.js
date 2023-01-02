@@ -35,22 +35,18 @@ const getMainCategories = () => {
     .catch((err) => ({ err }));
 };
 
-const getNewArrivalProducts = (filterType, supplierId) => {
+const getNewArrivalProducts = (reqObj) => {
   return serviceUtil
-    .get(
-      `/products/customer/popular-department/new-arrival?filterType=${filterType}&supplierId=${supplierId}`
-    )
+    .put(`products/customer/popular-department/new-arrival`, reqObj)
     .then((res) => {
       const { data } = res?.data;
       return { data };
     })
     .catch((err) => ({ err }));
 };
-const getMostPopularProducts = (filterType, supplierId) => {
+const getMostPopularProducts = (reqObj) => {
   return serviceUtil
-    .get(
-      `/products/customer/popular-department/popular-product?filterType=${filterType}&supplierId=${supplierId}`
-    )
+    .put(`products/customer/popular-department/popular-product`, reqObj)
     .then((res) => {
       const { data } = res?.data;
       return { data };
@@ -85,22 +81,18 @@ const getTopCategoriesOfMonth = (supplierId) => {
     .catch((err) => ({ err }));
 };
 
-const getFeaturedProducts = (filterType, supplierId) => {
+const getFeaturedProducts = (reqObj) => {
   return serviceUtil
-    .get(
-      `/products/customer/popular-department/featured-product?filterType=${filterType}&supplierId=${supplierId}`
-    )
+    .put(`products/customer/popular-department/featured-product`, reqObj)
     .then((res) => {
       const { data } = res?.data;
       return { data };
     })
     .catch((err) => ({ err }));
 };
-const getBestSoldProducts = (filterType, supplierId) => {
+const getBestSoldProducts = (reqObj) => {
   return serviceUtil
-    .get(
-      `/products/customer/popular-department/best-seller?filterType=${filterType}&supplierId=${supplierId}`
-    )
+    .put(`products/customer/popular-department/best-seller`, reqObj)
     .then((res) => {
       const { data } = res?.data;
       return { data };
