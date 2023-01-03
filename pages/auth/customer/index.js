@@ -33,7 +33,7 @@ const ShopCode = () => {
   });
 
   const getStatus = async () => {
-    const { user } = await getSession();
+    const user = await getSession();
     if (user) {
       setSession({
         role: user?.role,
