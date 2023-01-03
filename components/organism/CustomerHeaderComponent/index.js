@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Grid, MenuItem, Paper, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -211,22 +211,39 @@ const Header = () => {
               className="d-flex justify-content-between py-0 px-3"
               key={ele.id}
             >
-              <CheckBoxComponent
-                checkedcolor="#54ce3c"
-                iconType="circled"
-                showIcon
-                id={ele.id}
-                label={
-                  <Typography className="h-5 cursor-pointer">
-                    {ele.label}
-                  </Typography>
-                }
-                isChecked={ele.checked}
-                checkBoxClick={() => {
-                  setShowConfirmModal(true);
-                  setstoreDetails(ele);
-                }}
-              />
+              <Grid display="flex" alignItems="center">
+                <CheckBoxComponent
+                  checkedcolor="#54ce3c"
+                  iconType="circled"
+                  showIcon
+                  id={ele.id}
+                  label=""
+                  // label={
+                  //   <Typography
+                  //     className="h-5 cursor-pointer"
+                  //     onClick={() => {
+                  //       setShowConfirmModal(true);
+                  //       setstoreDetails(ele);
+                  //     }}
+                  //   >
+                  //     {ele.label}
+                  //   </Typography>
+                  // }
+                  isChecked={ele.checked}
+                  checkBoxClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                />
+                <Typography
+                  onClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                >
+                  {ele.label}
+                </Typography>
+              </Grid>
               {ele.checked ? (
                 <></>
               ) : (
@@ -521,17 +538,19 @@ const Header = () => {
         {userId === "" ? (
           <></>
         ) : (
-          <FaStore
-            className="fs-2 cursor-pointer"
-            onClick={() => {
-              if (userId === "") {
-                route.push("/auth/customer/signin");
-                return;
-              }
-              setShowFavoriteList(true);
-              setOpen(true);
-            }}
-          />
+          <Grid>
+            <FaStore
+              className="fs-2 cursor-pointer position-relative"
+              onClick={() => {
+                if (userId === "") {
+                  route.push("/auth/customer/signin");
+                  return;
+                }
+                setShowFavoriteList(true);
+                setOpen(true);
+              }}
+            />
+          </Grid>
         )}
         <div
           className="cursor-pointer"
@@ -669,7 +688,7 @@ const Header = () => {
                   </Typography>
                 </MenuItem>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 fw-700 cursor-pointer">
                     Sell with us at low commission
                   </Typography>
                   <Typography className="color-orange h-5 cursor-pointer">
@@ -677,7 +696,7 @@ const Header = () => {
                   </Typography>
                 </Box>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-700">
                     Want to Earn without Investment
                   </Typography>
                   <Typography className="color-orange cursor-pointer h-5">

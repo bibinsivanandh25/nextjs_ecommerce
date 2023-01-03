@@ -36,6 +36,7 @@ const BankDetails = () => {
           "Bank Name": item.bankName,
           "Account Holder Name": item.accountHolderName,
           "Account Number": item.accountNumber,
+          ReBankAcc: item.accountNumber,
           "IFSC code": item.ifscCode,
           isChecked: item.primary,
           id: item.bankId,

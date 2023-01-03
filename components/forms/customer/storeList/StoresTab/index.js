@@ -164,8 +164,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             );
           })
         ) : (
-          <Typography className="fs-14 color-gray">
-            Store Categorys not found
+          <Typography className="fs-14 color-gray align-self-center">
+            Store categories not found
           </Typography>
         )}
       </Box>
