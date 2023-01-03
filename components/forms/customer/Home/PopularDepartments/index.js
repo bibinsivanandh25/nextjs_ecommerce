@@ -69,53 +69,59 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
     setProducts([...temp]);
   };
 
-  const getProducts = async () => {
+  const getProducts = async (filter) => {
     if (popularDepartments === "New Arrivals") {
-      const { data } = await getNewArrivalProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getNewArrivalProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Most Popular") {
-      const { data } = await getMostPopularProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getMostPopularProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Best Seller") {
-      const { data } = await getBestSoldProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getBestSoldProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
 
     if (popularDepartments === "Featured") {
-      const { data } = await getFeaturedProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getFeaturedProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
   };
-  useEffect(() => {
-    setProducts([]);
-    getProducts();
-  }, [popularDepartments, filterType]);
 
   useEffect(() => {
+    setProducts([]);
+    getProducts("WEEK");
     setFilterType("WEEK");
-  }, [popularDepartments]);
+  }, [popularDepartments, storeDetails]);
 
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
@@ -197,6 +203,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "WEEK") {
                 setFilterType("WEEK");
+                getProducts("WEEK");
               }
             }}
           >
@@ -209,6 +216,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "MONTH") {
                 setFilterType("MONTH");
+                getProducts("MONTH");
               }
             }}
           >

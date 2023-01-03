@@ -161,13 +161,11 @@ const Home = () => {
       });
     }
   };
+
   useEffect(() => {
     getBanners();
     getProducts();
     getArticlesData();
-  }, []);
-  useEffect(() => {
-    getBanners();
   }, [storeDetails?.storeCode]);
 
   return (

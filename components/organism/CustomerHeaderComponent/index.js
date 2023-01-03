@@ -29,11 +29,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
-  addStore,
+  // addStore,
   deleteStore,
   getRecentStoreList,
+  // getStoreListOfCustomer,
   switchStore,
 } from "services/admin/storeList";
+// import { FaArrowRight } from "react-icons/fa";
 import {
   clearUser,
   storeUserInfo as storeInfoUserSlice,
@@ -42,6 +44,7 @@ import toastify from "services/utils/toastUtils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
+import ExploreStores from "@/forms/customer/exploreStores";
 
 const Header = () => {
   const session = useSession();
@@ -56,6 +59,7 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
+  const [openExplore, setOpenExplore] = useState(false);
   const {
     supplierStoreName,
     supplierStoreLogo,
@@ -272,38 +276,28 @@ const Header = () => {
             See More
           </Typography>
         </Box>
-        {/* <Box className="d-flex justify-content-end pe-4 ">
-          <Typography
-            className="color-orange fs-14 cursor-pointer"
-            onClick={() => {
-              setShowStoreModal(true);
-            }}
-          >
-            Add new store <Add className="fs-16" />
-          </Typography>
-        </Box> */}
       </>
     );
   };
 
   const addStoreToCustomer = async () => {
-    const { data, err } = await addStore({
-      customerId: userId,
-      storeListId: null,
-      storeListName: null,
-      storeType: "SUPPLIER",
-      storeCode,
-    });
-    if (data) {
-      await handleSwitchStore(storeCode);
-    } else if (err) {
-      if (
-        err?.response?.data?.message ===
-        "This Store Already Added By The Customer"
-      ) {
-        await handleSwitchStore(storeCode);
-      } else toastify(err?.response?.data?.message, "error");
-    }
+    // const storeList = await getStoreListOfCustomer(userId);
+    // if (storeList.data && storeList.data.includes(code)) {
+    //   await handleSwitchStore(code);
+    // } else {
+    //   const { data, err } = await addStore({
+    //     customerId: userId,
+    //     storeListId: null,
+    //     storeListName: null,
+    //     storeType: "SUPPLIER",
+    //     storeCode: code,
+    //   });
+    //   if (data) {
+    //     await handleSwitchStore(code);
+    //   } else if (err) {
+    //     toastify(err?.response?.data?.message, "error");
+    //   }
+    // }
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -323,7 +317,7 @@ const Header = () => {
     },
     productSearch: {
       [theme.breakpoints.up("1300")]: {
-        width: "500px",
+        width: userId === "" ? "700px !important" : "500px !important",
       },
       [theme.breakpoints.down("1300")]: {
         width: "30%",
@@ -379,9 +373,23 @@ const Header = () => {
             <Typography className="h-5 fw-bold ps-1">Help Center</Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
           </div>
-          <div>
-            <FaApple className="fs-4" color="black" />
-            <FaGooglePlay className="fs-5" />
+          <Typography
+            onClick={() => {
+              setOpenExplore(!openExplore);
+            }}
+            className="color-white mx-2 me-3 h-5 fw-bold cursor-pointer"
+          >
+            {/* <FaArrowRight
+              onClick={() => {
+                setOpenExplore(true);
+              }}
+              className="fs-16 ms-1 cursor-pointer"
+            /> */}
+            Explore Stores
+          </Typography>
+          <div className="d-flex justify-content-center align-items-center">
+            <FaApple className="fs-4" color="white" />
+            <FaGooglePlay className="fs-5 ms-1" />
           </div>
           <div className="ps-1">
             <Typography className="h-5">Download App</Typography>
@@ -784,7 +792,7 @@ const Header = () => {
             setShowConfirmModal(false);
           } else {
             setShowConfirmModal(false);
-            addStoreToCustomer();
+            addStoreToCustomer(storeCode);
           }
         }}
         onClearBtnClick={() => {
@@ -797,6 +805,27 @@ const Header = () => {
           Are you sure you want to switch store?
         </Typography>
       </ModalComponent>
+      <CustomDrawer
+        open={openExplore}
+        position="right"
+        handleClose={() => {
+          setOpenExplore(false);
+        }}
+        title="Explore Stores"
+        titleClassName="color-orange"
+      >
+        <ExploreStores
+          handleStoreSelection={(storeData) => {
+            if (userId === "") {
+              switchStoreWOLogin(storeData.storeCode);
+            } else {
+              addStoreToCustomer(storeData.storeCode);
+            }
+            switchStoreWOLogin(storeData.storeCode);
+            setOpenExplore(false);
+          }}
+        />
+      </CustomDrawer>
     </div>
   );
 };
