@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Grid, MenuItem, Paper, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -29,13 +29,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
-  // addStore,
+  addStore,
   deleteStore,
   getRecentStoreList,
-  // getStoreListOfCustomer,
   switchStore,
 } from "services/admin/storeList";
-// import { FaArrowRight } from "react-icons/fa";
 import {
   clearUser,
   storeUserInfo as storeInfoUserSlice,
@@ -44,7 +42,6 @@ import toastify from "services/utils/toastUtils";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
-import ExploreStores from "@/forms/customer/exploreStores";
 
 const Header = () => {
   const session = useSession();
@@ -59,7 +56,6 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
-  const [openExplore, setOpenExplore] = useState(false);
   const {
     supplierStoreName,
     supplierStoreLogo,
@@ -132,7 +128,7 @@ const Header = () => {
   };
 
   const handleSwitchStore = async (storecode) => {
-    const { data, err } = await switchStore(storecode, userId);
+    const { data, err, message } = await switchStore(storecode, userId);
     if (data) {
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
         storecode
@@ -151,6 +147,7 @@ const Header = () => {
             supplierId: storeData.supplierId,
           })
         );
+        toastify(message, "success");
         setStoreCode("");
         setstoreDetails(null);
         dispatch(
@@ -214,28 +211,38 @@ const Header = () => {
               className="d-flex justify-content-between py-0 px-3"
               key={ele.id}
             >
-              <CheckBoxComponent
-                checkedcolor="#54ce3c"
-                iconType="circled"
-                showIcon
-                id={ele.id}
-                label={
-                  <Typography className="h-5 cursor-pointer">
-                    {ele.label}
-                  </Typography>
-                }
-                isChecked={ele.checked}
-                checkBoxClick={() => {
-                  setShowConfirmModal(true);
-                  setstoreDetails(ele);
-                }}
-              />
-              <CustomIcon
-                type="delete"
-                onIconClick={() => {
-                  deleteStores(ele.id);
-                }}
-              />
+              <Grid display="flex" alignItems="center">
+                <CheckBoxComponent
+                  checkedcolor="#54ce3c"
+                  iconType="circled"
+                  showIcon
+                  id={ele.id}
+                  label=""
+                  isChecked={ele.checked}
+                  checkBoxClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                />
+                <Typography
+                  onClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                >
+                  {ele.label}
+                </Typography>
+              </Grid>
+              {ele.checked ? (
+                <></>
+              ) : (
+                <CustomIcon
+                  type="delete"
+                  onIconClick={() => {
+                    deleteStores(ele.id);
+                  }}
+                />
+              )}
             </MenuItem>
           );
         })}
@@ -254,28 +261,38 @@ const Header = () => {
             See More
           </Typography>
         </Box>
+        {/* <Box className="d-flex justify-content-end pe-4 ">
+          <Typography
+            className="color-orange fs-14 cursor-pointer"
+            onClick={() => {
+              setShowStoreModal(true);
+            }}
+          >
+            Add new store <Add className="fs-16" />
+          </Typography>
+        </Box> */}
       </>
     );
   };
 
   const addStoreToCustomer = async () => {
-    // const storeList = await getStoreListOfCustomer(userId);
-    // if (storeList.data && storeList.data.includes(code)) {
-    //   await handleSwitchStore(code);
-    // } else {
-    //   const { data, err } = await addStore({
-    //     customerId: userId,
-    //     storeListId: null,
-    //     storeListName: null,
-    //     storeType: "SUPPLIER",
-    //     storeCode: code,
-    //   });
-    //   if (data) {
-    //     await handleSwitchStore(code);
-    //   } else if (err) {
-    //     toastify(err?.response?.data?.message, "error");
-    //   }
-    // }
+    const { data, err } = await addStore({
+      customerId: userId,
+      storeListId: null,
+      storeListName: null,
+      storeType: "SUPPLIER",
+      storeCode,
+    });
+    if (data) {
+      await handleSwitchStore(storeCode);
+    } else if (err) {
+      if (
+        err?.response?.data?.message ===
+        "This Store Already Added By The Customer"
+      ) {
+        await handleSwitchStore(storeCode);
+      } else toastify(err?.response?.data?.message, "error");
+    }
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -295,7 +312,7 @@ const Header = () => {
     },
     productSearch: {
       [theme.breakpoints.up("1300")]: {
-        width: userId === "" ? "700px !important" : "500px !important",
+        width: "500px",
       },
       [theme.breakpoints.down("1300")]: {
         width: "30%",
@@ -351,23 +368,9 @@ const Header = () => {
             <Typography className="h-5 fw-bold ps-1">Help Center</Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
           </div>
-          <Typography
-            onClick={() => {
-              setOpenExplore(!openExplore);
-            }}
-            className="color-white mx-2 me-3 h-5 fw-bold cursor-pointer"
-          >
-            {/* <FaArrowRight
-              onClick={() => {
-                setOpenExplore(true);
-              }}
-              className="fs-16 ms-1 cursor-pointer"
-            /> */}
-            Explore Stores
-          </Typography>
-          <div className="d-flex justify-content-center align-items-center">
-            <FaApple className="fs-4" color="white" />
-            <FaGooglePlay className="fs-5 ms-1" />
+          <div>
+            <FaApple className="fs-4" color="black" />
+            <FaGooglePlay className="fs-5" />
           </div>
           <div className="ps-1">
             <Typography className="h-5">Download App</Typography>
@@ -465,8 +468,8 @@ const Header = () => {
           }}
         >
           <input
-            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
-            placeholder="New Store"
+            className={`${styles.newStoreTheme} p-1 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store Code"
             style={{
               background: "#fae1cc",
               outline: "none",
@@ -491,36 +494,42 @@ const Header = () => {
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        {userId !== "" && (
-          <>
-            <div className="cursor-pointer">
-              <MenuwithArrow
-                subHeader=""
-                Header="Recent Stores"
-                onOpen={() => {
-                  if (userId === "") {
-                    route.push("/auth/customer/signin");
-                    return;
-                  }
-                  recentStore();
-                }}
-              >
-                <MenuItem>
-                  <div className="d-flex align-items-center">
-                    <input
-                      id="store"
-                      style={{
-                        outline: "none",
-                      }}
-                      placeholder="Search store"
-                    />
-                  </div>
-                </MenuItem>
-                {getStores()}
-              </MenuwithArrow>
-            </div>
+        <div className="cursor-pointer">
+          {userId === "" ? (
+            <></>
+          ) : (
+            <MenuwithArrow
+              subHeader=""
+              Header="Recent Stores"
+              onOpen={() => {
+                if (userId === "") {
+                  route.push("/auth/customer/signin");
+                  return;
+                }
+                recentStore();
+              }}
+            >
+              <MenuItem>
+                <div className="d-flex align-items-center">
+                  <input
+                    id="store"
+                    style={{
+                      outline: "none",
+                    }}
+                    placeholder="Search store"
+                  />
+                </div>
+              </MenuItem>
+              {getStores()}
+            </MenuwithArrow>
+          )}
+        </div>
+        {userId === "" ? (
+          <></>
+        ) : (
+          <Grid>
             <FaStore
-              className="fs-2 cursor-pointer"
+              className="fs-2 cursor-pointer position-relative"
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
@@ -530,31 +539,31 @@ const Header = () => {
                 setOpen(true);
               }}
             />
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                if (userId === "") {
-                  route.push("/auth/customer/signin");
-                }
-              }}
-            >
-              <Typography className="h-5 cursor-pointer">Returns</Typography>
-              <Typography className="fs-14 fw-bold cursor-pointer">
-                & Orders
-              </Typography>
-            </div>
-            <FiShoppingCart
-              className="fs-2 cursor-pointer"
-              onClick={() => {
-                if (userId === "") {
-                  route.push("/auth/customer/signin");
-                  return;
-                }
-                handleRouting("/customer/cart");
-              }}
-            />
-          </>
+          </Grid>
         )}
+        <div
+          className="cursor-pointer"
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+            }
+          }}
+        >
+          <Typography className="h-5 cursor-pointer">Returns</Typography>
+          <Typography className="fs-14 fw-bold cursor-pointer">
+            & Orders
+          </Typography>
+        </div>
+        <FiShoppingCart
+          className="fs-2 cursor-pointer"
+          onClick={() => {
+            if (userId === "") {
+              route.push("/auth/customer/signin");
+              return;
+            }
+            handleRouting("/customer/cart");
+          }}
+        />
         <div className="cursor-pointer position-ralative pe-3">
           <MenuwithArrow
             arrowPosition="end"
@@ -668,7 +677,7 @@ const Header = () => {
                   </Typography>
                 </MenuItem>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 fw-700 cursor-pointer">
                     Sell with us at low commission
                   </Typography>
                   <Typography className="color-orange h-5 cursor-pointer">
@@ -676,7 +685,7 @@ const Header = () => {
                   </Typography>
                 </Box>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-700">
                     Want to Earn without Investment
                   </Typography>
                   <Typography className="color-orange cursor-pointer h-5">
@@ -732,7 +741,7 @@ const Header = () => {
           setOpen(false);
           setShowFavoriteList(false);
         }}
-        title={showFavoriteList ? "Favorite Stores" : "Store List"}
+        title={showFavoriteList ? "Favourite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
         {showFavoriteList ? (
@@ -764,7 +773,7 @@ const Header = () => {
             setShowConfirmModal(false);
           } else {
             setShowConfirmModal(false);
-            addStoreToCustomer(storeCode);
+            addStoreToCustomer();
           }
         }}
         onClearBtnClick={() => {
@@ -777,27 +786,6 @@ const Header = () => {
           Are you sure you want to switch store?
         </Typography>
       </ModalComponent>
-      <CustomDrawer
-        open={openExplore}
-        position="right"
-        handleClose={() => {
-          setOpenExplore(false);
-        }}
-        title="Explore Stores"
-        titleClassName="color-orange"
-      >
-        <ExploreStores
-          handleStoreSelection={(storeData) => {
-            if (userId === "") {
-              switchStoreWOLogin(storeData.storeCode);
-            } else {
-              addStoreToCustomer(storeData.storeCode);
-            }
-            switchStoreWOLogin(storeData.storeCode);
-            setOpenExplore(false);
-          }}
-        />
-      </CustomDrawer>
     </div>
   );
 };
