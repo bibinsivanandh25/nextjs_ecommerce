@@ -368,14 +368,18 @@ const MyNotification = () => {
     return result;
   };
 
-  const getMyQueriesTableData = async (page = pageNumber, keyword = "") => {
+  const getMyQueriesTableData = async (
+    page = pageNumber,
+    keyword = "",
+    dates
+  ) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
       pageSize: 50,
       pageNumber: page,
-      dateFrom: dateState.fromDate,
-      dateTo: dateState.toDate,
+      dateFrom: dates?.fromDate,
+      dateTo: dates?.toDate,
     };
     const { data, errRes } = await getCustomerquary(payload);
     if (data) {
@@ -398,14 +402,14 @@ const MyNotification = () => {
     getMyQueriesTableData();
   }, [value]);
   // product query
-  const getProductData = async (page = pageNumber, keyword = "") => {
+  const getProductData = async (page = pageNumber, keyword = "", dates) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
       pageSize: 50,
       pageNumber: page,
-      dateFrom: ProductDate.fromDate,
-      dateTo: ProductDate.toDate,
+      dateFrom: dates?.fromDate,
+      dateTo: dates?.toDate,
     };
     const { data, errRes } = await getProductquary(payload);
     if (data) {
@@ -540,11 +544,7 @@ const MyNotification = () => {
             columns={myQueriescolumns}
             showDateFilter
             handlePageEnd={(searchText, _, page = pageNumber, dates) => {
-              getMyQueriesTableData(page, searchText);
-              setdateState({
-                fromDate: dates.fromDate,
-                toDate: dates.toDate,
-              });
+              getMyQueriesTableData(page, searchText, dates);
             }}
             tableRows={myQueriesRows}
             // tableRows={mapRowsToTable}
@@ -556,11 +556,7 @@ const MyNotification = () => {
             tableRows={productQueriesRows}
             // tableRows={mapProductQueryToTable}
             handlePageEnd={(searchText, _, page = pageNumberProduct, dates) => {
-              getProductData(page, searchText);
-              setProductDate({
-                fromDate: dates.fromDate,
-                toDate: dates.toDate,
-              });
+              getProductData(page, searchText, dates);
             }}
           />
         )}
@@ -617,19 +613,33 @@ const MyNotification = () => {
                           <>Answer</>
                         ),
                         <Grid>
-                          {item.userAnswer === null ? (
-                            <ButtonComponent
-                              variant="outlined"
-                              label="Reply"
-                              onBtnClick={() => {
-                                setopenEdit({
-                                  open: true,
-                                  qid: item.customerQuestionId,
-                                  type: "reply",
-                                  vid: item.variationId,
-                                });
-                              }}
-                            />
+                          {item.createdBy === storeDetails.userId ? (
+                            <>
+                              <Typography className="fs-15">
+                                {item.userAnswer}
+                              </Typography>
+                              <Typography className="d-flex justify-content-start fs-12 f-5 ">
+                                <Typography className="color-blue fs-12">
+                                  Replied by
+                                </Typography>
+                                &nbsp;
+                                {item.answerFromType},&nbsp;
+                                <>{item.questionAnsweredAt}</>
+                              </Typography>
+                              <ButtonComponent
+                                variant="outlined"
+                                label="Edit"
+                                onBtnClick={() => {
+                                  setopenEdit({
+                                    open: true,
+                                    qid: item.customerQuestionId,
+                                    type: "reply",
+                                    vid: item.variationId,
+                                  });
+                                  setproductReplyInput(item.userAnswer);
+                                }}
+                              />
+                            </>
                           ) : (
                             <>
                               <Typography className="fs-15">
@@ -760,8 +770,8 @@ const MyNotification = () => {
           }}
           onSaveBtnClick={() => {
             submitReply();
-            getProductQueryData(openEdit.vid);
             replyMsgCloseIcon();
+            getProductQueryData(openEdit.vid);
           }}
           footerClassName="f-flex justify-content-end"
         >

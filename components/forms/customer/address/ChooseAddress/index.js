@@ -36,7 +36,6 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
     addresstype: "",
   });
   const [masterAddress, setMasterAddress] = useState([]);
-  console.log(masterAddress, "masterAddress");
   const dispatch = useDispatch();
 
   const getAllData = async (id) => {
