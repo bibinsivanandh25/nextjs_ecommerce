@@ -44,34 +44,24 @@ import MenuwithArrow from "@/atoms/MenuwithArrow";
 import LinearProgressBar from "@/atoms/LinearProgressBar";
 
 function useWindowSize() {
-  // Initialize state with undefined width/height so server and client renders match
-  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
   const [windowSize, setWindowSize] = useState({
     width: undefined,
     height: undefined,
   });
 
   useEffect(() => {
-    // only execute all the code below in client side
     if (typeof window !== "undefined") {
-      // Handler to call on window resize
       function handleResize() {
         setWindowSize({
           width: window.innerWidth,
           height: window.innerHeight,
         });
       }
-
-      // Add event listener
       window.addEventListener("resize", handleResize);
-
-      // Call handler right away so state gets updated with initial window size
       handleResize();
-
-      // Remove event listener on cleanup
       return () => window.removeEventListener("resize", handleResize);
     }
-  }, []); // Empty array ensures that effect is only run on mount
+  }, []);
   return windowSize;
 }
 // const ownersCoupons = [
@@ -182,7 +172,6 @@ const ProductDetails = ({ isSideBarOpen, productId }) => {
     supplierId: state.customer.supplierId,
     storeCode: state.customer.storeCode,
   }));
-
   useEffect(() => {
     if (size.width > 800 && isSideBarOpen) {
       setImageSize({
@@ -196,6 +185,7 @@ const ProductDetails = ({ isSideBarOpen, productId }) => {
       });
     }
   }, [size, isSideBarOpen]);
+
   const getProductDetails = async (id) => {
     const status = "APPROVED";
     const { data, err } = await getAllProductDetails(id ?? productId, status);
@@ -896,7 +886,7 @@ const ProductDetails = ({ isSideBarOpen, productId }) => {
               </Grid> */}
             </Grid>
             <Grid item md={6} sm={5}>
-              <Box minHeight={selectedMasterData.rtoAccepted ? "" : "80%"}>
+              <Box minHeight={selectedMasterData.rtoAccepted ? "" : "20%"}>
                 {selectedMasterData.rtoAccepted && (
                   <>
                     <Box>
@@ -1220,7 +1210,7 @@ const ProductDetails = ({ isSideBarOpen, productId }) => {
             </Grid>
           ) : null}
           <Grid container className="my-2">
-            <Grid item md={11.4}>
+            <Grid item md={11.7}>
               <Paper elevation={3}>
                 <Box className="p-2">
                   <Typography className="h-4 fw-bold">Description</Typography>
