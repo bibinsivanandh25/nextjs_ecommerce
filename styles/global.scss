@@ -437,3 +437,14 @@ span {
 .profile_container {
   position: relative;
 }
+
+.container-shadow {
+  -webkit-box-shadow: 3px -2px 35px -6px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 3px -2px 35px -6px rgba(0, 0, 0, 0.75);
+  box-shadow: 3px -2px 35px -6px rgba(0, 0, 0, 0.75);
+}
+.container-shadow-md {
+  -webkit-box-shadow: 3px -2px 35px -13px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 3px -2px 35px -13px rgba(0, 0, 0, 0.75);
+  box-shadow: 3px -2px 35px -13px rgba(0, 0, 0, 0.75);
+}

@@ -136,7 +136,7 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "88px",
+        top: "100px",
         display: "flex",
         height: `calc(100vh - 88px)`,
       }}
@@ -236,8 +236,8 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 20px)"}`,
-          marginLeft: ` ${open ? "235px" : "10px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
