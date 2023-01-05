@@ -413,3 +413,27 @@ span {
 .border-orange {
   border-color: #e56700;
 }
+
+//customer profile hover effect
+.profile_overLay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(44 1 1 / 68%);
+  transition: opacity 0.5s ease;
+  z-index: 100;
+  opacity: 0;
+  border-radius: 50%;
+}
+
+.profile_container:hover {
+  .profile_overLay {
+    opacity: 1;
+  }
+}
+
+.profile_container {
+  position: relative;
+}

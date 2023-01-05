@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Paper, Typography } from "@mui/material";
+import { Avatar, Box, MenuItem, Paper, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -65,7 +65,10 @@ const Header = () => {
     supplierStoreLogo,
     profileImg,
     userId,
+    customerName,
+    profileName,
     addressDetails,
+    bgcolor,
   } = useSelector((state) => state.customer);
 
   const [storeDetails, setstoreDetails] = useState(null);
@@ -87,6 +90,18 @@ const Header = () => {
         }))
       );
     }
+  };
+
+  const getName = () => {
+    let label = "";
+    const name = profileName ?? customerName ?? "";
+    if (name !== "") {
+      name.split(" ").forEach((item) => {
+        label += item[0];
+      });
+    }
+    // console.log(label, );
+    return label.toUpperCase();
   };
 
   const getMainCategoriesList = async () => {
@@ -568,12 +583,22 @@ const Header = () => {
                   className="rounded-circle"
                   sx={{ height: "35px" }}
                 >
-                  <Image
-                    width={35}
-                    height={35}
-                    src={profileImg ?? ""}
-                    className="rounded-circle "
-                  />
+                  {profileImg ? (
+                    <Image
+                      width={35}
+                      height={35}
+                      src={profileImg}
+                      className="rounded-circle "
+                    />
+                  ) : (
+                    <Avatar
+                      sx={{
+                        bgcolor,
+                      }}
+                    >
+                      {getName()}
+                    </Avatar>
+                  )}
                 </Paper>
               )
             }
