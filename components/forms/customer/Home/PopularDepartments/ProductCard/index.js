@@ -100,10 +100,10 @@ const ProductCard = ({
       </Tooltip>
       <Box className="d-flex justify-content-center align-items-center mb-1">
         <StarRatingComponentReceivingRating
-          rating={item.rating.rate}
+          rating={item?.rating?.rate}
           className="h-4"
         />
-        <Typography className="h-6">{item.rating.count} ratings</Typography>
+        <Typography className="h-6">{item?.rating?.count} ratings</Typography>
       </Box>
       <Box className="">
         <Box className="">
