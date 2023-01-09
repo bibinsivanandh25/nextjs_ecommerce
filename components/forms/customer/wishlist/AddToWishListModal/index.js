@@ -15,6 +15,7 @@ import {
 import toastify from "services/utils/toastUtils";
 
 const AddToWishListModal = ({
+  getProducts = () => {},
   showModal = false,
   setShowModal = () => {},
   productId = "",
@@ -113,6 +114,7 @@ const AddToWishListModal = ({
     if (data) {
       toastify(data?.message, "success");
       setShowModal(false);
+      getProducts();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");

@@ -186,10 +186,18 @@ const Home = () => {
                     item
                     md={2.6}
                     sm={3}
-                    className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
+                    className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center cursor-pointer"
+                    onClick={() => {
+                      route.push("/customer/couponapplicableproducts");
+                    }}
                   >
-                    <Image src={customerHome.coupon} height={40} width={60} />
-                    <Typography className="fw-bold h-5">
+                    <Image
+                      src={customerHome.coupon}
+                      height={40}
+                      width={60}
+                      className="cursor-pointer"
+                    />
+                    <Typography className="fw-bold h-5 cursor-pointer">
                       Coupons Applicable Products
                     </Typography>
                   </Grid>

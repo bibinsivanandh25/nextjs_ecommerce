@@ -64,6 +64,11 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           rate: ele.averageRatings,
           count: ele.totalRatings,
         },
+        isWishlisted: ele.wishlisted,
+        skuId: ele.skuId,
+        wishlistId: ele.wishlistId,
+        userCartId: ele.userCartId,
+        isCarted: ele.presentInCart,
       });
     });
     setProducts([...temp]);
@@ -228,6 +233,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         {products.map((ele) => {
           return (
             <ProductCard
+              getProducts={getProducts}
               key={ele.id}
               item={ele}
               handleIconClick={(icon) => {

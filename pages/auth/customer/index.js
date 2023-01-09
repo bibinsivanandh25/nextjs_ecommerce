@@ -27,17 +27,17 @@ const ShopCode = () => {
   const [formValues, setFormValues] = useState({
     shopCode: "",
   });
-  const [session, setSession] = useState({
+  const [sessions, setSessions] = useState({
     role: "",
     id: "",
   });
 
   const getStatus = async () => {
-    const user = await getSession();
-    if (user) {
-      setSession({
-        role: user?.role,
-        id: user?.id,
+    const session = await getSession();
+    if (session) {
+      setSessions({
+        role: session?.user?.role,
+        id: session?.user?.id,
       });
     }
   };
@@ -47,10 +47,10 @@ const ShopCode = () => {
   }, []);
 
   useEffect(() => {
-    if (session?.role === "CUSTOMER" && session?.id?.length) {
+    if (sessions?.role === "CUSTOMER" && sessions?.id?.length) {
       route.push("/customer/home");
     }
-  }, [session]);
+  }, [sessions]);
 
   const [errorObj, setErrorObj] = useState({
     ...formObj,

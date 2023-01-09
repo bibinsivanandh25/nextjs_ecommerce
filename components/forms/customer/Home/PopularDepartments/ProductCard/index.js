@@ -1,14 +1,17 @@
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
+import { removeProductFromWishList } from "services/customer/wishlist";
+import toastify from "services/utils/toastUtils";
 import DeliveryOptionsModal from "../../buynowmodal";
 // import Link from "next/link";
 
 const ProductCard = ({
+  getProducts = () => {},
   item,
   handleIconClick = () => {},
   height = 150,
@@ -36,6 +39,7 @@ const ProductCard = ({
       title: "Search",
     },
   ];
+
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
   const [setshowAddToCardModal, setsetshowAddToCardModal] = useState(false);
@@ -44,16 +48,45 @@ const ProductCard = ({
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const route = useRouter();
+
   const mouseLeave = (name) => {
-    setIconColor((prev) => ({ ...prev, [name]: false }));
+    if (item?.isWishlisted && name === "favoriteBorderIcon") {
+      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
+    } else if (item?.isCarted && name === "localMallIcon") {
+      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
+    } else {
+      setIconColor((prev) => ({ ...prev, [name]: false }));
+    }
   };
 
-  const handleCardIconClick = (iconName) => {
+  useEffect(() => {
+    if (item?.isWishlisted) {
+      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
+    }
+    if (item?.isCarted) {
+      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
+    }
+  }, [item]);
+
+  const handleCardIconClick = async (iconName) => {
     if (iconName === "favoriteBorderIcon") {
-      setShowWishListModal(true);
+      if (!item.isWishlisted) {
+        setShowWishListModal(true);
+      } else {
+        const { data } = await removeProductFromWishList(
+          item.wishlistId,
+          item.id
+        );
+        if (data) {
+          toastify(data?.message, "success");
+          getProducts();
+        }
+      }
     }
     if (iconName === "localMallIcon") {
-      setsetshowAddToCardModal(true);
+      if (!item.isCarted) {
+        setsetshowAddToCardModal(true);
+      }
     }
   };
 
@@ -167,13 +200,16 @@ const ProductCard = ({
           showModal={showWishListModal}
           setShowModal={setShowWishListModal}
           productId={item?.id}
+          getProducts={getProducts}
         />
       ) : null}
       {setshowAddToCardModal && (
         <DeliveryOptionsModal
+          getProducts={getProducts}
           modalOpen={setshowAddToCardModal}
           setModalOpen={setsetshowAddToCardModal}
           productId={item?.id}
+          skuId={item?.skuId}
         />
       )}
     </Box>

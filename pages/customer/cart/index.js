@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 
 const Cart = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState();
   const [showChooseAddress, setShowChooseAddress] = useState(false);
 
   const { profileId } = useSelector((state) => state?.customer);
@@ -41,6 +41,8 @@ const Cart = () => {
         });
       });
       setProducts([...result]);
+    } else {
+      setProducts([]);
     }
   };
   useEffect(() => {
@@ -97,13 +99,13 @@ const Cart = () => {
   };
 
   const getCartList = () => {
-    return products.map((ele, ind) => {
+    return products?.map((ele, ind) => {
       return (
         <Box className="mx-2 py-1 ">
           <Grid container key={ind + 1}>
             <Grid item sm={1.5} className="">
               <Image
-                src={ele.image}
+                src={ele?.image}
                 height={85}
                 width="100%"
                 layout="intrinsic"
@@ -112,17 +114,17 @@ const Cart = () => {
                 <PlusMinusButtonComponent
                   className="fs-5"
                   countClassName="px-3"
-                  value={ele.cartQty}
-                  maxValue={ele.stockQty}
+                  value={ele?.cartQty}
+                  maxValue={ele?.stockQty}
                   getCount={(type) => {
-                    updateCartCount(ele.id, type);
+                    updateCartCount(ele?.id, type);
                   }}
                 />
               </Box>
             </Grid>
             <Grid item sm={6.5}>
               <Typography className="color-orange h-5 fw-bold">
-                Business Name: {ele.businessName}
+                Business Name: {ele?.businessName}
               </Typography>
               <Typography className="h-5  my-2">{ele?.title}</Typography>
               <Typography component="span" className="fw-bold me-2">
@@ -162,7 +164,7 @@ const Cart = () => {
                 :
               </Grid>
               <Grid item sm={7}>
-                {getOrderType(ele.orderType)}
+                {getOrderType(ele?.orderType)}
               </Grid>
               <Grid item sm={4}>
                 <Typography className="h-5 ">Delivery Charge</Typography>
@@ -171,7 +173,7 @@ const Cart = () => {
                 :
               </Grid>
               <Grid item sm={7}>
-                <span className={ele.deliveryCharge ? "" : "text-success"}>
+                <span className={ele?.deliveryCharge ? "" : "text-success"}>
                   {ele.deliveryCharge || "FREE"}
                 </span>
               </Grid>
@@ -184,10 +186,10 @@ const Cart = () => {
               <Grid item sm={7}>
                 <span
                   className={
-                    ele.returnCharge ? "fst-normal" : "text-success fst-normal"
+                    ele?.returnCharge ? "fst-normal" : "text-success fst-normal"
                   }
                 >
-                  {ele.returnCharge || "FREE"}
+                  {ele?.returnCharge || "FREE"}
                 </span>
               </Grid>
             </Grid>
@@ -203,7 +205,7 @@ const Cart = () => {
     let deliveryPrice = 0;
     let totalPrice = 0;
     let returnCharges = 0;
-    products.map((ele) => {
+    products?.map((ele) => {
       salePrice += parseInt(ele.salePrice, 10) * parseInt(ele.cartQty, 10);
       deliveryPrice += parseInt(ele.deliveryCharge, 10);
       returnCharges += parseInt(ele.returnCharge, 10);
@@ -251,7 +253,7 @@ const Cart = () => {
             />
           </Box>
           <Box className="mnh-79vh mxh-79vh overflow-auto hide-scrollbar">
-            {products?.length ? (
+            {products ? (
               getCartList()
             ) : (
               <Grid container>{getSkeletonLoader()}</Grid>
@@ -259,7 +261,7 @@ const Cart = () => {
           </Box>
         </Paper>
       </Grid>
-      {products.length ? (
+      {products?.length ? (
         <Grid item sm={3} className="">
           <Paper className="ms-2 p-2">
             <Typography className="text-secondary h-5 fw-bold">
@@ -268,7 +270,7 @@ const Cart = () => {
             <Divider />
             <Box className="d-flex justify-content-between align-items-center">
               <Typography className="h-5 fw-bold my-2">
-                Price ({products.length} items)
+                Price ({products?.length} items)
               </Typography>
               <Typography className="h-5 fw-bold">
                 {getFinalPrice().salePrice}
