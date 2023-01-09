@@ -98,6 +98,16 @@ const getFavoriteList = (customerId) => {
     .catch((err) => ({ err }));
 };
 
+const getStoreListOfCustomer = (customerId) => {
+  return serviceUtil
+    .put(`users/customer/store`, { customerId })
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getRecentStoreList,
   getStoreList,
@@ -109,4 +119,5 @@ export {
   switchStore,
   addStoreToStoreList,
   getFavoriteList,
+  getStoreListOfCustomer,
 };

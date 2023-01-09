@@ -240,6 +240,7 @@ const Cart = () => {
     }
     return temp;
   };
+
   return (
     <Grid container>
       <Grid item sm={9}>

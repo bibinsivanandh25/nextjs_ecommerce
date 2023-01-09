@@ -136,9 +136,9 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "88px",
+        top: "90px",
         display: "flex",
-        height: `calc(100vh - 88px)`,
+        height: `calc(100vh - 90px)`,
       }}
     >
       <CssBaseline />
@@ -163,8 +163,8 @@ const CustomerSideBarComponent = ({ children }) => {
         <Box
           className="hide-scrollbar"
           sx={{
-            maxHeight: `calc(100vh - 88px)`,
-            minHeight: `calc(100vh - 88px)`,
+            maxHeight: `calc(100vh - 90px)`,
+            minHeight: `calc(100vh - 90)`,
             maxWidth: open ? "225px" : "0px",
             minWidth: open ? "195px" : "0px",
             overflow: "auto",
@@ -183,7 +183,7 @@ const CustomerSideBarComponent = ({ children }) => {
           </Box>
           <Box
             className="overflow-y-scroll  hide-scrollbar mt-4 "
-            sx={{ height: "calc(100vh - 150px)" }}
+            sx={{ height: "calc(100vh - 155px)" }}
           >
             {customerMenu.map((item) => {
               return (
@@ -236,8 +236,8 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 20px)"}`,
-          marginLeft: ` ${open ? "235px" : "10px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
@@ -246,8 +246,9 @@ const CustomerSideBarComponent = ({ children }) => {
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
-              maxHeight: "calc(100vh - 136px)",
+              maxHeight: "calc(100vh - 130px)",
               overflowY: "scroll",
+              background: "red",
             }}
             className="hide-scrollbar "
             animate={{ opacity: 1 }}
