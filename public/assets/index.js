@@ -35,7 +35,9 @@ const customerHome = {
   shop: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/shop%20%281%29.png",
   tax: "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/tax.png",
   deliveryOptionModal:
-    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/deliveryModal.png",
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/opps.png",
+  noProductsFound:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png",
 };
 
 export { assetsJson, productImageGuidLines, customerHome };

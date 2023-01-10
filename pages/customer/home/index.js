@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import {
@@ -161,11 +161,13 @@ const Home = () => {
       });
     }
   };
-
   useEffect(() => {
     getBanners();
     getProducts();
     getArticlesData();
+  }, []);
+  useEffect(() => {
+    getBanners();
   }, [storeDetails?.storeCode]);
 
   return (
@@ -174,114 +176,122 @@ const Home = () => {
       <div className="px-3">
         {!showCompareProducts ? (
           <Box>
-            <CarousalComponent
-              list={[...bannerImages]}
-              autoPlay
-              stopOnHover={false}
-            />
-            <Paper className="p-1 mt-2">
-              {isLoggedIn ? (
-                <Grid container columnSpacing={1}>
-                  <Grid
-                    item
-                    md={2.6}
-                    sm={3}
-                    className="border-end border-2 d-flex justify-content-evenly p-3 align-items-center"
+            <Box
+              className="container-shadow rounded "
+              style={{
+                overflow: "hidden",
+              }}
+            >
+              <CarousalComponent
+                list={[...bannerImages]}
+                autoPlay
+                stopOnHover={false}
+              />
+            </Box>
+            <Box className="p-1 mt-3 container-shadow rounded">
+              <Grid container columnSpacing={1}>
+                <Grid
+                  item
+                  md={2.6}
+                  sm={3}
+                  className="border-end border-2 cursor-pointer d-flex justify-content-evenly p-3 align-items-center"
+                >
+                  <Image src={customerHome.coupon} height={40} width={60} />
+                  <Typography
+                    className="fw-bold h-5 cursor-pointer"
+                    onClick={() => {
+                      route.push("/customer/couponapplicableproducts");
+                    }}
                   >
-                    <Image src={customerHome.coupon} height={40} width={60} />
-                    <Typography className="fw-bold h-5">
-                      Coupons Applicable Products
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    md={3.1}
-                    sm={3}
-                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                  >
-                    <Image src={customerHome.shop} height={50} width={50} />
-                    <div>
-                      <Typography className="fw-bold h-5 d-flex align-items-center">
-                        <div className="d-flex">
-                          <Typography className="fw-bold h-5 d-flex">
-                            Holiday :&nbsp;
-                            {storeInformation?.holidays?.map((ele, ind) => {
-                              return storeInformation?.holidays?.length === 1
-                                ? ele.substr(0, 3)
-                                : ind === storeInformation?.holidays.length - 1
-                                ? `${ele.substr(0, 3)}. `
-                                : `${ele.substr(0, 3)}, `;
-                            })}
-                          </Typography>
-                        </div>
-                      </Typography>
-
-                      <Typography className="h-5">
-                        Shop Timings : {storeInformation?.shopTimings}
-                      </Typography>
-                    </div>
-                  </Grid>
-                  <Grid
-                    item
-                    md={2}
-                    sm={3}
-                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                  >
-                    <Image src={customerHome.file} height={50} width={50} />
-                    <Box>
-                      <Typography className="fw-bold h-5">GSTIN No.</Typography>
-                      <span className="h-5">{storeInformation?.gstIn}</span>
-                    </Box>
-                  </Grid>
-                  <Grid
-                    item
-                    md={2.5}
-                    sm={3}
-                    className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
-                  >
-                    <Image src={customerHome.tax} height={50} width={50} />
-                    <Box>
-                      {" "}
-                      <Typography className="fw-bold h-5">
-                        Business Processing Time
-                      </Typography>
-                      <span className="h-5">
-                        {storeInformation?.maxOrderProcessingTime}
-                      </span>
-                    </Box>
-                  </Grid>
-                  <Grid
-                    item
-                    md={1.8}
-                    sm={3}
-                    className="d-flex justify-content-evenly p-3  align-items-center"
-                  >
-                    <Image src={customerHome.help} height={50} width={55} />
-
-                    <Box>
-                      <Typography className="fw-bold h-5">
-                        Help & Support
-                      </Typography>
-                      <span className="h-5">Available</span>
-                    </Box>
-                  </Grid>
+                    Coupons Applicable Products
+                  </Typography>
                 </Grid>
-              ) : (
-                <></>
-              )}
-            </Paper>
+                <Grid
+                  item
+                  md={3.1}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.shop} height={50} width={50} />
+                  <div>
+                    <Typography className="fw-bold h-5 d-flex align-items-center">
+                      <div className="d-flex">
+                        <Typography className="fw-bold h-5 d-flex">
+                          Holiday :&nbsp;
+                          {storeInformation?.holidays?.map((ele, ind) => {
+                            return storeInformation?.holidays?.length === 1
+                              ? ele.substr(0, 3)
+                              : ind === storeInformation?.holidays.length - 1
+                              ? `${ele.substr(0, 3)}. `
+                              : `${ele.substr(0, 3)}, `;
+                          })}
+                        </Typography>
+                      </div>
+                    </Typography>
+
+                    <Typography className="h-5">
+                      Shop Timings : {storeInformation?.shopTimings}
+                    </Typography>
+                  </div>
+                </Grid>
+                <Grid
+                  item
+                  md={2}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.file} height={50} width={50} />
+                  <Box>
+                    <Typography className="fw-bold h-5">GSTIN No.</Typography>
+                    <span className="h-5">{storeInformation?.gstIn}</span>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  md={2.5}
+                  sm={3}
+                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.tax} height={50} width={50} />
+                  <Box>
+                    {" "}
+                    <Typography className="fw-bold h-5">
+                      Business Processing Time
+                    </Typography>
+                    <span className="h-5">
+                      {storeInformation?.maxOrderProcessingTime}
+                    </span>
+                  </Box>
+                </Grid>
+                <Grid
+                  item
+                  md={1.8}
+                  sm={3}
+                  className="d-flex justify-content-evenly p-3  align-items-center"
+                >
+                  <Image src={customerHome.help} height={50} width={55} />
+
+                  <Box>
+                    <Typography className="fw-bold h-5">
+                      Help & Support
+                    </Typography>
+                    <span className="h-5">Available</span>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
             {leaveDate.start && leaveDate.end && (
-              <Paper className="bg-light-yellow border border-orange rounded mt-3">
+              <Box className="bg-light-yellow border border-orange rounded mt-3 container-shadow">
                 <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
                   <FaInfoCircle className="mx-2 fs-20 color-orange" />
                   Shop will be on leave from {leaveDate.start} to{" "}
                   {leaveDate.end} , Your orders may be processed after{" "}
                   {new Date(leaveDate.end).getDate()}th.
                 </Typography>
-              </Paper>
+              </Box>
             )}
             <Grid container className="">
-              <Grid item sm={8} className="py-3 pe-1 h-100">
+              <Grid item sm={8} className="py-3 pe-3 h-100">
                 {/* <HotDealsOfTheDay /> */}
                 <AboutUs
                   description={storeInformation?.shopDescription}
@@ -292,7 +302,7 @@ const Home = () => {
                 <TopTrending />
               </Grid>
             </Grid>
-            <Box className="p-2">
+            <Box className="">
               <TopCategories />
             </Box>
             <Box>

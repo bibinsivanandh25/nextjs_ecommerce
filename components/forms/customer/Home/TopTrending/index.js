@@ -1,4 +1,4 @@
-import { Box, Paper, Rating, Typography } from "@mui/material";
+import { Box, Rating, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import serviceUtil from "services/utils";
@@ -21,7 +21,7 @@ const TopTrending = () => {
   }, []);
 
   return (
-    <Paper className="p-2 ">
+    <Box className="p-2 container-shadow rounded">
       <Box className="mx-2 py-1 border-bottom">
         <Typography className="fw-600 fs-16">Top Trending</Typography>
       </Box>
@@ -45,7 +45,7 @@ const TopTrending = () => {
           </Box>
         ))}
       </Box>
-    </Paper>
+    </Box>
   );
 };
 export default TopTrending;

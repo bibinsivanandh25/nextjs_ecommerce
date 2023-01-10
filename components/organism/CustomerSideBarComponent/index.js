@@ -16,6 +16,7 @@ import {
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CustomerSideBarComponent = ({ children }) => {
   // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
@@ -31,6 +32,8 @@ const CustomerSideBarComponent = ({ children }) => {
   // };
   const router = useRouter();
 
+  const { supplierId } = useSelector((state) => state?.customer);
+
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
@@ -42,7 +45,7 @@ const CustomerSideBarComponent = ({ children }) => {
   };
 
   const getCategoriesForSideMenu = async () => {
-    const { data } = await getAllMainCategories();
+    const { data } = await getAllMainCategories(supplierId);
     const temp = [
       {
         id: 0,
@@ -54,8 +57,8 @@ const CustomerSideBarComponent = ({ children }) => {
       const dataCopy = JSON.parse(JSON.stringify(data.splice(0, 20)));
       dataCopy?.forEach((ele) => {
         temp.push({
-          id: ele.mainCategoryId,
-          title: ele.mainCategoryName,
+          id: ele.id,
+          title: ele.name,
           route: false,
         });
       });
@@ -136,9 +139,9 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "88px",
+        top: "90px",
         display: "flex",
-        height: `calc(100vh - 88px)`,
+        height: `calc(100vh - 90px)`,
       }}
     >
       <CssBaseline />
@@ -163,8 +166,8 @@ const CustomerSideBarComponent = ({ children }) => {
         <Box
           className="hide-scrollbar"
           sx={{
-            maxHeight: `calc(100vh - 88px)`,
-            minHeight: `calc(100vh - 88px)`,
+            maxHeight: `calc(100vh - 90px)`,
+            minHeight: `calc(100vh - 90px)`,
             maxWidth: open ? "225px" : "0px",
             minWidth: open ? "195px" : "0px",
             overflow: "auto",
@@ -183,13 +186,13 @@ const CustomerSideBarComponent = ({ children }) => {
           </Box>
           <Box
             className="overflow-y-scroll  hide-scrollbar mt-4 "
-            sx={{ height: "calc(100vh - 150px)" }}
+            sx={{ height: "calc(100vh - 155px)" }}
           >
             {customerMenu.map((item) => {
               return (
                 <Box className="p-2 pe-0">
                   <Box
-                    className="w-100 ps-3 text-truncate"
+                    className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
@@ -206,7 +209,7 @@ const CustomerSideBarComponent = ({ children }) => {
                   >
                     {/* <Tooltip title={item.title}> */}
                     <Typography
-                      className="cursor-pointer "
+                      className="cursor-pointer"
                       variant="text"
                       fontWeight={600}
                       fontSize={13}
@@ -236,8 +239,8 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 20px)"}`,
-          marginLeft: ` ${open ? "235px" : "10px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
@@ -246,8 +249,9 @@ const CustomerSideBarComponent = ({ children }) => {
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
-              maxHeight: "calc(100vh - 136px)",
+              maxHeight: "calc(100vh - 90px)",
               overflowY: "scroll",
+              background: "red",
             }}
             className="hide-scrollbar "
             animate={{ opacity: 1 }}

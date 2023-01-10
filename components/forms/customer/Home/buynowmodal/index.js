@@ -6,15 +6,20 @@ import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import { customerHome } from "public/assets";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
+  addProductToCart,
   getDeliveryOptions,
   getProductDetailsByDeliveryType,
 } from "services/customer/cart";
+import toastify from "services/utils/toastUtils";
 
 const DeliveryOptionsModal = ({
   modalOpen = false,
   setModalOpen = () => {},
+  getProducts = () => {},
   productId = "",
+  skuId = "",
 }) => {
   const tabList = [
     {
@@ -42,9 +47,11 @@ const DeliveryOptionsModal = ({
     noFreeDeliveryFastReturn: false,
     chooseReturnOption: false,
   };
+
   const [selectedTab, setSelectedTab] = useState("FREEDELIVERYANDRETURN");
   const [noFreeRetunModal, setNoFreeReturnModal] = useState(false);
   const [productDetails, setProductDetails] = useState({});
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [
     selectedDeliveryandReturnCharges,
     setSelectedDeliveryandReturnCharges,
@@ -92,6 +99,7 @@ const DeliveryOptionsModal = ({
     }
   };
 
+  const { userId, profileId } = useSelector((state) => state.customer);
   useEffect(() => {
     getProductDetails("FREEDELIVERYANDRETURN");
   }, []);
@@ -127,6 +135,75 @@ const DeliveryOptionsModal = ({
         ))}
       </Box>
     );
+  };
+
+  const getDeliveryCharge = () => {
+    let result = 0;
+    if (selectedTab === "FREEDELIVERYANDRETURN") {
+      if (selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery) {
+        return Number(productDetails.fastDeliveryCharges);
+      }
+    }
+    if (selectedTab === "NOFREEDELIVERYANDRETURN") {
+      Object.entries(selectedDeliveryandReturnCharges).forEach(
+        ([key, value]) => {
+          if (value) {
+            if (key === "noFreeDeliveryFastDelivery") {
+              result = Number(productDetails.fastDeliveryCharges);
+            }
+            if (key === "noFreeDeliveryStandardDelivery") {
+              result = Number(productDetails?.deliveryCharges);
+            }
+          }
+        }
+      );
+    }
+    return result;
+  };
+  const getReturnCharge = () => {
+    let result = 0;
+    if (selectedTab === "NOFREEDELIVERYANDRETURN") {
+      Object.entries(selectedDeliveryandReturnCharges).forEach(
+        ([key, value]) => {
+          if (value) {
+            if (key === "noFreeDeliveryFastReturn") {
+              result = Number(productDetails.fastReturnCharges);
+            }
+            if (key === "noFreeDeliveryStandardReturn") {
+              result = Number(productDetails?.returnCharges);
+            }
+          }
+        }
+      );
+    }
+    return result;
+  };
+  const handleSubmit = async (flag = false) => {
+    const payload = {
+      profileId,
+      customerId: userId,
+      cartProductId: {
+        productId,
+        quantity: 1,
+        orderType: selectedTab,
+        skuId,
+        deliveryCharge: getDeliveryCharge(),
+        returnCharge: getReturnCharge(),
+      },
+      flag,
+    };
+
+    const { data, err } = await addProductToCart(payload);
+    if (data) {
+      if (!data?.popUp) {
+        toastify(data?.message, "success");
+        setModalOpen(false);
+        getProducts();
+      } else setShowConfirmModal(true);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
   const renderGeneralModal = () => {
     if (deliveryOptions.includes(selectedTab))
@@ -194,12 +271,6 @@ const DeliveryOptionsModal = ({
     );
   };
   const renderNoFreeRetunModal = () => {
-    console.log(
-      deliveryOptions.includes(selectedTab),
-      selectedTab,
-      deliveryOptions,
-      "oombu"
-    );
     return (
       <Grid container marginY={2} marginLeft={2}>
         <Grid item xs={4}>
@@ -376,6 +447,7 @@ const DeliveryOptionsModal = ({
   const getFinalPrice = (price) => {
     return price ?? productDetails?.finalPrice;
   };
+
   return (
     <ModalComponent
       open={modalOpen}
@@ -417,10 +489,35 @@ const DeliveryOptionsModal = ({
             label="Add to Cart"
             muiProps="color-black me-3 border-black"
             variant="outlined"
+            onBtnClick={() => {
+              handleSubmit();
+            }}
           />
           <ButtonComponent label="Proceed to Checkout" />
         </Box>
       </Box>
+      {showConfirmModal ? (
+        <ModalComponent
+          open={showConfirmModal}
+          showHeader={false}
+          saveBtnText="No"
+          ClearBtnText="Yes, Proceed"
+          saveBtnVariant="outlined"
+          clearBtnVariant="contained"
+          onSaveBtnClick={() => {
+            setShowConfirmModal(false);
+            setModalOpen(false);
+          }}
+          onClearBtnClick={() => {
+            handleSubmit(true);
+          }}
+        >
+          <Typography className="mt-4 mb-2 fw-bold">
+            If you add this product to the cart, it will replace any existing
+            items from other stores. Do you still wish to proceed?
+          </Typography>
+        </ModalComponent>
+      ) : null}
     </ModalComponent>
   );
 };
