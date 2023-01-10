@@ -49,7 +49,7 @@ const CouponApplicableProducts = () => {
   const mainRef = useRef(null);
   useEffect(() => {
     if (mainRef && mainRef.current) {
-      mainRef.current.scrollIntoView();
+      mainRef.current.scrollIntoView(0, 0);
     }
   }, []);
 
@@ -162,7 +162,7 @@ const CouponApplicableProducts = () => {
         ref={mainRef}
       >
         <Typography className="fw-bold">Coupons Applicable Products</Typography>
-        <Box className="d-flex w-25">
+        <Box className="d-flex w-30p">
           <InputBox
             label="Search Coupon Applicable Products"
             placeholder="Search Coupon Applicable Products"

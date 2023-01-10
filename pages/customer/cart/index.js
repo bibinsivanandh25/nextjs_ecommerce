@@ -13,10 +13,12 @@ import {
 } from "services/customer/cart";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
+import DeliveryOptionsModal from "@/forms/customer/Home/buynowmodal";
 
 const Cart = () => {
   const [products, setProducts] = useState();
   const [showChooseAddress, setShowChooseAddress] = useState(false);
+  const [showDeliveryOptionModal, setShowDeliveryOptionModal] = useState(false);
 
   const { profileId } = useSelector((state) => state?.customer);
 
@@ -52,7 +54,7 @@ const Cart = () => {
   const mainRef = useRef(null);
   useEffect(() => {
     if (mainRef && mainRef.current) {
-      mainRef.current.scrollIntoView();
+      mainRef.current.scrollIntoView(0, 0);
     }
   }, []);
 
@@ -146,7 +148,13 @@ const Cart = () => {
                 >
                   Remove
                 </Typography>
-                <Typography component="span" className="fw-bold h-5">
+                <Typography
+                  component="span"
+                  className="fw-bold h-5"
+                  onClick={() => {
+                    setShowDeliveryOptionModal(true);
+                  }}
+                >
                   Edit
                 </Typography>
               </div>
@@ -154,7 +162,7 @@ const Cart = () => {
             <Grid item container sm={3.5} className="ps-3 h-5">
               <Grid item sm={12} display="flex" justifyContent="end">
                 <Typography className="h-5 text-end mb-1 fw-bold">
-                  Delivery in 6-7 Days
+                  Delivery in {ele?.deliveryIn}
                 </Typography>
               </Grid>
               <Grid item sm={4} className="h-5">
@@ -242,9 +250,9 @@ const Cart = () => {
   };
 
   return (
-    <Grid container>
+    <Grid container ref={mainRef}>
       <Grid item sm={9}>
-        <Paper className="w-100" ref={mainRef}>
+        <Paper className="w-100">
           <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2 w-100">
             <Typography className="h-5 text-secondary">My Cart</Typography>
             <ButtonComponent
@@ -338,6 +346,7 @@ const Cart = () => {
           </Paper>
         </Grid>
       )}
+      {showDeliveryOptionModal ? <DeliveryOptionsModal /> : null}
     </Grid>
   );
 };

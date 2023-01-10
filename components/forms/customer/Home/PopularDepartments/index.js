@@ -230,26 +230,42 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         </Box>
       </Box>
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {products.map((ele) => {
-          return (
-            <ProductCard
-              getProducts={getProducts}
-              key={ele.id}
-              item={ele}
-              handleIconClick={(icon) => {
-                if (icon === "viewCarouselOutlinedIcon") {
-                  setShowDrawer(true);
-                }
-                if (icon === "balanceIcon") {
-                  setComparDrawer(true);
-                }
-                if (icon === "visibilityOutlinedIcon") {
-                  setViewModalOpen(true);
-                }
-              }}
+        {products?.length ? (
+          products.map((ele) => {
+            return (
+              <ProductCard
+                getProducts={getProducts}
+                key={ele.id}
+                item={ele}
+                handleIconClick={(icon) => {
+                  if (icon === "viewCarouselOutlinedIcon") {
+                    setShowDrawer(true);
+                  }
+                  if (icon === "balanceIcon") {
+                    setComparDrawer(true);
+                  }
+                  if (icon === "visibilityOutlinedIcon") {
+                    setViewModalOpen(true);
+                  }
+                }}
+              />
+            );
+          })
+        ) : (
+          <div
+            className="w-100 mx-2"
+            style={{
+              height: "300px",
+              position: "relative",
+            }}
+          >
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
+              height="250px"
+              layout="fill"
             />
-          );
-        })}
+          </div>
+        )}
       </Box>
       <DrawerComponent
         openDrawer={showDrawer}

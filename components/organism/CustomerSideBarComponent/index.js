@@ -16,6 +16,7 @@ import {
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CustomerSideBarComponent = ({ children }) => {
   // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
@@ -31,6 +32,8 @@ const CustomerSideBarComponent = ({ children }) => {
   // };
   const router = useRouter();
 
+  const { supplierId } = useSelector((state) => state?.customer);
+
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
@@ -42,7 +45,7 @@ const CustomerSideBarComponent = ({ children }) => {
   };
 
   const getCategoriesForSideMenu = async () => {
-    const { data } = await getAllMainCategories();
+    const { data } = await getAllMainCategories(supplierId);
     const temp = [
       {
         id: 0,
@@ -54,8 +57,8 @@ const CustomerSideBarComponent = ({ children }) => {
       const dataCopy = JSON.parse(JSON.stringify(data.splice(0, 20)));
       dataCopy?.forEach((ele) => {
         temp.push({
-          id: ele.mainCategoryId,
-          title: ele.mainCategoryName,
+          id: ele.id,
+          title: ele.name,
           route: false,
         });
       });
@@ -164,7 +167,7 @@ const CustomerSideBarComponent = ({ children }) => {
           className="hide-scrollbar"
           sx={{
             maxHeight: `calc(100vh - 90px)`,
-            minHeight: `calc(100vh - 90)`,
+            minHeight: `calc(100vh - 90px)`,
             maxWidth: open ? "225px" : "0px",
             minWidth: open ? "195px" : "0px",
             overflow: "auto",
@@ -189,7 +192,7 @@ const CustomerSideBarComponent = ({ children }) => {
               return (
                 <Box className="p-2 pe-0">
                   <Box
-                    className="w-100 ps-3 text-truncate"
+                    className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
@@ -206,7 +209,7 @@ const CustomerSideBarComponent = ({ children }) => {
                   >
                     {/* <Tooltip title={item.title}> */}
                     <Typography
-                      className="cursor-pointer "
+                      className="cursor-pointer"
                       variant="text"
                       fontWeight={600}
                       fontSize={13}
@@ -246,7 +249,7 @@ const CustomerSideBarComponent = ({ children }) => {
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
-              maxHeight: "calc(100vh - 130px)",
+              maxHeight: "calc(100vh - 90px)",
               overflowY: "scroll",
               background: "red",
             }}
