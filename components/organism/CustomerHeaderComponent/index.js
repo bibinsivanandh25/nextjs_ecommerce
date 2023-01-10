@@ -5,7 +5,7 @@
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Avatar, Box, MenuItem, Typography } from "@mui/material";
-import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
+import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -502,36 +502,46 @@ const Header = () => {
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        {userId !== "" && (
+        <div className="cursor-pointer">
+          {userId === "" ? (
+            <></>
+          ) : (
+            <MenuwithArrow
+              subHeader=""
+              Header="Recent Stores"
+              onOpen={() => {
+                if (userId === "") {
+                  route.push("/auth/customer/signin");
+                  return;
+                }
+                recentStore();
+              }}
+            >
+              <MenuItem>
+                <div className="d-flex align-items-center">
+                  <input
+                    id="store"
+                    style={{
+                      outline: "none",
+                    }}
+                    placeholder="Search store"
+                  />
+                </div>
+              </MenuItem>
+              {getStores()}
+            </MenuwithArrow>
+          )}
+        </div>
+        {userId === "" ? (
+          <></>
+        ) : (
           <>
-            <div className="cursor-pointer">
-              <MenuwithArrow
-                subHeader=""
-                Header="Recent Stores"
-                onOpen={() => {
-                  if (userId === "") {
-                    route.push("/auth/customer/signin");
-                    return;
-                  }
-                  recentStore();
-                }}
-              >
-                <MenuItem>
-                  <div className="d-flex align-items-center">
-                    <input
-                      id="store"
-                      style={{
-                        outline: "none",
-                      }}
-                      placeholder="Search store"
-                    />
-                  </div>
-                </MenuItem>
-                {getStores()}
-              </MenuwithArrow>
-            </div>
-            <FaStore
-              className="fs-2 cursor-pointer  color-white"
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/no_products_found.svg"
+              width={40}
+              height={40}
+              layout="fixed"
+              className="fs-2 cursor-pointer position-relative "
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
