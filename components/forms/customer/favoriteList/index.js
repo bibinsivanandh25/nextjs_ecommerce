@@ -17,6 +17,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
+import { useRouter } from "next/router";
 
 const FavoriteList = ({ close = () => {} }) => {
   const [favStores, setFavStores] = useState([]);
@@ -25,6 +26,7 @@ const FavoriteList = ({ close = () => {} }) => {
   const customer = useSelector((state) => state.customer);
   const { userId } = customer;
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const getAllStores = async () => {
     const { data, err } = await getFavoriteList(userId);
@@ -89,6 +91,7 @@ const FavoriteList = ({ close = () => {} }) => {
             supplierId: storeData.supplierId,
           })
         );
+        router.push("/customer/home");
       } else if (storeErr) {
         toastify(storeErr?.response?.data?.message, "error");
       }

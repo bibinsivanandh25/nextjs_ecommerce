@@ -26,7 +26,9 @@ const errorObj = {
   state: false,
   addresstype: false,
   mobileValidate: false,
+  pincodeValidate: false,
 };
+
 const NewAddress = ({
   newAddressModal,
   setNewAddressModal,
@@ -103,6 +105,7 @@ const NewAddress = ({
       state: false,
       addresstype: false,
       mobileValidate: false,
+      pincodeValidate: false,
     });
   };
   const handleError = () => {
@@ -110,6 +113,7 @@ const NewAddress = ({
       name: false,
       mobilenumber: false,
       pincode: false,
+      pincodeValidate: false,
       location: false,
       address: false,
       city: false,
@@ -137,6 +141,8 @@ const NewAddress = ({
     }
     if (pincode == "") {
       errorobj.pincode = true;
+    } else if (!validationRegex.pincode.test(pincode)) {
+      errorobj.pincodeValidate = true;
     }
     if (location == "") {
       errorobj.location = true;
@@ -259,8 +265,14 @@ const NewAddress = ({
                 onInputChange={(e) => {
                   handleInputChange(e, "pincode");
                 }}
-                error={error.pincode}
-                helperText={error.pincode ? validateMessage.field_required : ""}
+                error={error.pincode || error.pincodeValidate}
+                helperText={
+                  error.pincode
+                    ? validateMessage.field_required
+                    : error.pincodeValidate
+                    ? validateMessage.validPincode
+                    : ""
+                }
               />
             </Grid>{" "}
             <Grid item lg={6} md={6} xs={6}>
