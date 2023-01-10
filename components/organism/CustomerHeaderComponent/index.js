@@ -528,8 +528,12 @@ const Header = () => {
           <></>
         ) : (
           <Grid>
-            <FaStore
-              className="fs-2 cursor-pointer position-relative"
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/no_products_found.svg"
+              width={40}
+              height={40}
+              layout="fixed"
+              className="fs-2 cursor-pointer position-relative "
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
