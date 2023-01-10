@@ -20,7 +20,7 @@ import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 
-const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
+const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const [storelist, setStoreList] = useState([]);
   const [stores, setStores] = useState([]);
   const [selectedStoreList, setSelectedStoreList] = useState(null);
@@ -149,7 +149,6 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                   scale: 1.05,
                   transition: { duration: 0.5 },
                 }}
-                whileTap={{ scale: 0.9 }}
               >
                 <Paper
                   key={item.id}
@@ -165,8 +164,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
             );
           })
         ) : (
-          <Typography className="fs-14 color-gray">
-            Store Categorys not found
+          <Typography className="fs-14 color-gray align-self-center">
+            Store categories not found
           </Typography>
         )}
       </Box>
@@ -259,7 +258,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                 scale: 1.05,
                 transition: { duration: 0.5 },
               }}
-              whileTap={{ scale: 0.9 }}
+              // whileTap={{ scale: 0.9 }}
             >
               <Paper
                 className={`w-80p rounded mx-auto d-flex justify-content-between m-2 ${
@@ -271,7 +270,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {} }) => {
                   // handleSwitchStore(item);
                   if (item.defaultStore) return;
                   setstoreDetails(item);
-                  setShowConfirmModal(true);
+                  // setShowConfirmModal(true);
                 }}
               >
                 <Box elevation={4}>

@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Box, MenuItem, Paper, Typography } from "@mui/material";
+import { Avatar, Box, MenuItem, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -29,10 +29,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
-  // addStore,
+  addStore,
   deleteStore,
   getRecentStoreList,
-  // getStoreListOfCustomer,
+  getStoreListOfCustomer,
   switchStore,
 } from "services/admin/storeList";
 // import { FaArrowRight } from "react-icons/fa";
@@ -65,7 +65,10 @@ const Header = () => {
     supplierStoreLogo,
     profileImg,
     userId,
+    customerName,
+    profileName,
     addressDetails,
+    bgcolor,
   } = useSelector((state) => state.customer);
 
   const [storeDetails, setstoreDetails] = useState(null);
@@ -87,6 +90,18 @@ const Header = () => {
         }))
       );
     }
+  };
+
+  const getName = () => {
+    let label = "";
+    const name = profileName ?? customerName ?? "";
+    if (name !== "") {
+      name.split(" ").forEach((item) => {
+        label += item[0];
+      });
+    }
+    // console.log(label, );
+    return label.toUpperCase();
   };
 
   const getMainCategoriesList = async () => {
@@ -258,24 +273,24 @@ const Header = () => {
     );
   };
 
-  const addStoreToCustomer = async () => {
-    // const storeList = await getStoreListOfCustomer(userId);
-    // if (storeList.data && storeList.data.includes(code)) {
-    //   await handleSwitchStore(code);
-    // } else {
-    //   const { data, err } = await addStore({
-    //     customerId: userId,
-    //     storeListId: null,
-    //     storeListName: null,
-    //     storeType: "SUPPLIER",
-    //     storeCode: code,
-    //   });
-    //   if (data) {
-    //     await handleSwitchStore(code);
-    //   } else if (err) {
-    //     toastify(err?.response?.data?.message, "error");
-    //   }
-    // }
+  const addStoreToCustomer = async (code) => {
+    const storeList = await getStoreListOfCustomer(userId);
+    if (storeList.data && storeList.data.includes(code)) {
+      await handleSwitchStore(code);
+    } else {
+      const { data, err } = await addStore({
+        customerId: userId,
+        storeListId: null,
+        storeListName: null,
+        storeType: "SUPPLIER",
+        storeCode: code,
+      });
+      if (data) {
+        await handleSwitchStore(code);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -311,23 +326,22 @@ const Header = () => {
         zIndex: 1000,
       }}
     >
-      <div className="d-flex justify-content-between align-items-center bg-orange text-white px-3">
+      <div className="d-flex justify-content-between align-items-center bg-white text-white px-2 py-1">
         <div className="d-flex align-items-center">
-          {/* <p className="h-5">Hello Customer</p> */}
           <p
-            className="ps-4 cursor-pointer d-flex align-items-center"
+            className=" cursor-pointer d-flex align-items-center color-black"
             onClick={() => setShowSelectAddress(true)}
           >
-            <LocationOnIcon />
+            <LocationOnIcon className="color-black" />
             {(!isSignedIn && !addressDetails?.name) ||
             !addressDetails?.cityDistrictTown ? (
               "Select Your Address"
             ) : (
               <div className="ms-2">
-                <Typography className="fs-10">
+                <Typography className="fs-10 color-black">
                   {addressDetails?.name}
                 </Typography>
-                <Typography className="fs-12">
+                <Typography className="fs-12 color-black">
                   {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
                 </Typography>
               </div>
@@ -348,14 +362,16 @@ const Header = () => {
             className="px-4"
             onClick={() => handleRouting("/customer/helpcenter")}
           >
-            <Typography className="h-5 fw-bold ps-1">Help Center</Typography>
+            <Typography className="h-5 fw-bold ps-1 color-black">
+              Help Center
+            </Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
           </div>
           <Typography
             onClick={() => {
               setOpenExplore(!openExplore);
             }}
-            className="color-white mx-2 me-3 h-5 fw-bold cursor-pointer"
+            className="color-black mx-2 me-3 h-5 fw-bold cursor-pointer"
           >
             {/* <FaArrowRight
               onClick={() => {
@@ -366,23 +382,18 @@ const Header = () => {
             Explore Stores
           </Typography>
           <div className="d-flex justify-content-center align-items-center">
-            <FaApple className="fs-4" color="white" />
-            <FaGooglePlay className="fs-5 ms-1" />
+            <FaApple className="fs-4" color="black" />
+            <FaGooglePlay className="fs-5 ms-1 color-black" />
           </div>
           <div className="ps-1">
-            <Typography className="h-5">Download App</Typography>
-            <Typography className="fs-12">
+            <Typography className="h-5 color-black">Download App</Typography>
+            <Typography className="fs-12 color-black">
               Play & win Prices/Discounts
             </Typography>
           </div>
         </div>
       </div>
-      <div
-        className="d-flex justify-content-between align-items-center px-2 py-1"
-        style={{
-          background: "#fae1cc",
-        }}
-      >
+      <div className="d-flex justify-content-between align-items-center px-2 py-2 bg-orange">
         <div
           className="cursor-pointer d-flex justify-content-between align-items-center "
           onClick={() => {
@@ -398,7 +409,7 @@ const Header = () => {
             />
           </Box>
           <Typography
-            className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px`}
+            className={`${styles.storeName} h-5 fw-bold cursor-pointer mxw-100px color-white`}
           >
             {supplierStoreName &&
               (supplierStoreName.length <= 40
@@ -520,7 +531,7 @@ const Header = () => {
               </MenuwithArrow>
             </div>
             <FaStore
-              className="fs-2 cursor-pointer"
+              className="fs-2 cursor-pointer  color-white"
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
@@ -538,13 +549,15 @@ const Header = () => {
                 }
               }}
             >
-              <Typography className="h-5 cursor-pointer">Returns</Typography>
-              <Typography className="fs-14 fw-bold cursor-pointer">
+              <Typography className="h-5 cursor-pointer color-white">
+                Returns
+              </Typography>
+              <Typography className="fs-14 fw-bold cursor-pointer color-white">
                 & Orders
               </Typography>
             </div>
             <FiShoppingCart
-              className="fs-2 cursor-pointer"
+              className="fs-2 cursor-pointer color-white"
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
@@ -563,18 +576,25 @@ const Header = () => {
               userId === "" ? (
                 "Hello Customer, sign In"
               ) : (
-                <Paper
-                  elevation={4}
-                  className="rounded-circle"
-                  sx={{ height: "35px" }}
-                >
-                  <Image
-                    width={35}
-                    height={35}
-                    src={profileImg ?? ""}
-                    className="rounded-circle "
-                  />
-                </Paper>
+                <>
+                  {profileImg ? (
+                    <Image
+                      width={35}
+                      height={35}
+                      src={profileImg}
+                      className="rounded-circle "
+                    />
+                  ) : (
+                    <Avatar
+                      sx={{
+                        bgcolor,
+                      }}
+                      className="shadow"
+                    >
+                      {getName()}
+                    </Avatar>
+                  )}
+                </>
               )
             }
           >

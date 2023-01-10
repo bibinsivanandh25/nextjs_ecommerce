@@ -31,10 +31,13 @@ const TopCategories = () => {
     return categories.map((ele) => {
       return (
         <Box
-          className="mx-1"
+          className="mx-1 container-shadow-md rounded"
           key={ele.id}
           onClick={() => {
             route.push("/customer/searchedproduct");
+          }}
+          style={{
+            overflow: "hidden",
           }}
         >
           <CategoryCards
@@ -52,7 +55,7 @@ const TopCategories = () => {
       <Typography className="fw-bold text-center">
         Top Categories of the Month
       </Typography>
-      <Box className="w-100 overflow-auto hide-scrollbar d-flex">
+      <Box className="w-100 overflow-auto hide-scrollbar d-flex p-3">
         {renderCategories()}
       </Box>
     </Box>

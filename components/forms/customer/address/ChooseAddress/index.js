@@ -14,6 +14,7 @@ import {
 } from "services/customer/Home/address";
 import toastify from "services/utils/toastUtils";
 import { storeUserInfo } from "features/customerSlice";
+import { getCustomerById } from "services/customer/auth";
 
 const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
   const customer = useSelector((state) => state.customer);
@@ -45,6 +46,13 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         data.forEach((item) => {
           if (item.primary) {
             temp.unshift(item);
+            // console.log(item);
+            // dispatch(
+            //   storeUserInfo({
+            //     ...customer,
+            //     addressDetails: { ...data.data },
+            //   })
+            // );
           } else {
             temp.push(item);
           }
@@ -97,6 +105,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
             addressDetails: { ...data.data },
           })
         );
+
         toastify(data?.message, "success");
         getAllData(customer.userId);
       }
@@ -112,6 +121,15 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
     );
     if (data) {
       toastify(data?.message, "success");
+      const customerData = await getCustomerById(customer.userId);
+      if (customerData.data) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            addressDetails: customerData.data.addressDetails,
+          })
+        );
+      }
       getAllData(customer.userId);
     }
     if (err) {
@@ -155,12 +173,16 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                       iconType="circled"
                     />
                     <Box>
-                      <DeleteIcon
-                        className="cursor-pointer"
-                        onClick={() => {
-                          handleDeleteClick(item);
-                        }}
-                      />
+                      {item.primary ? (
+                        <></>
+                      ) : (
+                        <DeleteIcon
+                          className="cursor-pointer"
+                          onClick={() => {
+                            handleDeleteClick(item);
+                          }}
+                        />
+                      )}
                     </Box>
                   </Box>
                   <Box className="d-flex justify-content-between">

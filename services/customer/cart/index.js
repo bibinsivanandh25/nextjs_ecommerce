@@ -53,10 +53,21 @@ const getProductDetailsByDeliveryType = (productId, deliveryType) => {
     })
     .catch((err) => ({ err }));
 };
+
+const addProductToCart = (reqObj) => {
+  return serviceUtil
+    .post(`products/product/user-cart`, reqObj)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getDeliveryOptions,
   getCartProducts,
   updateCartQuantity,
   removeProductFromCart,
   getProductDetailsByDeliveryType,
+  addProductToCart,
 };

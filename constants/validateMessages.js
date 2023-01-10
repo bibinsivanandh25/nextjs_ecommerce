@@ -25,5 +25,7 @@ const validateMessage = {
   alphabets_3: "At least 3 alphabets required",
   startDateValid: "From date can't be more than To date",
   brforeDate: "Selected date should be before current date",
+  samePassword: "Password should same as new password",
+  validPincode: "Enter a valid pincode",
 };
 export default validateMessage;

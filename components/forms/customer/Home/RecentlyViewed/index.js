@@ -33,7 +33,7 @@ const comparProductData = [
 ];
 
 const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
@@ -56,7 +56,10 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(userInfo?.data?.user?.id);
+    const { data } = await getRecentlyViewedProducts(
+      userInfo?.data?.user?.id,
+      storeDetails.profileId
+    );
     if (data) {
       const temp = [];
       data.forEach((ele) => {
@@ -70,6 +73,11 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
             rate: ele.averageRatings,
             count: ele.totalRatings,
           },
+          isWishlisted: ele.wishlisted,
+          skuId: ele.skuId,
+          wishlistId: ele.wishlistId,
+          userCartId: ele.userCartId,
+          isCarted: ele.presentInCart,
         });
       });
       setProducts([...temp]);

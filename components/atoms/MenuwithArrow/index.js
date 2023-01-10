@@ -31,12 +31,14 @@ export default function MenuwithArrow({
   return (
     <div className="cursor-pointer">
       <Box onClick={handleClick} className="cursor-pointer">
-        <Typography className="h-5 cursor-pointer">{subHeader}</Typography>
+        <Typography className="h-5 cursor-pointer  color-white">
+          {subHeader}
+        </Typography>
         <div className="d-flex cursor-pointer align-items-center">
-          <Typography className="fw-bold fs-14 cursor-pointer">
+          <Typography className="fw-bold fs-14 cursor-pointer  color-white">
             {Header}
           </Typography>
-          <ArrowDropDown className="fw-bold h-3 cursor-pointer" />
+          <ArrowDropDown className="fw-bold h-3 cursor-pointer color-white" />
         </div>
       </Box>
       <Menu
