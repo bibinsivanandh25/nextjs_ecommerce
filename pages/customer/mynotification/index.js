@@ -617,6 +617,20 @@ const MyNotification = () => {
                             <>
                               <Typography className="fs-15">
                                 {item.userAnswer}
+                                <CustomIcon
+                                  type="edit"
+                                  title="Edit Answer"
+                                  className="fs-14 mx-2 mb-1"
+                                  onIconClick={() => {
+                                    setopenEdit({
+                                      open: true,
+                                      qid: item.customerQuestionId,
+                                      type: "reply",
+                                      vid: item.variationId,
+                                    });
+                                    setproductReplyInput(item.userAnswer);
+                                  }}
+                                />
                               </Typography>
                               <Typography className="d-flex justify-content-start fs-12 f-5 ">
                                 <Typography className="color-blue fs-12">
@@ -626,19 +640,6 @@ const MyNotification = () => {
                                 {item.answerFromType},&nbsp;
                                 <>{item.questionAnsweredAt}</>
                               </Typography>
-                              <ButtonComponent
-                                variant="outlined"
-                                label="Edit"
-                                onBtnClick={() => {
-                                  setopenEdit({
-                                    open: true,
-                                    qid: item.customerQuestionId,
-                                    type: "reply",
-                                    vid: item.variationId,
-                                  });
-                                  setproductReplyInput(item.userAnswer);
-                                }}
-                              />
                             </>
                           ) : (
                             <>
@@ -662,33 +663,6 @@ const MyNotification = () => {
                 );
               })}
             </Grid>
-            {/* {getParagraph("Customer Id", viewProductQueryData?.customerId)}
-              {getParagraph(
-                "Product Image",
-                // <Grid style={{ maxHeight: "20vh", overflowY: "scroll" }}>
-                <Grid className="d-flex justify-content-between">
-                  {viewProductQueryData?.images?.map((item) => {
-                    return (
-                      <Paper>
-                        <Image
-                          src={item?.toString()}
-                          height={70}
-                          width={70}
-                          alt="img"
-                          layout="intrinsic"
-                          className="d-flex justify-content-center align-items-center"
-                        />
-                      </Paper>
-                    );
-                  })}
-                </Grid>
-                //  </Grid>
-              )}
-              {getParagraph("Question", viewProductQueryData?.customerQuestion)}
-              {/* {getParagraph("Date and Time", viewQuertData?.dateAndTime)}
-              {getParagraph("Reply", viewQuertData?.dateAndTime)}
-              {getParagraph("Replied by", viewQuertData?.dateAndTime)} */}
-            {/* {getParagraph("Discussion", viewProductQueryData?.replay)} */}{" "}
           </Grid>
         </Grid>
       </DrawerComponent>

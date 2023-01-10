@@ -53,9 +53,9 @@ const getMostPopularProducts = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
-const getRecentlyViewedProducts = (customerId) => {
+const getRecentlyViewedProducts = (customerId, profileId) => {
   return serviceUtil
-    .get(`/products/recent-product/${customerId}`)
+    .get(`/products/recent-product/${customerId}/${profileId}`)
     .then((res) => {
       const { data } = res?.data;
       return { data };
