@@ -21,9 +21,8 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import validateMessage from "constants/validateMessages";
 import { getBase64 } from "services/utils/functionUtils";
 import CloseIcon from "@mui/icons-material/Close";
-import { storeUserInfo, clearCustomerSlice } from "features/customerSlice";
-import { signOut } from "next-auth/react";
-import { clearUser } from "features/userSlice";
+import { storeUserInfo } from "features/customerSlice";
+import { useRouter } from "next/router";
 
 const SwitchProfile = ({
   showSwitchProfile = false,
@@ -40,10 +39,12 @@ const SwitchProfile = ({
   const imgRef = useRef(null);
   const [editModal, seteditModal] = useState(null);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const getProfiles = async () => {
     const { data, err } = await getCustomerProfile(userId);
     if (data) {
+      console.log(data);
       setProfileList(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -149,6 +150,7 @@ const SwitchProfile = ({
           profileName: data.data.profileName,
         })
       );
+      router.push("/customer/home");
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
