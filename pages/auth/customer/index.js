@@ -1,5 +1,5 @@
 import { Box, Paper, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import validateMessage from "constants/validateMessages";
 // import { signIn } from "next-auth/react";
@@ -14,6 +14,7 @@ import InputBox from "@/atoms/InputBoxComponent";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import ExploreStores from "@/forms/customer/exploreStores";
+import { getSession } from "next-auth/react";
 import styles from "./shopcode.module.css";
 
 const ShopCode = () => {
@@ -26,6 +27,30 @@ const ShopCode = () => {
   const [formValues, setFormValues] = useState({
     shopCode: "",
   });
+  const [sessions, setSessions] = useState({
+    role: "",
+    id: "",
+  });
+
+  const getStatus = async () => {
+    const session = await getSession();
+    if (session) {
+      setSessions({
+        role: session?.user?.role,
+        id: session?.user?.id,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getStatus();
+  }, []);
+
+  useEffect(() => {
+    if (sessions?.role === "CUSTOMER" && sessions?.id?.length) {
+      route.push("/customer/home");
+    }
+  }, [sessions]);
 
   const [errorObj, setErrorObj] = useState({
     ...formObj,

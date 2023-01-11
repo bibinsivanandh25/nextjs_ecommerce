@@ -6,6 +6,7 @@ import DrawerComponent from "@/atoms/DrawerComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSession } from "next-auth/react";
+import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 import ProductCard from "../PopularDepartments/ProductCard";
@@ -32,7 +33,7 @@ const comparProductData = [
 ];
 
 const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
-  const [products, setProducts] = useState();
+  const [products, setProducts] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
@@ -52,9 +53,13 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
     setCompredProduct(final);
   };
   const userInfo = useSession();
+  const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(userInfo?.data?.user?.id);
+    const { data } = await getRecentlyViewedProducts(
+      userInfo?.data?.user?.id,
+      storeDetails.profileId
+    );
     if (data) {
       const temp = [];
       data.forEach((ele) => {
@@ -68,16 +73,21 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
             rate: ele.averageRatings,
             count: ele.totalRatings,
           },
+          isWishlisted: ele.wishlisted,
+          skuId: ele.skuId,
+          wishlistId: ele.wishlistId,
+          userCartId: ele.userCartId,
+          isCarted: ele.presentInCart,
         });
       });
       setProducts([...temp]);
     }
   };
   useEffect(() => {
-    if (userInfo?.data) {
+    if (userInfo?.data && storeDetails) {
       getRecentViewedProducts();
     }
-  }, [userInfo]);
+  }, [userInfo, storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>

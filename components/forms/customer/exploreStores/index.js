@@ -23,6 +23,7 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
   const [storesList, setStoresList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [noStore, setnoStore] = useState(false);
   const [stateList, setStateList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   // const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
@@ -81,7 +82,7 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
     };
     setLoading(true);
     const { data, err } = await getStore(payload);
-    if (data) {
+    if (data.length) {
       setLoading(false);
       setStoresList(
         data.map((item) => ({
@@ -92,6 +93,11 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
           city: item.city,
         }))
       );
+      setnoStore(false);
+    } else if (!data.length) {
+      setStoresList([]);
+      setnoStore(true);
+      setLoading(false);
     } else if (err) {
       setLoading(false);
       toastify(err?.response?.data?.message, "error");
@@ -209,6 +215,7 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
           );
         })}
         {loading && <div>Loading</div>}
+        {noStore && <div>No store Found</div>}
       </Box>
     </Box>
   );

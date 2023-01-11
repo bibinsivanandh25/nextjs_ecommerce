@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getAllMainCategories = () => {
+const getAllMainCategories = (supplierId) => {
   return serviceUtil
-    .get(`products/main-category/drop-down-list`)
+    .get(`products/customer-categories?supplierId=${supplierId}`)
     .then((res) => {
       const { data } = res?.data;
       return { data };

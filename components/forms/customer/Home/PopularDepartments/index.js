@@ -64,58 +64,69 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           rate: ele.averageRatings,
           count: ele.totalRatings,
         },
+        isWishlisted: ele.wishlisted,
+        skuId: ele.skuId,
+        wishlistId: ele.wishlistId,
+        userCartId: ele.userCartId,
+        isCarted: ele.presentInCart,
       });
     });
     setProducts([...temp]);
   };
 
-  const getProducts = async () => {
+  const getProducts = async (filter) => {
     if (popularDepartments === "New Arrivals") {
-      const { data } = await getNewArrivalProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getNewArrivalProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Most Popular") {
-      const { data } = await getMostPopularProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getMostPopularProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
     if (popularDepartments === "Best Seller") {
-      const { data } = await getBestSoldProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getBestSoldProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
 
     if (popularDepartments === "Featured") {
-      const { data } = await getFeaturedProducts(
-        filterType,
-        storeDetails?.supplierId
-      );
+      const payload = {
+        filterType: filter ?? filterType,
+        supplierId: storeDetails?.supplierId,
+        profileId: storeDetails?.profileId,
+      };
+      const { data } = await getFeaturedProducts(payload);
       if (data) {
         setAllProducts(data);
       }
     }
   };
-  useEffect(() => {
-    setProducts([]);
-    getProducts();
-  }, [popularDepartments, filterType]);
 
   useEffect(() => {
+    setProducts([]);
+    getProducts("WEEK");
     setFilterType("WEEK");
-  }, [popularDepartments]);
+  }, [popularDepartments, storeDetails]);
 
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
@@ -197,6 +208,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "WEEK") {
                 setFilterType("WEEK");
+                getProducts("WEEK");
               }
             }}
           >
@@ -209,6 +221,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             onClick={() => {
               if (filterType !== "MONTH") {
                 setFilterType("MONTH");
+                getProducts("MONTH");
               }
             }}
           >
@@ -217,25 +230,42 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         </Box>
       </Box>
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
-        {products.map((ele) => {
-          return (
-            <ProductCard
-              key={ele.id}
-              item={ele}
-              handleIconClick={(icon) => {
-                if (icon === "viewCarouselOutlinedIcon") {
-                  setShowDrawer(true);
-                }
-                if (icon === "balanceIcon") {
-                  setComparDrawer(true);
-                }
-                if (icon === "visibilityOutlinedIcon") {
-                  setViewModalOpen(true);
-                }
-              }}
+        {products?.length ? (
+          products.map((ele) => {
+            return (
+              <ProductCard
+                getProducts={getProducts}
+                key={ele.id}
+                item={ele}
+                handleIconClick={(icon) => {
+                  if (icon === "viewCarouselOutlinedIcon") {
+                    setShowDrawer(true);
+                  }
+                  if (icon === "balanceIcon") {
+                    setComparDrawer(true);
+                  }
+                  if (icon === "visibilityOutlinedIcon") {
+                    setViewModalOpen(true);
+                  }
+                }}
+              />
+            );
+          })
+        ) : (
+          <div
+            className="w-100 mx-2"
+            style={{
+              height: "300px",
+              position: "relative",
+            }}
+          >
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
+              height="250px"
+              layout="fill"
             />
-          );
-        })}
+          </div>
+        )}
       </Box>
       <DrawerComponent
         openDrawer={showDrawer}
