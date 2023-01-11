@@ -117,6 +117,7 @@ const CustomerSideBarComponent = ({ children }) => {
               className={`d-block p-1 fs-14 text-truncate ${
                 ele.isSet ? "color-orange" : ""
               }`}
+              key={ele.label}
             >
               {ele.label}
             </li>
@@ -187,13 +188,12 @@ const CustomerSideBarComponent = ({ children }) => {
           >
             {customerMenu.map((item) => {
               return (
-                <Box className="p-2 pe-0">
+                <Box className="p-2 pe-0" key={item.title}>
                   <Box
                     className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
-                    key={item.title}
                     onMouseEnter={(e) => {
                       if (e.target.id === category?.id) {
                         setSetsandSubCategoryData([]);

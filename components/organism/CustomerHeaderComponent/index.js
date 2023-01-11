@@ -348,15 +348,23 @@ const Header = () => {
             )}
           </p>
         </div>
-        <Image
-          src={assetsJson.logo}
-          alt=""
-          width="100px"
-          height="30px"
+        <div
           style={{
-            zIndex: 1000,
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%, 0px)",
           }}
-        />
+        >
+          <Image
+            src={assetsJson.logo}
+            alt=""
+            width="100px"
+            height="30px"
+            style={{
+              zIndex: 1000,
+            }}
+          />
+        </div>
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -576,7 +584,7 @@ const Header = () => {
               userId === "" ? (
                 "Hello Customer, sign In"
               ) : (
-                <>
+                <div>
                   {profileImg ? (
                     <Image
                       width={35}
@@ -594,7 +602,7 @@ const Header = () => {
                       {getName()}
                     </Avatar>
                   )}
-                </>
+                </div>
               )
             }
           >

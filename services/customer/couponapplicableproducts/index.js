@@ -19,4 +19,17 @@ const getProductsByMarketingTool = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
-export { getActiveMarketingToolNames, getProductsByMarketingTool };
+const getScratchCardMarketingTool = (purchaseId) => {
+  return serviceUtil
+    .get(`users/customer-products?purchaseId=${purchaseId}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getActiveMarketingToolNames,
+  getProductsByMarketingTool,
+  getScratchCardMarketingTool,
+};

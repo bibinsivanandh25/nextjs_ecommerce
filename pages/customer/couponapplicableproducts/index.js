@@ -5,12 +5,9 @@ import { Box, Typography } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  getActiveMarketingToolNames,
-  // getProductsByMarketingTool,
-} from "services/customer/couponapplicableproducts";
-// import CarousalComponent from "@/atoms/Carousel";
+import { getActiveMarketingToolNames } from "services/customer/couponapplicableproducts";
 import TODAYSDEAL from "./todaysDeal";
+import ScratchCard from "./scratchCard";
 
 const CouponApplicableProducts = () => {
   const intialTabs = [
@@ -44,12 +41,32 @@ const CouponApplicableProducts = () => {
   const [selectedTab, setSelectedTab] = useState({
     ind: 0,
     id: null,
+    name: "",
   });
-  // const [productdetails, setProductDetails] = useState([]);
   const [searchText, setSearchText] = useState("");
   const childRef = useRef();
-
   const mainRef = useRef(null);
+  const [Component, setComponent] = useState(null);
+
+  const getTabComponent = (name) => {
+    switch (name) {
+      case "Today's Deal": {
+        // return <TODAYSDEAL purchaseId={selectedTab.id} ref={childRef} />;
+        setComponent(TODAYSDEAL);
+        break;
+      }
+      case "Scratch Card": {
+        // return <ScratchCard purchaseId={selectedTab.id} ref={childRef} />;
+        setComponent(ScratchCard);
+        break;
+      }
+      default: {
+        setComponent(null);
+        break;
+      }
+    }
+  };
+
   useEffect(() => {
     if (mainRef && mainRef.current) {
       mainRef.current.scrollIntoView(0, 0);
@@ -57,13 +74,10 @@ const CouponApplicableProducts = () => {
   }, []);
 
   const { supplierId } = useSelector((state) => state.customer);
+
   const getAllTabNames = async () => {
     const { data } = await getActiveMarketingToolNames(supplierId);
     if (data) {
-      setSelectedTab({
-        ind: 0,
-        id: data[0]?.purchaseId,
-      });
       const temp = JSON.parse(JSON.stringify(intialTabs));
       data?.forEach((ele) => {
         temp.forEach((item) => {
@@ -73,65 +87,37 @@ const CouponApplicableProducts = () => {
         });
       });
       setTabNames(temp);
+      setSelectedTab({
+        ind: 0,
+        id: data[0]?.purchaseId ?? null,
+        name: "Today's Deal",
+      });
     }
   };
 
   useEffect(() => {
     getAllTabNames();
   }, []);
-
-  // const getProducts = async (keyword) => {
-  //   const payload = {
-  //     purchaseId: selectedTab.id,
-  //     profileId,
-  //     keyword: keyword ?? searchText ?? "",
-  //   };
-  //   const { data } = await getProductsByMarketingTool(payload);
-  //   if (data) {
-  //     const temp = [];
-  //     data.marketingTool.forEach((ele) => {
-  //       temp.push({
-  //         campaignName: ele.campaignTitle,
-  //         products: ele.productResponse.map((item) => ({
-  //           id: item.productId,
-  //           title: item.productTitle,
-  //           price: item.salePrice,
-  //           salePriceWithLogistics: item.salePriceWithLogistics,
-  //           image: item.variationMedia,
-  //           rating: {
-  //             rate: item.averageRatings,
-  //             count: item.totalRatings,
-  //           },
-  //           isWishlisted: item.wishlisted,
-  //           skuId: item.skuId,
-  //           wishlistId: item.wishlistId,
-  //           userCartId: item.userCartId,
-  //           isCarted: item.presentInCart,
-  //         })),
-  //       });
-  //     });
-  //     setProductDetails([...temp]);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (selectedTab.id) {
-  //     getProducts();
-  //   }
-  // }, [selectedTab.id]);
+  useEffect(() => {
+    if (selectedTab) {
+      getTabComponent(selectedTab.name);
+    }
+    console.log(selectedTab);
+  }, [selectedTab]);
 
   const getTabs = () => {
     return tabNames.map((ele, ind) => {
       return (
         <Box
           onClick={() => {
-            setSelectedTab({
+            setSelectedTab(() => ({
               id: ele.id,
               ind,
-            });
+              name: ele.name,
+            }));
           }}
-          key={ele.id}
-          className={`px-3 text-capitalize h-5 py-1 border rounded-pill me-3  ${
+          key={ele.name}
+          className={`px-3 cursor-pointer text-capitalize h-5 py-1 border rounded-pill me-3  ${
             selectedTab.ind === ind ? "border-orange color-orange shadow" : ""
           }`}
         >
@@ -140,29 +126,6 @@ const CouponApplicableProducts = () => {
       );
     });
   };
-
-  // const renderProducts = () => {
-  //   return productdetails?.map((ele) => {
-  //     return (
-  //       <Box className="mt-4">
-  //         <Typography className="fw-bold ms-2">
-  //           <span className="fw-500 h-4 color-orange"> Campaign Title</span> :{" "}
-  //           {ele.campaignName}
-  //         </Typography>
-  //         <Box className="d-flex w-100 overflow-auto  hide-scrollbar py-3">
-  //           {ele?.products?.map((product) => {
-  //             return (
-  //               <ProductCard
-  //                 item={product}
-  //                 cardPaperClass="container-shadow-sm"
-  //               />
-  //             );
-  //           })}
-  //         </Box>
-  //       </Box>
-  //     );
-  //   });
-  // };
 
   return (
     <>
@@ -182,7 +145,7 @@ const CouponApplicableProducts = () => {
             onInputChange={(e) => {
               setSearchText(e.target.value);
               if (e.target.value === "") {
-                childRef.current.getProducts("");
+                childRef.current("");
               }
             }}
           />
@@ -195,7 +158,7 @@ const CouponApplicableProducts = () => {
             <SearchOutlinedIcon
               style={{ color: "white" }}
               onClick={() => {
-                childRef.current.getProducts(searchText);
+                childRef.current(searchText);
               }}
             />
           </Box>
@@ -205,7 +168,9 @@ const CouponApplicableProducts = () => {
         <Box className="d-flex flex-row align-items-center mt-1 mb-2">
           {getTabs()}
         </Box>
-        <TODAYSDEAL purchaseId={selectedTab.id} ref={childRef} />
+        {Component !== null && (
+          <Component purchaseId={selectedTab.id} ref={childRef} />
+        )}
       </Box>
     </>
   );

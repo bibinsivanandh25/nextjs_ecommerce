@@ -73,14 +73,14 @@ const TODAYSDEAL = forwardRef(({ purchaseId, searchText = "" }, ref = null) => {
       );
     });
   };
-  //   console.log(productdetails, bannerImages);
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    if (purchaseId) getProducts();
+  }, [purchaseId]);
 
   useEffect(() => {
-    ref.current.getProducts = getProducts;
+    // if (ref?.current) ref.current = { ...ref.current, getProducts };
+    ref.current = getProducts;
   }, [ref]);
 
   return (
