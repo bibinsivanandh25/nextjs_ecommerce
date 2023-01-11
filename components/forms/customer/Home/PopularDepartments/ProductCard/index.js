@@ -16,6 +16,7 @@ const ProductCard = ({
   handleIconClick = () => {},
   height = 150,
   width = 150,
+  cardPaperClass = "",
 }) => {
   const iconListData = [
     {
@@ -99,10 +100,11 @@ const ProductCard = ({
     >
       <Paper
         elevation={hover ? 6 : 3}
-        className="mx-2 position-relative"
+        className={`mx-2 position-relative rounded ${cardPaperClass}`}
         style={{
           minHeight: 150,
           minWidth: 150,
+          overflow: "hidden",
         }}
       >
         <Image

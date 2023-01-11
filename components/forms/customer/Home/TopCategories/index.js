@@ -31,7 +31,7 @@ const TopCategories = () => {
     return categories.map((ele) => {
       return (
         <Box
-          className="mx-1 container-shadow-md rounded"
+          className="mx-1 container-shadow rounded"
           key={ele.id}
           onClick={() => {
             route.push("/customer/searchedproduct");
