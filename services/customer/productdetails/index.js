@@ -2,7 +2,7 @@ import serviceUtil from "services/utils";
 
 const getAllFrequentProduct = (id) => {
   return serviceUtil
-    .get(`products/grouped-product/${id}`)
+    .get(`products/fb-products/${id}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -11,9 +11,11 @@ const getAllFrequentProduct = (id) => {
       err,
     }));
 };
-const getAllProductDetails = (id, status) => {
+const getAllProductDetails = (id, productId) => {
   return serviceUtil
-    .get(`products/master-product/product-variations?id=${id}&status=${status}`)
+    .get(
+      `products/master-product/product-variations?id=${id}&status=APPROVED&profileId=${productId}`
+    )
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -45,9 +47,21 @@ const getAllCouponsData = (id) => {
       err,
     }));
 };
+const getAllRating = (id) => {
+  return serviceUtil
+    .get(`/users/customer/products/review?productVariationId=${id}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
 export {
   getAllFrequentProduct,
   getAllProductDetails,
   getAllMinumCart,
   getAllCouponsData,
+  getAllRating,
 };
