@@ -80,6 +80,7 @@ const ProductCard = ({
         if (data) {
           toastify(data?.message, "success");
           getProducts();
+          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
         }
       }
     }
@@ -210,6 +211,7 @@ const ProductCard = ({
           setModalOpen={setsetshowAddToCardModal}
           productId={item?.id}
           skuId={item?.skuId}
+          modalType="ADD"
         />
       )}
     </Box>

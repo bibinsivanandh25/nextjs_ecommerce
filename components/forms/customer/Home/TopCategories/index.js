@@ -34,7 +34,7 @@ const TopCategories = () => {
           className="mx-1 container-shadow-md rounded"
           key={ele.id}
           onClick={() => {
-            route.push("/customer/searchedproduct");
+            route.push("/customer/productvariation");
           }}
           style={{
             overflow: "hidden",

@@ -461,7 +461,7 @@ const Header = () => {
                 m: "0.08rem",
               }}
               onClick={() => {
-                route.push("/customer/searchedproduct");
+                route.push("/customer/productvariation");
               }}
               className="bg-orange d-flex  p-1 rounded align-items-center cursor-pointer"
             >

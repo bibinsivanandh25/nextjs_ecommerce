@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box, Button, Grid, Pagination, Paper } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import Image from "next/image";
@@ -219,6 +219,7 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
+
 function SearchedProduct({ showBreadCrumb = () => {} }) {
   const classes = useStyles();
   showBreadCrumb(false);
@@ -236,6 +237,11 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   useEffect(() => {
     setCompredProduct(comparProductData);
   }, []);
+
+  const mainRef = useRef(null);
+  useEffect(() => {
+    mainRef.current.scrollIntoView();
+  }, [mainRef]);
   const handleCloseIconClick = (id) => {
     const comparedProductCopy = [...comparedProduct];
     const final = comparedProductCopy.map((item) => {
@@ -350,7 +356,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
     setPage((prev) => (prev < pageCount ? prev + 1 : prev));
   };
   return (
-    <Box className="mnh-100vh">
+    <Box className="mnh-100vh" ref={mainRef}>
       {!comparModalOpen ? (
         <Box className="row w-100">
           <Box className="d-flex justify-content-end mt-1">
