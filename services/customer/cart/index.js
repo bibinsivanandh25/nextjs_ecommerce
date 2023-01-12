@@ -63,6 +63,16 @@ const addProductToCart = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
+
+const editCartProduct = (reqObj) => {
+  return serviceUtil
+    .put(`products/product/cart`, reqObj)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getDeliveryOptions,
   getCartProducts,
@@ -70,4 +80,5 @@ export {
   removeProductFromCart,
   getProductDetailsByDeliveryType,
   addProductToCart,
+  editCartProduct,
 };

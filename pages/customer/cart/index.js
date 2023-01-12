@@ -19,6 +19,7 @@ const Cart = () => {
   const [products, setProducts] = useState();
   const [showChooseAddress, setShowChooseAddress] = useState(false);
   const [showDeliveryOptionModal, setShowDeliveryOptionModal] = useState(false);
+  const [productDetails, setProductDetails] = useState({});
 
   const { profileId } = useSelector((state) => state?.customer);
 
@@ -40,6 +41,11 @@ const Cart = () => {
           orderType: ele.orderType,
           returnType: ele.returnType,
           returnCharge: ele.returnCharge,
+          deliveryIn: ele.deliveryIn,
+          fastDelivery: ele.fastestDelivery,
+          standardDelivery: ele.delivery,
+          fastReturn: ele.fastestReturn,
+          standardReturn: ele.return,
         });
       });
       setProducts([...result]);
@@ -150,9 +156,19 @@ const Cart = () => {
                 </Typography>
                 <Typography
                   component="span"
-                  className="fw-bold h-5"
+                  className="fw-bold h-5 cursor-pointer"
                   onClick={() => {
                     setShowDeliveryOptionModal(true);
+                    setProductDetails({
+                      productId: ele.id,
+                      deliveryOption: ele.orderType,
+                      deliveryOrReturnOptions: {
+                        fastDelivery: ele.fastDelivery,
+                        standardDelivery: ele.standardDelivery,
+                        fastReturn: ele.fastReturn,
+                        standardReturn: ele.standardReturn,
+                      },
+                    });
                   }}
                 >
                   Edit
@@ -346,7 +362,16 @@ const Cart = () => {
           </Paper>
         </Grid>
       )}
-      {showDeliveryOptionModal ? <DeliveryOptionsModal /> : null}
+      {showDeliveryOptionModal ? (
+        <DeliveryOptionsModal
+          modalOpen={showDeliveryOptionModal}
+          setModalOpen={setShowDeliveryOptionModal}
+          productId={productDetails?.productId}
+          getProducts={getproducts}
+          modalType="EDIT"
+          choosedDeliveryandReturnCharges={productDetails}
+        />
+      ) : null}
     </Grid>
   );
 };

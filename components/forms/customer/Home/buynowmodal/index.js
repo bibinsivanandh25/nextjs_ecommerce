@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   addProductToCart,
+  editCartProduct,
   getDeliveryOptions,
   getProductDetailsByDeliveryType,
 } from "services/customer/cart";
@@ -20,15 +21,17 @@ const DeliveryOptionsModal = ({
   getProducts = () => {},
   productId = "",
   skuId = "",
+  modalType = "ADD",
+  choosedDeliveryandReturnCharges = {},
 }) => {
   const tabList = [
     {
-      id: "FREEDELIVERYANDRETURN",
-      label: "Free Delivery Returns",
-    },
-    {
       id: "NOFREEDELIVERYANDRETURN",
       label: "No Free Delivery Returns",
+    },
+    {
+      id: "FREEDELIVERYANDRETURN",
+      label: "Free Delivery Returns",
     },
     {
       id: "STOREOWNERDELIVERY",
@@ -48,7 +51,7 @@ const DeliveryOptionsModal = ({
     chooseReturnOption: false,
   };
 
-  const [selectedTab, setSelectedTab] = useState("FREEDELIVERYANDRETURN");
+  const [selectedTab, setSelectedTab] = useState("");
   const [noFreeRetunModal, setNoFreeReturnModal] = useState(false);
   const [productDetails, setProductDetails] = useState({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -65,13 +68,53 @@ const DeliveryOptionsModal = ({
     if (data) {
       setDeliveryOptions([...data]);
     }
-    setSelectedTab(tabList[0].id);
-    if (tabList[0].label === "No Free Delivery Returns") {
+    // setSelectedTab(tabList[0].id);
+    if (
+      modalType === "ADD" ||
+      (modalType === "EDIT" &&
+        JSON.parse(JSON.stringify(choosedDeliveryandReturnCharges))
+          ?.deliveryOption === "NOFREEDELIVERYANDRETURN")
+    ) {
       setNoFreeReturnModal(true);
     } else {
       setNoFreeReturnModal(false);
     }
   };
+
+  useEffect(() => {
+    if (modalType === "EDIT") {
+      const deliveryOrReturnOptions = JSON.parse(
+        JSON.stringify(choosedDeliveryandReturnCharges)
+      );
+      setSelectedDeliveryandReturnCharges({
+        ...selectedDeliveryandReturnCharges,
+        freeDeliveryFastDelivery:
+          JSON.parse(JSON.stringify(choosedDeliveryandReturnCharges))
+            ?.deliveryOption === "FREEDELIVERYANDRETURN"
+            ? deliveryOrReturnOptions.deliveryOrReturnOptions?.fastDelivery
+            : false,
+        noFreeDeliveryFastDelivery:
+          deliveryOrReturnOptions?.deliveryOrReturnOptions?.fastDelivery,
+        noFreeDeliveryFastReturn:
+          deliveryOrReturnOptions?.deliveryOrReturnOptions?.fastReturn,
+        noFreeDeliveryStandardDelivery:
+          deliveryOrReturnOptions?.deliveryOrReturnOptions?.standardDelivery,
+        noFreeDeliveryStandardReturn:
+          deliveryOrReturnOptions?.deliveryOrReturnOptions?.standardReturn,
+        chooseReturnOption:
+          deliveryOrReturnOptions.deliveryOrReturnOptions?.standardReturn ||
+          deliveryOrReturnOptions.deliveryOrReturnOptions?.fastReturn,
+      });
+    }
+    if (modalType === "ADD") {
+      setSelectedTab("NOFREEDELIVERYANDRETURN");
+    } else {
+      setSelectedTab(
+        JSON.parse(JSON.stringify(choosedDeliveryandReturnCharges))
+          ?.deliveryOption
+      );
+    }
+  }, [modalType]);
 
   useEffect(() => {
     getAllTabList();
@@ -101,12 +144,22 @@ const DeliveryOptionsModal = ({
 
   const { userId, profileId } = useSelector((state) => state.customer);
   useEffect(() => {
-    getProductDetails("FREEDELIVERYANDRETURN");
-  }, []);
+    if (modalType === "ADD") {
+      getProductDetails("NOFREEDELIVERYANDRETURN");
+    } else {
+      getProductDetails(
+        JSON.parse(JSON.stringify(choosedDeliveryandReturnCharges))
+          ?.deliveryOption
+      );
+    }
+  }, [modalType]);
 
   useEffect(() => {
-    setSelectedDeliveryandReturnCharges({ ...initialCharges });
+    if (modalType === "ADD") {
+      setSelectedDeliveryandReturnCharges({ ...initialCharges });
+    }
   }, [selectedTab]);
+
   const handleChangeTab = (item) => {
     getProductDetails(item.id);
     setSelectedTab(item.id);
@@ -137,10 +190,13 @@ const DeliveryOptionsModal = ({
     );
   };
 
-  const getDeliveryCharge = () => {
-    let result = 0;
+  const getDeliveryCharge = (deliveryType) => {
+    let result = null;
     if (selectedTab === "FREEDELIVERYANDRETURN") {
-      if (selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery) {
+      if (
+        selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery &&
+        deliveryType === "fast"
+      ) {
         return Number(productDetails.fastDeliveryCharges);
       }
     }
@@ -148,10 +204,16 @@ const DeliveryOptionsModal = ({
       Object.entries(selectedDeliveryandReturnCharges).forEach(
         ([key, value]) => {
           if (value) {
-            if (key === "noFreeDeliveryFastDelivery") {
+            if (
+              key === "noFreeDeliveryFastDelivery" &&
+              deliveryType === "fast"
+            ) {
               result = Number(productDetails.fastDeliveryCharges);
             }
-            if (key === "noFreeDeliveryStandardDelivery") {
+            if (
+              key === "noFreeDeliveryStandardDelivery" &&
+              deliveryType === "standard"
+            ) {
               result = Number(productDetails?.deliveryCharges);
             }
           }
@@ -160,16 +222,19 @@ const DeliveryOptionsModal = ({
     }
     return result;
   };
-  const getReturnCharge = () => {
-    let result = 0;
+  const getReturnCharge = (returnType) => {
+    let result = null;
     if (selectedTab === "NOFREEDELIVERYANDRETURN") {
       Object.entries(selectedDeliveryandReturnCharges).forEach(
         ([key, value]) => {
           if (value) {
-            if (key === "noFreeDeliveryFastReturn") {
+            if (key === "noFreeDeliveryFastReturn" && returnType === "fast") {
               result = Number(productDetails.fastReturnCharges);
             }
-            if (key === "noFreeDeliveryStandardReturn") {
+            if (
+              key === "noFreeDeliveryStandardReturn" &&
+              returnType === "standard"
+            ) {
               result = Number(productDetails?.returnCharges);
             }
           }
@@ -179,30 +244,55 @@ const DeliveryOptionsModal = ({
     return result;
   };
   const handleSubmit = async (flag = false) => {
-    const payload = {
-      profileId,
-      customerId: userId,
-      cartProductId: {
-        productId,
-        quantity: 1,
+    if (modalType === "ADD") {
+      const payload = {
+        profileId,
+        customerId: userId,
+        cartProduct: [
+          {
+            productId,
+            quantity: 1,
+            orderType: selectedTab,
+            skuId,
+            fastestDeliveryAmount: getDeliveryCharge("fast"),
+            deliveryCharge: getDeliveryCharge("standard"),
+            fastestReturnAmount: getReturnCharge("fast"),
+            returnCharge: getReturnCharge("standard"),
+          },
+        ],
+        flag,
+      };
+      const { data, err } = await addProductToCart(payload);
+      if (data) {
+        if (!data?.popUp) {
+          toastify(data?.message, "success");
+          setModalOpen(false);
+          getProducts();
+        } else setShowConfirmModal(true);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+    if (modalType === "EDIT") {
+      const payload = {
+        profileId,
         orderType: selectedTab,
-        skuId,
-        deliveryCharge: getDeliveryCharge(),
-        returnCharge: getReturnCharge(),
-      },
-      flag,
-    };
-
-    const { data, err } = await addProductToCart(payload);
-    if (data) {
-      if (!data?.popUp) {
+        productId,
+        deliveryCharge: getDeliveryCharge("standard"),
+        fastestDeliveryAmount: getDeliveryCharge("fast"),
+        fastestReturnAmount: getReturnCharge("fast"),
+        returnCharge: getReturnCharge("standard"),
+      };
+      const { data, err } = await editCartProduct(payload);
+      if (data) {
         toastify(data?.message, "success");
         setModalOpen(false);
         getProducts();
-      } else setShowConfirmModal(true);
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
   const renderGeneralModal = () => {
