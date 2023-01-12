@@ -60,6 +60,11 @@ const CouponApplicableProducts = () => {
         setComponent(ScratchCard);
         break;
       }
+      case "Discount Coupon": {
+        // return <ScratchCard purchaseId={selectedTab.id} ref={childRef} />;
+        setComponent(TODAYSDEAL);
+        break;
+      }
       default: {
         setComponent(null);
         break;
@@ -80,6 +85,13 @@ const CouponApplicableProducts = () => {
     if (data) {
       const temp = JSON.parse(JSON.stringify(intialTabs));
       data?.forEach((ele) => {
+        if (ele.marketingTools === "TODAYS_DEAL") {
+          setSelectedTab({
+            ind: 0,
+            id: ele?.purchaseId ?? null,
+            name: "Today's Deal",
+          });
+        }
         temp.forEach((item) => {
           if (item.enum === ele.marketingTools) {
             item.id = ele.purchaseId;
@@ -87,11 +99,6 @@ const CouponApplicableProducts = () => {
         });
       });
       setTabNames(temp);
-      setSelectedTab({
-        ind: 0,
-        id: data[0]?.purchaseId ?? null,
-        name: "Today's Deal",
-      });
     }
   };
 
@@ -102,7 +109,6 @@ const CouponApplicableProducts = () => {
     if (selectedTab) {
       getTabComponent(selectedTab.name);
     }
-    console.log(selectedTab);
   }, [selectedTab]);
 
   const getTabs = () => {
@@ -169,7 +175,11 @@ const CouponApplicableProducts = () => {
           {getTabs()}
         </Box>
         {Component !== null && (
-          <Component purchaseId={selectedTab.id} ref={childRef} />
+          <Component
+            purchaseId={selectedTab.id}
+            ref={childRef}
+            tabName={selectedTab.name}
+          />
         )}
       </Box>
     </>
