@@ -169,44 +169,6 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
           </Typography>
         )}
       </Box>
-      {/* <Box className="w-100 p-2 border-top">
-        <Typography className="fs-18 fw-500">
-          Recently Visited Stores
-        </Typography>
-        {recentStores.map((item) => {
-          return (
-            <motion.div
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.5 },
-              }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Paper
-                className="w-80p mx-auto px-2 py-1 d-flex m-2 cursor-pointer"
-                elevation={4}
-              >
-                <Box elevation={4}>
-                  <Image
-                    className="rounded-circle  cursor-pointer"
-                    src={item.logo}
-                    width={35}
-                    height={35}
-                  />
-                </Box>
-                <Box className="d-flex flex-column ms-1  cursor-pointer">
-                  <Typography className="fs-14  cursor-pointer">
-                    {item.label}
-                  </Typography>
-                  <Typography className="fs-14  cursor-pointer">
-                    {item.description}
-                  </Typography>
-                </Box>
-              </Paper>
-            </motion.div>
-          );
-        })}
-      </Box> */}
     </>
   ) : (
     <Box className="p-2 w-100">
