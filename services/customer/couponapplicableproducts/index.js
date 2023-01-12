@@ -28,8 +28,18 @@ const getScratchCardMarketingTool = (purchaseId) => {
     })
     .catch((err) => ({ err }));
 };
+const getScratchCardProduct = (payload) => {
+  return serviceUtil
+    .put(`users/customer-coupon-products`, payload)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getActiveMarketingToolNames,
   getProductsByMarketingTool,
   getScratchCardMarketingTool,
+  getScratchCardProduct,
 };

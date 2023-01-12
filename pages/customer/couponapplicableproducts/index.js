@@ -175,11 +175,7 @@ const CouponApplicableProducts = () => {
           {getTabs()}
         </Box>
         {Component !== null && (
-          <Component
-            purchaseId={selectedTab.id}
-            ref={childRef}
-            tabName={selectedTab.name}
-          />
+          <Component purchaseId={selectedTab.id} ref={childRef} />
         )}
       </Box>
     </>
