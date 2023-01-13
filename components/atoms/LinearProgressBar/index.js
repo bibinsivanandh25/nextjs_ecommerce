@@ -11,6 +11,7 @@ const LinearProgressBar = ({
   rightTitle = "",
   height = 10,
   borderRadius = 10,
+  className = "",
 }) => {
   const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height,
@@ -25,15 +26,15 @@ const LinearProgressBar = ({
     },
   }));
   return (
-    <Box>
+    <Box className={className}>
       <Grid container paddingX={2}>
-        <Grid item sm={2} alignSelf="center" paddingRight={1}>
+        <Grid item lg={2} xs={3} alignSelf="center" paddingRight={1}>
           <Typography className="h-5 text-center">{leftTitle}</Typography>
         </Grid>
-        <Grid item sm={8.5} alignSelf="center">
+        <Grid item lg={8.5} xs={7} alignSelf="center">
           <BorderLinearProgress variant="determinate" value={value} />
         </Grid>
-        <Grid item sm={1.5} alignSelf="center" paddingLeft={1}>
+        <Grid item lg={1.5} xs={2} alignSelf="center" paddingLeft={1}>
           <Typography className="h-5">{rightTitle} </Typography>
         </Grid>
       </Grid>

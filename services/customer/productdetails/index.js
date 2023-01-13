@@ -49,7 +49,41 @@ const getAllCouponsData = (id) => {
 };
 const getAllRating = (id) => {
   return serviceUtil
-    .get(`/users/customer/products/review?productVariationId=${id}`)
+    .put(`/users/customer/products/review?productVariationId=${id}`)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
+const getAllQandA = (payload, pageNumber) => {
+  return serviceUtil
+    .put(`products/customer-question-answer/${pageNumber}/10`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
+
+const postQuestions = (payload) => {
+  return serviceUtil
+    .post(`products/customer-question-answer`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
+const getProductReview = (id, pageNumber) => {
+  return serviceUtil
+    .put(`users/customer/review/${pageNumber}/5?productVariationId=${id}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -64,4 +98,7 @@ export {
   getAllMinumCart,
   getAllCouponsData,
   getAllRating,
+  getAllQandA,
+  postQuestions,
+  getProductReview,
 };
