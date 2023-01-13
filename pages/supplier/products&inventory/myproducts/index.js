@@ -36,6 +36,7 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { style } from "@mui/system";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -147,6 +148,7 @@ const MyProducts = () => {
   });
   const { supplierId, storeCode } = useSelector((state) => state.user);
   const [flagsList, setFlagsList] = useState([]);
+
   const flagSchema = {
     flagTitle: "",
     imageUrl: "",
@@ -159,11 +161,14 @@ const MyProducts = () => {
     supplierId: "",
     userType: "SUPPLIER",
     purchaseId: null,
+    visibilityPlace: "",
+    imageId: "",
   };
   const [flagFormData, setFlagFormData] = useState(flagSchema);
   const [disableFlagField, setdisableFlagField] = useState(false);
   const [flagTitle, setFlagTitle] = useState({});
   const [flagUrlList, setflagUrlList] = useState([]);
+  const [FlagListData, setFlagListData] = useState([]);
   const { id } = useUserInfo();
   const router = useRouter();
 
@@ -437,15 +442,33 @@ const MyProducts = () => {
 
   const getflagList = async () => {
     const { data, err } = await getFlags(supplierId);
+
     if (data) {
       setFlagsList(
         data.map((item) => ({
           value: item.id,
           label: item.name,
-          purchaseId: item.purchaseId,
-          imageUrl: item.imageUrl,
+          purchaseId: item?.purchaseId,
+
+          flagImagePojos: item.flagImagePojos.map((imgData) => {
+            return {
+              visibilityPlace: imgData.visibilityPlace,
+              flagImageId: imgData.flagImageId,
+              imageUrl: imgData.flagImageUrl,
+            };
+          }),
+          // imageUrl: item?.flagImagePojos?.map((img) => {
+          //   return img?.flagImageUrl;
+          // }),
+          // flagImageId: item?.flagImagePojos?.map((imgid) => {
+          //   return imgid?.flagImageId;
+          // }),
+          // visibilityPlace: item.flagImagePojos.map((place) => {
+          //   return place.visibilityPlace;
+          // }),
         }))
       );
+      setFlagListData(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -468,12 +491,23 @@ const MyProducts = () => {
     );
     if (data) {
       if (data.data) {
+        setFlagTitle(JSON.parse(JSON.stringify(val)));
+        const temp = val?.flagImagePojos?.map((item) => {
+          return {
+            checked: data?.data?.imageId == item?.flagImageId,
+            url: item,
+            label: <Image src={item?.imageUrl} width={400} height={50} />,
+          };
+        });
+        setflagUrlList(temp);
+
         setdisableFlagField(true);
         setFlagFormData((pre) => ({
           ...pre,
           flagId: val.value,
           flagTitle: val.label,
-          imageUrl: val.imageUrl,
+          imageUrl: data.data.imageUrl,
+          imageId: data.data.imageId,
           supplierId,
           supplierStoreId: storeCode,
           purchaseId: val.purchaseId,
@@ -481,6 +515,7 @@ const MyProducts = () => {
           startDate: data.data.startDate,
           endDate: data.data.endDate,
           discount: data.data.discount,
+          visibilityPlace: data.data.visibilityPlace,
         }));
       } else {
         setdisableFlagField(false);
@@ -488,7 +523,9 @@ const MyProducts = () => {
           ...pre,
           flagId: val.value,
           flagTitle: val.label,
-          imageUrl: val.imageUrl,
+          imageUrl: data.data.imageUrl,
+          imageId: data.data.imageId,
+          visibilityPlace: data.data.visibilityPlace,
           supplierId,
           supplierStoreId: storeCode,
           purchaseId: val.purchaseId,
@@ -506,7 +543,11 @@ const MyProducts = () => {
   const flagSubmit = async () => {
     const { data, err } = await addProductFlag({
       ...flagFormData,
-      imageUrl: flagUrlList.filter((item) => item.checked)[0].url,
+      imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
+      visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
+        .visibilityPlace,
+      imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
+      // FlagListData.flagImagePojos.map((val)=>{})
     });
     if (data) {
       toastify(data.message, "success");
@@ -520,6 +561,7 @@ const MyProducts = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const [showPlace, setshowPlace] = useState(false);
 
   return (
     <Paper
@@ -634,15 +676,6 @@ const MyProducts = () => {
                   list={flagsList}
                   value={flagTitle}
                   onDropdownSelect={(val) => {
-                    setFlagTitle(JSON.parse(JSON.stringify(val)));
-                    const temp = val?.imageUrl?.map((item) => {
-                      return {
-                        checked: false,
-                        url: item,
-                        label: <Image src={item} width={400} height={50} />,
-                      };
-                    });
-                    setflagUrlList(temp);
                     getFlagDetails(val);
                   }}
                 />
@@ -713,10 +746,10 @@ const MyProducts = () => {
                 />
               </Grid>
               <Grid item sm={12} container>
-                {flagUrlList.map((item, ind) => {
+                {flagUrlList?.map((item, ind) => {
                   return (
                     <Grid item md={6}>
-                      <div className="d-flex">
+                      <div className="d-flex" style={{ paddingLeft: "10px" }}>
                         <CheckBoxComponent
                           isChecked={item.checked}
                           checkBoxClick={() => {
@@ -729,9 +762,15 @@ const MyProducts = () => {
                               }
                             });
                             setflagUrlList(temp);
+                            setshowPlace(true);
                           }}
                         />
                         {item.label}
+                        <span className="fs-12 color-orange d-flex align-self-center p-3">
+                          {showPlace
+                            ? item.url.visibilityPlace.replace("_", " ")
+                            : ""}
+                        </span>
                       </div>
                     </Grid>
                   );

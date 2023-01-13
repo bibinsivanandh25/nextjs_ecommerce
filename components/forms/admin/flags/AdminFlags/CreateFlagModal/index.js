@@ -89,7 +89,6 @@ const CreateFlagModal = ({
       ],
     };
     const { data, err } = await editThemeLayout(payload);
-
     if (data) {
       const result = [];
       data.forEach((ele) => {
@@ -190,27 +189,34 @@ const CreateFlagModal = ({
     }:00`;
     const payload = {
       flagTitle: formData.flagTitle.label,
-      visibilityPlace: [
-        ...formData.visibilityPlace.map((item) => {
-          return item.title;
-        }),
-      ],
-      flagLayoutId: [
-        ...formData.themeSelection.map((item) => {
-          return item.id;
-        }),
-      ],
+      flagImagePojos: formData?.colorSelection?.map((val) => {
+        return {
+          flagImageId: val.id,
+          flagImageUrl: val.url,
+          visibilityPlace: val.visibilityPlace,
+        };
+      }),
+
+      // visibilityPlace: [
+      //   ...formData.visibilityPlace.map((item) => {
+      //     return item.title;
+      //   }),
+      // ],
+      // flagLayoutId: [
+      //   ...formData.themeSelection.map((item) => {
+      //     return item.id;
+      //   }),
+      // ],
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [
-        ...formData?.colorSelection?.map((item) => {
-          return item.url;
-        }),
-      ],
+      // flagImageUrl: [
+      //   ...formData?.colorSelection?.map((item) => {
+      //     return item.url;
+      //   }),
+      // ],
 
       userType: "ADMIN",
     };
-
     const { data, err, message } = await saveAdminFlag(payload);
     if (data) {
       toastify(message, "success");
@@ -243,8 +249,8 @@ const CreateFlagModal = ({
   useEffect(() => {
     if (
       formData.flagTitle?.label &&
-      formData.themeSelection.length &&
-      formData.visibilityPlace.length
+      formData.themeSelection?.length &&
+      formData.visibilityPlace?.length
     ) {
       flahLayoutTheme();
     }
@@ -257,13 +263,13 @@ const CreateFlagModal = ({
         flagLayoutIdList: data?.flagLayoutId?.filter((item) => {
           if (data?.flagLayoutId.includes(item)) return item;
         }),
-        visibilityPlaceList: data?.visibilityPlace?.map((item) => {
-          return item;
+        visibilityPlaceList: data?.flagImagePojos?.map((item) => {
+          return item.visibilityPlace;
         }),
       });
       const temp = colorList?.data.map((item) => {
         return {
-          id: item.flagThemeId,
+          id: item.flagImageId,
           title: (
             <Image src={item?.flagThemeImageUrl} width={400} height={80} />
           ),
@@ -272,18 +278,27 @@ const CreateFlagModal = ({
           flagLayoutId: item.flagLayoutId,
         };
       });
+      console.log(temp, "temp");
       setcolorTheme([...temp]);
       setFormDate({
         flagId: data.flagId,
         flagTitle: { id: data?.flagTitle, label: data.flagTitle },
-        visibilityPlace: data?.visibilityPlace.map((item) => {
-          return { id: item, title: item };
+        // flagImagePojos: data?.flagImagePojos.map((item) => {
+        //   return {
+        //     flagImageId: item.flagImageId,
+        //     flagImageUrl: item.flagImageUrl,
+        //     visibilityPlace: item.visibilityPlace,
+        //   };
+        // }),
+        visibilityPlace: data?.flagImagePojos?.map((item) => {
+          return { id: item.visibilityPlace, title: item.visibilityPlace };
         }),
         themeSelection: themeState?.filter((item) => {
           if (data?.flagLayoutId?.includes(item.id)) return item;
         }),
-        colorSelection: temp?.filter((item) => {
-          if (data.flagImageUrl.includes(item.url)) return item;
+        colorSelection: temp?.filter((item, ind) => {
+          if (data.flagImagePojos[ind].flagImageUrl.includes(item.url))
+            return item;
         }),
         startDate: data.startDateTime.split(" ")[0],
         endDate: data.endDateTime.split(" ")[0],
@@ -310,23 +325,30 @@ const CreateFlagModal = ({
     const payload = {
       flagId: formData.flagId,
       flagTitle: formData.flagTitle.label,
-      visibilityPlace: [
-        ...formData.visibilityPlace.map((item) => {
-          return item.title;
-        }),
-      ],
-      flagLayoutId: [
-        ...formData.themeSelection.map((item) => {
-          return item.id;
-        }),
-      ],
+      flagImagePojos: formData?.colorSelection?.map((val) => {
+        return {
+          flagImageId: val.id,
+          flagImageUrl: val.url,
+          visibilityPlace: val.visibilityPlace,
+        };
+      }),
+      // visibilityPlace: [
+      //   ...formData.visibilityPlace.map((item) => {
+      //     return item.title;
+      //   }),
+      // ],
+      // flagLayoutId: [
+      //   ...formData.themeSelection.map((item) => {
+      //     return item.id;
+      //   }),
+      // ],
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [
-        ...formData.colorSelection.map((item) => {
-          return item.url;
-        }),
-      ],
+      // flagImageUrl: [
+      //   ...formData.colorSelection.map((item) => {
+      //     return item.url;
+      //   }),
+      // ],
       userType: "ADMIN",
     };
     const { data, message, err } = await editFlag(payload);

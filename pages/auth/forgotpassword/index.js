@@ -72,6 +72,7 @@ const OtpLogIn = () => {
       const { data, errRes } = await getOtp(formData);
       if (data) {
         setSubmitted(true);
+        toastify(data.message, "success");
       } else if (errRes) {
         toastify(errRes?.message, "error");
       }

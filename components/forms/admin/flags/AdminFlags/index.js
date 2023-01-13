@@ -82,7 +82,11 @@ const AdminFlags = () => {
           flagId: item.flagId,
           col1: item.flagTitle,
           col2: (
-            <Image src={item.flagImageUrl[0] || ""} height={50} width={50} />
+            <Image
+              src={item?.flagImagePojos[0]?.flagImageUrl || ""}
+              height={50}
+              width={50}
+            />
           ),
           col3: "--",
           col4: item.createdAt,
@@ -407,10 +411,11 @@ const AdminFlags = () => {
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={8}>
                   <Typography className="fs-14 fw-500">
-                    {flagData?.visibilityPlace?.map((ele, index) => {
+                    {flagData?.flagImagePojos?.map((ele, index) => {
                       return (
                         <span key={ele}>
-                          {(index ? ",  " : "") + ele.split("_").join(" ")}
+                          {(index ? ",  " : "") +
+                            ele.visibilityPlace.split("_").join(" ")}
                         </span>
                       );
                     })}
@@ -420,10 +425,10 @@ const AdminFlags = () => {
               <Grid item>
                 <Typography className="fw-600 fs-14">Flag Image:</Typography>
                 <Grid style={{ maxHeight: "20vh", overflowY: "scroll" }}>
-                  {flagData?.flagImageUrl?.map((item) => {
+                  {flagData?.flagImagePojos?.map((item) => {
                     return (
                       <Image
-                        src={item?.toString()}
+                        src={item?.flagImageUrl?.toString()}
                         height={100}
                         width={300}
                         alt="flag"
