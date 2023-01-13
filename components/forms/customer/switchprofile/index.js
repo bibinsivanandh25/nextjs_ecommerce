@@ -44,7 +44,6 @@ const SwitchProfile = ({
   const getProfiles = async () => {
     const { data, err } = await getCustomerProfile(userId);
     if (data) {
-      console.log(data);
       setProfileList(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");

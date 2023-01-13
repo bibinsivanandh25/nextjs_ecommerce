@@ -5,7 +5,7 @@
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Avatar, Box, MenuItem, Typography } from "@mui/material";
-import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
+import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";

@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { getActiveMarketingToolNames } from "services/customer/couponapplicableproducts";
 import TODAYSDEAL from "./todaysDeal";
 import ScratchCard from "./scratchCard";
+import Quiz from "./quiz";
 
 const CouponApplicableProducts = () => {
   const intialTabs = [
@@ -47,6 +48,7 @@ const CouponApplicableProducts = () => {
   const childRef = useRef();
   const mainRef = useRef(null);
   const [Component, setComponent] = useState(null);
+  const [showSearch, setShowSearch] = useState(true);
 
   const getTabComponent = (name) => {
     switch (name) {
@@ -63,6 +65,11 @@ const CouponApplicableProducts = () => {
       case "Discount Coupon": {
         // return <ScratchCard purchaseId={selectedTab.id} ref={childRef} />;
         setComponent(TODAYSDEAL);
+        break;
+      }
+      case "Quiz": {
+        // return <ScratchCard purchaseId={selectedTab.id} ref={childRef} />;
+        setComponent(Quiz);
         break;
       }
       default: {
@@ -142,40 +149,46 @@ const CouponApplicableProducts = () => {
         <Typography className="fw-bold ms-4">
           Coupons Applicable Products
         </Typography>
-        <Box className="d-flex w-30p">
-          <InputBox
-            label="Search Coupon Applicable Products"
-            placeholder="Search Coupon Applicable Products"
-            value={searchText}
-            className="w-100 mx-2"
-            onInputChange={(e) => {
-              setSearchText(e.target.value);
-              if (e.target.value === "") {
-                childRef.current("");
-              }
-            }}
-          />
-          <Box
-            style={{ width: "40px", height: "38px" }}
-            className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
-              searchText === "" ? "bg-gray" : ""
-            }`}
-          >
-            <SearchOutlinedIcon
-              style={{ color: "white" }}
-              onClick={() => {
-                childRef.current(searchText);
+        {showSearch && (
+          <Box className="d-flex w-30p">
+            <InputBox
+              label="Search Coupon Applicable Products"
+              placeholder="Search Coupon Applicable Products"
+              value={searchText}
+              className="w-100 mx-2"
+              onInputChange={(e) => {
+                setSearchText(e.target.value);
+                if (e.target.value === "") {
+                  childRef.current("");
+                }
               }}
             />
+            <Box
+              style={{ width: "40px", height: "38px" }}
+              className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${
+                searchText === "" ? "bg-gray" : ""
+              }`}
+            >
+              <SearchOutlinedIcon
+                style={{ color: "white" }}
+                onClick={() => {
+                  childRef.current(searchText);
+                }}
+              />
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
       <Box className="mx-5">
         <Box className="d-flex flex-row align-items-center mt-1 mb-2">
           {getTabs()}
         </Box>
         {Component !== null && (
-          <Component purchaseId={selectedTab.id} ref={childRef} />
+          <Component
+            purchaseId={selectedTab.id}
+            ref={childRef}
+            setShowSearch={setShowSearch}
+          />
         )}
       </Box>
     </>
