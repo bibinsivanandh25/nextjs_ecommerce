@@ -36,7 +36,6 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import { style } from "@mui/system";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -168,7 +167,6 @@ const MyProducts = () => {
   const [disableFlagField, setdisableFlagField] = useState(false);
   const [flagTitle, setFlagTitle] = useState({});
   const [flagUrlList, setflagUrlList] = useState([]);
-  const [FlagListData, setFlagListData] = useState([]);
   const { id } = useUserInfo();
   const router = useRouter();
 
@@ -468,7 +466,6 @@ const MyProducts = () => {
           // }),
         }))
       );
-      setFlagListData(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }

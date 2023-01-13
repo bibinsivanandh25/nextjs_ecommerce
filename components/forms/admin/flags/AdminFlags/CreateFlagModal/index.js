@@ -278,7 +278,6 @@ const CreateFlagModal = ({
           flagLayoutId: item.flagLayoutId,
         };
       });
-      console.log(temp, "temp");
       setcolorTheme([...temp]);
       setFormDate({
         flagId: data.flagId,
