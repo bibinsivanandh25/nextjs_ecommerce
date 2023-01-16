@@ -119,6 +119,103 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
       </Box>
     </Box>
   );
+
+  /* <DrawerComponent
+openDrawer={showDrawer}
+width="500px"
+modalTitle="Similar Products"
+onClose={() => setShowDrawer(false)}
+>
+<Grid
+  container
+  spacing={2}
+  className="mx-auto ms-0 mt-2 mb-2 ps-1 pe-3"
+  sx={{
+    width: `calc(100% - 10px)`,
+  }}
+>
+  {productData.map((item, index) => (
+    <Grid item md={6} sm={6} key={index}>
+      <SimilarProducts
+        data={item}
+        handleIconClick={(value) => onSimilerIconClick(value)}
+      />
+    </Grid>
+  ))}
+</Grid>
+</DrawerComponent>
+
+{viewModalOpen && (
+<ViewModalComponent
+  setViewModalOpen={setViewModalOpen}
+  viewModalOpen={viewModalOpen}
+/>
+)}
+<DrawerComponent
+openDrawer={comparDrawer}
+anchor="bottom"
+width="vp-width"
+headerBorder={false}
+onClose={() => setComparDrawer(false)}
+enter={300}
+>
+<Box
+  className="px-4 py-2 d-flex justify-content-between mnh-25p mx-4"
+  style={{ height: "150px" }}
+>
+  <Box className="align-self-center ">
+    <p className="fw-600 fs-18">Compare Products</p>
+    <p>( 1 Product )</p>
+  </Box>
+  {comparedProduct &&
+    comparedProduct.map((item) => (
+      <Box className="d-flex justify-content-center border rounded mnw-150">
+        {item.imageLink ? (
+          <>
+            <Image
+              src={item?.imageLink}
+              alt=""
+              className="rounded bg-white"
+              style={{ position: "relative" }}
+              width="150%"
+              height="100%"
+            />
+
+            <CustomIcon
+              type="close"
+              className="position-absolute compareProductTop fs-18"
+              onIconClick={() => handleCloseIconClick(item.id)}
+            />
+          </>
+        ) : (
+          <Box className="align-self-center border p-3 rounded-circle cursor-pointer">
+            <CustomIcon type="add" className="" />
+          </Box>
+        )}
+      </Box>
+    ))}
+  <Box className="align-self-center">
+    <ButtonComponent
+      label="Clear All"
+      variant="outlined"
+      borderColor="border-gray "
+      bgColor="bg-white"
+      textColor="color-black"
+      size="medium"
+      muiProps="me-3"
+      onBtnClick={() => compareClearAll()}
+    />
+    <ButtonComponent
+      label="Start Compare"
+      size="medium"
+      onBtnClick={() => {
+        setComparModalOpan(true);
+        setComparDrawer(false);
+      }}
+    />
+  </Box>
+</Box>
+</DrawerComponent> */
 }
 
 export default SimilarProducts;
