@@ -132,8 +132,11 @@ const CustomerSideBarComponent = ({ children }) => {
                 if (!ele.isSet) {
                   router.push({
                     pathname: "/customer/productvariation",
-                    subCategoryId: ele?.id,
+                    query: {
+                      subCategoryId: ele?.id,
+                    },
                   });
+                  setHover(false);
                 }
               }}
             >
