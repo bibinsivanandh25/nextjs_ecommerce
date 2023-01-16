@@ -100,6 +100,7 @@ const OtpLogIn = () => {
         toastify(err?.response?.data?.message, "error");
       });
     if (data?.data) {
+      toastify(data.data.message, "success");
       const { token } = data.data;
       const decoded = JSON.parse(atob(token.split(".")[1].toString()));
       const userData = decoded.sub.split(",");
@@ -160,6 +161,8 @@ const OtpLogIn = () => {
         .then((data) => {
           if (data) {
             setSubmitted(true);
+            console.log(data.data.message, "data");
+            toastify(data.data.message, "success");
           }
         })
         .catch((err) => {
