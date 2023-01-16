@@ -243,6 +243,7 @@ const DeliveryOptionsModal = ({
     }
     return result;
   };
+
   const handleSubmit = async (flag = false) => {
     if (modalType === "ADD") {
       const payload = {

@@ -34,7 +34,12 @@ const TopCategories = () => {
           className="mx-1 container-shadow rounded"
           key={ele.id}
           onClick={() => {
-            route.push("/customer/productvariation");
+            route.push({
+              pathname: "/customer/productvariation",
+              query: {
+                categoryId: ele.id,
+              },
+            });
           }}
           style={{
             overflow: "hidden",
@@ -45,6 +50,9 @@ const TopCategories = () => {
             src={ele.image}
             height={150}
             width={150}
+            clickCardCategory={() => {
+              console.log(ele);
+            }}
           />
         </Box>
       );
