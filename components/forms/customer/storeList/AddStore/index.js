@@ -62,6 +62,9 @@ const AddStore = ({
     if (formData.storeCode === "") {
       errObj.storeCode = validateMessage.field_required;
       flag = true;
+    } else if (formData.storeListName.title === "") {
+      errObj.storeListName = validateMessage.field_required;
+      flag = true;
     }
     if (
       defaultData?.type &&
