@@ -59,7 +59,7 @@ const editThemeLayout = (payLoad) => {
 
 const getFlagById = (id) => {
   return serviceUtil
-    .get(`products/produt-flag/${id}`)
+    .get(`products/produt-flag-details/${id}`)
     .then((res) => {
       const { data, message } = res && res.data;
       return { data, message };

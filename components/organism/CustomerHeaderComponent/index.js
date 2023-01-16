@@ -100,7 +100,6 @@ const Header = () => {
         label += item[0];
       });
     }
-    // console.log(label, );
     return label.toUpperCase();
   };
 
@@ -147,8 +146,9 @@ const Header = () => {
   };
 
   const handleSwitchStore = async (storecode) => {
-    const { data, err } = await switchStore(storecode, userId);
+    const { data, err, message } = await switchStore(storecode, userId);
     if (data) {
+      toastify(message, "success");
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
         storecode
       );
@@ -229,29 +229,66 @@ const Header = () => {
               className="d-flex justify-content-between py-0 px-3"
               key={ele.id}
             >
-              <CheckBoxComponent
-                checkedcolor="#54ce3c"
-                iconType="circled"
-                showIcon
-                id={ele.id}
-                label={
-                  <Typography className="h-5 cursor-pointer">
-                    {ele.label}
-                  </Typography>
-                }
-                isChecked={ele.checked}
-                checkBoxClick={() => {
-                  setShowConfirmModal(true);
-                  setstoreDetails(ele);
-                }}
-              />
-              <CustomIcon
-                type="delete"
-                onIconClick={() => {
-                  deleteStores(ele.id);
-                }}
-              />
+              <Grid display="flex" alignItems="center">
+                <CheckBoxComponent
+                  checkedcolor="#54ce3c"
+                  iconType="circled"
+                  showIcon
+                  id={ele.id}
+                  label=""
+                  isChecked={ele.checked}
+                  checkBoxClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                />
+                <Typography
+                  onClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                >
+                  {ele.label}
+                </Typography>
+              </Grid>
+              {ele.checked ? (
+                <></>
+              ) : (
+                <CustomIcon
+                  type="delete"
+                  onIconClick={() => {
+                    deleteStores(ele.id);
+                  }}
+                />
+              )}
             </MenuItem>
+            // <MenuItem
+            //   className="d-flex justify-content-between py-0 px-3"
+            //   key={ele.id}
+            // >
+            //   <CheckBoxComponent
+            //     checkedcolor="#54ce3c"
+            //     iconType="circled"
+            //     showIcon
+            //     id={ele.id}
+            //     label={
+            //       <Typography onCli className="h-5 cursor-pointer">
+            //         {ele.label}
+            //       </Typography>
+            //     }
+            //     isChecked={ele.checked}
+            //     checkBoxClick={() => {
+            //       setShowConfirmModal(true);
+            //       setstoreDetails(ele);
+            //     }}
+            //   />
+            //   <CustomIcon
+            //     type="delete"
+            //     onIconClick={() => {
+            //       deleteStores(ele.id);
+            //     }}
+            //   />
+            // </MenuItem>
           );
         })}
         {!stores.length && (
@@ -381,12 +418,6 @@ const Header = () => {
             }}
             className="color-black mx-2 me-3 h-5 fw-bold cursor-pointer"
           >
-            {/* <FaArrowRight
-              onClick={() => {
-                setOpenExplore(true);
-              }}
-              className="fs-16 ms-1 cursor-pointer"
-            /> */}
             Explore Stores
           </Typography>
           <div className="d-flex justify-content-center align-items-center">
@@ -484,8 +515,8 @@ const Header = () => {
           }}
         >
           <input
-            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
-            placeholder="New Store"
+            className={`${styles.newStoreTheme} p-1 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store code"
             style={{
               background: "#fae1cc",
               outline: "none",
@@ -706,15 +737,15 @@ const Header = () => {
                   </Typography>
                 </MenuItem>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-600">
                     Sell with us at low commission
                   </Typography>
-                  <Typography className="color-orange h-5 cursor-pointer">
+                  <Typography className="color-orange h-5 cursor-pointer ">
                     Register here
                   </Typography>
                 </Box>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-600">
                     Want to Earn without Investment
                   </Typography>
                   <Typography className="color-orange cursor-pointer h-5">
@@ -770,7 +801,7 @@ const Header = () => {
           setOpen(false);
           setShowFavoriteList(false);
         }}
-        title={showFavoriteList ? "Favorite Stores" : "Store List"}
+        title={showFavoriteList ? "Favourite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
         {showFavoriteList ? (

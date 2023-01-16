@@ -35,9 +35,9 @@ const tempObj = {
 const CreateFlagModal = ({
   openCreateFlagModal = false,
   setOpenCreateFlagModal = () => {},
+
   modalDetails = {},
   setmodalDetails = () => {},
-  getTableData = () => {},
 }) => {
   const [formData, setFormDate] = useState({ ...tempObj });
   const [errorObj, setErrorObj] = useState({});
@@ -90,7 +90,6 @@ const CreateFlagModal = ({
       ],
     };
     const { data, err } = await editThemeLayout(payload);
-
     if (data) {
       const result = [];
       data.forEach((ele) => {
@@ -191,30 +190,22 @@ const CreateFlagModal = ({
     }:00`;
     const payload = {
       flagTitle: formData.flagTitle.label,
-      visibilityPlace: [
-        ...formData.visibilityPlace.map((item) => {
-          return item.title;
-        }),
-      ],
-      flagLayoutId: [
-        ...formData.themeSelection.map((item) => {
-          return item.id;
-        }),
-      ],
+      flagImagePojos: formData?.colorSelection?.map((val) => {
+        return {
+          flagImageId: val.id,
+          flagImageUrl: val.url,
+          visibilityPlace: val.visibilityPlace,
+        };
+      }),
+
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [
-        ...formData?.colorSelection?.map((item) => {
-          return item.url;
-        }),
-      ],
 
       userType: "SUPPLIER",
     };
-    const { data, message, err } = await saveAdminFlag(payload);
+    const { data, err, message } = await saveAdminFlag(payload);
     if (data) {
       toastify(message, "success");
-      getTableData();
       handleClearAll();
       setOpenCreateFlagModal(false);
     } else if (err) {
@@ -244,8 +235,8 @@ const CreateFlagModal = ({
   useEffect(() => {
     if (
       formData.flagTitle?.label &&
-      formData.themeSelection.length &&
-      formData.visibilityPlace.length
+      formData.themeSelection?.length &&
+      formData.visibilityPlace?.length
     ) {
       flahLayoutTheme();
     }
@@ -258,13 +249,13 @@ const CreateFlagModal = ({
         flagLayoutIdList: data?.flagLayoutId?.filter((item) => {
           if (data?.flagLayoutId.includes(item)) return item;
         }),
-        visibilityPlaceList: data?.visibilityPlace?.map((item) => {
-          return item;
+        visibilityPlaceList: data?.flagImagePojos?.map((item) => {
+          return item.visibilityPlace;
         }),
       });
       const temp = colorList?.data.map((item) => {
         return {
-          id: item.flagThemeId,
+          id: item.flagImageId,
           title: (
             <Image src={item?.flagThemeImageUrl} width={400} height={80} />
           ),
@@ -274,18 +265,19 @@ const CreateFlagModal = ({
         };
       });
       setcolorTheme([...temp]);
-
       setFormDate({
         flagId: data.flagId,
         flagTitle: { id: data?.flagTitle, label: data.flagTitle },
-        visibilityPlace: data?.visibilityPlace.map((item) => {
-          return { id: item, title: item };
+
+        visibilityPlace: data?.flagImagePojos?.map((item) => {
+          return { id: item.visibilityPlace, title: item.visibilityPlace };
         }),
         themeSelection: themeState?.filter((item) => {
           if (data?.flagLayoutId?.includes(item.id)) return item;
         }),
-        colorSelection: temp?.filter((item) => {
-          if (data.flagImageUrl.includes(item.url)) return item;
+        colorSelection: temp?.filter((item, ind) => {
+          if (data.flagImagePojos[ind].flagImageUrl.includes(item.url))
+            return item;
         }),
         startDate: data.startDateTime.split(" ")[0],
         endDate: data.endDateTime.split(" ")[0],
@@ -308,27 +300,21 @@ const CreateFlagModal = ({
     }`;
     const endDate = `${format(new Date(formData.endDate), "MM-dd-yyyy")} ${
       formData.endTime
-    }:00`;
+    }`;
     const payload = {
       flagId: formData.flagId,
       flagTitle: formData.flagTitle.label,
-      visibilityPlace: [
-        ...formData.visibilityPlace.map((item) => {
-          return item.title;
-        }),
-      ],
-      flagLayoutId: [
-        ...formData.themeSelection.map((item) => {
-          return item.id;
-        }),
-      ],
+      flagImagePojos: formData?.colorSelection?.map((val) => {
+        return {
+          flagImageId: val.id,
+          flagImageUrl: val.url,
+          visibilityPlace: val.visibilityPlace,
+        };
+      }),
+
       startDateTime: startDate,
       endDateTime: endDate,
-      flagImageUrl: [
-        ...formData.colorSelection.map((item) => {
-          return item.url;
-        }),
-      ],
+
       userType: "SUPPLIER",
     };
     const { data, message, err } = await editFlag(payload);
@@ -357,10 +343,8 @@ const CreateFlagModal = ({
       }
       titleClassName="fw-bold fs-14 color-orange"
       footerClassName="d-flex justify-content-start flex-row-reverse border-top mt-3"
-      showClearBtn={modalDetails.type === "create"}
       ClearBtnText="Reset"
       saveBtnText="Save"
-      clearBtnClassName="me-2"
       saveBtnClassName="ms-1"
       ModalWidth={650}
       onCloseIconClick={() => {
@@ -460,19 +444,6 @@ const CreateFlagModal = ({
             helperText={errorObj?.colorSelection}
             error={errorObj?.colorSelection}
           />
-          {/* comment */}
-          {/* <SimpleDropdownComponent
-            size="small"
-            label="Color Selection"
-            inputlabelshrink
-            list={colorTheme}
-            onDropdownSelect={(value) => {
-              handleChange(value ?? {}, "colorSelection");
-            }}
-            id="colorSelection"
-            value={formData.colorSelection}
-            helperText={errorObj.colorSelection}
-          /> */}
         </Grid>
 
         <Grid item md={6}>

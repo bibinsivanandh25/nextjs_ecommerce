@@ -49,10 +49,10 @@ const varifyPhoneOtp = (payload) => {
       return { errRes };
     });
 };
-const sendEmailOtp = (payload) => {
+const sendOtpEmailOrPhone = (payload) => {
   return serviceUtil
     .post(
-      `users/user-registration/send-otp-email?recipientMail=${payload.userEmail}`
+      `users/customer-update/send-otp?otpType=${payload.type}&emailOrMobileNumber=${payload.value}`
     )
     .then((res) => {
       const data = res && res.data && res.data.message;
@@ -79,6 +79,6 @@ export {
   updateProfile,
   getOtp,
   varifyPhoneOtp,
-  sendEmailOtp,
+  sendOtpEmailOrPhone,
   UpdateProfilePicture,
 };

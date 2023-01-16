@@ -10,8 +10,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import { useSelector } from "react-redux";
 import {
   getCustomerProfile,
-  getOtp,
-  sendEmailOtp,
+  sendOtpEmailOrPhone,
   updateProfile,
   UpdateProfilePicture,
   varifyPhoneOtp,
@@ -119,12 +118,11 @@ const MyProfile = () => {
       }
       const payload = {
         customerId: CustomerStaticDetails.customerId,
-        profileId: CustomerStaticDetails.profileId,
         customerName: customerDetails.customerName,
         mobileNumber: customerDetails.mobileNumber,
         emailId: customerDetails.emailId,
         gender: customerDetails.gender,
-        profileImageUrl: imageurl || customerDetails.profileImage,
+        profileImageUrl: imageurl || customerDetails.profileImage || "",
         dob: customerDetails?.dob
           ? `${format(customerDetails?.dob, "MM-dd-yyyy")}`
           : customerDetails?.dob,
@@ -139,10 +137,13 @@ const MyProfile = () => {
     }
   };
   const getOtpFunction = async () => {
-    const payload = { mobileNumber: customerDetails.mobileNumber };
     if (customerDetails.mobileNumber.length === 10) {
       setErrorObj({ ...ErrorObj, mobileNumber: "" });
-      const { data, errRes } = await getOtp(payload);
+      const payload = {
+        type: "MobileNumber",
+        value: customerDetails.mobileNumber,
+      };
+      const { data, errRes } = await sendOtpEmailOrPhone(payload);
       if (data) {
         toastify(data, "success");
         setdisableEdit({
@@ -151,7 +152,7 @@ const MyProfile = () => {
           phoneOtp: false,
         });
       } else if (errRes) {
-        toastify(errRes, "error");
+        toastify(errRes.response.data.message, "error");
       }
     } else {
       setErrorObj({ ...ErrorObj, mobileNumber: validateMessage.mobile });
@@ -194,8 +195,8 @@ const MyProfile = () => {
       setErrorObj({ ...ErrorObj, emailId: validateMessage.email });
       return false;
     }
-    const payload = { userEmail: customerDetails.emailId };
-    const { data, errRes } = await sendEmailOtp(payload);
+    const payload = { type: "Email", value: customerDetails.emailId };
+    const { data, errRes } = await sendOtpEmailOrPhone(payload);
     if (data) {
       toastify(data, "success");
       setdisableEdit({
@@ -204,7 +205,7 @@ const MyProfile = () => {
         emailOtp: false,
       });
     } else if (errRes) {
-      toastify(errRes, "error");
+      toastify(errRes.response.data.message, "error");
     }
   };
   const varifyEmailOtp = async () => {
@@ -384,11 +385,19 @@ const MyProfile = () => {
                         ...pre,
                         mobileNumber: e.target.value,
                       }));
+                      setErrorObj({
+                        ...ErrorObj,
+                        mobileNumber: "",
+                      });
                     } else {
                       setcustomerDetails((pre) => ({
                         ...pre,
-                        mobileNumber: "",
+                        mobileNumber: e.target.value,
                       }));
+                      setErrorObj({
+                        ...ErrorObj,
+                        mobileNumber: validateMessage.mobile,
+                      });
                     }
                     if (
                       CustomerStaticDetails?.mobileNumber !== e.target.value
