@@ -19,6 +19,8 @@ const AddToWishListModal = ({
   showModal = false,
   setShowModal = () => {},
   productId = "",
+  // its for product view page
+  getProductDetails = () => {},
 }) => {
   const { userId, profileId } = useSelector((state) => state?.customer);
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
@@ -115,6 +117,7 @@ const AddToWishListModal = ({
       toastify(data?.message, "success");
       setShowModal(false);
       getProducts();
+      getProductDetails(productId);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");

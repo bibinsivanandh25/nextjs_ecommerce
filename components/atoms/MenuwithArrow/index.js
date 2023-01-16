@@ -12,6 +12,7 @@ export default function MenuwithArrow({
   Header = "List",
   onOpen = () => {},
   arrowPosition = "center",
+  color = "color-white",
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -38,7 +39,7 @@ export default function MenuwithArrow({
           <Typography className="fw-bold fs-14 cursor-pointer  color-white">
             {Header}
           </Typography>
-          <ArrowDropDown className="fw-bold h-3 cursor-pointer color-white" />
+          <ArrowDropDown className={`fw-bold h-3 cursor-pointer ${color}`} />
         </div>
       </Box>
       <Menu

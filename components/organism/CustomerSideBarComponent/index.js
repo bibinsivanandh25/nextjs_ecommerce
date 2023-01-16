@@ -19,22 +19,19 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const CustomerSideBarComponent = ({ children }) => {
-  // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
   const [customerMenu, setCustomerMenu] = useState([]);
   const [category, setCategory] = useState(null);
   const [setsandSubCategoryData, setSetsandSubCategoryData] = useState([]);
-  // const updatedChildren = { ...children };
-  // updatedChildren.props = {
-  //   ...children.props,
-  //   showBreadCrumb: (val = true) => {
-  //     setShowBreadCrumb(val);
-  //   },
-  // };
+  const [open, setOpen] = useState(false);
+
+  const updatedChildren = { ...children };
+  updatedChildren.props = {
+    ...children.props,
+    isSideBarOpen: open,
+  };
   const router = useRouter();
 
   const { supplierId } = useSelector((state) => state?.customer);
-
-  const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -120,6 +117,7 @@ const CustomerSideBarComponent = ({ children }) => {
               className={`d-block p-1 fs-14 text-truncate ${
                 ele.isSet ? "color-orange" : ""
               }`}
+              key={ele.label}
             >
               {ele.label}
             </li>
@@ -139,7 +137,7 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "90px",
+        top: "100px",
         display: "flex",
         height: `calc(100vh - 90px)`,
       }}
@@ -190,13 +188,12 @@ const CustomerSideBarComponent = ({ children }) => {
           >
             {customerMenu.map((item) => {
               return (
-                <Box className="p-2 pe-0">
+                <Box className="p-2 pe-0" key={item.title}>
                   <Box
                     className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
-                    key={item.title}
                     onMouseEnter={(e) => {
                       if (e.target.id === category?.id) {
                         setSetsandSubCategoryData([]);
@@ -261,7 +258,8 @@ const CustomerSideBarComponent = ({ children }) => {
             }}
             key={router.route}
           >
-            {children}
+            {/* {children} */}
+            {updatedChildren}
             <Footer />
           </motion.div>
         </AnimatePresence>

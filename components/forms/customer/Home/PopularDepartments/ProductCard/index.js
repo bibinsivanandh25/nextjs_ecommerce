@@ -16,6 +16,7 @@ const ProductCard = ({
   handleIconClick = () => {},
   height = 150,
   width = 150,
+  cardPaperClass = "",
 }) => {
   const iconListData = [
     {
@@ -80,6 +81,7 @@ const ProductCard = ({
         if (data) {
           toastify(data?.message, "success");
           getProducts();
+          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
         }
       }
     }
@@ -99,10 +101,11 @@ const ProductCard = ({
     >
       <Paper
         elevation={hover ? 6 : 3}
-        className="mx-2 position-relative"
+        className={`mx-2 position-relative rounded ${cardPaperClass}`}
         style={{
           minHeight: 150,
           minWidth: 150,
+          overflow: "hidden",
         }}
       >
         <Image
@@ -210,6 +213,7 @@ const ProductCard = ({
           setModalOpen={setsetshowAddToCardModal}
           productId={item?.id}
           skuId={item?.skuId}
+          modalType="ADD"
         />
       )}
     </Box>

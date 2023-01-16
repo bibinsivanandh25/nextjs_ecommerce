@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Avatar, Box, Grid, MenuItem, Typography } from "@mui/material";
+import { Avatar, Box, MenuItem, Typography } from "@mui/material";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -385,15 +385,23 @@ const Header = () => {
             )}
           </p>
         </div>
-        <Image
-          src={assetsJson.logo}
-          alt=""
-          width="100px"
-          height="30px"
+        <div
           style={{
-            zIndex: 1000,
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%, 0px)",
           }}
-        />
+        >
+          <Image
+            src={assetsJson.logo}
+            alt=""
+            width="100px"
+            height="30px"
+            style={{
+              zIndex: 1000,
+            }}
+          />
+        </div>
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -492,7 +500,7 @@ const Header = () => {
                 m: "0.08rem",
               }}
               onClick={() => {
-                route.push("/customer/searchedproduct");
+                route.push("/customer/productvariation");
               }}
               className="bg-orange d-flex  p-1 rounded align-items-center cursor-pointer"
             >
@@ -617,7 +625,7 @@ const Header = () => {
               userId === "" ? (
                 "Hello Customer, sign In"
               ) : (
-                <>
+                <div>
                   {profileImg ? (
                     <Image
                       width={35}
@@ -635,7 +643,7 @@ const Header = () => {
                       {getName()}
                     </Avatar>
                   )}
-                </>
+                </div>
               )
             }
           >
