@@ -757,10 +757,12 @@ const Header = () => {
           </MenuwithArrow>
         </div>
       </div>
-      <SwitchProfile
-        showSwitchProfile={showSwitchProfile}
-        setShowSwitchProfile={setShowSwitchProfile}
-      />
+      {showSwitchProfile && (
+        <SwitchProfile
+          showSwitchProfile={showSwitchProfile}
+          setShowSwitchProfile={setShowSwitchProfile}
+        />
+      )}
       {showStoreModal && (
         <ModalComponent
           onCloseIconClick={() => {
