@@ -8,6 +8,11 @@ import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
 import TableComponent from "@/atoms/TableComponent";
+import {
+  EditQuestion,
+  ReplyQuestion,
+  ViewQuestions,
+} from "@/forms/customer/helpandsupport/AddandEditModal";
 import Notification from "@/forms/customer/mynotification/notification";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import SubTabComponent from "components/molecule/SubTabComponent";
@@ -265,8 +270,8 @@ const MyNotification = () => {
               <Image
                 src={row?.productImages[0] || ""}
                 showClose={false}
-                height={70}
-                width={70}
+                height={50}
+                width={50}
                 layout="intrinsic"
               />
             )}
@@ -278,8 +283,8 @@ const MyNotification = () => {
           </div>
         ),
         col3: row.customerQuestion,
-        col4: row.userAnswer,
-        col5: row.answerFromType,
+        col4: row.userAnswer ? row.userAnswer : "__",
+        col5: row.answerFromType ? row.answerFromType : "__",
         col6: row.createdAt,
         col7: (
           <Grid className="d-flex justify-content-center">
@@ -322,8 +327,8 @@ const MyNotification = () => {
               <Image
                 src={row?.productImages[0] || ""}
                 showClose={false}
-                height={70}
-                width={70}
+                height={50}
+                width={50}
                 layout="intrinsic"
               />
             )}
@@ -399,7 +404,7 @@ const MyNotification = () => {
     }
   };
   useEffect(() => {
-    getMyQueriesTableData();
+    getMyQueriesTableData(0);
   }, [value]);
   // product query
   const getProductData = async (page = pageNumber, keyword = "", dates) => {
@@ -469,7 +474,7 @@ const MyNotification = () => {
     const { data, errRes } = await editQuestion(payload);
     if (data) {
       toastify(data, "success");
-      getMyQueriesTableData();
+      getMyQueriesTableData(0);
       setopenEdit({ open: false, qid: "", type: "" });
     } else if (errRes) {
       toastify(errRes, "error");
@@ -677,32 +682,10 @@ const MyNotification = () => {
           ModalWidth="800px"
         >
           {/* <Grid>This is view modal</Grid> */}
-          <Grid container spacing={3}>
-            <Grid xs={12} item className="fs-15 fw-500">
-              {getParagraph("Cutomer Name", viewQuertData?.customerId)}
-              {getParagraph(
-                "Product Image",
-                <Grid className="d-flex justify-content-between">
-                  {viewQuertData?.images?.map((item) => {
-                    return (
-                      <Paper>
-                        <Image
-                          src={item?.toString()}
-                          height={70}
-                          width={70}
-                          alt="img"
-                          layout="intrinsic"
-                          className="d-flex justify-content-center align-items-center"
-                        />
-                      </Paper>
-                    );
-                  })}
-                </Grid>
-              )}
-              {getParagraph("Question", viewQuertData?.customerQuestion)}
-              {getParagraph("Date and Time", viewQuertData?.dateAndTime)}
-            </Grid>
-          </Grid>
+          <ViewQuestions
+            getParagraph={getParagraph}
+            viewQuertData={viewQuertData}
+          />
         </ModalComponent>
       )}
       {openEdit.open && openEdit.type === "edit" && (
@@ -719,18 +702,11 @@ const MyNotification = () => {
           }}
           footerClassName="f-flex justify-content-end"
         >
-          <Box className="mt-3">
-            <TextArea
-              placeholder="Reply here"
-              widthClassName="w-100"
-              onInputChange={(e) => {
-                setreplyInput(e.target.value);
-              }}
-              value={replyInput}
-              error={errEditMessage !== ""}
-              helperText={errEditMessage}
-            />
-          </Box>
+          <EditQuestion
+            setreplyInput={setreplyInput}
+            replyInput={replyInput}
+            errEditMessage={errEditMessage}
+          />
         </ModalComponent>
       )}
       {openEdit.open && openEdit.type === "reply" && (
@@ -749,18 +725,11 @@ const MyNotification = () => {
           }}
           footerClassName="f-flex justify-content-end"
         >
-          <Box className="mt-3">
-            <TextArea
-              placeholder="Reply here"
-              widthClassName="w-100"
-              onInputChange={(e) => {
-                setproductReplyInput(e.target.value);
-              }}
-              value={productReplyInput}
-              error={errProductReply !== ""}
-              helperText={errProductReply}
-            />
-          </Box>
+          <ReplyQuestion
+            setproductReplyInput={setproductReplyInput}
+            productReplyInput={productReplyInput}
+            errProductReply={errProductReply}
+          />
         </ModalComponent>
       )}
     </Box>

@@ -65,6 +65,15 @@ const deleteStore = (customerStoreId, userId) => {
     })
     .catch((err) => ({ err }));
 };
+const removeFromStoreList = (storeListId, userId, id) => {
+  return serviceUtil
+    .deleteById(`/users/customers/store/${storeListId}/${userId}/${id}`)
+    .then((res) => {
+      const { data, message } = res.data;
+      return { data, message };
+    })
+    .catch((err) => ({ err }));
+};
 const switchStore = (storeCode, userId) => {
   return serviceUtil
     .put(
@@ -120,4 +129,5 @@ export {
   addStoreToStoreList,
   getFavoriteList,
   getStoreListOfCustomer,
+  removeFromStoreList,
 };

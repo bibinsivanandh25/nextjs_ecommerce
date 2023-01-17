@@ -219,7 +219,9 @@ const Home = () => {
                         <Typography className="fw-bold h-5 d-flex">
                           Holiday :&nbsp;
                           {storeInformation?.holidays?.map((ele, ind) => {
-                            return storeInformation?.holidays?.length === 1
+                            return !storeInformation?.holidays?.length
+                              ? "No Holiday's"
+                              : storeInformation?.holidays?.length === 1
                               ? ele.substr(0, 3)
                               : ind === storeInformation?.holidays.length - 1
                               ? `${ele.substr(0, 3)}. `

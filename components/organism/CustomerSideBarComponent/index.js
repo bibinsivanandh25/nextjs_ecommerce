@@ -151,13 +151,14 @@ const CustomerSideBarComponent = ({ children }) => {
             padding: "8px",
             borderRadius: "0% 50% 50% 0%",
             zIndex: "100",
+            background: "transparent",
           }}
           className="position-absolute cursor-pointer"
           onClick={() => {
             setOpen(true);
           }}
         >
-          <FaAngleDoubleRight className="fs-20" />
+          <FaAngleDoubleRight className="fs-15 bg-transparent" />
         </Paper>
       )}
       <Box className="shadow position-fixed overflow-auto">
