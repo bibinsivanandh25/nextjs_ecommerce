@@ -315,7 +315,7 @@ const Home = () => {
             <Box className="my-2">
               <FlashDeals />
             </Box>
-            <Box className={isLoggedIn ? "" : "d-none"}>
+            <Box className={isLoggedIn ? "my-2" : "d-none"}>
               <RecentlyViewed setShowCompareProducts={setShowCompareProducts} />
             </Box>
             <Box className={articleData?.length ? "" : "d-none"}>

@@ -169,7 +169,9 @@ const SignIn = () => {
                     details
                   );
                 }
-                router.push(`/customer/home`);
+                if (data?.defaultStoreCode || router?.query?.storeCode) {
+                  router.push(`/customer/home`);
+                }
               }
             }
           }
