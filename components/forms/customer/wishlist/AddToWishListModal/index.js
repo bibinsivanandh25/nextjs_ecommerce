@@ -15,9 +15,12 @@ import {
 import toastify from "services/utils/toastUtils";
 
 const AddToWishListModal = ({
+  getProducts = () => {},
   showModal = false,
   setShowModal = () => {},
   productId = "",
+  // its for product view page
+  getProductDetails = () => {},
 }) => {
   const { userId, profileId } = useSelector((state) => state?.customer);
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
@@ -113,6 +116,8 @@ const AddToWishListModal = ({
     if (data) {
       toastify(data?.message, "success");
       setShowModal(false);
+      getProducts();
+      getProductDetails(productId);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");

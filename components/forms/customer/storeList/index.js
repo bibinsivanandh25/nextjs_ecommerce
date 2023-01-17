@@ -109,6 +109,9 @@ const StoreList = ({ close = () => {} }) => {
       dispatch(setAddStoreFlag({ addStoreFlag: false }));
     }
   }, [addStoreFlag]);
+  useEffect(() => {
+    setStoreSearchText("");
+  }, [selectedTab]);
 
   return (
     <Box className="w-100 px-2">

@@ -4,7 +4,6 @@
 /* eslint-disable no-nested-ternary */
 import ButtonComponent from "@/atoms/ButtonComponent";
 import DrawerComponent from "@/atoms/DrawerComponent";
-import ImageCard from "@/atoms/ImageCard";
 import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
 import TextArea from "@/atoms/SimpleTextArea";
@@ -177,167 +176,25 @@ const MyNotification = () => {
   const [ProductDate, setProductDate] = useState({ fromDate: "", toDate: "" });
   const [pageNumber, setpageNumber] = useState(0);
   const [pageNumberProduct, setpageNumberProduct] = useState(0);
-  const [value, setValue] = useState(null);
-  const [openEdit, setopenEdit] = useState({ open: false, qid: "", type: "" });
-  const userName = useSelector((state) => state.customer.customerName);
-  const [dummyProductQueryData, setdummyProductQueryData] = useState([
-    {
-      customerQuestionId: "639c16bd1ff4a614d7057125",
-      customerQuestion: "Does it come in pair or single?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      productImages: [
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-      ],
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-    },
-    {
-      customerQuestionId: "639c16bd1ff4a614d7057126",
-      customerQuestion: "Can i use this for sports",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      productImages: [
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778064-71Mh4zz74ZL._UL1500_.jpg",
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778375-71s9knabsOL._UL1500_.jpg",
-        "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-      ],
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-    },
-  ]);
-  const [selectedQuestion, setselectedQuestion] = useState([]);
-  const [viewQuertData, setviewQuertData] = useState({
-    customerId: "CST1122000046",
-    images: [
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778064-71Mh4zz74ZL._UL1500_.jpg",
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778375-71s9knabsOL._UL1500_.jpg",
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-      "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-    ],
-    customerQuestion: "Does it come in pair or single?",
-    dateAndTime: "2022-12-16 16:51",
-    replay: null,
-    replayBy: null,
+  const [value, setValue] = useState(0);
+  const [openEdit, setopenEdit] = useState({
+    open: false,
+    qid: "",
+    type: "",
+    vid: "",
   });
-  const [viewProductQueryData, setviewProductQueryData] = useState([
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "CST1122000046",
-      customerQuestionId: "639c16bd1ff4a614d7057125",
-      customerQuestion: "Does it come in pair or single?",
-      profileId: "CST1122000046",
-      userAnswer: "It will come in a pair",
-      answerFromType: null,
-      answerFromTypeId: "12345",
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: "12-16-2022 12:27:01",
-      createdAt: "12-16-2022 12:27:01",
-      lastModifiedAt: "12-16-2022 12:27:01",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-    {
-      createdBy: "CST1122000046",
-      lastModifiedBy: "ADM001",
-      customerQuestionId: "639c54b2ed7cb4734224e137",
-      customerQuestion: "Does it come in pair or double?",
-      profileId: "CST1122000046",
-      userAnswer: null,
-      answerFromType: null,
-      answerFromTypeId: null,
-      variationId: "62fa5d55e5d1f7265bb58cdc",
-      questionAnsweredAt: null,
-      createdAt: "12-16-2022 16:51:22",
-      lastModifiedAt: "12-20-2022 14:08:45",
-      deleted: false,
-    },
-  ]);
-  const [openView, setopenView] = useState({ open: false, type: "" });
-
+  const userName = useSelector((state) => state.customer.customerName);
+  const [selectedQuestion, setselectedQuestion] = useState([]);
+  const [viewQuertData, setviewQuertData] = useState({});
+  const [viewProductQueryData, setviewProductQueryData] = useState([]);
+  const [openView, setopenView] = useState({ open: false, type: "", qid: "" });
   const [replyInput, setreplyInput] = useState("");
   const [productReplyInput, setproductReplyInput] = useState("");
   const [errEditMessage, seterrEditMessage] = useState("");
   const [errProductReply, seterrProductReply] = useState("");
   const onClickOfMenuItem = async (ele, id) => {
     if (ele === "Delete") {
-      const { errRes, message } = deleteQuary(id);
+      const { message, errRes } = deleteQuary(id);
       if (message) {
         toastify(message, "success");
       } else if (errRes) {
@@ -345,6 +202,16 @@ const MyNotification = () => {
       }
     } else if (ele === "Edit") {
       setopenEdit({ open: true, qid: id, type: "edit" });
+      const payload = {
+        questionId: id,
+        userid: storeDetails.userId,
+      };
+      const { data, errRes } = await viewQuery(payload);
+      if (data) {
+        setreplyInput(data.customerQuestion);
+      } else if (errRes) {
+        toastify(errRes, "error");
+      }
     }
   };
   const handleSelect = (index) => {
@@ -366,7 +233,7 @@ const MyNotification = () => {
   const getProductQueryData = async (id) => {
     const { data, errRes } = await viewProductQuery(id);
     if (data) {
-      setviewProductQueryData(data.data);
+      setviewProductQueryData(data);
       toastify(data.message, "success");
     } else if (errRes) {
       toastify(errRes, "error");
@@ -379,7 +246,7 @@ const MyNotification = () => {
     };
     const { data, errRes } = await viewQuery(payload);
     if (data) {
-      setviewQuertData(data.data);
+      setviewQuertData(data);
       toastify(data.message, "success");
     } else if (errRes) {
       toastify(errRes, "error");
@@ -387,31 +254,32 @@ const MyNotification = () => {
   };
   const mapRowsToTable = (data) => {
     const result = [];
-    const demo = [
-      {
-        createdBy: "CST1122000046",
-        lastModifiedBy: "CST1122000046",
-        customerQuestionId: "639c54b2ed7cb4734224e137",
-        customerQuestion: "Does it come in pair or single?",
-        profileId: "CST1122000046",
-        userAnswer: null,
-        answerFromType: null,
-        answerFromTypeId: null,
-        variationId: "62fa5d55e5d1f7265bb58cdc",
-        questionAnsweredAt: null,
-        createdAt: "12-16-2022 16:51:22",
-        lastModifiedAt: "12-16-2022 16:51:22",
-        deleted: false,
-      },
-    ];
-    demo?.forEach((row, ind) => {
+
+    data?.forEach((row, ind) => {
       result.push({
         id: row.customerQuestionId,
         col1: ind + 1,
-        // col2: <Image src={row.productImages[0] || ""} height={50} width={50} />,
+        col2: (
+          <div className="d-flex justify-content-center">
+            {row?.productImages && (
+              <Image
+                src={row?.productImages[0] || ""}
+                showClose={false}
+                height={70}
+                width={70}
+                layout="intrinsic"
+              />
+            )}
+            {row?.productImages?.length && (
+              <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
+                / {row?.productImages?.length}
+              </Typography>
+            )}
+          </div>
+        ),
         col3: row.customerQuestion,
         col4: row.userAnswer,
-        col5: row.answerFromTypeId,
+        col5: row.answerFromType,
         col6: row.createdAt,
         col7: (
           <Grid className="d-flex justify-content-center">
@@ -440,98 +308,58 @@ const MyNotification = () => {
     });
     return result;
   };
-  const getQueriesByQuestionId = (id) => {
-    dummyProductQueryData.filter((item) => {
-      if (item.customerQuestionId === id) {
-        setselectedQuestion(item);
-        return item;
-      }
-    });
-  };
-  useEffect(() => {
-    getQueriesByQuestionId();
-  }, [openView]);
-
   const mapProductQueryToTable = (data) => {
     const result = [];
-    const demo = [
-      {
-        customerQuestionId: "639c16bd1ff4a614d7057125",
-        customerQuestion: "Does it come in pair or single?",
-        profileId: "CST1122000046",
-        userAnswer: null,
-        answerFromType: null,
-        answerFromTypeId: null,
-        variationId: "62fa5d55e5d1f7265bb58cdc",
-        productImages: [
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-          "https://test-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/AMD09220001/flag/image/1667900036457-layout_one.jpg",
-        ],
-        questionAnsweredAt: null,
-        createdAt: "12-16-2022 12:27:01",
-        lastModifiedAt: "12-16-2022 12:27:01",
-        createdBy: "CST1122000046",
-        lastModifiedBy: "CST1122000046",
-      },
-      {
-        customerQuestionId: "639c16bd1ff4a614d7057126",
-        customerQuestion: "Can i use this for sports",
-        profileId: "CST1122000046",
-        userAnswer: null,
-        answerFromType: null,
-        answerFromTypeId: null,
-        variationId: "62fa5d55e5d1f7265bb58cdc",
-        productImages: [
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778064-71Mh4zz74ZL._UL1500_.jpg",
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778375-71s9knabsOL._UL1500_.jpg",
-          "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/supplier/SP0822000040/product/image/1661585778495-81z3XQwEywL._UL1500_.jpg",
-        ],
-        questionAnsweredAt: null,
-        createdAt: "12-16-2022 12:27:01",
-        lastModifiedAt: "12-16-2022 12:27:01",
-        createdBy: "CST1122000046",
-        lastModifiedBy: "CST1122000046",
-      },
-    ];
-    demo?.forEach((row, ind) => {
+
+    data?.forEach((row, ind) => {
       result.push({
         id: row.customerQuestionId,
         col1: ind + 1,
         col2: row.profileId,
         col3: (
           <div className="d-flex justify-content-center">
-            <ImageCard
-              className="d-inline me-1 my-0"
-              imgSrc={row.productImages[0] || ""}
-              showClose={false}
-              height={40}
-              width={70}
-            />
-            <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-              / {row.productImages.length}
-            </Typography>
+            {row?.productImages && (
+              <Image
+                src={row?.productImages[0] || ""}
+                showClose={false}
+                height={70}
+                width={70}
+                layout="intrinsic"
+              />
+            )}
+            {row?.productImages?.length && (
+              <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
+                / {row?.productImages?.length}
+              </Typography>
+            )}
           </div>
         ),
         col4: row.customerQuestion,
         col5: row.userAnswer,
-        col6: row.answerFromTypeId,
+        col6: row.answerFromType,
         col7: row.createdAt,
         col8: (
           <Grid className="d-flex justify-content-center">
             <Grid>
-              <CustomIcon
-                type="view"
-                title="View "
-                onIconClick={() => {
-                  setopenView({ open: true, type: "productview" });
-                  getProductQueryData(row.customerQuestionId);
-                  getQueriesByQuestionId(row.customerQuestionId);
-                }}
-                className="fs-18 me-2 fit-content"
-              />
+              {row.customerQuestionId && (
+                <CustomIcon
+                  type="view"
+                  title="View "
+                  onIconClick={() => {
+                    setopenView({
+                      open: true,
+                      type: "productview",
+                      qid: row.customerQuestionId,
+                    });
+                    getProductQueryData(row.variationId);
+                    setselectedQuestion({
+                      productName: row.productName,
+                      productImage: row.productImages,
+                    });
+                  }}
+                  className="fs-18 me-2 fit-content"
+                />
+              )}
             </Grid>
           </Grid>
         ),
@@ -540,14 +368,18 @@ const MyNotification = () => {
     return result;
   };
 
-  const getMyQueriesTableData = async (page = pageNumber, keyword = "") => {
+  const getMyQueriesTableData = async (
+    page = pageNumber,
+    keyword = "",
+    dates
+  ) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
       pageSize: 50,
       pageNumber: page,
-      dateFrom: dateState.fromDate,
-      dateTo: dateState.toDate,
+      dateFrom: dates?.fromDate,
+      dateTo: dates?.toDate,
     };
     const { data, errRes } = await getCustomerquary(payload);
     if (data) {
@@ -570,26 +402,26 @@ const MyNotification = () => {
     getMyQueriesTableData();
   }, [value]);
   // product query
-  const getProductData = async (page = pageNumber, keyword = "") => {
+  const getProductData = async (page = pageNumber, keyword = "", dates) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
       pageSize: 50,
       pageNumber: page,
-      dateFrom: ProductDate.fromDate,
-      dateTo: ProductDate.toDate,
+      dateFrom: dates?.fromDate,
+      dateTo: dates?.toDate,
     };
     const { data, errRes } = await getProductquary(payload);
     if (data) {
       if (page === 0) {
         setProductQueriesRows(
-          mapProductQueryToTable(data?.data?.questionAnswerViewPojo)
+          mapProductQueryToTable(data?.questionAnswerViewPojo)
         );
         setpageNumberProduct((pre) => pre + 1);
       } else {
         setProductQueriesRows((pre) => [
           ...pre,
-          ...mapProductQueryToTable(data?.data?.questionAnswerViewPojo),
+          ...mapProductQueryToTable(data?.questionAnswerViewPojo),
         ]);
         setpageNumberProduct((pre) => pre + 1);
       }
@@ -601,6 +433,11 @@ const MyNotification = () => {
   useEffect(() => {
     getProductData();
   }, [value]);
+  const replyMsgCloseIcon = () => {
+    setopenEdit({ open: false, qid: "", type: "" });
+    setproductReplyInput("");
+    seterrProductReply("");
+  };
   const submitReply = async () => {
     if (productReplyInput === "") {
       seterrProductReply(validateMessage.field_required);
@@ -619,7 +456,7 @@ const MyNotification = () => {
     }
     seterrProductReply("");
   };
-  const editQuestionSave = () => {
+  const editQuestionSave = async () => {
     if (replyInput === "") {
       seterrEditMessage(validateMessage.field_required);
       return false;
@@ -629,9 +466,10 @@ const MyNotification = () => {
       questionid: openEdit.qid,
       userid: storeDetails.userId,
     };
-    const { data, errRes } = editQuestion(payload);
+    const { data, errRes } = await editQuestion(payload);
     if (data) {
       toastify(data, "success");
+      getMyQueriesTableData();
       setopenEdit({ open: false, qid: "", type: "" });
     } else if (errRes) {
       toastify(errRes, "error");
@@ -673,14 +511,10 @@ const MyNotification = () => {
     setreplyInput("");
     seterrEditMessage("");
   };
-  const replyMsgCloseIcon = () => {
-    setopenEdit({ open: false, qid: "", type: "" });
-    setproductReplyInput("");
-    seterrProductReply("");
-  };
+
   const closeDrawer = () => {
     setopenView({ open: false, type: "" });
-    setselectedQuestion({});
+    setselectedQuestion([]);
   };
   return (
     <Box className="mnh-75vh">
@@ -710,27 +544,19 @@ const MyNotification = () => {
             columns={myQueriescolumns}
             showDateFilter
             handlePageEnd={(searchText, _, page = pageNumber, dates) => {
-              getMyQueriesTableData(page, searchText);
-              setdateState({
-                fromDate: dates.fromDate,
-                toDate: dates.toDate,
-              });
+              getMyQueriesTableData(page, searchText, dates);
             }}
-            // tableRows={myQueriesRows}
-            tableRows={mapRowsToTable}
+            tableRows={myQueriesRows}
+            // tableRows={mapRowsToTable}
           />
         ) : (
           <TableComponent
             columns={productQueriescolumns}
             showDateFilter
-            // tableRows={productQueriesRows}
-            tableRows={mapProductQueryToTable}
+            tableRows={productQueriesRows}
+            // tableRows={mapProductQueryToTable}
             handlePageEnd={(searchText, _, page = pageNumberProduct, dates) => {
-              getProductData(page, searchText);
-              setProductDate({
-                fromDate: dates.fromDate,
-                toDate: dates.toDate,
-              });
+              getProductData(page, searchText, dates);
             }}
           />
         )}
@@ -742,12 +568,15 @@ const MyNotification = () => {
       >
         <Grid container spacing={3}>
           <Grid xs={12} item className="fs-15 fw-500">
-            {getParagraphForDrawer("Product name", selectedQuestion.profileId)}
+            {getParagraphForDrawer(
+              "Product name",
+              selectedQuestion.productName
+            )}
             {getParagraphForDrawer(
               "Product Image",
 
               <Grid className="d-flex justify-content-between">
-                {selectedQuestion?.productImages?.map((item) => {
+                {selectedQuestion?.productImage?.map((item) => {
                   return (
                     <Paper>
                       <Image
@@ -768,13 +597,13 @@ const MyNotification = () => {
               Questions related to this product
             </Typography>
             <Grid style={{ maxHeight: "70vh", overflowY: "scroll" }}>
-              {viewProductQueryData.map((item, ind) => {
+              {viewProductQueryData?.map((item) => {
                 return (
                   item.createdBy,
                   (
                     <Grid>
                       {getParagraphForDrawer(
-                        `Question No.${ind + 1}`,
+                        `Question`,
                         <Grid>{item.customerQuestion}</Grid>
                       )}
                       {getParagraphForDrawer(
@@ -784,26 +613,45 @@ const MyNotification = () => {
                           <>Answer</>
                         ),
                         <Grid>
-                          {item.userAnswer === null ? (
-                            <ButtonComponent
-                              variant="outlined"
-                              label="Reply"
-                              onBtnClick={() => {
-                                setopenEdit({
-                                  open: true,
-                                  qid: item.customerQuestionId,
-                                  type: "reply",
-                                });
-                              }}
-                            />
+                          {item.createdBy === storeDetails.userId ? (
+                            <>
+                              <Typography className="fs-15">
+                                {item.userAnswer}
+                                <CustomIcon
+                                  type="edit"
+                                  title="Edit Answer"
+                                  className="fs-14 mx-2 mb-1"
+                                  onIconClick={() => {
+                                    setopenEdit({
+                                      open: true,
+                                      qid: item.customerQuestionId,
+                                      type: "reply",
+                                      vid: item.variationId,
+                                    });
+                                    setproductReplyInput(item.userAnswer);
+                                  }}
+                                />
+                              </Typography>
+                              <Typography className="d-flex justify-content-start fs-12 f-5 ">
+                                <Typography className="color-blue fs-12">
+                                  Replied by
+                                </Typography>
+                                &nbsp;
+                                {item.answerFromType},&nbsp;
+                                <>{item.questionAnsweredAt}</>
+                              </Typography>
+                            </>
                           ) : (
                             <>
                               <Typography className="fs-15">
                                 {item.userAnswer}
                               </Typography>
-                              <Typography className="d-flex justify-content-start fs-12 f-5">
-                                <>Replied by </>
-                                {item.answerFromTypeId},&nbsp;
+                              <Typography className="d-flex justify-content-start fs-12 f-5 ">
+                                <Typography className="color-blue fs-12">
+                                  Replied by
+                                </Typography>
+                                &nbsp;
+                                {item.answerFromType},&nbsp;
                                 <>{item.questionAnsweredAt}</>
                               </Typography>
                             </>
@@ -815,33 +663,6 @@ const MyNotification = () => {
                 );
               })}
             </Grid>
-            {/* {getParagraph("Customer Id", viewProductQueryData?.customerId)}
-              {getParagraph(
-                "Product Image",
-                // <Grid style={{ maxHeight: "20vh", overflowY: "scroll" }}>
-                <Grid className="d-flex justify-content-between">
-                  {viewProductQueryData?.images?.map((item) => {
-                    return (
-                      <Paper>
-                        <Image
-                          src={item?.toString()}
-                          height={70}
-                          width={70}
-                          alt="img"
-                          layout="intrinsic"
-                          className="d-flex justify-content-center align-items-center"
-                        />
-                      </Paper>
-                    );
-                  })}
-                </Grid>
-                //  </Grid>
-              )}
-              {getParagraph("Question", viewProductQueryData?.customerQuestion)}
-              {/* {getParagraph("Date and Time", viewQuertData?.dateAndTime)}
-              {getParagraph("Reply", viewQuertData?.dateAndTime)}
-              {getParagraph("Replied by", viewQuertData?.dateAndTime)} */}
-            {/* {getParagraph("Discussion", viewProductQueryData?.replay)} */}{" "}
           </Grid>
         </Grid>
       </DrawerComponent>
@@ -858,7 +679,7 @@ const MyNotification = () => {
           {/* <Grid>This is view modal</Grid> */}
           <Grid container spacing={3}>
             <Grid xs={12} item className="fs-15 fw-500">
-              {getParagraph("Cutomer Id", viewQuertData?.customerId)}
+              {getParagraph("Cutomer Name", viewQuertData?.customerId)}
               {getParagraph(
                 "Product Image",
                 <Grid className="d-flex justify-content-between">
@@ -923,6 +744,8 @@ const MyNotification = () => {
           }}
           onSaveBtnClick={() => {
             submitReply();
+            replyMsgCloseIcon();
+            getProductQueryData(openEdit.vid);
           }}
           footerClassName="f-flex justify-content-end"
         >

@@ -18,6 +18,7 @@ import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { storeUserInfo } from "features/customerSlice";
 import { storeUserInfo as storeInfoUserSlice } from "features/userSlice";
 import ModalComponent from "@/atoms/ModalComponent";
+import { useRouter } from "next/router";
 
 const ViewAllStore = ({
   switchTabs = () => {},
@@ -31,6 +32,7 @@ const ViewAllStore = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pageNum, setPageNum] = useState(0);
   const dispatch = useDispatch();
+  const router = useRouter();
   // const { loading, list } = useStoreList(cb, pageNum);
   // const observer = useRef();
   // const lastStore = useCallback(
@@ -117,6 +119,7 @@ const ViewAllStore = ({
             supplierId: storeData.supplierId,
           })
         );
+        router.push("/customer/home");
       } else if (storeErr) {
         toastify(storeErr?.response?.data?.message, "error");
       }

@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-param-reassign */
+import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Add } from "@mui/icons-material";
@@ -5,176 +8,239 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { BsFillExclamationCircleFill } from "react-icons/bs";
 import { getAllFrequentProduct } from "services/customer/productdetails";
 
-const FrequentBuyProduct = ({ productId }) => {
+const FrequentBuyProduct = ({ selectedMasterData }) => {
   const router = useRouter();
   const [frequentProduct, setfrequentProduct] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
     actualCost: "",
     fd: "",
     handpick: "",
     storeowner: "",
   });
+  const priceCal = (array) => {
+    let actualCost = 0;
+    let fd = 0;
+    let handPicks = 0;
+    array?.length &&
+      array.forEach((item) => {
+        actualCost += item.salePrice;
+        fd += item.salePriceWithLogistics;
+        handPicks += item.salePrice;
+      });
+    setFormFrequentData({
+      actualCost,
+      fd,
+      handpick: handPicks,
+      storeowner: handPicks,
+    });
+  };
   const getfrequentProduct = async (id) => {
     const { data, err } = await getAllFrequentProduct(id);
     if (data?.length) {
-      let actualCost = 0;
-      let fd = 0;
-      let handPicks = 0;
+      const temp1 = [];
       data.forEach((item) => {
-        if (item.mrp) {
-          actualCost += item.mrp;
-        }
-        if (item.salePriceWithLogistics) {
-          fd += item.salePriceWithLogistics;
-        }
-        if (item.salePrice) {
-          handPicks += item.salePrice;
-        }
+        temp1.push({
+          productVariationId: item.productVariationId,
+          mrp: item.mrp,
+          productTitle: item.productTitle,
+          variationMedia: item.productImageUrl,
+          salePrice: item.salePrice,
+          salePriceWithLogistics: item.salePriceWithLogistics,
+          isSelected: true,
+        });
       });
-      setFormFrequentData({
-        actualCost,
-        fd,
-        handpick: handPicks,
-        storeowner: handPicks,
+      temp1.unshift({
+        productVariationId: selectedMasterData.productVariationId,
+        mrp: selectedMasterData.mrp,
+        productTitle: selectedMasterData.productTitle,
+        variationMedia: selectedMasterData.variationMedia[0],
+        salePrice: selectedMasterData.salePrice,
+        salePriceWithLogistics: selectedMasterData.salePriceWithFDR,
+        isSelected: true,
       });
-      setfrequentProduct(data);
+      priceCal(temp1);
+      setSelectedProduct(temp1);
+      setfrequentProduct(temp1);
     }
     if (err) {
       setfrequentProduct([]);
     }
   };
   useEffect(() => {
-    // console.log(router.query.id, "router.query.id");
-    if (router.query.id ?? productId) {
-      const id = router.query.id ?? productId;
+    if (router.query.id ?? selectedMasterData.productVariationId) {
+      const id = router.query.id ?? selectedMasterData.productVariationId;
       getfrequentProduct(id);
     }
-  }, [router.query, productId]);
+  }, [router.query, selectedMasterData]);
+
+  const handleCheckBoxClik = (id) => {
+    const tempSelectedData = [...selectedProduct];
+    tempSelectedData.forEach((item) => {
+      if (item.productVariationId === id) {
+        item.isSelected = !item.isSelected;
+      }
+    });
+    const temp = tempSelectedData.filter((x) => x.isSelected);
+    priceCal(temp);
+    setSelectedProduct(tempSelectedData);
+  };
   return (
-    <Box>
+    <>
       {frequentProduct.length ? (
-        <Grid item md={12} className="my-2 mx-4">
-          <Paper elevation={3}>
-            <Box className="p-2">
-              <Typography className="h-4 fw-bold">
-                Frequently Bought Together
-              </Typography>
-              <Grid container>
-                <Grid item md={6}>
+        <Box>
+          <Grid item md={12} m={0.5}>
+            <Paper elevation={3}>
+              <Box className="p-2">
+                <Typography className="h-4 fw-bold mb-3">
+                  Frequently Bought Together
+                </Typography>
+                {selectedProduct.some((x) => x.isSelected) ? (
                   <Grid container>
-                    {frequentProduct.map((item, index) => (
-                      <>
-                        <Grid item md={3}>
-                          <Image
-                            height={150}
-                            width={150}
-                            src={item.variationMedia[0]}
-                            layout="intrinsic"
-                            alt="alt"
-                            className="border rounded"
-                          />
-                        </Grid>
-                        {frequentProduct.length - 1 > index && (
-                          <Grid item md={1} className="d-center">
-                            <Add sx={{ fontSize: "40px" }} />
-                          </Grid>
+                    <Grid item md={6}>
+                      <Grid container>
+                        {frequentProduct.map((item, index) =>
+                          item.isSelected ? (
+                            <>
+                              <Image
+                                height={120}
+                                width={120}
+                                src={item.variationMedia}
+                                layout="intrinsic"
+                                alt="alt"
+                              />
+                              {frequentProduct.filter(
+                                (x) => x.isSelected == true
+                              ).length >
+                                index + 1 && (
+                                <Grid item md={1} className="d-center">
+                                  <Add sx={{ fontSize: "30px" }} />
+                                </Grid>
+                              )}
+                            </>
+                          ) : null
                         )}
-                      </>
-                    ))}
-                  </Grid>
-                </Grid>
-                <Grid item md={6}>
-                  <Grid container display="flex" alignItems="center">
-                    <Grid item md={6} display="flex" alignItems="center">
-                      <RadiobuttonComponent
-                        size="small"
-                        // label="Actual Price (Excl.Delivery & Return Charge)"
-                      />
-                      <Typography className="h-5">
-                        Actual Price (Excl.Delivery & Return Charge)
-                      </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item>
-                      <Typography>:&nbsp;</Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                      <Typography className="fw-bold">
-                        ₹ {formFrequentData.actualCost}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container display="flex" alignItems="center">
-                    <Grid item md={6} display="flex" alignItems="center">
-                      <RadiobuttonComponent size="small" />
-                      <Typography className="h-5">
-                        Price For Free Delivery & Return
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography>:&nbsp;</Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                      <Typography className="fw-bold">
-                        ₹ {formFrequentData.fd}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container display="flex" alignItems="center">
-                    <Grid item md={6} display="flex" alignItems="center">
-                      <RadiobuttonComponent size="small" />
-                      <Typography className="h-5">Hand Pick</Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography>:&nbsp;</Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                      <Typography className="fw-bold">
-                        ₹ {formFrequentData.handpick}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container display="flex" alignItems="center">
-                    <Grid item md={6} display="flex" alignItems="center">
-                      <RadiobuttonComponent size="small" />
-                      <Typography className="h-5">
-                        Store Owner Delivery
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography>:&nbsp;</Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                      <Typography className="fw-bold">
-                        ₹ {formFrequentData.storeowner}
-                      </Typography>
+                    <Grid item md={6}>
+                      <Grid container display="flex" alignItems="center">
+                        <Grid item md={6} display="flex" alignItems="center">
+                          <RadiobuttonComponent size="small" />
+                          <Typography className="h-5">
+                            Actual Price (Excl.Delivery & Return Charge)
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography>:&nbsp;</Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                          <Typography className="fw-bold">
+                            ₹ {formFrequentData.actualCost}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                      <Grid container display="flex" alignItems="center">
+                        <Grid item md={6} display="flex" alignItems="center">
+                          <RadiobuttonComponent size="small" />
+                          <Typography className="h-5">
+                            Price For Free Delivery & Return
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <Typography>:&nbsp;</Typography>
+                        </Grid>
+                        <Grid item md={3}>
+                          <Typography className="fw-bold">
+                            ₹ {formFrequentData.fd}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                      {/* <Grid container display="flex" alignItems="center">
+                      <Grid item md={6} display="flex" alignItems="center">
+                        <RadiobuttonComponent size="small" />
+                        <Typography className="h-5">Hand Pick</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography>:&nbsp;</Typography>
+                      </Grid>
+                      <Grid item md={3}>
+                        <Typography className="fw-bold">
+                          ₹ {formFrequentData.handpick}
+                        </Typography>
+                      </Grid>
+                    </Grid> */}
+                      {/* <Grid container display="flex" alignItems="center">
+                      <Grid item md={6} display="flex" alignItems="center">
+                        <RadiobuttonComponent size="small" />
+                        <Typography className="h-5">
+                          Store Owner Delivery
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography>:&nbsp;</Typography>
+                      </Grid>
+                      <Grid item md={3}>
+                        <Typography className="fw-bold">
+                          ₹ {formFrequentData.storeowner}
+                        </Typography>
+                      </Grid>
+                    </Grid> */}
+                      <ButtonComponent label="Add To Cart" variant="outlined" />
                     </Grid>
                   </Grid>
-                  <Typography className="h-5 color-orange cursor-pointer">
-                    Add All These To Cart
-                  </Typography>
-                </Grid>
+                ) : (
+                  <Box
+                    className="mnh-100"
+                    display="flex"
+                    alignItems="center"
+                    marginLeft={5}
+                  >
+                    <BsFillExclamationCircleFill size="25px" color="#e56700" />
+                    <Typography marginLeft={0.5} className="h-p89">
+                      Choose Items to Buy Together
+                    </Typography>
+                  </Box>
+                )}
                 <Grid container>
                   <Grid item md={8}>
-                    {frequentProduct.map((item) => (
+                    {selectedProduct.map((item, index) => (
                       <Grid item md={12} display="flex" alignItems="center">
                         <CheckBoxComponent
-                          // label={`${item.productTitle} - AC ${item.mrp} / FD ${item.salePriceWithLogistics}`}
                           showIcon
                           varient="filled"
                           label=""
+                          isChecked={item.isSelected}
+                          checkBoxClick={() => {
+                            handleCheckBoxClik(item.productVariationId);
+                          }}
                         />
-                        <Typography>
+                        <Typography
+                          color={item.isSelected ? "black" : "gray"}
+                          className="fs-14"
+                        >
+                          {index == 0 ? (
+                            <span className="fw-500">This Item :</span>
+                          ) : (
+                            ""
+                          )}{" "}
                           {item.productTitle}{" "}
-                          <span className="color-blue">- AC</span>{" "}
-                          <span className="color-light-green">
-                            {" "}
-                            Rs.{item.mrp}
-                          </span>{" "}
-                          / <span className="color-blue">FD</span>{" "}
-                          <span className="color-light-green">
-                            Rs.{item.salePriceWithLogistics}
+                          <span
+                            className={
+                              item.isSelected ? "color-blue" : "color-gray"
+                            }
+                          >
+                            - AC &nbsp;Rs.{item.salePrice}
+                          </span>
+                          /
+                          <span
+                            className={
+                              item.isSelected ? "color-blue" : "color-gray"
+                            }
+                          >
+                            FD &nbsp;Rs.{item.salePriceWithLogistics}
                           </span>
                         </Typography>
                       </Grid>
@@ -195,12 +261,12 @@ const FrequentBuyProduct = ({ productId }) => {
                     </Box>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
+              </Box>
+            </Paper>
+          </Grid>
+        </Box>
       ) : null}
-    </Box>
+    </>
   );
 };
 

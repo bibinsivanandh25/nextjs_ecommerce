@@ -1,8 +1,10 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -16,25 +18,31 @@ import {
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import { BsFillPinAngleFill, BsPinFill } from "react-icons/bs";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CustomerSideBarComponent = ({ children }) => {
-  // const [showBreadCrumb, setShowBreadCrumb] = useState(true);
   const [customerMenu, setCustomerMenu] = useState([]);
   const [category, setCategory] = useState(null);
   const [setsandSubCategoryData, setSetsandSubCategoryData] = useState([]);
-  // const updatedChildren = { ...children };
-  // updatedChildren.props = {
-  //   ...children.props,
-  //   showBreadCrumb: (val = true) => {
-  //     setShowBreadCrumb(val);
-  //   },
-  // };
+  const [open, setOpen] = useState(false);
+
+  const updatedChildren = { ...children };
+  updatedChildren.props = {
+    ...children.props,
+    isSideBarOpen: open,
+  };
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
+  const { supplierId } = useSelector((state) => state?.customer);
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const mainRef = useRef(null);
+
+  useEffect(() => {
+    mainRef.current.scrollIntoView();
+  }, [mainRef]);
 
   const handleClick = (event) => {
     setHover(true);
@@ -42,7 +50,7 @@ const CustomerSideBarComponent = ({ children }) => {
   };
 
   const getCategoriesForSideMenu = async () => {
-    const { data } = await getAllMainCategories();
+    const { data } = await getAllMainCategories(supplierId);
     const temp = [
       {
         id: 0,
@@ -54,8 +62,8 @@ const CustomerSideBarComponent = ({ children }) => {
       const dataCopy = JSON.parse(JSON.stringify(data.splice(0, 20)));
       dataCopy?.forEach((ele) => {
         temp.push({
-          id: ele.mainCategoryId,
-          title: ele.mainCategoryName,
+          id: ele.id,
+          title: ele.name,
           route: false,
         });
       });
@@ -117,6 +125,18 @@ const CustomerSideBarComponent = ({ children }) => {
               className={`d-block p-1 fs-14 text-truncate ${
                 ele.isSet ? "color-orange" : ""
               }`}
+              key={ele.label}
+              onClick={() => {
+                if (!ele.isSet) {
+                  router.push({
+                    pathname: "/customer/productvariation",
+                    query: {
+                      subCategoryId: ele?.id,
+                    },
+                  });
+                  setHover(false);
+                }
+              }}
             >
               {ele.label}
             </li>
@@ -136,10 +156,11 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "88px",
+        top: "100px",
         display: "flex",
-        height: `calc(100vh - 88px)`,
+        height: `calc(100vh - 90px)`,
       }}
+      ref={mainRef}
     >
       <CssBaseline />
 
@@ -163,8 +184,8 @@ const CustomerSideBarComponent = ({ children }) => {
         <Box
           className="hide-scrollbar"
           sx={{
-            maxHeight: `calc(100vh - 88px)`,
-            minHeight: `calc(100vh - 88px)`,
+            maxHeight: `calc(100vh - 90px)`,
+            minHeight: `calc(100vh - 90px)`,
             maxWidth: open ? "225px" : "0px",
             minWidth: open ? "195px" : "0px",
             overflow: "auto",
@@ -183,17 +204,16 @@ const CustomerSideBarComponent = ({ children }) => {
           </Box>
           <Box
             className="overflow-y-scroll  hide-scrollbar mt-4 "
-            sx={{ height: "calc(100vh - 150px)" }}
+            sx={{ height: "calc(100vh - 155px)" }}
           >
             {customerMenu.map((item) => {
               return (
-                <Box className="p-2 pe-0">
+                <Box className="p-2 pe-0" key={item.title}>
                   <Box
-                    className="w-100 ps-3 text-truncate"
+                    className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
-                    key={item.title}
                     onMouseEnter={(e) => {
                       if (e.target.id === category?.id) {
                         setSetsandSubCategoryData([]);
@@ -206,7 +226,7 @@ const CustomerSideBarComponent = ({ children }) => {
                   >
                     {/* <Tooltip title={item.title}> */}
                     <Typography
-                      className="cursor-pointer "
+                      className="cursor-pointer"
                       variant="text"
                       fontWeight={600}
                       fontSize={13}
@@ -236,8 +256,8 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 226px)" : "calc(100vw - 20px)"}`,
-          marginLeft: ` ${open ? "235px" : "10px"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
         }}
@@ -246,8 +266,9 @@ const CustomerSideBarComponent = ({ children }) => {
         <AnimatePresence initial={false} exitBeforeEnter>
           <motion.div
             sx={{
-              maxHeight: "calc(100vh - 136px)",
+              maxHeight: "calc(100vh - 90px)",
               overflowY: "scroll",
+              background: "red",
             }}
             className="hide-scrollbar "
             animate={{ opacity: 1 }}
@@ -257,7 +278,8 @@ const CustomerSideBarComponent = ({ children }) => {
             }}
             key={router.route}
           >
-            {children}
+            {/* {children} */}
+            {updatedChildren}
             <Footer />
           </motion.div>
         </AnimatePresence>
@@ -282,6 +304,7 @@ const CustomerSideBarComponent = ({ children }) => {
                   maxHeight: "380px",
                   overflow: "auto",
                   maxWidth: "800px",
+                  minWidth: "800px",
                 }}
                 className="hide-scrollbar"
               >

@@ -89,11 +89,15 @@ const VerifyOTP = ({
 
   const resendOTP = async () => {
     setotp("xxxx");
-    await serviceUtil.post(
-      `users/registration/send-otp/?mobileNumber=${
-        payLoad.mobileNumber
-      }&userType=${router.pathname.split("/")[2].toUpperCase()}`
-    );
+    await serviceUtil
+      .post(
+        `users/registration/send-otp/?mobileNumber=${
+          payLoad.mobileNumber
+        }&userType=${router.pathname.split("/")[2].toUpperCase()}`
+      )
+      .then((data) => {
+        toastify(data.data.message, "success");
+      });
   };
 
   return (

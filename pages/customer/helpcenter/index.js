@@ -5,6 +5,11 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { ArrowDropDown } from "@mui/icons-material";
+import { getCustomerHelpCenter } from "services/customer/helpCenter";
+import toastify from "services/utils/toastUtils";
+import { useEffect, useState } from "react";
+import { Grid } from "@mui/material";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -44,78 +49,106 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 
 export default function CustomizedAccordions() {
   const [expanded, setExpanded] = React.useState("");
-
+  const [HelpCenterData, setHelpCenterData] = useState([]);
+  const [showTruncate, setshowTruncate] = useState(false);
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+  const getCustomerHelpCenterFunction = async () => {
+    const title = "FAQ";
+    const { data, errRes } = await getCustomerHelpCenter(title);
+    if (data) {
+      setHelpCenterData(data);
+    } else if (errRes) {
+      toastify(errRes, "error");
+    }
+  };
+  useEffect(() => {
+    getCustomerHelpCenterFunction();
+  }, []);
 
   return (
-    <div>
-      <Typography className="fw-bold fs-5 ms-2">FAQ</Typography>
-      <Accordion
-        expanded={expanded === "panel1"}
-        onChange={handleChange("panel1")}
-      >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography className="fw-bold">About MrMrsCart</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "panel2"}
-        onChange={handleChange("panel2")}
-      >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-          <Typography className="fw-bold">Placing Orders</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "panel3"}
-        onChange={handleChange("panel3")}
-      >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-          <Typography className="fw-bold">Payments</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion
-        expanded={expanded === "panel4"}
-        onChange={handleChange("panel4")}
-      >
-        <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
-          <Typography className="fw-bold">Cancellations</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
+    <div className="mxh-82vh mnh-82vh overflow-auto hide-scrollbar">
+      <Typography className="fw-bold fs-5 ms-2 ">FAQ</Typography>
+      {HelpCenterData.map((item, idx) => {
+        return (
+          <Accordion expanded={expanded === idx} onChange={handleChange(idx)}>
+            <AccordionSummary
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+            >
+              <Typography className="fw-bold">
+                {item.helpCenterSubtitle}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className="mxh-400 overflow-y-scroll p-4">
+              {item.questionAndAnswer.map((val) => {
+                return (
+                  <>
+                    <Grid>
+                      <Grid item lg={12} md={6} className="h-5 mb-2 ">
+                        <Typography className="fw-600">
+                          <span>Q : </span>
+                          {val.question}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item lg={12} md={6} className="h-5 mb-3">
+                        <Typography
+                          style={{
+                            overflow: "hidden",
+                            height: showTruncate ? "" : "24px",
+                            paddingLeft: "23px",
+                          }}
+                        >
+                          {val.answer}
+                        </Typography>
+                        {!showTruncate && (
+                          <Grid className="px-2">
+                            <ButtonComponent
+                              variant="outlined"
+                              label="See more..."
+                              bgColor="bg-white"
+                              textColor="color-gray"
+                              borderColor="border-white"
+                              onBtnClick={() => {
+                                setshowTruncate(true);
+                              }}
+                            />
+                          </Grid>
+                        )}
+                        {showTruncate && (
+                          <Grid className="px-2">
+                            <ButtonComponent
+                              variant="outlined"
+                              label="See less..."
+                              bgColor="bg-white"
+                              textColor="color-gray"
+                              borderColor="border-white"
+                              onBtnClick={() => {
+                                setshowTruncate(false);
+                              }}
+                            />
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Grid>
+                    {/* <Grid container my={1}>
+                      <Grid item xs={1} className="h-5">
+                        <Typography className="fw-600">A :</Typography>
+                      </Grid>
+
+                      <Grid item xs={10} className="h-5">
+                        {val.answer}
+                      </Grid>
+                    </Grid> */}
+                  </>
+                );
+              })}
+            </AccordionDetails>
+          </Accordion>
+        );
+      })}
     </div>
   );
 }

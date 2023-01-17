@@ -1,10 +1,10 @@
 /* eslint-disable react/no-danger */
-import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import Image from "next/image";
 
 const AboutUs = ({ imageUrl = "", description = "" }) => {
   return (
-    <Paper className="p-2">
+    <Box className="p-2 container-shadow rounded">
       <Box className="mx-2 py-1 border-bottom">
         <Typography className="fw-600 fs-16">About Us</Typography>
       </Box>
@@ -38,7 +38,7 @@ const AboutUs = ({ imageUrl = "", description = "" }) => {
           )}
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 };
 export default AboutUs;

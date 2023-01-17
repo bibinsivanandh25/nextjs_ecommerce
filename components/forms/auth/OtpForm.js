@@ -1,7 +1,7 @@
 import InputBox from "components/atoms/InputBoxComponent";
 import { useEffect, useRef } from "react";
 
-const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
+const OtpForm = ({ otp = "xxxx", setotp = () => {}, OtpInputStyle }) => {
   const firstInputRef = useRef();
   const secondInputRef = useRef();
   const thirdInputRef = useRef();
@@ -11,9 +11,9 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
   }, []);
 
   return (
-    <div className="d-flex justify-content-evenly w-250px mx-auto mb-3 mt-4">
+    <div className={`d-flex justify-content-evenly w-250px mx-auto mb-3 mt-4 `}>
       <div
-        className={`shadow rounded p-2 px-3 `}
+        className={`shadow rounded p-2 px-3 ${OtpInputStyle}`}
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
@@ -31,7 +31,6 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
               const temp = `x${otp.slice(1, 4)}`;
               setotp(temp);
             } else if (e.keyCode >= 48 && e.keyCode <= 57) {
-              // thirdInputRef.current.focus();
               const temp = String.fromCharCode(e.keyCode) + otp.slice(1, 4);
               setotp(temp);
             } else if (e.keyCode === 39) {
@@ -42,7 +41,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         />
       </div>
       <div
-        className={`shadow rounded p-2 px-3 `}
+        className={`shadow rounded p-2 px-3 ${OtpInputStyle}`}
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
@@ -79,7 +78,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         />
       </div>
       <div
-        className={`shadow rounded p-2 px-3 `}
+        className={`shadow rounded p-2 px-3 ${OtpInputStyle}`}
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
@@ -101,7 +100,6 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
                 setotp(temp);
               }
             } else if (e.keyCode >= 48 && e.keyCode <= 57) {
-              // fourthInputRef.current.focus();
               const temp =
                 otp.slice(0, 2) +
                 String.fromCharCode(e.keyCode) +
@@ -117,7 +115,7 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
         />
       </div>
       <div
-        className={`shadow rounded p-2 px-3 `}
+        className={`shadow rounded p-2 px-3 ${OtpInputStyle}`}
         style={{ width: "40px", height: "40px" }}
       >
         <InputBox
@@ -127,10 +125,6 @@ const OtpForm = ({ otp = "xxxx", setotp = () => {} }) => {
           type="number"
           className="w-100"
           inputRef={fourthInputRef}
-          // onInputChange={(e) => {
-          //   const temp = otp.slice(0, 3) + e.target.value;
-          //   setotp(temp);
-          // }}
           onKeyDown={(e) => {
             if (e.keyCode == 8 || e.keyCode == 46) {
               if (otp.charAt(3) === "x") {

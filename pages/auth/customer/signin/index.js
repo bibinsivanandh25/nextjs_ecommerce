@@ -37,6 +37,7 @@ const SignIn = () => {
     mobileNoOrEmail: "",
     password: "",
   });
+  const bg_color = ["#fe4a49", "#966b9d", "#1A936F", "#907AD6", "#114B5F"];
   const [showPassword, setShowPassword] = useState(false);
 
   const [errorObj, setErrorObj] = useState({
@@ -87,6 +88,8 @@ const SignIn = () => {
         addressDetails: details.addressDetails,
         customerName: details.customerName,
         profileId: details.profileId,
+        profileName: details.profileName,
+        bgcolor: bg_color[Math.floor(Math.random() * (4 - 0) + 0)],
       };
       dispatch(storeUserInfo(userInfo));
       dispatch(
