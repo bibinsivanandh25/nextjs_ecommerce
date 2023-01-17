@@ -211,7 +211,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   };
 
   return (
-    <Box className="mnh-100vh" ref={mainRef}>
+    <Box className="mnh-79vh" ref={mainRef}>
       <Box className="row w-100">
         <Box className="d-flex justify-content-end mt-1">
           <Box
@@ -276,18 +276,18 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
             />
           </Box>
         </Box>
-        <Box className="d-flex justify-content-end mt-3">
+        {/* <Box className="d-flex justify-content-end mt-3">
           <p className="text-danger fs-14 me-4">
             {" "}
             Offer ends in 09h 42min 2sec
           </p>
-        </Box>
-        <Box className="">
+        </Box> */}
+        <Box className="mt-2">
           <Box className="d-flex">
             <Grid
               container={!viewIconClick}
               spacing={2}
-              className="ms-0 "
+              className="ms-0"
               sx={{
                 width: `calc(100% - 10px)`,
               }}
@@ -296,8 +296,11 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 <Grid item md={4} lg={3} sm={6} key={index}>
                   <Paper elevation={3}>
                     <ProductDetailsCard
-                      data={item}
+                      productDetails={item}
                       viewType={viewIconClick ? "row" : "Grid"}
+                      getProducts={() => {
+                        getProducts(categoryId, subCategoryId, 0);
+                      }}
                     />
                   </Paper>
                 </Grid>

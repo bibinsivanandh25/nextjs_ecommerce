@@ -156,7 +156,7 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "100px",
+        top: "88px",
         display: "flex",
         height: `calc(100vh - 90px)`,
       }}
