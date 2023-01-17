@@ -571,7 +571,7 @@ const MyNotification = () => {
         modalTitle="Questions and Reply"
         onClose={closeDrawer}
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={3} className="px-2">
           <Grid xs={12} item className="fs-15 fw-500">
             {getParagraphForDrawer(
               "Product name",
@@ -601,7 +601,10 @@ const MyNotification = () => {
             <Typography className="d-flex justify-content-center align-items-center fw-600">
               Questions related to this product
             </Typography>
-            <Grid style={{ maxHeight: "70vh", overflowY: "scroll" }}>
+            <Grid
+              style={{ maxHeight: "70vh", overflowY: "scroll" }}
+              className="px-2"
+            >
               {viewProductQueryData?.map((item) => {
                 return (
                   item.createdBy,
@@ -620,45 +623,77 @@ const MyNotification = () => {
                         <Grid>
                           {item.createdBy === storeDetails.userId ? (
                             <>
-                              <Typography className="fs-15">
-                                {item.userAnswer}
-                                <CustomIcon
-                                  type="edit"
-                                  title="Edit Answer"
-                                  className="fs-14 mx-2 mb-1"
-                                  onIconClick={() => {
+                              {item.userAnswer === null ? (
+                                <ButtonComponent
+                                  variant="outlined"
+                                  label="Reply"
+                                  onBtnClick={() => {
                                     setopenEdit({
                                       open: true,
                                       qid: item.customerQuestionId,
                                       type: "reply",
-                                      vid: item.variationId,
                                     });
-                                    setproductReplyInput(item.userAnswer);
                                   }}
                                 />
-                              </Typography>
-                              <Typography className="d-flex justify-content-start fs-12 f-5 ">
-                                <Typography className="color-blue fs-12">
-                                  Replied by
-                                </Typography>
-                                &nbsp;
-                                {item.answerFromType},&nbsp;
-                                <>{item.questionAnsweredAt}</>
-                              </Typography>
+                              ) : (
+                                <>
+                                  <Typography className="fs-15">
+                                    {item.userAnswer}
+                                    <CustomIcon
+                                      type="edit"
+                                      title="Edit Answer"
+                                      className="fs-14 mx-2 mb-1"
+                                      onIconClick={() => {
+                                        setopenEdit({
+                                          open: true,
+                                          qid: item.customerQuestionId,
+                                          type: "reply",
+                                          vid: item.variationId,
+                                        });
+                                        setproductReplyInput(item.userAnswer);
+                                      }}
+                                    />
+                                  </Typography>
+                                  <Typography className="d-flex justify-content-start fs-12 f-5 ">
+                                    <Typography className="color-blue fs-12">
+                                      Replied by
+                                    </Typography>
+                                    &nbsp;
+                                    {item.answerFromType},&nbsp;
+                                    <>{item.questionAnsweredAt}</>
+                                  </Typography>
+                                </>
+                              )}
                             </>
                           ) : (
                             <>
-                              <Typography className="fs-15">
-                                {item.userAnswer}
-                              </Typography>
-                              <Typography className="d-flex justify-content-start fs-12 f-5 ">
-                                <Typography className="color-blue fs-12">
-                                  Replied by
-                                </Typography>
-                                &nbsp;
-                                {item.answerFromType},&nbsp;
-                                <>{item.questionAnsweredAt}</>
-                              </Typography>
+                              {item.userAnswer === null ? (
+                                <ButtonComponent
+                                  variant="outlined"
+                                  label="Reply"
+                                  onBtnClick={() => {
+                                    setopenEdit({
+                                      open: true,
+                                      qid: item.customerQuestionId,
+                                      type: "reply",
+                                    });
+                                  }}
+                                />
+                              ) : (
+                                <>
+                                  <Typography className="fs-15">
+                                    {item.userAnswer}
+                                  </Typography>
+                                  <Typography className="d-flex justify-content-start fs-12 f-5 ">
+                                    <Typography className="color-blue fs-12">
+                                      Replied by
+                                    </Typography>
+                                    &nbsp;
+                                    {item.answerFromType},&nbsp;
+                                    <>{item.questionAnsweredAt}</>
+                                  </Typography>
+                                </>
+                              )}
                             </>
                           )}
                         </Grid>

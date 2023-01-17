@@ -376,7 +376,7 @@ const Header = () => {
               "Select Your Address"
             ) : (
               <div className="ms-2 ">
-                <Typography className="fs-10 color-black cursor-pointer">
+                <Typography className="fs-12 color-black cursor-pointer">
                   {addressDetails?.name}
                 </Typography>
                 <Typography className="fs-12 color-black cursor-pointer">
