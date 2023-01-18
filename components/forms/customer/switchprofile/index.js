@@ -3,7 +3,6 @@ import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import ModalComponent from "@/atoms/ModalComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { Delete, Edit } from "@mui/icons-material";
-import SwapHorizontalCircleIcon from "@mui/icons-material/SwapHorizontalCircle";
 import {
   getCustomerProfile,
   addProfile,
@@ -23,6 +22,7 @@ import { getBase64 } from "services/utils/functionUtils";
 import CloseIcon from "@mui/icons-material/Close";
 import { storeUserInfo } from "features/customerSlice";
 import { useRouter } from "next/router";
+import { HiSwitchHorizontal } from "react-icons/hi";
 
 const SwitchProfile = ({
   showSwitchProfile = false,
@@ -33,7 +33,7 @@ const SwitchProfile = ({
   const [showModal, setShowModal] = useState(false);
   const [profileName, setProfileName] = useState("");
   const [error, setError] = useState("");
-  const { userId } = useSelector((state) => state.customer);
+  const { userId, profileId } = useSelector((state) => state.customer);
   const [addImage, setAddImage] = useState(false);
   const [img, setImg] = useState("");
   const imgRef = useRef(null);
@@ -47,6 +47,26 @@ const SwitchProfile = ({
       setProfileList(data);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const handleProfileSwitch = async (profile, showMessage) => {
+    const { data, err } = await switchProfile(
+      profile.profileId,
+      profile.customerId
+    );
+    if (data) {
+      if (showMessage) toastify(data.message, "success");
+      dispatch(
+        storeUserInfo({
+          profileImg: data.data.profileImageUrl,
+          profileId: data.data.profileId,
+          profileName: data.data.profileName,
+        })
+      );
+      router.push("/customer/home");
+    } else if (err) {
+      if (showMessage) toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -83,6 +103,13 @@ const SwitchProfile = ({
         setProfileName("");
         setAddImage(false);
         setImg("");
+        dispatch(
+          storeUserInfo({
+            profileImg: data.profileImageUrl,
+            profileId: data.profileId,
+            profileName: data.profileName,
+          })
+        );
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -135,26 +162,6 @@ const SwitchProfile = ({
     return letters;
   };
 
-  const handleProfileSwitch = async (profile) => {
-    const { data, err } = await switchProfile(
-      profile.profileId,
-      profile.customerId
-    );
-    if (data) {
-      toastify(data.message, "success");
-      dispatch(
-        storeUserInfo({
-          profileImg: data.data.profileImageUrl,
-          profileId: data.data.profileId,
-          profileName: data.data.profileName,
-        })
-      );
-      router.push("/customer/home");
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
-
   useEffect(() => {
     if (userId !== "") getProfiles();
     return () => {
@@ -166,6 +173,10 @@ const SwitchProfile = ({
     const { data, err } = await deleteProfile(item.profileId, item.customerId);
     if (data) {
       toastify(data.message, "success");
+      if (profileId === item.profileId) {
+        const temp = profileList.filter((ele) => ele.profileId !== profileId);
+        handleProfileSwitch(temp[0], false);
+      }
       getProfiles();
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -177,10 +188,11 @@ const SwitchProfile = ({
       <div className="profile_overLay">
         <div className="d-flex h-100 align-items-center justify-content-center shadow rounded-circle">
           <Tooltip title="Switch">
-            <SwapHorizontalCircleIcon
-              className="m-1 cursor-pointer theme_color"
+            <HiSwitchHorizontal
+              className="fs-20 m-1  cursor-pointer rounded-circle  theme_bg_color text-white"
               style={{
-                fontSize: "19px !important",
+                // fontSize: "19px !important",
+                padding: "2px",
               }}
               onClick={() => {
                 handleProfileSwitch(item);
@@ -189,11 +201,10 @@ const SwitchProfile = ({
           </Tooltip>
           <Tooltip title="Update">
             <Edit
-              className="fs-20 m-1  cursor-pointer rounded-circle"
+              className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
               style={{
                 background: "#e56700",
-                fontSize: "19px !important",
-                color: "rgb(44 1 1 / 60%) ",
+                // fontSize: "19px !important",
                 padding: "2px",
               }}
               onClick={() => {
@@ -206,11 +217,11 @@ const SwitchProfile = ({
           </Tooltip>
           <Tooltip title="Delete">
             <Delete
-              className="fs-20 m-1  cursor-pointer rounded-circle"
+              className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
               style={{
                 background: "#e56700",
-                fontSize: "20px !important",
-                color: "rgb(44 1 1 / 60%) ",
+                // fontSize: "20px !important",
+                // color: "rgb(44 1 1 / 60%) ",
                 padding: "2px",
               }}
               onClick={() => {

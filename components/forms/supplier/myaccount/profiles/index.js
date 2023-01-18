@@ -61,13 +61,13 @@ const Profile = () => {
     return letters;
   };
 
-  const handleProfileSwitch = async (profile) => {
+  const handleProfileSwitch = async (profile, showMessage) => {
     const { data, err } = await switchProfile(
       profile.profileId,
       profile.customerId
     );
     if (data) {
-      toastify(data.message, "success");
+      if (showMessage) toastify(data.message, "success");
       dispatch(
         storeUserInfo({
           profileImg: data.data.profileImageUrl,
@@ -77,7 +77,7 @@ const Profile = () => {
       );
       router.push("/customer/home");
     } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      if (showMessage) toastify(err?.response?.data?.message, "error");
     }
   };
   const handleSubmit = async () => {
@@ -113,6 +113,13 @@ const Profile = () => {
         setProfileName("");
         setAddImage(false);
         setImg("");
+        dispatch(
+          storeUserInfo({
+            profileImg: data.profileImageUrl,
+            profileId: data.profileId,
+            profileName: data.profileName,
+          })
+        );
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -160,6 +167,10 @@ const Profile = () => {
     const { data, err } = await deleteProfile(item.profileId, item.customerId);
     if (data) {
       toastify(data.message, "success");
+      if (profileId === item.profileId) {
+        const temp = profileList.filter((ele) => ele.profileId !== profileId);
+        handleProfileSwitch(temp[0], false);
+      }
       getProfiles();
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -167,20 +178,20 @@ const Profile = () => {
   };
 
   return (
-    <>
+    <Box className="d-flex justify-content-center flex-column">
       {profileList.length <= 4 && (
-        <div className="d-flex justify-content-end">
+        <div>
           <Typography
-            className="fs-16 theme_color cursor-pointer"
+            className="fs-16 theme_color d-inline cursor-pointer ms-3"
             onClick={() => {
               setShowModal(true);
             }}
           >
-            + New Profile
+            New Profile +
           </Typography>
         </div>
       )}
-      <Box className="w-100 d-flex justify-content-center my-3 flex-wrap">
+      <Box className="d-flex justify-content-center my-3 flex-wrap">
         {profileList.map((item, index) => {
           return (
             <Paper
@@ -452,7 +463,7 @@ const Profile = () => {
           </Box>
         </ModalComponent>
       </Box>
-    </>
+    </Box>
   );
 };
 export default Profile;
