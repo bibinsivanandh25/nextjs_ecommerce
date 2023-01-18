@@ -167,8 +167,8 @@ const AddToWishListModal = ({
               label="Add new wishlist"
               variant="outlined"
               muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-              borderColor="border-orange"
-              textColor="color-orange"
+              // borderColor="border-orange"
+              textColor="theme_color"
               onBtnClick={() => {
                 setShowAddNewWishList(true);
                 setModalType("Add");

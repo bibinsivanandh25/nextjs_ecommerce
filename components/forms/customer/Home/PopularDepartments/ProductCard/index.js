@@ -175,7 +175,7 @@ const ProductCard = ({
                 height: "25px",
               }}
               className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
+                iconcolor[ele.iconName] ? "theme_bg_color" : "bg-white"
               }`}
               // eslint-disable-next-line react/no-array-index-key
               key={index}

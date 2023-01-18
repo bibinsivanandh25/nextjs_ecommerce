@@ -40,7 +40,7 @@ const MyAccount = () => {
               <span
                 onClick={() => setSelectedMenu(ind)}
                 className={`cursor-pointer fw-bold   ${
-                  selectedMenu === ind ? "active-tab" : ""
+                  selectedMenu === ind ? "theme_color active-tab " : ""
                 }`}
               >
                 {ele}

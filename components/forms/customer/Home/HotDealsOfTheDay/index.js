@@ -188,7 +188,7 @@ const HotDealsOfTheDay = () => {
           <Box className="col-4 d-flex justify-content-center ">
             {getPageDots()}
           </Box>
-          <Box className="col-4 text-end color-orange fw-bold h-5 pe-5">
+          <Box className="col-4 text-end theme_color fw-bold h-5 pe-5">
             View More Deals &gt;&gt;
           </Box>
         </Box>

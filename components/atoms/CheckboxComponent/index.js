@@ -27,7 +27,7 @@ const CheckBoxComponent = ({
   id = "checkbox",
   className = "",
   diableLabelClick = true,
-  checkedcolor = "#e56700",
+  // checkedcolor = "#e56700",
   labelColor = "",
   lableFontSize = "",
   lableFontWeight = "",
@@ -71,7 +71,9 @@ const CheckBoxComponent = ({
             checkedIcon={getCheckIcon()}
             sx={{
               "&.Mui-checked": {
-                color: checkedcolor,
+                color: window
+                  .getComputedStyle(document.documentElement)
+                  .getPropertyValue("--themeColor"),
               },
               pointerEvents: "auto",
               cursor: "pointer",

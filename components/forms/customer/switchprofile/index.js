@@ -178,7 +178,7 @@ const SwitchProfile = ({
         <div className="d-flex h-100 align-items-center justify-content-center shadow rounded-circle">
           <Tooltip title="Switch">
             <SwapHorizontalCircleIcon
-              className="m-1  cursor-pointer color-orange"
+              className="m-1 cursor-pointer theme_color"
               style={{
                 fontSize: "19px !important",
               }}

@@ -45,6 +45,7 @@ import { getStoreByStoreCode } from "services/customer/ShopNow";
 import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
 import ExploreStores from "@/forms/customer/exploreStores";
+import FavouriteStoreSvg from "public/assets/svg/favouriteStoreSvg";
 
 const Header = () => {
   const session = useSession();
@@ -298,7 +299,7 @@ const Header = () => {
         )}
         <Box className="d-flex justify-content-end pe-4 ">
           <Typography
-            className="color-orange fs-14 cursor-pointer"
+            className="theme_color fs-14 cursor-pointer"
             onClick={() => {
               setOpen(true);
             }}
@@ -432,7 +433,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="d-flex justify-content-between align-items-center px-2 py-2 bg-orange">
+      <div className="d-flex justify-content-between align-items-center px-2 py-2 theme_bg_color">
         <div
           className="cursor-pointer d-flex justify-content-between align-items-center "
           onClick={() => {
@@ -502,7 +503,7 @@ const Header = () => {
               onClick={() => {
                 route.push("/customer/productvariation");
               }}
-              className="bg-orange d-flex  p-1 rounded align-items-center cursor-pointer"
+              className="theme_bg_color d-flex  p-1 rounded align-items-center cursor-pointer"
             >
               <SearchOutlinedIcon className="text-white fs-4" />
             </Box>
@@ -538,7 +539,7 @@ const Header = () => {
               setShowConfirmModal(true);
             }}
           >
-            <ArrowForward className="color-orange fs-4" />
+            <ArrowForward className="theme_color fs-4" />
           </Box>
         </div>
         <div className="cursor-pointer">
@@ -575,12 +576,8 @@ const Header = () => {
           <></>
         ) : (
           <>
-            <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/no_products_found.svg"
-              width={40}
-              height={40}
-              layout="fixed"
-              className="fs-2 cursor-pointer position-relative "
+            <span
+              className="cursor-pointer"
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
@@ -589,7 +586,13 @@ const Header = () => {
                 setShowFavoriteList(true);
                 setOpen(true);
               }}
-            />
+            >
+              <FavouriteStoreSvg
+                height={40}
+                width={40}
+                className="fs-2 cursor-pointer position-relative "
+              />
+            </span>
             <div
               className="cursor-pointer"
               onClick={() => {
@@ -668,7 +671,7 @@ const Header = () => {
                     New Customer?
                   </Typography>
                   <Typography
-                    className="color-orange h-5 cursor-pointer"
+                    className="theme_colororange h-5 cursor-pointer"
                     onClick={() => {
                       route.push("/auth/customer/register");
                     }}
@@ -684,7 +687,7 @@ const Header = () => {
                     Your Account
                   </Typography>
                   <Typography
-                    className="color-orange fs-14"
+                    className="theme_color fs-14"
                     onClick={() => {
                       dispatch(clearUser());
                       dispatch(clearCustomerSlice());
@@ -740,7 +743,7 @@ const Header = () => {
                   <Typography className="h-5 cursor-pointer fw-600">
                     Sell with us at low commission
                   </Typography>
-                  <Typography className="color-orange h-5 cursor-pointer ">
+                  <Typography className="theme_color h-5 cursor-pointer ">
                     Register here
                   </Typography>
                 </Box>
@@ -748,7 +751,7 @@ const Header = () => {
                   <Typography className="h-5 cursor-pointer fw-600">
                     Want to Earn without Investment
                   </Typography>
-                  <Typography className="color-orange cursor-pointer h-5">
+                  <Typography className="theme_color cursor-pointer h-5">
                     Register here
                   </Typography>
                 </Box>
@@ -770,7 +773,7 @@ const Header = () => {
           }}
           open={showStoreModal}
           ModalTitle="Add New Store"
-          titleClassName="fw-600 fs-16 color-orange"
+          titleClassName="fw-600 fs-16 theme_color"
           footerClassName="justify-content-end"
           onSaveBtnClick={() => {
             setShowStoreModal(false);
@@ -804,7 +807,7 @@ const Header = () => {
           setShowFavoriteList(false);
         }}
         title={showFavoriteList ? "Favourite Stores" : "Store List"}
-        titleClassName="color-orange fs-16"
+        titleClassName="theme_color fs-16"
       >
         {showFavoriteList ? (
           <FavoriteList
@@ -855,7 +858,7 @@ const Header = () => {
           setOpenExplore(false);
         }}
         title="Explore Stores"
-        titleClassName="color-orange"
+        titleClassName="theme_color"
       >
         <ExploreStores
           handleStoreSelection={(storeData) => {

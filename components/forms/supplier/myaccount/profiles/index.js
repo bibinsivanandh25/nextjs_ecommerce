@@ -25,7 +25,7 @@ import { getBase64 } from "services/utils/functionUtils";
 import InputBox from "@/atoms/InputBoxComponent";
 
 const Profile = () => {
-  const { userId } = useSelector((state) => state.customer);
+  const { userId, profileId } = useSelector((state) => state.customer);
   const [profileList, setProfileList] = useState([]);
   const bg_color = ["#fe4a49", "#966b9d", "#1A936F", "#907AD6", "#114B5F"];
   const dispatch = useDispatch();
@@ -171,7 +171,7 @@ const Profile = () => {
       {profileList.length <= 4 && (
         <div className="d-flex justify-content-end">
           <Typography
-            className="fs-16 color-orange cursor-pointer"
+            className="fs-16 theme_color cursor-pointer"
             onClick={() => {
               setShowModal(true);
             }}
@@ -237,17 +237,16 @@ const Profile = () => {
               <div className="d-flex align-items-center w-75 justify-content-evenly mt-4">
                 <motion.div
                   whileHover={{
-                    scale: 1.05,
+                    scale: 1.4,
                     transition: { duration: 0.5 },
                   }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <Tooltip title="Switch">
                     <HiSwitchHorizontal
-                      className="m-1 shadow cursor-pointer rounded-circle"
-                      size={40}
+                      className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                      size={30}
                       style={{
-                        background: "#e56700",
                         color: "#fff ",
                         padding: "5px",
                       }}
@@ -259,19 +258,20 @@ const Profile = () => {
                 </motion.div>
                 <motion.div
                   whileHover={{
-                    scale: 1.1,
+                    scale: 1.4,
                     transition: { duration: 0.5 },
                   }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <Tooltip title="Update">
                     <Edit
-                      className=" m-1 shadow cursor-pointer rounded-circle"
-                      size={40}
+                      className=" m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                      size={60}
                       style={{
-                        background: "#e56700",
                         color: "#fff ",
                         padding: "5px",
+                        height: "30px",
+                        width: "30px",
                       }}
                       onClick={() => {
                         seteditModal(item);
@@ -282,28 +282,31 @@ const Profile = () => {
                     />
                   </Tooltip>
                 </motion.div>
-                <motion.div
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { duration: 0.5 },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Tooltip title="Delete">
-                    <Delete
-                      size={40}
-                      className=" m-1  cursor-pointer rounded-circle shadow"
-                      style={{
-                        background: "#e56700",
-                        color: "#fff",
-                        padding: "5px",
-                      }}
-                      onClick={() => {
-                        deleteprofile(item);
-                      }}
-                    />
-                  </Tooltip>
-                </motion.div>
+                {profileId !== item.profileId && (
+                  <motion.div
+                    whileHover={{
+                      scale: 1.4,
+                      transition: { duration: 0.5 },
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Tooltip title="Delete">
+                      <Delete
+                        size={40}
+                        className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
+                        style={{
+                          color: "#fff",
+                          padding: "5px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        onClick={() => {
+                          deleteprofile(item);
+                        }}
+                      />
+                    </Tooltip>
+                  </motion.div>
+                )}
               </div>
             </Paper>
           );
