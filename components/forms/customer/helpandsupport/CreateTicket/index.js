@@ -18,9 +18,9 @@ import toastify from "services/utils/toastUtils";
 const HelpandsupportCreate = ({
   setShowCreateComponent = () => {},
   getTabledata = () => {},
+  selectedData,
 }) => {
   // const inputField = useRef();
-
   const issueTypes = [
     {
       label: "ORDER RELATED ISSUE",
@@ -201,8 +201,10 @@ const HelpandsupportCreate = ({
             <Grid item xs={10}>
               <SimpleDropdownComponent
                 size="small"
-                value={formValue.issueType}
+                disabled
+                value={selectedData.issueType}
                 helperText={errorObj.issueType}
+                label={selectedData.issueType}
                 error={errorObj.issueType.length}
                 list={[...issueTypes]}
                 onDropdownSelect={(value) => {
@@ -221,9 +223,10 @@ const HelpandsupportCreate = ({
             display="flex"
             alignItems="center"
             className={
-              formValue.issueType?.label !== "ORDER RELATED ISSUE"
-                ? "d-none"
-                : ""
+              // formValue.issueType?.label !== "ORDER RELATED ISSUE"
+              //   ?
+              "d-none"
+              // : ""
             }
           >
             <Grid item xs={1} justifyContent="end" className="fw-bold">
@@ -263,11 +266,12 @@ const HelpandsupportCreate = ({
             </Grid>
             <Grid item xs={10}>
               <InputBox
+                disabled
                 helperText={errorObj.subject}
                 error={errorObj.subject.length}
                 className="w-100"
                 size="small"
-                value={formValue.subject}
+                value={selectedData.issueSubject}
                 onInputChange={(e) => {
                   setFormValue((pre) => ({
                     ...pre,

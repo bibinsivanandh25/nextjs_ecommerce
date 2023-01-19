@@ -156,7 +156,7 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "100px",
+        top: "88px",
         display: "flex",
         height: `calc(100vh - 90px)`,
       }}
@@ -171,13 +171,14 @@ const CustomerSideBarComponent = ({ children }) => {
             padding: "8px",
             borderRadius: "0% 50% 50% 0%",
             zIndex: "100",
+            background: "transparent",
           }}
           className="position-absolute cursor-pointer"
           onClick={() => {
             setOpen(true);
           }}
         >
-          <FaAngleDoubleRight className="fs-20" />
+          <FaAngleDoubleRight className="fs-15 bg-transparent" />
         </Paper>
       )}
       <Box className="shadow position-fixed overflow-auto">

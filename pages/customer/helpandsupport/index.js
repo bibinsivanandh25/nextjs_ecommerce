@@ -301,6 +301,7 @@ const HelpAndSupport = () => {
         <HelpandsupportCreate
           setShowCreateComponent={setShowCreateComponent}
           getTabledata={getTabledata}
+          selectedData={selectedData}
         />
       ) : showModal.show && showModal.type === "view" ? (
         <HelpandsupportView
