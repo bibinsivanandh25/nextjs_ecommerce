@@ -22,7 +22,7 @@ const ReusableProduct = ({ children, product }) => {
         />
       </Box>
       <Box className="ms-2">
-        <Typography className="color-orange mb-1 fs-14" variantMapping={<p />}>
+        <Typography className="theme_color mb-1 fs-14" variantMapping={<p />}>
           Supplier Name: Buisness Name
         </Typography>
         <Typography className="mb-1 fs-16 fw-bold" variantMapping={<p />}>

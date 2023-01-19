@@ -219,10 +219,10 @@ const HelpandsupportView = ({
             })
           }
         >
-          <Typography className="color-orange cursor-pointer fw-bold">
+          <Typography className="theme_color cursor-pointer fw-bold">
             <ArrowBack className="h-4" />
           </Typography>
-          <Typography className="color-orange cursor-pointer fw-bold">
+          <Typography className="theme_color cursor-pointer fw-bold">
             Back
           </Typography>
         </Box>

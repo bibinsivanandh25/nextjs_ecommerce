@@ -132,7 +132,7 @@ const ReturnOrderModel = ({
           <Typography className="fs-14 mt-3 color-blue cursor-pointer">
             Review or edit your recent Orders
           </Typography>
-          <Typography className="fs-14 mt-3 text-decoration-underline color-orange cursor-pointer">
+          <Typography className="fs-14 mt-3 text-decoration-underline theme_color cursor-pointer">
             Continue Shopping {">>"}
           </Typography>
         </Box>

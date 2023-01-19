@@ -59,9 +59,7 @@ const OrderSuccessModal = ({
         <p className="text-primary cursor-pointer">
           Review or edit your recent Orders
         </p>
-        <p className="color-orange cursor-pointer">
-          Continue Shopping &gt;&gt;
-        </p>
+        <p className="theme_color cursor-pointer">Continue Shopping &gt;&gt;</p>
       </Box>
     </ModalComponent>
   );

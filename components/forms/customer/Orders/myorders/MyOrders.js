@@ -131,9 +131,6 @@ const SingleProductTrackDetails = ({
       >
         Write a Product review
       </Paper>
-      <Paper className="w-250px text-center p-1 mb-2 fs-14" elevation={2}>
-        Save for later
-      </Paper>
     </Box>
   );
 };

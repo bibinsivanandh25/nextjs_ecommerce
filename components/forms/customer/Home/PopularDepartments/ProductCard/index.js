@@ -43,7 +43,7 @@ const ProductCard = ({
 
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
-  const [setshowAddToCardModal, setsetshowAddToCardModal] = useState(false);
+  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -87,7 +87,7 @@ const ProductCard = ({
     }
     if (iconName === "localMallIcon") {
       if (!item.isCarted) {
-        setsetshowAddToCardModal(true);
+        setShowAddToCardModal(true);
       }
     }
   };
@@ -175,7 +175,7 @@ const ProductCard = ({
                 height: "25px",
               }}
               className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
+                iconcolor[ele.iconName] ? "theme_bg_color" : "bg-white"
               }`}
               // eslint-disable-next-line react/no-array-index-key
               key={index}
@@ -206,11 +206,11 @@ const ProductCard = ({
           getProducts={getProducts}
         />
       ) : null}
-      {setshowAddToCardModal && (
+      {showAddToCardModal && (
         <DeliveryOptionsModal
           getProducts={getProducts}
-          modalOpen={setshowAddToCardModal}
-          setModalOpen={setsetshowAddToCardModal}
+          modalOpen={showAddToCardModal}
+          setModalOpen={setShowAddToCardModal}
           productId={item?.id}
           skuId={item?.skuId}
           modalType="ADD"

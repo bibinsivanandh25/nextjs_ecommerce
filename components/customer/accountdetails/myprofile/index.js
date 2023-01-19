@@ -176,7 +176,7 @@ const MyProfile = () => {
         phone: false,
       });
     } else if (errRes) {
-      toastify(errRes, "error");
+      toastify(errRes.response.data.message, "error");
     }
   };
   useEffect(() => {
@@ -224,7 +224,7 @@ const MyProfile = () => {
         emailId: false,
       });
     } else if (errRes) {
-      toastify(errRes, "error");
+      toastify(errRes.response.data.message, "error");
     }
   };
   useEffect(() => {

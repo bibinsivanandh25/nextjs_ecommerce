@@ -62,7 +62,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
         {data.flag && (
           <Badge
             style={{ borderTopLeftRadius: "4px" }}
-            className="bg-orange fs-12 align-top text-white px-2"
+            className="theme_bg_color fs-12 align-top text-white px-2"
           >
             Best Seller
           </Badge>
@@ -83,7 +83,7 @@ function SimilarProducts({ data = {}, handleIconClick = () => {} }) {
                     height: "25px",
                   }}
                   className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                    iconcolor[item.iconName] ? "bg-orange" : "bg-white"
+                    iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
                   }`}
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}

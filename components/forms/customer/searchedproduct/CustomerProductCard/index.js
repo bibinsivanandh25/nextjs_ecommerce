@@ -1,11 +1,15 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import makeStyles from "@mui/styles/makeStyles";
 import { AirportShuttleOutlined, RemoveRedEye } from "@mui/icons-material";
 import CarousalComponent from "@/atoms/Carousel";
+import toastify from "services/utils/toastUtils";
+import { removeProductFromWishList } from "services/customer/wishlist";
+import AddToWishListModal from "../../wishlist/AddToWishListModal";
+import DeliveryOptionsModal from "../../Home/buynowmodal";
 
 const useStyles = makeStyles(() => ({
   arrow: {
@@ -44,19 +48,62 @@ const iconListData = [
 ];
 
 function ProductDetailsCard({
-  data = {},
+  productDetails = {},
   handleIconClick = () => {},
   viewType = "",
+  getProducts = () => {},
 }) {
   const [hover, setHover] = useState(false);
   const [iconcolor, setIconColor] = useState({});
+
+  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
+  const [showWishListModal, setShowWishListModal] = useState(false);
+
+  useEffect(() => {
+    if (productDetails?.wishListed) {
+      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
+    }
+    if (productDetails?.carted) {
+      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
+    }
+  }, [productDetails]);
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const mouseLeave = (name) => {
-    setIconColor((prev) => ({ ...prev, [name]: false }));
+    if (productDetails?.wishListed && name === "favoriteBorderIcon") {
+      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
+    } else if (productDetails?.carted && name === "localMallIcon") {
+      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
+    } else {
+      setIconColor((prev) => ({ ...prev, [name]: false }));
+    }
   };
+
+  const handleCardIconClick = async (iconName) => {
+    if (iconName === "favoriteBorderIcon") {
+      if (!productDetails.isWishlisted) {
+        setShowWishListModal(true);
+      } else {
+        const { data } = await removeProductFromWishList(
+          productDetails.wishlistId,
+          productDetails.id
+        );
+        if (data) {
+          toastify(data?.message, "success");
+          getProducts();
+          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        }
+      }
+    }
+    if (iconName === "localMallIcon") {
+      if (!productDetails.isCarted) {
+        setShowAddToCardModal(true);
+      }
+    }
+  };
+
   // tooltip css changed
   const classes = useStyles();
   return (
@@ -81,56 +128,6 @@ function ProductDetailsCard({
         }}
         style={{ position: "relative" }}
       >
-        {/* {hover ? (
-          <>
-            <div className="poistion-relative">
-              <CarousalComponent
-                interval={1500}
-                autoPlay={hover}
-                stopOnHover={false}
-                dynamicHeight={false}
-                images={images}
-                showIndicators={hover}
-                carouselImageHeight={viewType === "Grid" ? "30vh" : "25vh"}
-              />
-            </div>
-            {data.flag && (
-              <Badge
-                style={{
-                  borderTopLeftRadius: "4px",
-                  position: "absolute",
-                  top: 3,
-                }}
-                className="bg-orange h-5 text-white px-2 ms-1"
-              >
-                Best Seller
-              </Badge>
-            )}
-          </>
-        ) : (
-          <>
-            <Image
-              src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png"
-              layout="fill"
-              alt=""
-              className={
-                hover ? "rounded bg-white " : "rounded bg-white  opacity-75"
-              }
-            />
-            {data.flag && (
-              <Badge
-                style={{
-                  borderTopLeftRadius: "4px",
-                  position: "absolute",
-                  top: 3,
-                }}
-                className="bg-orange h-5 align-top text-white px-2 ms-1"
-              >
-                Best Seller
-              </Badge>
-            )}
-          </>
-        )} */}
         <>
           <div className="poistion-relative">
             <CarousalComponent
@@ -138,13 +135,13 @@ function ProductDetailsCard({
               autoPlay={hover}
               stopOnHover={false}
               dynamicHeight={false}
-              list={data.images}
+              list={productDetails.images}
               showIndicators={hover}
               carouselImageMaxHeight={viewType === "Grid" ? "250px" : "0"}
               carouselImageMinHeight={viewType === "Grid" ? "250px" : "170px"}
             />
           </div>
-          {/* {data.flag && (
+          {/* {productDetails.flag && (
             <Badge
               style={{
                 borderTopLeftRadius: "4px",
@@ -172,7 +169,7 @@ function ProductDetailsCard({
                     height: "25px",
                   }}
                   className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                    iconcolor[item.iconName] ? "bg-orange" : "bg-white"
+                    iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
                   }`}
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
@@ -182,6 +179,7 @@ function ProductDetailsCard({
                     className="fs-18"
                     onIconClick={() => {
                       handleIconClick(item.iconName);
+                      handleCardIconClick(item.iconName);
                     }}
                     showColorOnHover={false}
                     onMouseEnter={() => mouseEnter(item.iconName)}
@@ -202,8 +200,8 @@ function ProductDetailsCard({
         <Box
           className={viewType === "row" ? "d-flex justify-content-between" : ""}
         >
-          <p className="fs-18 fw-600 text-truncate">{data.title}</p>
-          {/* {data.offerFlag && viewType === "row" && (
+          <p className="fs-18 fw-600 text-truncate">{productDetails.title}</p>
+          {/* {productDetails.offerFlag && viewType === "row" && (
             <Badge className="text-danger h-5">
               Offer ends in 09h 42min 2sec
             </Badge>
@@ -218,7 +216,7 @@ function ProductDetailsCard({
             whiteSpace: "nowrap",
           }}
         >
-          {data.description}
+          {productDetails.description}
         </p>
         <div className="h-50">
           <div
@@ -238,13 +236,13 @@ function ProductDetailsCard({
             >
               Actual Cost :
             </span>
-            <span className="h-5 fw-bold">{data.actualCost}</span>
+            <span className="h-5 fw-bold">{productDetails.actualCost}</span>
             <Tooltip title="MRP" placement="top">
               <span className=" h-5 ms-2 text-decoration-line-through">
-                {data?.mrp}
+                {productDetails?.mrp}
               </span>
             </Tooltip>
-            <span className="h-5">({data.actualCostOff} Off)</span>
+            <span className="h-5">({productDetails.actualCostOff} Off)</span>
           </div>
           <div
             style={{
@@ -263,13 +261,17 @@ function ProductDetailsCard({
             >
               Free Delivery :
             </span>
-            <span className="h-5 fw-bold">{data.freeDeliveryCost}</span>
+            <span className="h-5 fw-bold">
+              {productDetails.freeDeliveryCost}
+            </span>
             <Tooltip title="MRP" placement="top">
               <span className=" h-5 ms-2 text-decoration-line-through">
-                {data.mrp}
+                {productDetails.mrp}
               </span>
             </Tooltip>
-            <span className="h-5">({data.freeDeliveryCostOff} Off)</span>
+            <span className="h-5">
+              ({productDetails.freeDeliveryCostOff} Off)
+            </span>
           </div>
         </div>
 
@@ -279,14 +281,14 @@ function ProductDetailsCard({
           }
         >
           <Tooltip
-            title={<span className="bg-primary">View Count</span>}
+            title={<span className="">View Count</span>}
             placement="top"
             arrow
             classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           >
             <div className="ms-2 me-3">
               <RemoveRedEye className="fs-14 color-gray " />
-              <span className="h-5"> {data.viewCount}</span>
+              <span className="h-5"> {productDetails.viewCount}</span>
             </div>
           </Tooltip>
           <Tooltip
@@ -297,16 +299,34 @@ function ProductDetailsCard({
           >
             <div>
               <AirportShuttleOutlined className="fs-14 color-gray" />
-              <span className="h-5"> {data.orderCount}</span>
+              <span className="h-5"> {productDetails.orderCount}</span>
             </div>
           </Tooltip>
         </div>
-        {data.offerFlag && viewType === "Grid" && (
+        {productDetails.offerFlag && viewType === "Grid" && (
           <Box className="d-flex justify-content-end">
             <p className="text-danger h-5"> Offer ends in 09h 42min 2sec</p>
           </Box>
         )}
       </Box>
+      {showWishListModal ? (
+        <AddToWishListModal
+          showModal={showWishListModal}
+          setShowModal={setShowWishListModal}
+          productId={productDetails?.id}
+          getProducts={getProducts}
+        />
+      ) : null}
+      {showAddToCardModal && (
+        <DeliveryOptionsModal
+          getProducts={getProducts}
+          modalOpen={showAddToCardModal}
+          setModalOpen={setShowAddToCardModal}
+          productId={productDetails?.id}
+          skuId={productDetails?.skuId}
+          modalType="ADD"
+        />
+      )}
     </div>
   );
 }
