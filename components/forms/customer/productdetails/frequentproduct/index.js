@@ -10,9 +10,11 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
 import { getAllFrequentProduct } from "services/customer/productdetails";
+import AddToCartModal from "../addtocartmodal";
 
 const FrequentBuyProduct = ({ selectedMasterData }) => {
   const router = useRouter();
+  const [deliveryType, setDeliveryType] = useState("NOFREEDELIVERYANDRETURN");
   const [frequentProduct, setfrequentProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
@@ -21,6 +23,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
     handpick: "",
     storeowner: "",
   });
+  const [showModal, setShowModal] = useState(false);
   const priceCal = (array) => {
     let actualCost = 0;
     let fd = 0;
@@ -88,6 +91,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
     priceCal(temp);
     setSelectedProduct(tempSelectedData);
   };
+
   return (
     <>
       {frequentProduct.length ? (
@@ -128,7 +132,15 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                     <Grid item md={6}>
                       <Grid container display="flex" alignItems="center">
                         <Grid item md={6} display="flex" alignItems="center">
-                          <RadiobuttonComponent size="small" />
+                          <RadiobuttonComponent
+                            size="small"
+                            onRadioChange={() => {
+                              setDeliveryType("NOFREEDELIVERYANDRETURN");
+                            }}
+                            isChecked={
+                              deliveryType === "NOFREEDELIVERYANDRETURN"
+                            }
+                          />
                           <Typography className="h-5">
                             Actual Price (Excl.Delivery & Return Charge)
                           </Typography>
@@ -138,13 +150,19 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Grid>
                         <Grid item md={3}>
                           <Typography className="fw-bold">
-                            ₹ {formFrequentData.actualCost}
+                            ₹ {parseInt(formFrequentData.actualCost, 10)}
                           </Typography>
                         </Grid>
                       </Grid>
                       <Grid container display="flex" alignItems="center">
                         <Grid item md={6} display="flex" alignItems="center">
-                          <RadiobuttonComponent size="small" />
+                          <RadiobuttonComponent
+                            size="small"
+                            onRadioChange={() => {
+                              setDeliveryType("FREEDELIVERYANDRETURN");
+                            }}
+                            isChecked={deliveryType === "FREEDELIVERYANDRETURN"}
+                          />
                           <Typography className="h-5">
                             Price For Free Delivery & Return
                           </Typography>
@@ -154,7 +172,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Grid>
                         <Grid item md={3}>
                           <Typography className="fw-bold">
-                            ₹ {formFrequentData.fd}
+                            ₹ {parseInt(formFrequentData.fd, 10)}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -188,7 +206,13 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Typography>
                       </Grid>
                     </Grid> */}
-                      <ButtonComponent label="Add To Cart" variant="outlined" />
+                      <ButtonComponent
+                        label="Add To Cart"
+                        variant="outlined"
+                        onBtnClick={() => {
+                          setShowModal(true);
+                        }}
+                      />
                     </Grid>
                   </Grid>
                 ) : (
@@ -265,6 +289,14 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
             </Paper>
           </Grid>
         </Box>
+      ) : null}
+      {showModal ? (
+        <AddToCartModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          frequentProduct={frequentProduct}
+          type={deliveryType}
+        />
       ) : null}
     </>
   );
