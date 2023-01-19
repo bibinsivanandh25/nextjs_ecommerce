@@ -8,6 +8,7 @@ import CustomIcon from "services/iconUtils";
 import { useRef, useState, useEffect } from "react";
 import {
   deleteStore,
+  deleteStoreList,
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
@@ -45,6 +46,16 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   //   },
   //   [loading]
   // );
+
+  const deleteStoreCategory = async (storeListId) => {
+    const { res, message, err } = await deleteStoreList(storeListId);
+    if (res) {
+      toastify(message, "success");
+      getStoresList();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
@@ -156,9 +167,18 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     getAllStoreOfStoreList(item.id);
                     setSelectedStoreList(item);
                   }}
-                  className="p-2 my-2 w-300px cursor-pointer"
+                  className="p-2 my-2 w-300px cursor-pointer d-flex justify-content-between"
                 >
-                  {item.label}
+                  <Typography>{item.label}</Typography>
+                  <CustomIcon
+                    showColorOnHover={false}
+                    type="delete"
+                    className="color-light-blue fs-20"
+                    onIconClick={(e) => {
+                      e.stopPropagation();
+                      deleteStoreCategory(item.id);
+                    }}
+                  />
                 </Paper>
               </motion.div>
             );

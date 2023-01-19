@@ -117,6 +117,16 @@ const getStoreListOfCustomer = (customerId) => {
     .catch((err) => ({ err }));
 };
 
+const deleteStoreList = (storeListId) => {
+  return serviceUtil
+    .deleteById(`users/customerStoreList/${storeListId}`)
+    .then((res) => {
+      const { message } = res.data;
+      return { res, message };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getRecentStoreList,
   getStoreList,
@@ -130,4 +140,5 @@ export {
   getFavoriteList,
   getStoreListOfCustomer,
   removeFromStoreList,
+  deleteStoreList,
 };
