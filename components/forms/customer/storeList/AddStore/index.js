@@ -79,7 +79,6 @@ const AddStore = ({
 
   const handleSubmit = async () => {
     if (!validate()) {
-      debugger;
       if (defaultData?.type) {
         const { data, err, message } = await addStoreToStoreList(
           formData.storeCode,

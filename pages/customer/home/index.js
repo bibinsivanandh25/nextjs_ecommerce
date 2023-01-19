@@ -49,7 +49,7 @@ const themeColors = [
     secondaryColor: "#a95a4c3d",
   },
 ];
-//["#f4e7dc","#D3EAE4","#BAA6B1","#a95a4c3d"]
+// ["#f4e7dc","#D3EAE4","#BAA6B1","#a95a4c3d"]
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
