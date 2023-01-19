@@ -30,7 +30,9 @@ export default function RadiobuttonComponent({
           sx={{
             color: "gray",
             "&.Mui-checked": {
-              color: "#e56700",
+              color: window
+                .getComputedStyle(document.documentElement)
+                .getPropertyValue("--themeColor"),
             },
           }}
           {...muiProps}

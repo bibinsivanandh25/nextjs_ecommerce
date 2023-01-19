@@ -72,7 +72,7 @@ const OrderReturn = ({
               <Image src={ele.image} height={85} width={85} />
             </Grid>
             <Grid item sm={7}>
-              <Typography className="color-orange">
+              <Typography className="theme_color">
                 Supplier Name: Business Name
               </Typography>
               <Typography className="h-5  my-1">{ele.title}</Typography>
@@ -143,7 +143,7 @@ const OrderReturn = ({
             <Typography
               className={`${
                 ele.isSelected ? "" : "d-none"
-              } color-orange h-5 fw-bold pe-5`}
+              } theme_color h-5 fw-bold pe-5`}
             >
               Edit
             </Typography>

@@ -155,8 +155,9 @@ const FAQPage = ({
     if (validate()) {
       const payload = {
         customerQuestion: questionData,
-        profileId: user.profileId,
         variationId: productId,
+        customerId: user.userId,
+        customerName: user.customerName,
       };
       const { data, err } = await postQuestions(payload);
       if (data) {

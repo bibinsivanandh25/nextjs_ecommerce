@@ -26,6 +26,7 @@ const AddToWishListModal = ({
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
   const [newWishListName, setNewWishListName] = useState("");
   const [modalType, setModalType] = useState("Add");
+  const [error, setError] = useState(false);
 
   const [wishListNames, setWishListNames] = useState([]);
   const [selectedList, setSelectedList] = useState({
@@ -56,21 +57,23 @@ const AddToWishListModal = ({
     getAllWishLists();
   }, []);
   const createNewWishList = async () => {
-    const payload = {
-      customerId: userId,
-      userProfileId: profileId,
-      wishlistName: newWishListName,
-    };
-    const { data, message, err } = await addNewWishList(payload);
-    if (data) {
-      toastify(message, "success");
-      getAllWishLists();
-      setShowAddNewWishList(false);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-      setNewWishListName("");
-      getAllWishLists();
-    }
+    if (newWishListName?.length) {
+      const payload = {
+        customerId: userId,
+        userProfileId: profileId,
+        wishlistName: newWishListName,
+      };
+      const { data, message, err } = await addNewWishList(payload);
+      if (data) {
+        toastify(message, "success");
+        getAllWishLists();
+        setShowAddNewWishList(false);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+        setNewWishListName("");
+        getAllWishLists();
+      }
+    } else setError(true);
   };
 
   const editWishListName = async () => {
@@ -95,6 +98,7 @@ const AddToWishListModal = ({
   const deleteList = async (id) => {
     const { data, err } = await deleteWishListName(profileId, id);
     if (data) {
+      getProducts();
       getAllWishLists();
       toastify(data?.message, "success");
       setSelectedList({
@@ -132,6 +136,7 @@ const AddToWishListModal = ({
         setShowModal(false);
       }}
       showClearBtn={false}
+      showSaveBtn={wishListNames?.length}
       saveBtnText="Add"
       ModalWidth="25%"
       ModalTitle="Choose WishList"
@@ -167,8 +172,8 @@ const AddToWishListModal = ({
               label="Add new wishlist"
               variant="outlined"
               muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-              borderColor="border-orange"
-              textColor="color-orange"
+              // borderColor="border-orange"
+              textColor="theme_color"
               onBtnClick={() => {
                 setShowAddNewWishList(true);
                 setModalType("Add");
@@ -209,6 +214,8 @@ const AddToWishListModal = ({
             onInputChange={(e) => {
               setNewWishListName(e?.target?.value);
             }}
+            helperText={error ? "This Field is Required" : ""}
+            error={error}
           />
         </Box>
       </ModalComponent>

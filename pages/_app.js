@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 
 import "bootstrap/dist/css/bootstrap.css";
+import "../styles/customerTheme.css";
 import "../styles/width.scss";
 import "../styles/global.scss";
 import "../styles/colors.scss";

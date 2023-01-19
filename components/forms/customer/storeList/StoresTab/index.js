@@ -173,7 +173,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   ) : (
     <Box className="p-2 w-100">
       <Typography
-        className="d-inline color-orange fs-12 cursor-pointer"
+        className="d-inline theme_color fs-12 cursor-pointer"
         onClick={() => {
           setSelectedStoreList(null);
           setStores([]);
@@ -182,7 +182,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         {"< "} Back
       </Typography>
       <Box className="w-100 d-flex justify-content-between align-items-center">
-        <Typography className=" color-orange fs-16 fw-bold">
+        <Typography className=" theme_color fs-16 fw-bold">
           {selectedStoreList.label}
         </Typography>
         <Typography
@@ -251,7 +251,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                   {item.favourite ? (
                     <CustomIcon
                       type="heart"
-                      className="fs-20 m-1 cursor-pointer color-orange"
+                      className="fs-20 m-1 cursor-pointer theme_color"
                       onIconClick={(e) => {
                         e.preventDefault();
                         makefavouriteStore(item.id);

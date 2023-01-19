@@ -18,15 +18,27 @@ import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 import { useSession } from "next-auth/react";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { format } from "date-fns";
-import Image from "next/image";
+// import Image from "next/image";
 import { FaInfoCircle } from "react-icons/fa";
-import { customerHome } from "public/assets";
+// import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
 import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
+import ButtonComponent from "@/atoms/ButtonComponent";
+import TicketSvg from "public/assets/svg/TicketSvg";
+import ScheduleSvg from "public/assets/svg/scheduleSvg";
+import TaxSvg from "public/assets/svg/TaxSvg";
+import ChatBubbleSvg from "public/assets/svg/chatbubbleSvg";
+import ShopSvg from "public/assets/svg/ShopSvg";
 import Articles from "./Articles";
-// import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
-// import InputBox from "@/atoms/InputBoxComponent";
-// import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
+
+const themeColors = [
+  "#e56700",
+  "#000",
+  "#62615fde",
+  "#144955",
+  "#59334b",
+  "#a95a4c",
+];
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
@@ -37,7 +49,7 @@ const Home = () => {
   const [storeInformation, setStoreInformation] = useState([]);
   const [articleData, setArticleData] = useState([]);
   const [leaveDate, setleaveDate] = useState({ start: null, end: null });
-
+  const [themeId, setThemeId] = useState(0);
   // const [products, setProducts] = useState([]);
 
   const route = useRouter();
@@ -170,9 +182,16 @@ const Home = () => {
     getBanners();
   }, [storeDetails?.storeCode]);
 
+  const handleThemeChange = () => {
+    const r = document.querySelector(":root");
+    const temp = themeId >= 5 ? 0 : themeId + 1;
+    r.style.setProperty("--themeColor", themeColors[temp]);
+    setThemeId(temp);
+  };
+
   return (
     <>
-      {/* {isLoggedIn ? ( */}
+      <ButtonComponent label="Change Theme" onBtnClick={handleThemeChange} />
       <div className="px-3">
         {!showCompareProducts ? (
           <Box>
@@ -196,7 +215,12 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 cursor-pointer d-flex justify-content-evenly p-3 align-items-center"
                 >
-                  <Image src={customerHome.coupon} height={40} width={60} />
+                  {/* <Image src={customerHome.coupon} height={40} width={60} /> */}
+                  <TicketSvg
+                    height={40}
+                    width={60}
+                    className="theme_svg_fill"
+                  />
                   <Typography
                     className="fw-bold h-5 cursor-pointer"
                     onClick={() => {
@@ -212,14 +236,17 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.shop} height={50} width={50} />
+                  <ShopSvg height={40} width={60} className="theme_svg_fill" />
+                  {/* <Image src={customerHome.shop} height={50} width={50} /> */}
                   <div>
                     <Typography className="fw-bold h-5 d-flex align-items-center">
                       <div className="d-flex">
                         <Typography className="fw-bold h-5 d-flex">
                           Holiday :&nbsp;
                           {storeInformation?.holidays?.map((ele, ind) => {
-                            return storeInformation?.holidays?.length === 1
+                            return !storeInformation?.holidays?.length
+                              ? "No Holiday's"
+                              : storeInformation?.holidays?.length === 1
                               ? ele.substr(0, 3)
                               : ind === storeInformation?.holidays.length - 1
                               ? `${ele.substr(0, 3)}. `
@@ -240,7 +267,12 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.file} height={50} width={50} />
+                  {/* <Image src={customerHome.file} height={50} width={50} /> */}
+                  <ScheduleSvg
+                    height={50}
+                    width={50}
+                    className="theme_svg_fill"
+                  />
                   <Box>
                     <Typography className="fw-bold h-5">GSTIN No.</Typography>
                     <span className="h-5">{storeInformation?.gstIn}</span>
@@ -252,7 +284,7 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.tax} height={50} width={50} />
+                  <TaxSvg height={40} width={60} className="theme_svg_fill" />
                   <Box>
                     {" "}
                     <Typography className="fw-bold h-5">
@@ -269,7 +301,12 @@ const Home = () => {
                   sm={3}
                   className="d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.help} height={50} width={55} />
+                  <ChatBubbleSvg
+                    height={40}
+                    width={60}
+                    className="theme_svg_fill"
+                  />
+                  {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
                   <Box>
                     <Typography className="fw-bold h-5">
@@ -313,7 +350,7 @@ const Home = () => {
             <Box className="my-2">
               <FlashDeals />
             </Box>
-            <Box className={isLoggedIn ? "" : "d-none"}>
+            <Box className={isLoggedIn ? "my-2" : "d-none"}>
               <RecentlyViewed setShowCompareProducts={setShowCompareProducts} />
             </Box>
             <Box className={articleData?.length ? "" : "d-none"}>

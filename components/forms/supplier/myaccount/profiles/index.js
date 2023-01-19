@@ -25,7 +25,7 @@ import { getBase64 } from "services/utils/functionUtils";
 import InputBox from "@/atoms/InputBoxComponent";
 
 const Profile = () => {
-  const { userId } = useSelector((state) => state.customer);
+  const { userId, profileId } = useSelector((state) => state.customer);
   const [profileList, setProfileList] = useState([]);
   const bg_color = ["#fe4a49", "#966b9d", "#1A936F", "#907AD6", "#114B5F"];
   const dispatch = useDispatch();
@@ -61,13 +61,13 @@ const Profile = () => {
     return letters;
   };
 
-  const handleProfileSwitch = async (profile) => {
+  const handleProfileSwitch = async (profile, showMessage) => {
     const { data, err } = await switchProfile(
       profile.profileId,
       profile.customerId
     );
     if (data) {
-      toastify(data.message, "success");
+      if (showMessage) toastify(data.message, "success");
       dispatch(
         storeUserInfo({
           profileImg: data.data.profileImageUrl,
@@ -77,7 +77,7 @@ const Profile = () => {
       );
       router.push("/customer/home");
     } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      if (showMessage) toastify(err?.response?.data?.message, "error");
     }
   };
   const handleSubmit = async () => {
@@ -113,6 +113,13 @@ const Profile = () => {
         setProfileName("");
         setAddImage(false);
         setImg("");
+        dispatch(
+          storeUserInfo({
+            profileImg: data.profileImageUrl,
+            profileId: data.profileId,
+            profileName: data.profileName,
+          })
+        );
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -160,6 +167,10 @@ const Profile = () => {
     const { data, err } = await deleteProfile(item.profileId, item.customerId);
     if (data) {
       toastify(data.message, "success");
+      if (profileId === item.profileId) {
+        const temp = profileList.filter((ele) => ele.profileId !== profileId);
+        handleProfileSwitch(temp[0], false);
+      }
       getProfiles();
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
@@ -167,20 +178,20 @@ const Profile = () => {
   };
 
   return (
-    <>
+    <Box className="d-flex justify-content-center flex-column">
       {profileList.length <= 4 && (
-        <div className="d-flex justify-content-end">
+        <div>
           <Typography
-            className="fs-16 color-orange cursor-pointer"
+            className="fs-16 theme_color d-inline cursor-pointer ms-3"
             onClick={() => {
               setShowModal(true);
             }}
           >
-            + New Profile
+            New Profile +
           </Typography>
         </div>
       )}
-      <Box className="w-100 d-flex justify-content-center my-3 flex-wrap">
+      <Box className="d-flex justify-content-center my-3 flex-wrap">
         {profileList.map((item, index) => {
           return (
             <Paper
@@ -237,17 +248,16 @@ const Profile = () => {
               <div className="d-flex align-items-center w-75 justify-content-evenly mt-4">
                 <motion.div
                   whileHover={{
-                    scale: 1.05,
+                    scale: 1.4,
                     transition: { duration: 0.5 },
                   }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <Tooltip title="Switch">
                     <HiSwitchHorizontal
-                      className="m-1 shadow cursor-pointer rounded-circle"
-                      size={40}
+                      className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                      size={30}
                       style={{
-                        background: "#e56700",
                         color: "#fff ",
                         padding: "5px",
                       }}
@@ -259,19 +269,20 @@ const Profile = () => {
                 </motion.div>
                 <motion.div
                   whileHover={{
-                    scale: 1.1,
+                    scale: 1.4,
                     transition: { duration: 0.5 },
                   }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <Tooltip title="Update">
                     <Edit
-                      className=" m-1 shadow cursor-pointer rounded-circle"
-                      size={40}
+                      className=" m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                      size={60}
                       style={{
-                        background: "#e56700",
                         color: "#fff ",
                         padding: "5px",
+                        height: "30px",
+                        width: "30px",
                       }}
                       onClick={() => {
                         seteditModal(item);
@@ -282,28 +293,31 @@ const Profile = () => {
                     />
                   </Tooltip>
                 </motion.div>
-                <motion.div
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { duration: 0.5 },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Tooltip title="Delete">
-                    <Delete
-                      size={40}
-                      className=" m-1  cursor-pointer rounded-circle shadow"
-                      style={{
-                        background: "#e56700",
-                        color: "#fff",
-                        padding: "5px",
-                      }}
-                      onClick={() => {
-                        deleteprofile(item);
-                      }}
-                    />
-                  </Tooltip>
-                </motion.div>
+                {profileId !== item.profileId && (
+                  <motion.div
+                    whileHover={{
+                      scale: 1.4,
+                      transition: { duration: 0.5 },
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Tooltip title="Delete">
+                      <Delete
+                        size={40}
+                        className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
+                        style={{
+                          color: "#fff",
+                          padding: "5px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        onClick={() => {
+                          deleteprofile(item);
+                        }}
+                      />
+                    </Tooltip>
+                  </motion.div>
+                )}
               </div>
             </Paper>
           );
@@ -449,7 +463,7 @@ const Profile = () => {
           </Box>
         </ModalComponent>
       </Box>
-    </>
+    </Box>
   );
 };
 export default Profile;
