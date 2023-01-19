@@ -55,6 +55,7 @@ const Header = () => {
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [showFavoriteList, setShowFavoriteList] = useState(false);
   const customer = useSelector((state) => state.customer);
+  const { storeThemes } = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
@@ -92,6 +93,19 @@ const Header = () => {
       );
     }
   };
+
+  const handleThemeChange = () => {
+    const r = document.querySelector(":root");
+    r.style.setProperty("--themeColor", storeThemes?.primaryColor || "#e56700");
+    r.style.setProperty(
+      "--secondaryColor",
+      storeThemes?.secondaryColor || "#f4e7dc"
+    );
+  };
+
+  useEffect(() => {
+    handleThemeChange();
+  }, [storeThemes]);
 
   const getName = () => {
     let label = "";
@@ -161,7 +175,7 @@ const Header = () => {
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
@@ -193,7 +207,7 @@ const Header = () => {
           supplierStoreLogo: storeData.supplierStoreLogo,
           supplierStoreName: storeData.supplierStoreName,
           storeCode: storeData.supplierStoreCode,
-          storeThemes: storeData.storeThemes,
+          storeThemes: storeData.storeTheme,
           shopDescription: storeData.shopDescription ?? "",
           shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
           addStoreFlag: false,

@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
   Box,
   Button,
@@ -14,6 +16,7 @@ import validateMessage from "constants/validateMessages";
 import {
   getSupplierStoreConfiguration,
   supplierStoreImageConfig,
+  getThemes,
   updateSupplierStoreConfiguration,
 } from "services/supplier/myaccount/storesettings";
 import { useSelector } from "react-redux";
@@ -144,14 +147,14 @@ const daysList = [
   },
 ];
 
-const themeColor = [
-  "#e01313",
-  "#16a887",
-  "#e56700",
-  "#f1b07b",
-  "#a316a8",
-  "#d6c20f",
-];
+// const themeColor = [
+//   "#e01313",
+//   "#16a887",
+//   "#e56700",
+//   "#f1b07b",
+//   "#a316a8",
+//   "#d6c20f",
+// ];
 
 const StoreSettings = () => {
   const [formValues, setFormValues] = useState({
@@ -165,7 +168,8 @@ const StoreSettings = () => {
     shopCloseTimings: "",
     description: "",
   });
-
+  const [themeColor, setThemeColors] = useState([]);
+  const [selectedTheme, setSelectedTheme] = useState(null);
   const [storeLogo, setStoreLogo] = useState({
     file: null,
     url: "",
@@ -207,6 +211,7 @@ const StoreSettings = () => {
   const getStoreInfo = async () => {
     const { data } = await getSupplierStoreConfiguration(user?.storeCode);
     if (data) {
+      setSelectedTheme(data?.storeTheme?.storeThemeId ?? 0);
       setFormValues((pre) => ({
         ...pre,
         storeName: data.supplierStoreName,
@@ -240,8 +245,17 @@ const StoreSettings = () => {
     }
   };
 
-  useEffect(() => {
+  const getStoreTheme = async () => {
+    const { data } = await getThemes();
     getStoreInfo();
+    if (data) {
+      setThemeColors(data);
+      setSelectedTheme(data[0].storeThemeId);
+    }
+  };
+
+  useEffect(() => {
+    getStoreTheme();
   }, []);
 
   const validateForm = () => {
@@ -328,13 +342,7 @@ const StoreSettings = () => {
       shopDescription: formValues.description,
       shopDescriptionImageUrl: image[1] ?? discriptionImage.url,
       supplierStoreLogo: image[0] ?? storeLogo.url,
-      storeThemes: [
-        {
-          storeThemeId: 0,
-          colorName: "string",
-          colorCode: "string",
-        },
-      ],
+      storeThemeId: selectedTheme,
     };
 
     const { data, err } = await updateSupplierStoreConfiguration(payload);
@@ -373,6 +381,7 @@ const StoreSettings = () => {
       }
     }
   };
+  console.log(themeColor);
 
   return (
     <Paper className="mnh-70vh overflow-auto hide-scrollbar">
@@ -733,14 +742,26 @@ const StoreSettings = () => {
             </Box>
             <Grid container spacing={2} justifyContent="space-around">
               {themeColor.map((item) => (
-                <Grid item sm={5} justifyContent="space-around">
+                <Grid
+                  item
+                  sm={5}
+                  justifyContent="space-around"
+                  key={item.storeThemeId}
+                >
                   <div
                     style={{
-                      backgroundColor: `${item}`,
-                      height: "3rem",
-                      width: "3rem",
+                      backgroundColor: `${item.primaryColor}`,
+                      height: "4rem",
+                      width: "4rem",
                     }}
-                    className="rounded"
+                    className={`rounded ${
+                      selectedTheme === item.storeThemeId
+                        ? "border border-primary border-2"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedTheme(item.storeThemeId);
+                    }}
                   />
                 </Grid>
               ))}

@@ -12,7 +12,10 @@ import { getStore } from "services/admin/explorestore";
 import toastify from "services/utils/toastUtils";
 import ModalComponent from "@/atoms/ModalComponent";
 
-const ExploreStores = ({ handleStoreSelection = () => {} }) => {
+const ExploreStores = ({
+  handleStoreSelection = () => {},
+  showConformation = true,
+}) => {
   const [formData, setFormData] = useState({
     location: null,
     category: {},
@@ -195,9 +198,12 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
                 className="w-80p mx-auto p-2 d-flex m-2"
                 elevation={4}
                 onClick={() => {
-                  setopenConfirm(true);
-                  seteachStoreList(item);
-                  // handleStoreSelection(item);
+                  if (showConformation) {
+                    setopenConfirm(true);
+                    seteachStoreList(item);
+                  } else {
+                    handleStoreSelection(item);
+                  }
                 }}
               >
                 <Box className="d-flex">

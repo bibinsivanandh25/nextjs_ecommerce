@@ -30,8 +30,18 @@ const updateSupplierStoreConfiguration = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
+
+const getThemes = () => {
+  return serviceUtil
+    .get("users/supplier/store/theme")
+    .then((res) => {
+      return { data: res.data.data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getSupplierStoreConfiguration,
   supplierStoreImageConfig,
   updateSupplierStoreConfiguration,
+  getThemes,
 };

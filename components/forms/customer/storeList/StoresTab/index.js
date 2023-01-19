@@ -124,7 +124,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,

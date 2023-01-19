@@ -82,7 +82,7 @@ const ShopCode = () => {
           supplierStoreLogo: data?.supplierStoreLogo,
           supplierStoreName: data?.supplierStoreName,
           storeCode: data?.supplierStoreCode,
-          storeThemes: data?.storeThemes,
+          storeThemes: data?.storeTheme,
           shopDescription: data?.shopDescription,
           shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         };
@@ -191,6 +191,7 @@ const ShopCode = () => {
         titleClassName="color-orange"
       >
         <ExploreStores
+          showConformation={false}
           handleStoreSelection={(storeData) => {
             setFormValues((prev) => ({
               ...prev,
