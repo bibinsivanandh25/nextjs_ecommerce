@@ -32,13 +32,24 @@ import ShopSvg from "public/assets/svg/ShopSvg";
 import Articles from "./Articles";
 
 const themeColors = [
-  "#e56700",
-  "#000",
-  "#62615fde",
-  "#144955",
-  "#59334b",
-  "#a95a4c",
+  {
+    primaryColor: "#e56700",
+    secondaryColor: "#f4e7dc",
+  },
+  {
+    primaryColor: "#144955",
+    secondaryColor: "#D3EAE4",
+  },
+  {
+    primaryColor: "#59334b",
+    secondaryColor: "#BAA6B1",
+  },
+  {
+    primaryColor: "#a95a4c",
+    secondaryColor: "#a95a4c3d",
+  },
 ];
+//["#f4e7dc","#D3EAE4","#BAA6B1","#a95a4c3d"]
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
@@ -184,8 +195,9 @@ const Home = () => {
 
   const handleThemeChange = () => {
     const r = document.querySelector(":root");
-    const temp = themeId >= 5 ? 0 : themeId + 1;
-    r.style.setProperty("--themeColor", themeColors[temp]);
+    const temp = themeId >= 3 ? 0 : themeId + 1;
+    r.style.setProperty("--themeColor", themeColors[temp].primaryColor);
+    r.style.setProperty("--secondaryColor", themeColors[temp].secondaryColor);
     setThemeId(temp);
   };
 

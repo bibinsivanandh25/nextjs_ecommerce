@@ -79,6 +79,7 @@ const AddStore = ({
 
   const handleSubmit = async () => {
     if (!validate()) {
+      debugger;
       if (defaultData?.type) {
         const { data, err, message } = await addStoreToStoreList(
           formData.storeCode,
@@ -188,7 +189,7 @@ const AddStore = ({
         size="small"
       />
       <Box className="d-flex justify-content-center w-100 mt-3">
-        <ButtonComponent label="submit" onBtnClick={handleSubmit} />
+        <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
       </Box>
     </Box>
   );
