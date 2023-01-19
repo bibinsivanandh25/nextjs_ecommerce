@@ -128,6 +128,11 @@ const CustomerRegistration = () => {
 
   const handleSubmit = async () => {
     if (!validateForm()) {
+      const payload1 = {
+        mobileNumber: formValues.mobileNo,
+        userType: "CUSTOMER",
+        email: formValues.email,
+      };
       const payload = {
         customerName: formValues.pName,
         mobileNumber: formValues.mobileNo,
@@ -139,9 +144,7 @@ const CustomerRegistration = () => {
         wished: false,
       };
       await serviceUtil
-        .post(
-          `users/registration/send-otp?mobileNumber=${formValues.mobileNo}&userType=CUSTOMER`
-        )
+        .post(`users/user-registration/send-otp`, payload1)
         .then((data) => {
           toastify(data.data.message, "success");
           setShowVerifyOTP(true);

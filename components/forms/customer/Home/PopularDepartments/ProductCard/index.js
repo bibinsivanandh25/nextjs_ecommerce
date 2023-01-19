@@ -16,6 +16,7 @@ const ProductCard = ({
   handleIconClick = () => {},
   height = 150,
   width = 150,
+  cardPaperClass = "",
 }) => {
   const iconListData = [
     {
@@ -42,7 +43,7 @@ const ProductCard = ({
 
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
-  const [setshowAddToCardModal, setsetshowAddToCardModal] = useState(false);
+  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -80,12 +81,13 @@ const ProductCard = ({
         if (data) {
           toastify(data?.message, "success");
           getProducts();
+          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
         }
       }
     }
     if (iconName === "localMallIcon") {
       if (!item.isCarted) {
-        setsetshowAddToCardModal(true);
+        setShowAddToCardModal(true);
       }
     }
   };
@@ -99,10 +101,11 @@ const ProductCard = ({
     >
       <Paper
         elevation={hover ? 6 : 3}
-        className="mx-2 position-relative"
+        className={`mx-2 position-relative rounded ${cardPaperClass}`}
         style={{
           minHeight: 150,
           minWidth: 150,
+          overflow: "hidden",
         }}
       >
         <Image
@@ -203,13 +206,14 @@ const ProductCard = ({
           getProducts={getProducts}
         />
       ) : null}
-      {setshowAddToCardModal && (
+      {showAddToCardModal && (
         <DeliveryOptionsModal
           getProducts={getProducts}
-          modalOpen={setshowAddToCardModal}
-          setModalOpen={setsetshowAddToCardModal}
+          modalOpen={showAddToCardModal}
+          setModalOpen={setShowAddToCardModal}
           productId={item?.id}
           skuId={item?.skuId}
+          modalType="ADD"
         />
       )}
     </Box>

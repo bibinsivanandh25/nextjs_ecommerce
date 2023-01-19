@@ -1,8 +1,10 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
@@ -35,6 +37,12 @@ const CustomerSideBarComponent = ({ children }) => {
   const [hover, setHover] = useState(false);
   const [pin, setPin] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const mainRef = useRef(null);
+
+  useEffect(() => {
+    mainRef.current.scrollIntoView();
+  }, [mainRef]);
 
   const handleClick = (event) => {
     setHover(true);
@@ -117,6 +125,18 @@ const CustomerSideBarComponent = ({ children }) => {
               className={`d-block p-1 fs-14 text-truncate ${
                 ele.isSet ? "color-orange" : ""
               }`}
+              key={ele.label}
+              onClick={() => {
+                if (!ele.isSet) {
+                  router.push({
+                    pathname: "/customer/productvariation",
+                    query: {
+                      subCategoryId: ele?.id,
+                    },
+                  });
+                  setHover(false);
+                }
+              }}
             >
               {ele.label}
             </li>
@@ -136,10 +156,11 @@ const CustomerSideBarComponent = ({ children }) => {
         minWidth: `calc(100vw - 5px)`,
         maxWidth: "100vw",
         position: "relative",
-        top: "90px",
+        top: "88px",
         display: "flex",
         height: `calc(100vh - 90px)`,
       }}
+      ref={mainRef}
     >
       <CssBaseline />
 
@@ -187,13 +208,12 @@ const CustomerSideBarComponent = ({ children }) => {
           >
             {customerMenu.map((item) => {
               return (
-                <Box className="p-2 pe-0">
+                <Box className="p-2 pe-0" key={item.title}>
                   <Box
                     className="w-100 ps-3 text-truncate pe-2"
                     sx={{
                       width: "200px",
                     }}
-                    key={item.title}
                     onMouseEnter={(e) => {
                       if (e.target.id === category?.id) {
                         setSetsandSubCategoryData([]);
@@ -284,6 +304,7 @@ const CustomerSideBarComponent = ({ children }) => {
                   maxHeight: "380px",
                   overflow: "auto",
                   maxWidth: "800px",
+                  minWidth: "800px",
                 }}
                 className="hide-scrollbar"
               >

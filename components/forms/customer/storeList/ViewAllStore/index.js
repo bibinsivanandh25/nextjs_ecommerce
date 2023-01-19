@@ -119,7 +119,6 @@ const ViewAllStore = ({
             supplierId: storeData.supplierId,
           })
         );
-        console.log("switched");
         router.push("/customer/home");
       } else if (storeErr) {
         toastify(storeErr?.response?.data?.message, "error");

@@ -38,6 +38,8 @@ const customerHome = {
     "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/opps.png",
   noProductsFound:
     "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png",
+  quizBackgroung:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/coupon_applicable_product_quiz.jpg",
 };
 
 export { assetsJson, productImageGuidLines, customerHome };

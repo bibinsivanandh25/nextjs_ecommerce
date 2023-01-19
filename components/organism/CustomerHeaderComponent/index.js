@@ -5,7 +5,7 @@
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Avatar, Box, MenuItem, Typography } from "@mui/material";
-import { FaGooglePlay, FaApple, FaStore } from "react-icons/fa";
+import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -100,7 +100,6 @@ const Header = () => {
         label += item[0];
       });
     }
-    // console.log(label, );
     return label.toUpperCase();
   };
 
@@ -147,8 +146,9 @@ const Header = () => {
   };
 
   const handleSwitchStore = async (storecode) => {
-    const { data, err } = await switchStore(storecode, userId);
+    const { data, err, message } = await switchStore(storecode, userId);
     if (data) {
+      toastify(message, "success");
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
         storecode
       );
@@ -229,29 +229,66 @@ const Header = () => {
               className="d-flex justify-content-between py-0 px-3"
               key={ele.id}
             >
-              <CheckBoxComponent
-                checkedcolor="#54ce3c"
-                iconType="circled"
-                showIcon
-                id={ele.id}
-                label={
-                  <Typography className="h-5 cursor-pointer">
-                    {ele.label}
-                  </Typography>
-                }
-                isChecked={ele.checked}
-                checkBoxClick={() => {
-                  setShowConfirmModal(true);
-                  setstoreDetails(ele);
-                }}
-              />
-              <CustomIcon
-                type="delete"
-                onIconClick={() => {
-                  deleteStores(ele.id);
-                }}
-              />
+              <Grid display="flex" alignItems="center">
+                <CheckBoxComponent
+                  checkedcolor="#54ce3c"
+                  iconType="circled"
+                  showIcon
+                  id={ele.id}
+                  label=""
+                  isChecked={ele.checked}
+                  checkBoxClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                />
+                <Typography
+                  onClick={() => {
+                    setShowConfirmModal(true);
+                    setstoreDetails(ele);
+                  }}
+                >
+                  {ele.label}
+                </Typography>
+              </Grid>
+              {ele.checked ? (
+                <></>
+              ) : (
+                <CustomIcon
+                  type="delete"
+                  onIconClick={() => {
+                    deleteStores(ele.id);
+                  }}
+                />
+              )}
             </MenuItem>
+            // <MenuItem
+            //   className="d-flex justify-content-between py-0 px-3"
+            //   key={ele.id}
+            // >
+            //   <CheckBoxComponent
+            //     checkedcolor="#54ce3c"
+            //     iconType="circled"
+            //     showIcon
+            //     id={ele.id}
+            //     label={
+            //       <Typography onCli className="h-5 cursor-pointer">
+            //         {ele.label}
+            //       </Typography>
+            //     }
+            //     isChecked={ele.checked}
+            //     checkBoxClick={() => {
+            //       setShowConfirmModal(true);
+            //       setstoreDetails(ele);
+            //     }}
+            //   />
+            //   <CustomIcon
+            //     type="delete"
+            //     onIconClick={() => {
+            //       deleteStores(ele.id);
+            //     }}
+            //   />
+            // </MenuItem>
           );
         })}
         {!stores.length && (
@@ -348,15 +385,23 @@ const Header = () => {
             )}
           </p>
         </div>
-        <Image
-          src={assetsJson.logo}
-          alt=""
-          width="100px"
-          height="30px"
+        <div
           style={{
-            zIndex: 1000,
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%, 0px)",
           }}
-        />
+        >
+          <Image
+            src={assetsJson.logo}
+            alt=""
+            width="100px"
+            height="30px"
+            style={{
+              zIndex: 1000,
+            }}
+          />
+        </div>
         <div className="d-flex align-items-center">
           <div
             className="px-4"
@@ -373,12 +418,6 @@ const Header = () => {
             }}
             className="color-black mx-2 me-3 h-5 fw-bold cursor-pointer"
           >
-            {/* <FaArrowRight
-              onClick={() => {
-                setOpenExplore(true);
-              }}
-              className="fs-16 ms-1 cursor-pointer"
-            /> */}
             Explore Stores
           </Typography>
           <div className="d-flex justify-content-center align-items-center">
@@ -461,7 +500,7 @@ const Header = () => {
                 m: "0.08rem",
               }}
               onClick={() => {
-                route.push("/customer/searchedproduct");
+                route.push("/customer/productvariation");
               }}
               className="bg-orange d-flex  p-1 rounded align-items-center cursor-pointer"
             >
@@ -476,8 +515,8 @@ const Header = () => {
           }}
         >
           <input
-            className={`${styles.newStoreTheme} p-2 bg-white rounded inputPlaceHolder`}
-            placeholder="New Store"
+            className={`${styles.newStoreTheme} p-1 bg-white rounded inputPlaceHolder`}
+            placeholder="New Store code"
             style={{
               background: "#fae1cc",
               outline: "none",
@@ -502,36 +541,46 @@ const Header = () => {
             <ArrowForward className="color-orange fs-4" />
           </Box>
         </div>
-        {userId !== "" && (
+        <div className="cursor-pointer">
+          {userId === "" ? (
+            <></>
+          ) : (
+            <MenuwithArrow
+              subHeader=""
+              Header="Recent Stores"
+              onOpen={() => {
+                if (userId === "") {
+                  route.push("/auth/customer/signin");
+                  return;
+                }
+                recentStore();
+              }}
+            >
+              <MenuItem>
+                <div className="d-flex align-items-center">
+                  <input
+                    id="store"
+                    style={{
+                      outline: "none",
+                    }}
+                    placeholder="Search store"
+                  />
+                </div>
+              </MenuItem>
+              {getStores()}
+            </MenuwithArrow>
+          )}
+        </div>
+        {userId === "" ? (
+          <></>
+        ) : (
           <>
-            <div className="cursor-pointer">
-              <MenuwithArrow
-                subHeader=""
-                Header="Recent Stores"
-                onOpen={() => {
-                  if (userId === "") {
-                    route.push("/auth/customer/signin");
-                    return;
-                  }
-                  recentStore();
-                }}
-              >
-                <MenuItem>
-                  <div className="d-flex align-items-center">
-                    <input
-                      id="store"
-                      style={{
-                        outline: "none",
-                      }}
-                      placeholder="Search store"
-                    />
-                  </div>
-                </MenuItem>
-                {getStores()}
-              </MenuwithArrow>
-            </div>
-            <FaStore
-              className="fs-2 cursor-pointer  color-white"
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/no_products_found.svg"
+              width={40}
+              height={40}
+              layout="fixed"
+              className="fs-2 cursor-pointer position-relative "
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
@@ -576,7 +625,7 @@ const Header = () => {
               userId === "" ? (
                 "Hello Customer, sign In"
               ) : (
-                <>
+                <div>
                   {profileImg ? (
                     <Image
                       width={35}
@@ -594,7 +643,7 @@ const Header = () => {
                       {getName()}
                     </Avatar>
                   )}
-                </>
+                </div>
               )
             }
           >
@@ -688,15 +737,15 @@ const Header = () => {
                   </Typography>
                 </MenuItem>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-600">
                     Sell with us at low commission
                   </Typography>
-                  <Typography className="color-orange h-5 cursor-pointer">
+                  <Typography className="color-orange h-5 cursor-pointer ">
                     Register here
                   </Typography>
                 </Box>
                 <Box className="px-3">
-                  <Typography className="h-5 cursor-pointer">
+                  <Typography className="h-5 cursor-pointer fw-600">
                     Want to Earn without Investment
                   </Typography>
                   <Typography className="color-orange cursor-pointer h-5">
@@ -752,7 +801,7 @@ const Header = () => {
           setOpen(false);
           setShowFavoriteList(false);
         }}
-        title={showFavoriteList ? "Favorite Stores" : "Store List"}
+        title={showFavoriteList ? "Favourite Stores" : "Store List"}
         titleClassName="color-orange fs-16"
       >
         {showFavoriteList ? (
