@@ -29,6 +29,8 @@ const WishList = () => {
   const [modalType, setModalType] = useState("Add");
   const [searchText, setSearchText] = useState("");
 
+  const [error, setError] = useState(false);
+
   const [products, setProducts] = useState([]);
   const [wishListNames, setWishListNames] = useState([]);
   const [selectedList, setSelectedList] = useState({
@@ -82,21 +84,23 @@ const WishList = () => {
   }, []);
 
   const createNewWishList = async () => {
-    const payload = {
-      customerId: userId,
-      userProfileId: profileId,
-      wishlistName: newWishListName,
-    };
-    const { data, message, err } = await addNewWishList(payload);
-    if (data) {
-      toastify(message, "success");
-      getAllWishLists();
-      setShowAddNewWishList(false);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-      setNewWishListName("");
-      getAllWishLists();
-    }
+    if (newWishListName?.length) {
+      const payload = {
+        customerId: userId,
+        userProfileId: profileId,
+        wishlistName: newWishListName,
+      };
+      const { data, message, err } = await addNewWishList(payload);
+      if (data) {
+        toastify(message, "success");
+        getAllWishLists();
+        setShowAddNewWishList(false);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+        setNewWishListName("");
+        getAllWishLists();
+      }
+    } else setError(true);
   };
 
   const editWishListName = async () => {
@@ -297,6 +301,8 @@ const WishList = () => {
             onInputChange={(e) => {
               setNewWishListName(e?.target?.value);
             }}
+            helperText="This Feild is Required"
+            error={error}
           />
         </Box>
       </ModalComponent>

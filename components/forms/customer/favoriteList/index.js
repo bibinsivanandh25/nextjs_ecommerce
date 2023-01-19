@@ -167,7 +167,7 @@ const FavoriteList = ({ close = () => {} }) => {
           </motion.div>
         ))
       ) : (
-        <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
+        <Typography className="fs-14 color-gray text-center  p-2">{`No Store's found`}</Typography>
       )}
       <ModalComponent
         open={showConfirmModal}

@@ -77,7 +77,7 @@ const Header = () => {
   const [storeCode, setStoreCode] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
   const [category, setCategory] = useState({});
-
+  const router = useRouter();
   const recentStore = async () => {
     const { data } = await getRecentStoreList(userId);
     if (data) {
@@ -150,6 +150,7 @@ const Header = () => {
     const { data, err, message } = await switchStore(storecode, userId);
     if (data) {
       toastify(message, "success");
+      router.push("/customer/home");
       const { data: storeData, err: storeErr } = await getStoreByStoreCode(
         storecode
       );
@@ -370,16 +371,16 @@ const Header = () => {
             className=" cursor-pointer d-flex align-items-center color-black"
             onClick={() => setShowSelectAddress(true)}
           >
-            <LocationOnIcon className="color-black" />
+            <LocationOnIcon className="color-black cursor-pointer" />
             {(!isSignedIn && !addressDetails?.name) ||
             !addressDetails?.cityDistrictTown ? (
               "Select Your Address"
             ) : (
-              <div className="ms-2">
-                <Typography className="fs-10 color-black">
+              <div className="ms-2 ">
+                <Typography className="fs-12 color-black cursor-pointer">
                   {addressDetails?.name}
                 </Typography>
-                <Typography className="fs-12 color-black">
+                <Typography className="fs-12 color-black cursor-pointer">
                   {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
                 </Typography>
               </div>
@@ -396,8 +397,8 @@ const Header = () => {
           <Image
             src={assetsJson.logo}
             alt=""
-            width="100px"
-            height="30px"
+            width="140px"
+            height="35px"
             style={{
               zIndex: 1000,
             }}
@@ -687,7 +688,7 @@ const Header = () => {
                     Your Account
                   </Typography>
                   <Typography
-                    className="theme_color fs-14"
+                    className="theme_color cursor-pointer fs-14"
                     onClick={() => {
                       dispatch(clearUser());
                       dispatch(clearCustomerSlice());

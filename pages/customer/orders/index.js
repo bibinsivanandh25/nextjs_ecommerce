@@ -25,7 +25,7 @@ const Orders = () => {
   const [returnProducts, setReturnProducts] = useState([]);
 
   return (
-    <Box>
+    <Box className=" px-2">
       {!showReturnOrder ? (
         <Box>
           <Box className="d-flex align-items-center pb-3">
