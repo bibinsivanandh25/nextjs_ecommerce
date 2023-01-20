@@ -37,9 +37,9 @@ import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import InputBox from "@/atoms/InputBoxComponent";
-import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 import FAQPage from "@/forms/customer/productdetails/faqpage";
 import ModalComponent from "@/atoms/ModalComponent";
+import RecentlyViewedProduct from "@/forms/customer/productdetails/recentlyviewedproduct";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -100,6 +100,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
   });
   const [codAvailable, setCodAvailable] = useState(false);
   const [fdrOptions, setfdrOptions] = useState("");
+
   useEffect(() => {
     let search;
     if (searchAnswers?.length) {
@@ -131,50 +132,8 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setCouponsMasterData([]);
     }
   };
-  // product api call
-  const getProductDetails = async (id) => {
-    const payload = {
-      productVariationId: id,
-      status: "APPROVED",
-      profileId: userData.profileId,
-      variationDetails: [],
-    };
-    const { data, err } = await getAllProductDetails(payload);
-    if (data) {
-      setMasterData(data);
-      setSelectedMasterData(data.customerViewProductPojo);
-      setSelectedImage(data.customerViewProductPojo.variationMedia[0]);
-      setNofdrOptions({
-        deliveryCharge:
-          data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
-        fastestDeliveryAmount: "",
-        value:
-          data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
-      });
-      const temp = [];
-      data?.allVariationListDetails.forEach((item) => {
-        item.variationPropertyPojoList.forEach((val) => {
-          val.isSelected = false;
-        });
-        temp.push(item);
-      });
-      setOtherVariation(temp);
-    }
-    if (err) {
-      setMasterData([]);
-      setSelectedMasterData({});
-      setSelectedImage("");
-    }
-  };
-  const getMinimumCart = async () => {
-    const { data, err } = await getAllMinumCart(userData.storeCode);
-    if (data) {
-      setSupplierDetails(data);
-    }
-    if (err) {
-      setSupplierDetails({});
-    }
-  };
+  const [selectedOtherVariation, setSelectedOtherVariation] = useState([]);
+  const [masterVariation, setMasterVariation] = useState([]);
 
   const getRating = async (id) => {
     const { data, err } = await getAllRating(id);
@@ -191,24 +150,138 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setRatingData({});
     }
   };
+  // product api call
+  const getProductDetails = async (
+    id,
+    selecte = masterVariation,
+    other = selectedOtherVariation
+  ) => {
+    const payload = {
+      productVariationId: id,
+      status: "APPROVED",
+      profileId: userData.profileId,
+      variationDetails: [...selecte, ...other],
+    };
+    const { data, err } = await getAllProductDetails(payload);
+    if (data) {
+      setMasterData(data);
+      setSelectedMasterData(data.customerViewProductPojo);
+      setSelectedImage(data.customerViewProductPojo.variationMedia[0]);
+      setNofdrOptions({
+        deliveryCharge:
+          data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
+        fastestDeliveryAmount: "",
+        value:
+          data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
+      });
+      // adding variation details
+      const temp = [];
+      data?.allVariationListDetails.forEach((item) => {
+        item.variationPropertyPojoList.forEach((val) => {
+          val.isSelected = false;
+        });
+        temp.push(item);
+      });
+      const temp1 = [];
+      temp.forEach((item) => {
+        item.variationPropertyPojoList.forEach((val) => {
+          selectedOtherVariation.forEach((x) => {
+            if (x.optionId === val.optionId) {
+              val.isSelected = true;
+            }
+          });
+        });
+        temp1.push(item);
+      });
+      setOtherVariation(temp1);
+    }
+    if (err) {
+      setMasterData([]);
+      setSelectedMasterData({});
+      setSelectedImage("");
+    }
+  };
+
+  useEffect(() => {
+    if (selectedOtherVariation.length || masterVariation.length) {
+      console.log(masterVariation[0], "masterVariation");
+      getProductDetails(masterVariation[0].productVariationId);
+    }
+  }, [selectedOtherVariation, masterVariation]);
+
+  const handleVariationClick = (item) => {
+    getRating(item.productVariationId);
+    setMasterVariation([item]);
+  };
+  const handleOtherVariationClick = (item, val) => {
+    const temp = [...otherVariation];
+    temp.forEach((value) => {
+      if (value.standardVariationId === item.standardVariationId) {
+        value.variationPropertyPojoList.forEach((values) => {
+          if (values.optionId === val.optionId) {
+            values.isSelected = true;
+          } else {
+            values.isSelected = false;
+          }
+        });
+      }
+    });
+    setOtherVariation([...temp]);
+    const y = [];
+    temp.forEach((value) => {
+      value.variationPropertyPojoList.forEach((values) => {
+        if (values.isSelected) {
+          y.push(values);
+        }
+      });
+    });
+
+    setSelectedOtherVariation(y);
+  };
+  const getMinimumCart = async () => {
+    const { data, err } = await getAllMinumCart(userData.storeCode);
+    if (data) {
+      setSupplierDetails(data);
+    }
+    if (err) {
+      setSupplierDetails({});
+    }
+  };
+
   const scrollPage = () => {
     const element = document.getElementById("MainBox");
     element.scrollIntoView();
   };
-  const handleVariationClick = (id) => {
-    getRating(id);
-    getProductDetails(id);
-  };
+
   useEffect(() => {
     if (router?.query?.id) {
-      getProductDetails(router?.query?.id);
+      getProductDetails(router?.query?.id, [
+        {
+          optionId: "62f620838c1fd7153be3612e",
+          optionName: "Brown",
+          variationId: "62f4f91bf4828b694836ec68",
+          variationName: "Color",
+          variationType: "STANDARD_VARIATION",
+          isSelected: true,
+        },
+      ]);
+      setMasterVariation([
+        {
+          optionId: "62f620838c1fd7153be3612e",
+          optionName: "Brown",
+          variationId: "62f4f91bf4828b694836ec68",
+          variationName: "Color",
+          variationType: "STANDARD_VARIATION",
+          isSelected: true,
+        },
+      ]);
       getRating(router?.query?.id);
     }
     // Scroll the Screen to top....
     scrollPage();
     getMinimumCart();
     getCouponsData();
-  }, [router?.query]);
+  }, [router?.query?.id]);
 
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
@@ -341,30 +414,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const handleOtherVariationClick = (item, val) => {
-    const temp = [...otherVariation];
-    temp.forEach((value) => {
-      if (value.standardVariationId === item.standardVariationId) {
-        value.variationPropertyPojoList.forEach((values) => {
-          if (values.optionId === val.optionId) {
-            values.isSelected = true;
-          } else {
-            values.isSelected = false;
-          }
-        });
-      }
-    });
-    setOtherVariation([...temp]);
-    // const y = [];
-    // temp.forEach((value) => {
-    //   value.variationPropertyPojoList.forEach((values) => {
-    //     if (values.isSelected) {
-    //       y.push(values);
-    //     }
-    //   });
-    // });
-    // console.log(y, "y");
-  };
+
   return (
     <Box id="MainBox" p={0.5}>
       {!showQAPage ? (
@@ -545,13 +595,13 @@ const ProductDetails = ({ isSideBarOpen }) => {
                     <Grid item md={1} display="flex">
                       <RemoveRedEye className="fs-18 color-gray" />
                       <Typography className="mx-1 h-5 color-gray">
-                        2138
+                        {selectedMasterData?.viewCount}
                       </Typography>
                     </Grid>
                     <Grid item md={1} display="flex">
                       <AirportShuttle className="fs-18 color-gray" />
                       <Typography className="mx-1 h-5 color-gray">
-                        1238
+                        {selectedMasterData?.deliveredcount}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -1181,11 +1231,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               {supplierDetails.supplierStoreName}
                             </span>
                           </Typography>
-                          <Typography className="color-blue h-p89">
-                            Enter Pincode & Check If Its Deliverable/Not
-                          </Typography>
                           {!masterData.combined ? (
                             <Box>
+                              <Typography className="color-blue h-p89">
+                                Enter Pincode & Check If Its Deliverable/Not
+                              </Typography>
                               <Grid container marginY={1}>
                                 <Grid item xs={10}>
                                   <div
@@ -1296,10 +1346,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                           >
                                             <Box className="cursor-pointer">
                                               <Typography
-                                                className={`cursor-pointer h-p89 px-1 py-2 text-break ${
+                                                className={`cursor-pointer h-p89 px-1 py-2 ${
                                                   val.isSelected &&
                                                   `color-orange`
                                                 }`}
+                                                textAlign="center"
                                               >
                                                 {val.optionName}
                                               </Typography>
@@ -1332,7 +1383,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               onClick={() => {
                                 selectedMasterData.productVariationId !==
                                   item.productVariationId &&
-                                  handleVariationClick(item.productVariationId);
+                                  handleVariationClick(item);
                               }}
                             >
                               <Box display="flex" justifyContent="center">
@@ -1452,7 +1503,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                 </Grid>
                 <Grid item md={12}>
                   <Box className="mt-2">
-                    <RecentlyViewed />
+                    <RecentlyViewedProduct />
                   </Box>
                   {/* <Box className="mt-2">
                 <ProductList title=" Products Related To This Item" />
@@ -1499,6 +1550,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
           </Typography>
         </ModalComponent>
       ) : null}
+      {/* <video
+        src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/customer/CST1222000052/profile/01202023152453177/video.webm"
+        controls
+        style={{ height: imageSize.height, width: imageSize.width }}
+      /> */}
     </Box>
   );
 };

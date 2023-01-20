@@ -54,7 +54,7 @@ const AddToCartModal = ({
           skuId: item.skuId,
           variationMedia: item.variationMedia,
           selectedAmount: item.productDeliveryCharges.deliveryAmount,
-          returnAmount: "",
+          returnAmount: 0,
           fastestDeliveryAmount:
             item.productDeliveryCharges.fastestDeliveryAmount,
           deliveryCharge: item.productDeliveryCharges.deliveryAmount,
@@ -89,16 +89,6 @@ const AddToCartModal = ({
       setdeliveryType([]);
     }
   };
-  useEffect(() => {
-    const temp = [...deliveryType];
-    let amount = 0;
-    temp.length &&
-      temp.forEach((item) => {
-        amount += item.finalPrice;
-        amount += item.selectedAmount == "free" ? 0 : item.selectedAmount;
-      });
-    setFinalPrice(parseInt(amount, 10));
-  }, [deliveryType]);
 
   useEffect(() => {
     getSelectedDeliveryType();
@@ -249,7 +239,7 @@ const AddToCartModal = ({
     temp.forEach((item) => {
       if (item.productId === value.productId) {
         item.enableReturn = !item.enableReturn;
-        item.returnAmount = item.enableReturn ? item.returnCharge : "";
+        item.returnAmount = item.enableReturn ? item.returnCharge : 0;
       }
     });
     setdeliveryType([...temp]);
@@ -396,11 +386,36 @@ const AddToCartModal = ({
             </Grid>
           </Grid>
         ))}
+        <Box display="flex" justifyContent="end">
+          <Typography className="fw-bold">
+            Final Price - {finalPrice}
+          </Typography>
+        </Box>
       </>
     );
   };
+  useEffect(() => {
+    const temp = [...deliveryType];
+
+    let amount = 0;
+    if (type == "FREEDELIVERYANDRETURN") {
+      temp.length &&
+        temp.forEach((item) => {
+          amount += item.finalPrice;
+          amount += item.selectedAmount == "free" ? 0 : item.selectedAmount;
+        });
+    }
+    if (type === "NOFREEDELIVERYANDRETURN") {
+      temp.length &&
+        temp.forEach((item) => {
+          amount += item.finalPrice;
+          amount += item.selectedAmount;
+          amount += item.returnAmount;
+        });
+    }
+    setFinalPrice(parseInt(amount, 10));
+  }, [deliveryType]);
   const renderContent = (value) => {
-    console.log(value);
     switch (value) {
       case "FREEDELIVERYANDRETURN":
         return renderFreeDelivery();

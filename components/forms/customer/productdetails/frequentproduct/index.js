@@ -16,6 +16,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
   const router = useRouter();
   const [deliveryType, setDeliveryType] = useState("NOFREEDELIVERYANDRETURN");
   const [frequentProduct, setfrequentProduct] = useState([]);
+  const [showImage, setShowImage] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
     actualCost: "",
@@ -56,18 +57,10 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
           isSelected: true,
         });
       });
-      temp1.unshift({
-        productVariationId: selectedMasterData.productVariationId,
-        mrp: selectedMasterData.mrp,
-        productTitle: selectedMasterData.productTitle,
-        variationMedia: selectedMasterData.variationMedia[0],
-        salePrice: selectedMasterData.salePrice,
-        salePriceWithLogistics: selectedMasterData.salePriceWithFDR,
-        isSelected: true,
-      });
       priceCal(temp1);
       setSelectedProduct(temp1);
       setfrequentProduct(temp1);
+      setShowImage(temp1);
     }
     if (err) {
       setfrequentProduct([]);
@@ -89,6 +82,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
     });
     const temp = tempSelectedData.filter((x) => x.isSelected);
     priceCal(temp);
+    setShowImage(temp);
     setSelectedProduct(tempSelectedData);
   };
 
@@ -106,7 +100,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                   <Grid container>
                     <Grid item md={6}>
                       <Grid container>
-                        {frequentProduct.map((item, index) =>
+                        {showImage.map((item, index) =>
                           item.isSelected ? (
                             <>
                               <Image
@@ -116,14 +110,13 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                                 layout="intrinsic"
                                 alt="alt"
                               />
-                              {frequentProduct.filter(
-                                (x) => x.isSelected == true
-                              ).length >
-                                index + 1 && (
+                              {showImage.filter((x) => x.isSelected == true)
+                                .length >
+                              index + 1 ? (
                                 <Grid item md={1} className="d-center">
                                   <Add sx={{ fontSize: "30px" }} />
                                 </Grid>
-                              )}
+                              ) : null}
                             </>
                           ) : null
                         )}
