@@ -162,7 +162,7 @@ const ViewModalComponent = ({
                         height: "25px",
                       }}
                       className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                        iconcolor[item.iconName] ? "bg-orange" : "bg-white"
+                        iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
                       }`}
                       key={index}
                     >

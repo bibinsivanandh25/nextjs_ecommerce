@@ -154,7 +154,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "New Arrivals"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -167,7 +167,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Best Seller"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -180,7 +180,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Most Popular"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -193,7 +193,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Featured"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -203,7 +203,9 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         <Box className="col-4 d-flex justify-content-end pb-1">
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
-              filterType === "WEEK" ? "border-orange bg-orange-1 fw-bold" : ""
+              filterType === "WEEK"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
+                : ""
             }`}
             onClick={() => {
               if (filterType !== "WEEK") {
@@ -216,7 +218,9 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Card>
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
-              filterType === "MONTH" ? "border-orange bg-orange-1 fw-bold" : ""
+              filterType === "MONTH"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
+                : ""
             }`}
             onClick={() => {
               if (filterType !== "MONTH") {

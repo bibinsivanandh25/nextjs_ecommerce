@@ -53,7 +53,7 @@ const OtpLogIn = () => {
         supplierStoreLogo: data?.supplierStoreLogo,
         supplierStoreName: data?.supplierStoreName,
         storeCode: data?.supplierStoreCode,
-        storeThemes: data?.storeThemes,
+        storeThemes: data?.storeTheme,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         role: "CUSTOMER",
@@ -100,6 +100,7 @@ const OtpLogIn = () => {
         toastify(err?.response?.data?.message, "error");
       });
     if (data?.data) {
+      toastify(data.data.message, "success");
       const { token } = data.data;
       const decoded = JSON.parse(atob(token.split(".")[1].toString()));
       const userData = decoded.sub.split(",");
@@ -160,6 +161,8 @@ const OtpLogIn = () => {
         .then((data) => {
           if (data) {
             setSubmitted(true);
+            console.log(data.data.message, "data");
+            toastify(data.data.message, "success");
           }
         })
         .catch((err) => {

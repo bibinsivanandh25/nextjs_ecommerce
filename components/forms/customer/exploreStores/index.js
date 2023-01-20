@@ -10,8 +10,12 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { getStore } from "services/admin/explorestore";
 import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 
-const ExploreStores = ({ handleStoreSelection = () => {} }) => {
+const ExploreStores = ({
+  handleStoreSelection = () => {},
+  showConformation = true,
+}) => {
   const [formData, setFormData] = useState({
     location: null,
     category: {},
@@ -20,6 +24,8 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
     district: {},
     city: "",
   });
+  const [openConfirm, setopenConfirm] = useState(false);
+  const [eachStoreList, seteachStoreList] = useState([]);
   const [storesList, setStoresList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -192,7 +198,12 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
                 className="w-80p mx-auto p-2 d-flex m-2"
                 elevation={4}
                 onClick={() => {
-                  handleStoreSelection(item);
+                  if (showConformation) {
+                    setopenConfirm(true);
+                    seteachStoreList(item);
+                  } else {
+                    handleStoreSelection(item);
+                  }
                 }}
               >
                 <Box className="d-flex">
@@ -216,6 +227,27 @@ const ExploreStores = ({ handleStoreSelection = () => {} }) => {
         })}
         {loading && <div>Loading</div>}
         {noStore && <div>No store Found</div>}
+        {openConfirm && (
+          <ModalComponent
+            open={openConfirm}
+            showHeader={false}
+            onClearBtnClick={() => {
+              setopenConfirm(false);
+            }}
+            onSaveBtnClick={() => {
+              handleStoreSelection(eachStoreList);
+            }}
+            saveBtnText="Confirm"
+            ClearBtnText="Close"
+            onCloseIconClick={() => {
+              setopenConfirm(false);
+            }}
+          >
+            <Typography className="fs-16 w-100 text-center fw-bold my-4">
+              Are you sure you want to switch store?
+            </Typography>
+          </ModalComponent>
+        )}
       </Box>
     </Box>
   );

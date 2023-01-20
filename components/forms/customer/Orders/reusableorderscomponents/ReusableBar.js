@@ -36,7 +36,7 @@ const ReusableBar = ({ children, ordersplaced = " Orders Placed" }) => {
           Order ID #278345283t4
         </Typography>
         <Typography variantMapping={<p />} className="color fs-14">
-          <a className="color-orange" href="##">
+          <a className="theme_color" href="##">
             View Order Details
           </a>
           <Typography className="ms-2" variant="p">

@@ -79,7 +79,7 @@ const FavoriteList = ({ close = () => {} }) => {
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
@@ -145,7 +145,7 @@ const FavoriteList = ({ close = () => {} }) => {
                 <CustomIcon
                   title="Remove from favourite"
                   type="heart"
-                  className="fs-20 m-1 cursor-pointer color-orange"
+                  className="fs-20 m-1 cursor-pointer theme_color"
                   onIconClick={(e) => {
                     e.stopPropagation();
                     makefavouriteStore(item.id);
@@ -167,7 +167,7 @@ const FavoriteList = ({ close = () => {} }) => {
           </motion.div>
         ))
       ) : (
-        <Typography className="fs-14 color-gray text-center p-2">{`No Store's found`}</Typography>
+        <Typography className="fs-14 color-gray text-center  p-2">{`No Store's found`}</Typography>
       )}
       <ModalComponent
         open={showConfirmModal}

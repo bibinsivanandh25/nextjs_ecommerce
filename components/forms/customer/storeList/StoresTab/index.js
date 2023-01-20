@@ -8,6 +8,7 @@ import CustomIcon from "services/iconUtils";
 import { useRef, useState, useEffect } from "react";
 import {
   deleteStore,
+  deleteStoreList,
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
@@ -45,6 +46,16 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   //   },
   //   [loading]
   // );
+
+  const deleteStoreCategory = async (storeListId) => {
+    const { res, message, err } = await deleteStoreList(storeListId);
+    if (res) {
+      toastify(message, "success");
+      getStoresList();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
@@ -113,7 +124,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
@@ -156,9 +167,18 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     getAllStoreOfStoreList(item.id);
                     setSelectedStoreList(item);
                   }}
-                  className="p-2 my-2 w-300px cursor-pointer"
+                  className="p-2 my-2 w-300px cursor-pointer d-flex justify-content-between"
                 >
-                  {item.label}
+                  <Typography>{item.label}</Typography>
+                  <CustomIcon
+                    showColorOnHover={false}
+                    type="delete"
+                    className="color-light-blue fs-20"
+                    onIconClick={(e) => {
+                      e.stopPropagation();
+                      deleteStoreCategory(item.id);
+                    }}
+                  />
                 </Paper>
               </motion.div>
             );
@@ -173,7 +193,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   ) : (
     <Box className="p-2 w-100">
       <Typography
-        className="d-inline color-orange fs-12 cursor-pointer"
+        className="d-inline theme_color fs-12 cursor-pointer"
         onClick={() => {
           setSelectedStoreList(null);
           setStores([]);
@@ -182,7 +202,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         {"< "} Back
       </Typography>
       <Box className="w-100 d-flex justify-content-between align-items-center">
-        <Typography className=" color-orange fs-16 fw-bold">
+        <Typography className=" theme_color fs-16 fw-bold">
           {selectedStoreList.label}
         </Typography>
         <Typography
@@ -251,7 +271,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                   {item.favourite ? (
                     <CustomIcon
                       type="heart"
-                      className="fs-20 m-1 cursor-pointer color-orange"
+                      className="fs-20 m-1 cursor-pointer theme_color"
                       onIconClick={(e) => {
                         e.preventDefault();
                         makefavouriteStore(item.id);

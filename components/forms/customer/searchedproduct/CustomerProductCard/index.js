@@ -169,7 +169,7 @@ function ProductDetailsCard({
                     height: "25px",
                   }}
                   className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                    iconcolor[item.iconName] ? "bg-orange" : "bg-white"
+                    iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
                   }`}
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
