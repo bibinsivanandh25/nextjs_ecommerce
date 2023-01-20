@@ -323,12 +323,12 @@ const Orders = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={6} md={6}>
-                        <Typography>Rs. 4899.00</Typography>
-                        <Typography>Rs. 0.00</Typography>
-                        <Typography>Rs. 4899.00</Typography>
-                        <Typography>Rs. 300.00</Typography>
+                        <Typography>Rs: 4899.00</Typography>
+                        <Typography>Rs: 0.00</Typography>
+                        <Typography>Rs: 4899.00</Typography>
+                        <Typography>Rs: 300.00</Typography>
                         <Typography className="fw-600 py-2">
-                          Rs. 4599.00
+                          Rs: 4599.00
                         </Typography>
                       </Grid>
                     </Grid>
