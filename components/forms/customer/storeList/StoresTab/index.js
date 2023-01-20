@@ -30,22 +30,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const customer = useSelector((state) => state.customer);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
   const [pageNum, setPageNum] = useState(1);
   const observer = useRef();
-  // const lastStore = useCallback(
-  //   (node) => {
-  //     if (loading) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         setPageNum((prev) => prev + 1);
-  //       }
-  //     });
-  //     if (node) observer.current.observe(node);
-  //   },
-  //   [loading]
-  // );
 
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
