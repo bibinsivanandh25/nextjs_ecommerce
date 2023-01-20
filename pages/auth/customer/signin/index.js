@@ -169,7 +169,10 @@ const SignIn = () => {
                     details
                   );
                 }
-                if (data?.defaultStoreCode || router?.query?.storeCode) {
+                if (
+                  data?.defaultStoreCode?.length ||
+                  router?.query?.storeCode?.length
+                ) {
                   router.push(`/customer/home`);
                 }
               }

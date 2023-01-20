@@ -60,13 +60,17 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setStoreList(
-        data.map((item) => ({
-          label: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-          defaultStore: item.defaultStore,
-        }))
-      );
+      if (data.data) {
+        setStoreList(
+          data.data.map((item) => ({
+            label: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+            defaultStore: item.defaultStore,
+          }))
+        );
+      } else {
+        setStoreList([]);
+      }
     }
   };
   const getAllStoreOfStoreList = async (id) => {
@@ -99,7 +103,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const deleteStores = async (id) => {
     const { data, err, message } = await deleteStore(id, userId);
     if (data === null) {
-      getAllStoreOfStoreList(selectedStoreList.id);
+      // getAllStoreOfStoreList(selectedStoreList.id);
+      getStoresList();
       toastify(message, "success");
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
