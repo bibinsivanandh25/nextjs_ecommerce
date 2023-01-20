@@ -11,6 +11,7 @@ import {
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
+  removeFromStoreList,
   switchStore,
 } from "services/admin/storeList";
 import { useDispatch, useSelector } from "react-redux";
@@ -69,6 +70,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
           defaultStore: item.defaultStore,
           favourite: item.favourite,
           storeLogo: item.storeLogo || "",
+          storeListId: item.storeListId,
         }))
       );
     } else if (err) {
@@ -85,9 +87,13 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const deleteStores = async (id) => {
-    const { data, err, message } = await deleteStore(id, userId);
-    if (data === null) {
+  const deleteStores = async (storeId, id) => {
+    const { data, err, message } = await removeFromStoreList(
+      storeId,
+      userId,
+      id
+    );
+    if (data) {
       getAllStoreOfStoreList(selectedStoreList.id);
       toastify(message, "success");
     } else if (err) {
@@ -213,6 +219,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         }}
       >
         {stores.map((item, index) => {
+          console.log(item, "item");
           return (
             <motion.div
               // ref={list.length - 1 === index ? lastStore : null}
@@ -271,7 +278,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     type="delete"
                     onIconClick={(e) => {
                       e.preventDefault();
-                      deleteStores(item.id);
+                      deleteStores(item.storeListId, item.id);
                     }}
                     className=""
                   />

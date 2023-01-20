@@ -321,7 +321,12 @@ const MyProfile = () => {
                     if (CustomerStaticDetails?.emailId !== e.target.value) {
                       setdisableEdit({ ...disableEdit, emailOtp: true });
                     } else {
-                      setdisableEdit({ ...disableEdit, emailOtp: false });
+                      setdisableEdit({
+                        ...disableEdit,
+                        emailOtp: false,
+                        emailId: false,
+                      });
+                      // setdisableEdit({ ...disableEdit, emailId: false });
                     }
                   }}
                   error={ErrorObj.emailId}
@@ -335,7 +340,11 @@ const MyProfile = () => {
                     title="Edit"
                     className="ms-2 fs-18"
                     onIconClick={() => {
-                      setdisableEdit({ ...disableEdit, emailId: true });
+                      // setdisableEdit({ ...disableEdit, emailId: true });
+                      setdisableEdit((pre) => ({
+                        ...pre,
+                        emailId: true,
+                      }));
                     }}
                   />
                 ) : (
@@ -404,7 +413,11 @@ const MyProfile = () => {
                     ) {
                       setdisableEdit({ ...disableEdit, phoneOtp: true });
                     } else {
-                      setdisableEdit({ ...disableEdit, phoneOtp: false });
+                      setdisableEdit({
+                        ...disableEdit,
+                        phoneOtp: false,
+                        phone: false,
+                      });
                     }
                   }}
                   error={ErrorObj.mobileNumber}

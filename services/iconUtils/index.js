@@ -15,6 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Edit from "@mui/icons-material/Edit";
 import { FileCopy, MoreVert, Reply } from "@mui/icons-material";
 import { TbMessageCircle2 } from "react-icons/tb";
+
 import { useState } from "react";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -30,7 +31,7 @@ import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlin
 import Remove from "@mui/icons-material/Remove";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { RiShareForwardFill } from "react-icons/ri";
+import { RiShareForwardFill, RiShieldCheckFill } from "react-icons/ri";
 import DoneIcon from "@mui/icons-material/Done";
 import ViewInArIcon from "@mui/icons-material/ViewInAr";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -122,6 +123,7 @@ const CustomIcon = ({
     message: MessageIcon,
     block: BlockIcon,
     heart: FavoriteIcon,
+    sheld: RiShieldCheckFill,
   };
 
   const [hover, setHover] = useState(false);
