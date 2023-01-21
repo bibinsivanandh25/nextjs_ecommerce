@@ -210,7 +210,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
           </Box>
           <Box className="d-flex justify-content-center mt-3">
             <Typography
-              className="color-orange fs-16 cursor-pointer"
+              className="theme_color fs-16 cursor-pointer"
               onClick={() => {
                 setModalType("add");
                 setNewAddressModal(true);

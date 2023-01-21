@@ -62,6 +62,9 @@ const AddStore = ({
     if (formData.storeCode === "") {
       errObj.storeCode = validateMessage.field_required;
       flag = true;
+    } else if (formData.storeListName.title === "") {
+      errObj.storeListName = validateMessage.field_required;
+      flag = true;
     }
     if (
       defaultData?.type &&
@@ -185,7 +188,7 @@ const AddStore = ({
         size="small"
       />
       <Box className="d-flex justify-content-center w-100 mt-3">
-        <ButtonComponent label="submit" onBtnClick={handleSubmit} />
+        <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
       </Box>
     </Box>
   );

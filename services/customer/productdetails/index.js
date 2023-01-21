@@ -11,11 +11,9 @@ const getAllFrequentProduct = (id) => {
       err,
     }));
 };
-const getAllProductDetails = (id, productId) => {
+const getAllProductDetails = (payload) => {
   return serviceUtil
-    .get(
-      `products/master-product/product-variations?id=${id}&status=APPROVED&profileId=${productId}`
-    )
+    .put(`products/master-product/product-variations`, payload)
     .then((res) => {
       const { data } = res && res.data;
       return { data };
@@ -92,6 +90,28 @@ const getProductReview = (id, pageNumber) => {
       err,
     }));
 };
+const mainProductAddToCart = (payload) => {
+  return serviceUtil
+    .post(`products/product/user-cart`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
+const getAddToCartData = (payload) => {
+  return serviceUtil
+    .put(`products/cart/group/product`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
 export {
   getAllFrequentProduct,
   getAllProductDetails,
@@ -101,4 +121,6 @@ export {
   getAllQandA,
   postQuestions,
   getProductReview,
+  mainProductAddToCart,
+  getAddToCartData,
 };

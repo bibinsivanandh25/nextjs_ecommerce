@@ -119,7 +119,7 @@ const PickUpAddress = ({ pageType = "supplier" }) => {
         <Grid xs={6} item>
           <Paper
             sx={{ py: 1.5, px: 3, border: "1px solid lightgray" }}
-            className="fs-14 bg-white rounded color-orange cursor-pointer"
+            className="fs-14 bg-white rounded theme_color cursor-pointer"
             onClick={() => {
               setModalType("add");
               setNewAddressModal(true);

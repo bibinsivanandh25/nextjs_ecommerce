@@ -107,7 +107,7 @@ const ViewAllStore = ({
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
@@ -175,7 +175,7 @@ const ViewAllStore = ({
                 {item.favourite ? (
                   <CustomIcon
                     type="heart"
-                    className="fs-20 m-1 cursor-pointer color-orange"
+                    className="fs-20 m-1 cursor-pointer theme_color"
                     onIconClick={(e) => {
                       e.stopPropagation();
                       makefavouriteStore(item.id);

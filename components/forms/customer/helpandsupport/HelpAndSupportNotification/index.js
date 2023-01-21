@@ -41,7 +41,7 @@ const HelpAndSupportNotification = ({
       showFooter={false}
       onCloseIconClick={() => setShowModal({ show: false, id: null })}
       ModalWidth={500}
-      titleClassName="fw-bold color-orange"
+      titleClassName="fw-bold theme_color"
     >
       <Grid container spacing={3}>
         <Grid xs={12} item className="fs-15 fw-500">

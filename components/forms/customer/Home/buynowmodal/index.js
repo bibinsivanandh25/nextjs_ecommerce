@@ -138,6 +138,7 @@ const DeliveryOptionsModal = ({
         returnCharges: data.productReturnCharges?.returnAmount,
         fastReturnCharges: data.productReturnCharges?.fastestReturnAmount,
         description: data.longDescription,
+        rtoAccepted: data.rtoAccepted,
       });
     }
   };
@@ -175,7 +176,7 @@ const DeliveryOptionsModal = ({
         {tabList.map((item) => (
           <Box
             className={`${
-              item.id === selectedTab ? "bg-orange color-white" : ``
+              item.id === selectedTab ? "theme_bg_color color-white" : ``
             } border rounded-pill cursor-pointer`}
             paddingY={1}
             paddingX={1.5}
@@ -449,7 +450,11 @@ const DeliveryOptionsModal = ({
               label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
             />
           </Box>
-          <Box className="border-top border-dark-gray ps-4">
+          <Box
+            className={`border-top border-dark-gray ps-4 ${
+              productDetails?.rtoAccepted ? "" : "d-none"
+            }`}
+          >
             <CheckBoxComponent
               label="Choose Return options"
               size="medium"
@@ -572,7 +577,7 @@ const DeliveryOptionsModal = ({
         <Box marginLeft={2}>
           <Typography className="d-flex align-items-center">
             <span className="h-4">Final Price -</span>{" "}
-            <span className="h-3 color-orange">&nbsp;{getFinalPrice()}</span>
+            <span className="h-3 theme_color">&nbsp;{getFinalPrice()}</span>
           </Typography>
         </Box>
         <Box className="mb-2">
