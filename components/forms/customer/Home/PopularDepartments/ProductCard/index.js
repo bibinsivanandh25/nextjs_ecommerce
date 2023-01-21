@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -5,8 +6,10 @@ import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
+import { useSession } from "next-auth/react";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
+import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import DeliveryOptionsModal from "../../buynowmodal";
 // import Link from "next/link";
 
@@ -17,6 +20,7 @@ const ProductCard = ({
   height = 150,
   width = 150,
   cardPaperClass = "",
+  showActionList = true,
 }) => {
   const iconListData = [
     {
@@ -45,11 +49,26 @@ const ProductCard = ({
   const [showWishListModal, setShowWishListModal] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
+    useState(false);
+
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const route = useRouter();
 
+  const session = useSession();
+  useEffect(() => {
+    if (
+      session?.status === "authenticated" &&
+      session?.data?.user?.role === "CUSTOMER"
+    ) {
+      setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
+    }
+  }, [session]);
   const mouseLeave = (name) => {
     if (item?.isWishlisted && name === "favoriteBorderIcon") {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
@@ -90,11 +109,16 @@ const ProductCard = ({
         setShowAddToCardModal(true);
       }
     }
+    if (iconName === "viewCarouselOutlinedIcon") {
+      setShowSimilarProductsDrawer(true);
+    }
   };
 
   return (
     <Box
-      onMouseEnter={() => setHover(true)}
+      onMouseEnter={() => {
+        if (isSignedIn && showActionList) setHover(true);
+      }}
       onMouseLeave={() => setHover(false)}
       maxWidth={165}
       className="position-relative"
@@ -214,6 +238,14 @@ const ProductCard = ({
           productId={item?.id}
           skuId={item?.skuId}
           modalType="ADD"
+        />
+      )}
+      {showSimilarProductsDrawer && (
+        <SimilarProducts
+          setShowDrawer={setShowSimilarProductsDrawer}
+          showDrawer={showSimilarProductsDrawer}
+          productId={item?.id}
+          subCategoryId={item?.subCategoryId}
         />
       )}
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
@@ -7,7 +7,6 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
-import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 import ProductCard from "../PopularDepartments/ProductCard";
 
@@ -34,7 +33,6 @@ const comparProductData = [
 
 const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
   const [products, setProducts] = useState([]);
-  const [showDrawer, setShowDrawer] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
   const [comparedProduct, setCompredProduct] = useState([]);
@@ -77,6 +75,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
           skuId: ele.skuId,
           wishlistId: ele.wishlistId,
           userCartId: ele.userCartId,
+          subCategoryId: ele.subCategoryId,
           isCarted: ele.presentInCart,
         });
       });
@@ -102,9 +101,6 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
               <ProductCard
                 item={ele}
                 handleIconClick={(icon) => {
-                  if (icon === "viewCarouselOutlinedIcon") {
-                    setShowDrawer(true);
-                  }
                   if (icon === "balanceIcon") {
                     setComparDrawer(true);
                   }
@@ -119,27 +115,7 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
           <Skeleton variant="rectangular" width={150} height={150} />
         )}
       </Box>
-      <DrawerComponent
-        openDrawer={showDrawer}
-        width="500px"
-        modalTitle="Similar Products"
-        onClose={() => setShowDrawer(false)}
-      >
-        <Grid
-          container
-          spacing={2}
-          className="mx-auto ms-0 mt-2"
-          sx={{
-            width: `calc(100% - 10px)`,
-          }}
-        >
-          {products?.map((item) => (
-            <Grid item md={6} sm={6} key={item.id}>
-              <SimilarProducts data={item} handleIconClick={() => {}} />
-            </Grid>
-          ))}
-        </Grid>
-      </DrawerComponent>
+
       {viewModalOpen && (
         <ViewModalComponent
           setViewModalOpen={setViewModalOpen}
