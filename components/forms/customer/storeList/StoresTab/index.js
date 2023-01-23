@@ -12,6 +12,7 @@ import {
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
+  removeFromStoreList,
   switchStore,
 } from "services/admin/storeList";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,22 +31,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const customer = useSelector((state) => state.customer);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
   const [pageNum, setPageNum] = useState(1);
   const observer = useRef();
-  // const lastStore = useCallback(
-  //   (node) => {
-  //     if (loading) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         setPageNum((prev) => prev + 1);
-  //       }
-  //     });
-  //     if (node) observer.current.observe(node);
-  //   },
-  //   [loading]
-  // );
 
   const deleteStoreCategory = async (storeListId) => {
     const { res, message, err } = await deleteStoreList(storeListId);
@@ -60,13 +47,17 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setStoreList(
-        data.map((item) => ({
-          label: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-          defaultStore: item.defaultStore,
-        }))
-      );
+      if (data.data) {
+        setStoreList(
+          data.data.map((item) => ({
+            label: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+            defaultStore: item.defaultStore,
+          }))
+        );
+      } else {
+        setStoreList([]);
+      }
     }
   };
   const getAllStoreOfStoreList = async (id) => {
@@ -80,6 +71,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
           defaultStore: item.defaultStore,
           favourite: item.favourite,
           storeLogo: item.storeLogo || "",
+          storeListId: item.storeListId,
         }))
       );
     } else if (err) {
@@ -96,9 +88,13 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const deleteStores = async (id) => {
-    const { data, err, message } = await deleteStore(id, userId);
-    if (data === null) {
+  const deleteStores = async (storeId, id) => {
+    const { data, err, message } = await removeFromStoreList(
+      storeId,
+      userId,
+      id
+    );
+    if (data) {
       getAllStoreOfStoreList(selectedStoreList.id);
       toastify(message, "success");
     } else if (err) {
@@ -233,6 +229,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         }}
       >
         {stores.map((item, index) => {
+          console.log(item, "item");
           return (
             <motion.div
               // ref={list.length - 1 === index ? lastStore : null}
@@ -291,7 +288,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     type="delete"
                     onIconClick={(e) => {
                       e.preventDefault();
-                      deleteStores(item.id);
+                      deleteStores(item.storeListId, item.id);
                     }}
                     className=""
                   />

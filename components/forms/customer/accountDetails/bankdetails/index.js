@@ -12,6 +12,9 @@ import {
   deleteBankDetails,
   getAllBankDetails,
 } from "services/customer/accountdetails/bankdetails";
+import CustomIcon from "services/iconUtils";
+import { setPrimaryBank } from "services/supplier/myaccount/bankdetails";
+
 import RadiobuttonComponent from "../../../../atoms/RadiobuttonComponent";
 import AddBankDetailsModal from "./addbankdetails";
 
@@ -20,8 +23,7 @@ const BankDetails = () => {
   const [selectedBankDetails, setSelectedBankDetails] = useState([]);
   const [bankDetails, setbankDetails] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const { userId } = useSelector((state) => state.customer);
-
+  const { userId, supplierId } = useSelector((state) => state.customer);
   const getAllBankData = async () => {
     const { data } = await getAllBankDetails(userId);
     const result = [];
@@ -53,7 +55,7 @@ const BankDetails = () => {
   const getBankDetails = (details) => {
     return Object.entries(details).map(([key, value]) => {
       return (
-        <div key={value}>
+        <div key={key}>
           <div className={`${key === "isChecked" ? "d-none" : ""} fs-12 my-2`}>
             {key != "id" ? `${key} : ${value}` : null}
           </div>
@@ -71,22 +73,22 @@ const BankDetails = () => {
       toastify(err?.response?.data?.message);
     }
   };
-  // const updatePrimaryAccount = async (e, id) => {
-  //   // const { data, err } = await setPrimaryBank(user, id);
-  //   // if (data) {
-  //   //   setbankDetails((prev) => {
-  //   //     const temp = prev.map((item) => {
-  //   //       item.isChecked = false;
-  //   //       return item;
-  //   //     });
-  //   //     temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
-  //   //     return [...temp];
-  //   //   });
-  //   //   toastify(data, "success");
-  //   // } else {
-  //   //   toastify(err?.response?.data?.message, "error");
-  //   // }
-  // };
+  const updatePrimaryAccount = async (e, id) => {
+    const { data, err } = await setPrimaryBank(supplierId, id);
+    if (data) {
+      setbankDetails((prev) => {
+        const temp = prev.map((item) => {
+          item.isChecked = false;
+          return item;
+        });
+        temp[`${e.target.id}`].isChecked = !temp[`${e.target.id}`].isChecked;
+        return [...temp];
+      });
+      toastify(data, "success");
+    } else {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   const renderBankDetails = () => {
     return bankDetails.map((ele, index) => {
       return (
@@ -102,8 +104,8 @@ const BankDetails = () => {
               <RadiobuttonComponent
                 id={index}
                 isChecked={ele.isChecked}
-                onRadioChange={() => {
-                  // updatePrimaryAccount(e, bankDetails[index].id);
+                onRadioChange={(e) => {
+                  updatePrimaryAccount(e, bankDetails[index].id);
                 }}
               />
             </Grid>
@@ -113,8 +115,15 @@ const BankDetails = () => {
             <Grid
               item
               xs={1}
-              className="d-flex flex-column align-items-center justify-content-center"
+              className="d-flex flex-column align-items-center justify-content-around"
             >
+              <Grid>
+                {ele.isChecked ? (
+                  <CustomIcon type="sheld" color="color-blue" />
+                ) : (
+                  <></>
+                )}
+              </Grid>
               <Grid className="my-2">
                 <EditIcon
                   className="cursor-pointer"

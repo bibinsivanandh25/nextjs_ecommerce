@@ -49,6 +49,7 @@ const TODAYSDEAL = forwardRef(
               wishlistId: item.wishlistId,
               userCartId: item.userCartId,
               isCarted: item.presentInCart,
+              subCategoryId: ele.subcategoryId,
             })),
           });
         });

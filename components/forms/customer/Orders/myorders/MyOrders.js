@@ -1,25 +1,15 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/self-closing-comp */
-import { Typography, Box } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
+import { Typography, Box, Grid } from "@mui/material";
+import MenuOption from "@/atoms/MenuOptions";
+import { useState } from "react";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import Image from "next/image";
 import CancelOrReturnModal from "../CancelOrReturnModal";
-import ReusableBar from "../reusableorderscomponents/ReusableBar";
-import ReusableProduct from "../reusableorderscomponents/ReusableProduct";
-import styles from "./MyOrders.module.css";
 
-const list = [
-  { label: "Last 30 days" },
-  { label: "2020" },
-  { label: "2019" },
-  { label: "2018" },
-  { label: "Archive Orders" },
-];
 const datas = [
   {
     id: 1,
@@ -95,87 +85,201 @@ const datas = [
     ],
   },
 ];
-const SingleProductTrackDetails = ({
-  setTrackPackage,
+
+const option1 = [
+  "Track Package",
+  "Leave Seller feedback",
+  "Write a Product review",
+  "View Order Details",
+];
+const option2 = ["View Order Details"];
+const option3 = [
+  "Leave Seller feedback",
+  "Write a Product review",
+  "View Order Details",
+];
+const MyOrders = ({
+  setshowProdDetails,
   setSellerFeedbackModal,
   setProductFeedbackType,
+  setShowReturnOrder,
+  setReturnProducts,
+  products,
+  setProducts,
+  showCheckbox = true,
+  showCancelBtn = true,
+  showReturnBtn = true,
+  showTopBar = true,
+  selectedLink,
+  selectedProduct,
+  setSelectedProduct,
 }) => {
+  const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
+
+  const [modalType, setModalType] = useState("");
+  const [trackPackage, setTrackPackage] = useState(false);
+
+  const handleCheckboxClick = (value) => {
+    const temp = [...products];
+    temp.forEach((item) => {
+      if (item.id === value.id) {
+        item.isSelected = !item.isSelected;
+      }
+    });
+    setProducts([...temp]);
+    const selected = temp.filter((x) => x.isSelected === true);
+    setSelectedProduct(selected);
+  };
   return (
     <Box>
-      <Paper
-        className="w-250px text-center p-1 mb-2 fs-14 cursor-pointer"
-        elevation={2}
-        onClick={() => {
-          setTrackPackage(true);
-        }}
-      >
-        Track Package
-      </Paper>
-      <Paper
-        className="w-250px text-center p-1 mb-2 fs-14 cursor-pointer"
-        elevation={2}
-        onClick={() => {
-          setProductFeedbackType("seller");
-          setSellerFeedbackModal(true);
-        }}
-      >
-        Leave Seller feedback
-      </Paper>
-      <Paper
-        className="w-250px text-center p-1 mb-2 fs-14 cursor-pointer"
-        elevation={2}
-        onClick={() => {
-          setProductFeedbackType("product");
-          setSellerFeedbackModal(true);
-        }}
-      >
-        Write a Product review
-      </Paper>
-    </Box>
-  );
-};
+      {showTopBar && (
+        <Grid container className="px-1">
+          <Grid
+            item
+            xs={11}
+            md={11}
+            className="px-1 d-flex justify-content-end bg-light-orange1 p-3"
+          >
+            {showCancelBtn && (
+              <ButtonComponent
+                label="Cancel Order"
+                variant="outlined"
+                onBtnClick={() => {
+                  setShowCancelOrReturnModal(true);
+                  setModalType("cancel");
+                }}
+              />
+            )}
+            {showReturnBtn && (
+              <ButtonComponent
+                label="Return Orders"
+                muiProps="ms-2"
+                onBtnClick={() => {
+                  setShowCancelOrReturnModal(true);
+                  setModalType("return");
+                }}
+              />
+            )}
+          </Grid>
 
-const ProductDetailsPlusTrackDetails = ({
-  product,
-  setSellerFeedbackModal,
-  setProductFeedbackType,
-  setSelectedProduct = () => {},
-  selectedProduct = [],
-}) => {
-  const [checked, setChecked] = useState(false);
-  const [trackPackage, setTrackPackage] = useState(false);
-  return (
-    <>
-      <Box className="d-flex justify-content-between px-2">
-        {/* <SingleProductDetails /> */}
-        <ReusableProduct product={product}>
-          <CheckBoxComponent
-            isChecked={checked}
-            checkBoxClick={() => {
-              setChecked(!checked);
-              const temp = [...selectedProduct];
-              temp.push(product);
-              setSelectedProduct([...new Set(temp)]);
-            }}
-            className="color-blue"
-          />
-          <Typography className="mb-1">
-            <small>Return window will close on 20 - Aug - 2021</small>
-          </Typography>
-          <ButtonComponent
-            label="Buy it Again"
-            variant="outlined"
-            muiProps="fw-bold border border-secondary fs-12 bg-primary"
-            borderColor="bg-light-gray"
-            textColor="color-black"
-          />
-        </ReusableProduct>
-        <SingleProductTrackDetails
-          setTrackPackage={setTrackPackage}
-          setSellerFeedbackModal={setSellerFeedbackModal}
-          setProductFeedbackType={setProductFeedbackType}
-        />
-      </Box>
+          <Grid
+            item
+            xs={1}
+            md={1}
+            className=" px-1 bg-light-orange1 p-3"
+          ></Grid>
+        </Grid>
+      )}
+
+      <Grid container className="px-1">
+        <Grid
+          item
+          xs={11}
+          md={11}
+          className="px-1  p-3 hide-scrollbar"
+          sx={{
+            maxHeight: "80vh",
+            overflow: "scroll",
+          }}
+        >
+          {products.map((product) => {
+            return (
+              <Box
+                className="d-flex justify-content-between px-2 "
+                key={product.id}
+              >
+                {/* <ReusableProduct product={product}> */}
+                <Box
+                  className={`d-flex align-items-center" "
+                    }`}
+                >
+                  {showCheckbox && (
+                    <CheckBoxComponent
+                      isChecked={product.isSelected}
+                      checkBoxClick={() => {
+                        handleCheckboxClick(product);
+                      }}
+                      className="color-blue"
+                    />
+                  )}
+                  <Box className="w-135px h-135px">
+                    <Image
+                      className="d-block w-100 h-100 img-fluid rounded-1"
+                      width="120"
+                      height="120"
+                      src={product.image}
+                      alt="product"
+                    />
+                  </Box>
+                  <Box className="ms-2">
+                    <Typography
+                      className="color-orange mb-1 fs-14"
+                      variantMapping={<p />}
+                    >
+                      Supplier Name: Buisness Name
+                    </Typography>
+                    <Typography
+                      className="mb-1 fs-16 fw-bold"
+                      variantMapping={<p />}
+                    >
+                      {product.title}
+                    </Typography>
+
+                    <Typography className="mb-1">
+                      <small>Return window will close on 20 - Aug - 2021</small>
+                    </Typography>
+                    <ButtonComponent
+                      label="Buy it Again"
+                      variant="outlined"
+                      muiProps="fw-bold border border-secondary fs-12 bg-primary"
+                      borderColor="bg-light-gray"
+                      textColor="color-black"
+                    />
+                  </Box>
+                </Box>
+                {/* </ReusableProduct> */}
+              </Box>
+            );
+          })}
+        </Grid>
+
+        <Grid item xs={1} md={1} className="  p-3">
+          <Grid item xs={4} md={4}>
+            {selectedProduct.length === 1 ? (
+              <MenuOption
+                getSelectedItem={(ele) => {
+                  if (ele === "Track Package") {
+                    setTrackPackage(true);
+                  } else if (ele === "Leave Seller feedback") {
+                    setProductFeedbackType("seller");
+                    setSellerFeedbackModal(true);
+                  } else if (ele === "Write a Product review") {
+                    setProductFeedbackType("product");
+                    setSellerFeedbackModal(true);
+                  } else if (ele === "View Order Details") {
+                    setshowProdDetails(true);
+                  }
+
+                  // onClickOfMenuItem(ele, item.flagId);
+                }}
+                options={
+                  selectedLink === "notYetShipped"
+                    ? [...option2]
+                    : selectedLink === "cancelled"
+                    ? [...option2]
+                    : selectedLink === "return"
+                    ? [...option3]
+                    : [...option1]
+                }
+                IconclassName="color-gray"
+              />
+            ) : (
+              <></>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
+
       {trackPackage && (
         <ModalComponent
           open={trackPackage}
@@ -259,87 +363,7 @@ const ProductDetailsPlusTrackDetails = ({
           </Box>
         </ModalComponent>
       )}
-    </>
-  );
-};
 
-const MyOrders = ({
-  setSellerFeedbackModal,
-  setProductFeedbackType,
-  setShowReturnOrder,
-  setReturnProducts,
-}) => {
-  const [products, setProducts] = useState([]);
-  const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState([]);
-  const [modalType, setModalType] = useState("");
-  const getProducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        // // console.log(data.data);
-        setProducts([...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
-      });
-  };
-  // console.log(selectedProduct, "sad");
-
-  useEffect(() => {
-    getProducts();
-  }, []);
-  return (
-    <Box>
-      <Box className="d-flex align-items-center mb-3">
-        <Box className={`${styles.dropDownStyle}`}>
-          <SimpleDropdownComponent
-            list={list}
-            size="small"
-            label="Past 3 Months"
-            inputlabelshrink
-          />
-        </Box>
-        <Typography className="ms-2 fs-14">
-          <span className="fw-bold fs-16">2 Orders</span> placed
-        </Typography>
-      </Box>
-      <ReusableBar>
-        <ButtonComponent
-          label="Cancel Order"
-          variant="outlined"
-          onBtnClick={() => {
-            setShowCancelOrReturnModal(true);
-            setModalType("cancel");
-          }}
-        />
-        <ButtonComponent
-          label="Return Orders"
-          muiProps="ms-2"
-          onBtnClick={() => {
-            setShowCancelOrReturnModal(true);
-            setModalType("return");
-          }}
-        />
-      </ReusableBar>
-      <Box className="ms-3 pb-2">
-        <Typography className="fs-16 fw-bold">
-          Dilevered 2 - Aug - 2021
-        </Typography>
-      </Box>
-      {products.map((product) => {
-        return (
-          <Box key={product.id} className="mt-4">
-            <ProductDetailsPlusTrackDetails
-              product={product}
-              setSelectedProduct={setSelectedProduct}
-              selectedProduct={selectedProduct}
-              setSellerFeedbackModal={setSellerFeedbackModal}
-              setProductFeedbackType={setProductFeedbackType}
-            />
-          </Box>
-        );
-      })}
       {showCancelOrReturnModal ? (
         <CancelOrReturnModal
           showModal={showCancelOrReturnModal}
