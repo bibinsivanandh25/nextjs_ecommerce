@@ -133,7 +133,7 @@ const CustomIcon = ({
     return (
       <Component
         className={`${color} ${className} ${
-          hover && showColorOnHover && "color-orange"
+          hover && showColorOnHover && "theme_color"
         }`}
         size={size}
         {...muiProps}

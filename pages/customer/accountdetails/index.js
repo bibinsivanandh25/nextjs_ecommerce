@@ -6,10 +6,18 @@ import BankDetails from "@/forms/customer/accountDetails/bankdetails";
 import { Box, Grid, Typography } from "@mui/material";
 import MyProfile from "components/customer/accountdetails/myprofile";
 import ChangePassword from "components/forms/supplier/myaccount/changepassword";
+// import Profile from "components/forms/supplier/myaccount/Profile";
 import React, { useState } from "react";
+import Profile from "@/forms/supplier/myaccount/profiles";
 
 const MyAccount = () => {
-  const tabList = ["My profile", "Bank Details", "Change Password", "Address"];
+  const tabList = [
+    "My Account",
+    "Bank Details",
+    "Change Password",
+    "Address",
+    "Profile",
+  ];
 
   const [selectedMenu, setSelectedMenu] = useState(0);
   const getSelectedMenuItem = () => {
@@ -19,6 +27,7 @@ const MyAccount = () => {
     if (selectedMenu === 1) return <BankDetails />;
     if (selectedMenu === 2) return <ChangePassword usertype="CUSTOMER" />;
     if (selectedMenu === 3) return <PickUpAddress pageType="customer" />;
+    if (selectedMenu === 4) return <Profile pageType="customer" />;
     return null;
   };
   return (
@@ -31,7 +40,7 @@ const MyAccount = () => {
               <span
                 onClick={() => setSelectedMenu(ind)}
                 className={`cursor-pointer fw-bold   ${
-                  selectedMenu === ind ? "active-tab" : ""
+                  selectedMenu === ind ? "theme_color active-tab " : ""
                 }`}
               >
                 {ele}

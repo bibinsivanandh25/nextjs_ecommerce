@@ -149,7 +149,7 @@ const BankDetails = () => {
   return (
     // <Paper className="h-95p overflow-auto">
     <div className="bg-white rounded mnh-70vh mxh-70vh overflow-auto hide-scrollbar">
-      <Grid className="p-4 fw-bold color-orange">Choose Bank</Grid>
+      <Grid className="p-4 fw-bold theme_color">Choose Bank</Grid>
       <Grid container>
         {renderBankDetails()}
         <Grid

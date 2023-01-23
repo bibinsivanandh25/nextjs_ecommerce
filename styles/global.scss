@@ -130,11 +130,11 @@ span {
   left: 0;
 }
 
-.active-tab {
-  color: #e56700 !important;
-  border-bottom: 1px solid #e56700;
-  padding: 3px 0px;
-}
+// .active-tab {
+//   color: #e56700 !important;
+//   border-bottom: 1px solid #e56700;
+//   padding: 3px 0px;
+// }
 
 // .spinner {
 //   width: 70px;
@@ -253,6 +253,10 @@ fieldset {
 
 .border-dashed {
   border-bottom: 1px dashed #6c757d !important;
+}
+
+.border-dashed1 {
+  border: 1px dashed #9da2a7 !important;
 }
 
 .rounded-5 {

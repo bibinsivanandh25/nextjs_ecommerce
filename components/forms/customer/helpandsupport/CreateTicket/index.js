@@ -165,21 +165,21 @@ const HelpandsupportCreate = ({
     <Paper className="w-100 mnh-80vh">
       {/* <Box className="d-flex align-items-center">
         <Typography
-          className="color-orange cursor-pointer fw-bold"
+          className="theme_color cursor-pointer fw-bold"
           onClick={() => setShowCreateComponent(false)}
         >
           <ArrowBack />
         </Typography>
-        <Typography className="m-1 color-orange fw-bold">Back</Typography>
+        <Typography className="m-1 theme_color fw-bold">Back</Typography>
       </Box> */}
       <Box
         className="d-inline-block cursor-pointer d-flex ms-4 align-items-center"
         onClick={() => setShowCreateComponent(false)}
       >
-        <Typography className="color-orange cursor-pointer fw-bold">
+        <Typography className="theme_color cursor-pointer fw-bold">
           <ArrowBack className="h-4" />
         </Typography>
-        <Typography className="color-orange cursor-pointer fw-bold">
+        <Typography className="theme_color cursor-pointer fw-bold">
           Back
         </Typography>
       </Box>

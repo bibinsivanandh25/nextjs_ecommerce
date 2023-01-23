@@ -188,7 +188,7 @@ const AddStore = ({
         size="small"
       />
       <Box className="d-flex justify-content-center w-100 mt-3">
-        <ButtonComponent label="submit" onBtnClick={handleSubmit} />
+        <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
       </Box>
     </Box>
   );

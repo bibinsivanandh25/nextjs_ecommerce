@@ -13,7 +13,6 @@ import {
 import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
-import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 
 const comparProductData = [
   {
@@ -39,7 +38,6 @@ const comparProductData = [
 const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   const [products, setProducts] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
   const [comparedProduct, setCompredProduct] = useState([]);
   const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
@@ -69,6 +67,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         wishlistId: ele.wishlistId,
         userCartId: ele.userCartId,
         isCarted: ele.presentInCart,
+        variationDetails: ele.variationDetails,
       });
     });
     setProducts([...temp]);
@@ -154,7 +153,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "New Arrivals"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -167,7 +166,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Best Seller"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -180,7 +179,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Most Popular"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -193,7 +192,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
               popularDepartments === "Featured"
-                ? "border-orange bg-orange-1 fw-bold"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
           >
@@ -203,7 +202,9 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         <Box className="col-4 d-flex justify-content-end pb-1">
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
-              filterType === "WEEK" ? "border-orange bg-orange-1 fw-bold" : ""
+              filterType === "WEEK"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
+                : ""
             }`}
             onClick={() => {
               if (filterType !== "WEEK") {
@@ -216,7 +217,9 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </Card>
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
-              filterType === "MONTH" ? "border-orange bg-orange-1 fw-bold" : ""
+              filterType === "MONTH"
+                ? "theme_border_color theme_bg_color_1 fw-bold"
+                : ""
             }`}
             onClick={() => {
               if (filterType !== "MONTH") {
@@ -243,9 +246,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
                   }
                   if (icon === "balanceIcon") {
                     setComparDrawer(true);
-                  }
-                  if (icon === "visibilityOutlinedIcon") {
-                    setViewModalOpen(true);
                   }
                 }}
               />
@@ -288,12 +288,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           ))}
         </Grid>
       </DrawerComponent>
-      {viewModalOpen && (
-        <ViewModalComponent
-          setViewModalOpen={setViewModalOpen}
-          viewModalOpen={viewModalOpen}
-        />
-      )}
+
       <DrawerComponent
         openDrawer={comparDrawer}
         anchor="bottom"

@@ -53,7 +53,7 @@ const OtpLogIn = () => {
         supplierStoreLogo: data?.supplierStoreLogo,
         supplierStoreName: data?.supplierStoreName,
         storeCode: data?.supplierStoreCode,
-        storeThemes: data?.storeThemes,
+        storeThemes: data?.storeTheme,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         role: "CUSTOMER",

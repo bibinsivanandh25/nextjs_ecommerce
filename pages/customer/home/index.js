@@ -19,15 +19,17 @@ import RecentlyViewed from "@/forms/customer/Home/RecentlyViewed";
 import { useSession } from "next-auth/react";
 import { getStoreByStoreCode } from "services/customer/ShopNow";
 import { format } from "date-fns";
-import Image from "next/image";
+// import Image from "next/image";
 import { FaInfoCircle } from "react-icons/fa";
-import { customerHome } from "public/assets";
+// import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
 import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
+import TicketSvg from "public/assets/svg/TicketSvg";
+import ScheduleSvg from "public/assets/svg/scheduleSvg";
+import TaxSvg from "public/assets/svg/TaxSvg";
+import ChatBubbleSvg from "public/assets/svg/chatbubbleSvg";
+import ShopSvg from "public/assets/svg/ShopSvg";
 import Articles from "./Articles";
-// import CategoryScrollComponent from "@/atoms/CategoryScrollComponent";
-// import InputBox from "@/atoms/InputBoxComponent";
-// import ProductDetailsCard from "components/reseller/atoms/productdetailscard";
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
@@ -190,7 +192,6 @@ const Home = () => {
 
   return (
     <>
-      {/* {isLoggedIn ? ( */}
       <div className="px-3">
         {!showCompareProducts ? (
           <Box>
@@ -214,7 +215,12 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 cursor-pointer d-flex justify-content-evenly p-3 align-items-center"
                 >
-                  <Image src={customerHome.coupon} height={40} width={60} />
+                  {/* <Image src={customerHome.coupon} height={40} width={60} /> */}
+                  <TicketSvg
+                    height={40}
+                    width={60}
+                    className="theme_svg_fill"
+                  />
                   <Typography
                     className="fw-bold h-5 cursor-pointer"
                     onClick={() => {
@@ -230,7 +236,8 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.shop} height={50} width={50} />
+                  <ShopSvg height={40} width={60} className="theme_svg_fill" />
+                  {/* <Image src={customerHome.shop} height={50} width={50} /> */}
                   <div>
                     <Typography className="fw-bold h-5 d-flex align-items-center">
                       <div className="d-flex">
@@ -260,7 +267,12 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.file} height={50} width={50} />
+                  {/* <Image src={customerHome.file} height={50} width={50} /> */}
+                  <ScheduleSvg
+                    height={50}
+                    width={50}
+                    className="theme_svg_fill"
+                  />
                   <Box>
                     <Typography className="fw-bold h-5">GSTIN No.</Typography>
                     <span className="h-5">{storeInformation?.gstIn}</span>
@@ -272,7 +284,7 @@ const Home = () => {
                   sm={3}
                   className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.tax} height={50} width={50} />
+                  <TaxSvg height={40} width={60} className="theme_svg_fill" />
                   <Box>
                     {" "}
                     <Typography className="fw-bold h-5">
@@ -289,7 +301,12 @@ const Home = () => {
                   sm={3}
                   className="d-flex justify-content-evenly p-3  align-items-center"
                 >
-                  <Image src={customerHome.help} height={50} width={55} />
+                  <ChatBubbleSvg
+                    height={40}
+                    width={60}
+                    className="theme_svg_fill"
+                  />
+                  {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
                   <Box>
                     <Typography className="fw-bold h-5">
