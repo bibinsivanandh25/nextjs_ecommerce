@@ -6,14 +6,16 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Add } from "@mui/icons-material";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 import { getAllFrequentProduct } from "services/customer/productdetails";
+import AddToCartModal from "../addtocartmodal";
 
-const FrequentBuyProduct = ({ selectedMasterData }) => {
-  const router = useRouter();
+const FrequentBuyProduct = () => {
+  const [deliveryType, setDeliveryType] = useState("NOFREEDELIVERYANDRETURN");
   const [frequentProduct, setfrequentProduct] = useState([]);
+  const [showImage, setShowImage] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [formFrequentData, setFormFrequentData] = useState({
     actualCost: "",
@@ -21,6 +23,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
     handpick: "",
     storeowner: "",
   });
+  const [showModal, setShowModal] = useState(false);
   const priceCal = (array) => {
     let actualCost = 0;
     let fd = 0;
@@ -53,29 +56,21 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
           isSelected: true,
         });
       });
-      temp1.unshift({
-        productVariationId: selectedMasterData.productVariationId,
-        mrp: selectedMasterData.mrp,
-        productTitle: selectedMasterData.productTitle,
-        variationMedia: selectedMasterData.variationMedia[0],
-        salePrice: selectedMasterData.salePrice,
-        salePriceWithLogistics: selectedMasterData.salePriceWithFDR,
-        isSelected: true,
-      });
       priceCal(temp1);
       setSelectedProduct(temp1);
       setfrequentProduct(temp1);
+      setShowImage(temp1);
     }
     if (err) {
       setfrequentProduct([]);
     }
   };
+  const userData = useSelector((state) => state.customer);
   useEffect(() => {
-    if (router.query.id ?? selectedMasterData.productVariationId) {
-      const id = router.query.id ?? selectedMasterData.productVariationId;
-      getfrequentProduct(id);
+    if (userData) {
+      getfrequentProduct(userData.productId);
     }
-  }, [router.query, selectedMasterData]);
+  }, [userData]);
 
   const handleCheckBoxClik = (id) => {
     const tempSelectedData = [...selectedProduct];
@@ -86,8 +81,10 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
     });
     const temp = tempSelectedData.filter((x) => x.isSelected);
     priceCal(temp);
+    setShowImage(temp);
     setSelectedProduct(tempSelectedData);
   };
+
   return (
     <>
       {frequentProduct.length ? (
@@ -102,7 +99,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                   <Grid container>
                     <Grid item md={6}>
                       <Grid container>
-                        {frequentProduct.map((item, index) =>
+                        {showImage.map((item, index) =>
                           item.isSelected ? (
                             <>
                               <Image
@@ -112,14 +109,13 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                                 layout="intrinsic"
                                 alt="alt"
                               />
-                              {frequentProduct.filter(
-                                (x) => x.isSelected == true
-                              ).length >
-                                index + 1 && (
+                              {showImage.filter((x) => x.isSelected == true)
+                                .length >
+                              index + 1 ? (
                                 <Grid item md={1} className="d-center">
                                   <Add sx={{ fontSize: "30px" }} />
                                 </Grid>
-                              )}
+                              ) : null}
                             </>
                           ) : null
                         )}
@@ -128,7 +124,15 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                     <Grid item md={6}>
                       <Grid container display="flex" alignItems="center">
                         <Grid item md={6} display="flex" alignItems="center">
-                          <RadiobuttonComponent size="small" />
+                          <RadiobuttonComponent
+                            size="small"
+                            onRadioChange={() => {
+                              setDeliveryType("NOFREEDELIVERYANDRETURN");
+                            }}
+                            isChecked={
+                              deliveryType === "NOFREEDELIVERYANDRETURN"
+                            }
+                          />
                           <Typography className="h-5">
                             Actual Price (Excl.Delivery & Return Charge)
                           </Typography>
@@ -138,13 +142,19 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Grid>
                         <Grid item md={3}>
                           <Typography className="fw-bold">
-                            ₹ {formFrequentData.actualCost}
+                            ₹ {parseInt(formFrequentData.actualCost, 10)}
                           </Typography>
                         </Grid>
                       </Grid>
                       <Grid container display="flex" alignItems="center">
                         <Grid item md={6} display="flex" alignItems="center">
-                          <RadiobuttonComponent size="small" />
+                          <RadiobuttonComponent
+                            size="small"
+                            onRadioChange={() => {
+                              setDeliveryType("FREEDELIVERYANDRETURN");
+                            }}
+                            isChecked={deliveryType === "FREEDELIVERYANDRETURN"}
+                          />
                           <Typography className="h-5">
                             Price For Free Delivery & Return
                           </Typography>
@@ -154,7 +164,7 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Grid>
                         <Grid item md={3}>
                           <Typography className="fw-bold">
-                            ₹ {formFrequentData.fd}
+                            ₹ {parseInt(formFrequentData.fd, 10)}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -188,7 +198,13 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
                         </Typography>
                       </Grid>
                     </Grid> */}
-                      <ButtonComponent label="Add To Cart" variant="outlined" />
+                      <ButtonComponent
+                        label="Add To Cart"
+                        variant="outlined"
+                        onBtnClick={() => {
+                          setShowModal(true);
+                        }}
+                      />
                     </Grid>
                   </Grid>
                 ) : (
@@ -265,6 +281,14 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
             </Paper>
           </Grid>
         </Box>
+      ) : null}
+      {showModal ? (
+        <AddToCartModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          frequentProduct={frequentProduct}
+          type={deliveryType}
+        />
       ) : null}
     </>
   );

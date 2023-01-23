@@ -13,7 +13,6 @@ import {
 import { useSelector } from "react-redux";
 import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
-import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
 
 const comparProductData = [
   {
@@ -39,7 +38,6 @@ const comparProductData = [
 const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
   const [products, setProducts] = useState([]);
   const [showDrawer, setShowDrawer] = useState(false);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [comparDrawer, setComparDrawer] = useState(false);
   const [comparedProduct, setCompredProduct] = useState([]);
   const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
@@ -69,6 +67,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         wishlistId: ele.wishlistId,
         userCartId: ele.userCartId,
         isCarted: ele.presentInCart,
+        variationDetails: ele.variationDetails,
       });
     });
     setProducts([...temp]);
@@ -248,9 +247,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
                   if (icon === "balanceIcon") {
                     setComparDrawer(true);
                   }
-                  if (icon === "visibilityOutlinedIcon") {
-                    setViewModalOpen(true);
-                  }
                 }}
               />
             );
@@ -292,12 +288,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           ))}
         </Grid>
       </DrawerComponent>
-      {viewModalOpen && (
-        <ViewModalComponent
-          setViewModalOpen={setViewModalOpen}
-          viewModalOpen={viewModalOpen}
-        />
-      )}
+
       <DrawerComponent
         openDrawer={comparDrawer}
         anchor="bottom"

@@ -8,13 +8,10 @@ import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import { useDispatch } from "react-redux";
-import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
 import { productDetails } from "features/customerSlice";
-import DeliveryOptionsModal from "../../buynowmodal";
+import DeliveryOptionsModal from "../../Home/buynowmodal";
 
-// import Link from "next/link";
-
-const ProductCard = ({
+const ProductListCard = ({
   getProducts = () => {},
   item,
   handleIconClick = () => {},
@@ -22,13 +19,7 @@ const ProductCard = ({
   width = 150,
   cardPaperClass = "",
 }) => {
-  const dispatch = useDispatch();
-
   const iconListData = [
-    {
-      iconName: "viewCarouselOutlinedIcon",
-      title: "View",
-    },
     {
       iconName: "favoriteBorderIcon",
       title: "Favorite",
@@ -37,22 +28,13 @@ const ProductCard = ({
       iconName: "localMallIcon",
       title: "Favorite",
     },
-    {
-      iconName: "visibilityOutlinedIcon",
-      title: "Search",
-    },
-    {
-      iconName: "balanceIcon",
-      title: "Search",
-    },
   ];
+  const dispatch = useDispatch();
 
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
@@ -78,7 +60,6 @@ const ProductCard = ({
   }, [item]);
 
   const handleCardIconClick = async (iconName) => {
-    console.log(iconName);
     if (iconName === "favoriteBorderIcon") {
       if (!item.isWishlisted) {
         setShowWishListModal(true);
@@ -99,21 +80,21 @@ const ProductCard = ({
         setShowAddToCardModal(true);
       }
     }
-    if (iconName === "visibilityOutlinedIcon") {
-      setViewModalOpen(true);
-    }
   };
   const handleProductClick = () => {
-    dispatch(
-      productDetails({
-        productId: item?.id,
-        variationDetails: item.variationDetails,
-      })
-    );
-    route.push({
-      pathname: "/customer/productdetails",
-    });
+    if (item?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: item?.id,
+          variationDetails: item.variationDetails,
+        })
+      );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
+    }
   };
+
   return (
     <Box
       onMouseEnter={() => setHover(true)}
@@ -191,7 +172,7 @@ const ProductCard = ({
                 height: "25px",
               }}
               className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                iconcolor[ele.iconName] ? "theme_bg_color" : "bg-white"
+                iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
               }`}
               // eslint-disable-next-line react/no-array-index-key
               key={index}
@@ -232,14 +213,7 @@ const ProductCard = ({
           modalType="ADD"
         />
       )}
-      {viewModalOpen && (
-        <ViewModalComponent
-          setViewModalOpen={setViewModalOpen}
-          viewModalOpen={viewModalOpen}
-          selectedData={item}
-        />
-      )}
     </Box>
   );
 };
-export default ProductCard;
+export default ProductListCard;
