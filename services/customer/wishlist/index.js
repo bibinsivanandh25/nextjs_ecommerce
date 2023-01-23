@@ -69,6 +69,16 @@ const removeProductFromWishList = (wishListId, productId) => {
     .catch((err) => ({ err }));
 };
 
+const productDetailsView = (id) => {
+  return serviceUtil
+    .get(`/products/customer/product-view/${id}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
 export {
   getAllWishListsByProfileId,
   addNewWishList,
@@ -77,4 +87,5 @@ export {
   fetchProductsFromWishListId,
   addProductToWishList,
   removeProductFromWishList,
+  productDetailsView,
 };

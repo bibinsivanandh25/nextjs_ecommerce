@@ -217,7 +217,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   const handleVariationClick = (item) => {
-    console.log(selectedOtherVariation, "selectedOtherVariation");
     getRating(item.productVariationId);
     setMasterVariation(item);
     dispatch(
@@ -339,7 +338,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
       );
       if (data) {
         toastify(data?.message, "success");
-        // getProductDetails(selectedMasterData.productVariationId);
+        getProductDetails(userData.productId, userData.variationDetails);
       }
     }
   };

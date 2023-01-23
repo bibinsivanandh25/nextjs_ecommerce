@@ -78,7 +78,6 @@ const ProductCard = ({
   }, [item]);
 
   const handleCardIconClick = async (iconName) => {
-    console.log(iconName);
     if (iconName === "favoriteBorderIcon") {
       if (!item.isWishlisted) {
         setShowWishListModal(true);
@@ -236,7 +235,7 @@ const ProductCard = ({
         <ViewModalComponent
           setViewModalOpen={setViewModalOpen}
           viewModalOpen={viewModalOpen}
-          selectedData={item}
+          productId={item?.id}
         />
       )}
     </Box>
