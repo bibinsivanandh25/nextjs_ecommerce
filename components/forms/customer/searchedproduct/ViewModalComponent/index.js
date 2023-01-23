@@ -36,7 +36,7 @@ const viewImageData = [
 const ViewModalComponent = ({
   setViewModalOpen = () => {},
   viewModalOpen = false,
-  selectedData = {},
+  // selectedData = {},
 }) => {
   const [selectedImage, setSelectedImage] = useState({});
   const [iconcolor, setIconColor] = useState({});

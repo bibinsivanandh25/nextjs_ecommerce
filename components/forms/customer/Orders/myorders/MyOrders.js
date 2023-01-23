@@ -3,16 +3,12 @@
 /* eslint-disable react/self-closing-comp */
 import { Typography, Box, Grid } from "@mui/material";
 import MenuOption from "@/atoms/MenuOptions";
-import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
+import { useState } from "react";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import Image from "next/image";
-import SearchComponent from "@/atoms/SearchComponent";
 import CancelOrReturnModal from "../CancelOrReturnModal";
-import styles from "./MyOrders.module.css";
 
 const datas = [
   {

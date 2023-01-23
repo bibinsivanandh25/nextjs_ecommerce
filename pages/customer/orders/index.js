@@ -17,7 +17,7 @@ import serviceUtil from "services/utils";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 // import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
 import SearchComponent from "@/atoms/SearchComponent";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getBase64 } from "services/utils/functionUtils";
 import Image from "next/image";
 import TextArea from "@/atoms/SimpleTextArea";
@@ -111,7 +111,7 @@ const Orders = () => {
       // reviewerId: "CST1222000058",
       writtenReview: productReviewState.reviewText,
       variationId: selectedProduct[0]?.variationId,
-      reviewMediaUrl: temp ? temp : [],
+      reviewMediaUrl: temp || [],
       isDeleted: false,
     };
     const { data, errRes } = await customerProdFeedback(payload);

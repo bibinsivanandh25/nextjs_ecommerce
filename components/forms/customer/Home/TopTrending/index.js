@@ -1,9 +1,7 @@
 import { Box, Rating, Typography } from "@mui/material";
 import { productDetails } from "features/customerSlice";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import serviceUtil from "services/utils";
 
 const TopTrending = ({ products }) => {
   const dispatch = useDispatch();
