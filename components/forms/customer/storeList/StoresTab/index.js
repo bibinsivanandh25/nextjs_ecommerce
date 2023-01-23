@@ -8,9 +8,11 @@ import CustomIcon from "services/iconUtils";
 import { useRef, useState, useEffect } from "react";
 import {
   deleteStore,
+  deleteStoreList,
   favouriteStore,
   getAllStoresOfStoreListByStoreId,
   getStoreList,
+  removeFromStoreList,
   switchStore,
 } from "services/admin/storeList";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,33 +31,33 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const customer = useSelector((state) => state.customer);
   const [storeDetails, setstoreDetails] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
   const [pageNum, setPageNum] = useState(1);
   const observer = useRef();
-  // const lastStore = useCallback(
-  //   (node) => {
-  //     if (loading) return;
-  //     if (observer.current) observer.current.disconnect();
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         setPageNum((prev) => prev + 1);
-  //       }
-  //     });
-  //     if (node) observer.current.observe(node);
-  //   },
-  //   [loading]
-  // );
+
+  const deleteStoreCategory = async (storeListId) => {
+    const { res, message, err } = await deleteStoreList(storeListId);
+    if (res) {
+      toastify(message, "success");
+      getStoresList();
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setStoreList(
-        data.map((item) => ({
-          label: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-          defaultStore: item.defaultStore,
-        }))
-      );
+      if (data.data) {
+        setStoreList(
+          data.data.map((item) => ({
+            label: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+            defaultStore: item.defaultStore,
+          }))
+        );
+      } else {
+        setStoreList([]);
+      }
     }
   };
   const getAllStoreOfStoreList = async (id) => {
@@ -69,6 +71,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
           defaultStore: item.defaultStore,
           favourite: item.favourite,
           storeLogo: item.storeLogo || "",
+          storeListId: item.storeListId,
         }))
       );
     } else if (err) {
@@ -85,9 +88,13 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const deleteStores = async (id) => {
-    const { data, err, message } = await deleteStore(id, userId);
-    if (data === null) {
+  const deleteStores = async (storeId, id) => {
+    const { data, err, message } = await removeFromStoreList(
+      storeId,
+      userId,
+      id
+    );
+    if (data) {
       getAllStoreOfStoreList(selectedStoreList.id);
       toastify(message, "success");
     } else if (err) {
@@ -113,7 +120,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             supplierStoreLogo: storeData.supplierStoreLogo,
             supplierStoreName: storeData.supplierStoreName,
             storeCode: storeData.supplierStoreCode,
-            storeThemes: storeData.storeThemes,
+            storeThemes: storeData.storeTheme,
             shopDescription: storeData.shopDescription ?? "",
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
@@ -156,9 +163,18 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     getAllStoreOfStoreList(item.id);
                     setSelectedStoreList(item);
                   }}
-                  className="p-2 my-2 w-300px cursor-pointer"
+                  className="p-2 my-2 w-300px cursor-pointer d-flex justify-content-between"
                 >
-                  {item.label}
+                  <Typography>{item.label}</Typography>
+                  <CustomIcon
+                    showColorOnHover={false}
+                    type="delete"
+                    className="color-light-blue fs-20"
+                    onIconClick={(e) => {
+                      e.stopPropagation();
+                      deleteStoreCategory(item.id);
+                    }}
+                  />
                 </Paper>
               </motion.div>
             );
@@ -213,6 +229,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         }}
       >
         {stores.map((item, index) => {
+          console.log(item, "item");
           return (
             <motion.div
               // ref={list.length - 1 === index ? lastStore : null}
@@ -271,7 +288,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
                     type="delete"
                     onIconClick={(e) => {
                       e.preventDefault();
-                      deleteStores(item.id);
+                      deleteStores(item.storeListId, item.id);
                     }}
                     className=""
                   />

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import { Box, Paper, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -6,30 +5,21 @@ import CustomIcon from "services/iconUtils";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
-import { useSession } from "next-auth/react";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
-import { productDetails } from "features/customerSlice";
-import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import { useDispatch } from "react-redux";
-import DeliveryOptionsModal from "../../buynowmodal";
+import { productDetails } from "features/customerSlice";
+import DeliveryOptionsModal from "../../Home/buynowmodal";
 
-const ProductCard = ({
+const ProductListCard = ({
   getProducts = () => {},
   item,
   handleIconClick = () => {},
   height = 150,
   width = 150,
   cardPaperClass = "",
-  showActionList = true,
 }) => {
-  const dispatch = useDispatch();
-
   const iconListData = [
-    {
-      iconName: "viewCarouselOutlinedIcon",
-      title: "View",
-    },
     {
       iconName: "favoriteBorderIcon",
       title: "Favorite",
@@ -38,40 +28,18 @@ const ProductCard = ({
       iconName: "localMallIcon",
       title: "Favorite",
     },
-    {
-      iconName: "visibilityOutlinedIcon",
-      title: "Search",
-    },
-    {
-      iconName: "balanceIcon",
-      title: "Search",
-    },
   ];
+  const dispatch = useDispatch();
 
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
-    useState(false);
-
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const route = useRouter();
 
-  const session = useSession();
-  useEffect(() => {
-    if (
-      session?.status === "authenticated" &&
-      session?.data?.user?.role === "CUSTOMER"
-    ) {
-      setIsSignedIn(true);
-    } else {
-      setIsSignedIn(false);
-    }
-  }, [session]);
   const mouseLeave = (name) => {
     if (item?.isWishlisted && name === "favoriteBorderIcon") {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
@@ -92,7 +60,6 @@ const ProductCard = ({
   }, [item]);
 
   const handleCardIconClick = async (iconName) => {
-    console.log(iconName);
     if (iconName === "favoriteBorderIcon") {
       if (!item.isWishlisted) {
         setShowWishListModal(true);
@@ -115,21 +82,22 @@ const ProductCard = ({
     }
   };
   const handleProductClick = () => {
-    dispatch(
-      productDetails({
-        productId: item?.id,
-        variationDetails: item.variationDetails,
-      })
-    );
-    route.push({
-      pathname: "/customer/productdetails",
-    });
+    if (item?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: item?.id,
+          variationDetails: item.variationDetails,
+        })
+      );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
+    }
   };
+
   return (
     <Box
-      onMouseEnter={() => {
-        if (isSignedIn && showActionList) setHover(true);
-      }}
+      onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       maxWidth={165}
       className="position-relative"
@@ -204,7 +172,7 @@ const ProductCard = ({
                 height: "25px",
               }}
               className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                iconcolor[ele.iconName] ? "theme_bg_color" : "bg-white"
+                iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
               }`}
               // eslint-disable-next-line react/no-array-index-key
               key={index}
@@ -245,16 +213,7 @@ const ProductCard = ({
           modalType="ADD"
         />
       )}
-
-      {showSimilarProductsDrawer && (
-        <SimilarProducts
-          setShowDrawer={setShowSimilarProductsDrawer}
-          showDrawer={showSimilarProductsDrawer}
-          productId={item?.id}
-          subCategoryId={item?.subCategoryId}
-        />
-      )}
     </Box>
   );
 };
-export default ProductCard;
+export default ProductListCard;

@@ -34,12 +34,16 @@ const AddStore = ({
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setOptions(
-        data.map((item) => ({
-          title: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-        }))
-      );
+      if (data.data) {
+        setOptions(
+          data.data.map((item) => ({
+            title: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+          }))
+        );
+      } else {
+        setOptions([]);
+      }
     }
   };
 
@@ -188,7 +192,7 @@ const AddStore = ({
         size="small"
       />
       <Box className="d-flex justify-content-center w-100 mt-3">
-        <ButtonComponent label="submit" onBtnClick={handleSubmit} />
+        <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
       </Box>
     </Box>
   );

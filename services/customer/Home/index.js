@@ -99,6 +99,18 @@ const getBestSoldProducts = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
+const getTopTrandingProducts = (supplierId) => {
+  return serviceUtil
+    .get(`products/top-product/${supplierId}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      const errRes = err;
+      return { errRes };
+    });
+};
 export {
   getBannersBySupplierId,
   getMainCategories,
@@ -110,4 +122,5 @@ export {
   getTopCategoriesOfMonth,
   getFeaturedProducts,
   getBestSoldProducts,
+  getTopTrandingProducts,
 };

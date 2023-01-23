@@ -156,7 +156,7 @@ const NewAddress = ({
     if (state == null || Object.keys(state)?.length === 0) {
       errorobj.state = true;
     }
-    if (addresstype == "" && pageType == "customer") {
+    if (addresstype == "") {
       errorobj.addresstype = true;
     }
     setError(errorobj);

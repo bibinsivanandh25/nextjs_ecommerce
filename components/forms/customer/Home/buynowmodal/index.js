@@ -138,6 +138,7 @@ const DeliveryOptionsModal = ({
         returnCharges: data.productReturnCharges?.returnAmount,
         fastReturnCharges: data.productReturnCharges?.fastestReturnAmount,
         description: data.longDescription,
+        rtoAccepted: data.rtoAccepted,
       });
     }
   };
@@ -449,7 +450,11 @@ const DeliveryOptionsModal = ({
               label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
             />
           </Box>
-          <Box className="border-top border-dark-gray ps-4">
+          <Box
+            className={`border-top border-dark-gray ps-4 ${
+              productDetails?.rtoAccepted ? "" : "d-none"
+            }`}
+          >
             <CheckBoxComponent
               label="Choose Return options"
               size="medium"

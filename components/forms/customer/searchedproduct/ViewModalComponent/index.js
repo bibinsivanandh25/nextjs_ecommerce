@@ -18,10 +18,6 @@ const viewModalIcons = [
     iconName: "favoriteBorderIcon",
     title: "Favorite",
   },
-  {
-    iconName: "localMallIcon",
-    title: "Favorite",
-  },
 ];
 const viewImageData = [
   {
@@ -40,6 +36,7 @@ const viewImageData = [
 const ViewModalComponent = ({
   setViewModalOpen = () => {},
   viewModalOpen = false,
+  // selectedData = {},
 }) => {
   const [selectedImage, setSelectedImage] = useState({});
   const [iconcolor, setIconColor] = useState({});

@@ -1,5 +1,6 @@
 :root {
   --themeColor: #e56700;
+  --secondaryColor: "#f4e7dc";
 }
 
 .theme_bg_color {
@@ -19,4 +20,8 @@
   color: var(--themeColor) !important;
   border-bottom: 1px solid var(--themeColor);
   padding: 3px 0px;
+}
+
+.theme_bg_color_1 {
+  background-color: var(--secondaryColor) !important;
 }

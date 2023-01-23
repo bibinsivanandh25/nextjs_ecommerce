@@ -6,6 +6,7 @@ import {
   getArticles,
   getBannersBySupplierId,
   getTopProducts,
+  getTopTrandingProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -23,22 +24,12 @@ import { FaInfoCircle } from "react-icons/fa";
 // import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
 import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
-import ButtonComponent from "@/atoms/ButtonComponent";
 import TicketSvg from "public/assets/svg/TicketSvg";
 import ScheduleSvg from "public/assets/svg/scheduleSvg";
 import TaxSvg from "public/assets/svg/TaxSvg";
 import ChatBubbleSvg from "public/assets/svg/chatbubbleSvg";
 import ShopSvg from "public/assets/svg/ShopSvg";
 import Articles from "./Articles";
-
-const themeColors = [
-  "#e56700",
-  "#000",
-  "#62615fde",
-  "#144955",
-  "#59334b",
-  "#a95a4c",
-];
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
@@ -49,12 +40,14 @@ const Home = () => {
   const [storeInformation, setStoreInformation] = useState([]);
   const [articleData, setArticleData] = useState([]);
   const [leaveDate, setleaveDate] = useState({ start: null, end: null });
-  const [themeId, setThemeId] = useState(0);
+  const [topTrendingData, settopTrendingData] = useState([]);
   // const [products, setProducts] = useState([]);
 
   const route = useRouter();
 
   const storeDetails = useSelector((state) => state.customer);
+  // const AllRedux = useSelector((state) => state);
+  // console.log(AllRedux, "supplierDetails");
 
   const userInfo = useSession();
   useEffect(() => {
@@ -173,25 +166,32 @@ const Home = () => {
       });
     }
   };
+  const getTopTranding = async () => {
+    // const supplierId = "SP0123000312";
+    const { data, errRes } = await getTopTrandingProducts(
+      storeDetails.supplierId
+    );
+    // let temp = [];
+    if (data) {
+      // temp.push(data.data);
+      settopTrendingData(data.data);
+    } else if (errRes) {
+      // console.log(errRes);
+    }
+  };
   useEffect(() => {
     getBanners();
     getProducts();
     getArticlesData();
+    getTopTranding();
   }, []);
   useEffect(() => {
+    getTopTranding();
     getBanners();
   }, [storeDetails?.storeCode]);
 
-  const handleThemeChange = () => {
-    const r = document.querySelector(":root");
-    const temp = themeId >= 5 ? 0 : themeId + 1;
-    r.style.setProperty("--themeColor", themeColors[temp]);
-    setThemeId(temp);
-  };
-
   return (
     <>
-      <ButtonComponent label="Change Theme" onBtnClick={handleThemeChange} />
       <div className="px-3">
         {!showCompareProducts ? (
           <Box>
@@ -336,7 +336,7 @@ const Home = () => {
                 />
               </Grid>
               <Grid item sm={4} className="py-3 ps-1 h-100">
-                <TopTrending />
+                <TopTrending products={topTrendingData} />
               </Grid>
             </Grid>
             <Box className="">

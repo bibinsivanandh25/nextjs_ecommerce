@@ -77,7 +77,7 @@ const SignIn = () => {
         supplierStoreLogo: data?.supplierStoreLogo,
         supplierStoreName: data?.supplierStoreName,
         storeCode: data?.supplierStoreCode,
-        storeThemes: data?.storeThemes,
+        storeThemes: data?.storeTheme,
         shopDescription: data?.shopDescription,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         role: "CUSTOMER",
@@ -169,7 +169,10 @@ const SignIn = () => {
                     details
                   );
                 }
-                if (data?.defaultStoreCode || router?.query?.storeCode) {
+                if (
+                  data?.defaultStoreCode?.length ||
+                  router?.query?.storeCode?.length
+                ) {
                   router.push(`/customer/home`);
                 }
               }

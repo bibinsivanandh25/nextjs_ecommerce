@@ -109,6 +109,7 @@ const Quiz = forwardRef(
               skuId: item.skuId,
               wishlistId: item.wishlistId,
               userCartId: item.userCartId,
+              subCategoryId: item.subcategoryId,
               isCarted: item.presentInCart,
             };
           })
