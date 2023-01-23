@@ -7,7 +7,11 @@ import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
+import { useDispatch } from "react-redux";
+import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
+import { productDetails } from "features/customerSlice";
 import DeliveryOptionsModal from "../../buynowmodal";
+
 // import Link from "next/link";
 
 const ProductCard = ({
@@ -18,6 +22,8 @@ const ProductCard = ({
   width = 150,
   cardPaperClass = "",
 }) => {
+  const dispatch = useDispatch();
+
   const iconListData = [
     {
       iconName: "viewCarouselOutlinedIcon",
@@ -45,6 +51,8 @@ const ProductCard = ({
   const [showWishListModal, setShowWishListModal] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
@@ -70,6 +78,7 @@ const ProductCard = ({
   }, [item]);
 
   const handleCardIconClick = async (iconName) => {
+    console.log(iconName);
     if (iconName === "favoriteBorderIcon") {
       if (!item.isWishlisted) {
         setShowWishListModal(true);
@@ -90,8 +99,21 @@ const ProductCard = ({
         setShowAddToCardModal(true);
       }
     }
+    if (iconName === "visibilityOutlinedIcon") {
+      setViewModalOpen(true);
+    }
   };
-
+  const handleProductClick = () => {
+    dispatch(
+      productDetails({
+        productId: item?.id,
+        variationDetails: item.variationDetails,
+      })
+    );
+    route.push({
+      pathname: "/customer/productdetails",
+    });
+  };
   return (
     <Box
       onMouseEnter={() => setHover(true)}
@@ -114,19 +136,13 @@ const ProductCard = ({
           width={width}
           layout="responsive"
           onClick={() => {
-            route.push({
-              pathname: "/customer/productdetails",
-              query: { id: item?.id },
-            });
+            handleProductClick();
           }}
         />
       </Paper>
       <Tooltip
         onClick={() => {
-          route.push({
-            pathname: "/customer/productdetails",
-            query: { id: item?.id },
-          });
+          handleProductClick();
         }}
         title={item.title}
       >
@@ -214,6 +230,13 @@ const ProductCard = ({
           productId={item?.id}
           skuId={item?.skuId}
           modalType="ADD"
+        />
+      )}
+      {viewModalOpen && (
+        <ViewModalComponent
+          setViewModalOpen={setViewModalOpen}
+          viewModalOpen={viewModalOpen}
+          selectedData={item}
         />
       )}
     </Box>

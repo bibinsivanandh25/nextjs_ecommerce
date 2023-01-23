@@ -6,14 +6,13 @@ import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Add } from "@mui/icons-material";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { BsFillExclamationCircleFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 import { getAllFrequentProduct } from "services/customer/productdetails";
 import AddToCartModal from "../addtocartmodal";
 
-const FrequentBuyProduct = ({ selectedMasterData }) => {
-  const router = useRouter();
+const FrequentBuyProduct = () => {
   const [deliveryType, setDeliveryType] = useState("NOFREEDELIVERYANDRETURN");
   const [frequentProduct, setfrequentProduct] = useState([]);
   const [showImage, setShowImage] = useState([]);
@@ -66,12 +65,12 @@ const FrequentBuyProduct = ({ selectedMasterData }) => {
       setfrequentProduct([]);
     }
   };
+  const userData = useSelector((state) => state.customer);
   useEffect(() => {
-    if (router.query.id ?? selectedMasterData.productVariationId) {
-      const id = router.query.id ?? selectedMasterData.productVariationId;
-      getfrequentProduct(id);
+    if (userData) {
+      getfrequentProduct(userData.productId);
     }
-  }, [router.query, selectedMasterData]);
+  }, [userData]);
 
   const handleCheckBoxClik = (id) => {
     const tempSelectedData = [...selectedProduct];

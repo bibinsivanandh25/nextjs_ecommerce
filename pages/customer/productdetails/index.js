@@ -7,10 +7,9 @@
 /* eslint-disable no-inner-declarations */
 import { Box, Grid, Paper, Rating, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import ReactImageMagnify from "react-image-magnify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCouponsData,
   getAllMinumCart,
@@ -40,6 +39,8 @@ import InputBox from "@/atoms/InputBoxComponent";
 import FAQPage from "@/forms/customer/productdetails/faqpage";
 import ModalComponent from "@/atoms/ModalComponent";
 import RecentlyViewedProduct from "@/forms/customer/productdetails/recentlyviewedproduct";
+import { productDetails } from "features/customerSlice";
+import { useRouter } from "next/router";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -68,7 +69,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedImageId, setSelectedImageId] = useState("1");
   const [imageSize, setImageSize] = useState({ width: 250, height: 200 });
-  const router = useRouter();
   const userData = useSelector((state) => state.customer);
   const [count, setCount] = useState(1);
   const [couponMasterData, setCouponsMasterData] = useState([]);
@@ -100,7 +100,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
   });
   const [codAvailable, setCodAvailable] = useState(false);
   const [fdrOptions, setfdrOptions] = useState("");
-
   useEffect(() => {
     let search;
     if (searchAnswers?.length) {
@@ -134,6 +133,8 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
   const [selectedOtherVariation, setSelectedOtherVariation] = useState([]);
   const [masterVariation, setMasterVariation] = useState([]);
+  const dispatch = useDispatch();
+  const route = useRouter();
 
   const getRating = async (id) => {
     const { data, err } = await getAllRating(id);
@@ -185,7 +186,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
       const temp1 = [];
       temp.forEach((item) => {
         item.variationPropertyPojoList.forEach((val) => {
-          selectedOtherVariation.forEach((x) => {
+          selecte.forEach((x) => {
             if (x.optionId === val.optionId) {
               val.isSelected = true;
             }
@@ -203,15 +204,23 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
 
   useEffect(() => {
-    if (selectedOtherVariation.length || masterVariation.length) {
-      console.log(masterVariation[0], "masterVariation");
-      getProductDetails(masterVariation[0].productVariationId);
+    if (masterVariation.length) {
+      getProductDetails();
     }
-  }, [selectedOtherVariation, masterVariation]);
+  }, [masterVariation]);
 
   const handleVariationClick = (item) => {
     getRating(item.productVariationId);
-    setMasterVariation([item]);
+    // setMasterVariation(item);
+    dispatch(
+      productDetails({
+        productId: item?.productVariationId,
+        variationDetails: item.variationDetails,
+      })
+    );
+    route.push({
+      pathname: "/customer/productdetails",
+    });
   };
   const handleOtherVariationClick = (item, val) => {
     const temp = [...otherVariation];
@@ -235,7 +244,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
         }
       });
     });
-
     setSelectedOtherVariation(y);
   };
   const getMinimumCart = async () => {
@@ -254,34 +262,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
 
   useEffect(() => {
-    if (router?.query?.id) {
-      getProductDetails(router?.query?.id, [
-        {
-          optionId: "62f620838c1fd7153be3612e",
-          optionName: "Brown",
-          variationId: "62f4f91bf4828b694836ec68",
-          variationName: "Color",
-          variationType: "STANDARD_VARIATION",
-          isSelected: true,
-        },
-      ]);
-      setMasterVariation([
-        {
-          optionId: "62f620838c1fd7153be3612e",
-          optionName: "Brown",
-          variationId: "62f4f91bf4828b694836ec68",
-          variationName: "Color",
-          variationType: "STANDARD_VARIATION",
-          isSelected: true,
-        },
-      ]);
-      getRating(router?.query?.id);
+    if (userData) {
+      getProductDetails(userData.productId, userData.variationDetails);
+      // setMasterVariation(userData.variationDetails);
+      getRating(userData.productId);
     }
     // Scroll the Screen to top....
     scrollPage();
     getMinimumCart();
     getCouponsData();
-  }, [router?.query?.id]);
+  }, [userData]);
 
   const handleImageClick = (value, ind) => {
     setSelectedImage(value);
@@ -335,7 +325,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
       );
       if (data) {
         toastify(data?.message, "success");
-        getProductDetails(selectedMasterData.productVariationId);
+        // getProductDetails(selectedMasterData.productVariationId);
       }
     }
   };
@@ -1384,6 +1374,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 selectedMasterData.productVariationId !==
                                   item.productVariationId &&
                                   handleVariationClick(item);
+                                setMasterVariation(item.variationDetails);
                               }}
                             >
                               <Box display="flex" justifyContent="center">
@@ -1392,10 +1383,18 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   width={150}
                                   src={item?.imageUrl}
                                   layout="intrinsic"
-                                  className={`border rounded cursor-pointer ${
+                                  // className={`border-dashed1 rounded cursor-pointer ${
+                                  //   selectedMasterData.productVariationId ===
+                                  //     item.productVariationId && `border-orange`
+                                  // }`}
+                                  className={`${
+                                    item.variationDetails[0].enabled
+                                      ? `border`
+                                      : `border-dashed1`
+                                  } ${
                                     selectedMasterData.productVariationId ===
                                       item.productVariationId && `border-orange`
-                                  }`}
+                                  } rounded`}
                                   alt="alt"
                                 />
                               </Box>

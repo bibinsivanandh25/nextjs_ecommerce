@@ -7,8 +7,9 @@ import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
+import { useDispatch } from "react-redux";
+import { productDetails } from "features/customerSlice";
 import DeliveryOptionsModal from "../../Home/buynowmodal";
-// import Link from "next/link";
 
 const ProductListCard = ({
   getProducts = () => {},
@@ -28,6 +29,7 @@ const ProductListCard = ({
       title: "Favorite",
     },
   ];
+  const dispatch = useDispatch();
 
   const [hover, setHover] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
@@ -79,6 +81,19 @@ const ProductListCard = ({
       }
     }
   };
+  const handleProductClick = () => {
+    if (item?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: item?.id,
+          variationDetails: item.variationDetails,
+        })
+      );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
+    }
+  };
 
   return (
     <Box
@@ -102,19 +117,13 @@ const ProductListCard = ({
           width={width}
           layout="responsive"
           onClick={() => {
-            route.push({
-              pathname: "/customer/productdetails",
-              query: { id: item?.id },
-            });
+            handleProductClick();
           }}
         />
       </Paper>
       <Tooltip
         onClick={() => {
-          route.push({
-            pathname: "/customer/productdetails",
-            query: { id: item?.id },
-          });
+          handleProductClick();
         }}
         title={item.title}
       >
