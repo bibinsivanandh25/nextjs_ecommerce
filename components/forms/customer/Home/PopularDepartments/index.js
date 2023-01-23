@@ -35,6 +35,7 @@ const PopularDepartments = () => {
         wishlistId: ele.wishlistId,
         userCartId: ele.userCartId,
         isCarted: ele.presentInCart,
+        variationDetails: ele.variationDetails,
         subCategoryId: ele.subcategoryId,
       });
     });

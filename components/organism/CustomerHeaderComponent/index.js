@@ -259,6 +259,7 @@ const Header = () => {
                   }}
                 />
                 <Typography
+                  sx={{ marginLeft: "-1rem" }}
                   onClick={() => {
                     setShowConfirmModal(true);
                     setstoreDetails(ele);
@@ -381,25 +382,29 @@ const Header = () => {
     >
       <div className="d-flex justify-content-between align-items-center bg-white text-white px-2 py-1">
         <div className="d-flex align-items-center">
-          <p
-            className=" cursor-pointer d-flex align-items-center color-black"
-            onClick={() => setShowSelectAddress(true)}
-          >
-            <LocationOnIcon className="color-black cursor-pointer" />
-            {(!isSignedIn && !addressDetails?.name) ||
-            !addressDetails?.cityDistrictTown ? (
-              "Select Your Address"
-            ) : (
-              <div className="ms-2 ">
-                <Typography className="fs-12 color-black cursor-pointer">
-                  {addressDetails?.name}
-                </Typography>
-                <Typography className="fs-12 color-black cursor-pointer">
-                  {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
-                </Typography>
-              </div>
-            )}
-          </p>
+          {customer.userId !== "" ? (
+            <p
+              className=" cursor-pointer d-flex align-items-center color-black"
+              onClick={() => setShowSelectAddress(true)}
+            >
+              <LocationOnIcon className="color-black cursor-pointer" />
+              {(!isSignedIn && !addressDetails?.name) ||
+              !addressDetails?.cityDistrictTown ? (
+                "Select Your Address"
+              ) : (
+                <div className="ms-2 ">
+                  <Typography className="fs-12 color-black cursor-pointer">
+                    {addressDetails?.name}
+                  </Typography>
+                  <Typography className="fs-12 color-black cursor-pointer">
+                    {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
+                  </Typography>
+                </div>
+              )}
+            </p>
+          ) : (
+            <></>
+          )}
         </div>
         <div
           style={{

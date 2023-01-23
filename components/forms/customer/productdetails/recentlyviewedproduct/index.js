@@ -1,18 +1,16 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getRecentlyViewedProducts } from "services/customer/Home";
-import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import ProductListCard from "../productlistcard";
 
 const RecentlyViewedProduct = () => {
   const [products, setProducts] = useState([]);
-  const userInfo = useSession();
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
     const { data } = await getRecentlyViewedProducts(
-      userInfo?.data?.user?.id,
+      storeDetails.userId,
       storeDetails.profileId
     );
     if (data) {
@@ -39,10 +37,10 @@ const RecentlyViewedProduct = () => {
     }
   };
   useEffect(() => {
-    if (userInfo?.data && storeDetails) {
+    if (storeDetails) {
       getRecentViewedProducts();
     }
-  }, [userInfo, storeDetails]);
+  }, [storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>

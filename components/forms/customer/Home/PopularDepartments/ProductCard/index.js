@@ -9,10 +9,11 @@ import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { useSession } from "next-auth/react";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
+import { productDetails } from "features/customerSlice";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
+import { useDispatch } from "react-redux";
 import DeliveryOptionsModal from "../../buynowmodal";
-// import Link from "next/link";
 
 const ProductCard = ({
   getProducts = () => {},
@@ -23,6 +24,8 @@ const ProductCard = ({
   cardPaperClass = "",
   showActionList = true,
 }) => {
+  const dispatch = useDispatch();
+
   const iconListData = [
     {
       iconName: "viewCarouselOutlinedIcon",
@@ -118,7 +121,17 @@ const ProductCard = ({
       setShowCompareDrawer(true);
     }
   };
-
+  const handleProductClick = () => {
+    dispatch(
+      productDetails({
+        productId: item?.id,
+        variationDetails: item.variationDetails,
+      })
+    );
+    route.push({
+      pathname: "/customer/productdetails",
+    });
+  };
   return (
     <Box
       onMouseEnter={() => {
@@ -143,19 +156,13 @@ const ProductCard = ({
           width={width}
           layout="responsive"
           onClick={() => {
-            route.push({
-              pathname: "/customer/productdetails",
-              query: { id: item?.id },
-            });
+            handleProductClick();
           }}
         />
       </Paper>
       <Tooltip
         onClick={() => {
-          route.push({
-            pathname: "/customer/productdetails",
-            query: { id: item?.id },
-          });
+          handleProductClick();
         }}
         title={item.title}
       >
@@ -245,6 +252,7 @@ const ProductCard = ({
           modalType="ADD"
         />
       )}
+
       {showSimilarProductsDrawer && (
         <SimilarProducts
           setShowDrawer={setShowSimilarProductsDrawer}
