@@ -1,9 +1,6 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import CustomIcon from "services/iconUtils";
-import DrawerComponent from "@/atoms/DrawerComponent";
-import ButtonComponent from "@/atoms/ButtonComponent";
 import {
   getFeaturedProducts,
   getMostPopularProducts,
@@ -11,41 +8,12 @@ import {
   getBestSoldProducts,
 } from "services/customer/Home";
 import { useSelector } from "react-redux";
-import SimilarProducts from "../../searchedproduct/SimilarProduct";
 import ProductCard from "./ProductCard";
 
-const comparProductData = [
-  {
-    id: 1,
-    imageLink:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-  },
-  {
-    id: 2,
-    imageLink:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG",
-  },
-  {
-    id: 3,
-    imageLink: "",
-  },
-  {
-    id: 4,
-    imageLink: "",
-  },
-];
-
-const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
+const PopularDepartments = () => {
   const [products, setProducts] = useState([]);
-  const [showDrawer, setShowDrawer] = useState(false);
-  const [comparDrawer, setComparDrawer] = useState(false);
-  const [comparedProduct, setCompredProduct] = useState([]);
   const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
   const [filterType, setFilterType] = useState("WEEK");
-
-  useEffect(() => {
-    setCompredProduct(comparProductData);
-  }, []);
 
   const storeDetails = useSelector((state) => state.customer);
 
@@ -68,6 +36,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         userCartId: ele.userCartId,
         isCarted: ele.presentInCart,
         variationDetails: ele.variationDetails,
+        subCategoryId: ele.subcategoryId,
       });
     });
     setProducts([...temp]);
@@ -126,17 +95,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
     getProducts("WEEK");
     setFilterType("WEEK");
   }, [popularDepartments, storeDetails]);
-
-  const handleCloseIconClick = (id) => {
-    const comparedProductCopy = [...comparedProduct];
-    const final = comparedProductCopy.map((item) => {
-      if (item.id == id) {
-        return { ...item, imageLink: "" };
-      }
-      return item;
-    });
-    setCompredProduct(final);
-  };
 
   return (
     <Box>
@@ -236,19 +194,7 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
         {products?.length ? (
           products.map((ele) => {
             return (
-              <ProductCard
-                getProducts={getProducts}
-                key={ele.id}
-                item={ele}
-                handleIconClick={(icon) => {
-                  if (icon === "viewCarouselOutlinedIcon") {
-                    setShowDrawer(true);
-                  }
-                  if (icon === "balanceIcon") {
-                    setComparDrawer(true);
-                  }
-                }}
-              />
+              <ProductCard getProducts={getProducts} key={ele.id} item={ele} />
             );
           })
         ) : (
@@ -267,95 +213,6 @@ const PopularDepartments = ({ setShowCompareProducts = () => {} }) => {
           </div>
         )}
       </Box>
-      <DrawerComponent
-        openDrawer={showDrawer}
-        width="500px"
-        modalTitle="Similar Products"
-        onClose={() => setShowDrawer(false)}
-      >
-        <Grid
-          container
-          spacing={2}
-          className="mx-auto ms-0 mt-2"
-          sx={{
-            width: `calc(100% - 10px)`,
-          }}
-        >
-          {products.map((item) => (
-            <Grid item md={6} sm={6} key={item.id}>
-              <SimilarProducts data={item} handleIconClick={() => {}} />
-            </Grid>
-          ))}
-        </Grid>
-      </DrawerComponent>
-
-      <DrawerComponent
-        openDrawer={comparDrawer}
-        anchor="bottom"
-        width="vp-width"
-        headerBorder={false}
-        onClose={() => setComparDrawer(false)}
-        enter={300}
-      >
-        <Box
-          className="px-4 py-2 d-flex justify-content-between mnh-25p mx-4"
-          style={{ height: "150px" }}
-        >
-          <Box className="align-self-center ">
-            <p className="fw-600 fs-18">Compare Products</p>
-            <p>( 1 Product )</p>
-          </Box>
-          {comparedProduct &&
-            comparedProduct.map((item) => (
-              <Box
-                className="d-flex justify-content-center border rounded mnw-150"
-                key={item.id}
-              >
-                {item.imageLink ? (
-                  <>
-                    <Image
-                      src={item?.imageLink}
-                      alt=""
-                      className="rounded bg-white"
-                      style={{ position: "relative" }}
-                      width="150%"
-                      height="100%"
-                    />
-
-                    <CustomIcon
-                      type="close"
-                      className="position-absolute compareProductTop fs-18"
-                      onIconClick={() => handleCloseIconClick(item.id)}
-                    />
-                  </>
-                ) : (
-                  <Box className="align-self-center border p-3 rounded-circle cursor-pointer">
-                    <CustomIcon type="add" className="" />
-                  </Box>
-                )}
-              </Box>
-            ))}
-          <Box className="align-self-center">
-            <ButtonComponent
-              label="Clear All"
-              variant="outlined"
-              borderColor="border-gray "
-              bgColor="bg-white"
-              textColor="color-black"
-              size="medium"
-              muiProps="me-3"
-            />
-            <ButtonComponent
-              label="Start Compare"
-              size="medium"
-              onBtnClick={() => {
-                setShowCompareProducts(true);
-                setComparDrawer(false);
-              }}
-            />
-          </Box>
-        </Box>
-      </DrawerComponent>
     </Box>
   );
 };
