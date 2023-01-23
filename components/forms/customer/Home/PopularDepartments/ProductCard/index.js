@@ -12,6 +12,7 @@ import toastify from "services/utils/toastUtils";
 import { productDetails } from "features/customerSlice";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
+import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
 import { useDispatch } from "react-redux";
 import DeliveryOptionsModal from "../../buynowmodal";
 
@@ -57,6 +58,7 @@ const ProductCard = ({
   const [showCompareDrawer, setShowCompareDrawer] = useState(false);
   const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
     useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -119,6 +121,9 @@ const ProductCard = ({
     }
     if (iconName === "balanceIcon") {
       setShowCompareDrawer(true);
+    }
+    if (iconName === "visibilityOutlinedIcon") {
+      setViewModalOpen(true);
     }
   };
   const handleProductClick = () => {
@@ -270,6 +275,13 @@ const ProductCard = ({
           subCategoryId={item?.subCategoryId}
         />
       ) : null}
+      {viewModalOpen && (
+        <ViewModalComponent
+          setViewModalOpen={setViewModalOpen}
+          viewModalOpen={viewModalOpen}
+          productId={item?.id}
+        />
+      )}
     </Box>
   );
 };
