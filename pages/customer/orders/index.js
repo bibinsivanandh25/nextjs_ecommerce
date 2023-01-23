@@ -18,6 +18,12 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 // import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
 import SearchComponent from "@/atoms/SearchComponent";
 import { useDispatch, useSelector } from "react-redux";
+import { getBase64 } from "services/utils/functionUtils";
+import Image from "next/image";
+import TextArea from "@/atoms/SimpleTextArea";
+import { UpdateProfilePicture } from "services/customer/accountdetails/myprofile";
+import toastify from "services/utils/toastUtils";
+import { customerProdFeedback } from "services/customer/orders";
 
 const list = [
   { label: "Last 30 days", id: 1 },
@@ -33,16 +39,26 @@ const Orders = () => {
   const [selectedLink, setSelectedLink] = useState("orders");
   const [sellerFeedbackmModal, setSellerFeedbackModal] = useState(false);
   const [productFeedbackType, setProductFeedbackType] = useState("");
+  console.log(productFeedbackType, "productFeedbackType");
   const [feedbackRating, setFeedbackRating] = useState(0);
   const inputRef = useRef(null);
   const [showReturnOrder, setShowReturnOrder] = useState(false);
   const [returnProducts, setReturnProducts] = useState([]);
   const [showProdDetails, setshowProdDetails] = useState(false);
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState([]);
+  console.log(selectedProduct, "selectedProduct");
+
   const [orderFilter, setorderFilter] = useState({
     duration: "",
     status: "",
     keyword: "",
+  });
+  const [productReviewState, setproductReviewState] = useState({
+    retings: 0,
+    headline: "",
+    reviewText: "",
+    reviewImage: [],
   });
   const getProducts = async () => {
     await serviceUtil
@@ -59,6 +75,7 @@ const Orders = () => {
             title: item.title,
             price: item.price,
             isSelected: false,
+            variationId: "6363c36f17a3bf069acb0bcd",
           });
         });
         setProducts([...temp]);
@@ -72,6 +89,45 @@ const Orders = () => {
   useEffect(() => {
     getProducts();
   }, [orderFilter]);
+  const submitProductReview = async () => {
+    let temp = [];
+
+    const file = productReviewState.reviewImage;
+    console.log(file, "file");
+    if (file.length) {
+      const { datas, err } = await UpdateProfilePicture(file, user.userId);
+
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+      temp = [datas?.data];
+    }
+
+    const payload = {
+      customerRatings: productReviewState.retings,
+      headline: productReviewState.headline,
+      reviewerType: "CUSTOMER",
+      reviewerId: user.userId,
+      // reviewerId: "CST1222000058",
+      writtenReview: productReviewState.reviewText,
+      variationId: selectedProduct[0]?.variationId,
+      reviewMediaUrl: temp ? temp : [],
+      isDeleted: false,
+    };
+    const { data, errRes } = await customerProdFeedback(payload);
+    if (data) {
+      console.log(data, "datadata");
+      toastify(data, "success");
+      setproductReviewState({
+        retings: 0,
+        headline: "",
+        reviewText: "",
+        reviewImage: [],
+      });
+    } else if (errRes) {
+      toastify(errRes.response.data.message, "error");
+    }
+  };
   return (
     <Box className=" px-2">
       {!showReturnOrder ? (
@@ -90,6 +146,7 @@ const Orders = () => {
               onClick={() => {
                 if (selectedLink !== "orders") setSelectedLink("orders");
                 setorderFilter({ duration: "", status: "", keyword: "" });
+                setSelectedProduct([]);
               }}
             >
               Orders
@@ -105,6 +162,7 @@ const Orders = () => {
                 if (selectedLink !== "notYetShipped")
                   setSelectedLink("notYetShipped");
                 setorderFilter({ duration: "", status: "", keyword: "" });
+                setSelectedProduct([]);
               }}
             >
               Not Yet Shipped
@@ -119,6 +177,7 @@ const Orders = () => {
               onClick={() => {
                 if (selectedLink !== "cancelled") setSelectedLink("cancelled");
                 setorderFilter({ duration: "", status: "", keyword: "" });
+                setSelectedProduct([]);
               }}
             >
               Cancelled Orders
@@ -133,6 +192,7 @@ const Orders = () => {
               onClick={() => {
                 if (selectedLink !== "return") setSelectedLink("return");
                 setorderFilter({ duration: "", status: "", keyword: "" });
+                setSelectedProduct([]);
               }}
             >
               Returned Orders
@@ -154,6 +214,12 @@ const Orders = () => {
                     onClick={() => {
                       setSellerFeedbackModal(false);
                       setProductFeedbackType("");
+                      setproductReviewState({
+                        retings: 0,
+                        headline: "",
+                        reviewText: "",
+                        reviewImage: "",
+                      });
                     }}
                   >
                     Back
@@ -163,9 +229,12 @@ const Orders = () => {
                   <h4>Rate Seller</h4>
                   <Rating
                     name="half-rating"
-                    value={feedbackRating}
+                    value={productReviewState.retings}
                     onClick={(e) => {
-                      setFeedbackRating(e.target.value);
+                      setproductReviewState((pre) => ({
+                        ...pre,
+                        retings: e.target.value,
+                      }));
                     }}
                     size="large"
                     sx={{ color: "#E56700" }}
@@ -173,14 +242,31 @@ const Orders = () => {
                   <Box>
                     <Box>
                       <p>Add Headlines :</p>
-                      <InputBox fullWidth size="medium" />
+                      <InputBox
+                        fullWidth
+                        size="medium"
+                        value={productReviewState.headline}
+                        onInputChange={(e) => {
+                          setproductReviewState((pre) => ({
+                            ...pre,
+                            headline: e.target.value,
+                          }));
+                        }}
+                      />
                     </Box>
                     <Box className="mt-2">
                       <p>Add a written Review :</p>
-                      <textarea
+                      <TextArea
                         className="w-100 mnh-100 border rounded outline"
                         placeholder="Reply here"
                         style={{ outline: "1px solid gray" }}
+                        value={productReviewState.reviewText}
+                        onInputChange={(e) => {
+                          setproductReviewState((pre) => ({
+                            ...pre,
+                            reviewText: e.target.value,
+                          }));
+                        }}
                       />
                     </Box>
                     <Box
@@ -199,6 +285,15 @@ const Orders = () => {
                             accept="image/*"
                             // onChange={(e) => {
                             // }}
+                            onChange={async (e) => {
+                              if (e.target.files[0]) {
+                                const file = await getBase64(e.target.files[0]);
+                                setproductReviewState({
+                                  ...productReviewState,
+                                  reviewImage: file,
+                                });
+                              }
+                            }}
                           />
                           <CustomIcon
                             type="add"
@@ -212,8 +307,14 @@ const Orders = () => {
                         </Box>
                       </Box>
                     </Box>
+                    <Image
+                      src={productReviewState.reviewImage}
+                      height={100}
+                      width={100}
+                    />
                     <Box className="d-flex justify-content-end">
                       <ButtonComponent
+                        onBtnClick={submitProductReview}
                         label="Submit Feedback"
                         muiProps="px-3 py-2"
                       />
@@ -407,6 +508,8 @@ const Orders = () => {
                       products={products}
                       setProducts={setProducts}
                       selectedLink={selectedLink}
+                      selectedProduct={selectedProduct}
+                      setSelectedProduct={setSelectedProduct}
                     />
                   </>
                 )}
@@ -481,6 +584,8 @@ const Orders = () => {
                       setProducts={setProducts}
                       selectedLink={selectedLink}
                       showReturnBtn={false}
+                      selectedProduct={selectedProduct}
+                      setSelectedProduct={setSelectedProduct}
                     />
                   </>
                 )}
@@ -555,6 +660,8 @@ const Orders = () => {
                       setProducts={setProducts}
                       selectedLink={selectedLink}
                       showTopBar={false}
+                      selectedProduct={selectedProduct}
+                      setSelectedProduct={setSelectedProduct}
                     />
                   </>
                 )}
@@ -629,6 +736,8 @@ const Orders = () => {
                       setProducts={setProducts}
                       selectedLink={selectedLink}
                       showTopBar={false}
+                      selectedProduct={selectedProduct}
+                      setSelectedProduct={setSelectedProduct}
                     />
                   </>
                 )}

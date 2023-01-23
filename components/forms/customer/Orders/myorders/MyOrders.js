@@ -115,9 +115,11 @@ const MyOrders = ({
   showReturnBtn = true,
   showTopBar = true,
   selectedLink,
+  selectedProduct,
+  setSelectedProduct,
 }) => {
   const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState([]);
+
   const [modalType, setModalType] = useState("");
   const [trackPackage, setTrackPackage] = useState(false);
 
