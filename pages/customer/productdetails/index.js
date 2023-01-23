@@ -152,16 +152,12 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   // product api call
-  const getProductDetails = async (
-    id,
-    selecte = masterVariation,
-    other = selectedOtherVariation
-  ) => {
+  const getProductDetails = async (id, select) => {
     const payload = {
       productVariationId: id,
       status: "APPROVED",
       profileId: userData.profileId,
-      variationDetails: [...selecte, ...other],
+      variationDetails: [...select],
     };
     const { data, err } = await getAllProductDetails(payload);
     if (data) {
@@ -176,6 +172,13 @@ const ProductDetails = ({ isSideBarOpen }) => {
           data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
       });
       // adding variation details
+      data.customerViewProductPojo?.customerProductVariationList?.forEach(
+        (item) => {
+          if (item.productVariationId === id) {
+            setMasterVariation(item.variationDetails);
+          }
+        }
+      );
       const temp = [];
       data?.allVariationListDetails.forEach((item) => {
         item.variationPropertyPojoList.forEach((val) => {
@@ -184,9 +187,10 @@ const ProductDetails = ({ isSideBarOpen }) => {
         temp.push(item);
       });
       const temp1 = [];
+      const selectedvaraiation = [...select];
       temp.forEach((item) => {
         item.variationPropertyPojoList.forEach((val) => {
-          selecte.forEach((x) => {
+          selectedvaraiation.forEach((x) => {
             if (x.optionId === val.optionId) {
               val.isSelected = true;
             }
@@ -195,6 +199,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
         temp1.push(item);
       });
       setOtherVariation(temp1);
+
+      const y = [];
+      temp1.forEach((value) => {
+        value.variationPropertyPojoList.forEach((values) => {
+          if (values.isSelected) {
+            y.push(values);
+          }
+        });
+      });
+      setSelectedOtherVariation(y);
     }
     if (err) {
       setMasterData([]);
@@ -202,20 +216,14 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setSelectedImage("");
     }
   };
-
-  useEffect(() => {
-    if (masterVariation.length) {
-      getProductDetails();
-    }
-  }, [masterVariation]);
-
   const handleVariationClick = (item) => {
+    console.log(selectedOtherVariation, "selectedOtherVariation");
     getRating(item.productVariationId);
-    // setMasterVariation(item);
+    setMasterVariation(item);
     dispatch(
       productDetails({
         productId: item?.productVariationId,
-        variationDetails: item.variationDetails,
+        variationDetails: [...item.variationDetails, ...selectedOtherVariation],
       })
     );
     route.push({
@@ -245,6 +253,12 @@ const ProductDetails = ({ isSideBarOpen }) => {
       });
     });
     setSelectedOtherVariation(y);
+    dispatch(
+      productDetails({
+        productId: selectedMasterData.productVariationId,
+        variationDetails: [...masterVariation.variationDetails, ...y],
+      })
+    );
   };
   const getMinimumCart = async () => {
     const { data, err } = await getAllMinumCart(userData.storeCode);
@@ -1374,7 +1388,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 selectedMasterData.productVariationId !==
                                   item.productVariationId &&
                                   handleVariationClick(item);
-                                setMasterVariation(item.variationDetails);
                               }}
                             >
                               <Box display="flex" justifyContent="center">
