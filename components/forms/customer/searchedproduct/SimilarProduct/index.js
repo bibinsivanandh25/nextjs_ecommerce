@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 import CustomDrawer from "@/atoms/CustomDrawer";
-import { Grid } from "@mui/material";
-import { useState, useEffect } from "react";
+import { CircularProgress, Grid } from "@mui/material";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { getSimilarProducts } from "services/customer/similarproducts";
 import ProductCard from "../../Home/PopularDepartments/ProductCard";
@@ -12,11 +12,46 @@ function SimilarProducts({
   productId = null,
   subCategoryId = null,
 }) {
-  // eslint-disable-next-line no-unused-vars
   const [pageNumber, setPageNumber] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [productCount, setProductCount] = useState(0);
+  const [productCount, setProductCount] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
+  const [isIntersecting, setIntersecting] = useState(true);
+
+  const observer = new IntersectionObserver(([entry]) => {
+    setIntersecting(entry.isIntersecting);
+  });
+
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    if (footerRef.current) observer.observe(footerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [footerRef.current]);
+
+  const mapProductDetails = (data) => {
+    const temp = [];
+    data.forEach((ele) => {
+      temp.push({
+        id: ele.productVariationId,
+        title: ele.productTitle,
+        price: ele.salePrice,
+        salePriceWithLogistics: ele.salePriceWithLogistics,
+        image: ele.variationMedia,
+        rating: {
+          rate: ele.averageRatings,
+          count: ele.totalRatings,
+        },
+        skuId: ele.skuId,
+        wishlistId: ele.wishlistId,
+        userCartId: ele.userCartId,
+        isCarted: ele.presentInCart,
+        subCategoryId: ele.subcategoryId,
+      });
+    });
+    return temp;
+  };
 
   const { supplierId } = useSelector((state) => state?.customer);
   const getProducts = async (page = pageNumber ?? 0) => {
@@ -25,42 +60,35 @@ function SimilarProducts({
       supplierId,
       subCategoryId,
       pageNumber: page,
-      pageSize: 30,
+      pageSize: 16,
     };
-    const { data } = await getSimilarProducts(payload);
+    const { data, err } = await getSimilarProducts(payload);
     if (data) {
       setProductCount(data.count ?? 0);
-      const temp = [];
-      data.productDetails.forEach((ele) => {
-        temp.push({
-          id: ele.productVariationId,
-          title: ele.productTitle,
-          price: ele.salePrice,
-          salePriceWithLogistics: ele.salePriceWithLogistics,
-          image: ele.variationMedia,
-          rating: {
-            rate: ele.averageRatings,
-            count: ele.totalRatings,
-          },
-          skuId: ele.skuId,
-          wishlistId: ele.wishlistId,
-          userCartId: ele.userCartId,
-          isCarted: ele.presentInCart,
-          subCategoryId: ele.subcategoryId,
-        });
-      });
-      setProductDetails([...temp]);
+      if (page === 0) {
+        setProductDetails(mapProductDetails(data?.productDetails || []));
+        setPageNumber(1);
+      } else {
+        setPageNumber(pageNumber + 1);
+        setProductDetails([
+          ...productDetails,
+          ...mapProductDetails(data?.productDetails || []),
+        ]);
+      }
+    } else if (err) {
+      setPageNumber(0);
     }
   };
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    if (isIntersecting && productDetails?.length !== productCount)
+      getProducts();
+  }, [isIntersecting]);
 
   const renderProductDetails = () => {
     return productDetails?.map((ele) => {
       return (
-        <Grid item sm={6}>
+        <Grid item sm={6} key={ele.id}>
           <ProductCard item={ele} showActionList={false} />
         </Grid>
       );
@@ -87,6 +115,16 @@ function SimilarProducts({
       >
         {renderProductDetails()}
       </Grid>
+      <div
+        ref={footerRef}
+        className={
+          Boolean(productDetails?.length) && productCount !== 0
+            ? "invisible"
+            : ""
+        }
+      >
+        <CircularProgress className="d-flex justify-content-center color-orange" />
+      </div>
     </CustomDrawer>
   );
 }
