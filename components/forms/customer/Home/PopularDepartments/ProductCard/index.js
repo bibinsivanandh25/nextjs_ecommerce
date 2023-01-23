@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
+import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
 import DeliveryOptionsModal from "../../buynowmodal";
 // import Link from "next/link";
 
@@ -50,6 +51,7 @@ const ProductCard = ({
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [showCompareDrawer, setShowCompareDrawer] = useState(false);
   const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
     useState(false);
 
@@ -111,6 +113,9 @@ const ProductCard = ({
     }
     if (iconName === "viewCarouselOutlinedIcon") {
       setShowSimilarProductsDrawer(true);
+    }
+    if (iconName === "balanceIcon") {
+      setShowCompareDrawer(true);
     }
   };
 
@@ -248,6 +253,15 @@ const ProductCard = ({
           subCategoryId={item?.subCategoryId}
         />
       )}
+      {showCompareDrawer ? (
+        <CompareProductDrawer
+          showDrawer={showCompareDrawer}
+          setShowDrawer={setShowCompareDrawer}
+          imgSrc={item?.image}
+          productId={item?.id}
+          subCategoryId={item?.subCategoryId}
+        />
+      ) : null}
     </Box>
   );
 };
