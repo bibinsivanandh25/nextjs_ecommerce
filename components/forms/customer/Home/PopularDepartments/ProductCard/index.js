@@ -11,6 +11,7 @@ import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import { productDetails } from "features/customerSlice";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
+import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
 import { useDispatch } from "react-redux";
 import DeliveryOptionsModal from "../../buynowmodal";
 
@@ -55,6 +56,7 @@ const ProductCard = ({
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
     useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -111,6 +113,9 @@ const ProductCard = ({
       if (!item.isCarted) {
         setShowAddToCardModal(true);
       }
+    }
+    if (iconName === "visibilityOutlinedIcon") {
+      setViewModalOpen(true);
     }
   };
   const handleProductClick = () => {
@@ -251,6 +256,13 @@ const ProductCard = ({
           showDrawer={showSimilarProductsDrawer}
           productId={item?.id}
           subCategoryId={item?.subCategoryId}
+        />
+      )}
+      {viewModalOpen && (
+        <ViewModalComponent
+          setViewModalOpen={setViewModalOpen}
+          viewModalOpen={viewModalOpen}
+          productId={item?.id}
         />
       )}
     </Box>
