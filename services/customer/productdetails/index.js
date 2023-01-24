@@ -112,6 +112,17 @@ const getAddToCartData = (payload) => {
       err,
     }));
 };
+const similarProductsData = async (payload) => {
+  return serviceUtil
+    .put(`products/customer/similar/product`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
 export {
   getAllFrequentProduct,
   getAllProductDetails,
@@ -123,4 +134,5 @@ export {
   getProductReview,
   mainProductAddToCart,
   getAddToCartData,
+  similarProductsData,
 };
