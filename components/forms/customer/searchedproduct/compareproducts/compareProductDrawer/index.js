@@ -1,12 +1,15 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import ImageCard from "@/atoms/ImageCard";
-import ProductCard from "@/forms/customer/Home/PopularDepartments/ProductCard";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { getCompareProductDetails } from "services/customer/compareProducts";
 import { getSimilarProducts } from "services/customer/similarproducts";
+import toastify from "services/utils/toastUtils";
+import CompareProductCard from "../compareProductCard";
 // import ProductCard from "../../Home/PopularDepartments/ProductCard";
 
 function CompareProductDrawer({
@@ -47,6 +50,16 @@ function CompareProductDrawer({
     }
   }, [productId, imgSrc]);
   const { supplierId } = useSelector((state) => state?.customer);
+
+  const startCompareProducts = async () => {
+    const payload = {
+      productVariationIds: products.map((e) => e.productId),
+    };
+    const { data } = await getCompareProductDetails(payload);
+    if (data) {
+      console.log(data);
+    }
+  };
 
   const mapProductDetails = (data) => {
     const temp = [];
@@ -108,10 +121,19 @@ function CompareProductDrawer({
   }, [isIntersecting, showCompareProductsDrawer]);
 
   const renderProductCards = () => {
-    return products?.map((product) => {
+    return products?.map((product, ind) => {
       return (
         <Box className="">
-          <ImageCard imgSrc={product?.imgSrc} height={130} width={130} />
+          <ImageCard
+            imgSrc={product?.imgSrc}
+            height={130}
+            width={130}
+            handleCloseClick={() => {
+              const temp = [...products];
+              temp.splice(ind, 1);
+              setProducts([...temp]);
+            }}
+          />
         </Box>
       );
     });
@@ -121,7 +143,27 @@ function CompareProductDrawer({
     return productDetails?.map((ele) => {
       return (
         <Grid item sm={6} key={ele.id}>
-          <ProductCard item={ele} showActionList={false} />
+          <CompareProductCard
+            item={ele}
+            showActionList={false}
+            handleCardClick={(item) => {
+              const temp = [...products];
+              if (temp.length <= 4) {
+                temp.push({
+                  imgSrc: item.image,
+                  productId: item.id,
+                });
+                setProducts([...temp]);
+              } else {
+                toastify("You can compare up to five products.", "info");
+              }
+            }}
+            removeProductFromList={(id) => {
+              let temp = [...products];
+              temp = temp.filter((e) => e.productId !== id);
+              setProducts([...temp]);
+            }}
+          />
         </Grid>
       );
     });
@@ -145,7 +187,7 @@ function CompareProductDrawer({
         setShowDrawer(false);
       }}
     >
-      <Box className="mnh-87vh d-flex flex-column align-items-center">
+      <Box className="mnh-87vh mxh-87vh overflow-scroll d-flex flex-column align-items-center">
         <Box>{renderProductCards()}</Box>
         <Box
           className={
@@ -161,26 +203,53 @@ function CompareProductDrawer({
             preventChooseFile
             handleCardClick={() => {
               setShowCompareProductsDrawer(true);
+              let tempProducts = [...products];
+              tempProducts = tempProducts.slice(1).map((e) => e.productId);
+              const tempProductDetails = [...productDetails];
+              tempProductDetails.forEach((i) => {
+                if (tempProducts?.includes(i?.id)) {
+                  i.isSelected = true;
+                } else {
+                  i.isSelected = false;
+                }
+              });
+              setProductDetails([...tempProductDetails]);
             }}
           />
         </Box>
       </Box>
-      <Box className="d-flex  justify-content-evenly mt-auto mx-2 mb-2">
+      <Box className="d-flex my-2  justify-content-evenly mt-auto mx-2 mb-2">
         <ButtonComponent
           label="Clear All"
           muiProps="me-2 text-muted"
           variant="outlined"
+          onBtnClick={() => {
+            const temp = [products[0]];
+            setProducts([...temp]);
+          }}
         />
-        <ButtonComponent label="Start Compare" muiProps="p-0 h-5" />
+        <ButtonComponent
+          label="Start Compare"
+          muiProps="p-0 h-5"
+          onBtnClick={() => {
+            startCompareProducts();
+          }}
+        />
       </Box>
+
       <CustomDrawer
         position="right"
-        title="Similar Products"
+        titleClassName="h-5 fw-bold"
+        title={`${
+          products.length === 1
+            ? "Choose Products to Compare"
+            : `${products.length - 1} products selected`
+        }`}
         open={showCompareProductsDrawer}
         widthClass="mnw-450"
         handleClose={() => {
           setShowCompareProductsDrawer(false);
-          setProductDetails([]);
+          setPageNumber(0);
         }}
       >
         <Grid
