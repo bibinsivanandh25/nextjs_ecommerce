@@ -3,8 +3,13 @@ import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
+import { useRouter } from "next/router";
 
 const ReturnOrderModel = ({
+  showReturnOrder,
+  setShowReturnOrder = () => {},
+  returnSuccessData,
+  setreturnSuccessData,
   allFree,
   showModal = false,
   setShowModal = () => {},
@@ -21,20 +26,33 @@ const ReturnOrderModel = ({
   useEffect(() => {
     setFreeReturn(allFree);
   }, [allFree]);
-
+  const route = useRouter();
+  const goTOHome = () => {
+    setreturnSuccessData([]);
+    route.push("/customer/home");
+  };
+  const goToOrder = () => {
+    setreturnSuccessData([]);
+    setShowReturnOrder(false);
+    route.push("/customer/orders");
+  };
+  const closeFunction = () => {
+    setShowModal(false);
+    setShowReturnOrder(false);
+  };
   const returnProducts = () => {
     return (
       <Box
         overflow="scroll"
         className="overflow-auto mxh-200 hide-scrollbar mt-3"
       >
-        {theArray.map((val) => {
+        {returnSuccessData.map((val, inx) => {
           return (
-            <Box key={val.id} className="mt-3 d-flex justify-content-between">
+            <Box key={inx} className="mt-3 d-flex justify-content-between">
               <Box>
                 <Typography className="fs-14">
-                  <span className="fw-bold">Estimated Pickup date:</span> 24 -
-                  Nov - 2021, 9am - 6pm
+                  <span className="fw-bold">Estimated Pickup date:</span>
+                  {returnSuccessData?.estimatedPickUpDate}
                 </Typography>
                 <Typography className="fs-14 mt-2">
                   <CustomIcon
@@ -51,7 +69,7 @@ const ReturnOrderModel = ({
                           <span className="color-dark-green">Free</span>
                         ) : (
                           <span className="color-error">
-                            Paid Rs {val.returnPrice} now.
+                            Paid Rs {val?.returnPrice} now.
                           </span>
                         )}
                       </Typography>
@@ -62,9 +80,10 @@ const ReturnOrderModel = ({
               <Box>
                 <Image
                   className="rounded"
-                  src="https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/ecommerceBanner.jpg"
-                  height="100"
-                  width="150"
+                  src={val?.productImage}
+                  height={100}
+                  width={100}
+                  alt="Image"
                 />
               </Box>
             </Box>
@@ -83,59 +102,91 @@ const ReturnOrderModel = ({
         showSaveBtn={false}
         showFooter
         ModalTitle=""
-        onCloseIconClick={() => setShowModal(false)}
+        onCloseIconClick={closeFunction}
       >
-        <Box>
-          <Box className="d-flex align-items-center mt-3">
-            <CustomIcon
-              type="doneIcon"
-              className="bg-success color-white h-2 rounded-circle"
-              showColorOnHover={false}
-            />
-            <Typography className="fs-14 fw-bold text-success ps-2">
-              {freeReturn
-                ? "Return order placed sucessfully"
-                : "Payment is Successful & Return order is placed"}
-            </Typography>
-          </Box>
-          {freeReturn ? null : (
-            <Box className="border-bottom pb-2">
-              <Typography className="ms-5 fs-14">
-                Your Transaction ID :
-                <span className="fw-bold"> 123456789 </span>
-              </Typography>
-              <Typography className="ms-5 mt-2 fs-14">
-                Payment method :
-                <span className="fw-bold"> Internet banking </span>
+        <>
+          <Box>
+            <Box className="d-flex align-items-center mt-3">
+              <CustomIcon
+                type="doneIcon"
+                className="bg-success color-white h-2 rounded-circle"
+                showColorOnHover={false}
+              />
+              <Typography className="fs-14 fw-bold text-success ps-2">
+                {freeReturn
+                  ? "Return order placed sucessfully"
+                  : "Payment is Successful & Return order is placed"}
               </Typography>
             </Box>
-          )}
-        </Box>
-        <Typography className="fs-14 mt-3">
-          Conformation mail will be sent to your mail ID :
-          <span className="fw-bold">karthik@gmail.com</span>
-        </Typography>
-        <Typography className="fs-14 mt-3">
-          <span className="fw-bold">Pickup address:</span>Karthikeyan, 32/3,
-          Mahalakshmi Nagar, T.Kottampatti, Pollachi, Tamilnadu, 642002
-        </Typography>
-        <Box className="mt-3 d-flex">
-          <Typography className="fs-14">
-            <span className="fw-bold">Latitude:</span> 15.033544
+            {freeReturn ? null : (
+              <Box className="border-bottom pb-2">
+                <Typography className="ms-5 fs-14">
+                  Your Transaction ID :
+                  <span className="fw-bold">
+                    {returnSuccessData[0]?.trasanctionId}
+                  </span>
+                </Typography>
+                <Typography className="ms-5 mt-2 fs-14">
+                  Payment method :
+                  <span className="fw-bold">
+                    {" "}
+                    {returnSuccessData[0]?.paymentMethod}{" "}
+                  </span>
+                </Typography>
+              </Box>
+            )}
+          </Box>
+          <Typography className="fs-14 mt-3">
+            Conformation mail will be sent to your mail ID :
+            <span className="fw-bold">{returnSuccessData[0]?.email}</span>
           </Typography>
-          <Typography className="fs-14 ms-4">
-            <span className="fw-bold">Longitude:</span> 75.480423
+          <Typography className="fs-14 mt-3">
+            <span className="fw-bold">Pickup address: </span>
+            <Typography className="h-5">
+              {returnSuccessData[0]?.customerAddressResponse?.address}
+            </Typography>
+            <Typography className="h-5">
+              {returnSuccessData[0]?.customerAddressResponse?.cityDistrictTown}
+            </Typography>
+            <Typography className="h-5">
+              {returnSuccessData[0]?.customerAddressResponse?.location}-
+              {returnSuccessData[0]?.customerAddressResponse?.pinCode}
+            </Typography>
           </Typography>
-        </Box>
-        {returnProducts()}
-        <Box className="d-flex border-top w-100 mt-2 justify-content-around">
-          <Typography className="fs-14 mt-3 color-blue cursor-pointer">
-            Review or edit your recent Orders
-          </Typography>
-          <Typography className="fs-14 mt-3 text-decoration-underline theme_color cursor-pointer">
-            Continue Shopping {">>"}
-          </Typography>
-        </Box>
+          <Box className="mt-3 d-flex">
+            {returnSuccessData[0]?.customerAddressResponse?.latitudeValue ? (
+              <Typography className="fs-14">
+                <span className="fw-bold">Latitude:</span>
+                {returnSuccessData[0]?.customerAddressResponse?.latitudeValue}
+              </Typography>
+            ) : (
+              <></>
+            )}
+            {returnSuccessData[0]?.customerAddressResponse?.longitudeValue ? (
+              <Typography className="fs-14">
+                <span className="fw-bold">Latitude:</span>{" "}
+                {returnSuccessData[0]?.customerAddressResponse?.longitudeValue}
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Box>
+          {returnProducts()}
+          <Box className="d-flex border-top w-100 mt-2 justify-content-around">
+            <Typography
+              className="fs-14 mt-3 color-blue cursor-pointer"
+              onClick={goToOrder}
+            >
+              Review or edit your recent Orders
+            </Typography>
+            <Typography
+              className="fs-14 mt-3 text-decoration-underline theme_color cursor-pointer"
+              onClick={goTOHome}
+            >
+              Continue Shopping {">>"}
+            </Typography>
+          </Box>
+        </>
       </ModalComponent>
     </Box>
   );

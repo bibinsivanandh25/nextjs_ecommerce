@@ -6,7 +6,6 @@ import {
   getArticles,
   getBannersBySupplierId,
   getTopProducts,
-  getTopTrandingProducts,
 } from "services/customer/Home";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -40,14 +39,11 @@ const Home = () => {
   const [storeInformation, setStoreInformation] = useState([]);
   const [articleData, setArticleData] = useState([]);
   const [leaveDate, setleaveDate] = useState({ start: null, end: null });
-  const [topTrendingData, settopTrendingData] = useState([]);
   // const [products, setProducts] = useState([]);
 
   const route = useRouter();
 
   const storeDetails = useSelector((state) => state.customer);
-  // const AllRedux = useSelector((state) => state);
-  // console.log(AllRedux, "supplierDetails");
 
   const userInfo = useSession();
   useEffect(() => {
@@ -166,27 +162,14 @@ const Home = () => {
       });
     }
   };
-  const getTopTranding = async () => {
-    // const supplierId = "SP0123000312";
-    const { data, errRes } = await getTopTrandingProducts(
-      storeDetails.supplierId
-    );
-    // let temp = [];
-    if (data) {
-      // temp.push(data.data);
-      settopTrendingData(data.data);
-    } else if (errRes) {
-      // console.log(errRes);
-    }
-  };
+
   useEffect(() => {
     getBanners();
     getProducts();
     getArticlesData();
-    getTopTranding();
   }, []);
   useEffect(() => {
-    getTopTranding();
+    // getTopTranding();
     getBanners();
   }, [storeDetails?.storeCode]);
 
@@ -336,7 +319,7 @@ const Home = () => {
                 />
               </Grid>
               <Grid item sm={4} className="py-3 ps-1 h-100">
-                <TopTrending products={topTrendingData} />
+                <TopTrending />
               </Grid>
             </Grid>
             <Box className="">

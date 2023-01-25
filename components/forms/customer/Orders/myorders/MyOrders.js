@@ -3,16 +3,15 @@
 /* eslint-disable react/self-closing-comp */
 import { Typography, Box, Grid } from "@mui/material";
 import MenuOption from "@/atoms/MenuOptions";
-import { useEffect, useState } from "react";
-import serviceUtil from "services/utils";
+import { useState } from "react";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
-import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import Image from "next/image";
-import SearchComponent from "@/atoms/SearchComponent";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { productDetails } from "features/customerSlice";
 import CancelOrReturnModal from "../CancelOrReturnModal";
-import styles from "./MyOrders.module.css";
 
 const datas = [
   {
@@ -106,7 +105,8 @@ const MyOrders = ({
   setshowProdDetails,
   setSellerFeedbackModal,
   setProductFeedbackType,
-  setShowReturnOrder,
+  setShowReturnOrder = () => {},
+  ShowReturnOrder,
   setReturnProducts,
   products,
   setProducts,
@@ -118,31 +118,43 @@ const MyOrders = ({
   selectedProduct,
   setSelectedProduct,
 }) => {
+  const dispatch = useDispatch();
+  const route = useRouter();
   const [showCancelOrReturnModal, setShowCancelOrReturnModal] = useState(false);
-
   const [modalType, setModalType] = useState("");
   const [trackPackage, setTrackPackage] = useState(false);
+  const [selectedOldProduct, setSelectedOldProduct] = useState([]);
 
   const handleCheckboxClick = (value) => {
     const temp = [...products];
     temp.forEach((item) => {
-      if (item.id === value.id) {
+      if (item.orderId === value.orderId) {
         item.isSelected = !item.isSelected;
       }
     });
     setProducts([...temp]);
     const selected = temp.filter((x) => x.isSelected === true);
     setSelectedProduct(selected);
+    setSelectedOldProduct(selected);
+  };
+  const BuyItAgainFunction = (product) => {
+    dispatch(
+      productDetails({
+        productId: product.productId,
+        variationDetails: product.variationDetails,
+      })
+    );
+    route.push("/customer/productdetails");
   };
   return (
     <Box>
-      {showTopBar && (
+      {showTopBar && selectedProduct.length ? (
         <Grid container className="px-1">
           <Grid
             item
             xs={11}
             md={11}
-            className="px-1 d-flex justify-content-end bg-light-orange1 p-3"
+            className="px-1 d-flex justify-content-end theme_bg_color_1 p-3"
           >
             {showCancelBtn && (
               <ButtonComponent
@@ -170,9 +182,11 @@ const MyOrders = ({
             item
             xs={1}
             md={1}
-            className=" px-1 bg-light-orange1 p-3"
+            className=" px-1 theme_bg_color_1 p-3"
           ></Grid>
         </Grid>
+      ) : (
+        <></>
       )}
 
       <Grid container className="px-1">
@@ -211,33 +225,38 @@ const MyOrders = ({
                       className="d-block w-100 h-100 img-fluid rounded-1"
                       width="120"
                       height="120"
-                      src={product.image}
+                      src={product.productImage}
                       alt="product"
                     />
                   </Box>
                   <Box className="ms-2">
                     <Typography
-                      className="color-orange mb-1 fs-14"
+                      className="theme_color mb-1 fs-14"
                       variantMapping={<p />}
                     >
-                      Supplier Name: Buisness Name
+                      Supplier Name: {product.businessName}
                     </Typography>
                     <Typography
                       className="mb-1 fs-16 fw-bold"
                       variantMapping={<p />}
                     >
-                      {product.title}
+                      {product.productTitle}
                     </Typography>
 
                     <Typography className="mb-1">
-                      <small>Return window will close on 20 - Aug - 2021</small>
+                      <small>
+                        Return window will close on 20 - Aug - 2021(dummy data)
+                      </small>
                     </Typography>
                     <ButtonComponent
                       label="Buy it Again"
                       variant="outlined"
-                      muiProps="fw-bold border border-secondary fs-12 bg-primary"
+                      muiProps="fw-bold border theme_border_color fs-12 theme_bg_color"
                       borderColor="bg-light-gray"
                       textColor="color-black"
+                      onBtnClick={() => {
+                        BuyItAgainFunction(product);
+                      }}
                     />
                   </Box>
                 </Box>
@@ -372,10 +391,15 @@ const MyOrders = ({
         <CancelOrReturnModal
           showModal={showCancelOrReturnModal}
           setShowReturnOrder={setShowReturnOrder}
+          ShowReturnOrder={ShowReturnOrder}
           setShowModal={setShowCancelOrReturnModal}
-          products={[...selectedProduct]}
+          products={[...products]}
+          setProducts={setProducts}
           setReturnProducts={setReturnProducts}
           modalType={modalType}
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          selectedOldProduct={selectedOldProduct}
         />
       ) : null}
     </Box>

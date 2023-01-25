@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Paper, Rating, Typography } from "@mui/material";
 // import InputBoxComponent from "../../../../components/atoms/InputBoxComponent";
 import CustomIcon from "services/iconUtils";
@@ -13,42 +13,43 @@ import InputBox from "@/atoms/InputBoxComponent";
 import MyOrders from "@/forms/customer/Orders/myorders/MyOrders";
 import OrderReturn from "@/forms/customer/OrderReturn";
 // import ReturnedOrders from "@/forms/customer/Orders/returnedorders/ReturnedOrders";
-import serviceUtil from "services/utils";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 // import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
 import SearchComponent from "@/atoms/SearchComponent";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getBase64 } from "services/utils/functionUtils";
 import Image from "next/image";
 import TextArea from "@/atoms/SimpleTextArea";
 import { UpdateProfilePicture } from "services/customer/accountdetails/myprofile";
 import toastify from "services/utils/toastUtils";
-import { customerProdFeedback } from "services/customer/orders";
+import {
+  customerProdFeedback,
+  getOrderDetails,
+  getProductDetails,
+} from "services/customer/orders";
+import ImageCard from "@/atoms/ImageCard";
 
 const list = [
-  { label: "Last 30 days", id: 1 },
-  { label: "Last 1 Year", id: 2 },
-  { label: "Last 2 Years", id: 3 },
+  { label: "Last 30 days", id: 1, value: "MONTH" },
+  { label: "Last 1 Year", id: 2, value: "1YEAR" },
+  { label: "Last 2 Years", id: 3, value: "2YEAR" },
 ];
 const statusList = [
-  { label: "Pending", id: 1 },
-  { label: "Completed", id: 2 },
+  { label: "Pending", id: 1, value: "PENDING" },
+  { label: "Completed", id: 2, value: "COMPLETED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);
-  const [selectedLink, setSelectedLink] = useState("orders");
+  const [selectedLink, setSelectedLink] = useState("");
   const [sellerFeedbackmModal, setSellerFeedbackModal] = useState(false);
   const [productFeedbackType, setProductFeedbackType] = useState("");
-  console.log(productFeedbackType, "productFeedbackType");
   const [feedbackRating, setFeedbackRating] = useState(0);
-  const inputRef = useRef(null);
   const [showReturnOrder, setShowReturnOrder] = useState(false);
   const [returnProducts, setReturnProducts] = useState([]);
   const [showProdDetails, setshowProdDetails] = useState(false);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
-  console.log(selectedProduct, "selectedProduct");
-
+  const [EachProductDetails, setEachProductDetails] = useState([]);
   const [orderFilter, setorderFilter] = useState({
     duration: "",
     status: "",
@@ -61,48 +62,64 @@ const Orders = () => {
     reviewImage: [],
   });
   const getProducts = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        const temp = [];
-        data.data.forEach((item) => {
-          temp.push({
-            category: item.category,
-            description: item.description,
-            id: item.id,
-            image: item.image,
-            rating: item.rating,
-            title: item.title,
-            price: item.price,
-            isSelected: false,
-            variationId: "6363c36f17a3bf069acb0bcd",
-          });
+    const payload = {
+      customerId: user.userId,
+      orderStatus: selectedLink,
+      // orderStatus: "",
+      filterType: orderFilter.duration.value || "",
+      selectStatusType: orderFilter.status.value || "",
+      keyword: orderFilter.keyword.toLocaleLowerCase(),
+    };
+    const { data, errRes } = await getOrderDetails(payload);
+    if (data) {
+      const temp = [];
+      data.data.forEach((item) => {
+        temp.push({
+          // category: item.category,
+          // description: item.description,
+          orderId: item.orderId,
+          businessName: item.businessName,
+          productImage: item.productImage,
+          productId: item.productId,
+          variationDetails: item.variationPropertyPojos,
+          orderStatus: item.orderStatus,
+          orderDate: item.orderDate,
+          productOwnerId: item.productOwnerId,
+          // rating: item.rating,
+          productTitle: item.productTitle,
+          shippingAddressId: item.shippingAddressId,
+          // price: item.price,
+          isSelected: false,
+          dropDownValue: {},
+          variationId: item.productId,
         });
-        setProducts([...temp]);
-      })
-      .catch(() => {
-        // console.log(err);
       });
+      setProducts([...temp]);
+    } else if (errRes) {
+      toastify(errRes?.response?.data?.message, "error");
+    }
   };
-  // console.log(selectedProduct, "sad");
+  const indiviDualProductDetails = async () => {
+    const addressId = selectedProduct[0]?.shippingAddressId;
+    const orderId = selectedProduct[0]?.orderId;
+    const { data, errRes } = await getProductDetails(addressId, orderId);
+    if (data) {
+      setEachProductDetails(data.data);
+      toastify(data.data.message, "success");
+    } else if (errRes) {
+      toastify(errRes?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    if (showProdDetails == true) {
+      indiviDualProductDetails();
+    }
+  }, [showProdDetails]);
 
   useEffect(() => {
     getProducts();
   }, [orderFilter]);
   const submitProductReview = async () => {
-    let temp = [];
-
-    const file = productReviewState.reviewImage;
-    console.log(file, "file");
-    if (file.length) {
-      const { datas, err } = await UpdateProfilePicture(file, user.userId);
-
-      if (err) {
-        toastify(err.response.data.message, "error");
-      }
-      temp = [datas?.data];
-    }
-
     const payload = {
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
@@ -111,12 +128,11 @@ const Orders = () => {
       // reviewerId: "CST1222000058",
       writtenReview: productReviewState.reviewText,
       variationId: selectedProduct[0]?.variationId,
-      reviewMediaUrl: temp ? temp : [],
+      reviewMediaUrl: productReviewState.reviewImage,
       isDeleted: false,
     };
     const { data, errRes } = await customerProdFeedback(payload);
     if (data) {
-      console.log(data, "datadata");
       toastify(data, "success");
       setproductReviewState({
         retings: 0,
@@ -139,12 +155,12 @@ const Orders = () => {
             <Typography
               href="##"
               className={
-                selectedLink === "orders"
+                selectedLink === ""
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
                   : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
-                if (selectedLink !== "orders") setSelectedLink("orders");
+                if (selectedLink !== "") setSelectedLink("");
                 setorderFilter({ duration: "", status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
@@ -154,13 +170,12 @@ const Orders = () => {
             <Typography
               href="##"
               className={
-                selectedLink === "notYetShipped"
+                selectedLink === "INITIATED"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
                   : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
-                if (selectedLink !== "notYetShipped")
-                  setSelectedLink("notYetShipped");
+                if (selectedLink !== "INITIATED") setSelectedLink("INITIATED");
                 setorderFilter({ duration: "", status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
@@ -170,12 +185,12 @@ const Orders = () => {
             <Typography
               href="##"
               className={
-                selectedLink === "cancelled"
+                selectedLink === "CANCELLED"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
                   : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
-                if (selectedLink !== "cancelled") setSelectedLink("cancelled");
+                if (selectedLink !== "CANCELLED") setSelectedLink("CANCELLED");
                 setorderFilter({ duration: "", status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
@@ -185,12 +200,12 @@ const Orders = () => {
             <Typography
               href="##"
               className={
-                selectedLink === "return"
+                selectedLink === "RETURNED"
                   ? "color-orange text-decoration-underline fs-14 fw-bold"
                   : "fs-14 fw-bold cursor-pointer"
               }
               onClick={() => {
-                if (selectedLink !== "return") setSelectedLink("return");
+                if (selectedLink !== "RETURNED") setSelectedLink("RETURNED");
                 setorderFilter({ duration: "", status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
@@ -271,31 +286,32 @@ const Orders = () => {
                     </Box>
                     <Box
                       className="mnw-100px rounded"
-                      style={{ border: "1px dotted gray" }}
+                      // style={{ border: "1px dotted gray" }}
                     >
                       <Box
                         className="d-flex justify-content-center"
                         style={{ height: "100px", alignItems: "center" }}
                       >
-                        <Box>
-                          <input
+                        {/* <Box> */}
+                        {/* <input
                             type="file"
                             className="d-none"
                             ref={inputRef}
+                            multiple
                             accept="image/*"
                             // onChange={(e) => {
                             // }}
                             onChange={async (e) => {
-                              if (e.target.files[0]) {
-                                const file = await getBase64(e.target.files[0]);
+                              if (e.target.files) {
+                                const file = await getBase64(e.target.files);
                                 setproductReviewState({
                                   ...productReviewState,
                                   reviewImage: file,
                                 });
                               }
                             }}
-                          />
-                          <CustomIcon
+                          /> */}
+                        {/* <CustomIcon
                             type="add"
                             className="h-1"
                             color="text-black"
@@ -303,8 +319,68 @@ const Orders = () => {
                             onIconClick={() => {
                               inputRef.current.click();
                             }}
+                          /> */}
+                        {/* </Box> */}
+                        {productReviewState.reviewImage.length > 0
+                          ? productReviewState.reviewImage.map(
+                              (item, index) => (
+                                <ImageCard
+                                  // eslint-disable-next-line react/no-array-index-key
+                                  key={index}
+                                  imgSrc={item}
+                                  handleCloseClick={() => {
+                                    setproductReviewState((prev) => {
+                                      const temp = JSON.parse(
+                                        JSON.stringify(prev.reviewImage)
+                                      );
+                                      temp.splice(index, 1);
+                                      return { ...prev, reviewImage: temp };
+                                    });
+                                  }}
+                                  className="mx-3"
+                                  // showClose={!viewFlag}
+                                />
+                              )
+                            )
+                          : null}
+                        {productReviewState.reviewImage.length < 5 ? (
+                          <ImageCard
+                            showClose={false}
+                            handleImageUpload={async (e) => {
+                              if (e.target.files.length) {
+                                // if (e.target.files[0].size <= 1000000) {
+                                const file = await getBase64(e.target.files[0]);
+                                const { datas, err } =
+                                  await UpdateProfilePicture(
+                                    file,
+                                    user?.userId
+                                  );
+                                if (datas) {
+                                  setproductReviewState((prev) => {
+                                    return {
+                                      ...prev,
+                                      reviewImage: [
+                                        ...prev.reviewImage,
+                                        datas.data,
+                                      ],
+                                    };
+                                  });
+                                } else if (err) {
+                                  toastify(err.response.data.message, "error");
+                                }
+
+                                // } else {
+                                //   toastify(
+                                //     "Image size should be less than 1MB",
+                                //     "error"
+                                //   );
+                                // }
+                              }
+                            }}
+                            className="mx-3"
+                            imgSrc=""
                           />
-                        </Box>
+                        ) : null}
                       </Box>
                     </Box>
                     <Image
@@ -385,11 +461,13 @@ const Orders = () => {
                 <Grid className="d-flex justify-content-start py-2">
                   <Grid>
                     <Typography className="fs-14">
-                      Ordered on 2 july 2021
+                      Ordered on {EachProductDetails?.orderedDate}
                     </Typography>
                   </Grid>
                   <Grid className="px-5">
-                    <Typography className="fs-14">Order Id #123456</Typography>
+                    <Typography className="fs-14">
+                      Order Id {EachProductDetails?.orderId}
+                    </Typography>
                   </Grid>
                 </Grid>
                 <Grid container className="px-1">
@@ -398,16 +476,35 @@ const Orders = () => {
                       <Typography className="fs-14 fw-600 py-3">
                         Shipping Address
                       </Typography>
-                      <Typography>Tanmoy sen</Typography>
-                      <Typography>Indicube, south end circle</Typography>
-                      <Typography>Bangalore, 560085</Typography>
+                      <Typography className="fw-600">
+                        {EachProductDetails?.shippingAddress?.name}
+                      </Typography>
+                      <Typography className="fw-600">
+                        {EachProductDetails?.shippingAddress?.mobileNumber}
+                      </Typography>
+                      <Typography>
+                        {EachProductDetails?.shippingAddress?.address}
+                      </Typography>
+                      <Typography>
+                        {EachProductDetails?.shippingAddress?.cityDistrictTown}
+                      </Typography>
+                      <Typography>
+                        {EachProductDetails?.shippingAddress?.landmark}
+                      </Typography>
+                      <Typography>
+                        {EachProductDetails?.shippingAddress?.state}
+                      </Typography>
+                      <Typography>
+                        {EachProductDetails?.shippingAddress?.location},&nbsp;
+                        &nbsp; {EachProductDetails?.shippingAddress?.pinCode}
+                      </Typography>
                     </Grid>
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Typography className="fs-14 fw-600 py-3">
                       Payment Method
                     </Typography>
-                    <Typography>COD</Typography>
+                    <Typography>{EachProductDetails.paymentMethod}</Typography>
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <Typography className="fs-14 fw-600 py-3">
@@ -424,12 +521,18 @@ const Orders = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={6} md={6}>
-                        <Typography>Rs: 4899.00</Typography>
-                        <Typography>Rs: 0.00</Typography>
-                        <Typography>Rs: 4899.00</Typography>
-                        <Typography>Rs: 300.00</Typography>
+                        <Typography>
+                          Rs: {EachProductDetails.itemsSubTotal}
+                        </Typography>
+                        <Typography>
+                          Rs: {EachProductDetails.shipping}
+                        </Typography>
+                        <Typography> (Dummy price)</Typography>
+                        <Typography>
+                          Rs: {EachProductDetails.promotionApplied}
+                        </Typography>
                         <Typography className="fw-600 py-2">
-                          Rs: 4599.00
+                          Rs: {EachProductDetails.grandTotal}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -440,7 +543,7 @@ const Orders = () => {
           ) : (
             <>
               <Box>
-                {selectedLink === "orders" && (
+                {selectedLink === "" && (
                   <>
                     <Grid
                       container
@@ -460,6 +563,7 @@ const Orders = () => {
                                   duration: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -476,8 +580,9 @@ const Orders = () => {
                                 setorderFilter({
                                   ...orderFilter,
                                   status: {
-                                    label: val.label,
-                                    id: val.id,
+                                    label: val?.label,
+                                    id: val?.id,
+                                    value: val?.value,
                                   },
                                 });
                               }}
@@ -500,6 +605,7 @@ const Orders = () => {
                       </Grid>
                     </Grid>
                     <MyOrders
+                      ShowReturnOrder={showReturnOrder}
                       setshowProdDetails={setshowProdDetails}
                       setSellerFeedbackModal={setSellerFeedbackModal}
                       setProductFeedbackType={setProductFeedbackType}
@@ -515,7 +621,7 @@ const Orders = () => {
                 )}
               </Box>
               <Box>
-                {selectedLink === "notYetShipped" && (
+                {selectedLink === "INITIATED" && (
                   <>
                     <Grid
                       container
@@ -535,6 +641,7 @@ const Orders = () => {
                                   duration: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -553,6 +660,7 @@ const Orders = () => {
                                   status: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -591,7 +699,7 @@ const Orders = () => {
                 )}
               </Box>
               <Box>
-                {selectedLink === "cancelled" && (
+                {selectedLink === "CANCELLED" && (
                   <>
                     <Grid
                       container
@@ -611,6 +719,7 @@ const Orders = () => {
                                   duration: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -629,6 +738,7 @@ const Orders = () => {
                                   status: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -667,7 +777,7 @@ const Orders = () => {
                 )}
               </Box>
               <Box>
-                {selectedLink === "return" && (
+                {selectedLink === "RETURNED" && (
                   <>
                     <Grid
                       container
@@ -687,6 +797,7 @@ const Orders = () => {
                                   duration: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -705,6 +816,7 @@ const Orders = () => {
                                   status: {
                                     label: val.label,
                                     id: val.id,
+                                    value: val.value,
                                   },
                                 });
                               }}
@@ -747,7 +859,9 @@ const Orders = () => {
         </Box>
       ) : (
         <OrderReturn
+          selectedProduct={selectedProduct}
           returnProducts={returnProducts}
+          showReturnOrder={showReturnOrder}
           setShowReturnOrder={setShowReturnOrder}
         />
       )}
