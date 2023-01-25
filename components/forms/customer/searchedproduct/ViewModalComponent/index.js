@@ -17,6 +17,7 @@ const ViewModalComponent = ({
   setViewModalOpen = () => {},
   viewModalOpen = false,
   productId = "",
+  getProducts = () => {},
 }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [viewModalImage, setViewModalImage] = useState([]);
@@ -35,6 +36,7 @@ const ViewModalComponent = ({
       setViewModalImage(data.variationMedia);
     }
     if (err) {
+      setViewModalOpen(false);
       setMasterData([]);
       setSelectedImage("");
       setViewModalImage([]);
@@ -243,6 +245,9 @@ const ViewModalComponent = ({
             showAddtoCartModal={showAddtoCartModal}
             setShowAddtoCartModal={setShowAddtoCartModal}
             productId={productId}
+            count={count}
+            getProducts={getProducts}
+            setViewModalOpen={setViewModalOpen}
           />
         ) : null}
       </Box>

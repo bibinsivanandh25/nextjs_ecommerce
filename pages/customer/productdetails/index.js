@@ -41,6 +41,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import RecentlyViewedProduct from "@/forms/customer/productdetails/recentlyviewedproduct";
 import { productDetails } from "features/customerSlice";
 import { useRouter } from "next/router";
+import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -136,21 +137,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
   const dispatch = useDispatch();
   const route = useRouter();
 
-  const getRating = async (id) => {
-    const { data, err } = await getAllRating(id);
-    if (data) {
-      setRatingMasterData(data);
-      setRatingData({
-        "5 Star": data.starRating5,
-        "4 Star": data.starRating4,
-        "3 Star": data.starRating3,
-        "2 Star": data.starRating2,
-        "1 Star": data.starRating1,
-      });
-    } else if (err) {
-      setRatingData({});
-    }
-  };
   // product api call
   const getProductDetails = async (id, select) => {
     const payload = {
@@ -172,13 +158,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
           data.customerViewProductPojo?.productDeliveryCharges?.deliveryAmount,
       });
       // adding variation details
-      data.customerViewProductPojo?.customerProductVariationList?.forEach(
-        (item) => {
-          if (item.productVariationId === id) {
-            setMasterVariation(item.variationDetails);
-          }
+      data.customerProductVariationList?.forEach((item) => {
+        if (item.productVariationId === id) {
+          setMasterVariation(item.variationDetails);
         }
-      );
+      });
       const temp = [];
       data?.allVariationListDetails.forEach((item) => {
         item.variationPropertyPojoList.forEach((val) => {
@@ -216,9 +200,24 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setSelectedImage("");
     }
   };
+  const getRating = async (id) => {
+    const { data, err } = await getAllRating(id);
+    if (data) {
+      setRatingMasterData(data);
+      setRatingData({
+        "5 Star": data.starRating5,
+        "4 Star": data.starRating4,
+        "3 Star": data.starRating3,
+        "2 Star": data.starRating2,
+        "1 Star": data.starRating1,
+      });
+    } else if (err) {
+      setRatingData({});
+    }
+  };
   const handleVariationClick = (item) => {
     getRating(item.productVariationId);
-    setMasterVariation(item);
+    setMasterVariation(item.variationDetails);
     dispatch(
       productDetails({
         productId: item?.productVariationId,
@@ -230,7 +229,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     });
   };
   const handleOtherVariationClick = (item, val) => {
-    const temp = [...otherVariation];
+    const temp = JSON.parse(JSON.stringify(otherVariation));
     temp.forEach((value) => {
       if (value.standardVariationId === item.standardVariationId) {
         value.variationPropertyPojoList.forEach((values) => {
@@ -255,7 +254,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     dispatch(
       productDetails({
         productId: selectedMasterData.productVariationId,
-        variationDetails: [...masterVariation.variationDetails, ...y],
+        variationDetails: [...masterVariation, ...y],
       })
     );
   };
@@ -419,7 +418,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
 
   return (
-    <Box id="MainBox" p={0.5}>
+    <Box id="MainBox" p={0.5} className="mnh-80vh">
       {!showQAPage ? (
         <>
           {Object.keys(masterData).length ? (
@@ -1045,7 +1044,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                     </Grid>
                     <Grid item md={6}>
                       <Grid container>
-                        {selectedMasterData.fdr ? (
+                        {selectedMasterData.fdr && !masterData.combined ? (
                           <Grid item md={12}>
                             <RadiobuttonComponent
                               value={deliveryOption.type}
@@ -1325,12 +1324,14 @@ const ProductDetails = ({ isSideBarOpen }) => {
                           <Grid container>
                             {otherVariation.length
                               ? otherVariation.map((item) => (
-                                  <Grid item sm={12}>
-                                    <Box>
-                                      <Typography className="fw-500">
-                                        {item.standardVariationName}
-                                      </Typography>
-                                    </Box>
+                                  <Grid item sm={12} mt={0.7}>
+                                    <Grid item sm={12}>
+                                      <Box>
+                                        <Typography className="fw-500">
+                                          {item.standardVariationName}
+                                        </Typography>
+                                      </Box>
+                                    </Grid>
                                     <Grid container columnGap={2} rowGap={0.5}>
                                       {item.variationPropertyPojoList.map(
                                         (val) => (
@@ -1349,7 +1350,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                           >
                                             <Box className="cursor-pointer">
                                               <Typography
-                                                className={`cursor-pointer h-p89 px-1 py-2 ${
+                                                className={`cursor-pointer h-5 px-1 py-2 ${
                                                   val.isSelected &&
                                                   `color-orange`
                                                 }`}
@@ -1382,7 +1383,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                           (item) => (
                             <Grid
                               item
-                              md={1.8}
+                              xs={1.8}
                               onClick={() => {
                                 selectedMasterData.productVariationId !==
                                   item.productVariationId &&
@@ -1395,10 +1396,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   width={150}
                                   src={item?.imageUrl}
                                   layout="intrinsic"
-                                  // className={`border-dashed1 rounded cursor-pointer ${
-                                  //   selectedMasterData.productVariationId ===
-                                  //     item.productVariationId && `border-orange`
-                                  // }`}
                                   className={`${
                                     item.variationDetails[0].enabled
                                       ? `border`
@@ -1410,14 +1407,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   alt="alt"
                                 />
                               </Box>
-                              <Typography
-                                className={`text-center h-5 cursor-pointer ${
-                                  selectedMasterData.productVariationId ===
-                                    item.productVariationId && `color-orange`
-                                }`}
-                              >
-                                {item.productTitle}
-                              </Typography>
+                              <Tooltip title={item.productTitle}>
+                                <Typography
+                                  className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
+                                    selectedMasterData.productVariationId ===
+                                      item.productVariationId && `color-orange`
+                                  }`}
+                                >
+                                  {item.productTitle}
+                                </Typography>
+                              </Tooltip>
                             </Grid>
                           )
                         )}
@@ -1516,9 +1515,9 @@ const ProductDetails = ({ isSideBarOpen }) => {
                   <Box className="mt-2">
                     <RecentlyViewedProduct />
                   </Box>
-                  {/* <Box className="mt-2">
-                <ProductList title=" Products Related To This Item" />
-              </Box> */}
+                </Grid>
+                <Grid item sm={12}>
+                  <SimilarProducts subCategoryId={masterData.subCategoryId} />
                 </Grid>
               </Grid>
             </Box>

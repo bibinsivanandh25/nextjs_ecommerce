@@ -280,6 +280,7 @@ const ProductCard = ({
           setViewModalOpen={setViewModalOpen}
           viewModalOpen={viewModalOpen}
           productId={item?.id}
+          getProducts={getProducts}
         />
       )}
     </Box>
