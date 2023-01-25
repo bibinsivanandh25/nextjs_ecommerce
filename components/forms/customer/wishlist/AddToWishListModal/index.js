@@ -17,7 +17,7 @@ import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
 const AddToWishListModal = ({
-  // getProducts = () => {},
+  getProducts = () => {},
   showModal = false,
   setShowModal = () => {},
   productId = "",
@@ -128,6 +128,7 @@ const AddToWishListModal = ({
       onSuccess: ({ data }) => {
         toastify(data?.message, "success");
         setShowModal(false);
+        getProducts();
         queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
         queryClient.invalidateQueries(["RECENTLYVIEWED"]);
@@ -150,6 +151,7 @@ const AddToWishListModal = ({
         queryClient.invalidateQueries(["RECENTLYVIEWED"]);
         queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
         getAllWishLists();
+        getProducts();
         setSelectedList({
           id: "",
           index: 0,
