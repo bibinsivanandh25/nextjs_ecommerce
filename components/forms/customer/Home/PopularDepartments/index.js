@@ -13,12 +13,18 @@ import ProductCard from "./ProductCard";
 
 const PopularDepartments = () => {
   const [products, setProducts] = useState([]);
+  const [storeData, setStoreData] = useState({});
   const [filters, setFilters] = useState({
     popularDepartments: "New Arrivals",
     filterType: "WEEK",
   });
 
   const storeDetails = useSelector((state) => state.customer);
+
+  useEffect(() => {
+    if (JSON.stringify(storeDetails) !== JSON.stringify(storeData))
+      setStoreData(storeDetails);
+  }, [storeDetails]);
 
   // const setAllProducts = (data) => {
   //   const temp = [];
@@ -135,7 +141,7 @@ const PopularDepartments = () => {
       filterType: "WEEK",
       popularDepartments: "New Arrivals",
     });
-  }, [storeDetails]);
+  }, [storeData]);
 
   useEffect(() => {
     refetch();
