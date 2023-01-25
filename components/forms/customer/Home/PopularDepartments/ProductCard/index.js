@@ -119,12 +119,14 @@ const ProductCard = ({
     }
   };
   const handleProductClick = () => {
-    dispatch(
-      productDetails({
-        productId: item?.id,
-        variationDetails: item.variationDetails,
-      })
-    );
+    if (item?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: item?.id,
+          variationDetails: item.variationDetails,
+        })
+      );
+    }
     route.push({
       pathname: "/customer/productdetails",
     });

@@ -103,7 +103,13 @@ const ViewModalComponent = ({
                 </Paper>
               </div>
             </Box>
-            <div className="d-flex justify-content-evenly">
+            <div
+              className={`d-flex ${
+                viewModalImage.length > 2
+                  ? `justify-content-evenly`
+                  : `justify-content-start`
+              } `}
+            >
               {viewModalImage.map((item, index) => (
                 <div
                   className="me-1"
@@ -112,8 +118,8 @@ const ViewModalComponent = ({
                 >
                   <Image
                     src={item}
-                    width={100}
-                    height={100}
+                    width={70}
+                    height={70}
                     alt=""
                     className={`${
                       selectedImageIndex === index && `border-orange`
