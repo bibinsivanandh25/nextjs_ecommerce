@@ -13,12 +13,14 @@ import {
   deleteWishListName,
   fetchProductsFromWishListId,
   getAllWishListsByProfileId,
-  removeProductFromWishList,
+  // removeProductFromWishList,
   updateWishListName,
 } from "services/customer/wishlist";
 import ModalComponent from "@/atoms/ModalComponent";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
+import { useMutation, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
 
 const WishList = () => {
   const { userId, profileId, supplierId } = useSelector(
@@ -136,16 +138,32 @@ const WishList = () => {
     }
   };
 
-  const removeProductFromList = async (id) => {
-    const { data, err } = await removeProductFromWishList(selectedList?.id, id);
-    if (data) {
-      toastify(data?.message, "success");
-      getProducts();
+  const queryClient = useQueryClient();
+
+  const removeWishListMutation = useMutation(
+    (id) => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${selectedList?.id}&variationId=${id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        toastify(data?.message, "success");
+        getProducts();
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
     }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
+  );
+
+  // const removeProductFromList = (id) => {
+  //   removeWishListMutation.mutate(id);
+  // };
 
   const getList = () => {
     return products.map((ele) => {
@@ -187,7 +205,7 @@ const WishList = () => {
                 textColor="text-dark"
                 bgColor="bg-white"
                 onBtnClick={() => {
-                  removeProductFromList(ele.productVariationId);
+                  removeWishListMutation.mutate(ele.productVariationId);
                 }}
               />
             </Box>

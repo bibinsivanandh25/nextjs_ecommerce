@@ -7,12 +7,15 @@ import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentRecei
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { useSession } from "next-auth/react";
-import { removeProductFromWishList } from "services/customer/wishlist";
+// import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import { productDetails } from "features/customerSlice";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
+import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
 import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutation, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
 import DeliveryOptionsModal from "../../buynowmodal";
 
 const ProductCard = ({
@@ -54,14 +57,19 @@ const ProductCard = ({
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [iconcolor, setIconColor] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [showCompareDrawer, setShowCompareDrawer] = useState(false);
   const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
     useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const route = useRouter();
+
+  const { profileId } = useSelector((state) => state.customer);
 
   const session = useSession();
   useEffect(() => {
@@ -84,6 +92,42 @@ const ProductCard = ({
     }
   };
 
+  const removeWishListMutation = useMutation(
+    () => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${item.wishlistId}&variationId=${item.id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
+  const removeCartMutation = useMutation(
+    () => {
+      return serviceUtil.deleteById(
+        `products/product/cart?productVariationId=${item.id}&profileId=${profileId}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, localMallIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
   useEffect(() => {
     if (item?.isWishlisted) {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
@@ -98,21 +142,30 @@ const ProductCard = ({
       if (!item.isWishlisted) {
         setShowWishListModal(true);
       } else {
-        const { data } = await removeProductFromWishList(
-          item.wishlistId,
-          item.id
-        );
-        if (data) {
-          toastify(data?.message, "success");
-          getProducts();
-          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
-        }
+        removeWishListMutation.mutate();
+        // const { data } = await removeProductFromWishList(
+        //   item.wishlistId,
+        //   item.id
+        // );
+        // if (data) {
+        //   toastify(data?.message, "success");
+        //   getProducts();
+        //   setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        // }
       }
     }
     if (iconName === "localMallIcon") {
       if (!item.isCarted) {
         setShowAddToCardModal(true);
+      } else {
+        removeCartMutation.mutate();
       }
+    }
+    if (iconName === "viewCarouselOutlinedIcon") {
+      setShowSimilarProductsDrawer(true);
+    }
+    if (iconName === "balanceIcon") {
+      setShowCompareDrawer(true);
     }
     if (iconName === "visibilityOutlinedIcon") {
       setViewModalOpen(true);
@@ -260,6 +313,15 @@ const ProductCard = ({
           subCategoryId={item?.subCategoryId}
         />
       )}
+      {showCompareDrawer ? (
+        <CompareProductDrawer
+          showDrawer={showCompareDrawer}
+          setShowDrawer={setShowCompareDrawer}
+          imgSrc={item?.image}
+          productId={item?.id}
+          subCategoryId={item?.subCategoryId}
+        />
+      ) : null}
       {viewModalOpen && (
         <ViewModalComponent
           setViewModalOpen={setViewModalOpen}

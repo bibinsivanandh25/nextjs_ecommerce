@@ -79,14 +79,21 @@ const CustomerSideBarComponent = ({ children }) => {
 
   const getSetandSubCategory = async (e, item) => {
     handleClick(e, item.title);
-    const { data } = await axios.get(
-      `${process.env.DOMAIN}products/main-category/set/sub-category/${item.id}`
-    );
-    if (data) {
+    let result;
+    await axios
+      .get(
+        `${process.env.DOMAIN}products/main-category/set/sub-category/${item.id}`
+      )
+      .then((res) => {
+        const { data } = res?.data;
+        result = { data };
+      })
+      .catch((err) => ({ err }));
+    if (result?.data) {
       setCategory(item);
       // setSetsandSubCategoryData([...data.data]);
       const temp = [];
-      data.data.forEach((ele) => {
+      result?.data?.forEach((ele) => {
         temp.push({
           label: ele.setName,
           id: ele.categorySetId,
