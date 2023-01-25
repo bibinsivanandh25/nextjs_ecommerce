@@ -4,23 +4,27 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import { Box, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import {
   addNewWishList,
-  addProductToWishList,
-  deleteWishListName,
+  // addProductToWishList,
+  // deleteWishListName,
   getAllWishListsByProfileId,
   updateWishListName,
 } from "services/customer/wishlist";
+import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
 const AddToWishListModal = ({
-  getProducts = () => {},
+  // getProducts = () => {},
   showModal = false,
   setShowModal = () => {},
   productId = "",
+
   // its for product view page
   getProductDetails = () => {},
+  variationDetails = [],
 }) => {
   const { userId, profileId } = useSelector((state) => state?.customer);
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
@@ -68,10 +72,12 @@ const AddToWishListModal = ({
         toastify(message, "success");
         getAllWishLists();
         setShowAddNewWishList(false);
+        setError(false);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
         setNewWishListName("");
         getAllWishLists();
+        setError(false);
       }
     } else setError(true);
   };
@@ -89,45 +95,94 @@ const AddToWishListModal = ({
       toastify(message, "success");
       setNewWishListName("");
       getAllWishLists();
+      setError(false);
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
+      setError(false);
     }
   };
 
-  const deleteList = async (id) => {
-    const { data, err } = await deleteWishListName(profileId, id);
-    if (data) {
-      getProducts();
-      getAllWishLists();
-      toastify(data?.message, "success");
-      setSelectedList({
-        id: "",
-        index: 0,
+  // const deleteList = async (id) => {
+  //   const { data, err } = await deleteWishListName(profileId, id);
+  //   if (data) {
+  //     getProducts();
+  //     getAllWishLists();
+  //     toastify(data?.message, "success");
+  //     setSelectedList({
+  //       id: "",
+  //       index: 0,
+  //     });
+  //   } else if (err) {
+  //     toastify(err?.response?.data?.message, "error");
+  //   }
+  // };
+
+  const queryClient = useQueryClient();
+
+  const addProductToWishlistMutation = useMutation(
+    () => {
+      return serviceUtil.post(`/users/customer/wishlist/products`, {
+        profileId,
+        wishlistId: selectedList?.id,
+        productVariationId: productId,
       });
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        setShowModal(false);
+        getProductDetails(productId, variationDetails);
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
     }
-  };
+  );
 
-  const addproducttolist = async () => {
-    const payload = {
-      profileId,
-      wishlistId: selectedList?.id,
-      productVariationId: productId,
-    };
-    const { data, err } = await addProductToWishList(payload);
-    if (data) {
-      toastify(data?.message, "success");
-      setShowModal(false);
-      getProducts();
-      getProductDetails(productId);
+  const deleteProductMutation = useMutation(
+    (id) => {
+      return serviceUtil.deleteById(
+        `users/customer/wishlist/${profileId}/${id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        getAllWishLists();
+        setSelectedList({
+          id: "",
+          index: 0,
+        });
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
     }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-      setShowModal(false);
-    }
-  };
+  );
+  // const addproducttolist = async () => {
+  //   const payload = {
+  //     profileId,
+  //     wishlistId: selectedList?.id,
+  //     productVariationId: productId,
+  //   };
+  //   const { data, err } = await addProductToWishList(payload);
+  //   if (data) {
+  //     toastify(data?.message, "success");
+  //     setShowModal(false);
+  //     getProducts();
+  //     getProductDetails(productId, variationDetails);
+  //   }
+  //   if (err) {
+  //     toastify(err?.response?.data?.message, "error");
+  //     setShowModal(false);
+  //   }
+  // };
 
   return (
     <ModalComponent
@@ -142,7 +197,9 @@ const AddToWishListModal = ({
       ModalTitle="Choose WishList"
       footerClassName="justify-content-end"
       saveBtnClassName="fs-10"
-      onSaveBtnClick={addproducttolist}
+      onSaveBtnClick={() => {
+        addProductToWishlistMutation.mutate();
+      }}
     >
       <Grid container justifyContent="center" my={2}>
         <Grid item sm={7} className="w-75 ">
@@ -162,7 +219,8 @@ const AddToWishListModal = ({
               setNewWishListName(item?.title);
             }}
             onDeleteClick={(item) => {
-              deleteList(item?.id);
+              // deleteList(item?.id);
+              deleteProductMutation.mutate(item.id);
             }}
           />
         </Grid>
@@ -187,6 +245,7 @@ const AddToWishListModal = ({
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
+          setError(false);
         }}
         ClearBtnText="Clear"
         saveBtnText={
