@@ -126,10 +126,10 @@ const ProductCard = ({
           variationDetails: item.variationDetails,
         })
       );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
     }
-    route.push({
-      pathname: "/customer/productdetails",
-    });
   };
   return (
     <Box

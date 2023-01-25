@@ -1245,7 +1245,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               <Typography className="color-blue h-p89">
                                 Enter Pincode & Check If Its Deliverable/Not
                               </Typography>
-                              <Grid container marginY={1}>
+                              <Grid container marginY={0.5}>
                                 <Grid item xs={10}>
                                   <div
                                     className="d-flex bg-white justify-content-between"
