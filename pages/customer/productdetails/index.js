@@ -1533,11 +1533,14 @@ const ProductDetails = ({ isSideBarOpen }) => {
                 </Grid>
                 <Grid item md={12}>
                   <Box className="mt-2">
-                    <RecentlyViewedProduct />
+                    <RecentlyViewedProduct scrollPage={scrollPage} />
                   </Box>
                 </Grid>
                 <Grid item sm={12}>
-                  <SimilarProducts subCategoryId={masterData.subCategoryId} />
+                  <SimilarProducts
+                    subCategoryId={masterData.subCategoryId}
+                    scrollPage={scrollPage}
+                  />
                 </Grid>
               </Grid>
             </Box>

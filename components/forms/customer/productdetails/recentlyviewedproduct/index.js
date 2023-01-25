@@ -4,7 +4,7 @@ import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSelector } from "react-redux";
 import ProductListCard from "../productlistcard";
 
-const RecentlyViewedProduct = () => {
+const RecentlyViewedProduct = ({ scrollPage = () => {} }) => {
   const [products, setProducts] = useState([]);
   const storeDetails = useSelector((state) => state?.customer);
 
@@ -55,6 +55,7 @@ const RecentlyViewedProduct = () => {
               <ProductListCard
                 item={ele}
                 getProducts={getRecentViewedProducts}
+                scrollPage={scrollPage}
               />
             );
           })

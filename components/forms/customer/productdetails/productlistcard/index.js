@@ -18,6 +18,7 @@ const ProductListCard = ({
   height = 150,
   width = 150,
   cardPaperClass = "",
+  scrollPage = () => {},
 }) => {
   const iconListData = [
     {
@@ -89,6 +90,7 @@ const ProductListCard = ({
           variationDetails: item.variationDetails,
         })
       );
+      scrollPage();
       route.push({
         pathname: "/customer/productdetails",
       });
