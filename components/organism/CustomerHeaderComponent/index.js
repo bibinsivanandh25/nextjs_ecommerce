@@ -188,6 +188,8 @@ const Header = () => {
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
             supplierId: storeData.supplierId,
+            supplieremailId: storeData.emailId,
+            suppliermobileNumber: storeData.mobileNumber,
           })
         );
         setStoreCode("");
@@ -220,6 +222,8 @@ const Header = () => {
           shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
           addStoreFlag: false,
           supplierId: storeData.supplierId,
+          supplieremailId: storeData.emailId,
+          suppliermobileNumber: storeData.mobileNumber,
         })
       );
       setStoreCode("");
@@ -757,7 +761,7 @@ const Header = () => {
                 </MenuItem>
                 <MenuItem onClick={() => setShowSwitchProfile(true)}>
                   <Typography className="h-5 cursor-pointer">
-                    Switch Profiles
+                    Switch Profile
                   </Typography>
                 </MenuItem>
                 <MenuItem

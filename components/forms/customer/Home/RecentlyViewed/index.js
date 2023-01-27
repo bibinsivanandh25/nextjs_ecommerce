@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getRecentlyViewedProducts } from "services/customer/Home";

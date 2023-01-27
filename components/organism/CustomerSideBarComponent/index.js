@@ -269,7 +269,7 @@ const CustomerSideBarComponent = ({ children }) => {
           marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
-          paddingX: "20px",
+          paddingX: "40px",
         }}
         className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
@@ -277,8 +277,8 @@ const CustomerSideBarComponent = ({ children }) => {
           <motion.div
             sx={{
               maxHeight: "calc(100vh - 90px)",
+              minHeight: "calc(100vh - 90px)",
               overflowY: "scroll",
-              background: "red",
             }}
             className="hide-scrollbar "
             animate={{ opacity: 1 }}
@@ -289,7 +289,9 @@ const CustomerSideBarComponent = ({ children }) => {
             key={router.route}
           >
             {/* {children} */}
-            {updatedChildren}
+            <div className="py-2" style={{ minHeight: "calc(100vh - 370px)" }}>
+              {updatedChildren}
+            </div>
             <Footer open={open} />
           </motion.div>
         </AnimatePresence>

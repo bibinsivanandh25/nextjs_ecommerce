@@ -234,6 +234,10 @@ const MyProfile = () => {
       }, 2000);
     }
   }, [emailOtp]);
+  console.log(
+    customerDetails?.mobileNumber?.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
+  );
+
   return (
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded px-4">
       <div className="mt-4 d-flex align-items-center">
@@ -384,9 +388,16 @@ const MyProfile = () => {
               <Grid item xs={10}>
                 <InputBox
                   label="Mobile Number"
-                  type="number"
+                  type={!disableEdit.phone ? "text" : "number"}
                   inputlabelshrink
-                  value={customerDetails?.mobileNumber}
+                  value={
+                    !disableEdit.phone
+                      ? customerDetails?.mobileNumber?.replace(
+                          /(\d{3})(\d{3})(\d{4})/,
+                          "$1 $2 $3"
+                        )
+                      : customerDetails?.mobileNumber
+                  }
                   disabled={!disableEdit.phone}
                   onInputChange={(e) => {
                     if (e.target.value.length <= 10) {
@@ -432,7 +443,10 @@ const MyProfile = () => {
                     title="Edit"
                     className="ms-2 fs-18"
                     onIconClick={() => {
-                      setdisableEdit({ ...disableEdit, phone: true });
+                      setdisableEdit({
+                        ...disableEdit,
+                        phone: !disableEdit.phone,
+                      });
                     }}
                   />
                 ) : (

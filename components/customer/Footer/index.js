@@ -1,8 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const Footer = ({ open = false }) => {
+  const { supplieremailId, suppliermobileNumber } = useSelector(
+    (state) => state.customer
+  );
   const list = [
     {
       title: "Products",
@@ -57,22 +62,30 @@ const Footer = ({ open = false }) => {
       title: "About us",
       items: [
         {
-          lable: "Email: supplier@gmail.com",
+          lable: `Email: ${supplieremailId}`,
         },
         {
-          lable: "Contact us: 1234567890",
+          lable: `Contact us: ${suppliermobileNumber}`,
         },
       ],
     },
   ];
 
   const route = useRouter();
+  const useStyles = makeStyles({
+    underlineClass: {
+      "&:hover": {
+        textDecoration: "underline",
+      },
+    },
+  });
+  const classes = useStyles();
 
   return (
     <div
       style={{
         position: "relative",
-        left: "-20px",
+        left: "-40px",
         width: open ? "calc(100vw - 200px)" : "100vw",
         bottom: "10px",
         marginTop: "20px",
@@ -90,7 +103,7 @@ const Footer = ({ open = false }) => {
                 </Typography>
                 {item.items.map((ele, ind) => (
                   <Typography
-                    className="h-5 color-white mb-1 cursor-pointer"
+                    className={`h-5 color-white mb-1 cursor-pointer d-inline ${classes.underlineClass}`}
                     key={ind}
                     onClick={() => {
                       if (ele?.route) route.push(ele.route);

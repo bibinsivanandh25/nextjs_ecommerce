@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Box, Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
