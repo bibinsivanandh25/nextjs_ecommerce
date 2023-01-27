@@ -50,7 +50,7 @@ const SwitchProfile = ({
     }
   };
 
-  const handleProfileSwitch = async (profile, showMessage) => {
+  const handleProfileSwitch = async (profile, showMessage = true) => {
     const { data, err } = await switchProfile(
       profile.profileId,
       profile.customerId
@@ -64,6 +64,7 @@ const SwitchProfile = ({
           profileName: data.data.profileName,
         })
       );
+      getProfiles();
       router.push("/customer/home");
     } else if (err) {
       if (showMessage) toastify(err?.response?.data?.message, "error");
@@ -215,20 +216,22 @@ const SwitchProfile = ({
               }}
             />
           </Tooltip>
-          <Tooltip title="Delete">
-            <Delete
-              className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
-              style={{
-                background: "#e56700",
-                // fontSize: "20px !important",
-                // color: "rgb(44 1 1 / 60%) ",
-                padding: "2px",
-              }}
-              onClick={() => {
-                deleteprofile(item);
-              }}
-            />
-          </Tooltip>
+          {item.profilePrimary && (
+            <Tooltip title="Delete">
+              <Delete
+                className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
+                style={{
+                  background: "#e56700",
+                  // fontSize: "20px !important",
+                  // color: "rgb(44 1 1 / 60%) ",
+                  padding: "2px",
+                }}
+                onClick={() => {
+                  deleteprofile(item);
+                }}
+              />
+            </Tooltip>
+          )}
         </div>
       </div>
     );

@@ -270,7 +270,9 @@ const Cart = () => {
       <Grid item sm={9}>
         <Paper className="w-100">
           <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2 w-100">
-            <Typography className="h-5 text-secondary">My Cart</Typography>
+            <Typography className="h-4 text-secondary theme_color">
+              My Cart
+            </Typography>
             <ButtonComponent
               muiProps="p-0"
               label="Choose Address"

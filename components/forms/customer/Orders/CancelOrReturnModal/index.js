@@ -8,10 +8,12 @@ import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import ReturnOrderModel from "../../returnordermodel/ReturnOrderModel";
 import { useSelector } from "react-redux";
 import { returnProduct } from "services/customer/orders";
 import toastify from "services/utils/toastUtils";
+import validateMessage from "constants/validateMessages";
+import ReturnOrderModel from "../../returnordermodel/ReturnOrderModel";
+
 const returnList = [
   {
     id: 1,
@@ -65,31 +67,30 @@ const CancelOrReturnModal = ({
   modalType = "cancel",
   showModal = false,
   setShowModal = () => {},
-  ShowReturnOrder,
   setShowReturnOrder = () => {},
   setReturnProducts = () => {},
   selectedProduct,
   setSelectedProduct = () => {},
   selectedOldProduct,
+  setgetOrderApiCall = () => {},
+  getOrderApiCall,
 }) => {
   const user = useSelector((state) => state.user);
   const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
   const [dropDownData, setDropDownData] = useState([]);
   const [CancelSuccessData, setCancelSuccessData] = useState([]);
-  const [errorDropDown, seterrorDropDown] = useState(false);
   useEffect(() => {
     const temp = JSON.parse(JSON.stringify(selectedProduct));
-    temp.forEach((ele) => ({ ...ele, isSelected: true }));
     setDropDownData([...temp]);
   }, [selectedProduct]);
-
   const handleSelectDropDown = (val, id) => {
-    const temp = JSON.parse(JSON.stringify(selectedProduct));
+    const temp = JSON.parse(JSON.stringify(dropDownData));
     temp.forEach((ele) => {
       if (ele.orderId === id) {
         ele.dropDownValue = val;
       }
     });
+    setDropDownData([...temp]);
     setSelectedProduct([...temp]);
   };
   const handleCloseClick = () => {
@@ -115,7 +116,6 @@ const CancelOrReturnModal = ({
                       ele.isSelected = !ele.isSelected;
                     }
                   });
-                  // console.log(temp);
                   setDropDownData([...temp]);
                 }}
               />
@@ -161,7 +161,7 @@ const CancelOrReturnModal = ({
                   handleSelectDropDown(val, ele.orderId);
                 }}
                 value={ele.dropDownValue}
-                helperText={ele.dropDownValue == {} ? "Select any option" : ""}
+                helperText={ele.error ? validateMessage.field_required : ""}
               />
             </Box>
           </Box>
@@ -174,13 +174,19 @@ const CancelOrReturnModal = ({
     setReturnProducts([...temp]);
   };
   const dropDownValidation = () => {
-    dropDownData.forEach((val, ind) => {
-      console.log(val.dropDownValue, "value", ind);
-      if (val.dropDownValue == {}) {
-        return false;
+    const temp = JSON.parse(JSON.stringify(dropDownData));
+    temp.forEach((val) => {
+      if (val.dropDownValue === null) {
+        val.error = true;
+      } else {
+        val.error = false;
       }
     });
+    setDropDownData(temp);
+    const result = temp.every((x) => x.error === false);
+    return result;
   };
+
   const cancelProduct = async () => {
     const type = "CANCEL";
     let payload = [];
@@ -197,11 +203,11 @@ const CancelOrReturnModal = ({
       ];
     });
     const validate = dropDownValidation();
-    if (!validate) {
+    if (validate) {
       const { data, errRes } = await returnProduct(payload, type);
       if (data) {
         setCancelSuccessData(data.data);
-        toastify(data?.data?.message, "success");
+        toastify(data?.message, "success");
         setShowOrderSuccessModal(true);
       } else if (errRes) {
         toastify(errRes?.response?.data?.message, "error");
@@ -223,7 +229,9 @@ const CancelOrReturnModal = ({
       ClearBtnText="Continue"
       saveBtnText="Cancel"
       onClearBtnClick={() => {
-        if (modalType === "return") setShowReturnOrder(true);
+        if (modalType === "return")
+          // eslint-disable-next-line no-unused-expressions
+          dropDownValidation() && setShowReturnOrder(true);
         else cancelProduct();
         getSelectedItems();
       }}
@@ -234,14 +242,15 @@ const CancelOrReturnModal = ({
       </Typography>
       <Box className="mxh-400 overflow-auto ">{getProducts()}</Box>
       <ReturnOrderModel
-        // ShowReturnOrder={ShowReturnOrder}
-        // setShowReturnOrder={setShowReturnOrder}
+        setgetOrderApiCall={setgetOrderApiCall}
+        getOrderApiCall={getOrderApiCall}
+        setSelectedProduct={setSelectedProduct}
         ShowReturnOrder={showOrderSuccessModal}
         setShowReturnOrder={setShowOrderSuccessModal}
         returnSuccessData={CancelSuccessData}
         setreturnSuccessData={setCancelSuccessData}
         showModal={showOrderSuccessModal}
-        setShowModal={setShowOrderSuccessModal}
+        setShowModal={setShowModal}
       />
     </ModalComponent>
   );

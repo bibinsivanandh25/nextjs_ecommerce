@@ -18,8 +18,11 @@ import PickUpAddress from "../address/pickupaddress";
 const OrderReturn = ({
   showReturnOrder,
   selectedProduct,
+  setSelectedProduct = () => {},
   returnProducts = [],
   setShowReturnOrder = () => {},
+  setgetOrderApiCall = () => {},
+  getOrderApiCall,
 }) => {
   const user = useSelector((state) => state.user);
   const address = useSelector((state) => state.customer.addressDetails);
@@ -71,7 +74,7 @@ const OrderReturn = ({
           orderId: val.orderId,
           emailAddress: user.emailId,
           addressId: ele.addressId,
-          reason: val.dropDownValue.value,
+          reason: val?.dropDownValue?.value,
           productImage: val.productImage,
         },
       ];
@@ -81,6 +84,7 @@ const OrderReturn = ({
     const { data, errRes } = await returnProduct(payload, returnAction);
     if (data) {
       setreturnSucceccData(data.data);
+
       toastify(data.data.message, "success");
       setShowOrderSuccessModal(true);
     } else if (errRes) {
@@ -334,6 +338,10 @@ const OrderReturn = ({
         ) : null}
       </Grid>
       <ReturnOrderModel
+        setgetOrderApiCall={setgetOrderApiCall}
+        getOrderApiCall={getOrderApiCall}
+        setSelectedProduct={setSelectedProduct}
+        selectedProduct={selectedProduct}
         showReturnOrder={showReturnOrder}
         setShowReturnOrder={setShowReturnOrder}
         returnSuccessData={returnSucceccData}

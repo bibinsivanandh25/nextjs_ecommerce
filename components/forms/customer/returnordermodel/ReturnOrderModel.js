@@ -7,12 +7,16 @@ import { useRouter } from "next/router";
 
 const ReturnOrderModel = ({
   showReturnOrder,
+  setgetOrderApiCall = () => {},
+  getOrderApiCall,
   setShowReturnOrder = () => {},
   returnSuccessData,
   setreturnSuccessData,
   allFree,
   showModal = false,
   setShowModal = () => {},
+  setSelectedProduct = () => {},
+  selectedProduct,
 }) => {
   const [freeReturn, setFreeReturn] = useState(false);
 
@@ -33,12 +37,17 @@ const ReturnOrderModel = ({
   };
   const goToOrder = () => {
     setreturnSuccessData([]);
+    setShowModal(false);
     setShowReturnOrder(false);
+    setgetOrderApiCall(!getOrderApiCall);
+    setSelectedProduct([]);
     route.push("/customer/orders");
   };
   const closeFunction = () => {
     setShowModal(false);
     setShowReturnOrder(false);
+    setgetOrderApiCall(!getOrderApiCall);
+    setSelectedProduct([]);
   };
   const returnProducts = () => {
     return (
@@ -48,6 +57,7 @@ const ReturnOrderModel = ({
       >
         {returnSuccessData.map((val, inx) => {
           return (
+            // eslint-disable-next-line react/no-array-index-key
             <Box key={inx} className="mt-3 d-flex justify-content-between">
               <Box>
                 <Typography className="fs-14">

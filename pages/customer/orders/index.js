@@ -50,9 +50,14 @@ const Orders = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [EachProductDetails, setEachProductDetails] = useState([]);
+  const [getOrderApiCall, setgetOrderApiCall] = useState(false);
   const [orderFilter, setorderFilter] = useState({
-    duration: "",
-    status: "",
+    duration: { id: 1, label: "Last 30 days", value: "MONTH" },
+    status: {
+      label: "Pending",
+      id: 1,
+      value: "PENDING",
+    },
     keyword: "",
   });
   const [productReviewState, setproductReviewState] = useState({
@@ -90,8 +95,9 @@ const Orders = () => {
           shippingAddressId: item.shippingAddressId,
           // price: item.price,
           isSelected: false,
-          dropDownValue: {},
+          dropDownValue: null,
           variationId: item.productId,
+          error: false,
         });
       });
       setProducts([...temp]);
@@ -118,7 +124,7 @@ const Orders = () => {
 
   useEffect(() => {
     getProducts();
-  }, [orderFilter]);
+  }, [orderFilter, getOrderApiCall]);
   const submitProductReview = async () => {
     const payload = {
       customerRatings: productReviewState.retings,
@@ -233,7 +239,7 @@ const Orders = () => {
                         retings: 0,
                         headline: "",
                         reviewText: "",
-                        reviewImage: "",
+                        reviewImage: [],
                       });
                     }}
                   >
@@ -241,7 +247,7 @@ const Orders = () => {
                   </p>
                 </div>
                 <Box className="mt-3 ms-3 w-75 bg-white ps-3 rounded pe-2 ">
-                  <h4>Rate Seller</h4>
+                  <h4>Rate Product</h4>
                   <Rating
                     name="half-rating"
                     value={productReviewState.retings}
@@ -348,7 +354,6 @@ const Orders = () => {
                             showClose={false}
                             handleImageUpload={async (e) => {
                               if (e.target.files.length) {
-                                // if (e.target.files[0].size <= 1000000) {
                                 const file = await getBase64(e.target.files[0]);
                                 const { datas, err } =
                                   await UpdateProfilePicture(
@@ -368,13 +373,6 @@ const Orders = () => {
                                 } else if (err) {
                                   toastify(err.response.data.message, "error");
                                 }
-
-                                // } else {
-                                //   toastify(
-                                //     "Image size should be less than 1MB",
-                                //     "error"
-                                //   );
-                                // }
                               }
                             }}
                             className="mx-3"
@@ -383,12 +381,8 @@ const Orders = () => {
                         ) : null}
                       </Box>
                     </Box>
-                    <Image
-                      src={productReviewState.reviewImage}
-                      height={100}
-                      width={100}
-                    />
-                    <Box className="d-flex justify-content-end">
+
+                    <Box className="d-flex justify-content-end py-3">
                       <ButtonComponent
                         onBtnClick={submitProductReview}
                         label="Submit Feedback"
@@ -461,7 +455,8 @@ const Orders = () => {
                 <Grid className="d-flex justify-content-start py-2">
                   <Grid>
                     <Typography className="fs-14">
-                      Ordered on {EachProductDetails?.orderedDate}
+                      Ordered on{" "}
+                      {EachProductDetails?.orderedDate?.replace("T", " ")}
                     </Typography>
                   </Grid>
                   <Grid className="px-5">
@@ -616,6 +611,8 @@ const Orders = () => {
                       selectedLink={selectedLink}
                       selectedProduct={selectedProduct}
                       setSelectedProduct={setSelectedProduct}
+                      setgetOrderApiCall={setgetOrderApiCall}
+                      getOrderApiCall={getOrderApiCall}
                     />
                   </>
                 )}
@@ -694,6 +691,8 @@ const Orders = () => {
                       showReturnBtn={false}
                       selectedProduct={selectedProduct}
                       setSelectedProduct={setSelectedProduct}
+                      setgetOrderApiCall={setgetOrderApiCall}
+                      getOrderApiCall={getOrderApiCall}
                     />
                   </>
                 )}
@@ -772,6 +771,8 @@ const Orders = () => {
                       showTopBar={false}
                       selectedProduct={selectedProduct}
                       setSelectedProduct={setSelectedProduct}
+                      setgetOrderApiCall={setgetOrderApiCall}
+                      getOrderApiCall={getOrderApiCall}
                     />
                   </>
                 )}
@@ -850,6 +851,8 @@ const Orders = () => {
                       showTopBar={false}
                       selectedProduct={selectedProduct}
                       setSelectedProduct={setSelectedProduct}
+                      setgetOrderApiCall={setgetOrderApiCall}
+                      getOrderApiCall={getOrderApiCall}
                     />
                   </>
                 )}
@@ -860,9 +863,12 @@ const Orders = () => {
       ) : (
         <OrderReturn
           selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
           returnProducts={returnProducts}
           showReturnOrder={showReturnOrder}
           setShowReturnOrder={setShowReturnOrder}
+          setgetOrderApiCall={setgetOrderApiCall}
+          getOrderApiCall={getOrderApiCall}
         />
       )}
     </Box>
