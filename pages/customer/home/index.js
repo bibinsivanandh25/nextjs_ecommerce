@@ -214,6 +214,9 @@ const Home = () => {
                   md={2.6}
                   sm={3}
                   className="border-end border-2 cursor-pointer d-flex justify-content-evenly p-3 align-items-center"
+                  onClick={() => {
+                    route.push("/customer/couponapplicableproducts");
+                  }}
                 >
                   {/* <Image src={customerHome.coupon} height={40} width={60} /> */}
                   <TicketSvg
@@ -221,12 +224,7 @@ const Home = () => {
                     width={60}
                     className="theme_svg_fill"
                   />
-                  <Typography
-                    className="fw-bold h-5 cursor-pointer"
-                    onClick={() => {
-                      route.push("/customer/couponapplicableproducts");
-                    }}
-                  >
+                  <Typography className="fw-bold h-5 cursor-pointer">
                     Coupons Applicable Products
                   </Typography>
                 </Grid>

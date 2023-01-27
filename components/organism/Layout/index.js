@@ -31,7 +31,7 @@ const Layout = ({ Component, pageProps }) => {
             <Header />
           )}
         </div>
-        <Box className="mnw-100vw">
+        <Box className="mnw-100vw h-100vh" style={{ overFlow: "hidden" }}>
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||
           route.pathname.startsWith("/admin") ||

@@ -160,12 +160,13 @@ const CustomerSideBarComponent = ({ children }) => {
   return (
     <Box
       sx={{
-        minWidth: `calc(100vw - 5px)`,
+        minWidth: `100vw`,
         maxWidth: "100vw",
         position: "relative",
-        top: "88px",
+        top: "90px",
         display: "flex",
         height: `calc(100vh - 90px)`,
+        marginTop: "10px",
       }}
       ref={mainRef}
     >
@@ -268,6 +269,7 @@ const CustomerSideBarComponent = ({ children }) => {
           marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
+          paddingX: "20px",
         }}
         className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
