@@ -144,7 +144,6 @@ const ProductCard = ({
         scale: 1.05,
         transition: { duration: 0.5 },
       }}
-      whileTap={{ scale: 0.9 }}
     >
       <Box
         onMouseEnter={() => {
@@ -233,7 +232,8 @@ const ProductCard = ({
                 <CustomIcon
                   type={ele.iconName}
                   className="h-5"
-                  onIconClick={() => {
+                  onIconClick={(e) => {
+                    e.stopPropagation();
                     handleCardIconClick(ele.iconName);
                     handleIconClick(ele.iconName);
                   }}
