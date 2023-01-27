@@ -401,10 +401,10 @@ const Header = () => {
                 "Select Your Address"
               ) : (
                 <div className="ms-2 ">
-                  <Typography className="fs-12 color-black cursor-pointer fw-bold">
+                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
                     {addressDetails?.name}
                   </Typography>
-                  <Typography className="fs-12 color-black cursor-pointer fw-bold">
+                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
                     {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
                   </Typography>
                 </div>
@@ -431,12 +431,12 @@ const Header = () => {
             }}
           />
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center ">
           <div
             className="px-4"
             onClick={() => handleRouting("/customer/helpcenter")}
           >
-            <Typography className="h-5 fw-bold ps-1 color-black cursor-pointer">
+            <Typography className="h-5 fw-bold ps-1 cursor-pointer color-black">
               Help Center
             </Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}

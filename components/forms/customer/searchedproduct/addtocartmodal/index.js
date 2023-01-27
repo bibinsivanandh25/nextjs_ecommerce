@@ -263,14 +263,14 @@ const AddToCartModal = ({
           <Image src={masterData.variationMedia} width={130} height={130} />
         </Grid>
         <Grid item sm={8}>
-          <Typography>{masterData.productTitle}</Typography>
+          <Typography className="fw-500">{masterData.productTitle}</Typography>
           <Box>
             <RadiobuttonComponent
               isChecked={masterData.selectedAmount === 0}
               size="small"
               label={
                 <Typography className="h-p89">
-                  Free&nbsp; Delivery By Monday, Dec 24
+                  Free&nbsp;{masterData.deliveryBy}
                 </Typography>
               }
               onRadioChange={() => {

@@ -7,14 +7,16 @@ import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentRecei
 import { useRouter } from "next/router";
 import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { useSession } from "next-auth/react";
-import { removeProductFromWishList } from "services/customer/wishlist";
+// import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
 import { productDetails } from "features/customerSlice";
+import { motion } from "framer-motion";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
 import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalComponent";
-import { useDispatch } from "react-redux";
-import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutation, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
 import DeliveryOptionsModal from "../../buynowmodal";
 
 const ProductCard = ({
@@ -32,22 +34,27 @@ const ProductCard = ({
     {
       iconName: "viewCarouselOutlinedIcon",
       title: "View",
+      tooltip: "Similar",
     },
     {
       iconName: "favoriteBorderIcon",
       title: "Favorite",
+      tooltip: "wishlist",
     },
     {
       iconName: "localMallIcon",
       title: "Favorite",
+      tooltip: "cart",
     },
     {
       iconName: "visibilityOutlinedIcon",
       title: "Search",
+      tooltip: "View",
     },
     {
       iconName: "balanceIcon",
       title: "Search",
+      tooltip: "Compare",
     },
   ];
 
@@ -61,10 +68,14 @@ const ProductCard = ({
     useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
   const route = useRouter();
+
+  const { profileId } = useSelector((state) => state.customer);
 
   const session = useSession();
   useEffect(() => {
@@ -87,6 +98,42 @@ const ProductCard = ({
     }
   };
 
+  const removeWishListMutation = useMutation(
+    () => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${item.wishlistId}&variationId=${item.id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
+  const removeCartMutation = useMutation(
+    () => {
+      return serviceUtil.deleteById(
+        `products/product/cart?productVariationId=${item.id}&profileId=${profileId}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, localMallIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
   useEffect(() => {
     if (item?.isWishlisted) {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
@@ -101,20 +148,23 @@ const ProductCard = ({
       if (!item.isWishlisted) {
         setShowWishListModal(true);
       } else {
-        const { data } = await removeProductFromWishList(
-          item.wishlistId,
-          item.id
-        );
-        if (data) {
-          toastify(data?.message, "success");
-          getProducts();
-          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
-        }
+        removeWishListMutation.mutate();
+        // const { data } = await removeProductFromWishList(
+        //   item.wishlistId,
+        //   item.id
+        // );
+        // if (data) {
+        //   toastify(data?.message, "success");
+        //   getProducts();
+        //   setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        // }
       }
     }
     if (iconName === "localMallIcon") {
       if (!item.isCarted) {
         setShowAddToCardModal(true);
+      } else {
+        removeCartMutation.mutate();
       }
     }
     if (iconName === "viewCarouselOutlinedIcon") {
@@ -128,15 +178,17 @@ const ProductCard = ({
     }
   };
   const handleProductClick = () => {
-    dispatch(
-      productDetails({
-        productId: item?.id,
-        variationDetails: item.variationDetails,
-      })
-    );
-    route.push({
-      pathname: "/customer/productdetails",
-    });
+    if (item?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: item?.id,
+          variationDetails: item.variationDetails,
+        })
+      );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
+    }
   };
   return (
     <motion.div
@@ -155,7 +207,7 @@ const ProductCard = ({
       >
         <Paper
           elevation={hover ? 6 : 3}
-          className={`mx-2 position-relative rounded cursor-pointer ${cardPaperClass}`}
+          className={`mx-2 position-relative rounded ${cardPaperClass}`}
           style={{
             minHeight: 150,
             minWidth: 150,
@@ -170,7 +222,6 @@ const ProductCard = ({
             onClick={() => {
               handleProductClick();
             }}
-            className="cursor-pointer"
           />
         </Paper>
         <Tooltip
@@ -179,7 +230,7 @@ const ProductCard = ({
           }}
           title={item.title}
         >
-          <Typography className="h-5 fw-bold text-center text-truncate my-1 px-2 cursor-pointer">
+          <Typography className="h-5 fw-bold text-center text-truncate my-1 px-2">
             {item.title}
           </Typography>
         </Tooltip>
@@ -231,9 +282,9 @@ const ProductCard = ({
               >
                 <CustomIcon
                   type={ele.iconName}
+                  title={ele.tooltip}
                   className="h-5"
-                  onIconClick={(e) => {
-                    e.stopPropagation();
+                  onIconClick={() => {
                     handleCardIconClick(ele.iconName);
                     handleIconClick(ele.iconName);
                   }}

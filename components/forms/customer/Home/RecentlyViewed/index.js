@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
 import ProductCard from "../PopularDepartments/ProductCard";
 
 const RecentlyViewed = () => {
@@ -17,7 +18,20 @@ const RecentlyViewed = () => {
       storeDetails.profileId
     );
     if (data) {
-      const temp = [];
+      return data;
+    }
+    return [];
+  };
+
+  const { data } = useQuery(["RECENTLYVIEWED"], getRecentViewedProducts, {
+    enabled: Boolean(userInfo?.data && storeDetails),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    const temp = [];
+    if (data) {
       data.forEach((ele) => {
         temp.push({
           id: ele.productId,
@@ -37,14 +51,15 @@ const RecentlyViewed = () => {
           isCarted: ele.presentInCart,
         });
       });
-      setProducts([...temp]);
     }
-  };
-  useEffect(() => {
-    if (userInfo?.data && storeDetails) {
-      getRecentViewedProducts();
-    }
-  }, [userInfo, storeDetails]);
+    setProducts([...temp]);
+  }, [data]);
+
+  // useEffect(() => {
+  //   if (userInfo?.data && storeDetails) {
+  //     getRecentViewedProducts();
+  //   }
+  // }, [userInfo, storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>

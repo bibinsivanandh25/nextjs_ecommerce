@@ -6,13 +6,15 @@ import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import { customerHome } from "public/assets";
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import {
-  addProductToCart,
+  // addProductToCart,
   editCartProduct,
   getDeliveryOptions,
   getProductDetailsByDeliveryType,
 } from "services/customer/cart";
+import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
 const DeliveryOptionsModal = ({
@@ -62,6 +64,8 @@ const DeliveryOptionsModal = ({
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [finalPriceWithDeliveryCharges, setFinalPriceWithDeliveryCharge] =
     useState(0);
+
+  const queryClient = useQueryClient();
 
   const getAllTabList = async () => {
     const { data } = await getDeliveryOptions(productId);
@@ -245,6 +249,28 @@ const DeliveryOptionsModal = ({
     return result;
   };
 
+  const addToCartMutation = useMutation(
+    (reqObj) => {
+      return serviceUtil.post(`products/product/user-cart`, reqObj);
+    },
+    {
+      onSuccess: ({ data }) => {
+        if (!data?.popUp) {
+          queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+          queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+          queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+          queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+          setModalOpen(false);
+          toastify(data?.message, "success");
+          getProducts();
+        } else setShowConfirmModal(true);
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
+    }
+  );
+
   const handleSubmit = async (flag = false) => {
     if (modalType === "ADD") {
       const payload = {
@@ -264,17 +290,18 @@ const DeliveryOptionsModal = ({
         ],
         flag,
       };
-      const { data, err } = await addProductToCart(payload);
-      if (data) {
-        if (!data?.popUp) {
-          toastify(data?.message, "success");
-          setModalOpen(false);
-          getProducts();
-        } else setShowConfirmModal(true);
-      }
-      if (err) {
-        toastify(err?.response?.data?.message, "error");
-      }
+      addToCartMutation.mutate(payload);
+      // const { data, err } = await addProductToCart(payload);
+      // if (data) {
+      //   if (!data?.popUp) {
+      //     toastify(data?.message, "success");
+      //     setModalOpen(false);
+      //     getProducts();
+      //   } else setShowConfirmModal(true);
+      // }
+      // if (err) {
+      //   toastify(err?.response?.data?.message, "error");
+      // }
     }
     if (modalType === "EDIT") {
       const payload = {

@@ -22,10 +22,13 @@ import Layout from "../components/organism/Layout";
 import Loading from "../components/organism/Loading";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 // import Image from "next/image";
 // import Loader from "public/assets/loader.gif";
 
 function MyApp({ Component, pageProps, router }) {
+  const queryClient = new QueryClient();
   useEffect(() => {
     document.addEventListener("wheel", () => {
       if (document.activeElement.type === "number") {
@@ -68,12 +71,16 @@ function MyApp({ Component, pageProps, router }) {
         </>
       );
     }
+
     if (router.pathname === "/" || router.pathname.startsWith("/customer")) {
       return (
         <SessionProvider session={pageProps.session}>
-          <ToastComponent />
-          <Loading />
-          <Layout Component={Component} pageProps={pageProps} />
+          <QueryClientProvider client={queryClient}>
+            <ToastComponent />
+            <Loading />
+            <Layout Component={Component} pageProps={pageProps} />
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
         </SessionProvider>
       );
     }

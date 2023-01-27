@@ -154,7 +154,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
               masterAddress.map((item, index) => (
                 <Box
                   key={index}
-                  className="rounded mt-3 mnh-150 p-2"
+                  className="rounded my-3 mnh-150 p-2"
                   style={{
                     border: item.primary
                       ? "1px solid #E56700"
@@ -208,7 +208,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                 </Box>
               ))}
           </Box>
-          <Box className="d-flex justify-content-center my-3">
+          <Box className="d-flex justify-content-center mb-3">
             <Typography
               className="theme_color fs-16 cursor-pointer"
               onClick={() => {

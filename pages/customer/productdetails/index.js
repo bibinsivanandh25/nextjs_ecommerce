@@ -101,11 +101,22 @@ const ProductDetails = ({ isSideBarOpen }) => {
   });
   const [codAvailable, setCodAvailable] = useState(false);
   const [fdrOptions, setfdrOptions] = useState("");
+
+  const scrollPage = () => {
+    const element = document.getElementById("MainBox");
+    element.scrollIntoView();
+  };
+  // const otherVariationScroll = () => {
+  //   const element = document.getElementById("otherVariation");
+  //   element.scrollIntoView();
+  // };
+
   useEffect(() => {
     let search;
     if (searchAnswers?.length) {
       search = setTimeout(() => {
         setShowQAPage(true);
+        scrollPage();
       }, 1000);
     }
     return () => clearTimeout(search);
@@ -132,11 +143,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setCouponsMasterData([]);
     }
   };
-  const [selectedOtherVariation, setSelectedOtherVariation] = useState([]);
+  // const [selectedOtherVariation, setSelectedOtherVariation] = useState([]);
   const [masterVariation, setMasterVariation] = useState([]);
+  const [showScroll, setShowScroll] = useState(true);
   const dispatch = useDispatch();
   const route = useRouter();
-
   // product api call
   const getProductDetails = async (id, select) => {
     const payload = {
@@ -163,36 +174,38 @@ const ProductDetails = ({ isSideBarOpen }) => {
           setMasterVariation(item.variationDetails);
         }
       });
-      const temp = [];
-      data?.allVariationListDetails.forEach((item) => {
-        item.variationPropertyPojoList.forEach((val) => {
-          val.isSelected = false;
-        });
-        temp.push(item);
-      });
+      // const temp = [];
+      // data?.allVariationListDetails.forEach((item) => {
+      //   item.variationPropertyPojoList.forEach((val) => {
+      //     val.isSelected = false;
+      //   });
+      //   temp.push(item);
+      // });
       const temp1 = [];
       const selectedvaraiation = [...select];
-      temp.forEach((item) => {
+      data?.allVariationListDetails.forEach((item) => {
         item.variationPropertyPojoList.forEach((val) => {
           selectedvaraiation.forEach((x) => {
             if (x.optionId === val.optionId) {
-              val.isSelected = true;
+              val.selected = true;
             }
           });
         });
         temp1.push(item);
       });
       setOtherVariation(temp1);
-
       const y = [];
       temp1.forEach((value) => {
         value.variationPropertyPojoList.forEach((values) => {
-          if (values.isSelected) {
+          if (values.selected) {
             y.push(values);
           }
         });
       });
-      setSelectedOtherVariation(y);
+      showScroll && scrollPage();
+      setShowScroll(false);
+      // otherVariationScroll();
+      // setSelectedOtherVariation(y);
     }
     if (err) {
       setMasterData([]);
@@ -221,9 +234,10 @@ const ProductDetails = ({ isSideBarOpen }) => {
     dispatch(
       productDetails({
         productId: item?.productVariationId,
-        variationDetails: [...item.variationDetails, ...selectedOtherVariation],
+        variationDetails: [...item.variationDetails],
       })
     );
+    scrollPage();
     route.push({
       pathname: "/customer/productdetails",
     });
@@ -234,9 +248,9 @@ const ProductDetails = ({ isSideBarOpen }) => {
       if (value.standardVariationId === item.standardVariationId) {
         value.variationPropertyPojoList.forEach((values) => {
           if (values.optionId === val.optionId) {
-            values.isSelected = true;
+            values.selected = true;
           } else {
-            values.isSelected = false;
+            values.selected = false;
           }
         });
       }
@@ -245,12 +259,12 @@ const ProductDetails = ({ isSideBarOpen }) => {
     const y = [];
     temp.forEach((value) => {
       value.variationPropertyPojoList.forEach((values) => {
-        if (values.isSelected) {
+        if (values.selected) {
           y.push(values);
         }
       });
     });
-    setSelectedOtherVariation(y);
+    // setSelectedOtherVariation(y);
     dispatch(
       productDetails({
         productId: selectedMasterData.productVariationId,
@@ -267,20 +281,12 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setSupplierDetails({});
     }
   };
-
-  const scrollPage = () => {
-    const element = document.getElementById("MainBox");
-    element.scrollIntoView();
-  };
-
   useEffect(() => {
     if (userData) {
       getProductDetails(userData.productId, userData.variationDetails);
       // setMasterVariation(userData.variationDetails);
       getRating(userData.productId);
     }
-    // Scroll the Screen to top....
-    scrollPage();
     getMinimumCart();
     getCouponsData();
   }, [userData]);
@@ -406,6 +412,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     const { data, err } = await mainProductAddToCart(payload);
     if (data) {
       if (!data?.popUp) {
+        getProductDetails(userData.productId, userData.variationDetails);
         toastify(data?.message, "success");
         setShowConfirmModal(false);
       } else {
@@ -578,15 +585,15 @@ const ProductDetails = ({ isSideBarOpen }) => {
                         }}
                         onKeyDown={(e) => {
                           if (e.keyCode === 13) {
-                            setShowQAPage(true);
                             scrollPage();
+                            setShowQAPage(true);
                           }
                         }}
                       />
                     </Grid>
                   </Grid>
                 </Grid>
-                <Grid item lg={8.5} sm={8.5} xs={7}>
+                <Grid item lg={8.5} sm={8.5} xs={7} id="rightGrid">
                   <Grid container>
                     <Grid item md={10}>
                       <Typography className="h-5 fw-500 color-orange">
@@ -1073,7 +1080,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                             <Typography className="h-5" marginLeft={3.5}>
                               MRP :{" "}
                               <span className="text-decoration-line-through fw-500">
-                                ₹ {selectedMasterData.mrp}
+                                {selectedMasterData.mrp}
                               </span>
                             </Typography>
                             {selectedMasterData?.youSaveFDR ? (
@@ -1085,7 +1092,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 </Box>
                                 <Box>
                                   <Typography className="h-5 fw-500">
-                                    {`₹ ${
+                                    {` ${
                                       selectedMasterData?.youSaveFDR.split(
                                         " "
                                       )[0]
@@ -1238,7 +1245,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               <Typography className="color-blue h-p89">
                                 Enter Pincode & Check If Its Deliverable/Not
                               </Typography>
-                              <Grid container marginY={1}>
+                              <Grid container marginY={0.5}>
                                 <Grid item xs={10}>
                                   <div
                                     className="d-flex bg-white justify-content-between"
@@ -1308,7 +1315,9 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                     variant="outlined"
                                     muiProps="py-1 w-100"
                                     onBtnClick={() => {
-                                      handleAddtoCart();
+                                      selectedMasterData.inCart
+                                        ? route.push("/customer/cart")
+                                        : handleAddtoCart();
                                     }}
                                   />
                                 </Grid>
@@ -1321,7 +1330,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               </Grid>
                             </Box>
                           ) : null}
-                          <Grid container>
+                          <Grid container id="otherVariation">
                             {otherVariation.length
                               ? otherVariation.map((item) => (
                                   <Grid item sm={12} mt={0.7}>
@@ -1338,21 +1347,32 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                           <Grid
                                             item
                                             sm={3}
-                                            className={`border ${
-                                              val.isSelected && `border-orange`
+                                            className={` ${
+                                              val.enabled
+                                                ? "variation-border"
+                                                : "border-dashed1"
+                                            } ${
+                                              val.selected && `border-orange`
                                             }`}
                                             onClick={() => {
-                                              handleOtherVariationClick(
-                                                item,
-                                                val
-                                              );
+                                              val.enabled &&
+                                                handleOtherVariationClick(
+                                                  item,
+                                                  val
+                                                );
                                             }}
                                           >
                                             <Box className="cursor-pointer">
                                               <Typography
-                                                className={`cursor-pointer h-5 px-1 py-2 ${
-                                                  val.isSelected &&
+                                                className={`${
+                                                  val.enabled &&
+                                                  "cursor-pointer"
+                                                } h-5 px-1 py-2 ${
+                                                  val.selected &&
+                                                  val.enabled &&
                                                   `color-orange`
+                                                } ${
+                                                  !val.enabled && "color-gray"
                                                 }`}
                                                 textAlign="center"
                                               >
@@ -1527,7 +1547,14 @@ const ProductDetails = ({ isSideBarOpen }) => {
               showModal={showWishListModal}
               setShowModal={setShowWishListModal}
               productId={selectedMasterData.productVariationId}
+              variationDetails={userData.variationDetails}
               getProductDetails={getProductDetails}
+              getProducts={() => {
+                getProductDetails(
+                  userData.productId,
+                  userData.variationDetails
+                );
+              }}
             />
           ) : null}
         </>
