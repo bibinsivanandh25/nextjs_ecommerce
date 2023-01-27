@@ -132,6 +132,8 @@ const AddToWishListModal = ({
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
         queryClient.invalidateQueries(["RECENTLYVIEWED"]);
         queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        queryClient.invalidateQueries(["PRODUCTVARIATIONS"]);
+        queryClient.refetchQueries("PRODUCTVARIATIONS", { force: true });
       },
     }
   );
@@ -149,6 +151,8 @@ const AddToWishListModal = ({
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
         queryClient.invalidateQueries(["RECENTLYVIEWED"]);
         queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        queryClient.invalidateQueries(["PRODUCTVARIATIONS"]);
+        queryClient.refetchQueries("PRODUCTVARIATIONS", { force: true });
         getAllWishLists();
         setSelectedList({
           id: "",
@@ -189,7 +193,7 @@ const AddToWishListModal = ({
       showSaveBtn={wishListNames?.length}
       saveBtnText="Add"
       ModalWidth="25%"
-      ModalTitle="Choose WishList"
+      ModalTitle="Choose Wishlist"
       footerClassName="justify-content-end"
       saveBtnClassName="fs-10"
       onSaveBtnClick={() => {

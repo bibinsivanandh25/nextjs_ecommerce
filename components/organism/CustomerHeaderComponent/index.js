@@ -393,10 +393,10 @@ const Header = () => {
                 "Select Your Address"
               ) : (
                 <div className="ms-2 ">
-                  <Typography className="fs-12 color-black cursor-pointer">
+                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
                     {addressDetails?.name}
                   </Typography>
-                  <Typography className="fs-12 color-black cursor-pointer">
+                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
                     {addressDetails?.cityDistrictTown},{addressDetails?.pinCode}
                   </Typography>
                 </div>
@@ -423,12 +423,12 @@ const Header = () => {
             }}
           />
         </div>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center ">
           <div
             className="px-4"
             onClick={() => handleRouting("/customer/helpcenter")}
           >
-            <Typography className="h-5 fw-bold ps-1 color-black">
+            <Typography className="h-5 fw-bold ps-1 cursor-pointer color-black">
               Help Center
             </Typography>
             {/* <Typography className="h-5 cursor-pointer">Center</Typography> */}
@@ -448,7 +448,7 @@ const Header = () => {
           <div className="ps-1">
             <Typography className="h-5 color-black">Download App</Typography>
             <Typography className="fs-12 color-black">
-              Play & win Prices/Discounts
+              Play & win Prizes/Discounts
             </Typography>
           </div>
         </div>
@@ -460,12 +460,13 @@ const Header = () => {
             route.push("/customer/home");
           }}
         >
-          <Box className="pe-2">
+          <Box className="pe-2 cursor-pointer">
             <Image
               src={supplierStoreLogo ?? ""}
               layout="fixed"
               height={30}
               width={80}
+              className="cursor-pointer"
             />
           </Box>
           <Typography

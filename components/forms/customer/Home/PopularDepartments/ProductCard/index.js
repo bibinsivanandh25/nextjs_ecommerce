@@ -33,22 +33,27 @@ const ProductCard = ({
     {
       iconName: "viewCarouselOutlinedIcon",
       title: "View",
+      tooltip: "Similar",
     },
     {
       iconName: "favoriteBorderIcon",
       title: "Favorite",
+      tooltip: "wishlist",
     },
     {
       iconName: "localMallIcon",
       title: "Favorite",
+      tooltip: "cart",
     },
     {
       iconName: "visibilityOutlinedIcon",
       title: "Search",
+      tooltip: "View",
     },
     {
       iconName: "balanceIcon",
       title: "Search",
+      tooltip: "Compare",
     },
   ];
 
@@ -270,6 +275,7 @@ const ProductCard = ({
             >
               <CustomIcon
                 type={ele.iconName}
+                title={ele.tooltip}
                 className="h-5"
                 onIconClick={() => {
                   handleCardIconClick(ele.iconName);

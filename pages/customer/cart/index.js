@@ -20,13 +20,28 @@ const Cart = () => {
   const [showChooseAddress, setShowChooseAddress] = useState(false);
   const [showDeliveryOptionModal, setShowDeliveryOptionModal] = useState(false);
   const [productDetails, setProductDetails] = useState({});
-
+  const [priceDetails, setPriceDetails] = useState({
+    deliveryCharge: 0,
+    noOfItems: 0,
+    returnCharges: 0,
+    totalPayable: 0,
+    totalPrice: 0,
+    totalSaving: 0,
+  });
   const { profileId } = useSelector((state) => state?.customer);
 
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
     if (data) {
       const result = [];
+      setPriceDetails({
+        deliveryCharge: data.priceDetails.deliveryCharges,
+        noOfItems: data.priceDetails.noOfProductInCart,
+        returnCharges: data.priceDetails.returnCharges,
+        totalPayable: data.priceDetails.totalPayable,
+        totalPrice: data.priceDetails.totalPrice,
+        totalSaving: data.priceDetails.totalSaving,
+      });
       data?.userCartProductPojos?.forEach((ele) => {
         result.push({
           id: ele.productId,
@@ -295,7 +310,7 @@ const Cart = () => {
             <Divider />
             <Box className="d-flex justify-content-between align-items-center">
               <Typography className="h-5 fw-bold my-2">
-                Price ({products?.length} items)
+                Price ({priceDetails.noOfItems} items)
               </Typography>
               <Typography className="h-5 fw-bold">
                 {getFinalPrice().salePrice}
@@ -307,10 +322,10 @@ const Cart = () => {
               </Typography>
               <Typography
                 className={`${
-                  getFinalPrice().deliveryPrice === 0 ? "text-success" : ""
+                  priceDetails.deliveryCharge === 0 ? "text-success" : ""
                 } h-5`}
               >
-                {getFinalPrice().deliveryPrice || "FREE"}
+                {priceDetails.deliveryCharge || "FREE"}
               </Typography>
             </Box>
             <Box className="d-flex justify-content-between align-items-center">
@@ -319,22 +334,22 @@ const Cart = () => {
               </Typography>
               <Typography
                 className={`${
-                  getFinalPrice().returnCharges === 0 ? "text-success" : ""
+                  priceDetails.returnCharges === 0 ? "text-success" : ""
                 } h-5`}
               >
-                {getFinalPrice().returnCharges || "FREE"}
+                {priceDetails.returnCharges || "FREE"}
               </Typography>
             </Box>
             <Divider />
             <Box className="d-flex justify-content-between align-items-center my-2">
               <Typography className="h-5 fw-bold">Total Payable</Typography>
               <Typography className="h-5 fw-bold">
-                {getFinalPrice().totalPrice}
+                {priceDetails.totalPayable}
               </Typography>
             </Box>
             <Divider />
             <Typography className="text-success text-center h-5 my-2">
-              Your Total Savings on this Order is 10000
+              Your Total Savings on this Order is {priceDetails.totalSaving}
             </Typography>
           </Paper>
           <Box className="mt-3 w-100 ps-2">
