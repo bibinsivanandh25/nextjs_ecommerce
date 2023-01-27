@@ -1,69 +1,50 @@
 import { Box, Rating, Typography } from "@mui/material";
-import { productDetails } from "features/customerSlice";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import serviceUtil from "services/utils";
 
-const TopTrending = ({ products }) => {
-  const dispatch = useDispatch();
+const TopTrending = () => {
+  const [products, setProducts] = useState([]);
 
-  const getTrandingProductDetails = (item) => {
-    dispatch(
-      productDetails({
-        productId: item.productVariationId,
-        variationDetails: item.variationDetails,
+  const getproducts = async () => {
+    await serviceUtil
+      .get("https://fakestoreapi.com/products")
+      .then((data) => {
+        setProducts([...data.data]);
       })
-    );
+      .catch(() => {
+        // console.log(err);
+      });
   };
+  useEffect(() => {
+    getproducts();
+  }, []);
 
   return (
     <Box className="p-2 container-shadow rounded">
       <Box className="mx-2 py-1 border-bottom">
         <Typography className="fw-600 fs-16">Top Trending</Typography>
       </Box>
-      {products.length ? (
-        <Box className="mxh-400 mnh-400 overflow-y-scroll hide-scrollbar">
-          {products.map((item) => (
-            // eslint-disable-next-line react/no-array-index-key
-
-            <Box
-              className="d-flex p-1"
-              key={item.productVariationId}
-              onClick={() => {
-                getTrandingProductDetails(item);
-              }}
-            >
-              <Box className="me-1">
-                <Image
-                  src={item.variationMedia}
-                  layout="fixed"
-                  width={75}
-                  height={75}
-                  className="border rounded"
-                />
-              </Box>
-              <Box className="ms-1">
-                <Typography>{item.productTitle}</Typography>
-                <Rating value={item.customerRatings} readOnly />
-              </Box>
+      <Box className="mxh-400 mnh-400 overflow-y-scroll hide-scrollbar">
+        {products.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Box className="d-flex p-1" key={index}>
+            <Box className="me-1">
+              <Image
+                src={item.image}
+                layout="fixed"
+                width={75}
+                height={75}
+                className="border rounded"
+              />
             </Box>
-          ))}
-        </Box>
-      ) : (
-        <div
-          className="mxh-400 mnh-400"
-          style={{
-            height: "30vh",
-            width: "30vw",
-            position: "relative",
-          }}
-        >
-          <Image
-            src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
-            height="250px"
-            layout="fill"
-          />
-        </div>
-      )}
+            <Box className="ms-1">
+              <Typography>{item.title}</Typography>
+              <Rating value={item.rating.rate} readOnly />
+            </Box>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 };

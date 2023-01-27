@@ -52,7 +52,7 @@ const RecentlyViewed = () => {
         Your Recently Viewed Products
       </Typography>
 
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">
         {products ? (
           products?.map((ele) => {
             return <ProductCard item={ele} />;

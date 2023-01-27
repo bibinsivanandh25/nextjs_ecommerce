@@ -154,19 +154,19 @@ const CustomerSideBarComponent = ({ children }) => {
   };
 
   useEffect(() => {
-    getCategoriesForSideMenu();
-  }, []);
+    if (supplierId) getCategoriesForSideMenu();
+  }, [supplierId]);
 
   return (
     <Box
       sx={{
         minWidth: `100vw`,
         maxWidth: "100vw",
-        position: "relative",
-        top: "90px",
+        position: "fixed",
+        top: "104px",
         display: "flex",
         height: `calc(100vh - 90px)`,
-        marginTop: "10px",
+        // marginTop: "10px",
       }}
       ref={mainRef}
     >
@@ -265,7 +265,7 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "100vw"}`,
           marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
@@ -290,7 +290,7 @@ const CustomerSideBarComponent = ({ children }) => {
           >
             {/* {children} */}
             {updatedChildren}
-            <Footer />
+            <Footer open={open} />
           </motion.div>
         </AnimatePresence>
       </Box>

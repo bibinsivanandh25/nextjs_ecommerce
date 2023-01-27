@@ -190,7 +190,7 @@ const PopularDepartments = () => {
           </Card>
         </Box>
       </Box>
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">
         {products?.length ? (
           products.map((ele) => {
             return (

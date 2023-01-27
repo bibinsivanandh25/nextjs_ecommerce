@@ -143,7 +143,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         onCloseIconClick={() => {
           setShowModal(false);
         }}
-        ModalTitle="Choose your Location"
+        ModalTitle="Choose your Address"
         titleClassName="fs-18 fw-600"
         showFooter={false}
         minHeightClassName={masterAddress.length > 2 ? "mnh-400" : ""}
@@ -187,7 +187,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                   </Box>
                   <Box className="d-flex justify-content-between">
                     <Box>
-                      <Typography className="ps-3 fs-14">
+                      <Typography className="ps-3 fs-14 pe-2 text-align-justify">
                         {" "}
                         {`${item?.address}, ${item?.location}, ${
                           item?.landmark ? `${item?.landmark},` : ""
@@ -208,7 +208,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                 </Box>
               ))}
           </Box>
-          <Box className="d-flex justify-content-center mt-3">
+          <Box className="d-flex justify-content-center my-3">
             <Typography
               className="theme_color fs-16 cursor-pointer"
               onClick={() => {

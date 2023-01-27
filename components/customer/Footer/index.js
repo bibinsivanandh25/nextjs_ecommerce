@@ -1,7 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
-const Footer = () => {
+const Footer = ({ open = false }) => {
   const list = [
     {
       title: "Products",
@@ -23,23 +24,7 @@ const Footer = () => {
         },
       ],
     },
-    {
-      title: "About us",
-      items: [
-        {
-          lable: "MPLS",
-        },
-        {
-          lable: "Ethernet",
-        },
-        {
-          lable: "Private Line",
-        },
-        {
-          lable: "MPLS",
-        },
-      ],
-    },
+
     {
       title: "Markets We Serve",
       items: [
@@ -63,21 +48,38 @@ const Footer = () => {
     {
       title: "Blogs",
       items: [
+        { lable: "Articles", route: "/customer/article" },
+        { lable: "Publication" },
+        { lable: "News" },
+      ],
+    },
+    {
+      title: "About us",
+      items: [
         {
-          lable: "MPLS",
+          lable: "Email: supplier@gmail.com",
         },
         {
-          lable: "Ethernet",
-        },
-        {
-          lable: "Private Line",
+          lable: "Contact us: 1234567890",
         },
       ],
     },
   ];
 
+  const route = useRouter();
+
   return (
-    <>
+    <div
+      style={{
+        position: "relative",
+        left: "-20px",
+        width: open ? "calc(100vw - 200px)" : "100vw",
+        bottom: "10px",
+        marginTop: "20px",
+        transition: "all 0.2s ease-out",
+        WebkitTransition: "all 0.2s ease-out",
+      }}
+    >
       <Box className="w-100 d-flex p-5 py-4" style={{ background: "#212121" }}>
         <Grid container>
           {list.map((item, index) => (
@@ -87,7 +89,13 @@ const Footer = () => {
                   {item.title}
                 </Typography>
                 {item.items.map((ele, ind) => (
-                  <Typography className="h-5 color-white mb-1" key={ind}>
+                  <Typography
+                    className="h-5 color-white mb-1 cursor-pointer"
+                    key={ind}
+                    onClick={() => {
+                      if (ele?.route) route.push(ele.route);
+                    }}
+                  >
                     {ele.lable}
                   </Typography>
                 ))}
@@ -96,8 +104,15 @@ const Footer = () => {
           ))}
         </Grid>
       </Box>
-      <Box style={{ background: "#3E3E3E", width: "100%", height: "5vh" }} />
-    </>
+      <Box
+        style={{ background: "#3E3E3E", width: "100%", height: "5vh" }}
+        className="d-flex justify-content-center align-items-center"
+      >
+        <Typography className="text-white fs-12 d-inline">
+          © Multestore
+        </Typography>
+      </Box>
+    </div>
   );
 };
 export default Footer;
