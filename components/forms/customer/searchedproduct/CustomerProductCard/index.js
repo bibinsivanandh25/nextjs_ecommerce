@@ -7,9 +7,13 @@ import makeStyles from "@mui/styles/makeStyles";
 import { AirportShuttleOutlined, RemoveRedEye } from "@mui/icons-material";
 import CarousalComponent from "@/atoms/Carousel";
 import toastify from "services/utils/toastUtils";
-import { removeProductFromWishList } from "services/customer/wishlist";
-import AddToWishListModal from "../../wishlist/AddToWishListModal";
+// import { removeProductFromWishList } from "services/customer/wishlist";
+import serviceUtil from "services/utils";
+import { useMutation, useQueryClient } from "react-query";
+import { useSelector } from "react-redux";
+import { useSession } from "next-auth/react";
 import DeliveryOptionsModal from "../../Home/buynowmodal";
+import AddToWishListModal from "../../wishlist/AddToWishListModal";
 
 const useStyles = makeStyles(() => ({
   arrow: {
@@ -56,21 +60,28 @@ function ProductDetailsCard({
   const [hover, setHover] = useState(false);
   const [iconcolor, setIconColor] = useState({});
 
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
-
-  useEffect(() => {
-    if (productDetails?.wishListed) {
-      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
-    }
-    if (productDetails?.carted) {
-      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
-    }
-  }, [productDetails]);
+  const queryClient = useQueryClient();
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
   };
+
+  const { profileId } = useSelector((state) => state.customer);
+
+  const session = useSession();
+  useEffect(() => {
+    if (
+      session?.status === "authenticated" &&
+      session?.data?.user?.role === "CUSTOMER"
+    ) {
+      setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
+    }
+  }, [session]);
   const mouseLeave = (name) => {
     if (productDetails?.wishListed && name === "favoriteBorderIcon") {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
@@ -81,27 +92,85 @@ function ProductDetailsCard({
     }
   };
 
+  const removeWishListMutation = useMutation(
+    () => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${productDetails.wishListId}&variationId=${productDetails.id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
+  const removeCartMutation = useMutation(
+    () => {
+      return serviceUtil.deleteById(
+        `products/product/cart?productVariationId=${productDetails.id}&profileId=${profileId}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        getProducts();
+        setIconColor((prev) => ({ ...prev, localMallIcon: false }));
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
+  useEffect(() => {
+    if (productDetails?.wishListed) {
+      setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
+    }
+    if (productDetails?.carted) {
+      setIconColor((prev) => ({ ...prev, localMallIcon: true }));
+    }
+  }, [productDetails]);
+
   const handleCardIconClick = async (iconName) => {
     if (iconName === "favoriteBorderIcon") {
-      if (!productDetails.isWishlisted) {
+      if (!productDetails.wishListed) {
         setShowWishListModal(true);
       } else {
-        const { data } = await removeProductFromWishList(
-          productDetails.wishlistId,
-          productDetails.id
-        );
-        if (data) {
-          toastify(data?.message, "success");
-          getProducts();
-          setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
-        }
+        removeWishListMutation.mutate();
+        // const { data } = await removeProductFromWishList(
+        //   productDetails.wishlistId,
+        //   productDetails.id
+        // );
+        // if (data) {
+        //   toastify(data?.message, "success");
+        //   getProducts();
+        //   setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        // }
       }
     }
     if (iconName === "localMallIcon") {
-      if (!productDetails.isCarted) {
+      console.log("reached", productDetails.carted);
+      if (!productDetails.carted) {
         setShowAddToCardModal(true);
+      } else {
+        removeCartMutation.mutate();
       }
     }
+    // if (iconName === "viewCarouselOutlinedIcon") {
+    //   setShowSimilarProductsDrawer(true);
+    // }
+    // if (iconName === "balanceIcon") {
+    //   setShowCompareDrawer(true);
+    // }
+    // if (iconName === "visibilityOutlinedIcon") {
+    //   setViewModalOpen(true);
+    // }
   };
 
   // tooltip css changed
@@ -124,7 +193,7 @@ function ProductDetailsCard({
           setHover(false);
         }}
         onMouseEnter={() => {
-          setHover(true);
+          if (isSignedIn) setHover(true);
         }}
         style={{ position: "relative" }}
       >

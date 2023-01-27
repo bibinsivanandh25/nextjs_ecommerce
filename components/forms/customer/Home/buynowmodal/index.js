@@ -256,13 +256,13 @@ const DeliveryOptionsModal = ({
     {
       onSuccess: ({ data }) => {
         if (!data?.popUp) {
-          toastify(data?.message, "success");
-          setModalOpen(false);
-          getProducts();
           queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
           queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
           queryClient.invalidateQueries(["RECENTLYVIEWED"]);
           queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+          setModalOpen(false);
+          toastify(data?.message, "success");
+          getProducts();
         } else setShowConfirmModal(true);
       },
       onError: (err) => {
