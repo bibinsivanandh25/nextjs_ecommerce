@@ -1,4 +1,5 @@
-import { Box, Card, Typography } from "@mui/material";
+/* eslint-disable no-nested-ternary */
+import { Box, Card, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
@@ -9,6 +10,7 @@ import {
 } from "services/customer/Home";
 import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
+import { customerHome } from "public/assets";
 import ProductCard from "./ProductCard";
 
 const PopularDepartments = () => {
@@ -18,7 +20,7 @@ const PopularDepartments = () => {
     popularDepartments: "New Arrivals",
     filterType: "WEEK",
   });
-
+  const [isLoading, setIsLoading] = useState(false);
   const storeDetails = useSelector((state) => state.customer);
 
   useEffect(() => {
@@ -52,6 +54,7 @@ const PopularDepartments = () => {
   // };
 
   const getProducts = async () => {
+    setIsLoading(true);
     if (filters.popularDepartments === "New Arrivals") {
       const payload = {
         filterType: filters.filterType,
@@ -59,6 +62,7 @@ const PopularDepartments = () => {
         profileId: storeDetails?.profileId,
       };
       const { data } = await getNewArrivalProducts(payload);
+      setIsLoading(false);
       return data;
     }
     if (filters.popularDepartments === "Most Popular") {
@@ -69,6 +73,7 @@ const PopularDepartments = () => {
       };
       const { data } = await getMostPopularProducts(payload);
       if (data) {
+        setIsLoading(false);
         return data;
       }
     }
@@ -80,6 +85,7 @@ const PopularDepartments = () => {
       };
       const { data } = await getBestSoldProducts(payload);
       if (data) {
+        setIsLoading(false);
         return data;
       }
     }
@@ -92,6 +98,7 @@ const PopularDepartments = () => {
       };
       const { data } = await getFeaturedProducts(payload);
       if (data) {
+        setIsLoading(false);
         return data;
       }
     }
@@ -102,6 +109,7 @@ const PopularDepartments = () => {
     ["POPULARDEPARTMENTS"],
     () => getProducts(),
     {
+      staleTime: 0,
       retry: false,
       retryOnMount: false,
       refetchOnWindowFocus: false,
@@ -157,12 +165,12 @@ const PopularDepartments = () => {
         <Box className="col-5 d-flex justify-content-around  h-5 pb-1">
           <Card
             onClick={() => {
+              setProducts([]);
               if (filters.popularDepartments !== "New Arrivals") {
                 setFilters({
                   popularDepartments: "New Arrivals",
                   filterType: "WEEK",
                 });
-                setProducts([]);
               }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
@@ -175,12 +183,12 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
+              setProducts([]);
               if (filters.popularDepartments !== "Best Seller") {
                 setFilters({
                   popularDepartments: "Best Seller",
                   filterType: "WEEK",
                 });
-                setProducts([]);
               }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
@@ -193,6 +201,7 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
+              setProducts([]);
               if (filters.popularDepartments !== "Most Popular") {
                 setFilters({
                   popularDepartments: "Most Popular",
@@ -211,6 +220,7 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
+              setProducts([]);
               if (filters.popularDepartments !== "Featured") {
                 setFilters({
                   popularDepartments: "Featured",
@@ -236,6 +246,7 @@ const PopularDepartments = () => {
                 : ""
             }`}
             onClick={() => {
+              setProducts([]);
               if (filters.filterType !== "WEEK") {
                 setFilters({
                   ...filters,
@@ -254,6 +265,7 @@ const PopularDepartments = () => {
                 : ""
             }`}
             onClick={() => {
+              setProducts([]);
               if (filters.filterType !== "MONTH") {
                 setFilters({
                   ...filters,
@@ -272,7 +284,7 @@ const PopularDepartments = () => {
           products.map((ele) => {
             return <ProductCard key={ele.id} item={ele} />;
           })
-        ) : (
+        ) : !isLoading ? (
           <div
             className="w-100 mx-2"
             style={{
@@ -280,12 +292,18 @@ const PopularDepartments = () => {
               position: "relative",
             }}
           >
-            <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Sorryyyy.png"
-              height="250px"
-              layout="fill"
-            />
+            <Image src={customerHome.noProducts} height="250px" layout="fill" />
           </div>
+        ) : (
+          <Box className="d-flex">
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+          </Box>
         )}
       </Box>
     </Box>

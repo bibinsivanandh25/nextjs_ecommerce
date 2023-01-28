@@ -10,10 +10,15 @@ import toastify from "services/utils/toastUtils";
 // import { removeProductFromWishList } from "services/customer/wishlist";
 import serviceUtil from "services/utils";
 import { useMutation, useQueryClient } from "react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { productDetails } from "features/customerSlice";
 import DeliveryOptionsModal from "../../Home/buynowmodal";
 import AddToWishListModal from "../../wishlist/AddToWishListModal";
+import CompareProductDrawer from "../compareproducts/compareProductDrawer";
+import SimilarProducts from "../SimilarProduct";
+import ViewModalComponent from "../ViewModalComponent";
 
 const useStyles = makeStyles(() => ({
   arrow: {
@@ -52,7 +57,7 @@ const iconListData = [
 ];
 
 function ProductDetailsCard({
-  productDetails = {},
+  productDetail = {},
   handleIconClick = () => {},
   viewType = "",
   getProducts = () => {},
@@ -61,8 +66,12 @@ function ProductDetailsCard({
   const [iconcolor, setIconColor] = useState({});
 
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [showAddToCardModal, setShowAddToCardModal] = useState(false);
   const [showWishListModal, setShowWishListModal] = useState(false);
+  const [showCompareDrawer, setShowCompareDrawer] = useState(false);
+  const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
+    useState(false);
   const queryClient = useQueryClient();
 
   const mouseEnter = (name) => {
@@ -83,9 +92,9 @@ function ProductDetailsCard({
     }
   }, [session]);
   const mouseLeave = (name) => {
-    if (productDetails?.wishListed && name === "favoriteBorderIcon") {
+    if (productDetail?.wishListed && name === "favoriteBorderIcon") {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
-    } else if (productDetails?.carted && name === "localMallIcon") {
+    } else if (productDetail?.carted && name === "localMallIcon") {
       setIconColor((prev) => ({ ...prev, localMallIcon: true }));
     } else {
       setIconColor((prev) => ({ ...prev, [name]: false }));
@@ -95,7 +104,7 @@ function ProductDetailsCard({
   const removeWishListMutation = useMutation(
     () => {
       return serviceUtil.put(
-        `/users/customer/wishlist?wishlistId=${productDetails.wishListId}&variationId=${productDetails.id}`
+        `/users/customer/wishlist?wishlistId=${productDetail.wishListId}&variationId=${productDetail.id}`
       );
     },
     {
@@ -113,7 +122,7 @@ function ProductDetailsCard({
   const removeCartMutation = useMutation(
     () => {
       return serviceUtil.deleteById(
-        `products/product/cart?productVariationId=${productDetails.id}&profileId=${profileId}`
+        `products/product/cart?productVariationId=${productDetail.id}&profileId=${profileId}`
       );
     },
     {
@@ -129,58 +138,63 @@ function ProductDetailsCard({
     }
   );
   useEffect(() => {
-    if (productDetails?.wishListed) {
+    if (productDetail?.wishListed) {
       setIconColor((prev) => ({ ...prev, favoriteBorderIcon: true }));
     }
-    if (productDetails?.carted) {
+    if (productDetail?.carted) {
       setIconColor((prev) => ({ ...prev, localMallIcon: true }));
     }
-  }, [productDetails]);
+  }, [productDetail]);
 
   const handleCardIconClick = async (iconName) => {
     if (iconName === "favoriteBorderIcon") {
-      if (!productDetails.wishListed) {
+      if (!productDetail.wishListed) {
         setShowWishListModal(true);
       } else {
         removeWishListMutation.mutate();
-        // const { data } = await removeProductFromWishList(
-        //   productDetails.wishlistId,
-        //   productDetails.id
-        // );
-        // if (data) {
-        //   toastify(data?.message, "success");
-        //   getProducts();
-        //   setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
-        // }
       }
     }
     if (iconName === "localMallIcon") {
-      console.log("reached", productDetails.carted);
-      if (!productDetails.carted) {
+      if (!productDetail.carted) {
         setShowAddToCardModal(true);
       } else {
         removeCartMutation.mutate();
       }
     }
-    // if (iconName === "viewCarouselOutlinedIcon") {
-    //   setShowSimilarProductsDrawer(true);
-    // }
-    // if (iconName === "balanceIcon") {
-    //   setShowCompareDrawer(true);
-    // }
-    // if (iconName === "visibilityOutlinedIcon") {
-    //   setViewModalOpen(true);
-    // }
+    if (iconName === "viewCarouselOutlinedIcon") {
+      setShowSimilarProductsDrawer(true);
+    }
+    if (iconName === "balanceIcon") {
+      setShowCompareDrawer(true);
+    }
+    if (iconName === "visibilityOutlinedIcon") {
+      setViewModalOpen(true);
+    }
   };
+  const dispatch = useDispatch();
+  const route = useRouter();
 
   // tooltip css changed
+  const handleProductClick = () => {
+    if (productDetail?.variationDetails) {
+      dispatch(
+        productDetails({
+          productId: productDetail?.id,
+          variationDetails: productDetail.variationDetails,
+        })
+      );
+      route.push({
+        pathname: "/customer/productdetails",
+      });
+    }
+  };
   const classes = useStyles();
   return (
-    <div
+    <Paper
       className={
         viewType === "row"
-          ? "w-100 d-flex bg-white p-1 rounded border my-2 "
-          : "w-100 d-flex flex-column bg-white py-1 px-2 rounded  "
+          ? " row w-100 p-1 rounded border my-2 "
+          : " d-flex flex-column py-1 px-2 rounded"
       }
     >
       <Paper
@@ -196,21 +210,23 @@ function ProductDetailsCard({
           if (isSignedIn) setHover(true);
         }}
         style={{ position: "relative" }}
+        className="col-md-4"
       >
         <>
           <div className="poistion-relative">
             <CarousalComponent
               interval={1500}
               autoPlay={hover}
-              stopOnHover={false}
+              stopOnHover
               dynamicHeight={false}
-              list={productDetails.images}
+              list={productDetail.images}
               showIndicators={hover}
               carouselImageMaxHeight={viewType === "Grid" ? "250px" : "0"}
               carouselImageMinHeight={viewType === "Grid" ? "250px" : "170px"}
+              onClickItem={handleProductClick}
             />
           </div>
-          {/* {productDetails.flag && (
+          {/* {productDetail.flag && (
             <Badge
               style={{
                 borderTopLeftRadius: "4px",
@@ -225,7 +241,7 @@ function ProductDetailsCard({
         </>
         <Box
           className={hover ? "d-block" : "d-none"}
-          style={{ position: "absolute", top: 10, right: 0 }}
+          style={{ position: "absolute", top: 0, right: 0 }}
         >
           <Box className="d-flex flex-row-reverse p-2">
             <Box className="d-flex flex-column">
@@ -264,29 +280,35 @@ function ProductDetailsCard({
         </Box>
       </Paper>
       <Box
-        className={viewType === "row" ? "ms-3 h-150 w-100 " : "my-1 h-150 ps-2"}
+        className={
+          viewType === "row" ? "ms-3 h-150 w-75 col " : "my-1 h-150 ps-2"
+        }
       >
         <Box
           className={viewType === "row" ? "d-flex justify-content-between" : ""}
         >
-          <p className="fs-18 fw-600 text-truncate">{productDetails.title}</p>
-          {/* {productDetails.offerFlag && viewType === "row" && (
+          <p className="fs-18 fw-600 text-truncate ">{productDetail.title}</p>
+          {/* {productDetail.offerFlag && viewType === "row" && (
             <Badge className="text-danger h-5">
               Offer ends in 09h 42min 2sec
             </Badge>
           )} */}
         </Box>
         <p
-          className="h-5 text-secondary"
-          style={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            wordBreak: "break-all",
-            whiteSpace: "nowrap",
+          className=""
+          // style={{
+          //   textOverflow: "ellipsis",
+          //   overflow: "hidden",
+          //   wordBreak: "break-all",
+          //   whiteSpace: "nowrap",
+          // }}
+          dangerouslySetInnerHTML={{
+            __html: productDetail.description,
           }}
-        >
-          {productDetails.description}
-        </p>
+        />
+        {/* // >
+        //   {productDetail.description}
+        // </p> */}
         <div className="h-50">
           <div
             style={{
@@ -305,13 +327,13 @@ function ProductDetailsCard({
             >
               Actual Cost :
             </span>
-            <span className="h-5 fw-bold">{productDetails.actualCost}</span>
+            <span className="h-5 fw-bold">{productDetail.actualCost}</span>
             <Tooltip title="MRP" placement="top">
               <span className=" h-5 ms-2 text-decoration-line-through">
-                {productDetails?.mrp}
+                {productDetail?.mrp}
               </span>
             </Tooltip>
-            <span className="h-5">({productDetails.actualCostOff} Off)</span>
+            <span className="h-5">({productDetail.actualCostOff} Off)</span>
           </div>
           <div
             style={{
@@ -331,15 +353,15 @@ function ProductDetailsCard({
               Free Delivery :
             </span>
             <span className="h-5 fw-bold">
-              {productDetails.freeDeliveryCost}
+              {productDetail.freeDeliveryCost}
             </span>
             <Tooltip title="MRP" placement="top">
               <span className=" h-5 ms-2 text-decoration-line-through">
-                {productDetails.mrp}
+                {productDetail.mrp}
               </span>
             </Tooltip>
             <span className="h-5">
-              ({productDetails.freeDeliveryCostOff} Off)
+              ({productDetail.freeDeliveryCostOff} Off)
             </span>
           </div>
         </div>
@@ -357,7 +379,7 @@ function ProductDetailsCard({
           >
             <div className="ms-2 me-3">
               <RemoveRedEye className="fs-14 color-gray " />
-              <span className="h-5"> {productDetails.viewCount}</span>
+              <span className="h-5"> {productDetail.viewCount}</span>
             </div>
           </Tooltip>
           <Tooltip
@@ -368,11 +390,11 @@ function ProductDetailsCard({
           >
             <div>
               <AirportShuttleOutlined className="fs-14 color-gray" />
-              <span className="h-5"> {productDetails.orderCount}</span>
+              <span className="h-5"> {productDetail.orderCount}</span>
             </div>
           </Tooltip>
         </div>
-        {productDetails.offerFlag && viewType === "Grid" && (
+        {productDetail.offerFlag && viewType === "Grid" && (
           <Box className="d-flex justify-content-end">
             <p className="text-danger h-5"> Offer ends in 09h 42min 2sec</p>
           </Box>
@@ -382,7 +404,7 @@ function ProductDetailsCard({
         <AddToWishListModal
           showModal={showWishListModal}
           setShowModal={setShowWishListModal}
-          productId={productDetails?.id}
+          productId={productDetail?.id}
           getProducts={getProducts}
         />
       ) : null}
@@ -391,12 +413,37 @@ function ProductDetailsCard({
           getProducts={getProducts}
           modalOpen={showAddToCardModal}
           setModalOpen={setShowAddToCardModal}
-          productId={productDetails?.id}
-          skuId={productDetails?.skuId}
+          productId={productDetail?.id}
+          skuId={productDetail?.skuId}
           modalType="ADD"
         />
       )}
-    </div>
+      {viewModalOpen && (
+        <ViewModalComponent
+          setViewModalOpen={setViewModalOpen}
+          viewModalOpen={viewModalOpen}
+          productId={productDetail?.id}
+          getProducts={getProducts}
+        />
+      )}
+      {showSimilarProductsDrawer && (
+        <SimilarProducts
+          setShowDrawer={setShowSimilarProductsDrawer}
+          showDrawer={showSimilarProductsDrawer}
+          productId={productDetail?.id}
+          subCategoryId={productDetail?.subCategoryId}
+        />
+      )}
+      {showCompareDrawer ? (
+        <CompareProductDrawer
+          showDrawer={showCompareDrawer}
+          setShowDrawer={setShowCompareDrawer}
+          imgSrc={productDetail?.images[0]?.src}
+          productId={productDetail?.id}
+          subCategoryId={productDetail?.subCategoryId}
+        />
+      ) : null}
+    </Paper>
   );
 }
 

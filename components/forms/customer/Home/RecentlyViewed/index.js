@@ -8,7 +8,6 @@ import ProductCard from "../PopularDepartments/ProductCard";
 
 const RecentlyViewed = () => {
   const [products, setProducts] = useState([]);
-
   const userInfo = useSession();
   const storeDetails = useSelector((state) => state?.customer);
 
