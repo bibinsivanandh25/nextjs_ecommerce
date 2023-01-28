@@ -4,7 +4,14 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-param-reassign */
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Avatar, Box, MenuItem, Typography, Grid } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  MenuItem,
+  Typography,
+  Grid,
+  Tooltip,
+} from "@mui/material";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import Image from "next/image";
@@ -55,7 +62,6 @@ const Header = () => {
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [showFavoriteList, setShowFavoriteList] = useState(false);
   const customer = useSelector((state) => state.customer);
-  const { storeThemes } = useSelector((state) => state.customer);
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
@@ -71,6 +77,8 @@ const Header = () => {
     profileName,
     addressDetails,
     bgcolor,
+    supplierId,
+    storeThemes,
   } = useSelector((state) => state.customer);
 
   const [storeDetails, setstoreDetails] = useState(null);
@@ -119,13 +127,13 @@ const Header = () => {
   };
 
   const getMainCategoriesList = async () => {
-    const { data } = await getAllMainCategories();
+    const { data } = await getAllMainCategories(supplierId);
     if (data) {
       const temp = data?.map((ele) => {
         return {
-          id: ele.mainCategoryId,
-          label: ele.mainCategoryName,
-          value: ele.mainCategoryName,
+          id: ele.id,
+          label: ele.name,
+          value: ele.name,
         };
       });
       temp.push({
@@ -138,8 +146,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    getMainCategoriesList();
-  }, []);
+    if (supplierId) getMainCategoriesList();
+  }, [supplierId]);
 
   useEffect(() => {
     if (
@@ -180,6 +188,8 @@ const Header = () => {
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
             supplierId: storeData.supplierId,
+            supplieremailId: storeData.emailId,
+            suppliermobileNumber: storeData.mobileNumber,
           })
         );
         setStoreCode("");
@@ -212,6 +222,8 @@ const Header = () => {
           shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
           addStoreFlag: false,
           supplierId: storeData.supplierId,
+          supplieremailId: storeData.emailId,
+          suppliermobileNumber: storeData.mobileNumber,
         })
       );
       setStoreCode("");
@@ -441,14 +453,16 @@ const Header = () => {
           >
             Explore Stores
           </Typography>
-          <div className="d-flex justify-content-center align-items-center">
-            <FaApple className="fs-4" color="black" />
-            <FaGooglePlay className="fs-5 ms-1 color-black" />
+          <div className="d-flex justify-content-center align-items-center  cursor-pointer">
+            <FaApple className="fs-4 cursor-pointer" color="black" />
+            <FaGooglePlay className="fs-5 ms-1 cursor-pointer color-black" />
           </div>
           <div className="ps-1">
-            <Typography className="h-5 color-black">Download App</Typography>
-            <Typography className="fs-12 color-black">
-              Play & win Prizes/Discounts
+            <Typography className="h-5 color-black cursor-pointer">
+              Download App
+            </Typography>
+            <Typography className="fs-12 color-black cursor-pointer">
+              Play & win Prices/Discounts
             </Typography>
           </div>
         </div>
@@ -493,7 +507,7 @@ const Header = () => {
               className="bg-white rounded"
               list={categoriesList}
               value={category}
-              freeSolo
+              // freeSolo
               placeholder="Category"
               onDropdownSelect={(value) => {
                 if (value) {
@@ -553,9 +567,7 @@ const Header = () => {
             sx={{
               m: "0.08rem",
             }}
-            className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer ${
-              storeCode !== "" ? "" : "invisible"
-            }`}
+            className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer `}
             onClick={() => {
               setShowConfirmModal(true);
             }}
@@ -597,23 +609,25 @@ const Header = () => {
           <></>
         ) : (
           <>
-            <span
-              className="cursor-pointer"
-              onClick={() => {
-                if (userId === "") {
-                  route.push("/auth/customer/signin");
-                  return;
-                }
-                setShowFavoriteList(true);
-                setOpen(true);
-              }}
-            >
-              <FavouriteStoreSvg
-                height={40}
-                width={40}
-                className="fs-2 cursor-pointer position-relative "
-              />
-            </span>
+            <Tooltip title="Favourite Store">
+              <span
+                className="cursor-pointer"
+                onClick={() => {
+                  if (userId === "") {
+                    route.push("/auth/customer/signin");
+                    return;
+                  }
+                  setShowFavoriteList(true);
+                  setOpen(true);
+                }}
+              >
+                <FavouriteStoreSvg
+                  height={40}
+                  width={40}
+                  className="fs-2 cursor-pointer position-relative "
+                />
+              </span>
+            </Tooltip>
             <div
               className="cursor-pointer"
               onClick={() => {
@@ -629,16 +643,20 @@ const Header = () => {
                 & Orders
               </Typography>
             </div>
-            <FiShoppingCart
-              className="fs-2 cursor-pointer color-white"
-              onClick={() => {
-                if (userId === "") {
-                  route.push("/auth/customer/signin");
-                  return;
-                }
-                handleRouting("/customer/cart");
-              }}
-            />
+            <Tooltip title="Cart">
+              <span>
+                <FiShoppingCart
+                  className="fs-2 cursor-pointer color-white"
+                  onClick={() => {
+                    if (userId === "") {
+                      route.push("/auth/customer/signin");
+                      return;
+                    }
+                    handleRouting("/customer/cart");
+                  }}
+                />
+              </span>
+            </Tooltip>
           </>
         )}
         <div className="cursor-pointer position-ralative pe-3">
@@ -743,7 +761,7 @@ const Header = () => {
                 </MenuItem>
                 <MenuItem onClick={() => setShowSwitchProfile(true)}>
                   <Typography className="h-5 cursor-pointer">
-                    Switch Profiles
+                    Switch Profile
                   </Typography>
                 </MenuItem>
                 <MenuItem

@@ -187,7 +187,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                   </Box>
                   <Box className="d-flex justify-content-between">
                     <Box>
-                      <Typography className="ps-3 fs-14">
+                      <Typography className="ps-3 fs-14 pe-2 text-align-justify">
                         {" "}
                         {`${item?.address}, ${item?.location}, ${
                           item?.landmark ? `${item?.landmark},` : ""
