@@ -33,10 +33,13 @@ const MyProfile = () => {
     gender: "",
     profileImage: "",
   });
-
   const [otp, setotp] = useState("xxxx");
   const [emailOtp, setemailOtp] = useState("xxxx");
   const [CustomerStaticDetails, setCustomerStaticDetails] = useState([]);
+  const [showResendBtn, setshowResendBtn] = useState({
+    email: false,
+    phone: false,
+  });
   const [otpInput, setotpInput] = useState({ phone: "", emailId: "" });
   const [ErrorObj, setErrorObj] = useState({
     customerName: "",
@@ -54,6 +57,20 @@ const MyProfile = () => {
     emailOtp: false,
     emailValidOtp: false,
   });
+
+  useEffect(() => {
+    if (disableEdit.emailValidOtp) {
+      setTimeout(() => {
+        setshowResendBtn({ ...showResendBtn, email: true });
+      }, [60000]);
+    }
+    if (disableEdit.validOtp) {
+      setTimeout(() => {
+        setshowResendBtn({ ...showResendBtn, phone: true });
+      }, [60000]);
+    }
+  }, [disableEdit]);
+
   const { userId } = useSelector((state) => state?.customer);
   const validateFields = () => {
     let flag = false;
@@ -377,6 +394,16 @@ const MyProfile = () => {
                 </Grid>
               )}
             </Grid>
+            {/* <div>{seconds}</div> */}
+            {disableEdit.emailValidOtp && showResendBtn.email && (
+              <ButtonComponent
+                className="ms-2 fs-18"
+                label="Resend OTP"
+                onBtnClick={() => {
+                  sendEmailOtpFunction();
+                }}
+              />
+            )}
           </Grid>
 
           <Grid item xs={6}>
@@ -468,6 +495,15 @@ const MyProfile = () => {
                 </Grid>
               )}
             </Grid>
+            {disableEdit.validOtp && showResendBtn.phone && (
+              <ButtonComponent
+                className="ms-2 fs-18"
+                label="Resend OTP"
+                onBtnClick={() => {
+                  getOtpFunction();
+                }}
+              />
+            )}
           </Grid>
           <Grid item xs={5}>
             <DatePickerComponent

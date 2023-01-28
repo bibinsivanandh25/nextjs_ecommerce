@@ -50,6 +50,13 @@ const SwitchProfile = ({
     }
   };
 
+  const TruncateName = ({ name }) => {
+    const truncatedName =
+      // eslint-disable-next-line prefer-template
+      name.length > 20 ? name.substring(0, 20) + "..." : name;
+
+    return <div>{truncatedName}</div>;
+  };
   const handleProfileSwitch = async (profile, showMessage = true) => {
     const { data, err } = await switchProfile(
       profile.profileId,
@@ -188,18 +195,20 @@ const SwitchProfile = ({
     return (
       <div className="profile_overLay">
         <div className="d-flex h-100 align-items-center justify-content-center shadow rounded-circle">
-          <Tooltip title="Switch">
-            <HiSwitchHorizontal
-              className="fs-20 m-1  cursor-pointer rounded-circle  theme_bg_color text-white"
-              style={{
-                // fontSize: "19px !important",
-                padding: "2px",
-              }}
-              onClick={() => {
-                handleProfileSwitch(item);
-              }}
-            />
-          </Tooltip>
+          {!item.profilePrimary && (
+            <Tooltip title="Switch">
+              <HiSwitchHorizontal
+                className="fs-20 m-1  cursor-pointer rounded-circle  theme_bg_color text-white"
+                style={{
+                  // fontSize: "19px !important",
+                  padding: "2px",
+                }}
+                onClick={() => {
+                  handleProfileSwitch(item);
+                }}
+              />
+            </Tooltip>
+          )}
           <Tooltip title="Update">
             <Edit
               className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
@@ -216,7 +225,7 @@ const SwitchProfile = ({
               }}
             />
           </Tooltip>
-          {item.profilePrimary && (
+          {!item.profilePrimary && (
             <Tooltip title="Delete">
               <Delete
                 className="fs-20 m-1  cursor-pointer rounded-circle text-white theme_bg_color"
@@ -239,18 +248,22 @@ const SwitchProfile = ({
 
   return (
     <ModalComponent
-      showHeader={false}
+      // showHeader={false}
+      ModalTitle="Switch Profile"
       showFooter={false}
       open={showSwitchProfile}
       modalClose={() => {
         setShowSwitchProfile(false);
       }}
-      ModalWidth={400}
+      ModalWidth={500}
+      onCloseIconClick={() => {
+        setShowSwitchProfile(false);
+      }}
     >
       <Box className="pt-3 pb-3">
-        <Box className="d-flex justify-content-between align-items-center border-bottom">
+        {/* <Box className="d-flex justify-content-between align-items-center border-bottom">
           <Typography className="fs-20 fw-bold">Switch Profile</Typography>
-        </Box>
+        </Box> */}
         <Box className="p-2">
           <Grid container spacing={2}>
             {profileList.map((item, index) => {
@@ -328,12 +341,15 @@ const SwitchProfile = ({
                     </Paper>
                   )}
                   <Typography
-                    className=" fw-500"
+                    className=" fw-500 "
                     onClick={() => {
                       handleProfileSwitch(item);
                     }}
                   >
-                    {item.profileName}
+                    {/* {item.profileName} */}
+                    <TruncateName
+                      name={JSON.parse(JSON.stringify(item.profileName))}
+                    />
                   </Typography>
                 </Grid>
               );
