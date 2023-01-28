@@ -311,6 +311,7 @@ const WishList = () => {
         </Box>
       </Box>
       <ModalComponent
+        ModalTitle=""
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
