@@ -222,7 +222,7 @@ const Home = () => {
                     className="theme_svg_fill"
                   />
                   <Typography
-                    className="fw-bold h-5 cursor-pointer"
+                    className="fw-bold h-5 cursor-pointer ps-2"
                     onClick={() => {
                       route.push("/customer/couponapplicableproducts");
                     }}
@@ -299,7 +299,10 @@ const Home = () => {
                   item
                   md={1.8}
                   sm={3}
-                  className="d-flex justify-content-evenly p-3  align-items-center"
+                  onClick={() => {
+                    route.push("/customer/helpandsupport");
+                  }}
+                  className="d-flex justify-content-evenly p-3  align-items-center cursor-pointer"
                 >
                   <ChatBubbleSvg
                     height={40}
@@ -308,11 +311,11 @@ const Home = () => {
                   />
                   {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
-                  <Box>
-                    <Typography className="fw-bold h-5">
+                  <Box className="cursor-pointer">
+                    <Typography className="fw-bold h-5 cursor-pointer">
                       Help & Support
                     </Typography>
-                    <span className="h-5">Available</span>
+                    <span className="h-5 cursor-pointer">Available</span>
                   </Box>
                 </Grid>
               </Grid>
