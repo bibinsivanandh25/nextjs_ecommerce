@@ -7,7 +7,7 @@ import CustomIcon from "services/iconUtils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getCustomerProfile,
   sendOtpEmailOrPhone,
@@ -22,6 +22,7 @@ import { format, parse } from "date-fns";
 import { getBase64 } from "services/utils/functionUtils";
 import SimpleOtpForm from "@/forms/auth/VerifyOTP/SimpleOtpForm";
 import validationRegex from "services/utils/regexUtils";
+import { storeUserInfo } from "features/customerSlice";
 
 const MyProfile = () => {
   const profilePicRef = useRef(null);
@@ -40,6 +41,7 @@ const MyProfile = () => {
     email: false,
     phone: false,
   });
+  const dispatch = useDispatch();
   const [otpInput, setotpInput] = useState({ phone: "", emailId: "" });
   const [ErrorObj, setErrorObj] = useState({
     customerName: "",
@@ -146,13 +148,21 @@ const MyProfile = () => {
       };
       const { data, errRes } = await updateProfile(payload);
       if (data) {
-        toastify(data, "success");
+        toastify(data.message, "success");
         getUserDetails();
+        const userInfo = {
+          emailId: data?.data?.emailId,
+          gender: data?.data?.gender,
+          mobileNumber: data?.data?.mobileNumber,
+          customerName: data?.data?.customerName,
+        };
+        dispatch(storeUserInfo(userInfo));
       } else if (errRes) {
         toastify(errRes, "error");
       }
     }
   };
+
   const getOtpFunction = async () => {
     if (customerDetails.mobileNumber.length === 10) {
       setErrorObj({ ...ErrorObj, mobileNumber: "" });

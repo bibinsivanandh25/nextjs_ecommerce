@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Grid } from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import { useSelector } from "react-redux";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
@@ -56,7 +56,16 @@ const BankDetails = () => {
     return Object.entries(details).map(([key, value]) => {
       return (
         <div key={key}>
-          <div className={`${key === "isChecked" ? "d-none" : ""} fs-12 my-2`}>
+          <div
+            className={`${
+              // eslint-disable-next-line no-nested-ternary
+              key === "isChecked"
+                ? "d-none"
+                : key === "ReBankAcc"
+                ? "d-none"
+                : ""
+            } fs-12 my-2`}
+          >
             {key != "id" ? `${key} : ${value}` : null}
           </div>
         </div>
@@ -126,21 +135,25 @@ const BankDetails = () => {
                 )}
               </Grid>
               <Grid className="my-2">
-                <EditIcon
+                <Tooltip title="edit">
+                  <EditIcon
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setSelectedBankDetails(bankDetails[index]);
+                      setIsEdit(true);
+                      setShowModal(true);
+                    }}
+                  />
+                </Tooltip>
+              </Grid>
+              <Tooltip title="delete">
+                <DeleteIcon
                   className="cursor-pointer"
                   onClick={() => {
-                    setSelectedBankDetails(bankDetails[index]);
-                    setIsEdit(true);
-                    setShowModal(true);
+                    deleteBankData(bankDetails[index].id);
                   }}
                 />
-              </Grid>
-              <DeleteIcon
-                className="cursor-pointer"
-                onClick={() => {
-                  deleteBankData(bankDetails[index].id);
-                }}
-              />
+              </Tooltip>
             </Grid>
           </Grid>
         </Grid>
@@ -163,7 +176,9 @@ const BankDetails = () => {
             setSelectedBankDetails([]);
           }}
         >
-          <AddCircleIcon className="text-secondary fs-1" />
+          <Tooltip title="add bank">
+            <AddCircleIcon className="text-secondary fs-1" />
+          </Tooltip>
         </Grid>
         <Grid item xs={2} />
       </Grid>

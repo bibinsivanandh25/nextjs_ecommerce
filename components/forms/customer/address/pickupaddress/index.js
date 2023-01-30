@@ -14,7 +14,10 @@ import {
 import NewAddress from "@/forms/customer/address/AddNewAddress";
 import { storeUserInfo } from "features/customerSlice";
 
-const PickUpAddress = ({ setaddressList, pageType = "supplier" }) => {
+const PickUpAddress = ({
+  setaddressList = () => {},
+  pageType = "supplier",
+}) => {
   const customer = useSelector((state) => state.customer);
   const [newAddressModal, setNewAddressModal] = useState(false);
   const [modalType, setModalType] = useState("add");

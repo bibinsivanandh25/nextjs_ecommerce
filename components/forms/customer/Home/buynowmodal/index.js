@@ -319,7 +319,7 @@ const DeliveryOptionsModal = ({
             </Typography>
             {selectedTab === "FREEDELIVERYANDRETURN" ? (
               <CheckBoxComponent
-                label={`${productDetails.fastDeliveryCharges} - Fastest delivery by sunday , sep 18`}
+                label={`₹ ${productDetails.fastDeliveryCharges} - Fastest delivery by sunday , sep 18`}
                 isChecked={
                   selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
                 }
@@ -394,7 +394,7 @@ const DeliveryOptionsModal = ({
                 isChecked={
                   selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
                 }
-                label={`${productDetails?.deliveryCharges}- Delivery by wed, sep 22`}
+                label={`₹ ${productDetails?.deliveryCharges}- Delivery by wed, sep 22`}
                 onRadioChange={() => {
                   setSelectedDeliveryandReturnCharges({
                     ...selectedDeliveryandReturnCharges,
@@ -447,7 +447,7 @@ const DeliveryOptionsModal = ({
                   });
                 }
               }}
-              label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
+              label={`₹ ${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
             />
           </Box>
           <Box
@@ -508,7 +508,7 @@ const DeliveryOptionsModal = ({
                     noFreeDeliveryFastReturn: false,
                   });
                 }}
-                label={`${productDetails?.returnCharges} - Return by wed, sep 22`}
+                label={`₹ ${productDetails?.returnCharges} - Return by wed, sep 22`}
               />
             </Box>
             <RadiobuttonComponent
@@ -533,7 +533,7 @@ const DeliveryOptionsModal = ({
                   noFreeDeliveryFastReturn: true,
                 });
               }}
-              label={`${productDetails?.fastReturnCharges}- Fastest Return by mon, sep 22`}
+              label={`₹ ${productDetails?.fastReturnCharges}- Fastest Return by mon, sep 22`}
             />
           </Box>
         </Grid>
@@ -576,7 +576,8 @@ const DeliveryOptionsModal = ({
       >
         <Box marginLeft={2}>
           <Typography className="d-flex align-items-center">
-            <span className="h-4">Final Price -</span>{" "}
+            <span className="h-4">Final Price: </span>
+            <span className="h-3">&nbsp; ₹ </span>
             <span className="h-3 theme_color">&nbsp;{getFinalPrice()}</span>
           </Typography>
         </Box>

@@ -228,6 +228,8 @@ const WishList = () => {
       <Box className="d-flex justify-content-between">
         <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
           <ButtonTabsList
+            editBtnName="Edit"
+            deleteBtnName="Delete"
             tabsList={[...wishListNames]}
             showEditDelete
             activeTab={selectedList.index}
@@ -274,6 +276,7 @@ const WishList = () => {
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
+          setError(false);
         }}
         ClearBtnText="Clear"
         saveBtnText={
@@ -301,7 +304,7 @@ const WishList = () => {
             onInputChange={(e) => {
               setNewWishListName(e?.target?.value);
             }}
-            helperText="This Feild is Required"
+            helperText={error ? "This Field is Required" : ""}
             error={error}
           />
         </Box>

@@ -53,7 +53,7 @@ const AddBankDetailsModal = ({
       flag = true;
     }
     if (
-      BankDetails["Account Number"]?.toString().tolength < 9 ||
+      BankDetails["Account Number"]?.toString().length < 9 ||
       BankDetails["Account Number"]?.toString().length > 18
     ) {
       errObj.accountNumber = "Invalid Account.No";
