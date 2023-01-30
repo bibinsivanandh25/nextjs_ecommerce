@@ -18,7 +18,6 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import SearchComponent from "@/atoms/SearchComponent";
 import { useSelector } from "react-redux";
 import { getBase64 } from "services/utils/functionUtils";
-import Image from "next/image";
 import TextArea from "@/atoms/SimpleTextArea";
 import { UpdateProfilePicture } from "services/customer/accountdetails/myprofile";
 import toastify from "services/utils/toastUtils";
@@ -37,6 +36,7 @@ const list = [
 const statusList = [
   { label: "Pending", id: 1, value: "PENDING" },
   { label: "Completed", id: 2, value: "COMPLETED" },
+  { label: "REJECTED", id: 2, value: "REJECTED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);
@@ -167,7 +167,15 @@ const Orders = () => {
               }
               onClick={() => {
                 if (selectedLink !== "") setSelectedLink("");
-                setorderFilter({ duration: "", status: "", keyword: "" });
+                setorderFilter({
+                  duration: { id: 1, label: "Last 30 days", value: "MONTH" },
+                  status: {
+                    label: "Pending",
+                    id: 1,
+                    value: "PENDING",
+                  },
+                  keyword: "",
+                });
                 setSelectedProduct([]);
               }}
             >
@@ -626,44 +634,8 @@ const Orders = () => {
                     >
                       <Grid item sm={5}>
                         <Grid container spacing={1}>
-                          <Grid item sm={5}>
-                            <SimpleDropdownComponent
-                              list={list}
-                              size="small"
-                              label="Select Duration"
-                              inputlabelshrink
-                              onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  duration: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
-                                });
-                              }}
-                              value={orderFilter.duration}
-                            />
-                          </Grid>
-                          <Grid item sm={5}>
-                            <SimpleDropdownComponent
-                              list={statusList}
-                              size="small"
-                              label="Select Status"
-                              inputlabelshrink
-                              onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  status: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
-                                });
-                              }}
-                              value={orderFilter.status}
-                            />
-                          </Grid>
+                          {/* <Grid item sm={5}></Grid>
+                          <Grid item sm={5}></Grid> */}
                         </Grid>
                       </Grid>
                       <Grid item sm={3}>
@@ -725,25 +697,6 @@ const Orders = () => {
                               value={orderFilter.duration}
                             />
                           </Grid>
-                          <Grid item sm={5}>
-                            <SimpleDropdownComponent
-                              list={statusList}
-                              size="small"
-                              label="Select Status"
-                              inputlabelshrink
-                              onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  status: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
-                                });
-                              }}
-                              value={orderFilter.status}
-                            />
-                          </Grid>
                         </Grid>
                       </Grid>
                       <Grid item sm={3}>
@@ -803,25 +756,6 @@ const Orders = () => {
                                 });
                               }}
                               value={orderFilter.duration}
-                            />
-                          </Grid>
-                          <Grid item sm={5}>
-                            <SimpleDropdownComponent
-                              list={statusList}
-                              size="small"
-                              label="Select Status"
-                              inputlabelshrink
-                              onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  status: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
-                                });
-                              }}
-                              value={orderFilter.status}
                             />
                           </Grid>
                         </Grid>

@@ -67,10 +67,11 @@ const BankDetails = () => {
   const deleteBankData = async (id) => {
     const { data, err } = await deleteBankDetails(userId, id);
     if (data) {
+      toastify(data, "success");
       getAllBankData();
     }
     if (err) {
-      toastify(err?.response?.data?.message);
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const updatePrimaryAccount = async (e, id) => {
