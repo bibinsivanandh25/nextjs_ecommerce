@@ -2,7 +2,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 import { customerHome } from "public/assets";
 import { useState, useEffect } from "react";
@@ -54,7 +54,7 @@ const DeliveryOptionsModal = ({
   };
 
   const [selectedTab, setSelectedTab] = useState("");
-  const [noFreeRetunModal, setNoFreeReturnModal] = useState(false);
+  const [noFreeRetunModal, setNoFreeReturnModal] = useState(true);
   const [productDetails, setProductDetails] = useState({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [
@@ -143,6 +143,10 @@ const DeliveryOptionsModal = ({
         fastReturnCharges: data.productReturnCharges?.fastestReturnAmount,
         description: data.longDescription,
         rtoAccepted: data.rtoAccepted,
+        deliveryBy: data.productDeliveryCharges?.deliveryBy,
+        fastestDeliveryBy: data.productDeliveryCharges?.fastestDeliveryBy,
+        returnBy: data.productReturnCharges?.deliveryBy,
+        fastestReturnBy: data.productReturnCharges?.fastestDeliveryBy,
       });
     }
   };
@@ -166,7 +170,7 @@ const DeliveryOptionsModal = ({
   }, [selectedTab]);
 
   const handleChangeTab = (item) => {
-    getProductDetails(item.id);
+    if (deliveryOptions?.includes(item?.id)) getProductDetails(item.id);
     setSelectedTab(item.id);
     if (item.label == "No Free Delivery Returns") {
       setNoFreeReturnModal(true);
@@ -186,6 +190,7 @@ const DeliveryOptionsModal = ({
             paddingX={1.5}
             onClick={() => {
               handleChangeTab(item);
+              setProductDetails({});
             }}
           >
             <Typography className="h-5 cursor-pointer">{item.label}</Typography>
@@ -256,13 +261,13 @@ const DeliveryOptionsModal = ({
     {
       onSuccess: ({ data }) => {
         if (!data?.popUp) {
-          toastify(data?.message, "success");
-          setModalOpen(false);
-          getProducts();
           queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
           queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
           queryClient.invalidateQueries(["RECENTLYVIEWED"]);
           queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+          setModalOpen(false);
+          toastify(data?.message, "success");
+          getProducts();
         } else setShowConfirmModal(true);
       },
       onError: (err) => {
@@ -325,76 +330,11 @@ const DeliveryOptionsModal = ({
     }
   };
   const renderGeneralModal = () => {
-    if (deliveryOptions.includes(selectedTab))
-      return (
-        <Grid container marginY={2} marginLeft={2}>
-          <Grid item xs={3}>
-            <Image
-              src={productDetails?.image}
-              alt="image"
-              height={100}
-              width={100}
-              className="border"
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <Typography className="h-4 fw-bold">
-              {productDetails?.title}
-            </Typography>
-            <Typography className="h-5">
-              {productDetails?.description}
-            </Typography>
-            {selectedTab === "FREEDELIVERYANDRETURN" ? (
-              <CheckBoxComponent
-                label={`${productDetails.fastDeliveryCharges} - Fastest delivery by sunday , sep 18`}
-                isChecked={
-                  selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
-                }
-                checkBoxClick={() => {
-                  if (
-                    !selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
-                  ) {
-                    setProductDetails({
-                      ...productDetails,
-                      finalPrice:
-                        productDetails?.finalPrice +
-                        productDetails?.fastDeliveryCharges,
-                    });
-                  } else {
-                    setProductDetails({
-                      ...productDetails,
-                      finalPrice:
-                        productDetails?.finalPrice -
-                        productDetails?.fastDeliveryCharges,
-                    });
-                  }
-                  setSelectedDeliveryandReturnCharges({
-                    ...selectedDeliveryandReturnCharges,
-                    freeDeliveryFastDelivery:
-                      !selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery,
-                  });
-                }}
-              />
-            ) : null}
-          </Grid>
-        </Grid>
-      );
-    return (
-      <Box className="position-relative">
-        <Image
-          src={customerHome.deliveryOptionModal}
-          height={400}
-          width={750}
-        />
-      </Box>
-    );
-  };
-  const renderNoFreeRetunModal = () => {
-    return (
-      <Grid container marginY={2} marginLeft={2}>
-        <Grid item xs={4}>
-          <Box display="flex" justifyContent="center">
-            <Box>
+    if (deliveryOptions.includes(selectedTab)) {
+      if (Object.keys(productDetails)?.length) {
+        return (
+          <Grid container marginY={2} marginLeft={2}>
+            <Grid item xs={3}>
               <Image
                 src={productDetails?.image}
                 alt="image"
@@ -402,169 +342,263 @@ const DeliveryOptionsModal = ({
                 width={100}
                 className="border"
               />
+            </Grid>
+            <Grid item xs={8}>
               <Typography className="h-4 fw-bold">
                 {productDetails?.title}
               </Typography>
+              <Typography className="h-5">
+                {productDetails?.description}
+              </Typography>
+              {selectedTab === "FREEDELIVERYANDRETURN" ? (
+                <CheckBoxComponent
+                  label={`${productDetails.fastDeliveryCharges} - ${productDetails?.fastestDeliveryBy}`}
+                  isChecked={
+                    selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
+                  }
+                  checkBoxClick={() => {
+                    if (
+                      !selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
+                    ) {
+                      setProductDetails({
+                        ...productDetails,
+                        finalPrice:
+                          productDetails?.finalPrice +
+                          productDetails?.fastDeliveryCharges,
+                      });
+                    } else {
+                      setProductDetails({
+                        ...productDetails,
+                        finalPrice:
+                          productDetails?.finalPrice -
+                          productDetails?.fastDeliveryCharges,
+                      });
+                    }
+                    setSelectedDeliveryandReturnCharges({
+                      ...selectedDeliveryandReturnCharges,
+                      freeDeliveryFastDelivery:
+                        !selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery,
+                    });
+                  }}
+                />
+              ) : null}
+            </Grid>
+          </Grid>
+        );
+      }
+      return (
+        <Box
+          className="d-flex align-items-center justify-content-center"
+          style={{
+            minHeight: "300px",
+          }}
+        >
+          <CircularProgress className="theme_color" />
+        </Box>
+      );
+    }
+    return (
+      <Box className="position-relative">
+        <Image
+          src={customerHome.featureNotAvailable}
+          height={300}
+          width={750}
+        />
+      </Box>
+    );
+  };
+  const renderNoFreeReturnModal = () => {
+    if (Object.keys(productDetails)?.length) {
+      return (
+        <Grid container marginY={2} marginLeft={2}>
+          <Grid item xs={4}>
+            <Box display="flex" justifyContent="center">
+              <Box>
+                <Image
+                  src={productDetails?.image}
+                  alt="image"
+                  height={100}
+                  width={100}
+                  className="border"
+                />
+                <Typography className="h-4 fw-bold">
+                  {productDetails?.title}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-          <Typography className="h-5">{productDetails?.description}</Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Box className="ps-4">
-            <CheckBoxComponent
-              label="Choose Delivery options"
-              size="medium"
-              isChecked
-            />
-            <Box>
+            <Typography className="h-5">
+              {productDetails?.description}
+            </Typography>
+          </Grid>
+          <Grid item xs={8}>
+            <Box className="ps-4">
+              <CheckBoxComponent
+                label="Choose Delivery options"
+                size="medium"
+                isChecked
+              />
+              <Box>
+                <RadiobuttonComponent
+                  isChecked={
+                    selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
+                  }
+                  label={`${productDetails?.deliveryCharges} - ${productDetails?.deliveryBy}`}
+                  onRadioChange={() => {
+                    setSelectedDeliveryandReturnCharges({
+                      ...selectedDeliveryandReturnCharges,
+                      noFreeDeliveryStandardDelivery: true,
+                      noFreeDeliveryFastDelivery: false,
+                    });
+                    if (
+                      !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
+                    ) {
+                      setFinalPriceWithDeliveryCharge(
+                        finalPriceWithDeliveryCharges +
+                          productDetails?.deliveryCharges -
+                          productDetails.fastDeliveryCharges
+                      );
+                      setProductDetails({
+                        ...productDetails,
+                        finalPrice:
+                          productDetails?.finalPrice +
+                          productDetails?.deliveryCharges -
+                          productDetails.fastDeliveryCharges,
+                      });
+                    }
+                  }}
+                />
+              </Box>
               <RadiobuttonComponent
                 isChecked={
-                  selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
+                  selectedDeliveryandReturnCharges?.noFreeDeliveryFastDelivery
                 }
-                label={`${productDetails?.deliveryCharges}- Delivery by wed, sep 22`}
                 onRadioChange={() => {
                   setSelectedDeliveryandReturnCharges({
                     ...selectedDeliveryandReturnCharges,
-                    noFreeDeliveryStandardDelivery: true,
-                    noFreeDeliveryFastDelivery: false,
+                    noFreeDeliveryStandardDelivery: false,
+                    noFreeDeliveryFastDelivery: true,
                   });
                   if (
-                    !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
+                    !selectedDeliveryandReturnCharges?.noFreeDeliveryFastDelivery
                   ) {
                     setFinalPriceWithDeliveryCharge(
                       finalPriceWithDeliveryCharges +
-                        productDetails?.deliveryCharges -
-                        productDetails.fastDeliveryCharges
+                        productDetails?.fastDeliveryCharges -
+                        productDetails.deliveryCharges
                     );
                     setProductDetails({
                       ...productDetails,
                       finalPrice:
                         productDetails?.finalPrice +
-                        productDetails?.deliveryCharges -
-                        productDetails.fastDeliveryCharges,
+                        productDetails?.fastDeliveryCharges -
+                        productDetails.deliveryCharges,
                     });
                   }
                 }}
+                label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
               />
             </Box>
-            <RadiobuttonComponent
-              isChecked={
-                selectedDeliveryandReturnCharges?.noFreeDeliveryFastDelivery
-              }
-              onRadioChange={() => {
-                setSelectedDeliveryandReturnCharges({
-                  ...selectedDeliveryandReturnCharges,
-                  noFreeDeliveryStandardDelivery: false,
-                  noFreeDeliveryFastDelivery: true,
-                });
-                if (
-                  !selectedDeliveryandReturnCharges?.noFreeDeliveryFastDelivery
-                ) {
-                  setFinalPriceWithDeliveryCharge(
-                    finalPriceWithDeliveryCharges +
-                      productDetails?.fastDeliveryCharges -
-                      productDetails.deliveryCharges
-                  );
-                  setProductDetails({
-                    ...productDetails,
-                    finalPrice:
-                      productDetails?.finalPrice +
-                      productDetails?.fastDeliveryCharges -
-                      productDetails.deliveryCharges,
+            <Box
+              className={`border-top border-dark-gray ps-4 ${
+                productDetails?.rtoAccepted ? "" : "d-none"
+              }`}
+            >
+              <CheckBoxComponent
+                label="Choose Return options"
+                size="medium"
+                isChecked={selectedDeliveryandReturnCharges?.chooseReturnOption}
+                checkBoxClick={() => {
+                  if (!selectedDeliveryandReturnCharges?.chooseReturnOption) {
+                    setProductDetails({
+                      ...productDetails,
+                      finalPrice:
+                        finalPriceWithDeliveryCharges +
+                        productDetails?.returnCharges,
+                    });
+                  } else {
+                    setProductDetails({
+                      ...productDetails,
+                      finalPrice: finalPriceWithDeliveryCharges,
+                    });
+                  }
+                  setSelectedDeliveryandReturnCharges({
+                    ...selectedDeliveryandReturnCharges,
+                    chooseReturnOption:
+                      !selectedDeliveryandReturnCharges?.chooseReturnOption,
+                    noFreeDeliveryStandardReturn:
+                      !selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
+                        ? !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
+                        : false,
+                    noFreeDeliveryFastReturn: false,
                   });
-                }
-              }}
-              label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
-            />
-          </Box>
-          <Box
-            className={`border-top border-dark-gray ps-4 ${
-              productDetails?.rtoAccepted ? "" : "d-none"
-            }`}
-          >
-            <CheckBoxComponent
-              label="Choose Return options"
-              size="medium"
-              isChecked={selectedDeliveryandReturnCharges?.chooseReturnOption}
-              checkBoxClick={() => {
-                if (!selectedDeliveryandReturnCharges?.chooseReturnOption) {
-                  setProductDetails({
-                    ...productDetails,
-                    finalPrice:
-                      finalPriceWithDeliveryCharges +
-                      productDetails?.returnCharges,
-                  });
-                } else {
-                  setProductDetails({
-                    ...productDetails,
-                    finalPrice: finalPriceWithDeliveryCharges,
-                  });
-                }
-                setSelectedDeliveryandReturnCharges({
-                  ...selectedDeliveryandReturnCharges,
-                  chooseReturnOption:
-                    !selectedDeliveryandReturnCharges?.chooseReturnOption,
-                  noFreeDeliveryStandardReturn:
-                    !selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
-                      ? !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
-                      : false,
-                  noFreeDeliveryFastReturn: false,
-                });
-              }}
-            />
-            <Box>
+                }}
+              />
+              <Box>
+                <RadiobuttonComponent
+                  disabled={
+                    !selectedDeliveryandReturnCharges?.chooseReturnOption
+                  }
+                  isChecked={
+                    selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
+                  }
+                  onRadioChange={() => {
+                    if (
+                      !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
+                    ) {
+                      setProductDetails(() => ({
+                        ...productDetails,
+                        finalPrice:
+                          finalPriceWithDeliveryCharges +
+                          productDetails?.returnCharges,
+                      }));
+                    }
+                    setSelectedDeliveryandReturnCharges({
+                      ...selectedDeliveryandReturnCharges,
+                      noFreeDeliveryStandardReturn: true,
+                      noFreeDeliveryFastReturn: false,
+                    });
+                  }}
+                  label={`${productDetails?.returnCharges} - ${productDetails?.returnBy}`}
+                />
+              </Box>
               <RadiobuttonComponent
                 disabled={!selectedDeliveryandReturnCharges?.chooseReturnOption}
                 isChecked={
-                  selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
+                  selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
                 }
                 onRadioChange={() => {
                   if (
-                    !selectedDeliveryandReturnCharges?.noFreeDeliveryStandardReturn
+                    !selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
                   ) {
                     setProductDetails(() => ({
                       ...productDetails,
                       finalPrice:
                         finalPriceWithDeliveryCharges +
-                        productDetails?.returnCharges,
+                        productDetails?.fastReturnCharges,
                     }));
                   }
                   setSelectedDeliveryandReturnCharges({
                     ...selectedDeliveryandReturnCharges,
-                    noFreeDeliveryStandardReturn: true,
-                    noFreeDeliveryFastReturn: false,
+                    noFreeDeliveryStandardReturn: false,
+                    noFreeDeliveryFastReturn: true,
                   });
                 }}
-                label={`${productDetails?.returnCharges} - Return by wed, sep 22`}
+                label={`${productDetails?.fastReturnCharges} - ${productDetails?.fastestReturnBy}`}
               />
             </Box>
-            <RadiobuttonComponent
-              disabled={!selectedDeliveryandReturnCharges?.chooseReturnOption}
-              isChecked={
-                selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
-              }
-              onRadioChange={() => {
-                if (
-                  !selectedDeliveryandReturnCharges?.noFreeDeliveryFastReturn
-                ) {
-                  setProductDetails(() => ({
-                    ...productDetails,
-                    finalPrice:
-                      finalPriceWithDeliveryCharges +
-                      productDetails?.fastReturnCharges,
-                  }));
-                }
-                setSelectedDeliveryandReturnCharges({
-                  ...selectedDeliveryandReturnCharges,
-                  noFreeDeliveryStandardReturn: false,
-                  noFreeDeliveryFastReturn: true,
-                });
-              }}
-              label={`${productDetails?.fastReturnCharges}- Fastest Return by mon, sep 22`}
-            />
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      );
+    }
+    return (
+      <Box
+        className="d-flex align-items-center justify-content-center"
+        style={{
+          minHeight: "300px",
+        }}
+      >
+        <CircularProgress className="theme_color" />
+      </Box>
     );
   };
   const getFinalPrice = (price) => {
@@ -587,38 +621,41 @@ const DeliveryOptionsModal = ({
       <Box>{tabList.length ? renderTabList() : null}</Box>
       <Box
         className={`${
-          deliveryOptions?.includes(selectedTab)
+          deliveryOptions?.includes(selectedTab) &&
+          Object.keys(productDetails)?.length
             ? "border-top border-bottom border-dark-gray"
             : ""
         } mb-1`}
       >
         <Box>
-          {noFreeRetunModal ? renderNoFreeRetunModal() : renderGeneralModal()}
+          {noFreeRetunModal ? renderNoFreeReturnModal() : renderGeneralModal()}
         </Box>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        className={deliveryOptions?.includes(selectedTab) ? "" : "d-none"}
-      >
-        <Box marginLeft={2}>
-          <Typography className="d-flex align-items-center">
-            <span className="h-4">Final Price -</span>{" "}
-            <span className="h-3 theme_color">&nbsp;{getFinalPrice()}</span>
-          </Typography>
+      {Object.keys(productDetails)?.length ? (
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          className={deliveryOptions?.includes(selectedTab) ? "" : "d-none"}
+        >
+          <Box marginLeft={2}>
+            <Typography className="d-flex align-items-center">
+              <span className="h-4">Final Price -</span>{" "}
+              <span className="h-3 theme_color">&nbsp;{getFinalPrice()}</span>
+            </Typography>
+          </Box>
+          <Box className="mb-2">
+            <ButtonComponent
+              label="Add to Cart"
+              muiProps="color-black me-3 border-black"
+              variant="outlined"
+              onBtnClick={() => {
+                handleSubmit();
+              }}
+            />
+            <ButtonComponent label="Proceed to Checkout" />
+          </Box>
         </Box>
-        <Box className="mb-2">
-          <ButtonComponent
-            label="Add to Cart"
-            muiProps="color-black me-3 border-black"
-            variant="outlined"
-            onBtnClick={() => {
-              handleSubmit();
-            }}
-          />
-          <ButtonComponent label="Proceed to Checkout" />
-        </Box>
-      </Box>
+      ) : null}
       {showConfirmModal ? (
         <ModalComponent
           open={showConfirmModal}

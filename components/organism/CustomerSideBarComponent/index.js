@@ -154,18 +154,19 @@ const CustomerSideBarComponent = ({ children }) => {
   };
 
   useEffect(() => {
-    getCategoriesForSideMenu();
-  }, []);
+    if (supplierId) getCategoriesForSideMenu();
+  }, [supplierId]);
 
   return (
     <Box
       sx={{
-        minWidth: `calc(100vw - 5px)`,
+        minWidth: `100vw`,
         maxWidth: "100vw",
-        position: "relative",
-        top: "88px",
+        position: "fixed",
+        top: "104px",
         display: "flex",
         height: `calc(100vh - 90px)`,
+        // marginTop: "10px",
       }}
       ref={mainRef}
     >
@@ -264,10 +265,11 @@ const CustomerSideBarComponent = ({ children }) => {
       <Box
         component="main"
         sx={{
-          maxWidth: ` ${open ? "calc(100vw - 216px)" : "calc(100vw - 5px)"}`,
+          maxWidth: ` ${open ? "calc(100vw - 216px)" : "100vw"}`,
           marginLeft: ` ${open ? "225px" : "0px"}`,
           transition: "all 0.2s ease-out",
           WebkitTransition: "all 0.2s ease-out",
+          paddingX: "40px",
         }}
         className=" overflow-auto  py-3 pb-0 hide-scrollbar w-100"
       >
@@ -275,8 +277,8 @@ const CustomerSideBarComponent = ({ children }) => {
           <motion.div
             sx={{
               maxHeight: "calc(100vh - 90px)",
+              minHeight: "calc(100vh - 90px)",
               overflowY: "scroll",
-              background: "red",
             }}
             className="hide-scrollbar "
             animate={{ opacity: 1 }}
@@ -287,8 +289,10 @@ const CustomerSideBarComponent = ({ children }) => {
             key={router.route}
           >
             {/* {children} */}
-            {updatedChildren}
-            <Footer />
+            <div className="py-2" style={{ minHeight: "calc(100vh - 370px)" }}>
+              {updatedChildren}
+            </div>
+            <Footer open={open} />
           </motion.div>
         </AnimatePresence>
       </Box>

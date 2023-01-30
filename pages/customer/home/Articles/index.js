@@ -11,7 +11,6 @@ import {
 const Articles = ({ articleData = [] }) => {
   return (
     <Box className="my-3 ">
-      <Typography className="h-4 fw-bold text-center">Articles</Typography>
       <Grid
         container
         className="overflow-x-scroll w-100 p-2 hide-scrollbar"

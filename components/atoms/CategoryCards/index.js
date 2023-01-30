@@ -10,10 +10,20 @@ const CategoryCards = ({
   clickCardCategory = () => {},
 }) => {
   return (
-    <Box className="" onClick={clickCardCategory} maxWidth={width + 10}>
-      <Image height={height} width={width} src={src} layout="fixed" />
+    <Box
+      className="cursor-pointer"
+      onClick={clickCardCategory}
+      maxWidth={width + 10}
+    >
+      <Image
+        height={height}
+        width={width}
+        src={src}
+        layout="fixed"
+        className="cursor-pointer"
+      />
       <Tooltip title={categoryTitle}>
-        <Typography className="fs-14 fw-bold mt-1 text-center text-truncate">
+        <Typography className="fs-14 fw-bold mt-1 text-center text-truncate cursor-pointer">
           {categoryTitle}
         </Typography>
       </Tooltip>

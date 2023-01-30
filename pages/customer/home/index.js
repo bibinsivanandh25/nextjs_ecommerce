@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import {
-  getArticles,
+  // getArticles,
   getBannersBySupplierId,
   getTopProducts,
   getTopTrandingProducts,
@@ -23,13 +23,13 @@ import { format } from "date-fns";
 import { FaInfoCircle } from "react-icons/fa";
 // import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
-import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import TicketSvg from "public/assets/svg/TicketSvg";
 import ScheduleSvg from "public/assets/svg/scheduleSvg";
 import TaxSvg from "public/assets/svg/TaxSvg";
 import ChatBubbleSvg from "public/assets/svg/chatbubbleSvg";
 import ShopSvg from "public/assets/svg/ShopSvg";
-import Articles from "./Articles";
+import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
+// import Articles from "./Articles";
 
 const Home = () => {
   const [showCompareProducts, setShowCompareProducts] = useState(false);
@@ -38,7 +38,7 @@ const Home = () => {
   const [bannerImages, setBannerImages] = useState([]);
   // const [categories, setCategories] = useSta te([]);
   const [storeInformation, setStoreInformation] = useState([]);
-  const [articleData, setArticleData] = useState([]);
+  // const [articleData, setArticleData] = useState([]);
   const [leaveDate, setleaveDate] = useState({ start: null, end: null });
   const [topTrendingData, settopTrendingData] = useState([]);
   // const [products, setProducts] = useState([]);
@@ -154,18 +154,18 @@ const Home = () => {
     }
   };
 
-  const getArticlesData = async () => {
-    const { data } = await getArticles();
-    if (data) {
-      setArticleData(() => {
-        return data.map((ele) => ({
-          image: ele.articlesMedia[0]?.mediaUrl,
-          content: ele.longDescription,
-          id: ele.articleId,
-        }));
-      });
-    }
-  };
+  // const getArticlesData = async () => {
+  //   const { data } = await getArticles();
+  //   if (data) {
+  //     setArticleData(() => {
+  //       return data.map((ele) => ({
+  //         image: ele.articlesMedia[0]?.mediaUrl,
+  //         content: ele.longDescription,
+  //         id: ele.articleId,
+  //       }));
+  //     });
+  //   }
+  // };
   const getTopTranding = async () => {
     // const supplierId = "SP0123000312";
     const { data, errRes } = await getTopTrandingProducts(
@@ -182,7 +182,7 @@ const Home = () => {
   useEffect(() => {
     getBanners();
     getProducts();
-    getArticlesData();
+    // getArticlesData();
     getTopTranding();
   }, []);
   useEffect(() => {
@@ -192,7 +192,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="px-3">
+      <div className="">
         {!showCompareProducts ? (
           <Box>
             <Box
@@ -214,6 +214,9 @@ const Home = () => {
                   md={2.6}
                   sm={3}
                   className="border-end border-2 cursor-pointer d-flex justify-content-evenly p-3 align-items-center"
+                  onClick={() => {
+                    route.push("/customer/couponapplicableproducts");
+                  }}
                 >
                   {/* <Image src={customerHome.coupon} height={40} width={60} /> */}
                   <TicketSvg
@@ -221,12 +224,7 @@ const Home = () => {
                     width={60}
                     className="theme_svg_fill"
                   />
-                  <Typography
-                    className="fw-bold h-5 cursor-pointer"
-                    onClick={() => {
-                      route.push("/customer/couponapplicableproducts");
-                    }}
-                  >
+                  <Typography className="fw-bold h-5 cursor-pointer ps-2">
                     Coupons Applicable Products
                   </Typography>
                 </Grid>
@@ -299,7 +297,10 @@ const Home = () => {
                   item
                   md={1.8}
                   sm={3}
-                  className="d-flex justify-content-evenly p-3  align-items-center"
+                  onClick={() => {
+                    route.push("/customer/helpandsupport");
+                  }}
+                  className="d-flex justify-content-evenly p-3  align-items-center cursor-pointer"
                 >
                   <ChatBubbleSvg
                     height={40}
@@ -308,11 +309,11 @@ const Home = () => {
                   />
                   {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
-                  <Box>
-                    <Typography className="fw-bold h-5">
+                  <Box className="cursor-pointer">
+                    <Typography className="fw-bold h-5 cursor-pointer">
                       Help & Support
                     </Typography>
-                    <span className="h-5">Available</span>
+                    <span className="h-5 cursor-pointer">Available</span>
                   </Box>
                 </Grid>
               </Grid>
@@ -353,9 +354,9 @@ const Home = () => {
             <Box className={isLoggedIn ? "my-2" : "d-none"}>
               <RecentlyViewed setShowCompareProducts={setShowCompareProducts} />
             </Box>
-            <Box className={articleData?.length ? "" : "d-none"}>
+            {/* <Box className={articleData?.length ? "" : "d-none"}>
               <Articles articleData={articleData} />
-            </Box>
+            </Box> */}
           </Box>
         ) : (
           <ComapareProducts

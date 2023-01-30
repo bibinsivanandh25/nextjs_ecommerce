@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getRecentlyViewedProducts } from "services/customer/Home";
@@ -8,7 +9,6 @@ import ProductCard from "../PopularDepartments/ProductCard";
 
 const RecentlyViewed = () => {
   const [products, setProducts] = useState([]);
-
   const userInfo = useSession();
   const storeDetails = useSelector((state) => state?.customer);
 
@@ -67,7 +67,7 @@ const RecentlyViewed = () => {
         Your Recently Viewed Products
       </Typography>
 
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">
         {products ? (
           products?.map((ele) => {
             return <ProductCard item={ele} />;

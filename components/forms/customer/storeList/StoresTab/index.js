@@ -125,6 +125,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
             supplierId: storeData.supplierId,
+            supplieremailId: storeData.emailId,
+            suppliermobileNumber: storeData.mobileNumber,
           })
         );
         dispatch(

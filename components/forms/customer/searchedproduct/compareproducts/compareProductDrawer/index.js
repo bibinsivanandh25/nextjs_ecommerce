@@ -126,8 +126,9 @@ function CompareProductDrawer({
         <Box className="">
           <ImageCard
             imgSrc={product?.imgSrc}
-            height={130}
-            width={130}
+            showClose={ind !== 0}
+            height={150}
+            width={150}
             handleCloseClick={() => {
               const temp = [...products];
               temp.splice(ind, 1);
@@ -198,8 +199,8 @@ function CompareProductDrawer({
         >
           <ImageCard
             showClose={false}
-            height={130}
-            width={130}
+            height={150}
+            width={150}
             preventChooseFile
             handleCardClick={() => {
               setShowCompareProductsDrawer(true);

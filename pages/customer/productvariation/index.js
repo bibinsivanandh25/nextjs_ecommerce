@@ -2,23 +2,27 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Box, Button, Grid, Pagination, Paper } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { Box, Grid, Pagination } from "@mui/material";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import CustomIcon from "services/iconUtils";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import MenuWithCheckbox from "@/atoms/MenuWithCheckbox";
 import { useRouter } from "next/router";
 import { getProductsUnderCategoryOrSubCategory } from "services/customer/productVariation";
 import { useSelector } from "react-redux";
 import ProductDetailsCard from "@/forms/customer/searchedproduct/CustomerProductCard";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const useStyles = makeStyles(() => ({
   selected: {
     "& .Mui-selected": {
-      color: "#E56700",
-      border: "1px solid #E56700",
+      color: "#fff",
+      background: "#E56700 !important",
+      // border: "1px solid #E56700",
     },
+    // "& .css-1bu9iio-MuiButtonBase-root-MuiPaginationItem-root .Mui-selected": {
+    // },
   },
 }));
 
@@ -96,14 +100,17 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
               }))
             : [],
           id: ele.productId,
+          variationDetails: ele.variationProperty,
+          subCategoryId: ele.subCategoryId,
         });
       });
       setProductData(result);
     }
   };
 
-  useEffect(() => {
-    getProducts(categoryId, subCategoryId, page - 1);
+  useMemo(() => {
+    if (categoryId?.length || subCategoryId?.length)
+      getProducts(categoryId, subCategoryId, page - 1);
   }, [page]);
 
   useEffect(() => {
@@ -294,22 +301,26 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
             >
               {productData.map((item, index) => (
                 <Grid item md={4} lg={3} sm={6} key={index}>
-                  <Paper elevation={3}>
-                    <ProductDetailsCard
-                      productDetails={item}
-                      viewType={viewIconClick ? "row" : "Grid"}
-                      getProducts={() => {
-                        getProducts(categoryId, subCategoryId, 0);
-                      }}
-                    />
-                  </Paper>
+                  <ProductDetailsCard
+                    productDetail={item}
+                    viewType={viewIconClick ? "row" : "Grid"}
+                    getProducts={() => {
+                      getProducts(categoryId, subCategoryId, 0);
+                    }}
+                  />
                 </Grid>
               ))}
             </Grid>
           </Box>
           {productData?.length ? (
-            <Box className="d-flex justify-content-center mt-3 mb-2">
-              <Button
+            <Box className="d-flex justify-content-center align-items-center mt-3 mb-2">
+              <ChevronLeftIcon
+                className={page <= 1 ? "text-muted" : "text-black"}
+                onClick={() => {
+                  handlePreviousbtnClick();
+                }}
+              />
+              {/* <Button
                 variant="outlined"
                 startIcon={<ArrowBack />}
                 className={`py-0 align-self-center fs-12 me-2 ${
@@ -319,14 +330,12 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 onClick={() => {
                   handlePreviousbtnClick();
                 }}
-              >
-                Previous
-              </Button>
+              ></Button> */}
               <Pagination
                 classes={{ root: classes.selected }}
                 count={Math.ceil(totalProductCount / dataPerPage)}
-                variant="outlined"
-                shape="rounded"
+                // variant="outlined"
+                // shape="rounded"
                 onChange={(e, pagenumber) => {
                   setPage(pagenumber);
                 }}
@@ -334,19 +343,23 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 hideNextButton
                 hidePrevButton
               />
-              <Button
+              <ChevronRightIcon
+                fontSize="30"
+                onClick={() => {
+                  handleNextbtnClick();
+                }}
+                className={page < pageCount ? "text-black" : "text-muted"}
+              />
+              {/* <Button
                 variant="outlined"
                 endIcon={<ArrowForward />}
                 className={`py-0 align-self-center ms-2 fs-12 ${
                   page < pageCount ? `border-black text-black` : ``
                 }`}
                 disabled={page < pageCount ? false : true}
-                onClick={() => {
-                  handleNextbtnClick();
-                }}
               >
                 Next
-              </Button>
+              </Button> */}
             </Box>
           ) : null}
         </Box>
