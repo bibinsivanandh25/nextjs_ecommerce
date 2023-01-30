@@ -101,7 +101,15 @@ const deleteMarketingTool = (id) => {
     })
     .catch((err) => ({ err }));
 };
-
+const getChooseBannerData = (payload) => {
+  return serviceUtil
+    .put("users/choose-banner", payload)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getUserMarketingTool,
   getAllMainCategories,
@@ -112,4 +120,5 @@ export {
   getProductsForShareproduct,
   getThemes,
   deleteMarketingTool,
+  getChooseBannerData,
 };

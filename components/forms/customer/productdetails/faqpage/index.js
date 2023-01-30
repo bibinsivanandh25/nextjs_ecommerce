@@ -241,27 +241,12 @@ const FAQPage = ({
               ref={footerRef}
               style={{
                 visibility: "hidden",
-                display: answerData?.length ? "block" : "none",
+                display: answerData?.length > 9 ? "block" : "none",
               }}
             >
               See More Answered Questions
             </div>
           </Box>
-          {/* {answerData?.length ? (
-            <Grid container marginY={2}>
-              <Grid item md={1} />
-              <Grid item md={11}>
-                <Typography
-                  className="border fit-content h-p89 px-4 py-1 rounded cursor-pointer"
-                  onClick={() => {
-                    getProductQandAData();
-                  }}
-                >
-                  See More Answered Questions (12)
-                </Typography>
-              </Grid>
-            </Grid>
-          ) : null} */}
         </Grid>
         <Grid item md={6}>
           <Paper>
@@ -465,28 +450,13 @@ const FAQPage = ({
                   ref={reviewFooterRef}
                   style={{
                     visibility: "hidden",
-                    display: productReview?.length ? "block" : "none",
+                    display: productReview?.length > 9 ? "block" : "none",
                   }}
                 >
                   See More Review
                 </div>
               </Box>
             ) : null}
-            {/* {productReview?.length ? (
-              <Grid container marginY={2}>
-                <Grid item md={1} />
-                <Grid item md={11}>
-                  <Typography
-                    className="border fit-content h-p89 px-4 py-1 rounded cursor-pointer"
-                    onClick={() => {
-                      getAllProductReview();
-                    }}
-                  >
-                    See More Reviews
-                  </Typography>
-                </Grid>
-              </Grid>
-            ) : null} */}
           </Grid>
         </Grid>
       </Grid>

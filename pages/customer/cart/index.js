@@ -11,22 +11,47 @@ import {
   removeProductFromCart,
   updateCartQuantity,
 } from "services/customer/cart";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import DeliveryOptionsModal from "@/forms/customer/Home/buynowmodal";
+import CustomIcon from "services/iconUtils";
+import {
+  changePrimaryAddress,
+  getAllCustomerAddress,
+} from "services/customer/Home/address";
+import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { storeUserInfo } from "features/customerSlice";
 
 const Cart = () => {
   const [products, setProducts] = useState();
   const [showChooseAddress, setShowChooseAddress] = useState(false);
   const [showDeliveryOptionModal, setShowDeliveryOptionModal] = useState(false);
   const [productDetails, setProductDetails] = useState({});
-
-  const { profileId } = useSelector((state) => state?.customer);
+  const dispatch = useDispatch();
+  const [priceDetails, setPriceDetails] = useState({
+    deliveryCharge: 0,
+    noOfItems: 0,
+    returnCharges: 0,
+    totalPayable: 0,
+    totalPrice: 0,
+    totalSaving: 0,
+  });
+  const { profileId, userId } = useSelector((state) => state?.customer);
+  const customer = useSelector((state) => state?.customer);
+  const [masterAddress, setMasterAddress] = useState([]);
 
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
     if (data) {
       const result = [];
+      setPriceDetails({
+        deliveryCharge: data?.priceDetails?.deliveryCharges,
+        noOfItems: data.priceDetails?.noOfProductInCart,
+        returnCharges: data.priceDetails?.returnCharges,
+        totalPayable: data.priceDetails?.totalPayable,
+        totalPrice: data.priceDetails?.totalPrice,
+        totalSaving: data.priceDetails?.totalSaving,
+      });
       data?.userCartProductPojos?.forEach((ele) => {
         result.push({
           id: ele.productId,
@@ -105,6 +130,36 @@ const Cart = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+
+  const getAllData = async (id) => {
+    if (id) {
+      const { data } = await getAllCustomerAddress(id);
+      if (data?.length) {
+        const temp = [];
+        data.forEach((item) => {
+          if (item.primary) {
+            temp.unshift(item);
+            // console.log(item);
+            // dispatch(
+            //   storeUserInfo({
+            //     ...customer,
+            //     addressDetails: { ...data.data },
+            //   })
+            // );
+          } else {
+            temp.push(item);
+          }
+        });
+        // console.log(temp, "temp");
+        setMasterAddress(temp);
+      } else {
+        setMasterAddress([]);
+      }
+    }
+  };
+  useEffect(() => {
+    getAllData(userId);
+  }, [userId]);
 
   const getCartList = () => {
     return products?.map((ele, ind) => {
@@ -265,19 +320,48 @@ const Cart = () => {
     return temp;
   };
 
+  const handleAddressSelect = async (item) => {
+    if (item) {
+      const { data, err } = await changePrimaryAddress(userId, item.addressId);
+      if (data) {
+        dispatch(
+          storeUserInfo({
+            ...customer,
+            addressDetails: { ...data.data },
+          })
+        );
+
+        toastify(data?.message, "success");
+        getAllData(customer.userId);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
+
   return (
     <Grid container ref={mainRef}>
       <Grid item sm={9}>
         <Paper className="w-100">
-          <Box className="bg-light-pink d-flex justify-content-between align-items-center p-2 w-100">
-            <Typography className="h-4 text-secondary theme_color">
+          <Box className="theme_bg_color_1 d-flex justify-content-between align-items-center p-2 w-100">
+            <Typography className="theme_color fs-16 fw-bold">
               My Cart
             </Typography>
-            <ButtonComponent
+            {/* <ButtonComponent
               muiProps="p-0"
               label="Choose Address"
               onBtnClick={() => setShowChooseAddress(true)}
-            />
+            /> */}
+            <div className="mx-2 ">
+              <Typography className="fs-12 color-black fw-bold cursor-pointer">
+                {customer.addressDetails?.name}
+              </Typography>
+              <Typography className="fs-12 color-black fw-bold cursor-pointer">
+                {customer.addressDetails?.cityDistrictTown},
+                {customer.addressDetails?.pinCode}
+              </Typography>
+            </div>
           </Box>
           <Box className="mnh-79vh mxh-79vh overflow-auto hide-scrollbar">
             {products ? (
@@ -290,6 +374,52 @@ const Cart = () => {
       </Grid>
       {products?.length ? (
         <Grid item sm={3} className="">
+          <Paper className="mb-3 ms-2 p-2">
+            <Typography className="fs-16 fw-500 d-flex justify-content-between  border-bottom-1">
+              Choose Address
+              <CustomIcon
+                type="more"
+                size={20}
+                title="More Options"
+                onIconClick={() => setShowChooseAddress(true)}
+              />
+            </Typography>
+            <Box className="mxh-300 overflow-auto hide-scrollbar">
+              {masterAddress.length > 0 &&
+                masterAddress.map((item, index) => (
+                  <Box
+                    key={index}
+                    className={`rounded my-3 mnh-150 p-2 border ${
+                      item.primary ? "theme_bg_color_1 theme_border_color " : ""
+                    }`}
+                  >
+                    <Box className="d-flex justify-content-between">
+                      <CheckBoxComponent
+                        label={item.name}
+                        isChecked={item.primary}
+                        showIcon
+                        checkBoxClick={() => {
+                          handleAddressSelect(item);
+                        }}
+                        iconType="circled"
+                      />
+                    </Box>
+                    <Box className="d-flex justify-content-between">
+                      <Box>
+                        <Typography className="ps-3 fs-14 pe-2 text-align-justify">
+                          {" "}
+                          {`${item?.address}, ${item?.location}, ${
+                            item?.landmark ? `${item?.landmark},` : ""
+                          }  ${item?.cityDistrictTown}, ${item?.state}, ${
+                            item?.pinCode
+                          }.`}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                ))}
+            </Box>
+          </Paper>
           <Paper className="ms-2 p-2">
             <Typography className="text-secondary h-5 fw-bold">
               Price Details
@@ -297,7 +427,7 @@ const Cart = () => {
             <Divider />
             <Box className="d-flex justify-content-between align-items-center">
               <Typography className="h-5 fw-bold my-2">
-                Price ({products?.length} items)
+                Price ({priceDetails.noOfItems} items)
               </Typography>
               <Typography className="h-5 fw-bold">
                 {getFinalPrice().salePrice}
@@ -309,10 +439,10 @@ const Cart = () => {
               </Typography>
               <Typography
                 className={`${
-                  getFinalPrice().deliveryPrice === 0 ? "text-success" : ""
+                  priceDetails.deliveryCharge === 0 ? "text-success" : ""
                 } h-5`}
               >
-                {getFinalPrice().deliveryPrice || "FREE"}
+                {priceDetails.deliveryCharge || "FREE"}
               </Typography>
             </Box>
             <Box className="d-flex justify-content-between align-items-center">
@@ -321,22 +451,22 @@ const Cart = () => {
               </Typography>
               <Typography
                 className={`${
-                  getFinalPrice().returnCharges === 0 ? "text-success" : ""
+                  priceDetails.returnCharges === 0 ? "text-success" : ""
                 } h-5`}
               >
-                {getFinalPrice().returnCharges || "FREE"}
+                {priceDetails.returnCharges || "FREE"}
               </Typography>
             </Box>
             <Divider />
             <Box className="d-flex justify-content-between align-items-center my-2">
               <Typography className="h-5 fw-bold">Total Payable</Typography>
               <Typography className="h-5 fw-bold">
-                {getFinalPrice().totalPrice}
+                {priceDetails.totalPayable}
               </Typography>
             </Box>
             <Divider />
             <Typography className="text-success text-center h-5 my-2">
-              Your Total Savings on this Order is 10000
+              Your Total Savings on this Order is {priceDetails.totalSaving}
             </Typography>
           </Paper>
           <Box className="mt-3 w-100 ps-2">

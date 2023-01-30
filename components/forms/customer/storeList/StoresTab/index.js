@@ -47,13 +47,17 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setStoreList(
-        data.map((item) => ({
-          label: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-          defaultStore: item.defaultStore,
-        }))
-      );
+      if (data.data) {
+        setStoreList(
+          data.data.map((item) => ({
+            label: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+            defaultStore: item.defaultStore,
+          }))
+        );
+      } else {
+        setStoreList([]);
+      }
     }
   };
   const getAllStoreOfStoreList = async (id) => {
@@ -121,6 +125,8 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
             supplierId: storeData.supplierId,
+            supplieremailId: storeData.emailId,
+            suppliermobileNumber: storeData.mobileNumber,
           })
         );
         dispatch(

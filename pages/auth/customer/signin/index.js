@@ -90,6 +90,8 @@ const SignIn = () => {
         profileId: details.profileId,
         profileName: details.profileName,
         bgcolor: bg_color[Math.floor(Math.random() * (4 - 0) + 0)],
+        supplieremailId: data.emailId,
+        suppliermobileNumber: data.mobileNumber,
       };
       dispatch(storeUserInfo(userInfo));
       dispatch(
@@ -169,7 +171,10 @@ const SignIn = () => {
                     details
                   );
                 }
-                if (data?.defaultStoreCode || router?.query?.storeCode) {
+                if (
+                  data?.defaultStoreCode?.length ||
+                  router?.query?.storeCode?.length
+                ) {
                   router.push(`/customer/home`);
                 }
               }

@@ -13,8 +13,8 @@ const getStoreList = (userId, keyword = "") => {
   return serviceUtil
     .get(`users/customers/store-list?customerId=${userId}&keyword=${keyword}`)
     .then((res) => {
-      const { data } = res.data;
-      return { data };
+      // const { data } = res.data;
+      return { data: res.data };
     })
     .catch((err) => ({ err }));
 };

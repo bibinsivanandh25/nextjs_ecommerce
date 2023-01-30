@@ -64,6 +64,8 @@ const OtpLogIn = () => {
         addressDetails: details.addressDetails,
         customerName: details.customerName,
         profileId: details.profileId,
+        supplieremailId: data.emailId,
+        suppliermobileNumber: data.mobileNumber,
       };
       dispatch(storeUserInfo(userInfo));
       dispatch(

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CategoryCards from "@/atoms/CategoryCards";
 import { getTopCategoriesOfMonth } from "services/customer/Home";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 
 const TopCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -30,31 +31,40 @@ const TopCategories = () => {
   const renderCategories = () => {
     return categories.map((ele) => {
       return (
-        <Box
-          className="mx-1 container-shadow rounded"
+        <motion.div
+          whileHover={{
+            scale: 1.05,
+            transition: { duration: 0.5 },
+          }}
+          whileTap={{ scale: 0.9 }}
           key={ele.id}
-          onClick={() => {
-            route.push({
-              pathname: "/customer/productvariation",
-              query: {
-                categoryId: ele.id,
-              },
-            });
-          }}
-          style={{
-            overflow: "hidden",
-          }}
+          className="cursor-pointer"
         >
-          <CategoryCards
-            categoryTitle={ele.categoryTitle}
-            src={ele.image}
-            height={150}
-            width={150}
-            clickCardCategory={() => {
-              console.log(ele);
+          <Box
+            className="mx-1 container-shadow rounded cursor-pointer"
+            onClick={() => {
+              route.push({
+                pathname: "/customer/productvariation",
+                query: {
+                  categoryId: ele.id,
+                },
+              });
             }}
-          />
-        </Box>
+            style={{
+              overflow: "hidden",
+            }}
+          >
+            <CategoryCards
+              categoryTitle={ele.categoryTitle}
+              src={ele.image}
+              height={150}
+              width={150}
+              clickCardCategory={() => {
+                console.log(ele);
+              }}
+            />
+          </Box>
+        </motion.div>
       );
     });
   };

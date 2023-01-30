@@ -181,14 +181,13 @@ const Profile = () => {
     <Box className="d-flex justify-content-center flex-column">
       {profileList.length <= 4 && (
         <div>
-          <Typography
-            className="fs-16 theme_color d-inline cursor-pointer ms-3"
-            onClick={() => {
+          <ButtonComponent
+            label="New profile +"
+            onBtnClick={() => {
               setShowModal(true);
             }}
-          >
-            New Profile +
-          </Typography>
+            variant="outlined"
+          />
         </div>
       )}
       <Box className="d-flex justify-content-center my-3 flex-wrap">
@@ -202,7 +201,7 @@ const Profile = () => {
               }}
               className="m-2 rounded d-flex flex-column align-items-center"
             >
-              <Box className="w-100 d-flex justify-content-center bg-info p-3">
+              <Box className="w-100 d-flex justify-content-center theme_bg_color p-3">
                 {item.profileImageUrl ? (
                   <Image
                     src={item.profileImageUrl}
@@ -293,31 +292,29 @@ const Profile = () => {
                     />
                   </Tooltip>
                 </motion.div>
-                {profileId !== item.profileId && (
-                  <motion.div
-                    whileHover={{
-                      scale: 1.4,
-                      transition: { duration: 0.5 },
-                    }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Tooltip title="Delete">
-                      <Delete
-                        size={40}
-                        className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
-                        style={{
-                          color: "#fff",
-                          padding: "5px",
-                          height: "30px",
-                          width: "30px",
-                        }}
-                        onClick={() => {
-                          deleteprofile(item);
-                        }}
-                      />
-                    </Tooltip>
-                  </motion.div>
-                )}
+                <motion.div
+                  whileHover={{
+                    scale: 1.4,
+                    transition: { duration: 0.5 },
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Tooltip title="Delete">
+                    <Delete
+                      size={40}
+                      className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
+                      style={{
+                        color: "#fff",
+                        padding: "5px",
+                        height: "30px",
+                        width: "30px",
+                      }}
+                      onClick={() => {
+                        deleteprofile(item);
+                      }}
+                    />
+                  </Tooltip>
+                </motion.div>
               </div>
             </Paper>
           );

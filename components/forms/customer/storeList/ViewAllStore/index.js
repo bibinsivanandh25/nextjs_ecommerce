@@ -112,6 +112,8 @@ const ViewAllStore = ({
             shopDescriptionImageUrl: storeData.shopDescriptionImageUrl,
             addStoreFlag: false,
             supplierId: storeData.supplierId,
+            supplieremailId: storeData.emailId,
+            suppliermobileNumber: storeData.mobileNumber,
           })
         );
         dispatch(

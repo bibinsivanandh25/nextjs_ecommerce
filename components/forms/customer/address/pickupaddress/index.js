@@ -159,7 +159,7 @@ const PickUpAddress = ({
                       />
                     </Grid>
                     <Grid item xs={12} className="fs-14 fw-bold my-1 mx-4">
-                      <Typography>
+                      <Typography className="text-align-justify">
                         {" "}
                         {`${add?.address}, ${add?.location}, ${
                           add?.landmark ? `${add?.landmark},` : ""

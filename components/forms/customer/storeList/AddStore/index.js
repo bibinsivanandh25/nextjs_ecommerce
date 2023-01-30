@@ -34,12 +34,16 @@ const AddStore = ({
   const getStoresList = async () => {
     const { data } = await getStoreList(userId, "");
     if (data) {
-      setOptions(
-        data.map((item) => ({
-          title: item.customerStoreListName ?? "--",
-          id: item.customerStoreListId,
-        }))
-      );
+      if (data.data) {
+        setOptions(
+          data.data.map((item) => ({
+            title: item.customerStoreListName ?? "--",
+            id: item.customerStoreListId,
+          }))
+        );
+      } else {
+        setOptions([]);
+      }
     }
   };
 

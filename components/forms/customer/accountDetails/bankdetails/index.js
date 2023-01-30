@@ -106,11 +106,13 @@ const BankDetails = () => {
           item
           xs={5}
           container
-          className="border border-1 mx-4 my-3 rounded mnh-130"
+          className={`border border-1 mx-4 my-3 rounded mnh-130 ${
+            ele.isChecked ? "theme_border_color theme_bg_color_1" : ""
+          }`}
           key={index}
         >
           <Grid container>
-            <Grid item xs={1} className="d-flex align-items-center mx-2 ">
+            <Grid item xs={1} className="d-flex align-items-center mx-2">
               <RadiobuttonComponent
                 id={index}
                 isChecked={ele.isChecked}
