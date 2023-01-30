@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-use-before-define */
+import ChooseBannerModal from "@/forms/supplier/marketingtools/choosebanner";
 import ViewModal from "@/forms/supplier/marketingtools/viewmodal";
 import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -101,6 +102,7 @@ const CreateDiscountCoupons = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState({});
+  const [showChooseBanner, setShowChooseBanner] = useState(false);
 
   const handleDeleteClick = async (item) => {
     if (item) {
@@ -197,8 +199,8 @@ const CreateDiscountCoupons = () => {
       <div>
         {!showCreateDiscount ? (
           <div>
-            <Grid className="d-flex justify-content-between align-items-center my-2">
-              <Grid>
+            <Grid container>
+              <Grid item sm={4}>
                 <Typography className="fs-12 fw-bold">
                   Subscription Start Date & time :{" "}
                   {masterData.subscriptionStartDateTime
@@ -208,7 +210,7 @@ const CreateDiscountCoupons = () => {
                     : "--"}
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid item sm={4}>
                 <Typography className="fs-12 fw-bold">
                   Subscription End Date & time :{" "}
                   {masterData.subscriptionEndDateTime
@@ -218,7 +220,15 @@ const CreateDiscountCoupons = () => {
                     : "--"}
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid item sm={4} display="flex" justifyContent="end">
+                <ButtonComponent
+                  variant="outlined"
+                  label="Choose Banner"
+                  onBtnClick={() => {
+                    setShowChooseBanner(true);
+                  }}
+                  muiProps="mx-2"
+                />
                 <ButtonComponent
                   variant="outlined"
                   label="Create Discounts"
@@ -226,13 +236,11 @@ const CreateDiscountCoupons = () => {
                     setShowCreateDiscount(true);
                   }}
                 />
-                <Typography
-                  sx={{
-                    width: "fit-content",
-                    mx: "auto",
-                  }}
-                  className="h-5 text-primary cursor-pointer py-1"
-                >
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item sm={12} display="flex" justifyContent="end">
+                <Typography className="h-5 text-primary cursor-pointer py-1 me-2">
                   Guidelines to Create
                 </Typography>
               </Grid>
@@ -271,6 +279,13 @@ const CreateDiscountCoupons = () => {
           data={viewModalData}
           modalClose={setViewModalOpen}
           modalTitle="Create Disount View"
+        />
+      )}
+      {showChooseBanner && (
+        <ChooseBannerModal
+          open={showChooseBanner}
+          closeModal={setShowChooseBanner}
+          type="DISCOUNT_COUPON"
         />
       )}
     </Paper>

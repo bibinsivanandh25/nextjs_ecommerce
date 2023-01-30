@@ -3,11 +3,13 @@ import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Box, Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import {
-  addProductToCart,
+  // addProductToCart,
   getProductDetailsByDeliveryType,
 } from "services/customer/cart";
+import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
 const AddToCartModal = ({
@@ -354,20 +356,47 @@ const AddToCartModal = ({
     }
     return payload;
   };
+
+  const queryClient = useQueryClient();
+  const addToCartMutation = useMutation(
+    (reqObj) => {
+      return serviceUtil.post(`products/product/user-cart`, reqObj);
+    },
+    {
+      onSuccess: ({ data }) => {
+        if (!data?.popUp) {
+          toastify(data?.message, "success");
+          setShowAddtoCartModal(false);
+          setViewModalOpen(false);
+          getProducts();
+          queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+          queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+          queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+          queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        } else setShowConfirmModal(true);
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
+    }
+  );
+
   const handleAddToCartClick = async (flag = false) => {
     const payload = createPayload(flag);
-    const { data, err } = await addProductToCart(payload);
-    if (data) {
-      if (!data?.popUp) {
-        toastify(data?.message, "success");
-        getProducts();
-        setShowAddtoCartModal(false);
-        setViewModalOpen(false);
-      } else setShowConfirmModal(true);
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
+    addToCartMutation.mutate(payload);
+    // const { data, err } = await addProductToCart(payload);
+    // if (data) {
+    //   if (!data?.popUp) {
+    //     toastify(data?.message, "success");
+    //     getProducts();
+
+    //     setShowAddtoCartModal(false);
+    //     setViewModalOpen(false);
+    //   } else setShowConfirmModal(true);
+    // }
+    // if (err) {
+    //   toastify(err?.response?.data?.message, "error");
+    // }
   };
   return (
     <ModalComponent

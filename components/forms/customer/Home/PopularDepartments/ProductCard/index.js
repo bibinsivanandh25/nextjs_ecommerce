@@ -328,6 +328,7 @@ const ProductCard = ({
           viewModalOpen={viewModalOpen}
           productId={item?.id}
           getProducts={getProducts}
+          setIconColor={setIconColor}
         />
       )}
     </Box>
