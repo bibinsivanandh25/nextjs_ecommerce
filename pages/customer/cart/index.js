@@ -191,13 +191,13 @@ const Cart = () => {
               </Typography>
               <Typography className="h-5  my-2">{ele?.title}</Typography>
               <Typography component="span" className="fw-bold me-2">
-                ₹{ele?.salePrice}
+                ₹{ele?.cartQty * ele?.salePrice}
               </Typography>
               <Typography
                 component="span"
                 className="h-5 text-decoration-line-through"
               >
-                ₹ {ele?.mrp}
+                ₹ {ele?.cartQty * ele?.mrp}
               </Typography>
               <div className="mt-3">
                 <Typography
