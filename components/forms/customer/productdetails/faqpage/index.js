@@ -30,6 +30,7 @@ const FAQPage = ({
   const [reviewPageNumber, setReviewPageNumber] = useState(0);
   const [productReview, setProductReview] = useState([]);
   const [showPostQandA, setShowPostQandA] = useState(true);
+  const [showImageModal, setShowImageModal] = useState(false);
   const user = useSelector((state) => state.customer);
 
   const [isIntersecting, setIntersecting] = useState(false);
@@ -169,6 +170,9 @@ const FAQPage = ({
         toastify(err.response.data.message, "error");
       }
     }
+  };
+  const handleReviewImageClick = () => {
+    setShowImageModal(true);
   };
   return (
     <Box paddingX={1}>
@@ -329,27 +333,49 @@ const FAQPage = ({
         <Grid item md={8}>
           {reviewMasterData?.reviewMediaUrl?.length ? (
             <Grid item md={12}>
-              <Typography className="fw-500">Reviews With Images</Typography>
-              <Box>
-                {reviewMasterData.reviewMediaUrl.map((item) => (
-                  <Image
-                    layout="intrinsic"
-                    height={120}
-                    width={120}
-                    src={item}
-                    className="me-1"
-                    alt="No Image"
-                  />
-                ))}
+              <Typography className="fw-bold">Reviews With Images</Typography>
+              <Box display="flex">
+                {reviewMasterData.reviewMediaUrl.map(
+                  (item, index) =>
+                    index < 6 && (
+                      <Box position={index === 5 && "relative"} marginRight={1}>
+                        <Image
+                          layout="intrinsic"
+                          height={120}
+                          width={120}
+                          src={item}
+                          className={`${index === 5 ? "reviewIamge" : ""}`}
+                          alt="No Image"
+                        />
+                        {index === 5 && index < 6 && (
+                          <Box
+                            position="absolute"
+                            top={0}
+                            zIndex={100}
+                            onClick={() => {
+                              handleReviewImageClick();
+                            }}
+                            className="cursor-pointer w-100 h-100"
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                          >
+                            <Typography className="fs-26 color-white fw-500">
+                              + {reviewMasterData.reviewMediaUrl.length - 5}
+                            </Typography>
+                          </Box>
+                        )}
+                      </Box>
+                    )
+                )}
               </Box>
-              <Typography className="h-5 color-blue cursor-pointer">
-                See All Customer Images
-              </Typography>
             </Grid>
           ) : null}
           {reviewMasterData?.customerTopReviewPojo ? (
             <Grid item md={12} mt={2}>
-              <Typography className="fw-500">Top Reviews From India</Typography>
+              <Typography className="fw-bold ">
+                Top Reviews From India
+              </Typography>
               <Box>
                 <Box display="flex" alignItems="center">
                   <Avatar
@@ -402,7 +428,7 @@ const FAQPage = ({
               <Typography className="fw-bold my-1">Product Reviews</Typography>
             ) : null}
             {productReview?.length ? (
-              <Box className="mxh-300 overflow-auto hide-scrollbar">
+              <Box className="mxh-600 overflow-auto hide-scrollbar">
                 {productReview.map((item) => (
                   <Box>
                     <Box display="flex" alignItems="center">
@@ -435,6 +461,21 @@ const FAQPage = ({
                       <Typography className="h-5">
                         {item.writtenReview}
                       </Typography>
+                      <Box display="flex">
+                        {item?.reviewMediaUrl?.length
+                          ? item?.reviewMediaUrl.map((val) => (
+                              <Box marginRight={1}>
+                                <Image
+                                  layout="intrinsic"
+                                  height={70}
+                                  width={70}
+                                  src={val}
+                                  alt="No Image"
+                                />
+                              </Box>
+                            ))
+                          : null}
+                      </Box>
                       {item.helpfulCount > 0 ? (
                         <Typography className="h-5 color-gray">
                           {item.helpfulCount} people found this helpful
@@ -491,6 +532,34 @@ const FAQPage = ({
               Your question might be answered by suppliers, Re-sellers, or
               customers who boght this product.
             </Typography>
+          </Box>
+        </ModalComponent>
+      ) : null}
+      {showImageModal ? (
+        <ModalComponent
+          open={showImageModal}
+          showPositionedClose
+          showCloseIcon={false}
+          showFooter={false}
+          onCloseIconClick={() => setShowImageModal(false)}
+          ModalTitle={`User Images (${reviewMasterData?.reviewMediaUrl?.length})`}
+          titleClassName="fs-16 fw-500 color-orange"
+          ModalWidth={800}
+        >
+          <Box className="mxh-600">
+            <Grid container spacing={2} mt={1}>
+              {reviewMasterData.reviewMediaUrl.map((item) => (
+                <Grid item sm={4}>
+                  <Image
+                    layout="intrinsic"
+                    height={220}
+                    width={220}
+                    src={item}
+                    alt="No Image"
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </Box>
         </ModalComponent>
       ) : null}
