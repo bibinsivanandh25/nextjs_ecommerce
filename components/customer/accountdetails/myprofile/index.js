@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
-import { Avatar, Badge, Box, Grid } from "@mui/material";
+import { Avatar, Badge, Box, Grid, Typography } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useRef, useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -59,7 +59,6 @@ const MyProfile = () => {
     emailOtp: false,
     emailValidOtp: false,
   });
-
   useEffect(() => {
     if (disableEdit.emailValidOtp) {
       setTimeout(() => {
@@ -261,9 +260,6 @@ const MyProfile = () => {
       }, 2000);
     }
   }, [emailOtp]);
-  console.log(
-    customerDetails?.mobileNumber?.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
-  );
 
   return (
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded px-4">
@@ -418,6 +414,11 @@ const MyProfile = () => {
                 }}
               />
             )}
+            {disableEdit.emailValidOtp && !showResendBtn.email && (
+              <Typography className="theme_color fs-12 fw-500">
+                Please wait for a while to resend OTP
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={6}>
@@ -527,6 +528,11 @@ const MyProfile = () => {
                   getOtpFunction();
                 }}
               />
+            )}
+            {disableEdit.validOtp && !showResendBtn.phone && (
+              <Typography className="theme_color fs-12 fw-500">
+                Please wait for a while to resend OTP
+              </Typography>
             )}
           </Grid>
           <Grid item xs={5}>

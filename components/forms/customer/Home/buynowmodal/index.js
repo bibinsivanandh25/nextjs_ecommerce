@@ -639,7 +639,8 @@ const DeliveryOptionsModal = ({
         >
           <Box marginLeft={2}>
             <Typography className="d-flex align-items-center">
-              <span className="h-4">Final Price -</span>{" "}
+              <span className="h-4">Final Price -</span>
+              <span className="h-3">&nbsp;₹ </span>
               <span className="h-3 theme_color">&nbsp;{getFinalPrice()}</span>
             </Typography>
           </Box>

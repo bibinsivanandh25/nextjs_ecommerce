@@ -62,6 +62,7 @@ const Header = () => {
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [showFavoriteList, setShowFavoriteList] = useState(false);
   const customer = useSelector((state) => state.customer);
+
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);

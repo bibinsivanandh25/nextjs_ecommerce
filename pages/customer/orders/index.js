@@ -564,13 +564,13 @@ const Orders = () => {
                                 setorderFilter({
                                   ...orderFilter,
                                   duration: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
+                                    label: val?.label,
+                                    id: val?.id,
+                                    value: val?.value,
                                   },
                                 });
                               }}
-                              value={orderFilter.duration}
+                              value={orderFilter?.duration}
                             />
                           </Grid>
                           <Grid item sm={5}>
