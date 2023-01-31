@@ -352,7 +352,7 @@ const DeliveryOptionsModal = ({
               </Typography>
               {selectedTab === "FREEDELIVERYANDRETURN" ? (
                 <CheckBoxComponent
-                  label={`${productDetails.fastDeliveryCharges} - ${productDetails?.fastestDeliveryBy}`}
+                  label={` ₹ ${productDetails.fastDeliveryCharges} - ${productDetails?.fastestDeliveryBy}`}
                   isChecked={
                     selectedDeliveryandReturnCharges?.freeDeliveryFastDelivery
                   }
@@ -442,7 +442,7 @@ const DeliveryOptionsModal = ({
                   isChecked={
                     selectedDeliveryandReturnCharges?.noFreeDeliveryStandardDelivery
                   }
-                  label={`${productDetails?.deliveryCharges} - ${productDetails?.deliveryBy}`}
+                  label={`₹ ${productDetails?.deliveryCharges} - ${productDetails?.deliveryBy}`}
                   onRadioChange={() => {
                     setSelectedDeliveryandReturnCharges({
                       ...selectedDeliveryandReturnCharges,
@@ -495,7 +495,7 @@ const DeliveryOptionsModal = ({
                     });
                   }
                 }}
-                label={`${productDetails?.fastDeliveryCharges} - Fastest Delivery by wed, sep 22`}
+                label={`₹ ${productDetails?.fastDeliveryCharges} -${productDetails?.fastestDeliveryBy}`}
               />
             </Box>
             <Box
@@ -558,7 +558,7 @@ const DeliveryOptionsModal = ({
                       noFreeDeliveryFastReturn: false,
                     });
                   }}
-                  label={`${productDetails?.returnCharges} - ${productDetails?.returnBy}`}
+                  label={`₹ ${productDetails?.returnCharges} - ${productDetails?.returnBy}`}
                 />
               </Box>
               <RadiobuttonComponent
@@ -583,7 +583,7 @@ const DeliveryOptionsModal = ({
                     noFreeDeliveryFastReturn: true,
                   });
                 }}
-                label={`${productDetails?.fastReturnCharges} - ${productDetails?.fastestReturnBy}`}
+                label={`₹ ${productDetails?.fastReturnCharges} - ${productDetails?.fastestReturnBy}`}
               />
             </Box>
           </Grid>
