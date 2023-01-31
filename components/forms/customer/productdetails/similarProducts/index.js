@@ -104,8 +104,8 @@ const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
     <>
       {showPage ? (
         <Box>
-          <Typography className="fw-bold my-2">Similar Products</Typography>
-          <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+          <Typography className="fw-bold mt-2">Similar Products</Typography>
+          <Box className="d-flex w-100 overflow-auto py-2 hide-scrollbar">
             {products?.map((ele) => {
               return (
                 <ProductListCard

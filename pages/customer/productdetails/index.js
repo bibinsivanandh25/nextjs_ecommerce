@@ -41,6 +41,7 @@ import FAQPage from "@/forms/customer/productdetails/faqpage";
 import ModalComponent from "@/atoms/ModalComponent";
 import RecentlyViewedProduct from "@/forms/customer/productdetails/recentlyviewedproduct";
 import { productDetails } from "features/customerSlice";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
 
@@ -126,12 +127,12 @@ const ProductDetails = ({ isSideBarOpen }) => {
   useEffect(() => {
     if (size.width > 800 && isSideBarOpen) {
       setImageSize({
-        width: parseInt(size.width - 253, 10) / 4.3,
+        width: parseInt(size.width - 253, 10) / 4.5,
         height: parseInt(size.width, 10) / 5.5,
       });
     } else {
       setImageSize({
-        width: parseInt(size.width, 10) / 4.3,
+        width: parseInt(size.width, 10) / 4.55,
         height: parseInt(size.width, 10) / 4.5,
       });
     }
@@ -517,7 +518,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                             style={{
                               position: "absolute",
                               top: "3%",
-                              right: isSideBarOpen ? "5.5%" : "1%",
+                              right: "2.5%",
                             }}
                             className="border rounded-circle"
                             padding={1}
@@ -614,13 +615,13 @@ const ProductDetails = ({ isSideBarOpen }) => {
                         Charges
                       </Typography>
                     </Grid>
-                    <Grid item md={1} display="flex">
+                    <Grid item md={1} display="flex" justifyContent="end">
                       <RemoveRedEye className="fs-18 color-gray" />
                       <Typography className="mx-1 h-5 color-gray">
                         {selectedMasterData?.viewCount}
                       </Typography>
                     </Grid>
-                    <Grid item md={1} display="flex">
+                    <Grid item md={1} display="flex" justifyContent="end">
                       <AirportShuttle className="fs-18 color-gray" />
                       <Typography className="mx-1 h-5 color-gray">
                         {selectedMasterData?.deliveredcount}
@@ -1434,9 +1435,9 @@ const ProductDetails = ({ isSideBarOpen }) => {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} paddingY={1}>
                     {masterData?.customerProductVariationList.length ? (
-                      <Grid container gap={1} mt={2}>
+                      <Grid container gap={1} mt={1}>
                         <Grid item md={12} xs={12}>
                           <Typography className="fw-bold">
                             Variations ({masterData.mainStandardVariationName})
@@ -1453,33 +1454,42 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   handleVariationClick(item);
                               }}
                             >
-                              <Box display="flex" justifyContent="center">
-                                <Image
-                                  height={150}
-                                  width={150}
-                                  src={item?.imageUrl}
-                                  layout="intrinsic"
-                                  className={`${
-                                    item.variationDetails[0].enabled
-                                      ? `border`
-                                      : `border-dashed1`
-                                  } ${
-                                    selectedMasterData.productVariationId ===
-                                      item.productVariationId && `border-orange`
-                                  } rounded`}
-                                  alt="alt"
-                                />
-                              </Box>
-                              <Tooltip title={item.productTitle}>
-                                <Typography
-                                  className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
-                                    selectedMasterData.productVariationId ===
-                                      item.productVariationId && `color-orange`
-                                  }`}
-                                >
-                                  {item.productTitle}
-                                </Typography>
-                              </Tooltip>
+                              <motion.div
+                                whileHover={{
+                                  scale: 1.05,
+                                  transition: { duration: 0.5 },
+                                }}
+                              >
+                                <Box display="flex" justifyContent="center">
+                                  <Image
+                                    height={150}
+                                    width={150}
+                                    src={item?.imageUrl}
+                                    layout="intrinsic"
+                                    className={`${
+                                      item.variationDetails[0].enabled
+                                        ? `border`
+                                        : `border-dashed1`
+                                    } ${
+                                      selectedMasterData.productVariationId ===
+                                        item.productVariationId &&
+                                      `border-orange`
+                                    } rounded`}
+                                    alt="alt"
+                                  />
+                                </Box>
+                                <Tooltip title={item.productTitle}>
+                                  <Typography
+                                    className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
+                                      selectedMasterData.productVariationId ===
+                                        item.productVariationId &&
+                                      `color-orange`
+                                    }`}
+                                  >
+                                    {item.productTitle}
+                                  </Typography>
+                                </Tooltip>
+                              </motion.div>
                             </Grid>
                           )
                         )}

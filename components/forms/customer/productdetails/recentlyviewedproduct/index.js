@@ -45,11 +45,10 @@ const RecentlyViewedProduct = ({ scrollPage = () => {} }) => {
 
   return (
     <Box className={products?.length ? "" : "d-none"}>
-      <Typography className="fw-bold my-2">
+      <Typography className="fw-bold mt-2">
         Your Recently Viewed Products
       </Typography>
-
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto py-2 hide-scrollbar">
         {products ? (
           products?.map((ele) => {
             return (
