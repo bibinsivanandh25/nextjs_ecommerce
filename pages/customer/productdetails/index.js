@@ -44,6 +44,7 @@ import { productDetails } from "features/customerSlice";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
+import ProductSkeleton from "@/forms/customer/productdetails/productskeleton";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -147,7 +148,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   const [masterVariation, setMasterVariation] = useState([]);
-  const [showScroll, setShowScroll] = useState(true);
+
   const dispatch = useDispatch();
   const route = useRouter();
 
@@ -210,8 +211,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
           }
         });
       });
-      showScroll && scrollPage();
-      setShowScroll(false);
+      scrollPage();
     }
     if (err) {
       setMasterData([]);
@@ -235,6 +235,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   const handleVariationClick = (item) => {
+    scrollPage();
     getRating(item.productVariationId);
     setMasterVariation(item.variationDetails);
     dispatch(
@@ -243,7 +244,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
         variationDetails: [...item.variationDetails],
       })
     );
-    scrollPage();
     route.push({
       pathname: "/customer/productdetails",
     });
@@ -289,12 +289,18 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
   useEffect(() => {
     if (userData) {
+      scrollPage();
       getProductDetails(userData.productId, userData.variationDetails);
       // setMasterVariation(userData.variationDetails);
       getRating(userData.productId);
     }
     getMinimumCart();
     getCouponsData();
+    return () => {
+      setSelectedImage("");
+      setSelectedMasterData({});
+      setMasterData([]);
+    };
   }, [userData]);
 
   const handleImageClick = (value, ind) => {
@@ -737,7 +743,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 </span>
                                 <span className="h-p89">
                                   {" "}
-                                  (Actual Product Cost)
+                                  (No Free Delivery & Return)
                                 </span>
                               </Typography>
                             }
@@ -1489,6 +1495,15 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                     {item.productTitle}
                                   </Typography>
                                 </Tooltip>
+                                <Typography
+                                  className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
+                                    selectedMasterData.productVariationId ===
+                                      item.productVariationId && `color-orange`
+                                  }`}
+                                >
+                                  {masterData.mainStandardVariationName} :{" "}
+                                  {item?.variationDetails[0]?.optionName}
+                                </Typography>
                               </motion.div>
                             </Grid>
                           )
@@ -1597,7 +1612,11 @@ const ProductDetails = ({ isSideBarOpen }) => {
                 </Grid>
               </Grid>
             </Box>
-          ) : null}
+          ) : (
+            <Box>
+              <ProductSkeleton />
+            </Box>
+          )}
           {showWishListModal ? (
             <AddToWishListModal
               showModal={showWishListModal}
