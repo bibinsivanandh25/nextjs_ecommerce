@@ -312,7 +312,8 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
               ))}
             </Grid>
           </Box>
-          {productData?.length ? (
+          {productData?.length &&
+          Math.ceil(totalProductCount / dataPerPage) > 1 ? (
             <Box className="d-flex justify-content-center align-items-center mt-3 mb-2">
               <ChevronLeftIcon
                 className={page <= 1 ? "text-muted" : "text-black"}
@@ -344,7 +345,6 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 hidePrevButton
               />
               <ChevronRightIcon
-                fontSize="30"
                 onClick={() => {
                   handleNextbtnClick();
                 }}
