@@ -86,7 +86,7 @@ const getThemes = () => {
   return serviceUtil
     .get("users/marketing-tool-themes")
     .then((res) => {
-      const { data } = res.data;
+      const { data } = res?.data;
       return { data };
     })
     .catch((err) => ({ err }));
@@ -96,12 +96,29 @@ const deleteMarketingTool = (id) => {
   return serviceUtil
     .deleteById(`users/marketing-tool?marketingToolId=${id}`)
     .then((res) => {
-      const { data, message } = res.data;
+      const { data, message } = res?.data;
       return { data, message };
     })
     .catch((err) => ({ err }));
 };
-
+const getChooseBannerData = (payload) => {
+  return serviceUtil
+    .put("users/choose-banner", payload)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const saveChooseBanner = (payload) => {
+  return serviceUtil
+    .post(`users/choose-banner`, payload)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getUserMarketingTool,
   getAllMainCategories,
@@ -112,4 +129,6 @@ export {
   getProductsForShareproduct,
   getThemes,
   deleteMarketingTool,
+  getChooseBannerData,
+  saveChooseBanner,
 };

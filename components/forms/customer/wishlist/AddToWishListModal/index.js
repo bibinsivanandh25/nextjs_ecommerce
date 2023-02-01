@@ -158,6 +158,7 @@ const AddToWishListModal = ({
         queryClient.invalidateQueries(["PRODUCTVARIATIONS"]);
         queryClient.refetchQueries("PRODUCTVARIATIONS", { force: true });
         getAllWishLists();
+        getProducts();
         setSelectedList({
           id: "",
           index: 0,

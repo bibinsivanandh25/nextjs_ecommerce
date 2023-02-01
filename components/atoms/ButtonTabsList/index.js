@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import { Delete, Edit } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 
 const ButtonTabsList = ({
   className = "w-100",
@@ -10,6 +10,8 @@ const ButtonTabsList = ({
   showEditDelete = false,
   onEditClick = () => {},
   onDeleteClick = () => {},
+  deleteBtnName = "",
+  editBtnName = "",
 }) => {
   return (
     <Box className={`${className}`}>
@@ -30,14 +32,18 @@ const ButtonTabsList = ({
               </div>
               {showEditDelete && activeTab === index ? (
                 <div className="position-absolute end-0 top-2">
-                  <Edit
-                    className="fs-14 cursor-pointer"
-                    onClick={() => onEditClick(item)}
-                  />
-                  <Delete
-                    className="fs-14 cursor-pointer"
-                    onClick={() => onDeleteClick(item)}
-                  />
+                  <Tooltip title={editBtnName}>
+                    <Edit
+                      className="fs-14 cursor-pointer"
+                      onClick={() => onEditClick(item)}
+                    />
+                  </Tooltip>
+                  <Tooltip title={deleteBtnName}>
+                    <Delete
+                      className="fs-14 cursor-pointer"
+                      onClick={() => onDeleteClick(item)}
+                    />
+                  </Tooltip>
                 </div>
               ) : null}
             </div>

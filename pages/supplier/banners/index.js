@@ -12,6 +12,15 @@ import TableComponent from "@/atoms/TableComponent";
 import CreateBanner from "@/forms/supplier/banners/CreateBanners";
 import ViewBannerModal from "@/forms/supplier/banners/viewbannerModal";
 
+const displayName = [
+  { id: "Home", label: "Home" },
+  { id: "SPIN_WHEEL", label: "Spin Wheel" },
+  { id: "TODAYS_DEAL", label: "Todays Deal" },
+  { id: "DISCOUNT_COUPON", label: "Discount Coupon" },
+  { id: "QUIZ", label: "Quiz" },
+  { id: "SCRATCH_CARD", label: "Scratch Card" },
+];
+
 const columns = [
   {
     id: "col1", //  id value in column should be presented in row as key
@@ -115,7 +124,7 @@ const Banners = () => {
   const userInfo = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     bannerId: "",
-    url: "",
+    url: null,
     displayPage: null,
     buttonlable: null,
     startdate: "",
@@ -250,6 +259,10 @@ const Banners = () => {
       }
     }
   };
+  const getDisplayPage = (val) => {
+    const temp = displayName.filter((x) => x.label === val);
+    return temp?.length ? temp[0] : { id: val, label: val };
+  };
   const handleEditClick = (selectedData) => {
     if (selectedData) {
       const startDate = new Date(selectedData.startDateTime);
@@ -260,11 +273,11 @@ const Banners = () => {
       const endMin = new Date(selectedData.endDateTime).getMinutes();
       setFormData({
         bannerId: selectedData.bannerId,
-        url: selectedData.navigationUrl,
-        displayPage: {
-          id: selectedData.displayPage,
-          label: selectedData.displayPage,
+        url: {
+          id: selectedData.navigationUrl,
+          label: selectedData.navigationUrl,
         },
+        displayPage: getDisplayPage(selectedData.displayPage),
         buttonlable: {
           id: selectedData.buttonName,
           label: selectedData.buttonName,

@@ -40,6 +40,12 @@ const customerHome = {
     "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png",
   quizBackgroung:
     "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/coupon_applicable_product_quiz.jpg",
+  noProducts:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Sorryyyy.png",
+  featureNotAvailable:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/oooooooooops.png",
+  emptyCart:
+    "https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Your%20cart%20is%20empty%201.png",
 };
 
 export { assetsJson, productImageGuidLines, customerHome };

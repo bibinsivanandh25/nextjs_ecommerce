@@ -10,6 +10,7 @@ import { getCompareProductDetails } from "services/customer/compareProducts";
 import { getSimilarProducts } from "services/customer/similarproducts";
 import toastify from "services/utils/toastUtils";
 import CompareProductCard from "../compareProductCard";
+import CompareProductDetails from "../compareproductmodal";
 // import ProductCard from "../../Home/PopularDepartments/ProductCard";
 
 function CompareProductDrawer({
@@ -26,6 +27,10 @@ function CompareProductDrawer({
   const [productCount, setProductCount] = useState(null);
   const [productDetails, setProductDetails] = useState([]);
   const [isIntersecting, setIntersecting] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [showCompareProductsModal, setShowCompareProductsModal] =
+    useState(false);
+  const [compareProductData, setCompareProductData] = useState([]);
 
   const observer = new IntersectionObserver(([entry]) => {
     setIntersecting(entry.isIntersecting);
@@ -57,7 +62,8 @@ function CompareProductDrawer({
     };
     const { data } = await getCompareProductDetails(payload);
     if (data) {
-      console.log(data);
+      setCompareProductData(data);
+      setShowCompareProductsModal(true);
     }
   };
 
@@ -84,6 +90,7 @@ function CompareProductDrawer({
     return temp;
   };
   const getProducts = async (page = pageNumber ?? 0) => {
+    setLoading(true);
     const payload = {
       productVariationId: productId,
       supplierId,
@@ -108,7 +115,12 @@ function CompareProductDrawer({
     } else if (err) {
       setPageNumber(0);
     }
+    setLoading(false);
   };
+
+  useEffect(() => {
+    console.log(loading, "loadinf");
+  }, [loading]);
 
   useEffect(() => {
     if (
@@ -126,8 +138,9 @@ function CompareProductDrawer({
         <Box className="">
           <ImageCard
             imgSrc={product?.imgSrc}
-            height={130}
-            width={130}
+            showClose={ind !== 0}
+            height={150}
+            width={150}
             handleCloseClick={() => {
               const temp = [...products];
               temp.splice(ind, 1);
@@ -198,8 +211,8 @@ function CompareProductDrawer({
         >
           <ImageCard
             showClose={false}
-            height={130}
-            width={130}
+            height={150}
+            width={150}
             preventChooseFile
             handleCardClick={() => {
               setShowCompareProductsDrawer(true);
@@ -218,24 +231,26 @@ function CompareProductDrawer({
           />
         </Box>
       </Box>
-      <Box className="d-flex my-2  justify-content-evenly mt-auto mx-2 mb-2">
-        <ButtonComponent
-          label="Clear All"
-          muiProps="me-2 text-muted"
-          variant="outlined"
-          onBtnClick={() => {
-            const temp = [products[0]];
-            setProducts([...temp]);
-          }}
-        />
-        <ButtonComponent
-          label="Start Compare"
-          muiProps="p-0 h-5"
-          onBtnClick={() => {
-            startCompareProducts();
-          }}
-        />
-      </Box>
+      {products?.length > 1 ? (
+        <Box className="d-flex my-2  justify-content-evenly mt-auto mx-2 mb-2">
+          <ButtonComponent
+            label="Clear All"
+            muiProps="me-2 text-muted"
+            variant="outlined"
+            onBtnClick={() => {
+              const temp = [products[0]];
+              setProducts([...temp]);
+            }}
+          />
+          <ButtonComponent
+            label="Start Compare"
+            muiProps="p-0 h-5"
+            onBtnClick={() => {
+              startCompareProducts();
+            }}
+          />
+        </Box>
+      ) : null}
 
       <CustomDrawer
         position="right"
@@ -265,14 +280,21 @@ function CompareProductDrawer({
         <div
           ref={footerRef}
           className={
-            Boolean(productDetails?.length) && productCount !== 0
+            Boolean(productDetails?.length) && productCount !== 0 && !loading
               ? "invisible"
-              : "d-flex justify-content-center mx-auto"
+              : "d-flex justify-content-center mx-auto align-items-center mnh-79vh"
           }
         >
-          <CircularProgress className=" color-orange" />
+          <CircularProgress className="color-orange" />
         </div>
       </CustomDrawer>
+      {showCompareProductsModal ? (
+        <CompareProductDetails
+          showModal={showCompareProductsModal}
+          setShowModal={setShowCompareProductsModal}
+          productDetails={compareProductData}
+        />
+      ) : null}
     </CustomDrawer>
   );
 }
