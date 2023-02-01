@@ -53,7 +53,7 @@ const AddBankDetailsModal = ({
       flag = true;
     }
     if (
-      BankDetails["Account Number"]?.toString().tolength < 9 ||
+      BankDetails["Account Number"]?.toString().length < 9 ||
       BankDetails["Account Number"]?.toString().length > 18
     ) {
       errObj.accountNumber = "Invalid Account.No";
@@ -88,10 +88,12 @@ const AddBankDetailsModal = ({
       ifscCode: BankDetails["IFSC code"],
       customerId: userId,
     };
-    const { data } = await AddBankDetails(payload);
+    const { err, data } = await AddBankDetails(payload);
     if (data) {
       setShowModal(false);
       getAllBankData();
+    } else if (err) {
+      toastify(err.response.data.message, "error");
     }
   };
 
@@ -104,7 +106,6 @@ const AddBankDetailsModal = ({
       ifscCode: BankDetails["IFSC code"],
       customerId: userId,
     };
-    // console.log(BankDetails);
     const { data, err } = await EditBankDetails(payload);
     if (data) {
       toastify(data?.message, "success");

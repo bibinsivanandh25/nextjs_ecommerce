@@ -14,7 +14,7 @@ const addProfile = (payload) => {
   return serviceUtil
     .post(`users/customer-profile`, payload)
     .then((res) => {
-      const { data } = res && res.data;
+      const data = res && res.data;
       return { data };
     })
     .catch((err) => ({ err }));
