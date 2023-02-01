@@ -342,7 +342,7 @@ const CompareProductDetails = ({
       showPositionedClose
       ModalTitle=""
       showCloseIcon={false}
-      minHeightClassName=""
+      minHeightClassName="mxh-75vh"
       headerBorder="none"
     >
       <Box className="">
