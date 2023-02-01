@@ -1,4 +1,5 @@
-import { Box, Card, Typography } from "@mui/material";
+/* eslint-disable no-nested-ternary */
+import { Box, Card, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
@@ -8,93 +9,151 @@ import {
   getBestSoldProducts,
 } from "services/customer/Home";
 import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { customerHome } from "public/assets";
 import ProductCard from "./ProductCard";
 
 const PopularDepartments = () => {
   const [products, setProducts] = useState([]);
-  const [popularDepartments, setPopularDepartments] = useState("New Arrivals");
-  const [filterType, setFilterType] = useState("WEEK");
-
+  const [storeData, setStoreData] = useState({});
+  const [filters, setFilters] = useState({
+    popularDepartments: "New Arrivals",
+    filterType: "WEEK",
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const storeDetails = useSelector((state) => state.customer);
 
-  const setAllProducts = (data) => {
-    const temp = [];
-    data.forEach((ele) => {
-      temp.push({
-        id: ele.productId,
-        title: ele.productTitle,
-        price: ele.salePrice,
-        salePriceWithLogistics: ele.salePriceWithLogistics,
-        image: ele.variationMedia,
-        rating: {
-          rate: ele.averageRatings,
-          count: ele.totalRatings,
-        },
-        isWishlisted: ele.wishlisted,
-        skuId: ele.skuId,
-        wishlistId: ele.wishlistId,
-        userCartId: ele.userCartId,
-        isCarted: ele.presentInCart,
-        variationDetails: ele.variationDetails,
-        subCategoryId: ele.subcategoryId,
-      });
-    });
-    setProducts([...temp]);
-  };
+  useEffect(() => {
+    if (JSON.stringify(storeDetails) !== JSON.stringify(storeData))
+      setStoreData(storeDetails);
+  }, [storeDetails]);
 
-  const getProducts = async (filter) => {
-    if (popularDepartments === "New Arrivals") {
+  // const setAllProducts = (data) => {
+  //   const temp = [];
+  //   data.forEach((ele) => {
+  //     temp.push({
+  //       id: ele.productId,
+  //       title: ele.productTitle,
+  //       price: ele.salePrice,
+  //       salePriceWithLogistics: ele.salePriceWithLogistics,
+  //       image: ele.variationMedia,
+  //       rating: {
+  //         rate: ele.averageRatings,
+  //         count: ele.totalRatings,
+  //       },
+  //       isWishlisted: ele.wishlisted,
+  //       skuId: ele.skuId,
+  //       wishlistId: ele.wishlistId,
+  //       userCartId: ele.userCartId,
+  //       isCarted: ele.presentInCart,
+  //       variationDetails: ele.variationDetails,
+  //       subCategoryId: ele.subcategoryId,
+  //     });
+  //   });
+  //   setProducts([...temp]);
+  // };
+
+  const getProducts = async () => {
+    setIsLoading(true);
+    if (filters.popularDepartments === "New Arrivals") {
       const payload = {
-        filterType: filter ?? filterType,
+        filterType: filters.filterType,
         supplierId: storeDetails?.supplierId,
         profileId: storeDetails?.profileId,
       };
       const { data } = await getNewArrivalProducts(payload);
-      if (data) {
-        setAllProducts(data);
-      }
+      setIsLoading(false);
+      return data;
     }
-    if (popularDepartments === "Most Popular") {
+    if (filters.popularDepartments === "Most Popular") {
       const payload = {
-        filterType: filter ?? filterType,
+        filterType: filters.filterType,
         supplierId: storeDetails?.supplierId,
         profileId: storeDetails?.profileId,
       };
       const { data } = await getMostPopularProducts(payload);
       if (data) {
-        setAllProducts(data);
+        setIsLoading(false);
+        return data;
       }
     }
-    if (popularDepartments === "Best Seller") {
+    if (filters.popularDepartments === "Best Seller") {
       const payload = {
-        filterType: filter ?? filterType,
+        filterType: filters.filterType,
         supplierId: storeDetails?.supplierId,
         profileId: storeDetails?.profileId,
       };
       const { data } = await getBestSoldProducts(payload);
       if (data) {
-        setAllProducts(data);
+        setIsLoading(false);
+        return data;
       }
     }
 
-    if (popularDepartments === "Featured") {
+    if (filters.popularDepartments === "Featured") {
       const payload = {
-        filterType: filter ?? filterType,
+        filterType: filters.filterType,
         supplierId: storeDetails?.supplierId,
         profileId: storeDetails?.profileId,
       };
       const { data } = await getFeaturedProducts(payload);
       if (data) {
-        setAllProducts(data);
+        setIsLoading(false);
+        return data;
       }
     }
+    return [];
   };
+
+  const { data, refetch } = useQuery(
+    ["POPULARDEPARTMENTS"],
+    () => getProducts(),
+    {
+      staleTime: 0,
+      retry: false,
+      retryOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
+  );
+
+  useEffect(() => {
+    const temp = [];
+    if (data)
+      data.forEach((ele) => {
+        temp.push({
+          id: ele.productId,
+          title: ele.productTitle,
+          price: ele.salePrice,
+          salePriceWithLogistics: ele.salePriceWithLogistics,
+          image: ele.variationMedia,
+          rating: {
+            rate: ele.averageRatings,
+            count: ele.totalRatings,
+          },
+          isWishlisted: ele.wishlisted,
+          skuId: ele.skuId,
+          wishlistId: ele.wishlistId,
+          userCartId: ele.userCartId,
+          isCarted: ele.presentInCart,
+          variationDetails: ele.variationDetails,
+          subCategoryId: ele.subcategoryId,
+        });
+      });
+    setProducts([...temp]);
+  }, [data]);
 
   useEffect(() => {
     setProducts([]);
-    getProducts("WEEK");
-    setFilterType("WEEK");
-  }, [popularDepartments, storeDetails]);
+    setFilters({
+      filterType: "WEEK",
+      popularDepartments: "New Arrivals",
+    });
+  }, [storeData]);
+
+  useEffect(() => {
+    refetch();
+  }, [filters]);
 
   return (
     <Box>
@@ -106,11 +165,16 @@ const PopularDepartments = () => {
         <Box className="col-5 d-flex justify-content-around  h-5 pb-1">
           <Card
             onClick={() => {
-              if (popularDepartments !== "New Arrivals")
-                setPopularDepartments("New Arrivals");
+              setProducts([]);
+              if (filters.popularDepartments !== "New Arrivals") {
+                setFilters({
+                  popularDepartments: "New Arrivals",
+                  filterType: "WEEK",
+                });
+              }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
-              popularDepartments === "New Arrivals"
+              filters.popularDepartments === "New Arrivals"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
@@ -119,11 +183,16 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
-              if (popularDepartments !== "Best Seller")
-                setPopularDepartments("Best Seller");
+              setProducts([]);
+              if (filters.popularDepartments !== "Best Seller") {
+                setFilters({
+                  popularDepartments: "Best Seller",
+                  filterType: "WEEK",
+                });
+              }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
-              popularDepartments === "Best Seller"
+              filters.popularDepartments === "Best Seller"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
@@ -132,11 +201,17 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
-              if (popularDepartments !== "Most Popular")
-                setPopularDepartments("Most Popular");
+              setProducts([]);
+              if (filters.popularDepartments !== "Most Popular") {
+                setFilters({
+                  popularDepartments: "Most Popular",
+                  filterType: "WEEK",
+                });
+                setProducts([]);
+              }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
-              popularDepartments === "Most Popular"
+              filters.popularDepartments === "Most Popular"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
@@ -145,11 +220,17 @@ const PopularDepartments = () => {
           </Card>
           <Card
             onClick={() => {
-              if (popularDepartments !== "Featured")
-                setPopularDepartments("Featured");
+              setProducts([]);
+              if (filters.popularDepartments !== "Featured") {
+                setFilters({
+                  popularDepartments: "Featured",
+                  filterType: "WEEK",
+                });
+                setProducts([]);
+              }
             }}
             className={`px-3 py-1 border d-flex align-items-center text-center cursor-pointer ${
-              popularDepartments === "Featured"
+              filters.popularDepartments === "Featured"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
@@ -160,14 +241,18 @@ const PopularDepartments = () => {
         <Box className="col-4 d-flex justify-content-end pb-1">
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
-              filterType === "WEEK"
+              filters.filterType === "WEEK"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
             onClick={() => {
-              if (filterType !== "WEEK") {
-                setFilterType("WEEK");
-                getProducts("WEEK");
+              setProducts([]);
+              if (filters.filterType !== "WEEK") {
+                setFilters({
+                  ...filters,
+                  filterType: "WEEK",
+                });
+                // refetch();
               }
             }}
           >
@@ -175,14 +260,18 @@ const PopularDepartments = () => {
           </Card>
           <Card
             className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
-              filterType === "MONTH"
+              filters.filterType === "MONTH"
                 ? "theme_border_color theme_bg_color_1 fw-bold"
                 : ""
             }`}
             onClick={() => {
-              if (filterType !== "MONTH") {
-                setFilterType("MONTH");
-                getProducts("MONTH");
+              setProducts([]);
+              if (filters.filterType !== "MONTH") {
+                setFilters({
+                  ...filters,
+                  filterType: "MONTH",
+                });
+                // getProducts("MONTH");
               }
             }}
           >
@@ -190,14 +279,12 @@ const PopularDepartments = () => {
           </Card>
         </Box>
       </Box>
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">
         {products?.length ? (
           products.map((ele) => {
-            return (
-              <ProductCard getProducts={getProducts} key={ele.id} item={ele} />
-            );
+            return <ProductCard key={ele.id} item={ele} />;
           })
-        ) : (
+        ) : !isLoading ? (
           <div
             className="w-100 mx-2"
             style={{
@@ -205,12 +292,18 @@ const PopularDepartments = () => {
               position: "relative",
             }}
           >
-            <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
-              height="250px"
-              layout="fill"
-            />
+            <Image src={customerHome.noProducts} height="250px" layout="fill" />
           </div>
+        ) : (
+          <Box className="d-flex">
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+            <Skeleton height={250} width={150} className="mx-4" />
+            <Skeleton height={250} width={150} />
+          </Box>
         )}
       </Box>
     </Box>

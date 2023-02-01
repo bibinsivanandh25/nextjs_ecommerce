@@ -1,65 +1,39 @@
+/* eslint-disable import/no-named-as-default */
 import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-import CustomIcon from "services/iconUtils";
-import DrawerComponent from "@/atoms/DrawerComponent";
-import ButtonComponent from "@/atoms/ButtonComponent";
 import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
-import ViewModalComponent from "../../searchedproduct/ViewModalComponent";
+import { useQuery } from "react-query";
 import ProductCard from "../PopularDepartments/ProductCard";
 
-const comparProductData = [
-  {
-    id: 1,
-    imageLink:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-  },
-  {
-    id: 2,
-    imageLink:
-      "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/img_snap.PNG",
-  },
-  {
-    id: 3,
-    imageLink: "",
-  },
-  {
-    id: 4,
-    imageLink: "",
-  },
-];
-
-const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
+const RecentlyViewed = () => {
   const [products, setProducts] = useState([]);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [comparDrawer, setComparDrawer] = useState(false);
-  const [comparedProduct, setCompredProduct] = useState([]);
-
-  useEffect(() => {
-    setCompredProduct(comparProductData);
-  }, []);
-  const handleCloseIconClick = (id) => {
-    const comparedProductCopy = [...comparedProduct];
-    const final = comparedProductCopy.map((item) => {
-      if (item.id == id) {
-        return { ...item, imageLink: "" };
-      }
-      return item;
-    });
-    setCompredProduct(final);
-  };
   const userInfo = useSession();
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(
-      userInfo?.data?.user?.id,
-      storeDetails.profileId
-    );
+    const payload = {
+      customerId: storeDetails.userId,
+      profileId: storeDetails.profileId,
+      supplierStoreCode: storeDetails.storeCode,
+    };
+    const { data } = await getRecentlyViewedProducts(payload);
     if (data) {
-      const temp = [];
+      return data;
+    }
+    return [];
+  };
+
+  const { data } = useQuery(["RECENTLYVIEWED"], getRecentViewedProducts, {
+    enabled: Boolean(userInfo?.data && storeDetails),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    const temp = [];
+    if (data) {
       data.forEach((ele) => {
         temp.push({
           id: ele.productId,
@@ -79,14 +53,15 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
           isCarted: ele.presentInCart,
         });
       });
-      setProducts([...temp]);
     }
-  };
-  useEffect(() => {
-    if (userInfo?.data && storeDetails) {
-      getRecentViewedProducts();
-    }
-  }, [userInfo, storeDetails]);
+    setProducts([...temp]);
+  }, [data]);
+
+  // useEffect(() => {
+  //   if (userInfo?.data && storeDetails) {
+  //     getRecentViewedProducts();
+  //   }
+  // }, [userInfo, storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>
@@ -94,98 +69,15 @@ const RecentlyViewed = ({ setShowCompareProducts = () => {} }) => {
         Your Recently Viewed Products
       </Typography>
 
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">
         {products ? (
           products?.map((ele) => {
-            return (
-              <ProductCard
-                item={ele}
-                handleIconClick={(icon) => {
-                  if (icon === "balanceIcon") {
-                    setComparDrawer(true);
-                  }
-                  if (icon === "visibilityOutlinedIcon") {
-                    setViewModalOpen(true);
-                  }
-                }}
-              />
-            );
+            return <ProductCard item={ele} />;
           })
         ) : (
           <Skeleton variant="rectangular" width={150} height={150} />
         )}
       </Box>
-
-      {viewModalOpen && (
-        <ViewModalComponent
-          setViewModalOpen={setViewModalOpen}
-          viewModalOpen={viewModalOpen}
-        />
-      )}
-      <DrawerComponent
-        openDrawer={comparDrawer}
-        anchor="bottom"
-        width="vp-width"
-        headerBorder={false}
-        onClose={() => setComparDrawer(false)}
-        enter={300}
-      >
-        <Box
-          className="px-4 py-2 d-flex justify-content-between mnh-25p mx-4"
-          style={{ height: "150px" }}
-        >
-          <Box className="align-self-center ">
-            <p className="fw-600 fs-18">Compare Products</p>
-            <p>( 1 Product )</p>
-          </Box>
-          {comparedProduct &&
-            comparedProduct.map((item) => (
-              <Box className="d-flex justify-content-center border rounded mnw-150">
-                {item.imageLink ? (
-                  <>
-                    <Image
-                      src={item?.imageLink}
-                      alt=""
-                      className="rounded bg-white"
-                      style={{ position: "relative" }}
-                      width="150%"
-                      height="100%"
-                    />
-
-                    <CustomIcon
-                      type="close"
-                      className="position-absolute compareProductTop fs-18"
-                      onIconClick={() => handleCloseIconClick(item.id)}
-                    />
-                  </>
-                ) : (
-                  <Box className="align-self-center border p-3 rounded-circle cursor-pointer">
-                    <CustomIcon type="add" className="" />
-                  </Box>
-                )}
-              </Box>
-            ))}
-          <Box className="align-self-center">
-            <ButtonComponent
-              label="Clear All"
-              variant="outlined"
-              borderColor="border-gray "
-              bgColor="bg-white"
-              textColor="color-black"
-              size="medium"
-              muiProps="me-3"
-            />
-            <ButtonComponent
-              label="Start Compare"
-              size="medium"
-              onBtnClick={() => {
-                setShowCompareProducts(true);
-                setComparDrawer(false);
-              }}
-            />
-          </Box>
-        </Box>
-      </DrawerComponent>
     </Box>
   );
 };

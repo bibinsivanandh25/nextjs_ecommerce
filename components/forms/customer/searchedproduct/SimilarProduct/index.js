@@ -120,10 +120,10 @@ function SimilarProducts({
         className={
           Boolean(productDetails?.length) && productCount !== 0
             ? "invisible"
-            : ""
+            : "d-flex justify-content-center  mx-auto"
         }
       >
-        <CircularProgress className="d-flex justify-content-center color-orange" />
+        <CircularProgress className=" color-orange" />
       </div>
     </CustomDrawer>
   );

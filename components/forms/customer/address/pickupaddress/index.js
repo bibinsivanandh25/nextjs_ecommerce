@@ -14,7 +14,10 @@ import {
 import NewAddress from "@/forms/customer/address/AddNewAddress";
 import { storeUserInfo } from "features/customerSlice";
 
-const PickUpAddress = ({ pageType = "supplier" }) => {
+const PickUpAddress = ({
+  setaddressList = () => {},
+  pageType = "supplier",
+}) => {
   const customer = useSelector((state) => state.customer);
   const [newAddressModal, setNewAddressModal] = useState(false);
   const [modalType, setModalType] = useState("add");
@@ -49,6 +52,7 @@ const PickUpAddress = ({ pageType = "supplier" }) => {
           }
         });
         setMasterAddress(temp);
+        setaddressList(temp);
       } else {
         setMasterAddress([]);
       }
@@ -155,7 +159,7 @@ const PickUpAddress = ({ pageType = "supplier" }) => {
                       />
                     </Grid>
                     <Grid item xs={12} className="fs-14 fw-bold my-1 mx-4">
-                      <Typography>
+                      <Typography className="text-align-justify">
                         {" "}
                         {`${add?.address}, ${add?.location}, ${
                           add?.landmark ? `${add?.landmark},` : ""

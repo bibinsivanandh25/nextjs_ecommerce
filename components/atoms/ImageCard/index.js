@@ -14,6 +14,9 @@ const ImageCard = ({
   className = "",
   imageRef = null,
   onLoad = () => {},
+  preventChooseFile = false,
+  handleCardClick = () => {},
+  id = "",
 }) => {
   const inputRef = useRef(null);
   return (
@@ -31,11 +34,13 @@ const ImageCard = ({
         </div>
       )}
       <Card
+        id={id}
         elevation={4}
         sx={{ width: `${width}px`, height: `${height}px` }}
         className="p-0 d-flex align-items-center justify-content-center "
         onClick={() => {
-          if (imgSrc === "") inputRef.current.click();
+          if (imgSrc === "" && !preventChooseFile) inputRef.current.click();
+          else handleCardClick(id);
         }}
       >
         {imgSrc !== "" ? (
@@ -48,6 +53,9 @@ const ImageCard = ({
             alt=""
             className={showCursorPointer ? "cursor-pointer" : ""}
             onLoad={onLoad}
+            sx={{
+              objectFit: "fill",
+            }}
           />
         ) : (
           <Box className="rounded-circle p-1 bg-gray ">

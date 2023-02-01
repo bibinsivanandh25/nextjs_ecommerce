@@ -13,7 +13,7 @@ const updateProfile = (payload) => {
   return serviceUtil
     .put(`users/customer/profile`, payload)
     .then((res) => {
-      const data = res && res.data && res.data.message;
+      const data = res && res.data;
       return { data };
     })
     .catch((err) => {
