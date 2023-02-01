@@ -6,7 +6,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import { useRouter } from "next/router";
 
 const ReturnOrderModel = ({
-  showReturnOrder,
+  // showReturnOrder,
   setgetOrderApiCall = () => {},
   getOrderApiCall,
   setShowReturnOrder = () => {},
@@ -16,16 +16,16 @@ const ReturnOrderModel = ({
   showModal = false,
   setShowModal = () => {},
   setSelectedProduct = () => {},
-  selectedProduct,
+  // selectedProduct,
 }) => {
   const [freeReturn, setFreeReturn] = useState(false);
 
-  const theArray = [
-    { id: 1, isFree: true },
-    { id: 2, isFree: false, returnPrice: 123 },
-    { id: 3, isFree: false, returnPrice: 300 },
-    { id: 4, isFree: true },
-  ];
+  // const theArray = [
+  //   { id: 1, isFree: true },
+  //   { id: 2, isFree: false, returnPrice: 123 },
+  //   { id: 3, isFree: false, returnPrice: 300 },
+  //   { id: 4, isFree: true },
+  // ];
 
   useEffect(() => {
     setFreeReturn(allFree);

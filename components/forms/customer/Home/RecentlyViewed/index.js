@@ -13,10 +13,12 @@ const RecentlyViewed = () => {
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(
-      userInfo?.data?.user?.id,
-      storeDetails.profileId
-    );
+    const payload = {
+      customerId: storeDetails.userId,
+      profileId: storeDetails.profileId,
+      supplierStoreCode: storeDetails.storeCode,
+    };
+    const { data } = await getRecentlyViewedProducts(payload);
     if (data) {
       return data;
     }

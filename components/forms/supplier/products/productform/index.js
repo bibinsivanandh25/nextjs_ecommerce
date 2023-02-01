@@ -866,7 +866,7 @@ const ProductsLayout = ({
             weightInclusivePackage: parseFloat(pricing.product_weight),
             salePrice: parseInt(pricing.sale_price, 10),
             mrp: parseInt(pricing.mrp, 10),
-            stockQty: parseInt(inventory.stockqty, 10),
+            stockQty: parseInt(inventory.stock_qty, 10),
             modelName: inventory.modalname,
             sellWithMrMrsCart: mmcartPricing.sellwithus,
             mrmrscartSalePriceWithFDR: mmcartPricing.free_delivery,
