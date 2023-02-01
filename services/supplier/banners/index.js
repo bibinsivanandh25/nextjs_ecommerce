@@ -63,5 +63,23 @@ const updateBanner = (payload) => {
       return { err };
     });
 };
+const getnavigationUrl = () => {
+  return serviceUtil
+    .get(`users/banner-navigation-url`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 
-export { getAllData, saveBanner, bannnerMedia, deleteBanner, updateBanner };
+export {
+  getAllData,
+  saveBanner,
+  bannnerMedia,
+  deleteBanner,
+  updateBanner,
+  getnavigationUrl,
+};

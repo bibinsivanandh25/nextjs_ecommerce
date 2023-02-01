@@ -1,21 +1,28 @@
 import { Grid, Typography } from "@mui/material";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import toastify from "services/utils/toastUtils";
 import validateMessage from "constants/validateMessages";
 import { getBase64 } from "services/utils/functionUtils";
 import { format } from "date-fns";
 import {
   bannnerMedia,
+  getnavigationUrl,
   saveBanner,
   updateBanner,
 } from "services/supplier/banners";
 import ImageCard from "@/atoms/ImageCard";
-import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import styles from "./banner.module.css";
 
-const displayName = [{ id: "Home", label: "Home" }];
+const displayName = [
+  { id: "Home", label: "Home" },
+  { id: "SPIN_WHEEL", label: "Spin Wheel" },
+  { id: "TODAYS_DEAL", label: "Todays Deal" },
+  { id: "DISCOUNT_COUPON", label: "Discount Coupon" },
+  { id: "QUIZ", label: "Quiz" },
+  { id: "SCRATCH_CARD", label: "Scratch Card" },
+];
 const buttonLabel = [
   { id: "Shop Now", label: "Shop Now" },
   { id: "Click Now", label: "Click Now" },
@@ -31,6 +38,27 @@ const CreateBanner = ({
   setpageNumber = () => {},
   tableDate = {},
 }) => {
+  const [urlValues, setUrlValues] = useState([]);
+
+  const getAllBannerUrl = async () => {
+    const { data, err } = await getnavigationUrl();
+    if (data) {
+      const temp = [];
+      data.forEach((item) => {
+        temp.push({
+          id: item.navigationUrl,
+          label: item.navigationUrl,
+        });
+      });
+      setUrlValues(temp);
+    }
+    if (err) {
+      setUrlValues([]);
+    }
+  };
+  useEffect(() => {
+    getAllBannerUrl();
+  }, []);
   const mobile = useRef(null);
   const web = useRef(null);
   const [ratio, setRatio] = useState({
@@ -82,7 +110,7 @@ const CreateBanner = ({
       webimage,
     } = formData;
     let flag = true;
-    if (url.length == 0) {
+    if (url === null) {
       flag = false;
       errorObj.url = validateMessage.field_required;
     }
@@ -151,7 +179,7 @@ const CreateBanner = ({
   const handleCloseClick = () => {
     setShowModal(false);
     setFormData({
-      url: "",
+      url: null,
       displayPage: null,
       buttonlable: null,
       startdate: "",
@@ -200,9 +228,9 @@ const CreateBanner = ({
         bannerImageUrlForWeb: webImages?.data,
         bannerImageUrlForMobile: mobileImages?.data,
         panelName: "SUPPLIER",
-        navigationUrl: formData.url,
+        navigationUrl: formData.url.label,
         buttonName: formData.buttonlable.label,
-        displayPage: formData.displayPage.label,
+        displayPage: formData.displayPage.id,
         startDateTime: fromDate.toString(),
         endDateTime: toDate.toString(),
       };
@@ -253,7 +281,7 @@ const CreateBanner = ({
         bannerImageUrlForMobile: mobileImages.data
           ? mobileImages.data
           : formData.mobileimage,
-        navigationUrl: formData.url,
+        navigationUrl: formData.url.label,
         buttonName: formData.buttonlable.label,
         displayPage: formData.displayPage.label,
         startDateTime: fromDate.toString(),
@@ -274,7 +302,7 @@ const CreateBanner = ({
   return (
     <ModalComponent
       open={showModal}
-      ModalWidth="65%"
+      ModalWidth={900}
       onCloseIconClick={() => {
         handleCloseClick();
       }}
@@ -395,7 +423,21 @@ const CreateBanner = ({
         </Grid>
         <Grid item sm={7} container spacing={2} alignSelf="center">
           <Grid item sm={12}>
-            <InputBox
+            <SimpleDropdownComponent
+              list={urlValues}
+              value={formData.url}
+              label="Navigation URL"
+              size="small"
+              fontSize="1rem"
+              required
+              onDropdownSelect={(value) => {
+                setFormData((pre) => ({ ...pre, url: value }));
+              }}
+              inputlabelshrink
+              error={error.url !== ""}
+              helperText={error.url}
+            />
+            {/* <InputBox
               value={formData.url}
               label="Navigation URL"
               required
@@ -406,7 +448,7 @@ const CreateBanner = ({
               }}
               error={error.url !== ""}
               helperText={error.url}
-            />
+            /> */}
           </Grid>
           <Grid item sm={12}>
             <SimpleDropdownComponent

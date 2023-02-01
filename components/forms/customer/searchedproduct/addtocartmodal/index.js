@@ -2,13 +2,14 @@ import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Box, Grid, Typography } from "@mui/material";
-import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
 import {
-  addProductToCart,
+  // addProductToCart,
   getProductDetailsByDeliveryType,
 } from "services/customer/cart";
+import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
 const AddToCartModal = ({
@@ -121,28 +122,10 @@ const AddToCartModal = ({
   const renderNoFreeDelivery = () => {
     return (
       <Grid container>
-        <Grid
-          item
-          sm={5}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Box>
-            <Image
-              height={120}
-              width={120}
-              src={masterData.variationMedia}
-              layout="intrinsic"
-              alt="alt"
-            />
-            <Typography className="h-p89">{masterData.productTitle}</Typography>
-          </Box>
-        </Grid>
-        <Grid item sm={7}>
+        <Grid item sm={12}>
           <Grid container>
             <Grid item sm={12}>
-              <Box>
+              <Box className="border-bottom-gray">
                 <Typography className="color-orange fw-bold">
                   Choose Delivery options
                 </Typography>
@@ -160,7 +143,7 @@ const AddToCartModal = ({
                     size="small"
                     label={
                       <Typography>
-                        {masterData?.deliveryCharge} {masterData?.deliveryBy}
+                        ₹ {masterData?.deliveryCharge} {masterData?.deliveryBy}
                       </Typography>
                     }
                   />
@@ -180,7 +163,7 @@ const AddToCartModal = ({
                     size="small"
                     label={
                       <Typography>
-                        {masterData?.fastestDeliveryAmount}{" "}
+                        ₹ {masterData?.fastestDeliveryAmount}{" "}
                         {masterData?.fastestDeliveryBy}
                       </Typography>
                     }
@@ -200,7 +183,7 @@ const AddToCartModal = ({
                   handleReturnCheckClick();
                 }}
               />
-              <Box>
+              <Box className="border-bottom-gray">
                 <Box>
                   <RadiobuttonComponent
                     disabled={!masterData.enableReturn}
@@ -214,7 +197,7 @@ const AddToCartModal = ({
                           !masterData.enableReturn && `color-gray`
                         }`}
                       >
-                        {masterData?.returnCharge} {masterData?.deliveryBy}
+                        ₹ {masterData?.returnCharge} {masterData?.deliveryBy}
                       </Typography>
                     }
                     onRadioChange={() => {
@@ -235,7 +218,7 @@ const AddToCartModal = ({
                           !masterData.enableReturn && `color-gray`
                         }`}
                       >
-                        {masterData?.fastestReturnAmount}{" "}
+                        ₹ {masterData?.fastestReturnAmount}{" "}
                         {masterData?.fastestDeliveryBy}
                       </Typography>
                     }
@@ -247,9 +230,10 @@ const AddToCartModal = ({
               </Box>
             </Grid>
           </Grid>
-          <Box display="flex" justifyContent="end">
-            <Typography className="fw-bold">
-              Final Price - {selectedPrice}
+          <Box display="flex" justifyContent="center" mt={1}>
+            <Typography className="fw-500">
+              Final Price -{" "}
+              <span className="color-orange fw-bold">{selectedPrice}</span>
             </Typography>
           </Box>
         </Grid>
@@ -259,11 +243,10 @@ const AddToCartModal = ({
   const renderFreeDelivery = () => {
     return (
       <Grid container>
-        <Grid item sm={4}>
-          <Image src={masterData.variationMedia} width={130} height={130} />
-        </Grid>
-        <Grid item sm={8}>
-          <Typography className="fw-500">{masterData.productTitle}</Typography>
+        <Grid item sm={12}>
+          <Typography className="color-orange fw-bold my-1">
+            Choose Delivery options
+          </Typography>
           <Box>
             <RadiobuttonComponent
               isChecked={masterData.selectedAmount === 0}
@@ -282,7 +265,7 @@ const AddToCartModal = ({
               }}
             />
           </Box>
-          <Box>
+          <Box className="border-bottom-gray">
             <RadiobuttonComponent
               onRadioChange={() => {
                 setMasterData((pre) => ({
@@ -304,9 +287,12 @@ const AddToCartModal = ({
               }
             />
           </Box>
-          <Box display="flex" justifyContent="end">
-            <Typography className="fw-bold">
-              Final Price - {masterData.price}
+          <Box display="flex" justifyContent="center" mt={1}>
+            <Typography className="fw-500">
+              Final Price -{" "}
+              <span className="color-orange fw-bold">
+                {Number(selectedPrice).toLocaleString("en-IN")}
+              </span>
             </Typography>
           </Box>
         </Grid>
@@ -370,20 +356,47 @@ const AddToCartModal = ({
     }
     return payload;
   };
+
+  const queryClient = useQueryClient();
+  const addToCartMutation = useMutation(
+    (reqObj) => {
+      return serviceUtil.post(`products/product/user-cart`, reqObj);
+    },
+    {
+      onSuccess: ({ data }) => {
+        if (!data?.popUp) {
+          toastify(data?.message, "success");
+          setShowAddtoCartModal(false);
+          setViewModalOpen(false);
+          getProducts();
+          queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+          queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+          queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+          queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        } else setShowConfirmModal(true);
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
+    }
+  );
+
   const handleAddToCartClick = async (flag = false) => {
     const payload = createPayload(flag);
-    const { data, err } = await addProductToCart(payload);
-    if (data) {
-      if (!data?.popUp) {
-        toastify(data?.message, "success");
-        getProducts();
-        setShowAddtoCartModal(false);
-        setViewModalOpen(false);
-      } else setShowConfirmModal(true);
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
+    addToCartMutation.mutate(payload);
+    // const { data, err } = await addProductToCart(payload);
+    // if (data) {
+    //   if (!data?.popUp) {
+    //     toastify(data?.message, "success");
+    //     getProducts();
+
+    //     setShowAddtoCartModal(false);
+    //     setViewModalOpen(false);
+    //   } else setShowConfirmModal(true);
+    // }
+    // if (err) {
+    //   toastify(err?.response?.data?.message, "error");
+    // }
   };
   return (
     <ModalComponent
@@ -395,16 +408,15 @@ const AddToCartModal = ({
       showCloseIcon={false}
       ModalTitle=""
       headerBorder=""
-      footerClassName="justify-content-end"
-      ModalWidth={600}
+      footerClassName="justify-content-center mb-2"
+      ModalWidth={400}
       saveBtnText="Add To Cart"
+      saveBtnVariant="outlined"
       onSaveBtnClick={() => {
         handleAddToCartClick();
       }}
-      ClearBtnText="Close"
-      onClearBtnClick={() => {
-        setShowAddtoCartModal(false);
-      }}
+      ClearBtnText="Proceed to Checkout"
+      clearBtnVariant="contained"
     >
       {renderContent(type)}
       {showConfirmModal ? (
