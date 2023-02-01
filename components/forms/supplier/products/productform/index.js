@@ -68,7 +68,7 @@ const ProductsLayout = ({
   const { editProduct, viewFlag, adminView, list, showExtraTabs } = useSelector(
     (state) => state.product
   );
-
+  const acceptedTypes = ["png", "jpg"];
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [tabsLists, setTabsLists] = useState([...tabsList]);
   const [activeTab, setactiveTab] = useState(0);
@@ -1001,7 +1001,12 @@ const ProductsLayout = ({
                   showClose={false}
                   handleImageUpload={async (e) => {
                     if (e.target.files.length) {
-                      if (e.target.files[0].size <= 1000000) {
+                      if (
+                        e.target?.files.length &&
+                        acceptedTypes.includes(
+                          e.target.files[0].type.split("/")[1]
+                        )
+                      ) {
                         const file = await getBase64(e.target.files[0]);
                         setFormData((prev) => {
                           return {
@@ -1010,7 +1015,7 @@ const ProductsLayout = ({
                           };
                         });
                       } else {
-                        toastify("Image size should be less than 1MB", "error");
+                        toastify("Image type should be in png or jpg", "error");
                       }
                     }
                   }}

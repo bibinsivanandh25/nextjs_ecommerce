@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 const ChangePassword = ({ usertype = "SUPPLIER" }) => {
   const [error, setError] = useState({});
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.customer);
   const [formValues, setFormValues] = useState({ emailId: user.emailId });
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,

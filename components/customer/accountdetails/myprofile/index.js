@@ -1,13 +1,13 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
-import { Avatar, Badge, Box, Grid } from "@mui/material";
+import { Avatar, Badge, Box, Grid, Typography } from "@mui/material";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useRef, useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getCustomerProfile,
   sendOtpEmailOrPhone,
@@ -22,6 +22,7 @@ import { format, parse } from "date-fns";
 import { getBase64 } from "services/utils/functionUtils";
 import SimpleOtpForm from "@/forms/auth/VerifyOTP/SimpleOtpForm";
 import validationRegex from "services/utils/regexUtils";
+import { storeUserInfo } from "features/customerSlice";
 
 const MyProfile = () => {
   const profilePicRef = useRef(null);
@@ -33,10 +34,14 @@ const MyProfile = () => {
     gender: "",
     profileImage: "",
   });
-
   const [otp, setotp] = useState("xxxx");
   const [emailOtp, setemailOtp] = useState("xxxx");
   const [CustomerStaticDetails, setCustomerStaticDetails] = useState([]);
+  const [showResendBtn, setshowResendBtn] = useState({
+    email: false,
+    phone: false,
+  });
+  const dispatch = useDispatch();
   const [otpInput, setotpInput] = useState({ phone: "", emailId: "" });
   const [ErrorObj, setErrorObj] = useState({
     customerName: "",
@@ -54,6 +59,19 @@ const MyProfile = () => {
     emailOtp: false,
     emailValidOtp: false,
   });
+  useEffect(() => {
+    if (disableEdit.emailValidOtp) {
+      setTimeout(() => {
+        setshowResendBtn({ ...showResendBtn, email: true });
+      }, [60000]);
+    }
+    if (disableEdit.validOtp) {
+      setTimeout(() => {
+        setshowResendBtn({ ...showResendBtn, phone: true });
+      }, [60000]);
+    }
+  }, [disableEdit]);
+
   const { userId } = useSelector((state) => state?.customer);
   const validateFields = () => {
     let flag = false;
@@ -129,13 +147,21 @@ const MyProfile = () => {
       };
       const { data, errRes } = await updateProfile(payload);
       if (data) {
-        toastify(data, "success");
+        toastify(data.message, "success");
         getUserDetails();
+        const userInfo = {
+          emailId: data?.data?.emailId,
+          gender: data?.data?.gender,
+          mobileNumber: data?.data?.mobileNumber,
+          customerName: data?.data?.customerName,
+        };
+        dispatch(storeUserInfo(userInfo));
       } else if (errRes) {
         toastify(errRes, "error");
       }
     }
   };
+
   const getOtpFunction = async () => {
     if (customerDetails.mobileNumber.length === 10) {
       setErrorObj({ ...ErrorObj, mobileNumber: "" });
@@ -234,9 +260,6 @@ const MyProfile = () => {
       }, 2000);
     }
   }, [emailOtp]);
-  console.log(
-    customerDetails?.mobileNumber?.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3")
-  );
 
   return (
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded px-4">
@@ -381,6 +404,21 @@ const MyProfile = () => {
                 </Grid>
               )}
             </Grid>
+            {/* <div>{seconds}</div> */}
+            {disableEdit.emailValidOtp && showResendBtn.email && (
+              <ButtonComponent
+                className="ms-2 fs-18"
+                label="Resend OTP"
+                onBtnClick={() => {
+                  sendEmailOtpFunction();
+                }}
+              />
+            )}
+            {disableEdit.emailValidOtp && !showResendBtn.email && (
+              <Typography className="theme_color fs-12 fw-500">
+                Please wait for a while to resend OTP
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={6}>
@@ -482,6 +520,20 @@ const MyProfile = () => {
                 </Grid>
               )}
             </Grid>
+            {disableEdit.validOtp && showResendBtn.phone && (
+              <ButtonComponent
+                className="ms-2 fs-18"
+                label="Resend OTP"
+                onBtnClick={() => {
+                  getOtpFunction();
+                }}
+              />
+            )}
+            {disableEdit.validOtp && !showResendBtn.phone && (
+              <Typography className="theme_color fs-12 fw-500">
+                Please wait for a while to resend OTP
+              </Typography>
+            )}
           </Grid>
           <Grid item xs={5}>
             <DatePickerComponent

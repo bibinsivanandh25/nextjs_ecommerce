@@ -86,7 +86,7 @@ const Footer = ({ open = false }) => {
       style={{
         position: "relative",
         left: "-40px",
-        width: open ? "calc(100vw - 200px)" : "100vw",
+        width: open ? "calc(100vw - 225px)" : "100vw",
         bottom: "10px",
         marginTop: "20px",
         transition: "all 0.2s ease-out",

@@ -23,12 +23,12 @@ import { format } from "date-fns";
 import { FaInfoCircle } from "react-icons/fa";
 // import { customerHome } from "public/assets";
 import AboutUs from "@/forms/customer/Home/AboutUs";
+import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 import TicketSvg from "public/assets/svg/TicketSvg";
 import ScheduleSvg from "public/assets/svg/scheduleSvg";
 import TaxSvg from "public/assets/svg/TaxSvg";
 import ChatBubbleSvg from "public/assets/svg/chatbubbleSvg";
 import ShopSvg from "public/assets/svg/ShopSvg";
-import PopularDepartments from "@/forms/customer/Home/PopularDepartments";
 // import Articles from "./Articles";
 
 const Home = () => {
@@ -224,7 +224,7 @@ const Home = () => {
                     width={60}
                     className="theme_svg_fill"
                   />
-                  <Typography className="fw-bold h-5 cursor-pointer ps-2">
+                  <Typography className="fw-bold h-5 cursor-pointer">
                     Coupons Applicable Products
                   </Typography>
                 </Grid>
@@ -297,10 +297,7 @@ const Home = () => {
                   item
                   md={1.8}
                   sm={3}
-                  onClick={() => {
-                    route.push("/customer/helpandsupport");
-                  }}
-                  className="d-flex justify-content-evenly p-3  align-items-center cursor-pointer"
+                  className="d-flex justify-content-evenly p-3  align-items-center"
                 >
                   <ChatBubbleSvg
                     height={40}
@@ -309,11 +306,11 @@ const Home = () => {
                   />
                   {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
-                  <Box className="cursor-pointer">
-                    <Typography className="fw-bold h-5 cursor-pointer">
+                  <Box>
+                    <Typography className="fw-bold h-5">
                       Help & Support
                     </Typography>
-                    <span className="h-5 cursor-pointer">Available</span>
+                    <span className="h-5">Available</span>
                   </Box>
                 </Grid>
               </Grid>
