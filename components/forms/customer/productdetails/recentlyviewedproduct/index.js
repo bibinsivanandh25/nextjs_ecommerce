@@ -9,10 +9,12 @@ const RecentlyViewedProduct = () => {
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(
-      storeDetails.userId,
-      storeDetails.profileId
-    );
+    const payload = {
+      customerId: storeDetails.userId,
+      profileId: storeDetails.profileId,
+      supplierStoreCode: storeDetails.storeCode,
+    };
+    const { data } = await getRecentlyViewedProducts(payload);
     if (data) {
       const temp = [];
       data.forEach((ele) => {

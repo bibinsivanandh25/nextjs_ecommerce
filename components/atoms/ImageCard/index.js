@@ -53,6 +53,9 @@ const ImageCard = ({
             alt=""
             className={showCursorPointer ? "cursor-pointer" : ""}
             onLoad={onLoad}
+            sx={{
+              objectFit: "fill",
+            }}
           />
         ) : (
           <Box className="rounded-circle p-1 bg-gray ">
