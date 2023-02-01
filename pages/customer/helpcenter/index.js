@@ -50,7 +50,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function CustomizedAccordions() {
   const [expanded, setExpanded] = React.useState("");
   const [HelpCenterData, setHelpCenterData] = useState([]);
-  const [showTruncate, setshowTruncate] = useState(false);
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
@@ -58,7 +57,19 @@ export default function CustomizedAccordions() {
     const title = "FAQ";
     const { data, errRes } = await getCustomerHelpCenter(title);
     if (data) {
-      setHelpCenterData(data);
+      setHelpCenterData(
+        data.map((item) => {
+          return {
+            ...item,
+            questionAndAnswer: item.questionAndAnswer.map((ele) => ({
+              ...ele,
+              answer:
+                "Voluptate minim do esse nisi ea eu. Qui id ad voluptate ipsum reprehenderit pariatur sint duis proident id. Nulla exercitation elit proident non commodo ullamco exercitation consequat mollit quis qui excepteur consequat et.",
+              truncate: false,
+            })),
+          };
+        })
+      );
     } else if (errRes) {
       toastify(errRes, "error");
     }
@@ -82,7 +93,7 @@ export default function CustomizedAccordions() {
               </Typography>
             </AccordionSummary>
             <AccordionDetails className="mxh-400 overflow-y-scroll p-4">
-              {item.questionAndAnswer.map((val) => {
+              {item.questionAndAnswer.map((val, ind) => {
                 return (
                   <>
                     <Grid>
@@ -97,40 +108,29 @@ export default function CustomizedAccordions() {
                         <Typography
                           style={{
                             overflow: "hidden",
-                            height: showTruncate ? "" : "24px",
+                            height: val.truncate ? "" : "24px",
                             paddingLeft: "23px",
                           }}
                         >
                           {val.answer}
                         </Typography>
-                        {!showTruncate && (
-                          <Grid className="px-2">
-                            <ButtonComponent
-                              variant="outlined"
-                              label="See more..."
-                              bgColor="bg-white"
-                              textColor="color-gray"
-                              borderColor="border-white"
-                              onBtnClick={() => {
-                                setshowTruncate(true);
-                              }}
-                            />
-                          </Grid>
-                        )}
-                        {showTruncate && (
-                          <Grid className="px-2">
-                            <ButtonComponent
-                              variant="outlined"
-                              label="See less..."
-                              bgColor="bg-white"
-                              textColor="color-gray"
-                              borderColor="border-white"
-                              onBtnClick={() => {
-                                setshowTruncate(false);
-                              }}
-                            />
-                          </Grid>
-                        )}
+                        <Grid className="px-2">
+                          <ButtonComponent
+                            variant="outlined"
+                            label={val.truncate ? "See less..." : "See more..."}
+                            bgColor="bg-white"
+                            textColor="color-gray"
+                            borderColor="border-white"
+                            onBtnClick={() => {
+                              const temp = JSON.parse(
+                                JSON.stringify(HelpCenterData)
+                              );
+                              temp[idx].questionAndAnswer[ind].truncate =
+                                !temp[idx].questionAndAnswer[ind].truncate;
+                              setHelpCenterData(temp);
+                            }}
+                          />
+                        </Grid>
                       </Grid>
                     </Grid>
                     {/* <Grid container my={1}>

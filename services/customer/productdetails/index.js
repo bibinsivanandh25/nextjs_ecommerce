@@ -81,7 +81,7 @@ const postQuestions = (payload) => {
 };
 const getProductReview = (id, pageNumber) => {
   return serviceUtil
-    .put(`users/customer/review/${pageNumber}/5?productVariationId=${id}`)
+    .put(`users/customer/review/${pageNumber}/10?productVariationId=${id}`)
     .then((res) => {
       const { data } = res && res.data;
       return { data };

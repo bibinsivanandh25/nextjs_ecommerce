@@ -4,15 +4,17 @@ import { getRecentlyViewedProducts } from "services/customer/Home";
 import { useSelector } from "react-redux";
 import ProductListCard from "../productlistcard";
 
-const RecentlyViewedProduct = () => {
+const RecentlyViewedProduct = ({ scrollPage = () => {} }) => {
   const [products, setProducts] = useState([]);
   const storeDetails = useSelector((state) => state?.customer);
 
   const getRecentViewedProducts = async () => {
-    const { data } = await getRecentlyViewedProducts(
-      storeDetails.userId,
-      storeDetails.profileId
-    );
+    const payload = {
+      customerId: storeDetails.userId,
+      profileId: storeDetails.profileId,
+      supplierStoreCode: storeDetails.storeCode,
+    };
+    const { data } = await getRecentlyViewedProducts(payload);
     if (data) {
       const temp = [];
       data.forEach((ele) => {
@@ -31,6 +33,7 @@ const RecentlyViewedProduct = () => {
           wishlistId: ele.wishlistId,
           userCartId: ele.userCartId,
           isCarted: ele.presentInCart,
+          variationDetails: ele.variationDetails,
         });
       });
       setProducts([...temp]);
@@ -44,17 +47,17 @@ const RecentlyViewedProduct = () => {
 
   return (
     <Box className={products?.length ? "" : "d-none"}>
-      <Typography className="fw-bold my-2">
+      <Typography className="fw-bold mt-2">
         Your Recently Viewed Products
       </Typography>
-
-      <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+      <Box className="d-flex w-100 overflow-auto py-2 hide-scrollbar">
         {products ? (
           products?.map((ele) => {
             return (
               <ProductListCard
                 item={ele}
                 getProducts={getRecentViewedProducts}
+                scrollPage={scrollPage}
               />
             );
           })

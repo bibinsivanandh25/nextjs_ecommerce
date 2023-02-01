@@ -15,6 +15,7 @@ import {
   getUserMarketingTool,
   deleteMarketingTool,
 } from "services/supplier/marketingtools";
+import ChooseBannerModal from "@/forms/supplier/marketingtools/choosebanner";
 
 const CreateQuiz = ({ pageName }) => {
   const columns = [
@@ -97,6 +98,7 @@ const CreateQuiz = ({ pageName }) => {
     },
   ];
   const [showViewModal, setshowViewModal] = useState({});
+  const [showChooseBanner, setShowChooseBanner] = useState(false);
 
   const [genericForm, setShowGenericForm] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -192,121 +194,142 @@ const CreateQuiz = ({ pageName }) => {
   return (
     <Paper className="mnh-80vh w-100 p-3">
       {!genericForm ? (
-        <div>
-          <Grid className="d-flex justify-content-between align-items-center my-2">
-            <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription Start Date & time :{" "}
-                {masterData.subscriptionStartDateTime
-                  ? new Date(
-                      masterData.subscriptionStartDateTime
-                    ).toLocaleString()
-                  : "--"}
-              </Typography>
-            </Grid>
-            <Grid>
-              <Typography className="fs-12 fw-bold">
-                Subscription End Date & time :{" "}
-                {masterData.subscriptionEndDateTime
-                  ? new Date(
-                      masterData.subscriptionEndDateTime
-                    ).toLocaleString()
-                  : "--"}
-              </Typography>
-            </Grid>
-            <Grid>
-              <ButtonComponent
-                variant="outlined"
-                label={`Create ${
-                  // eslint-disable-next-line no-nested-ternary
-                  pageName === "createquiz"
-                    ? "Quiz"
-                    : pageName === "spinwheel"
-                    ? "Spin Wheel"
-                    : "Scratch Card"
-                }`}
-                onBtnClick={() => {
-                  setShowModal(true);
-                }}
-              />
-              <Typography
-                sx={{
-                  width: "fit-content",
-                  mx: "auto",
-                }}
-                className="h-5 text-primary cursor-pointer py-1"
-              >
-                Guidelines to Create
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid>
-            <TableComponent
-              tableRows={[...row]}
-              columns={[...columns]}
-              showCheckbox
-              showSearchFilter={false}
-              showSearchbar={false}
-              handlePageEnd={(searchText, searchFilter, page) => {
-                const pagename = getPageName();
-                getTableRows(pagename, page);
-              }}
-              handleRowsPerPageChange={() => {
-                const pagename = getPageName();
-                getTableRows(pagename, 0);
-              }}
-            />
-          </Grid>
-          <ModalComponent
-            ModalTitle="Warning"
-            titleClassName="color-orange"
-            onCloseIconClick={() => {
-              setShowModal(false);
-            }}
-            showFooter={false}
-            showClearBtn={false}
-            showSaveBtn={false}
-            open={showModal}
-          >
-            <Box className="w-100 d-flex  justify-content-center">
-              <Box className="w-60p mb-4 d-flex flex-column align-items-center m-3">
-                <Box>
-                  <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
-                </Box>
-
-                <Typography className="h-4 text-center">
-                  {`Be cautious that creating ${
+        <Box>
+          <div>
+            <Grid container>
+              <Grid item sm={4}>
+                <Typography className="fs-12 fw-bold">
+                  Subscription Start Date & time :{" "}
+                  {masterData.subscriptionStartDateTime
+                    ? new Date(
+                        masterData.subscriptionStartDateTime
+                      ).toLocaleString()
+                    : "--"}
+                </Typography>
+              </Grid>
+              <Grid item sm={4}>
+                <Typography className="fs-12 fw-bold">
+                  Subscription End Date & time :{" "}
+                  {masterData.subscriptionEndDateTime
+                    ? new Date(
+                        masterData.subscriptionEndDateTime
+                      ).toLocaleString()
+                    : "--"}
+                </Typography>
+              </Grid>
+              <Grid item sm={4} display="flex" justifyContent="end">
+                <ButtonComponent
+                  variant="outlined"
+                  label="Choose Banner"
+                  onBtnClick={() => {
+                    setShowChooseBanner(true);
+                  }}
+                  muiProps="mx-2"
+                />
+                <ButtonComponent
+                  variant="outlined"
+                  label={`Create ${
+                    // eslint-disable-next-line no-nested-ternary
                     pageName === "createquiz"
                       ? "Quiz"
                       : pageName === "spinwheel"
                       ? "Spin Wheel"
                       : "Scratch Card"
-                  } does not create any loss to you`}
-                </Typography>
-                <ButtonComponent
-                  label="Proceed"
+                  }`}
                   onBtnClick={() => {
-                    setShowModal(false);
-                    setShowGenericForm(true);
+                    setShowModal(true);
                   }}
-                  muiProps="mx-auto mt-3"
                 />
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item sm={12} display="flex" justifyContent="end">
+                <Typography className="h-5 text-primary cursor-pointer py-1 me-2">
+                  Guidelines to Create
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid>
+              <TableComponent
+                tableRows={[...row]}
+                columns={[...columns]}
+                showCheckbox
+                showSearchFilter={false}
+                showSearchbar={false}
+                handlePageEnd={(searchText, searchFilter, page) => {
+                  const pagename = getPageName();
+                  getTableRows(pagename, page);
+                }}
+                handleRowsPerPageChange={() => {
+                  const pagename = getPageName();
+                  getTableRows(pagename, 0);
+                }}
+              />
+            </Grid>
+            <ModalComponent
+              ModalTitle="Warning"
+              titleClassName="color-orange"
+              onCloseIconClick={() => {
+                setShowModal(false);
+              }}
+              showFooter={false}
+              showClearBtn={false}
+              showSaveBtn={false}
+              open={showModal}
+            >
+              <Box className="w-100 d-flex  justify-content-center">
+                <Box className="w-60p mb-4 d-flex flex-column align-items-center m-3">
+                  <Box>
+                    <WarningAmberIcon sx={{ fontSize: "5rem", color: "red" }} />
+                  </Box>
+
+                  <Typography className="h-4 text-center">
+                    {`Be cautious that creating ${
+                      pageName === "createquiz"
+                        ? "Quiz"
+                        : pageName === "spinwheel"
+                        ? "Spin Wheel"
+                        : "Scratch Card"
+                    } does not create any loss to you`}
+                  </Typography>
+                  <ButtonComponent
+                    label="Proceed"
+                    onBtnClick={() => {
+                      setShowModal(false);
+                      setShowGenericForm(true);
+                    }}
+                    muiProps="mx-auto mt-3"
+                  />
+                </Box>
               </Box>
-            </Box>
-          </ModalComponent>
-          <ModalComponent
-            open={!!Object.keys(showViewModal).length}
-            ModalTitle="View campain name"
-            onCloseIconClick={() => {
-              setshowViewModal({});
-            }}
-            showFooter={false}
-            ModalWidth={800}
-            titleClassName="color-orange h-4"
-          >
-            <ViewPage data={showViewModal} pageName={pageName} />
-          </ModalComponent>
-        </div>
+            </ModalComponent>
+            <ModalComponent
+              open={!!Object.keys(showViewModal).length}
+              ModalTitle="View campain name"
+              onCloseIconClick={() => {
+                setshowViewModal({});
+              }}
+              showFooter={false}
+              ModalWidth={800}
+              titleClassName="color-orange h-4"
+            >
+              <ViewPage data={showViewModal} pageName={pageName} />
+            </ModalComponent>
+          </div>
+          {showChooseBanner && (
+            <ChooseBannerModal
+              open={showChooseBanner}
+              closeModal={setShowChooseBanner}
+              type={
+                pageName === "createquiz"
+                  ? "QUIZ"
+                  : pageName === "spinwheel"
+                  ? "SPIN_WHEEL"
+                  : "SCRATCH_CARD"
+              }
+            />
+          )}
+        </Box>
       ) : (
         <GenericForm
           setShowGenericForm={setShowGenericForm}

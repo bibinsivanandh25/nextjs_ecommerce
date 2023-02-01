@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -13,12 +13,16 @@ import {
   deleteWishListName,
   fetchProductsFromWishListId,
   getAllWishListsByProfileId,
-  removeProductFromWishList,
+  // removeProductFromWishList,
   updateWishListName,
 } from "services/customer/wishlist";
 import ModalComponent from "@/atoms/ModalComponent";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
+import { useMutation, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
+import DeliveryOptionsModal from "@/forms/customer/Home/buynowmodal";
+import validateMessage from "constants/validateMessages";
 
 const WishList = () => {
   const { userId, profileId, supplierId } = useSelector(
@@ -28,8 +32,13 @@ const WishList = () => {
   const [newWishListName, setNewWishListName] = useState("");
   const [modalType, setModalType] = useState("Add");
   const [searchText, setSearchText] = useState("");
+  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
 
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
+  const [productData, setProductData] = useState({
+    productId: "",
+    skuId: "",
+  });
 
   const [products, setProducts] = useState([]);
   const [wishListNames, setWishListNames] = useState([]);
@@ -82,9 +91,28 @@ const WishList = () => {
   useEffect(() => {
     getAllWishLists();
   }, []);
-
+  const validateListname = () => {
+    let temp = null;
+    if (!newWishListName?.length) {
+      temp = validateMessage.field_required;
+      setError(validateMessage.field_required);
+    } else if (newWishListName?.length > 20) {
+      temp = validateMessage.alpha_numeric_20;
+      setError(validateMessage.alpha_numeric_20);
+    } else if (newWishListName?.trim().length !== newWishListName?.length) {
+      temp = "Enter a valid name";
+      setError("Enter a valid name");
+    } else {
+      setError(false);
+    }
+    if (temp === null) {
+      return false;
+    }
+    return true;
+  };
   const createNewWishList = async () => {
-    if (newWishListName?.length) {
+    const valid = validateListname();
+    if (!valid) {
       const payload = {
         customerId: userId,
         userProfileId: profileId,
@@ -95,30 +123,38 @@ const WishList = () => {
         toastify(message, "success");
         getAllWishLists();
         setShowAddNewWishList(false);
+        setError(null);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
         setNewWishListName("");
         getAllWishLists();
+        setError(null);
       }
-    } else setError(true);
+    }
+    // else setError(true);
   };
 
   const editWishListName = async () => {
     const formData = new FormData();
     formData.append("wishlistName", newWishListName);
-    const { message, err } = await updateWishListName(
-      profileId,
-      selectedList?.id,
-      formData
-    );
-    if (message) {
-      setShowAddNewWishList(false);
-      toastify(message, "success");
-      setNewWishListName("");
-      getAllWishLists();
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
+    const validname = validateListname();
+    if (!validname) {
+      const { message, err } = await updateWishListName(
+        profileId,
+        selectedList?.id,
+        formData
+      );
+      if (message) {
+        setShowAddNewWishList(false);
+        toastify(message, "success");
+        setNewWishListName("");
+        getAllWishLists();
+        setError(null);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        setError(null);
+      }
     }
   };
 
@@ -136,16 +172,33 @@ const WishList = () => {
     }
   };
 
-  const removeProductFromList = async (id) => {
-    const { data, err } = await removeProductFromWishList(selectedList?.id, id);
-    if (data) {
-      toastify(data?.message, "success");
-      getProducts();
+  const queryClient = useQueryClient();
+
+  const removeWishListMutation = useMutation(
+    (id) => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${selectedList?.id}&variationId=${id}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+        toastify(data?.message, "success");
+        getProducts();
+      },
+      onError: (err) => {
+        toastify(err?.response?.data?.message, "error");
+      },
     }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
+  );
+
+  // const addToCart = () => {};
+  // const removeProductFromList = (id) => {
+  //   removeWishListMutation.mutate(id);
+  // };
 
   const getList = () => {
     return products.map((ele) => {
@@ -154,11 +207,20 @@ const WishList = () => {
           className="d-flex justify-content-between ms-3 mb-2 p-2 rounded-1 align-items-center"
           key={ele.productVariationId}
         >
-          <Box className="d-flex">
-            <Box>
-              <Image src={ele.productImageUrl} height={100} width={100} />
-            </Box>
-            <Box className="ps-2">
+          <Grid container spacing={2}>
+            <Grid
+              item
+              sm={2}
+              className="  d-flex justify-content-center align-items-center"
+            >
+              <Image
+                src={ele.productImageUrl}
+                height={130}
+                width={130}
+                layout="fixed"
+              />
+            </Grid>
+            <Grid item sm={7.5} className="ps-2   ">
               <Typography className="fw-bold h-5">
                 {ele.productTitle}
               </Typography>
@@ -167,31 +229,37 @@ const WishList = () => {
                 className="h-4"
               />
               <Typography className="h-5">{ele.reviews} Reviews</Typography>
-            </Box>
-          </Box>
-          <Box className="">
-            <Typography className="mb-1 text-center h-5">
-              Item added on {format(new Date(ele.addedAt), "dd MMM yyyy")}
-            </Typography>
-            <Box className="mb-1">
-              <ButtonComponent
-                label="Add to cart"
-                muiProps="fw-bold fs-10 bg-primary w-100 px-5"
-                textColor="color-black"
-              />
-            </Box>
-            <Box className="mb-1">
-              <ButtonComponent
-                label="Remove from list"
-                muiProps="fw-bold fs-10 w-100 text-dark px-5"
-                textColor="text-dark"
-                bgColor="bg-white"
-                onBtnClick={() => {
-                  removeProductFromList(ele.productVariationId);
-                }}
-              />
-            </Box>
-          </Box>
+            </Grid>
+            <Grid item sm={2.5} paddingX={2} className=" ">
+              <Typography className="mb-1 text-center h-5">
+                Item added on {format(new Date(ele.addedAt), "dd MMM yyyy")}
+              </Typography>
+              <Box className="mb-1">
+                <ButtonComponent
+                  label="Add to cart"
+                  muiProps="fw-bold h-5  w-100 py-1"
+                  textColor="color-black"
+                  onBtnClick={() => {
+                    setProductData({
+                      productId: ele.productVariationId,
+                      skuId: ele?.skuId,
+                    });
+                  }}
+                />
+              </Box>
+              <Box className="mb-1">
+                <ButtonComponent
+                  label="Remove from list"
+                  muiProps="fw-bold h-5 w-100 text-dark py-1"
+                  textColor="text-dark"
+                  bgColor="bg-white"
+                  onBtnClick={() => {
+                    removeWishListMutation.mutate(ele.productVariationId);
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
         </Paper>
       );
     });
@@ -228,6 +296,8 @@ const WishList = () => {
       <Box className="d-flex justify-content-between">
         <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
           <ButtonTabsList
+            editBtnName="Edit"
+            deleteBtnName="Delete"
             tabsList={[...wishListNames]}
             showEditDelete
             activeTab={selectedList.index}
@@ -271,13 +341,15 @@ const WishList = () => {
         </Box>
       </Box>
       <ModalComponent
+        ModalTitle=""
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
+          setError(null);
         }}
         ClearBtnText="Clear"
         saveBtnText={
-          modalType === "Add" ? "Create WishList" : "Update WishList"
+          modalType === "Add" ? "Create Wishlist" : "Update Wishlist"
         }
         footerClassName="justify-content-start flex-row-reverse"
         clearBtnClassName="me-3"
@@ -299,13 +371,35 @@ const WishList = () => {
             label="WishList Name"
             value={newWishListName}
             onInputChange={(e) => {
-              setNewWishListName(e?.target?.value);
+              if (newWishListName.length < 20) {
+                setNewWishListName(e?.target?.value);
+              } else if (
+                newWishListName.trim().length !== newWishListName.length
+              ) {
+                setNewWishListName(e?.target?.value);
+              } else {
+                setNewWishListName(e?.target?.value);
+              }
             }}
-            helperText="This Feild is Required"
-            error={error}
+            helperText={
+              // eslint-disable-next-line no-nested-ternary
+              error !== null ? error : ""
+            }
+            error={error !== null}
           />
         </Box>
       </ModalComponent>
+      {showAddToCardModal && (
+        <DeliveryOptionsModal
+          getProducts={getAllWishLists}
+          modalOpen={showAddToCardModal}
+          setModalOpen={setShowAddToCardModal}
+          m
+          productId={productData?.productId}
+          skuId={productData?.skuId}
+          modalType="ADD"
+        />
+      )}
     </Box>
   );
 };

@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
+import ChooseBannerModal from "@/forms/supplier/marketingtools/choosebanner";
 import ViewModal from "@/forms/supplier/marketingtools/viewmodal";
 import { Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -101,6 +102,8 @@ const CreateTodaysDeals = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState({});
+  const [showChooseBanner, setShowChooseBanner] = useState(false);
+
   const handleViewClick = (item) => {
     if (item) {
       setViewModalOpen(true);
@@ -196,8 +199,8 @@ const CreateTodaysDeals = () => {
       {!showCreateDiscount ? (
         <Paper className="p-2 mnh-80vh mxh-80vh overflow-auto hide-scrollbar">
           <div>
-            <Grid className="d-flex justify-content-between align-items-center my-2">
-              <Grid>
+            <Grid container>
+              <Grid item sm={4}>
                 <Typography className="fs-12 fw-bold">
                   Subscription Start Date & time:{" "}
                   {masterData.subscriptionStartDateTime
@@ -207,7 +210,7 @@ const CreateTodaysDeals = () => {
                     : "--"}
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid item sm={4}>
                 <Typography className="fs-12 fw-bold">
                   Subscription End Date & time:{" "}
                   {masterData.subscriptionEndDateTime
@@ -217,7 +220,15 @@ const CreateTodaysDeals = () => {
                     : "--"}
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid item sm={4} display="flex" justifyContent="end">
+                <ButtonComponent
+                  variant="outlined"
+                  label="Choose Banner"
+                  onBtnClick={() => {
+                    setShowChooseBanner(true);
+                  }}
+                  muiProps="mx-2"
+                />
                 <ButtonComponent
                   variant="outlined"
                   label="Create Today's Deal"
@@ -225,13 +236,11 @@ const CreateTodaysDeals = () => {
                     setShowCreateDiscount(true);
                   }}
                 />
-                <Typography
-                  sx={{
-                    width: "fit-content",
-                    mx: "auto",
-                  }}
-                  className="h-5 text-primary cursor-pointer py-1"
-                >
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item sm={12} display="flex" justifyContent="end">
+                <Typography className="h-5 text-primary cursor-pointer py-1 me-2">
                   Guidelines to Create
                 </Typography>
               </Grid>
@@ -260,6 +269,13 @@ const CreateTodaysDeals = () => {
               data={viewModalData}
               modalClose={setViewModalOpen}
               modalTitle="Today's Deal View"
+            />
+          )}
+          {showChooseBanner && (
+            <ChooseBannerModal
+              open={showChooseBanner}
+              closeModal={setShowChooseBanner}
+              type="TODAYS_DEAL"
             />
           )}
         </Paper>

@@ -25,4 +25,36 @@ const getOrderDetails = (payload) => {
       return { errRes };
     });
 };
-export { customerProdFeedback, getOrderDetails };
+const returnProduct = (payload, type) => {
+  return serviceUtil
+    .post(`order-payment/customer-orders-action/${type}`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => {
+      const errRes = err;
+      return { errRes };
+    });
+};
+const getProductDetails = (addId, orderId) => {
+  // const aaa = 113;
+  return serviceUtil
+    .get(
+      `order-payment/customer-orders?shippingAddressId=${addId}&orderId=${orderId}`
+    )
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      const errRes = err;
+      return { errRes };
+    });
+};
+export {
+  customerProdFeedback,
+  getOrderDetails,
+  returnProduct,
+  getProductDetails,
+};

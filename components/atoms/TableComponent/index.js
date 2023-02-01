@@ -385,7 +385,7 @@ const FilterMenu = ({
           label={`Filter ${getFiltersCount()}`}
           showIcon
           iconName="filter"
-          iconColorClass="color-orange"
+          iconColorClass="theme_color"
           variant="outlined"
           onBtnClick={(e) => {
             if (showFilterList) handleClick(e);

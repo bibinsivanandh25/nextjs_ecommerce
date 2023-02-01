@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Badge, Button, Grid, Paper, Typography } from "@mui/material";
+import { Badge, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -10,6 +10,7 @@ import toastify from "services/utils/toastUtils";
 import { viewHelpandSupport } from "services/supplier/helpandsupport";
 import { useSelector } from "react-redux";
 import HelpAndSupportNotification from "@/forms/customer/helpandsupport/HelpAndSupportNotification";
+import ButtonComponent from "@/atoms/ButtonComponent";
 
 const HelpAndSupport = () => {
   const user = useSelector((state) => state.customer);
@@ -318,7 +319,7 @@ const HelpAndSupport = () => {
               justifyContent="space-between"
               className="border-bottom"
             >
-              <Grid item sx={{ p: 2 }}>
+              <Grid item sx={{ p: 1 }}>
                 <p>
                   <span className="fs-16 fw-bold px-3">Help & Support</span>
                   <span className="fs-12 fw-normal text-secondary">
@@ -326,15 +327,13 @@ const HelpAndSupport = () => {
                   </span>
                 </p>
               </Grid>
-              <Grid item sx={{ p: 2 }}>
-                <Button
-                  variant="contained"
+              <Grid item sx={{ p: 1 }}>
+                <ButtonComponent
                   className="bg-orange"
                   size="small"
-                  onClick={() => setShowCreateComponent(true)}
-                >
-                  Create Tickets
-                </Button>
+                  onBtnClick={() => setShowCreateComponent(true)}
+                  label="Create Tickets"
+                />
               </Grid>
             </Grid>
             <Grid item xs={12} sx={{ my: 5, px: 2 }}>

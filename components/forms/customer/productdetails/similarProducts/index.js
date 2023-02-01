@@ -4,7 +4,7 @@ import { similarProductsData } from "services/customer/productdetails";
 import { useSelector } from "react-redux";
 import ProductListCard from "../productlistcard";
 
-const SimilarProducts = ({ subCategoryId = "" }) => {
+const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
   const [products, setProducts] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [showPage, setShowPage] = useState(true);
@@ -32,7 +32,7 @@ const SimilarProducts = ({ subCategoryId = "" }) => {
       supplierId: storeDetails.supplierId,
       subCategoryId,
       pageNumber: page,
-      pageSize: 10,
+      pageSize: 20,
       //   productVariationId: "62fa5a03e5d1f7265bb58cd6",
       //   supplierId: "SP0822000040",
       //   subCategoryId: "62f91040e5d1f7265bb58caf",
@@ -104,19 +104,22 @@ const SimilarProducts = ({ subCategoryId = "" }) => {
     <>
       {showPage ? (
         <Box>
-          <Typography className="fw-bold my-2">Similar Products</Typography>
-          <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar">
+          <Typography className="fw-bold mt-2">Similar Products</Typography>
+          <Box className="d-flex w-100 overflow-auto py-2 hide-scrollbar">
             {products?.map((ele) => {
               return (
                 <ProductListCard
                   item={ele}
                   getProducts={getRecentViewedProducts}
+                  scrollPage={scrollPage}
                 />
               );
             })}
-            <div ref={footerRef} style={{ visibility: "hidden" }}>
-              footerRef
-            </div>
+            {products.length > 19 ? (
+              <div ref={footerRef} style={{ visibility: "hidden" }}>
+                footerRef
+              </div>
+            ) : null}
           </Box>
         </Box>
       ) : null}

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable consistent-return */
@@ -8,82 +9,54 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import ButtonComponent from "@/atoms/ButtonComponent";
-import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import { returnProduct } from "services/customer/orders";
+import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
 import ReturnOrderModel from "../returnordermodel/ReturnOrderModel";
+import PickUpAddress from "../address/pickupaddress";
 
 const OrderReturn = ({
+  showReturnOrder,
+  selectedProduct,
+  setSelectedProduct = () => {},
   returnProducts = [],
   setShowReturnOrder = () => {},
+  setgetOrderApiCall = () => {},
+  getOrderApiCall,
 }) => {
-  const [addressList, setAddressList] = useState([
-    {
-      id: 1,
-      name: "Perry",
-      address: "#109, 3rd Cross, 4th Main, Tokyo",
-      phoneNUmber: "+91 9023934220",
-      latitude: "15.898097",
-      langitude: "87.678856",
-      isSelected: false,
-    },
-    {
-      id: 2,
-      name: "Angela",
-      address: "#987, 1st Cross, 1st Main, Argentina",
-      phoneNUmber: "+91 9023934220",
-      latitude: "15.898097",
-      langitude: "87.678856",
-      isSelected: false,
-    },
-    {
-      id: 3,
-      name: "Natasha",
-      address: "#9870, 2nd Cross, 1st Main, Bangalore",
-      phoneNUmber: "+91 9023934220",
-      latitude: "15.898097",
-      langitude: "87.678856",
-      isSelected: false,
-    },
-    {
-      id: 4,
-      name: "Joker",
-      address: "#9987, 1st Cross, 1st Main, Mysore",
-      phoneNUmber: "+91 9023934220",
-      latitude: "15.898097",
-      langitude: "87.678856",
-      isSelected: false,
-    },
-  ]);
+  const user = useSelector((state) => state.user);
+  const address = useSelector((state) => state.customer.addressDetails);
   const [showDeliveryAddress, setShowDeliveryAddress] = useState(true);
   const [showOrderSummary, setshowOrderSummary] = useState(false);
   const [products, setProducts] = useState([]);
-  // const [selectedDeliveryAddress, setselectedDeliveryAddress] = useState();
   const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
-
+  const [returnSucceccData, setreturnSucceccData] = useState([]);
+  const [addressList, setaddressList] = useState([]);
   useEffect(() => {
     setProducts([...returnProducts]);
   }, [returnProducts]);
-
   const getOrderSummary = () => {
-    return products.map((ele) => {
+    return selectedProduct.map((ele) => {
       return (
         <Box className="mx-2 my-3">
-          <Grid container key={ele.id}>
+          <Grid container key={ele.orderId}>
             <Grid item sm={2} className="">
-              <Image src={ele.image} height={85} width={85} />
+              <Image src={ele.productImage} height={85} width={85} />
             </Grid>
             <Grid item sm={7}>
               <Typography className="theme_color">
-                Supplier Name: Business Name
+                Supplier Name: {ele.businessName}
               </Typography>
               <Typography className="h-5  my-1">{ele.title}</Typography>
               <Typography component="span" className="h-5 me-2">
                 Order Type :
               </Typography>
               <Typography component="span" className="h-5">
-                Actual Cost
+                Dummy data
               </Typography>
               <Typography className="h-5">
-                Return Charges : <span className="text-danger">₹123</span>
+                Return Charges :{" "}
+                <span className="text-danger">₹dummy data</span>
               </Typography>
             </Grid>
           </Grid>
@@ -92,93 +65,31 @@ const OrderReturn = ({
     });
   };
 
-  const getDeliveryAddress = () => {
-    if (showDeliveryAddress) {
-      return addressList.map((ele) => {
-        return (
-          <Box
-            className={`d-flex justify-content-between my-2 p-2 ${
-              ele.isSelected ? "bg-light-pink" : ""
-            }`}
-            key={ele.id}
-          >
-            <Box className="d-flex">
-              {" "}
-              <RadiobuttonComponent
-                id={ele.id}
-                isChecked={ele.isSelected}
-                onRadioChange={(e) => {
-                  const temp = [...addressList];
-                  temp.map((item) => {
-                    if (e.target.id == item.id) {
-                      return (item.isSelected = true);
-                    }
-                    return (item.isSelected = false);
-                  });
-                  setAddressList([...temp]);
-                  // setselectedDeliveryAddress({ ...ele });
-                }}
-              />
-              <Box>
-                <Box className="d-flex">
-                  <Typography className="fw-bold h-5">{ele.name}</Typography>
-                  <Typography className="fw-bold h-5">
-                    {ele.phoneNUmber}
-                  </Typography>
-                </Box>
-                <Typography className="h-5">{ele.address}</Typography>
-                <Box className="d-flex">
-                  <Typography className="h-5">
-                    Latitude : {ele.latitude}
-                  </Typography>
-                  <Typography className="h-5 mx-3">
-                    Langitude : {ele.langitude}
-                  </Typography>
-                </Box>
-                {ele.isSelected ? (
-                  <ButtonComponent label="Pickup Here" />
-                ) : null}
-              </Box>
-            </Box>
-            <Typography
-              className={`${
-                ele.isSelected ? "" : "d-none"
-              } theme_color h-5 fw-bold pe-5`}
-            >
-              Edit
-            </Typography>
-          </Box>
-        );
-      });
-    }
-    return addressList.map((ele) => {
-      if (ele.isSelected) {
-        return (
-          <Box className="d-flex justify-content-between my-2 p-2" key={ele.id}>
-            <Box className="d-flex mx-5">
-              <Box>
-                <Box className="d-flex">
-                  <Typography className="fw-bold h-5">{ele.name}</Typography>
-                  <Typography className="fw-bold h-5">
-                    {ele.phoneNUmber}
-                  </Typography>
-                </Box>
-                <Typography className="h-5">{ele.address}</Typography>
-                <Box className="d-flex">
-                  <Typography className="h-5">
-                    Latitude : {ele.latitude}
-                  </Typography>
-                  <Typography className="h-5 mx-3">
-                    Langitude : {ele.langitude}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        );
-      }
-      return null;
+  const returnProductFunction = async (ele) => {
+    let payload = [];
+    selectedProduct.forEach((val) => {
+      payload = [
+        ...payload,
+        {
+          orderId: val.orderId,
+          emailAddress: user.emailId,
+          addressId: ele.addressId,
+          reason: val?.dropDownValue?.value,
+          productImage: val.productImage,
+        },
+      ];
     });
+    // const reqBody = { orderActions: [...payload] };
+    const returnAction = "RETURN";
+    const { data, errRes } = await returnProduct(payload, returnAction);
+    if (data) {
+      setreturnSucceccData(data.data);
+
+      toastify(data.data.message, "success");
+      setShowOrderSuccessModal(true);
+    } else if (errRes) {
+      toastify(errRes?.response?.data?.message, "error");
+    }
   };
   const getTotalPrice = () => {
     let temp = 0;
@@ -221,7 +132,7 @@ const OrderReturn = ({
                       component="span"
                       className="text-secondary fw-bold h-5"
                     >
-                      +91 123453453
+                      {address.name}
                     </Typography>
                   </Box>
                 </Box>
@@ -272,52 +183,127 @@ const OrderReturn = ({
                 </Box>
               </Box>
               <Divider variant="middle" />
-              <Box className="py-2">{getDeliveryAddress()}</Box>
-            </Paper>
-            <Paper className="my-2">
-              <Box className="d-flex justify-content-between align-items-center px-2 rounded-0">
-                <Box className="d-flex my-2">
-                  <Box>
-                    <Typography
-                      className="mark me-3 py-1 px-2"
-                      component="span"
-                    >
-                      3
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography className="text-secondary fw-bold h-5">
-                      Return Order Summary
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box>
-                  {showDeliveryAddress ? (
-                    <ButtonComponent
-                      label="Continue"
-                      muiProps="px-4"
-                      onBtnClick={() => setShowDeliveryAddress(false)}
-                    />
-                  ) : null}
-                </Box>
-              </Box>
-              <Divider variant="middle" />
-              <Box className="py-2 mxh-300 overflow-auto hide-scrollbar">
-                {showOrderSummary ? getOrderSummary() : null}
-              </Box>
-            </Paper>
+              {/* <Box className="py-2">{getDeliveryAddress()}</Box> */}
+              {showDeliveryAddress ? (
+                <>
+                  {addressList.map((ele) => {
+                    if (ele.primary) {
+                      return (
+                        <Paper className="d-flex  p-2 rounded-0">
+                          <Box className="mx-5">
+                            <Box className="">
+                              <Typography className="fw-bold h-5">
+                                {ele.name}
+                              </Typography>
+                              <Typography className="fw-bold h-5">
+                                {ele.mobileNumber}
+                              </Typography>
+                            </Box>
+                            <Typography className="h-5">
+                              {ele.address}
+                            </Typography>
+                            <Typography className="h-5">
+                              {ele.cityDistrictTown}
+                            </Typography>
+                            <Typography className="h-5">{ele.state}</Typography>
+                            <Typography className="h-5">
+                              {ele.location} - {ele.pinCode}
+                            </Typography>
+                            <Box className="d-flex">
+                              {ele.latitudeValue && (
+                                <Typography className="h-5">
+                                  Latitude : {ele.latitudeValue}
+                                </Typography>
+                              )}
+                              {ele.langitude && (
+                                <Typography className="h-5 mx-3">
+                                  Langitude : {ele.langitude}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                        </Paper>
+                      );
+                    }
+                  })}
+                  <PickUpAddress
+                    pageType="customer"
+                    setaddressList={setaddressList}
+                  />
+                </>
+              ) : (
+                // eslint-disable-next-line array-callback-return
+                addressList.map((ele) => {
+                  if (ele.primary) {
+                    return (
+                      <Box className=" " key={ele.addressId}>
+                        <Paper className="d-flex  p-2 rounded-0">
+                          <Box className="mx-5">
+                            <Box className="">
+                              <Typography className="fw-bold h-5">
+                                {ele.name}
+                              </Typography>
+                              <Typography className="fw-bold h-5">
+                                {ele.mobileNumber}
+                              </Typography>
+                            </Box>
+                            <Typography className="h-5">
+                              {ele.address}
+                            </Typography>
+                          </Box>
+                        </Paper>
+                        <Paper className="my-2">
+                          <Box className="d-flex justify-content-between align-items-center px-2 rounded-0">
+                            <Box className="d-flex my-2">
+                              <Box>
+                                <Typography
+                                  className="mark me-3 py-1 px-2"
+                                  component="span"
+                                >
+                                  3
+                                </Typography>
+                              </Box>
+                              <Box>
+                                <Typography className="text-secondary fw-bold h-5">
+                                  Return Order Summary
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Box>
+                              {showDeliveryAddress ? (
+                                <ButtonComponent
+                                  label="Continue"
+                                  muiProps="px-4"
+                                  onBtnClick={() =>
+                                    setShowDeliveryAddress(false)
+                                  }
+                                />
+                              ) : null}
+                            </Box>
+                          </Box>
+                          <Divider variant="middle" />
+                          <Box className="py-2 mxh-300 overflow-auto hide-scrollbar">
+                            {showOrderSummary ? getOrderSummary() : null}
+                          </Box>
+                        </Paper>
 
-            <Paper className="d-flex justify-content-between align-items-center p-2">
-              <Typography>
-                Return Order confirmation will be sent to{" "}
-                <span className="fw-bold">xyz.gmail.com</span>{" "}
-              </Typography>
-              <ButtonComponent
-                label="Continue"
-                onBtnClick={() => {
-                  setShowOrderSuccessModal(true);
-                }}
-              />
+                        <Paper className="d-flex justify-content-between align-items-center p-2">
+                          <Typography>
+                            Return Order confirmation will be sent to{" "}
+                            <span className="fw-bold">xyz.gmail.com</span>{" "}
+                          </Typography>
+                          <ButtonComponent
+                            label="Continue"
+                            onBtnClick={() => {
+                              returnProductFunction(ele);
+                            }}
+                          />
+                        </Paper>
+                      </Box>
+                    );
+                  }
+                })
+              )}
             </Paper>
           </Box>
         </Grid>
@@ -352,6 +338,14 @@ const OrderReturn = ({
         ) : null}
       </Grid>
       <ReturnOrderModel
+        setgetOrderApiCall={setgetOrderApiCall}
+        getOrderApiCall={getOrderApiCall}
+        setSelectedProduct={setSelectedProduct}
+        selectedProduct={selectedProduct}
+        showReturnOrder={showReturnOrder}
+        setShowReturnOrder={setShowReturnOrder}
+        returnSuccessData={returnSucceccData}
+        setreturnSuccessData={setreturnSucceccData}
         showModal={showOrderSuccessModal}
         setShowModal={setShowOrderSuccessModal}
       />

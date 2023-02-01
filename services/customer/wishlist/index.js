@@ -69,9 +69,9 @@ const removeProductFromWishList = (wishListId, productId) => {
     .catch((err) => ({ err }));
 };
 
-const productDetailsView = (id) => {
+const productDetailsView = (userId, id) => {
   return serviceUtil
-    .get(`/products/customer/product-view/${id}`)
+    .get(`/products/customer/product-view/${userId}/${id}`)
     .then((res) => {
       const { data } = res?.data;
       return { data };

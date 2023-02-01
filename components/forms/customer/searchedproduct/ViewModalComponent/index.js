@@ -10,15 +10,21 @@ import InputBox from "@/atoms/InputBoxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import ModalComponent from "@/atoms/ModalComponent";
+import { useSelector } from "react-redux";
 import { productDetailsView } from "services/customer/wishlist";
+import toastify from "services/utils/toastUtils";
+import { useMutation, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
 import AddToCartModal from "../addtocartmodal";
+import AddToWishListModal from "../../wishlist/AddToWishListModal";
 
 const ViewModalComponent = ({
   setViewModalOpen = () => {},
-  viewModalOpen = false,
   productId = "",
   getProducts = () => {},
+  setIconColor = () => {},
 }) => {
+  const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [viewModalImage, setViewModalImage] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -27,13 +33,19 @@ const ViewModalComponent = ({
   const [count, setCount] = useState(1);
   const [radioBtnText, setRadioBtnText] = useState("NOFREEDELIVERYANDRETURN");
   const [showAddtoCartModal, setShowAddtoCartModal] = useState(false);
+  const [showWishListModal, setShowWishListModal] = useState(false);
+  const userData = useSelector((state) => state.customer);
 
   const getProductData = async () => {
-    const { data, err } = await productDetailsView(productId);
+    const { data, err } = await productDetailsView(
+      userData.profileId,
+      productId
+    );
     if (data) {
       setMasterData(data);
       setSelectedImage(data.variationMedia[0]);
       setViewModalImage(data.variationMedia);
+      setShowModal(true);
     }
     if (err) {
       setViewModalOpen(false);
@@ -59,15 +71,44 @@ const ViewModalComponent = ({
   const handleAddtoCartClik = async () => {
     setShowAddtoCartModal(true);
   };
+  const queryClient = useQueryClient();
+
+  const removeWishListMutation = useMutation(
+    () => {
+      return serviceUtil.put(
+        `/users/customer/wishlist?wishlistId=${masterData.wishlistId}&variationId=${masterData.productVariationId}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
+        getProductData(userData.productId, userData.variationDetails);
+        queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
+        queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
+        queryClient.invalidateQueries(["RECENTLYVIEWED"]);
+        queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+      },
+    }
+  );
+  const handleIconClick = async () => {
+    if (!masterData.inWishlist) {
+      setShowWishListModal(true);
+    } else {
+      removeWishListMutation.mutate();
+    }
+  };
+
   return (
     <ModalComponent
       showCloseIcon
-      showClearBtn={false}
-      showSaveBtn={false}
-      open={viewModalOpen}
-      onCloseIconClick={() => setViewModalOpen(false)}
+      open={showModal}
+      onCloseIconClick={() => {
+        setViewModalOpen(false);
+        setShowModal(false);
+      }}
       // showHeader={false}
-      ModalWidth={700}
+      ModalWidth={800}
       ModalTitle=""
       headerClassName=""
       iconStyle={{
@@ -78,6 +119,12 @@ const ViewModalComponent = ({
       }}
       closeIconClasName="cursor-pointer color-white"
       headerBorder=""
+      footerClassName="justify-content-end"
+      // saveBtnText="Buy Now"
+      // onSaveBtnClick={() => handleBuyNowClick()}
+      // ClearBtnText="Add to Cart"
+      // onClearBtnClick={() => handleAddtoCartClik()}
+      showFooter={false}
     >
       <Box className="p-2">
         <Box className="row d-flex">
@@ -86,24 +133,39 @@ const ViewModalComponent = ({
               {selectedImage && (
                 <Image
                   src={selectedImage}
-                  width="250px"
-                  height="250px"
+                  width={300}
+                  height={300}
                   alt=""
                   className="border rounded bg-white"
+                  layout="intrinsic"
                   style={{ aspectRatio: " 1 / 1 " }}
                 />
               )}
               <div style={{ position: "absolute", top: 5, right: 5 }}>
                 <Paper className="border rounded-circle p-1">
                   <CustomIcon
-                    type="favoriteBorderIcon"
+                    type={
+                      masterData.inWishlist ? "heart" : "favoriteBorderIcon"
+                    }
                     className="h-3"
                     showColorOnHover={false}
+                    onIconClick={() => {
+                      handleIconClick();
+                    }}
+                    color={
+                      masterData.inWishlist ? "color-orange" : "color-gray"
+                    }
                   />
                 </Paper>
               </div>
             </Box>
-            <div className="d-flex justify-content-evenly">
+            <div
+              className={`d-flex ${
+                viewModalImage.length > 2
+                  ? `justify-content-evenly`
+                  : `justify-content-start`
+              } `}
+            >
               {viewModalImage.map((item, index) => (
                 <div
                   className="me-1"
@@ -112,8 +174,8 @@ const ViewModalComponent = ({
                 >
                   <Image
                     src={item}
-                    width={100}
-                    height={100}
+                    width={70}
+                    height={70}
                     alt=""
                     className={`${
                       selectedImageIndex === index && `border-orange`
@@ -139,13 +201,15 @@ const ViewModalComponent = ({
             <Typography className="h-5">
               MRP :{" "}
               <span className="text-decoration-line-through fw-bold">
-                {masterData.mrp}
+                ₹ {Number(masterData.mrp).toLocaleString("en-IN")}
               </span>
             </Typography>
             <Box>
               <RadiobuttonComponent
                 isChecked={radioBtnText === "NOFREEDELIVERYANDRETURN"}
-                label={`₹ ${masterData.salePrice} (Actual Product cost)`}
+                label={`₹ ${Number(masterData.salePrice).toLocaleString(
+                  "en-IN"
+                )} (Actual Product cost)`}
                 size="small"
                 onRadioChange={() => {
                   setRadioBtnText("NOFREEDELIVERYANDRETURN");
@@ -154,7 +218,9 @@ const ViewModalComponent = ({
               {masterData.storeFDR ? (
                 <RadiobuttonComponent
                   isChecked={radioBtnText === "FREEDELIVERYANDRETURN"}
-                  label={`₹ ${masterData.salePriceWithFDR} (with free delivery & Return)`}
+                  label={`₹ ${Number(
+                    masterData.salePriceWithFDR
+                  ).toLocaleString("en-IN")} (with free delivery & Return)`}
                   size="small"
                   onRadioChange={() => {
                     setRadioBtnText("FREEDELIVERYANDRETURN");
@@ -201,8 +267,8 @@ const ViewModalComponent = ({
                 />
               </div>
             </Box>
-            <Box className="w-100">
-              <Typography className="color-blue h-p89">
+            <Box className="w-100 my-1">
+              <Typography className="color-orange h-p89">
                 Enter Pincode & Check If Its Deliverable/Not
               </Typography>
               <InputBox
@@ -248,6 +314,16 @@ const ViewModalComponent = ({
             count={count}
             getProducts={getProducts}
             setViewModalOpen={setViewModalOpen}
+          />
+        ) : null}
+        {showWishListModal ? (
+          <AddToWishListModal
+            showModal={showWishListModal}
+            setShowModal={setShowWishListModal}
+            productId={productId}
+            getProducts={() => {
+              getProductData();
+            }}
           />
         ) : null}
       </Box>

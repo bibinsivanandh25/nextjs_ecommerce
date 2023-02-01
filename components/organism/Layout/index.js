@@ -31,7 +31,15 @@ const Layout = ({ Component, pageProps }) => {
             <Header />
           )}
         </div>
-        <Box className="mnw-100vw">
+        <Box
+          className="mnw-100vw"
+          style={{
+            top: "0",
+            position: "fixed",
+            height: "100vh ",
+            overflow: "hidden",
+          }}
+        >
           {route.pathname.startsWith("/supplier") ||
           route.pathname.startsWith("/reseller") ||
           route.pathname.startsWith("/admin") ||
