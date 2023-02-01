@@ -16,6 +16,7 @@ const HelpAndSupport = () => {
   const user = useSelector((state) => state.customer);
   const [tableRows, setTableRows] = useState([]);
   const [showCreateComponent, setShowCreateComponent] = useState(false);
+  const [modalType, setmodalType] = useState("");
   const [pageNumber, setpageNumber] = useState(0);
   const [selectedData, setSelectedData] = useState(null);
   const [showModal, setShowModal] = useState({
@@ -222,6 +223,7 @@ const HelpAndSupport = () => {
                     id: row.ticketId,
                   });
                   setSelectedData(row);
+                  setmodalType("REPLY");
                 }}
               >
                 Reply
@@ -295,6 +297,10 @@ const HelpAndSupport = () => {
       getTabledata(0, result);
     }
   };
+  const openCreateFun = () => {
+    setmodalType("CREATE");
+    setShowCreateComponent(true);
+  };
   return (
     <>
       {/* eslint-disable-next-line no-nested-ternary */}
@@ -303,6 +309,7 @@ const HelpAndSupport = () => {
           setShowCreateComponent={setShowCreateComponent}
           getTabledata={getTabledata}
           selectedData={selectedData}
+          modalType={modalType}
         />
       ) : showModal.show && showModal.type === "view" ? (
         <HelpandsupportView
@@ -331,7 +338,7 @@ const HelpAndSupport = () => {
                 <ButtonComponent
                   className="bg-orange"
                   size="small"
-                  onBtnClick={() => setShowCreateComponent(true)}
+                  onBtnClick={openCreateFun}
                   label="Create Tickets"
                 />
               </Grid>
