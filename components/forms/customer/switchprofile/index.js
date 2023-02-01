@@ -105,6 +105,7 @@ const SwitchProfile = ({
       }
       const { data, err } = await addProfile(payload);
       if (data) {
+        toastify(data.message, "success");
         getProfiles();
         setShowModal(false);
         setError("");
@@ -113,9 +114,9 @@ const SwitchProfile = ({
         setImg("");
         dispatch(
           storeUserInfo({
-            profileImg: data.profileImageUrl,
-            profileId: data.profileId,
-            profileName: data.profileName,
+            profileImg: data.data.profileImageUrl,
+            profileId: data.data.profileId,
+            profileName: data.data.profileName,
           })
         );
       } else if (err) {
