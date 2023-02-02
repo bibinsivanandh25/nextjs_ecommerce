@@ -8,7 +8,7 @@ import ButtonComponent from "@/atoms/ButtonComponent";
 import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import {
   getCartProducts,
-  removeProductFromCart,
+  // removeProductFromCart,
   updateCartQuantity,
 } from "services/customer/cart";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,8 @@ import {
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import { storeUserInfo } from "features/customerSlice";
 import ModalComponent from "@/atoms/ModalComponent";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import serviceUtil from "services/utils";
 
 const Cart = () => {
   const [products, setProducts] = useState();
@@ -47,6 +49,12 @@ const Cart = () => {
 
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
+    if (data) return data;
+    return [];
+  };
+  const { data, refetch } = useQuery(["CART"], () => getproducts());
+
+  useEffect(() => {
     if (data) {
       const result = [];
       setPriceDetails({
@@ -82,10 +90,7 @@ const Cart = () => {
     } else {
       setProducts([]);
     }
-  };
-  useEffect(() => {
-    getproducts();
-  }, []);
+  }, [data]);
 
   const mainRef = useRef(null);
   useEffect(() => {
@@ -118,22 +123,39 @@ const Cart = () => {
     };
     const { data, err } = await updateCartQuantity(payload);
     if (data) {
-      getproducts();
+      refetch();
     }
     if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const queryClient = useQueryClient();
+  const removeProductMutation = useMutation(
+    (id) => {
+      return serviceUtil.deleteById(
+        `products/product/cart?productVariationId=${id}&profileId=${profileId}`
+      );
+    },
+    {
+      onSuccess: ({ data }) => {
+        toastify(data?.message, "success");
+        refetch();
+        queryClient.invalidateQueries(["CARTCOUNT"]);
+        queryClient.refetchQueries("CARTCOUNT", { force: true });
+      },
+    }
+  );
 
   const removeProduct = async (id) => {
-    const { data, err } = await removeProductFromCart(id, profileId);
-    if (data) {
-      toastify(data?.message, "success");
-      getproducts();
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
+    removeProductMutation.mutate(id);
+    // const { data, err } = await removeProductFromCart(id, profileId);
+    // if (data) {
+    //   toastify(data?.message, "success");
+    //   refetch();
+    // }
+    // if (err) {
+    //   toastify(err?.response?.data?.message, "error");
+    // }
   };
 
   const getAllData = async (id) => {

@@ -11,6 +11,7 @@ import {
   Typography,
   Grid,
   Tooltip,
+  Badge,
 } from "@mui/material";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
@@ -37,6 +38,7 @@ import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
   addStore,
+  countCart,
   deleteStore,
   getRecentStoreList,
   getStoreListOfCustomer,
@@ -53,6 +55,7 @@ import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
 import ExploreStores from "@/forms/customer/exploreStores";
 import FavouriteStoreSvg from "public/assets/svg/favouriteStoreSvg";
+import { useQuery } from "react-query";
 
 const Header = () => {
   const session = useSession();
@@ -62,12 +65,12 @@ const Header = () => {
   const [showSelectAddress, setShowSelectAddress] = useState(false);
   const [showFavoriteList, setShowFavoriteList] = useState(false);
   const customer = useSelector((state) => state.customer);
-
   const [open, setOpen] = useState(false);
   const [stores, setStores] = useState([]);
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
+  const [countCartstate, setCountCart] = useState(0);
   const [openExplore, setOpenExplore] = useState(false);
   const {
     supplierStoreName,
@@ -248,6 +251,19 @@ const Header = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const countCartFunction = async () => {
+    const { data } = await countCart(customer.profileId);
+    if (data) {
+      setCountCart(data.data);
+    }
+  };
+  // eslint-disable-next-line no-unused-vars
+  const { data } = useQuery(["CARTCOUNT"], () => countCartFunction(), {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    retry: false,
+    retryOnMount: false,
+  });
 
   const getStores = () => {
     return (
@@ -655,6 +671,12 @@ const Header = () => {
                     }
                     handleRouting("/customer/cart");
                   }}
+                />
+                <Badge
+                  // badgeContent={countCartstate == 0 ? "" : countCartstate}
+                  badgeContent={countCartstate}
+                  color="warning"
+                  className={countCartstate == 0 ? "d-none" : "mb-4"}
                 />
               </span>
             </Tooltip>
