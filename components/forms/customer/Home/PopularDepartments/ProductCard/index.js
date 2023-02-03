@@ -299,7 +299,6 @@ const ProductCard = ({
             ))}
           </Box>
         </Box>
-        {console.log(item)}
         {showWishListModal ? (
           <AddToWishListModal
             showModal={showWishListModal}

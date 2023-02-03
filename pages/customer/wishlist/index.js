@@ -1,71 +1,60 @@
-/* eslint-disable react/no-array-index-key */
-import { Box, Grid, Paper, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import ButtonTabsList from "@/atoms/ButtonTabsList";
-import ButtonComponent from "@/atoms/ButtonComponent";
-import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
-import InputBox from "@/atoms/InputBoxComponent";
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
-  addNewWishList,
   deleteWishListName,
-  fetchProductsFromWishListId,
+  addNewWishList,
   getAllWishListsByProfileId,
-  // removeProductFromWishList,
   updateWishListName,
+  fetchProductsFromWishListId,
 } from "services/customer/wishlist";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { motion } from "framer-motion";
+import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import toastify from "services/utils/toastUtils";
+import validateMessage from "constants/validateMessages";
+import Image from "next/image";
+import StarRatingComponentReceivingRating from "@/atoms/StarRatingComponentReceiving";
 import { format } from "date-fns";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import CloseIcon from "@mui/icons-material/Close";
 import { useMutation, useQueryClient } from "react-query";
 import serviceUtil from "services/utils";
 import DeliveryOptionsModal from "@/forms/customer/Home/buynowmodal";
-import validateMessage from "constants/validateMessages";
 
 const WishList = () => {
   const { userId, profileId, supplierId } = useSelector(
     (state) => state?.customer
   );
+  const [modalType, setModalType] = useState("Add");
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
   const [newWishListName, setNewWishListName] = useState("");
-  const [modalType, setModalType] = useState("Add");
-  const [searchText, setSearchText] = useState("");
-  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
-
-  const [error, setError] = useState(null);
-  const [productData, setProductData] = useState({
-    productId: "",
-    skuId: "",
-  });
-
-  const [products, setProducts] = useState([]);
-  const [wishListNames, setWishListNames] = useState([]);
   const [selectedList, setSelectedList] = useState({
     id: "",
     index: 0,
   });
-
-  const getProducts = async (keyword) => {
-    const payload = {
-      customerId: userId,
-      profileId,
-      supplierId,
-      wishlistId: selectedList.id,
-      keyword: keyword ?? "",
-    };
-    const { data } = await fetchProductsFromWishListId(payload);
-    if (data) {
-      setProducts([...data]);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedList?.id?.toString()?.length) {
-      getProducts();
-    }
-  }, [selectedList?.id]);
+  const [wishListNames, setWishListNames] = useState([]);
+  const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [productData, setProductData] = useState({
+    productId: "",
+    skuId: "",
+  });
+  const [showAddToCardModal, setShowAddToCardModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   const getAllWishLists = async () => {
     const { data } = await getAllWishListsByProfileId(userId, profileId);
@@ -87,10 +76,29 @@ const WishList = () => {
       );
     }
   };
+  const getProducts = async (keyword) => {
+    const payload = {
+      customerId: userId,
+      profileId,
+      supplierId,
+      wishlistId: selectedList.id,
+      keyword: keyword ?? "",
+    };
+    const { data } = await fetchProductsFromWishListId(payload);
+    if (data) {
+      setProducts([...data]);
+    }
+  };
 
   useEffect(() => {
     getAllWishLists();
   }, []);
+  useEffect(() => {
+    if (selectedList?.id?.toString()?.length) {
+      getProducts();
+    }
+  }, [selectedList?.id]);
+
   const validateListname = () => {
     let temp = null;
     if (!newWishListName?.length) {
@@ -110,6 +118,7 @@ const WishList = () => {
     }
     return true;
   };
+
   const createNewWishList = async () => {
     const valid = validateListname();
     if (!valid) {
@@ -123,6 +132,7 @@ const WishList = () => {
         toastify(message, "success");
         getAllWishLists();
         setShowAddNewWishList(false);
+        setNewWishListName("");
         setError(null);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
@@ -139,9 +149,10 @@ const WishList = () => {
     formData.append("wishlistName", newWishListName);
     const validname = validateListname();
     if (!validname) {
+      setError(null);
       const { message, err } = await updateWishListName(
         profileId,
-        selectedList?.id,
+        editItem?.id,
         formData
       );
       if (message) {
@@ -149,7 +160,7 @@ const WishList = () => {
         toastify(message, "success");
         setNewWishListName("");
         getAllWishLists();
-        setError(null);
+        setEditItem(null);
       }
       if (err) {
         toastify(err?.response?.data?.message, "error");
@@ -171,7 +182,6 @@ const WishList = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
   const queryClient = useQueryClient();
 
   const removeWishListMutation = useMutation(
@@ -195,153 +205,224 @@ const WishList = () => {
     }
   );
 
-  // const addToCart = () => {};
-  // const removeProductFromList = (id) => {
-  //   removeWishListMutation.mutate(id);
-  // };
-
-  const getList = () => {
-    return products.map((ele) => {
-      return (
-        <Paper
-          className="d-flex justify-content-between ms-3 mb-2 p-2 rounded-1 align-items-center"
-          key={ele.productVariationId}
-        >
-          <Grid container spacing={2}>
-            <Grid
-              item
-              sm={2}
-              className="  d-flex justify-content-center align-items-center"
-            >
-              <Image
-                src={ele.productImageUrl}
-                height={130}
-                width={130}
-                layout="fixed"
-              />
-            </Grid>
-            <Grid item sm={7.5} className="ps-2   ">
-              <Typography className="fw-bold h-5">
-                {ele.productTitle}
-              </Typography>
-              <StarRatingComponentReceivingRating
-                rating={ele.rating ?? 0}
-                className="h-4"
-              />
-              <Typography className="h-5">{ele.reviews} Reviews</Typography>
-            </Grid>
-            <Grid item sm={2.5} paddingX={2} className=" ">
-              <Typography className="mb-1 text-center h-5">
-                Item added on {format(new Date(ele.addedAt), "dd MMM yyyy")}
-              </Typography>
-              <Box className="mb-1">
-                <ButtonComponent
-                  label="Add to cart"
-                  muiProps="fw-bold h-5  w-100 py-1"
-                  textColor="color-black"
-                  onBtnClick={() => {
-                    setProductData({
-                      productId: ele.productVariationId,
-                      skuId: ele?.skuId,
-                    });
-                  }}
-                />
-              </Box>
-              <Box className="mb-1">
-                <ButtonComponent
-                  label="Remove from list"
-                  muiProps="fw-bold h-5 w-100 text-dark py-1"
-                  textColor="text-dark"
-                  bgColor="bg-white"
-                  onBtnClick={() => {
-                    removeWishListMutation.mutate(ele.productVariationId);
-                  }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Paper>
-      );
-    });
-  };
-
   return (
-    <Box>
-      <Box className="d-flex justify-content-between align-items-center mb-2">
-        <Typography variant="h-3" className="fw-bold">
-          Your Lists
-        </Typography>
-        <Box className="d-flex align-items-center w-25">
-          <InputBox
-            size="small"
-            placeholder="Search this list"
-            value={searchText}
-            onInputChange={(e) => {
-              if (e.target.value === "") {
-                getProducts();
-              }
-              setSearchText(e.target.value);
-            }}
-          />
-          <Box
-            className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
-            onClick={() => {
-              getProducts(searchText);
-            }}
-          >
-            <SearchOutlinedIcon className="text-white p-1 fs-1" />
-          </Box>
-        </Box>
-      </Box>
-      <Box className="d-flex justify-content-between">
-        <Paper className="bg-white p-2 rounded-1 w-20p mb-2">
-          <ButtonTabsList
-            editBtnName="Edit"
-            deleteBtnName="Delete"
-            tabsList={[...wishListNames]}
-            showEditDelete
-            activeTab={selectedList.index}
-            getActiveTab={(index, item) => {
-              setSelectedList({
-                id: item?.id,
-                index,
-              });
-            }}
-            onEditClick={(item) => {
-              setShowAddNewWishList(true);
-              setModalType("Edit");
-              setNewWishListName(item?.title);
-            }}
-            onDeleteClick={(item) => {
-              deleteList(item?.id);
-            }}
-          />
-          <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3"}>
-            <ButtonComponent
-              label="Add new wishlist"
-              variant="outlined"
-              muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-              borderColor="border-orange"
-              textColor="color-orange"
-              onBtnClick={() => {
-                setShowAddNewWishList(true);
-                setModalType("Add");
-                setNewWishListName("");
+    <div>
+      <div className="d-flex w-100 mb-4">
+        {wishListNames.map((item, index) => {
+          return (
+            <motion.div
+              whileHover={{
+                scale: 1.04,
+                transition: { duration: 0.5 },
               }}
-            />
-          </Box>
-        </Paper>
-        <Box
-          className="w-100 overflow-y-scroll hide-scrollbar"
-          sx={{
-            maxHeight: "72vh !important",
-          }}
+              whileTap={{ scale: 0.95 }}
+              style={{ width: " calc(90% / 5)", height: "85px" }}
+              onClick={() => {
+                setSelectedList({
+                  id: item?.id,
+                  index,
+                });
+              }}
+            >
+              <Paper
+                style={{
+                  height: "75px",
+                  transition: "all 0.2s ease-out",
+                  WebkitTransition: "all 0.2s ease-in-out",
+                }}
+                className={`d-flex  flex-column cursor-pointer justify-content-center align-items-center m-2 ${
+                  selectedList.id !== item.id ? "theme_bg_color" : ""
+                }`}
+              >
+                <Typography
+                  className={`fs-18 fw-bold text-capitalize ${
+                    selectedList.id !== item.id ? "color-white" : "theme_color"
+                  }`}
+                >
+                  {item.title}
+                </Typography>
+                <div className="d-flex">
+                  <Tooltip title="Add to cart">
+                    <EditIcon
+                      className="m-1 shadow cursor-pointer rounded-circle theme_bg_color_1 theme_color"
+                      size={30}
+                      style={{
+                        color: "#fff ",
+                        padding: "5px",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        //   handleProfileSwitch(item);
+                        setShowAddNewWishList(true);
+                        setModalType("Edit");
+                        setNewWishListName(item?.title);
+                        setEditItem(item);
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip title="Add to cart">
+                    <DeleteIcon
+                      className="m-1 shadow cursor-pointer rounded-circle theme_bg_color_1 theme_color"
+                      size={30}
+                      style={{
+                        color: "#fff ",
+                        padding: "5px",
+                      }}
+                      onClick={() => {
+                        //   handleProfileSwitch(item);
+                        deleteList(item.id);
+                      }}
+                    />
+                  </Tooltip>
+                </div>
+              </Paper>
+            </motion.div>
+          );
+        })}
+        {wishListNames.length < 5 && (
+          <Tooltip title="Add Wish List">
+            <motion.div
+              whileHover={{
+                scale: 1.04,
+                transition: { duration: 0.5 },
+              }}
+              whileTap={{ scale: 0.95 }}
+              style={{ width: " calc(90% / 5)", height: "85px" }}
+              onClick={() => {
+                setShowAddNewWishList(true);
+              }}
+            >
+              <Paper
+                style={{ height: "75px" }}
+                className="d-flex cursor-pointer justify-content-center align-items-center m-2 "
+              >
+                <Box className="rounded-circle p-1 bg-gray ">
+                  <AddOutlinedIcon className="color-light-gray cursor-pointer" />
+                </Box>
+              </Paper>
+            </motion.div>
+          </Tooltip>
+        )}
+      </div>
+      <Paper className="p-3">
+        <Typography
+          className="h-1 text-capitalize text-center my-4"
+          style={{ color: "#525252" }}
         >
-          {getList()}
-        </Box>
-      </Box>
+          {wishListNames[selectedList?.index]?.title}
+        </Typography>
+
+        <div className="d-flex justify-content-center w-100">
+          {products.length ? (
+            <Table
+              sx={{ minWidth: 650, maxWidth: "75%" }}
+              aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center" sx={{ width: 100 }}>
+                    Image
+                  </TableCell>
+                  <TableCell align="center">Product Details</TableCell>
+                  <TableCell align="center">Added Date</TableCell>
+                  <TableCell align="center">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {products.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <Image
+                        src={row?.productImageUrl || ""}
+                        width={100}
+                        height={90}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography className="fw-bold h-5">
+                        {row.productTitle}
+                      </Typography>
+                      <StarRatingComponentReceivingRating
+                        rating={row.rating ?? 0}
+                        className="h-4"
+                      />
+                      <Typography className="h-5">
+                        {row.reviews} Reviews
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      {format(new Date(row.addedAt), "dd MMM yyyy")}
+                    </TableCell>
+                    <TableCell align="center">
+                      <div className="d-flex align-items-center w-75 justify-content-evenly mt-4">
+                        <motion.div
+                          whileHover={{
+                            scale: 1.2,
+                            transition: { duration: 0.5 },
+                          }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <Tooltip title="Add to cart">
+                            <AddShoppingCartIcon
+                              className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                              size={30}
+                              style={{
+                                color: "#fff ",
+                                padding: "5px",
+                              }}
+                              onClick={() => {
+                                //   handleProfileSwitch(item);
+                                setShowAddToCardModal(true);
+                                setProductData({
+                                  productId: row.productVariationId,
+                                  skuId: row?.skuId,
+                                });
+                              }}
+                            />
+                          </Tooltip>
+                        </motion.div>
+                        <motion.div
+                          whileHover={{
+                            scale: 1.2,
+                            transition: { duration: 0.5 },
+                          }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <Tooltip title="Remove">
+                            <CloseIcon
+                              className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                              size={30}
+                              style={{
+                                color: "#fff ",
+                                padding: "5px",
+                              }}
+                              onClick={() => {
+                                //   handleProfileSwitch(item);
+                                removeWishListMutation.mutate(
+                                  row.productVariationId
+                                );
+                              }}
+                            />
+                          </Tooltip>
+                        </motion.div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography className="h-2" style={{ color: "#525252" }}>
+              Wishlist is empty
+            </Typography>
+          )}
+        </div>
+      </Paper>
       <ModalComponent
-        ModalTitle=""
+        ModalTitle="Create New Wish List"
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
@@ -394,13 +475,12 @@ const WishList = () => {
           getProducts={getAllWishLists}
           modalOpen={showAddToCardModal}
           setModalOpen={setShowAddToCardModal}
-          m
           productId={productData?.productId}
           skuId={productData?.skuId}
           modalType="ADD"
         />
       )}
-    </Box>
+    </div>
   );
 };
 
