@@ -73,6 +73,7 @@ const CustomerSideBarComponent = ({ children }) => {
       id: 0,
       title: "See All",
       route: true,
+      path: "seeallcategories",
     });
     setCustomerMenu(temp);
   };
@@ -232,6 +233,11 @@ const CustomerSideBarComponent = ({ children }) => {
                       }
                     }}
                     id={item.id}
+                    onClick={() => {
+                      if (item.route) {
+                        router.push(item.path);
+                      }
+                    }}
                   >
                     {/* <Tooltip title={item.title}> */}
                     <Typography
