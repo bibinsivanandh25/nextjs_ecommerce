@@ -169,9 +169,16 @@ const SwitchProfile = ({
         };
       }
       const { data, msg, err } = await updateProfile(payload);
-      if (data === null) {
+      if (data) {
         toastify(msg, "success");
         getProfiles();
+        dispatch(
+          storeUserInfo({
+            profileImg: data.profileImageUrl,
+            profileId: data.profileId,
+            profileName: data.profileName,
+          })
+        );
         setShowModal(false);
         setError(null);
         setProfileName("");

@@ -252,13 +252,13 @@ const Header = () => {
     }
   };
   const countCartFunction = async () => {
-    const { data } = await countCart(customer.profileId);
-    if (data) {
-      setCountCart(data.data);
+    const { data1 } = await countCart(customer.profileId);
+    if (data1) {
+      setCountCart(data1.data);
     }
   };
   // eslint-disable-next-line no-unused-vars
-  const { data } = useQuery(["CARTCOUNT"], () => countCartFunction(), {
+  const { data1 } = useQuery(["CARTCOUNT"], () => countCartFunction(), {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: false,
@@ -586,7 +586,7 @@ const Header = () => {
             }}
             className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer `}
             onClick={() => {
-              if (storeCode.length > 1) {
+              if (storeCode.length > 0) {
                 setShowConfirmModal(true);
               } else {
                 toastify("Please Enter Store Code", "error");
