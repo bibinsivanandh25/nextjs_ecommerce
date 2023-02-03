@@ -93,7 +93,7 @@ const SideBarComponent = ({ children }) => {
             </Box>
             <AnimatePresence initial={false} mode="wait">
               <motion.div
-                sx={{
+                style={{
                   maxHeight: route.pathname.startsWith("/admin")
                     ? "calc(100vh - 95px)"
                     : "calc(100vh - 130px)",
