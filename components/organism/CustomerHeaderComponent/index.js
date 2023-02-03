@@ -586,7 +586,11 @@ const Header = () => {
             }}
             className={` d-flex justify-content-center p-1 rounded align-items-center cursor-pointer `}
             onClick={() => {
-              setShowConfirmModal(true);
+              if (storeCode.length > 1) {
+                setShowConfirmModal(true);
+              } else {
+                toastify("Please Enter Store Code", "error");
+              }
             }}
           >
             <ArrowForward className="theme_color fs-4" />

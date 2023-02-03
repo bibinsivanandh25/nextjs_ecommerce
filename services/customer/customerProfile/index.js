@@ -19,12 +19,14 @@ const addProfile = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+
 const updateProfile = (payload) => {
   return serviceUtil
     .put(`users/customer-profile`, payload)
     .then((res) => {
       const { data } = res && res.data;
-      return { data };
+      const msg = res?.data?.message;
+      return { data, msg };
     })
     .catch((err) => ({ err }));
 };

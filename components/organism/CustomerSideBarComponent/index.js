@@ -231,6 +231,9 @@ const CustomerSideBarComponent = ({ children }) => {
                         getSetandSubCategory(e, item);
                       }
                     }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                    }}
                     id={item.id}
                   >
                     {/* <Tooltip title={item.title}> */}
