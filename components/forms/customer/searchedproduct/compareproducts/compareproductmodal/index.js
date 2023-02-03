@@ -332,17 +332,16 @@ const CompareProductDetails = ({
   return (
     <ModalComponent
       open={showModal}
-      minWidth="65%"
       // maxWidth="80%"
       onCloseIconClick={() => {
         setShowModal(false);
       }}
-      ModalWidth="100%"
+      ModalWidth="60%"
       showFooter={false}
       showPositionedClose
       ModalTitle=""
       showCloseIcon={false}
-      minHeightClassName=""
+      minHeightClassName="mxh-75vh"
       headerBorder="none"
     >
       <Box className="">
