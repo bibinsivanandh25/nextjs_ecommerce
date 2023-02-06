@@ -123,11 +123,11 @@ const Registration = () => {
         wished: false,
       };
       await serviceUtil
-        .post(
-          `users/registration/send-otp?mobileNumber=${
-            formValues.mobile
-          }&userType=${route.pathname.split("/")[2].toUpperCase()}`
-        )
+        .post(`users/user-registration/send-otp`, {
+          mobileNumber: "6362656767",
+          userType: route.pathname.split("/")[2].toUpperCase(),
+          email: "rakeshkumarrocky77@gmail.com",
+        })
         .then((data) => {
           // if (data) {
           toastify(data.message, "success");
