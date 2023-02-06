@@ -63,7 +63,7 @@ const Notification = () => {
         className="px-3 border-bottom pb-3"
       >
         <Grid item sm={4} className="d-flex align-self-center">
-          <Typography className="h-4 fw-bold">Notifications</Typography>
+          {/* <Typography className="h-4 fw-bold">Notifications</Typography> */}
         </Grid>
         <Grid item lg={2} md={3} sm={6} className="me-2">
           <SimpleDropdownComponent placeholder="Filter by type" size="small" />

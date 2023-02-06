@@ -1,307 +1,245 @@
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { getAllCategory } from "services/customer/seeAll";
 
-const categories = [
-  {
-    id: 1,
-    categorrName: "Apparel & Clothing",
-    sets: [
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 2,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 3,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric Clothing Fabric Clothing Fabric Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    categorrName: "Apparel & Clothing",
-    sets: [
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-          "Jumpsuit",
-        ],
-      },
-    ],
-  },
-  {
-    id: 3,
-    categorrName: "Apparel & Clothing",
-    sets: [
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Jumpsuit",
-        ],
-      },
-    ],
-  },
-  {
-    id: 4,
-    categorrName: "Apparel & Clothing",
-    sets: [
-      {
-        _id: 1,
-        setName: "Common Clothing",
-        setImage:
-          "https://mrmrscart.s3.ap-south-1.amazonaws.com/APPLICATION-ASSETS/assets/img/Printed+Dress.png",
-        setSubcategories: [
-          "Bodysuit",
-          "Baby Apparel Gift Set",
-          "Clothing Set",
-          "Capris",
-          "Camisoles",
-          "Coats",
-          "Clothing Fabric",
-          "Corset",
-          "Dungarees",
-          "Harem Pants",
-          "Jeans",
-        ],
-      },
-    ],
-  },
-];
+const SeeALLCategories = () => {
+  const [categoryData, setCaregoryData] = useState([]);
+  const { supplierId } = useSelector((state) => state.customer);
+  const getCategory = async () => {
+    const { data } = await getAllCategory(supplierId);
+    if (data) {
+      setCaregoryData(data);
+    }
+  };
+  useEffect(() => {
+    getCategory();
+  }, []);
+  const [hover, setHover] = useState(null);
+  const [seeMorehover, setseeMoreHover] = useState(null);
+  const [expandObj, setExpandObj] = useState(null);
+  const router = useRouter();
 
-const returnAllCategories = () => {
-  return (
-    <>
-      {categories.map((val) => {
-        return (
-          <Box className="mt-3 border-orange border-bottom pb-4">
-            <Typography className="color-orange fw-bold">
-              {val.categorrName}
-            </Typography>
-            <Grid container spacing={1}>
-              {val.sets.map((valTwo) => {
-                return (
-                  <Grid item xs={4} className="mt-2">
-                    <Grid container columnSpacing={1}>
-                      <Grid item xs={4}>
-                        <Image src={valTwo.setImage} height="150" width="150" />
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Typography className="fs-14 fw-bold">
-                          {valTwo.setName}
+  const viewSingleCategory = () => {
+    return (
+      <Box
+        className="mt-3 border-orange border-bottom pb-4"
+        key={expandObj.mainCategoryId}
+      >
+        <Typography className="color-orange fw-bold">
+          {expandObj.mainCategoryName}
+        </Typography>
+        <Grid container spacing={1}>
+          {expandObj.categorySetList.map((valTwo) => {
+            return (
+              <Grid item md={12} className="mt-2" key={valTwo.setId}>
+                <Grid container columnSpacing={1}>
+                  <Grid item md={2}>
+                    <Image src={valTwo.setImageUrl} height={150} width={150} />
+                  </Grid>
+                  <Grid item md={10}>
+                    <Typography className="fs-14 fw-bold">
+                      {valTwo.setName}
+                    </Typography>
+
+                    <div
+                      style={{
+                        maxHeight: "40vh",
+                        flexWrap: "wrap",
+                        maxWidth: "100%",
+                        overflowX: "auto",
+                      }}
+                      className="d-flex flex-column"
+                    >
+                      {valTwo.subCategoryLists.map((valThree) => {
+                        return (
+                          <div
+                            className="d-inline cursor-pointer"
+                            style={{ width: "150px" }}
+                          >
+                            <Typography
+                              onMouseOver={() => {
+                                setHover(valThree.subCategoryId);
+                              }}
+                              onMouseOut={() => {
+                                setHover(null);
+                              }}
+                              className={`h-5 text-truncate cursor-pointer ${
+                                hover === valThree.subCategoryId
+                                  ? "text-decoration-underline"
+                                  : ""
+                              }
+                                      `}
+                              onClick={() => {
+                                router.push({
+                                  pathname: "productvariation",
+                                  query: {
+                                    subCategoryId: valThree.subCategoryId,
+                                  },
+                                });
+                              }}
+                            >
+                              {valThree.subCategoryName}
+                            </Typography>
+                          </div>
+                        );
+                      })}
+
+                      <div className="d-inline">
+                        <Typography
+                          onMouseOver={() => {
+                            setseeMoreHover(valTwo.setId);
+                          }}
+                          onMouseOut={() => {
+                            setseeMoreHover(null);
+                          }}
+                          className={`h-5 text-center  text-truncate color-orange cursor-pointer ${
+                            seeMorehover === valTwo.setId
+                              ? "text-decoration-underline"
+                              : ""
+                          }
+                                      `}
+                          onClick={() => {
+                            setExpandObj(null);
+                          }}
+                        >
+                          See Less
                         </Typography>
-                        <Grid container className="pt-1" spacing={1}>
-                          {valTwo.setSubcategories.map((valThree) => {
-                            const [hover, setHover] = useState(false);
-                            return (
-                              <Grid item xs={4}>
-                                {valThree.length <= 16 ? (
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Box>
+    );
+  };
+
+  const returnAllCategories = () => {
+    return (
+      <>
+        {categoryData.map((val) => {
+          return (
+            <Box
+              className="mt-3 border-orange border-bottom pb-4"
+              key={val.mainCategoryId}
+            >
+              <Typography className="color-orange fw-bold">
+                {val.mainCategoryName}
+              </Typography>
+              <Grid container spacing={1}>
+                {val.categorySetList.map((valTwo) => {
+                  return (
+                    <Grid
+                      item
+                      md={4}
+                      lg={4}
+                      xl={3}
+                      className="mt-2"
+                      key={valTwo.setId}
+                    >
+                      <Grid container columnSpacing={1}>
+                        <Grid item md={4} xl={3}>
+                          <Image
+                            src={valTwo.setImageUrl}
+                            height={500}
+                            width={500}
+                          />
+                        </Grid>
+                        <Grid item md={8} xl={9}>
+                          <Typography className="fs-14 fw-bold">
+                            {valTwo.setName}
+                          </Typography>
+
+                          <div
+                            style={{
+                              height: "100px",
+                              flexWrap: "wrap",
+                            }}
+                            className="d-flex flex-column"
+                          >
+                            {valTwo.subCategoryLists.map((valThree, ind) => {
+                              if (ind > 14) return null;
+                              return (
+                                <div className="d-inline cursor-pointer">
                                   <Typography
                                     onMouseOver={() => {
-                                      setHover(true);
+                                      setHover(valThree.subCategoryId);
                                     }}
                                     onMouseOut={() => {
-                                      setHover(false);
+                                      setHover(null);
                                     }}
-                                    className={`fs-12 text-truncate cursor-pointer ${
-                                      hover ? "text-decoration-underline" : ""
+                                    className={`h-5 text-truncate cursor-pointer ${
+                                      hover === valThree.subCategoryId
+                                        ? "text-decoration-underline"
+                                        : ""
                                     }
                                       `}
+                                    onClick={() => {
+                                      router.push({
+                                        pathname: "productvariation",
+                                        query: {
+                                          subCategoryId: valThree.subCategoryId,
+                                        },
+                                      });
+                                    }}
                                   >
-                                    {valThree}
+                                    {valThree.subCategoryName}
                                   </Typography>
-                                ) : (
-                                  <Tooltip title={valThree} placement="top">
-                                    <Typography
-                                      onMouseOver={() => {
-                                        setHover(true);
-                                      }}
-                                      onMouseOut={() => {
-                                        setHover(false);
-                                      }}
-                                      className={`fs-12 text-truncate cursor-pointer ${
-                                        hover ? "text-decoration-underline" : ""
-                                      }
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {valTwo.subCategoryLists.length > 14 && (
+                            <div className="d-inline">
+                              <Typography
+                                onMouseOver={() => {
+                                  setseeMoreHover(valTwo.setId);
+                                }}
+                                onMouseOut={() => {
+                                  setseeMoreHover(null);
+                                }}
+                                sx={{
+                                  textAlign: "end",
+                                }}
+                                className={`h-5 px-4 text-truncate color-orange cursor-pointer ${
+                                  seeMorehover === valTwo.setId
+                                    ? "text-decoration-underline"
+                                    : ""
+                                }
                                       `}
-                                    >
-                                      {valThree}
-                                    </Typography>
-                                  </Tooltip>
-                                )}
-                              </Grid>
-                            );
-                          })}
+                                onClick={() => {
+                                  const temp = { ...val };
+                                  temp.categorySetList = [{ ...valTwo }];
+                                  setExpandObj({ ...temp });
+                                }}
+                              >
+                                See More
+                              </Typography>
+                            </div>
+                          )}
                         </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </Box>
-        );
-      })}
-    </>
-  );
-};
+                  );
+                })}
+              </Grid>
+            </Box>
+          );
+        })}
+      </>
+    );
+  };
 
-const SeeALLCategories = () => {
-  return <Box>{returnAllCategories()}</Box>;
+  return (
+    <Box>
+      {expandObj === null ? returnAllCategories() : viewSingleCategory()}
+    </Box>
+  );
 };
 
 export default SeeALLCategories;

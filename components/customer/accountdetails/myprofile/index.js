@@ -51,6 +51,7 @@ const MyProfile = () => {
     gender: "",
     profileImage: "",
   });
+
   const [disableEdit, setdisableEdit] = useState({
     phone: false,
     phoneOtp: false,
@@ -379,7 +380,7 @@ const MyProfile = () => {
                 )}
               </Grid>
               <Grid>
-                {disableEdit.emailOtp ? (
+                {disableEdit.emailOtp && disableEdit.emailId ? (
                   <ButtonComponent
                     type="send"
                     label="Send OTP"
@@ -394,31 +395,39 @@ const MyProfile = () => {
                   <></>
                 )}
               </Grid>
-              {disableEdit.emailValidOtp && (
-                <Grid className="d-flex justify-content-start">
-                  <SimpleOtpForm
-                    otp={emailOtp}
-                    setotp={setemailOtp}
-                    handleEnter={varifyEmailOtp}
-                  />
-                </Grid>
-              )}
+              {disableEdit.emailValidOtp &&
+                disableEdit.emailId &&
+                !disableEdit.emailOtp && (
+                  <Grid className="d-flex justify-content-start">
+                    <SimpleOtpForm
+                      otp={emailOtp}
+                      setotp={setemailOtp}
+                      handleEnter={varifyEmailOtp}
+                    />
+                  </Grid>
+                )}
             </Grid>
             {/* <div>{seconds}</div> */}
-            {disableEdit.emailValidOtp && showResendBtn.email && (
-              <ButtonComponent
-                className="ms-2 fs-18"
-                label="Resend OTP"
-                onBtnClick={() => {
-                  sendEmailOtpFunction();
-                }}
-              />
-            )}
-            {disableEdit.emailValidOtp && !showResendBtn.email && (
-              <Typography className="theme_color fs-12 fw-500">
-                Please wait for a while to resend OTP
-              </Typography>
-            )}
+            {disableEdit.emailValidOtp &&
+              showResendBtn.email &&
+              disableEdit.emailId &&
+              !disableEdit.emailOtp && (
+                <ButtonComponent
+                  className="ms-2 fs-18"
+                  label="Resend OTP"
+                  onBtnClick={() => {
+                    sendEmailOtpFunction();
+                  }}
+                />
+              )}
+            {disableEdit.emailValidOtp &&
+              !showResendBtn.email &&
+              disableEdit.emailId &&
+              !disableEdit.emailOtp && (
+                <Typography className="theme_color fs-12 fw-500">
+                  Please wait for a while to resend OTP
+                </Typography>
+              )}
           </Grid>
 
           <Grid item xs={6}>
@@ -493,6 +502,7 @@ const MyProfile = () => {
               </Grid>
               <Grid>
                 {disableEdit.phoneOtp &&
+                disableEdit.phone &&
                 customerDetails?.mobileNumber?.length === 10 ? (
                   <ButtonComponent
                     type="send"
@@ -509,31 +519,39 @@ const MyProfile = () => {
                 )}
               </Grid>
 
-              {disableEdit.validOtp && (
-                <Grid className="d-flex justify-content-start">
-                  <SimpleOtpForm
-                    otp={otp}
-                    setotp={setotp}
-                    handleEnter={varifyMobileOtpFunction}
-                    OtpInputStyle="shadow-none px-2"
-                  />
-                </Grid>
-              )}
+              {disableEdit.validOtp &&
+                disableEdit.phone &&
+                !disableEdit.phoneOtp && (
+                  <Grid className="d-flex justify-content-start">
+                    <SimpleOtpForm
+                      otp={otp}
+                      setotp={setotp}
+                      handleEnter={varifyMobileOtpFunction}
+                      OtpInputStyle="shadow-none px-2"
+                    />
+                  </Grid>
+                )}
             </Grid>
-            {disableEdit.validOtp && showResendBtn.phone && (
-              <ButtonComponent
-                className="ms-2 fs-18"
-                label="Resend OTP"
-                onBtnClick={() => {
-                  getOtpFunction();
-                }}
-              />
-            )}
-            {disableEdit.validOtp && !showResendBtn.phone && (
-              <Typography className="theme_color fs-12 fw-500">
-                Please wait for a while to resend OTP
-              </Typography>
-            )}
+            {disableEdit.validOtp &&
+              showResendBtn.phone &&
+              disableEdit.phone &&
+              !disableEdit.phoneOtp && (
+                <ButtonComponent
+                  className="ms-2 fs-18"
+                  label="Resend OTP"
+                  onBtnClick={() => {
+                    getOtpFunction();
+                  }}
+                />
+              )}
+            {disableEdit.validOtp &&
+              !showResendBtn.phone &&
+              disableEdit.phone &&
+              !disableEdit.phoneOtp && (
+                <Typography className="theme_color fs-12 fw-500">
+                  Please wait for a while to resend OTP
+                </Typography>
+              )}
           </Grid>
           <Grid item xs={5}>
             <DatePickerComponent

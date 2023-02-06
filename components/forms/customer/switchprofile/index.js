@@ -33,7 +33,7 @@ const SwitchProfile = ({
   const [profileList, setProfileList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [profileName, setProfileName] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const { userId, profileId } = useSelector((state) => state.customer);
   const [addImage, setAddImage] = useState(false);
   const [img, setImg] = useState("");
@@ -78,12 +78,28 @@ const SwitchProfile = ({
       if (showMessage) toastify(err?.response?.data?.message, "error");
     }
   };
-
-  const handleSubmit = async () => {
-    if (profileName === "") {
+  const validateListname = () => {
+    let temp = null;
+    if (!profileName?.length) {
+      temp = validateMessage.field_required;
       setError(validateMessage.field_required);
+    } else if (profileName?.length > 35) {
+      temp = validateMessage.alpha_numeric_35;
+      setError(validateMessage.alpha_numeric_35);
+    } else if (profileName?.trim().length !== profileName?.length) {
+      temp = "Enter a valid name";
+      setError("Enter a valid name");
     } else {
-      setError("");
+      setError(null);
+    }
+    if (temp === null) {
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async () => {
+    const valid = validateListname();
+    if (!valid) {
       let payload = {};
       if (img !== "") {
         const imgRes = await uploadProfile(userId, img);
@@ -93,8 +109,10 @@ const SwitchProfile = ({
             profileName,
             profileImageUrl: imgRes.data,
           };
+          setError(null);
         } else {
           toastify(imgRes.err?.response?.data?.message, "error");
+          setError(null);
           return;
         }
       } else {
@@ -109,7 +127,7 @@ const SwitchProfile = ({
         toastify(data.message, "success");
         getProfiles();
         setShowModal(false);
-        setError("");
+        setError(null);
         setProfileName("");
         setAddImage(false);
         setImg("");
@@ -127,39 +145,50 @@ const SwitchProfile = ({
   };
 
   const handleProfileUpdate = async () => {
-    let payload = {};
-    if (img !== "") {
-      const imgRes = await uploadProfile(userId, img);
-      if (imgRes.data) {
+    const valid = validateListname();
+    if (!valid) {
+      let payload = {};
+      if (img !== "") {
+        const imgRes = await uploadProfile(userId, img);
+        if (imgRes.data) {
+          payload = {
+            customerId: userId,
+            profileName,
+            profileImageUrl: imgRes.data,
+            profileId: editModal.profileId,
+          };
+        } else {
+          toastify(imgRes.err?.response?.data?.message, "error");
+          return;
+        }
+      } else {
         payload = {
           customerId: userId,
           profileName,
-          profileImageUrl: imgRes.data,
+          profileImageUrl: editModal.profileImageUrl,
           profileId: editModal.profileId,
         };
-      } else {
-        toastify(imgRes.err?.response?.data?.message, "error");
-        return;
       }
-    } else {
-      payload = {
-        customerId: userId,
-        profileName,
-        profileImageUrl: editModal.profileImageUrl,
-        profileId: editModal.profileId,
-      };
-    }
-    const { data, err } = await updateProfile(payload);
-    if (data === null) {
-      getProfiles();
-      setShowModal(false);
-      setError("");
-      setProfileName("");
-      setAddImage(false);
-      setImg("");
-      seteditModal(null);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+      const { data, msg, err } = await updateProfile(payload);
+      if (data) {
+        toastify(msg, "success");
+        getProfiles();
+        dispatch(
+          storeUserInfo({
+            profileImg: data.profileImageUrl,
+            profileId: data.profileId,
+            profileName: data.profileName,
+          })
+        );
+        setShowModal(false);
+        setError(null);
+        setProfileName("");
+        setAddImage(false);
+        setImg("");
+        seteditModal(null);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
 
@@ -252,6 +281,7 @@ const SwitchProfile = ({
     <ModalComponent
       // showHeader={false}
       ModalTitle="Switch Profile"
+      titleClassName="fs-16"
       showFooter={false}
       open={showSwitchProfile}
       modalClose={() => {
@@ -396,7 +426,7 @@ const SwitchProfile = ({
         headerClassName="rounded-top bg-light-gray"
         open={showModal}
         onCloseIconClick={() => {
-          setError("");
+          setError(null);
           setProfileName("");
           setImg("");
           setAddImage(false);
@@ -484,8 +514,11 @@ const SwitchProfile = ({
                   onInputChange={(e) => {
                     setProfileName(e.target.value);
                   }}
-                  error={error !== ""}
-                  helperText={error}
+                  helperText={
+                    // eslint-disable-next-line no-nested-ternary
+                    error !== null ? error : ""
+                  }
+                  error={error !== null}
                   inputlabelshrink
                 />
                 {!addImage && (
@@ -507,7 +540,7 @@ const SwitchProfile = ({
               label="Cancel"
               variant="outlined"
               onBtnClick={() => {
-                setError("");
+                setError(null);
                 setProfileName("");
                 setImg("");
                 setAddImage(false);

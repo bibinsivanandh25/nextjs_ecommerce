@@ -378,7 +378,7 @@ function ProductDetailsCard({
             classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           >
             <div className="ms-2 me-3">
-              <RemoveRedEye className="fs-14 color-gray " />
+              <RemoveRedEye className="fs-18 color-gray " />
               <span className="h-5"> {productDetail.viewCount}</span>
             </div>
           </Tooltip>
@@ -389,7 +389,7 @@ function ProductDetailsCard({
             classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           >
             <div>
-              <AirportShuttleOutlined className="fs-14 color-gray" />
+              <AirportShuttleOutlined className="fs-18 color-gray" />
               <span className="h-5"> {productDetail.orderCount}</span>
             </div>
           </Tooltip>

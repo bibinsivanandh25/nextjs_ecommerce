@@ -265,6 +265,8 @@ const DeliveryOptionsModal = ({
           queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
           queryClient.invalidateQueries(["RECENTLYVIEWED"]);
           queryClient.refetchQueries("RECENTLYVIEWED", { force: true });
+          queryClient.invalidateQueries(["CARTCOUNT"]);
+          queryClient.refetchQueries("CARTCOUNT", { force: true });
           setModalOpen(false);
           toastify(data?.message, "success");
           getProducts();

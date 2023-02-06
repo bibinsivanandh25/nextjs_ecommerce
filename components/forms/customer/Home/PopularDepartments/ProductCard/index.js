@@ -304,7 +304,9 @@ const ProductCard = ({
             showModal={showWishListModal}
             setShowModal={setShowWishListModal}
             productId={item?.id}
+            productImage={item?.image}
             getProducts={getProducts}
+            productTitle={item.title}
           />
         ) : null}
         {showAddToCardModal && (

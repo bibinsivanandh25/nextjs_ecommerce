@@ -44,6 +44,7 @@ import { productDetails } from "features/customerSlice";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
+import ProductSkeleton from "@/forms/customer/productdetails/productskeleton";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -103,6 +104,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
   });
   const [codAvailable, setCodAvailable] = useState(false);
   const [fdrOptions, setfdrOptions] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const scrollPage = () => {
     const element = document.getElementById("MainBox");
@@ -147,7 +149,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   const [masterVariation, setMasterVariation] = useState([]);
-  const [showScroll, setShowScroll] = useState(true);
+
   const dispatch = useDispatch();
   const route = useRouter();
 
@@ -210,10 +212,10 @@ const ProductDetails = ({ isSideBarOpen }) => {
           }
         });
       });
-      showScroll && scrollPage();
-      setShowScroll(false);
+      scrollPage();
     }
     if (err) {
+      setShowError(true);
       setMasterData([]);
       setSelectedMasterData({});
       setSelectedImage("");
@@ -235,6 +237,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
   };
   const handleVariationClick = (item) => {
+    scrollPage();
     getRating(item.productVariationId);
     setMasterVariation(item.variationDetails);
     dispatch(
@@ -243,7 +246,6 @@ const ProductDetails = ({ isSideBarOpen }) => {
         variationDetails: [...item.variationDetails],
       })
     );
-    scrollPage();
     route.push({
       pathname: "/customer/productdetails",
     });
@@ -289,12 +291,18 @@ const ProductDetails = ({ isSideBarOpen }) => {
   };
   useEffect(() => {
     if (userData) {
+      scrollPage();
       getProductDetails(userData.productId, userData.variationDetails);
       // setMasterVariation(userData.variationDetails);
       getRating(userData.productId);
     }
     getMinimumCart();
     getCouponsData();
+    return () => {
+      setSelectedImage("");
+      setSelectedMasterData({});
+      setMasterData([]);
+    };
   }, [userData]);
 
   const handleImageClick = (value, ind) => {
@@ -439,722 +447,381 @@ const ProductDetails = ({ isSideBarOpen }) => {
     <Box id="MainBox" p={0.5} className="mnh-90vh">
       {!showQAPage ? (
         <>
-          {Object.keys(masterData).length ? (
-            <Box>
-              <Grid container columnSpacing={2}>
-                <Grid
-                  item
-                  lg={3.5}
-                  sm={3.5}
-                  xs={5}
-                  sx={{
-                    position: "sticky",
-                    top: 0,
-                    height: "100%",
-                    zIndex: 10,
-                  }}
-                >
-                  <Grid container spacing={1}>
-                    <Grid
-                      item
-                      md={2}
-                      p={1}
-                      rowGap={1}
-                      display="flex"
-                      direction="column"
-                      mt={0.5}
-                      className="h-100"
-                    >
-                      {selectedMasterData.variationMedia &&
-                        selectedMasterData?.variationMedia?.map(
-                          (item, index) => (
-                            <Image
-                              height={50}
-                              width={50}
-                              src={item}
-                              layout="responsive"
-                              onClick={() => {
-                                handleImageClick(item, index + 1);
-                              }}
-                              className={`border rounded cursor-pointer ${
-                                selectedImageId == index + 1 && `border-orange `
-                              }`}
-                            />
-                          )
-                        )}
-                    </Grid>
-                    <Grid item md={10}>
-                      {selectedImage !== "" && (
-                        <Box position="relative" className="h-100">
-                          <ReactImageMagnify
-                            {...{
-                              smallImage: {
-                                alt: "No Images",
-                                height: imageSize.height,
-                                width: imageSize.width,
-                                src: selectedImage,
-                              },
-                              largeImage: {
-                                src: selectedImage,
-                                width: 1200,
-                                height: 1800,
-                              },
-                              enlargedImageContainerDimensions: {
-                                width: "250%",
-                                height: "130%",
-                              },
-                            }}
-                            className="bg-white"
-                            shouldUsePositiveSpaceLens
-                            imageClassName="border rounded p-1"
-                            lensStyle={{
-                              background: "hsla(0, 0%, 100%, .3)",
-                              border: "1px solid #fff",
-                            }}
-                            enlargedImageClassName=""
-                            style={{ position: "relative" }}
-                          />
-                          <Paper
-                            style={{
-                              position: "absolute",
-                              top: "3%",
-                              right: "2.5%",
-                            }}
-                            className="border rounded-circle"
-                            padding={1}
-                          >
-                            <CustomIcon
-                              onIconClick={() => {
-                                handleCardIconClick();
-                              }}
-                              type={
-                                selectedMasterData.inWishlist
-                                  ? "heart"
-                                  : "favoriteBorderIcon"
-                              }
-                              className={
-                                selectedMasterData.inWishlist
-                                  ? "color-orange"
-                                  : ""
-                              }
-                              showColorOnHover={false}
-                            />
-                          </Paper>
-                        </Box>
-                      )}
-                    </Grid>
-                  </Grid>
-                  {couponMasterData.length ? (
-                    <Grid container marginTop={1}>
-                      <Grid item md={2} />
+          {!showError ? (
+            Object.keys(masterData).length ? (
+              <Box>
+                <Grid container columnSpacing={2}>
+                  <Grid
+                    item
+                    lg={3.5}
+                    sm={3.5}
+                    xs={5}
+                    sx={{
+                      position: "sticky",
+                      top: 0,
+                      height: "100%",
+                      zIndex: 10,
+                    }}
+                  >
+                    <Grid container spacing={1}>
+                      <Grid
+                        item
+                        md={2}
+                        p={1}
+                        rowGap={1}
+                        display="flex"
+                        direction="column"
+                        mt={0.5}
+                        className="h-100"
+                      >
+                        {selectedMasterData.variationMedia &&
+                          selectedMasterData?.variationMedia?.map(
+                            (item, index) => (
+                              <Image
+                                height={50}
+                                width={50}
+                                src={item}
+                                layout="responsive"
+                                onClick={() => {
+                                  handleImageClick(item, index + 1);
+                                }}
+                                className={`border rounded cursor-pointer ${
+                                  selectedImageId == index + 1 &&
+                                  `border-orange `
+                                }`}
+                              />
+                            )
+                          )}
+                      </Grid>
                       <Grid item md={10}>
-                        <Typography className="h-4 fw-bold">
-                          Coupon Available For This Product
-                        </Typography>
-                        <Box className="mxh-300 overflow-auto hide-scrollbar">
-                          {couponMasterData.map((item) => (
-                            <Box className="border rounded p-2 my-2">
-                              <Typography className="h-5">
-                                {item.couponAmount} Rs Discount Applicable For
-                                This Product Your Coupon Code - &nbsp;
-                                <span className="color-orange" id="MrMrsCoupon">
-                                  {item.storeCouponCode}
-                                </span>{" "}
-                                <Tooltip
-                                  placement="right-start"
-                                  title="Copy Coupon"
-                                >
-                                  <CopyAllSharp
-                                    className="fs-16"
-                                    sx={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      copyText();
-                                    }}
-                                  />
-                                </Tooltip>
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  ) : null}
-                  <Grid container marginTop={0.5}>
-                    <Grid item md={2} />
-                    <Grid item md={10}>
-                      <Typography
-                        className="h-p89 color-orange cursor-pointer"
-                        onClick={() => {
-                          setShowQAPage(true);
-                        }}
-                      >
-                        Find Answers In Product Info, Q&As, Reviews
-                      </Typography>
-                      <InputBox
-                        size="small"
-                        value={searchAnswers}
-                        placeholder="Have a Question?.. Type here"
-                        onInputChange={(e) => {
-                          setSearchAnswers(e.target.value);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.keyCode === 13) {
-                            scrollPage();
-                            setShowQAPage(true);
-                          }
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item lg={8.5} sm={8.5} xs={7} id="rightGrid">
-                  <Grid container>
-                    <Grid item md={10}>
-                      <Typography className="h-5 fw-500 color-orange">
-                        We Get You To The Product Exact Price - No Indirect
-                        Charges
-                      </Typography>
-                    </Grid>
-                    <Grid item md={1} display="flex" justifyContent="end">
-                      <RemoveRedEye className="fs-18 color-gray" />
-                      <Typography className="mx-1 h-5 color-gray">
-                        {selectedMasterData?.viewCount}
-                      </Typography>
-                    </Grid>
-                    <Grid item md={1} display="flex" justifyContent="end">
-                      <AirportShuttle className="fs-18 color-gray" />
-                      <Typography className="mx-1 h-5 color-gray">
-                        {selectedMasterData?.deliveredcount}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item md={12}>
-                      <Typography className="h-3 fw-bold">
-                        {selectedMasterData.productTitle}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Box className="d-flex mt-1">
-                    <Box>
-                      <MenuwithArrow
-                        subHeader=""
-                        Header={
-                          <Rating
-                            value={selectedMasterData.customerRatings}
-                            readOnly
-                            sx={{ color: "#e56700" }}
-                          />
-                        }
-                        onOpen={() => {}}
-                        arrowPosition="center"
-                        color="color-black"
-                      >
-                        <Box className="mnw-300">
-                          <Typography className="ms-3 fw-500 h-p89 color-orange mb-1">
-                            {ratingMasterData.globalNoOfRatings} Global Ratings
-                          </Typography>
-                          {Object.keys(ratingData).length
-                            ? Object.entries(ratingData).map((item) => (
-                                <LinearProgressBar
-                                  height={15}
-                                  leftTitle={`${item[0]}`}
-                                  rightTitle={`${item[1]}%`}
-                                  value={item[1]}
-                                />
-                              ))
-                            : null}
-                        </Box>
-                      </MenuwithArrow>
-                    </Box>
-                    <span className="fs-12 mt-1 fw-bold">
-                      {" "}
-                      {selectedMasterData.noOfRatings} Rating |&nbsp;
-                    </span>
-                    <span className="fs-12 mt-1 fw-bold">
-                      {selectedMasterData.noOfQACount} Answered Questions
-                    </span>
-                    <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
-                      Want To Sell With Us?
-                    </span>
-                  </Box>
-                  <Box>
-                    <Typography className="color-orange h-4 fw-bold">
-                      Choose Delivery options
-                    </Typography>
-                  </Box>
-                  <Grid container>
-                    <Grid item md={6}>
-                      <Grid container>
-                        <Grid item md={12}>
-                          {selectedMasterData.handPick ? (
-                            <RadiobuttonComponent
-                              size="small"
-                              label={
-                                <Typography className="">
-                                  <span className="fw-500">
-                                    {`${selectedMasterData.salePriceWithHandPick}`}
-                                  </span>
-                                  <span className="h-p89"> (HandPick)</span>
-                                </Typography>
-                              }
-                            />
-                          ) : null}
-                        </Grid>
-                        <Grid item md={12}>
-                          {selectedMasterData.storeOwnerDelivery ? (
-                            <RadiobuttonComponent
-                              size="small"
-                              label={
-                                <Typography className="">
-                                  <span className="fw-500">
-                                    {`${selectedMasterData.salePricestoreOwnerDelivery}`}
-                                  </span>
-                                  <span className="h-p89">
-                                    {" "}
-                                    (Store Owner Delivery -Minimum Cart Value ₹
-                                    {supplierDetails?.minimumOrderAmount})
-                                  </span>
-                                </Typography>
-                              }
-                            />
-                          ) : null}
-                        </Grid>
-                        <Grid item md={12}>
-                          <RadiobuttonComponent
-                            value={deliveryOption.type}
-                            isChecked={
-                              deliveryOption.type === "NOFREEDELIVERYANDRETURN"
-                            }
-                            size="small"
-                            label={
-                              <Typography className="">
-                                <span className="fw-500">
-                                  ₹{" "}
-                                  {renderSalePrice(
-                                    selectedMasterData.salePrice
-                                  )}
-                                </span>
-                                <span className="h-p89">
-                                  {" "}
-                                  (Actual Product Cost)
-                                </span>
-                              </Typography>
-                            }
-                            onRadioChange={() => {
-                              setDeliveryOption({
-                                type: "NOFREEDELIVERYANDRETURN",
-                                value: selectedMasterData.salePrice,
-                              });
-                            }}
-                          />
-                          <Typography className="h-5" marginLeft={3.5}>
-                            MRP :{" "}
-                            <span className="text-decoration-line-through fw-bold">
-                              {selectedMasterData.mrp}
-                            </span>
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                      {selectedMasterData?.youSave ? (
-                        <Box className="d-flex">
-                          <Box>
-                            <Typography className="h-5">
-                              You Save : &nbsp;
-                            </Typography>
-                          </Box>
-                          <Box>
-                            <Typography className="h-5 fw-500">
-                              {`${selectedMasterData?.youSave.split(" ")[0]} 
-                            (${selectedMasterData?.youSave.split(" ")[1]})`}
-                            </Typography>
-                            <Typography className="h-5">
-                              Inclusive Of All Taxes
-                            </Typography>
-                          </Box>
-                        </Box>
-                      ) : null}
-                      {!masterData.combined ? (
-                        <Grid container>
-                          <Grid item md={12}>
-                            <Typography className="h-4 fw-400 color-orange">
-                              Choose Forward Shipment
-                            </Typography>
-                            <Box>
-                              <RadiobuttonComponent
-                                disabled={
-                                  deliveryOption.type !==
-                                  "NOFREEDELIVERYANDRETURN"
-                                }
-                                isChecked={
-                                  selectedMasterData?.productDeliveryCharges
-                                    ?.deliveryAmount ===
-                                  nofdrOptions.deliveryCharge
-                                }
-                                value={
-                                  selectedMasterData?.productDeliveryCharges
-                                    ?.deliveryAmount
-                                }
-                                onRadioChange={() => {
-                                  setNofdrOptions({
-                                    deliveryCharge:
-                                      selectedMasterData.productDeliveryCharges
-                                        .deliveryAmount,
-                                    fastestDeliveryAmount: "",
-                                    value:
-                                      selectedMasterData.productDeliveryCharges
-                                        .deliveryAmount,
-                                  });
-                                }}
-                                size="small"
-                                label={
-                                  <Typography>
-                                    <span className="fw-500">
-                                      ₹
-                                      {
-                                        selectedMasterData
-                                          ?.productDeliveryCharges
-                                          ?.deliveryAmount
-                                      }
-                                    </span>{" "}
-                                    <span className="h-p89">
-                                      -{" "}
-                                      {
-                                        selectedMasterData
-                                          ?.productDeliveryCharges?.deliveryBy
-                                      }
-                                    </span>
-                                  </Typography>
-                                }
-                              />
-                            </Box>
-                            <Box>
-                              <RadiobuttonComponent
-                                disabled={
-                                  deliveryOption.type !==
-                                  "NOFREEDELIVERYANDRETURN"
-                                }
-                                isChecked={
-                                  selectedMasterData?.productDeliveryCharges
-                                    ?.fastestDeliveryAmount ===
-                                  nofdrOptions.fastestDeliveryAmount
-                                }
-                                value={
-                                  selectedMasterData?.productDeliveryCharges
-                                    ?.deliveryAmount
-                                }
-                                onRadioChange={() => {
-                                  setNofdrOptions({
-                                    deliveryCharge: "",
-                                    fastestDeliveryAmount:
-                                      selectedMasterData?.productDeliveryCharges
-                                        ?.fastestDeliveryAmount,
-                                    value:
-                                      selectedMasterData?.productDeliveryCharges
-                                        ?.fastestDeliveryAmount,
-                                  });
-                                }}
-                                size="small"
-                                label={
-                                  <Typography>
-                                    <span className="fw-500">
-                                      ₹
-                                      {
-                                        selectedMasterData
-                                          ?.productDeliveryCharges
-                                          ?.fastestDeliveryAmount
-                                      }{" "}
-                                    </span>{" "}
-                                    <span className="h-p89">
-                                      -{" "}
-                                      {
-                                        selectedMasterData
-                                          ?.productDeliveryCharges
-                                          ?.fastestDeliveryBy
-                                      }
-                                    </span>
-                                  </Typography>
-                                }
-                              />
-                            </Box>
-                          </Grid>
-                          <Grid item md={12}>
-                            <CheckBoxComponent
-                              isDisabled={
-                                deliveryOption.type !==
-                                "NOFREEDELIVERYANDRETURN"
-                              }
-                              label={
-                                <Typography className="h-4 fw-400 color-orange">
-                                  Choose Return Shipment
-                                </Typography>
-                              }
-                              isChecked={chooseReturn}
-                              checkBoxClick={() => {
-                                setNofdrReturnOption({
-                                  returnAmount: !chooseReturn
-                                    ? selectedMasterData?.productReturnCharges
-                                        ?.returnAmount
-                                    : "",
-                                  fastReturnAmount: "",
-                                  value: !chooseReturn
-                                    ? selectedMasterData?.productReturnCharges
-                                        ?.returnAmount
-                                    : 0,
-                                });
-                                setChooseReturn(!chooseReturn);
+                        {selectedImage !== "" && (
+                          <Box position="relative" className="h-100">
+                            <ReactImageMagnify
+                              {...{
+                                smallImage: {
+                                  alt: "No Images",
+                                  height: imageSize.height,
+                                  width: imageSize.width,
+                                  src: selectedImage,
+                                },
+                                largeImage: {
+                                  src: selectedImage,
+                                  width: 1200,
+                                  height: 1800,
+                                },
+                                enlargedImageContainerDimensions: {
+                                  width: "250%",
+                                  height: "130%",
+                                },
                               }}
+                              className="bg-white"
+                              shouldUsePositiveSpaceLens
+                              imageClassName="border rounded p-1"
+                              lensStyle={{
+                                background: "hsla(0, 0%, 100%, .3)",
+                                border: "1px solid #fff",
+                              }}
+                              enlargedImageClassName=""
+                              style={{ position: "relative" }}
                             />
-                            <Box>
-                              <RadiobuttonComponent
-                                value={
-                                  selectedMasterData?.productReturnCharges
-                                    ?.returnAmount
-                                }
-                                isChecked={
-                                  selectedMasterData?.productReturnCharges
-                                    ?.returnAmount ===
-                                  nofdrReturnOption.returnAmount
-                                }
-                                onRadioChange={() => {
-                                  setNofdrReturnOption({
-                                    returnAmount:
-                                      selectedMasterData?.productReturnCharges
-                                        ?.returnAmount,
-                                    fastReturnAmount: "",
-                                    value:
-                                      selectedMasterData?.productReturnCharges
-                                        ?.returnAmount,
-                                  });
-                                }}
-                                disabled={!chooseReturn}
-                                size="small"
-                                label={
-                                  <Typography
-                                    className={chooseReturn ? "" : "color-gray"}
-                                  >
-                                    <span className="fw-500">
-                                      ₹
-                                      {
-                                        selectedMasterData?.productReturnCharges
-                                          ?.returnAmount
-                                      }{" "}
-                                    </span>{" "}
-                                    <span className="h-p89">
-                                      -{" "}
-                                      {
-                                        selectedMasterData?.productReturnCharges
-                                          ?.deliveryBy
-                                      }
-                                    </span>
-                                  </Typography>
-                                }
-                              />
-                            </Box>
-                            <Box>
-                              <RadiobuttonComponent
-                                value={
-                                  selectedMasterData?.productReturnCharges
-                                    ?.fastestReturnAmount
-                                }
-                                isChecked={
-                                  selectedMasterData?.productReturnCharges
-                                    ?.fastestReturnAmount ===
-                                  nofdrReturnOption.fastReturnAmount
-                                }
-                                onRadioChange={() => {
-                                  setNofdrReturnOption({
-                                    returnAmount: "",
-                                    fastReturnAmount:
-                                      selectedMasterData?.productReturnCharges
-                                        ?.fastestReturnAmount,
-                                    value:
-                                      selectedMasterData?.productReturnCharges
-                                        ?.fastestReturnAmount,
-                                  });
-                                }}
-                                disabled={!chooseReturn}
-                                size="small"
-                                label={
-                                  <Typography
-                                    className={chooseReturn ? "" : "color-gray"}
-                                  >
-                                    <span className="fw-500">
-                                      ₹
-                                      {
-                                        selectedMasterData?.productReturnCharges
-                                          ?.fastestReturnAmount
-                                      }{" "}
-                                    </span>{" "}
-                                    <span className="h-p89">
-                                      -{" "}
-                                      {
-                                        selectedMasterData?.productReturnCharges
-                                          ?.fastestDeliveryBy
-                                      }
-                                    </span>
-                                  </Typography>
-                                }
-                              />
-                            </Box>
-                          </Grid>
-                          <Grid item xs={10}>
-                            <div
-                              className="d-flex bg-white justify-content-between"
+                            <Paper
                               style={{
-                                border: "1px solid black",
-                                borderRadius: "3px",
+                                position: "absolute",
+                                top: "3%",
+                                right: "2.5%",
                               }}
+                              className="border rounded-circle"
+                              padding={1}
                             >
-                              <input
-                                className="p-1 w-100 bg-white"
-                                placeholder="Enter Coupon Code"
-                                style={{
-                                  background: "#fae1cc",
-                                  outline: "none",
-                                  border: "none",
-                                  borderRadius: "3px",
+                              <CustomIcon
+                                onIconClick={() => {
+                                  handleCardIconClick();
                                 }}
+                                type={
+                                  selectedMasterData.inWishlist
+                                    ? "heart"
+                                    : "favoriteBorderIcon"
+                                }
+                                className={
+                                  selectedMasterData.inWishlist
+                                    ? "color-orange"
+                                    : ""
+                                }
+                                showColorOnHover={false}
                               />
-                              <Box
-                                margin={0.4}
-                                borderRadius={1}
-                                className="d-flex bg-orange px-3 align-items-center cursor-pointer h-5"
-                              >
-                                <Typography className="h-5 cursor-pointer color-white fw-bold">
-                                  Apply
+                            </Paper>
+                          </Box>
+                        )}
+                      </Grid>
+                    </Grid>
+                    {couponMasterData.length ? (
+                      <Grid container marginTop={1}>
+                        <Grid item md={2} />
+                        <Grid item md={10}>
+                          <Typography className="h-4 fw-bold">
+                            Coupon Available For This Product
+                          </Typography>
+                          <Box className="mxh-300 overflow-auto hide-scrollbar">
+                            {couponMasterData.map((item) => (
+                              <Box className="border rounded p-2 my-2">
+                                <Typography className="h-5">
+                                  {item.couponAmount} Rs Discount Applicable For
+                                  This Product Your Coupon Code - &nbsp;
+                                  <span
+                                    className="color-orange"
+                                    id="MrMrsCoupon"
+                                  >
+                                    {item.storeCouponCode}
+                                  </span>{" "}
+                                  <Tooltip
+                                    placement="right-start"
+                                    title="Copy Coupon"
+                                  >
+                                    <CopyAllSharp
+                                      className="fs-16"
+                                      sx={{ cursor: "pointer" }}
+                                      onClick={() => {
+                                        copyText();
+                                      }}
+                                    />
+                                  </Tooltip>
                                 </Typography>
                               </Box>
-                            </div>
-                          </Grid>
+                            ))}
+                          </Box>
                         </Grid>
-                      ) : null}
-                      <Grid container md={12} columnGap={2} mt={1}>
-                        {selectedMasterData.codAvailable ? (
-                          <Grid item md={2}>
-                            <Box className="d-center">
-                              <TbTruckDelivery size="40px" color="#E56700" />
-                            </Box>
-                            <Typography className="text-center h-5  cursor-pointer">
-                              Pay On Delivery
-                            </Typography>
-                          </Grid>
-                        ) : null}
-                        {selectedMasterData.warrantyAvailable ? (
-                          <Grid item md={2} mt={0.6}>
-                            <Box className="d-center">
-                              <BsShieldCheck size="35px" color="#E56700" />
-                            </Box>
-                            <Typography className="text-center h-5 cursor-pointer">
-                              {selectedMasterData.warrantyPeriod} Year Warranty
-                            </Typography>
-                          </Grid>
-                        ) : null}
+                      </Grid>
+                    ) : null}
+                    <Grid container marginTop={0.5}>
+                      <Grid item md={2} />
+                      <Grid item md={10}>
+                        <Typography
+                          className="h-p89 color-orange cursor-pointer"
+                          onClick={() => {
+                            setShowQAPage(true);
+                          }}
+                        >
+                          Find Answers In Product Info, Q&As, Reviews
+                        </Typography>
+                        <InputBox
+                          size="small"
+                          value={searchAnswers}
+                          placeholder="Have a Question?.. Type here"
+                          onInputChange={(e) => {
+                            setSearchAnswers(e.target.value);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.keyCode === 13) {
+                              scrollPage();
+                              setShowQAPage(true);
+                            }
+                          }}
+                        />
                       </Grid>
                     </Grid>
-                    <Grid item md={6}>
-                      <Grid container>
-                        {selectedMasterData.fdr && !masterData.combined ? (
+                  </Grid>
+                  <Grid item lg={8.5} sm={8.5} xs={7} id="rightGrid">
+                    <Grid container>
+                      <Grid item md={10}>
+                        <Typography className="h-5 fw-500 color-orange">
+                          We Get You To The Product Exact Price - No Indirect
+                          Charges
+                        </Typography>
+                      </Grid>
+                      <Grid item md={1} display="flex" justifyContent="end">
+                        <RemoveRedEye className="fs-18 color-gray" />
+                        <Typography className="mx-1 h-5 color-gray">
+                          {selectedMasterData?.viewCount}
+                        </Typography>
+                      </Grid>
+                      <Grid item md={1} display="flex" justifyContent="end">
+                        <AirportShuttle className="fs-18 color-gray" />
+                        <Typography className="mx-1 h-5 color-gray">
+                          {selectedMasterData?.deliveredcount}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item md={12}>
+                        <Typography className="h-3 fw-bold">
+                          {selectedMasterData.productTitle}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Box className="d-flex mt-1">
+                      <Box>
+                        <MenuwithArrow
+                          subHeader=""
+                          Header={
+                            <Rating
+                              value={selectedMasterData.customerRatings}
+                              readOnly
+                              sx={{ color: "#e56700" }}
+                            />
+                          }
+                          onOpen={() => {}}
+                          arrowPosition="center"
+                          color="color-black"
+                        >
+                          <Box className="mnw-300">
+                            <Typography className="ms-3 fw-500 h-p89 color-orange mb-1">
+                              {ratingMasterData.globalNoOfRatings} Global
+                              Ratings
+                            </Typography>
+                            {Object.keys(ratingData).length
+                              ? Object.entries(ratingData).map((item) => (
+                                  <LinearProgressBar
+                                    height={15}
+                                    leftTitle={`${item[0]}`}
+                                    rightTitle={`${item[1]}%`}
+                                    value={item[1]}
+                                  />
+                                ))
+                              : null}
+                          </Box>
+                        </MenuwithArrow>
+                      </Box>
+                      <span className="fs-12 mt-1 fw-bold">
+                        {" "}
+                        {selectedMasterData.noOfRatings} Rating |&nbsp;
+                      </span>
+                      <span className="fs-12 mt-1 fw-bold">
+                        {selectedMasterData.noOfQACount} Answered Questions
+                      </span>
+                      <span className="fs-12 mt-1 ms-3 color-blue text-decoration-underline cursor-pointer">
+                        Want To Sell With Us?
+                      </span>
+                    </Box>
+                    <Box>
+                      <Typography className="color-orange h-4 fw-bold">
+                        Choose Delivery options
+                      </Typography>
+                    </Box>
+                    <Grid container>
+                      <Grid item md={6}>
+                        <Grid container>
+                          <Grid item md={12}>
+                            {selectedMasterData.handPick ? (
+                              <RadiobuttonComponent
+                                size="small"
+                                label={
+                                  <Typography className="">
+                                    <span className="fw-500">
+                                      {`${selectedMasterData.salePriceWithHandPick}`}
+                                    </span>
+                                    <span className="h-p89"> (HandPick)</span>
+                                  </Typography>
+                                }
+                              />
+                            ) : null}
+                          </Grid>
+                          <Grid item md={12}>
+                            {selectedMasterData.storeOwnerDelivery ? (
+                              <RadiobuttonComponent
+                                size="small"
+                                label={
+                                  <Typography className="">
+                                    <span className="fw-500">
+                                      {`${selectedMasterData.salePricestoreOwnerDelivery}`}
+                                    </span>
+                                    <span className="h-p89">
+                                      {" "}
+                                      (Store Owner Delivery -Minimum Cart Value
+                                      ₹{supplierDetails?.minimumOrderAmount})
+                                    </span>
+                                  </Typography>
+                                }
+                              />
+                            ) : null}
+                          </Grid>
                           <Grid item md={12}>
                             <RadiobuttonComponent
                               value={deliveryOption.type}
                               isChecked={
-                                deliveryOption.type === "FREEDELIVERYANDRETURN"
+                                deliveryOption.type ===
+                                "NOFREEDELIVERYANDRETURN"
                               }
-                              onRadioChange={() => {
-                                setfdrOptions(0);
-                                setDeliveryOption({
-                                  type: "FREEDELIVERYANDRETURN",
-                                  value: selectedMasterData.salePriceWithFDR,
-                                });
-                              }}
                               size="small"
                               label={
-                                <Typography>
+                                <Typography className="">
                                   <span className="fw-500">
                                     ₹{" "}
                                     {renderSalePrice(
-                                      selectedMasterData?.salePriceWithFDR
-                                    )}{" "}
-                                  </span>{" "}
+                                      selectedMasterData.salePrice
+                                    )}
+                                  </span>
                                   <span className="h-p89">
-                                    (With Free Delivery & Return)
+                                    {" "}
+                                    (No Free Delivery & Return)
                                   </span>
                                 </Typography>
                               }
+                              onRadioChange={() => {
+                                setDeliveryOption({
+                                  type: "NOFREEDELIVERYANDRETURN",
+                                  value: selectedMasterData.salePrice,
+                                });
+                              }}
                             />
                             <Typography className="h-5" marginLeft={3.5}>
                               MRP :{" "}
-                              <span className="text-decoration-line-through fw-500">
+                              <span className="text-decoration-line-through fw-bold">
                                 {selectedMasterData.mrp}
                               </span>
                             </Typography>
-                            {selectedMasterData?.youSaveFDR ? (
-                              <Box className="d-flex">
-                                <Box>
-                                  <Typography className="h-5">
-                                    You Save : &nbsp;
-                                  </Typography>
-                                </Box>
-                                <Box>
-                                  <Typography className="h-5 fw-500">
-                                    {` ${
-                                      selectedMasterData?.youSaveFDR.split(
-                                        " "
-                                      )[0]
-                                    } 
-                            (${selectedMasterData?.youSaveFDR.split(" ")[1]})`}
-                                  </Typography>
-                                  <Typography className="h-5">
-                                    Inclusive Of All Taxes
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            ) : null}
-                            <Grid item md={12} mt={0.5}>
+                          </Grid>
+                        </Grid>
+                        {selectedMasterData?.youSave ? (
+                          <Box className="d-flex">
+                            <Box>
+                              <Typography className="h-5">
+                                You Save : &nbsp;
+                              </Typography>
+                            </Box>
+                            <Box>
+                              <Typography className="h-5 fw-500">
+                                {`${selectedMasterData?.youSave.split(" ")[0]} 
+                            (${selectedMasterData?.youSave.split(" ")[1]})`}
+                              </Typography>
+                              <Typography className="h-5">
+                                Inclusive Of All Taxes
+                              </Typography>
+                            </Box>
+                          </Box>
+                        ) : null}
+                        {!masterData.combined ? (
+                          <Grid container>
+                            <Grid item md={12}>
                               <Typography className="h-4 fw-400 color-orange">
-                                Choose Delivery Options
+                                Choose Forward Shipment
                               </Typography>
                               <Box>
                                 <RadiobuttonComponent
                                   disabled={
                                     deliveryOption.type !==
-                                    "FREEDELIVERYANDRETURN"
-                                  }
-                                  isChecked={fdrOptions === 0}
-                                  value={fdrOptions}
-                                  onRadioChange={() => {
-                                    setfdrOptions(0);
-                                  }}
-                                  size="small"
-                                  label={
-                                    <Typography className="h-p89">
-                                      Free{" "}
-                                      {
-                                        selectedMasterData?.productFreeDelivery
-                                          ?.deliveryBy
-                                      }
-                                    </Typography>
-                                  }
-                                />
-                              </Box>
-                              <Box>
-                                <RadiobuttonComponent
-                                  disabled={
-                                    deliveryOption.type !==
-                                    "FREEDELIVERYANDRETURN"
+                                    "NOFREEDELIVERYANDRETURN"
                                   }
                                   isChecked={
-                                    fdrOptions ===
-                                    selectedMasterData?.productFreeDelivery
-                                      ?.fastestReturnAmount
+                                    selectedMasterData?.productDeliveryCharges
+                                      ?.deliveryAmount ===
+                                    nofdrOptions.deliveryCharge
                                   }
-                                  value={fdrOptions}
+                                  value={
+                                    selectedMasterData?.productDeliveryCharges
+                                      ?.deliveryAmount
+                                  }
                                   onRadioChange={() => {
-                                    setfdrOptions(
-                                      selectedMasterData?.productFreeDelivery
-                                        ?.fastestReturnAmount
-                                    );
+                                    setNofdrOptions({
+                                      deliveryCharge:
+                                        selectedMasterData
+                                          .productDeliveryCharges
+                                          .deliveryAmount,
+                                      fastestDeliveryAmount: "",
+                                      value:
+                                        selectedMasterData
+                                          .productDeliveryCharges
+                                          .deliveryAmount,
+                                    });
                                   }}
                                   size="small"
                                   label={
@@ -1163,15 +830,65 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                         ₹
                                         {
                                           selectedMasterData
-                                            ?.productFreeDelivery
-                                            ?.fastestReturnAmount
+                                            ?.productDeliveryCharges
+                                            ?.deliveryAmount
+                                        }
+                                      </span>{" "}
+                                      <span className="h-p89">
+                                        -{" "}
+                                        {
+                                          selectedMasterData
+                                            ?.productDeliveryCharges?.deliveryBy
+                                        }
+                                      </span>
+                                    </Typography>
+                                  }
+                                />
+                              </Box>
+                              <Box>
+                                <RadiobuttonComponent
+                                  disabled={
+                                    deliveryOption.type !==
+                                    "NOFREEDELIVERYANDRETURN"
+                                  }
+                                  isChecked={
+                                    selectedMasterData?.productDeliveryCharges
+                                      ?.fastestDeliveryAmount ===
+                                    nofdrOptions.fastestDeliveryAmount
+                                  }
+                                  value={
+                                    selectedMasterData?.productDeliveryCharges
+                                      ?.deliveryAmount
+                                  }
+                                  onRadioChange={() => {
+                                    setNofdrOptions({
+                                      deliveryCharge: "",
+                                      fastestDeliveryAmount:
+                                        selectedMasterData
+                                          ?.productDeliveryCharges
+                                          ?.fastestDeliveryAmount,
+                                      value:
+                                        selectedMasterData
+                                          ?.productDeliveryCharges
+                                          ?.fastestDeliveryAmount,
+                                    });
+                                  }}
+                                  size="small"
+                                  label={
+                                    <Typography>
+                                      <span className="fw-500">
+                                        ₹
+                                        {
+                                          selectedMasterData
+                                            ?.productDeliveryCharges
+                                            ?.fastestDeliveryAmount
                                         }{" "}
                                       </span>{" "}
                                       <span className="h-p89">
                                         -{" "}
                                         {
                                           selectedMasterData
-                                            ?.productFreeDelivery
+                                            ?.productDeliveryCharges
                                             ?.fastestDeliveryBy
                                         }
                                       </span>
@@ -1179,121 +896,433 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   }
                                 />
                               </Box>
-                              {selectedMasterData.codAvailable ? (
+                            </Grid>
+                            <Grid item md={12}>
+                              <CheckBoxComponent
+                                isDisabled={
+                                  deliveryOption.type !==
+                                  "NOFREEDELIVERYANDRETURN"
+                                }
+                                label={
+                                  <Typography className="h-4 fw-400 color-orange">
+                                    Choose Return Shipment
+                                  </Typography>
+                                }
+                                isChecked={chooseReturn}
+                                checkBoxClick={() => {
+                                  setNofdrReturnOption({
+                                    returnAmount: !chooseReturn
+                                      ? selectedMasterData?.productReturnCharges
+                                          ?.returnAmount
+                                      : "",
+                                    fastReturnAmount: "",
+                                    value: !chooseReturn
+                                      ? selectedMasterData?.productReturnCharges
+                                          ?.returnAmount
+                                      : 0,
+                                  });
+                                  setChooseReturn(!chooseReturn);
+                                }}
+                              />
+                              <Box>
+                                <RadiobuttonComponent
+                                  value={
+                                    selectedMasterData?.productReturnCharges
+                                      ?.returnAmount
+                                  }
+                                  isChecked={
+                                    selectedMasterData?.productReturnCharges
+                                      ?.returnAmount ===
+                                    nofdrReturnOption.returnAmount
+                                  }
+                                  onRadioChange={() => {
+                                    setNofdrReturnOption({
+                                      returnAmount:
+                                        selectedMasterData?.productReturnCharges
+                                          ?.returnAmount,
+                                      fastReturnAmount: "",
+                                      value:
+                                        selectedMasterData?.productReturnCharges
+                                          ?.returnAmount,
+                                    });
+                                  }}
+                                  disabled={!chooseReturn}
+                                  size="small"
+                                  label={
+                                    <Typography
+                                      className={
+                                        chooseReturn ? "" : "color-gray"
+                                      }
+                                    >
+                                      <span className="fw-500">
+                                        ₹
+                                        {
+                                          selectedMasterData
+                                            ?.productReturnCharges?.returnAmount
+                                        }{" "}
+                                      </span>{" "}
+                                      <span className="h-p89">
+                                        -{" "}
+                                        {
+                                          selectedMasterData
+                                            ?.productReturnCharges?.deliveryBy
+                                        }
+                                      </span>
+                                    </Typography>
+                                  }
+                                />
+                              </Box>
+                              <Box>
+                                <RadiobuttonComponent
+                                  value={
+                                    selectedMasterData?.productReturnCharges
+                                      ?.fastestReturnAmount
+                                  }
+                                  isChecked={
+                                    selectedMasterData?.productReturnCharges
+                                      ?.fastestReturnAmount ===
+                                    nofdrReturnOption.fastReturnAmount
+                                  }
+                                  onRadioChange={() => {
+                                    setNofdrReturnOption({
+                                      returnAmount: "",
+                                      fastReturnAmount:
+                                        selectedMasterData?.productReturnCharges
+                                          ?.fastestReturnAmount,
+                                      value:
+                                        selectedMasterData?.productReturnCharges
+                                          ?.fastestReturnAmount,
+                                    });
+                                  }}
+                                  disabled={!chooseReturn}
+                                  size="small"
+                                  label={
+                                    <Typography
+                                      className={
+                                        chooseReturn ? "" : "color-gray"
+                                      }
+                                    >
+                                      <span className="fw-500">
+                                        ₹
+                                        {
+                                          selectedMasterData
+                                            ?.productReturnCharges
+                                            ?.fastestReturnAmount
+                                        }{" "}
+                                      </span>{" "}
+                                      <span className="h-p89">
+                                        -{" "}
+                                        {
+                                          selectedMasterData
+                                            ?.productReturnCharges
+                                            ?.fastestDeliveryBy
+                                        }
+                                      </span>
+                                    </Typography>
+                                  }
+                                />
+                              </Box>
+                            </Grid>
+                            <Grid item xs={10}>
+                              <div
+                                className="d-flex bg-white justify-content-between"
+                                style={{
+                                  border: "1px solid black",
+                                  borderRadius: "3px",
+                                }}
+                              >
+                                <input
+                                  className="p-1 w-100 bg-white"
+                                  placeholder="Enter Coupon Code"
+                                  style={{
+                                    background: "#fae1cc",
+                                    outline: "none",
+                                    border: "none",
+                                    borderRadius: "3px",
+                                  }}
+                                />
+                                <Box
+                                  margin={0.4}
+                                  borderRadius={1}
+                                  className="d-flex bg-orange px-3 align-items-center cursor-pointer h-5"
+                                >
+                                  <Typography className="h-5 cursor-pointer color-white fw-bold">
+                                    Apply
+                                  </Typography>
+                                </Box>
+                              </div>
+                            </Grid>
+                          </Grid>
+                        ) : null}
+                        <Grid container md={12} columnGap={2} mt={1}>
+                          {selectedMasterData.codAvailable ? (
+                            <Grid item md={2}>
+                              <Box className="d-center">
+                                <TbTruckDelivery size="40px" color="#E56700" />
+                              </Box>
+                              <Typography className="text-center h-5  cursor-pointer">
+                                Pay On Delivery
+                              </Typography>
+                            </Grid>
+                          ) : null}
+                          {selectedMasterData.warrantyAvailable ? (
+                            <Grid item md={2} mt={0.6}>
+                              <Box className="d-center">
+                                <BsShieldCheck size="35px" color="#E56700" />
+                              </Box>
+                              <Typography className="text-center h-5 cursor-pointer">
+                                {selectedMasterData.warrantyPeriod} Year
+                                Warranty
+                              </Typography>
+                            </Grid>
+                          ) : null}
+                        </Grid>
+                      </Grid>
+                      <Grid item md={6}>
+                        <Grid container>
+                          {selectedMasterData.fdr && !masterData.combined ? (
+                            <Grid item md={12}>
+                              <RadiobuttonComponent
+                                value={deliveryOption.type}
+                                isChecked={
+                                  deliveryOption.type ===
+                                  "FREEDELIVERYANDRETURN"
+                                }
+                                onRadioChange={() => {
+                                  setfdrOptions(0);
+                                  setDeliveryOption({
+                                    type: "FREEDELIVERYANDRETURN",
+                                    value: selectedMasterData.salePriceWithFDR,
+                                  });
+                                }}
+                                size="small"
+                                label={
+                                  <Typography>
+                                    <span className="fw-500">
+                                      ₹{" "}
+                                      {renderSalePrice(
+                                        selectedMasterData?.salePriceWithFDR
+                                      )}{" "}
+                                    </span>{" "}
+                                    <span className="h-p89">
+                                      (With Free Delivery & Return)
+                                    </span>
+                                  </Typography>
+                                }
+                              />
+                              <Typography className="h-5" marginLeft={3.5}>
+                                MRP :{" "}
+                                <span className="text-decoration-line-through fw-500">
+                                  {selectedMasterData.mrp}
+                                </span>
+                              </Typography>
+                              {selectedMasterData?.youSaveFDR ? (
+                                <Box className="d-flex">
+                                  <Box>
+                                    <Typography className="h-5">
+                                      You Save : &nbsp;
+                                    </Typography>
+                                  </Box>
+                                  <Box>
+                                    <Typography className="h-5 fw-500">
+                                      {` ${
+                                        selectedMasterData?.youSaveFDR.split(
+                                          " "
+                                        )[0]
+                                      } 
+                            (${selectedMasterData?.youSaveFDR.split(" ")[1]})`}
+                                    </Typography>
+                                    <Typography className="h-5">
+                                      Inclusive Of All Taxes
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              ) : null}
+                              <Grid item md={12} mt={0.5}>
+                                <Typography className="h-4 fw-400 color-orange">
+                                  Choose Delivery Options
+                                </Typography>
                                 <Box>
-                                  <CheckBoxComponent
-                                    isChecked={codAvailable}
-                                    checkBoxClick={() =>
-                                      setCodAvailable(!codAvailable)
+                                  <RadiobuttonComponent
+                                    disabled={
+                                      deliveryOption.type !==
+                                      "FREEDELIVERYANDRETURN"
                                     }
+                                    isChecked={fdrOptions === 0}
+                                    value={fdrOptions}
+                                    onRadioChange={() => {
+                                      setfdrOptions(0);
+                                    }}
+                                    size="small"
+                                    label={
+                                      <Typography className="h-p89">
+                                        Free{" "}
+                                        {
+                                          selectedMasterData
+                                            ?.productFreeDelivery?.deliveryBy
+                                        }
+                                      </Typography>
+                                    }
+                                  />
+                                </Box>
+                                <Box>
+                                  <RadiobuttonComponent
+                                    disabled={
+                                      deliveryOption.type !==
+                                      "FREEDELIVERYANDRETURN"
+                                    }
+                                    isChecked={
+                                      fdrOptions ===
+                                      selectedMasterData?.productFreeDelivery
+                                        ?.fastestReturnAmount
+                                    }
+                                    value={fdrOptions}
+                                    onRadioChange={() => {
+                                      setfdrOptions(
+                                        selectedMasterData?.productFreeDelivery
+                                          ?.fastestReturnAmount
+                                      );
+                                    }}
+                                    size="small"
                                     label={
                                       <Typography>
-                                        <span className="fw-500">COD </span>
+                                        <span className="fw-500">
+                                          ₹
+                                          {
+                                            selectedMasterData
+                                              ?.productFreeDelivery
+                                              ?.fastestReturnAmount
+                                          }{" "}
+                                        </span>{" "}
                                         <span className="h-p89">
                                           -{" "}
                                           {
                                             selectedMasterData
-                                              ?.productFreeDelivery?.codBy
+                                              ?.productFreeDelivery
+                                              ?.fastestDeliveryBy
                                           }
                                         </span>
                                       </Typography>
                                     }
-                                    size="medium"
-                                    showIcon
-                                    varient="filled"
                                   />
                                 </Box>
-                              ) : null}
+                                {selectedMasterData.codAvailable ? (
+                                  <Box>
+                                    <CheckBoxComponent
+                                      isChecked={codAvailable}
+                                      checkBoxClick={() =>
+                                        setCodAvailable(!codAvailable)
+                                      }
+                                      label={
+                                        <Typography>
+                                          <span className="fw-500">COD </span>
+                                          <span className="h-p89">
+                                            -{" "}
+                                            {
+                                              selectedMasterData
+                                                ?.productFreeDelivery?.codBy
+                                            }
+                                          </span>
+                                        </Typography>
+                                      }
+                                      size="medium"
+                                      showIcon
+                                      varient="filled"
+                                    />
+                                  </Box>
+                                ) : null}
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        ) : null}
-                        <Grid item md={12} mt={1}>
-                          <Typography
-                            className={`${
-                              selectedMasterData.instock
-                                ? "color-light-green"
-                                : "color-red"
-                            } h-5 fw-bold`}
-                          >
-                            {selectedMasterData.instock
-                              ? "In Stock"
-                              : "Out Of Stock"}
-                          </Typography>
-                          <Typography className="h-5 my-1">
-                            Sold By{" "}
-                            <span className="h-5 color-orange">
-                              {supplierDetails.supplierStoreName}
-                            </span>
-                          </Typography>
-                          {!masterData.combined ? (
-                            <Box>
-                              <Typography className="color-orange h-p89">
-                                Enter Pincode & Check If Its Deliverable/Not
-                              </Typography>
-                              <Grid container marginY={0.5}>
-                                <Grid item xs={10}>
-                                  <div
-                                    className="d-flex bg-white justify-content-between"
-                                    style={{
-                                      border: "1px solid black",
-                                      borderRadius: "3px",
-                                    }}
-                                  >
-                                    <input
-                                      className="p-1 w-100 bg-white"
-                                      placeholder="Enter Pincode"
+                          ) : null}
+                          <Grid item md={12} mt={1}>
+                            <Typography
+                              className={`${
+                                selectedMasterData.instock
+                                  ? "color-light-green"
+                                  : "color-red"
+                              } h-5 fw-bold`}
+                            >
+                              {selectedMasterData.instock
+                                ? "In Stock"
+                                : "Out Of Stock"}
+                            </Typography>
+                            <Typography className="h-5 my-1">
+                              Sold By{" "}
+                              <span className="h-5 color-orange">
+                                {supplierDetails.supplierStoreName}
+                              </span>
+                            </Typography>
+                            {!masterData.combined ? (
+                              <Box>
+                                <Typography className="color-orange h-p89">
+                                  Enter Pincode & Check If Its Deliverable/Not
+                                </Typography>
+                                <Grid container marginY={0.5}>
+                                  <Grid item xs={10}>
+                                    <div
+                                      className="d-flex bg-white justify-content-between"
                                       style={{
-                                        background: "#fae1cc",
-                                        outline: "none",
-                                        border: "none",
+                                        border: "1px solid black",
                                         borderRadius: "3px",
                                       }}
-                                    />
-                                    <Box
-                                      margin={0.4}
-                                      borderRadius={1}
-                                      className="d-flex bg-orange px-3 align-items-center cursor-pointer h-5"
                                     >
-                                      <Typography className="h-5 cursor-pointer color-white fw-bold">
-                                        Check
-                                      </Typography>
-                                    </Box>
-                                  </div>
+                                      <input
+                                        className="p-1 w-100 bg-white"
+                                        placeholder="Enter Pincode"
+                                        style={{
+                                          background: "#fae1cc",
+                                          outline: "none",
+                                          border: "none",
+                                          borderRadius: "3px",
+                                        }}
+                                      />
+                                      <Box
+                                        margin={0.4}
+                                        borderRadius={1}
+                                        className="d-flex bg-orange px-3 align-items-center cursor-pointer h-5"
+                                      >
+                                        <Typography className="h-5 cursor-pointer color-white fw-bold">
+                                          Check
+                                        </Typography>
+                                      </Box>
+                                    </div>
+                                  </Grid>
                                 </Grid>
-                              </Grid>
-                              <Grid item md={12}>
-                                <>
-                                  <Typography className="mt-2">
-                                    <span className="fw-bold">
-                                      ₹{" "}
-                                      {deliveryOption.type ===
-                                      "NOFREEDELIVERYANDRETURN"
-                                        ? Number(
-                                            Number(
-                                              selectedMasterData.salePrice
-                                            ) +
-                                              Number(nofdrOptions.value) +
-                                              Number(nofdrReturnOption.value)
-                                          ).toLocaleString("en-IN")
-                                        : deliveryOption.type ===
-                                          "FREEDELIVERYANDRETURN"
-                                        ? Number(
-                                            Number(
-                                              selectedMasterData.salePriceWithFDR
-                                            ) + Number(fdrOptions)
-                                          ).toLocaleString("en-IN")
-                                        : null}
-                                    </span>{" "}
-                                    <span className="h-p89">
-                                      - Final Price Including Transaction Charge
-                                    </span>
-                                  </Typography>
-                                  <Typography className="h-6 color-red">
-                                    Pay Through UPI to Avoid Transaction Charges
-                                  </Typography>
-                                </>
-                              </Grid>
-                              {/* {deliveryOption.type ===
+                                <Grid item md={12}>
+                                  <>
+                                    <Typography className="mt-2">
+                                      <span className="fw-bold">
+                                        ₹{" "}
+                                        {deliveryOption.type ===
+                                        "NOFREEDELIVERYANDRETURN"
+                                          ? Number(
+                                              Number(
+                                                selectedMasterData.salePrice
+                                              ) +
+                                                Number(nofdrOptions.value) +
+                                                Number(nofdrReturnOption.value)
+                                            ).toLocaleString("en-IN")
+                                          : deliveryOption.type ===
+                                            "FREEDELIVERYANDRETURN"
+                                          ? Number(
+                                              Number(
+                                                selectedMasterData.salePriceWithFDR
+                                              ) + Number(fdrOptions)
+                                            ).toLocaleString("en-IN")
+                                          : null}
+                                      </span>{" "}
+                                      <span className="h-p89">
+                                        - Final Price Including Transaction
+                                        Charge
+                                      </span>
+                                    </Typography>
+                                    <Typography className="h-6 color-red">
+                                      Pay Through UPI to Avoid Transaction
+                                      Charges
+                                    </Typography>
+                                  </>
+                                </Grid>
+                                {/* {deliveryOption.type ===
                               "FREEDELIVERYANDRETURN" ? (
                                 <Grid item md={12}>
                                   <>
@@ -1316,169 +1345,180 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   </>
                                 </Grid>
                               ) : null} */}
-                              <Box
-                                mt={1}
-                                paddingY={0.7}
-                                borderRadius={1}
-                                className="w-33p"
-                                display="flex"
-                                justifyContent="space-evenly"
-                                alignItems="center"
-                                style={{ border: "1px solid #292929" }}
-                              >
-                                <div>
-                                  <CustomIcon
-                                    type="removeIcon"
-                                    className="border rounded-circle color-black fs-20"
-                                    showColorOnHover={false}
-                                    onIconClick={() => handleMinusClick()}
-                                  />
-                                </div>
-                                <span className="fw-bold">{count}</span>
-                                <div>
-                                  <CustomIcon
-                                    type="add"
-                                    className="border rounded-circle color-black fs-20"
-                                    showColorOnHover={false}
-                                    onIconClick={() => handlePlusClick()}
-                                  />
-                                </div>
+                                <Box
+                                  mt={1}
+                                  paddingY={0.7}
+                                  borderRadius={1}
+                                  className="w-33p"
+                                  display="flex"
+                                  justifyContent="space-evenly"
+                                  alignItems="center"
+                                  style={{ border: "1px solid #292929" }}
+                                >
+                                  <div>
+                                    <CustomIcon
+                                      type="removeIcon"
+                                      className="border rounded-circle color-black fs-20"
+                                      showColorOnHover={false}
+                                      onIconClick={() => handleMinusClick()}
+                                    />
+                                  </div>
+                                  <span className="fw-bold">{count}</span>
+                                  <div>
+                                    <CustomIcon
+                                      type="add"
+                                      className="border rounded-circle color-black fs-20"
+                                      showColorOnHover={false}
+                                      onIconClick={() => handlePlusClick()}
+                                    />
+                                  </div>
+                                </Box>
+                                <Grid container marginTop={1} columnGap={1}>
+                                  <Grid item md={4} display="flex">
+                                    <ButtonComponent
+                                      label={
+                                        selectedMasterData.inCart
+                                          ? "Go To Cart"
+                                          : "Add To Cart"
+                                      }
+                                      variant="outlined"
+                                      muiProps="py-1 w-100"
+                                      onBtnClick={() => {
+                                        selectedMasterData.inCart
+                                          ? route.push("/customer/cart")
+                                          : handleAddtoCart();
+                                      }}
+                                    />
+                                  </Grid>
+                                  <Grid item md={4} display="flex">
+                                    <ButtonComponent
+                                      label="Buy Now"
+                                      muiProps="py-1 w-100"
+                                    />
+                                  </Grid>
+                                </Grid>
                               </Box>
-                              <Grid container marginTop={1} columnGap={1}>
-                                <Grid item md={4} display="flex">
-                                  <ButtonComponent
-                                    label={
-                                      selectedMasterData.inCart
-                                        ? "Go To Cart"
-                                        : "Add To Cart"
-                                    }
-                                    variant="outlined"
-                                    muiProps="py-1 w-100"
-                                    onBtnClick={() => {
-                                      selectedMasterData.inCart
-                                        ? route.push("/customer/cart")
-                                        : handleAddtoCart();
-                                    }}
-                                  />
-                                </Grid>
-                                <Grid item md={4} display="flex">
-                                  <ButtonComponent
-                                    label="Buy Now"
-                                    muiProps="py-1 w-100"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Box>
-                          ) : null}
-                          <Grid container id="otherVariation">
-                            {otherVariation.length
-                              ? otherVariation.map((item) => (
-                                  <Grid container mt={0.7}>
-                                    <Grid container>
-                                      <Grid item sm={12}>
-                                        <Box>
-                                          <Typography className="fw-500">
-                                            {item.standardVariationName}
-                                          </Typography>
-                                        </Box>
+                            ) : null}
+                            <Grid container id="otherVariation">
+                              {otherVariation.length
+                                ? otherVariation.map((item) => (
+                                    <Grid container mt={0.7}>
+                                      <Grid container>
+                                        <Grid item sm={12}>
+                                          <Box>
+                                            <Typography className="fw-500">
+                                              {item.standardVariationName}
+                                            </Typography>
+                                          </Box>
+                                        </Grid>
+                                      </Grid>
+                                      <Grid container columnGap={1} rowGap={1}>
+                                        {item.variationPropertyPojoList.map(
+                                          (val) => (
+                                            <Grid
+                                              item
+                                              lg={2.8}
+                                              md={2.8}
+                                              sm={3}
+                                              className={` ${
+                                                val.enabled
+                                                  ? "variation-border"
+                                                  : "border-dashed1"
+                                              } ${
+                                                val.selected && `border-orange`
+                                              }`}
+                                              onClick={() => {
+                                                val.enabled &&
+                                                  handleOtherVariationClick(
+                                                    item,
+                                                    val
+                                                  );
+                                              }}
+                                            >
+                                              <Box className="cursor-pointer">
+                                                <Typography
+                                                  className={`${
+                                                    val.enabled &&
+                                                    "cursor-pointer"
+                                                  } h-5 px-1 py-2 ${
+                                                    val.selected &&
+                                                    val.enabled &&
+                                                    `color-orange`
+                                                  } ${
+                                                    !val.enabled && "color-gray"
+                                                  }`}
+                                                  textAlign="center"
+                                                >
+                                                  {val.optionName}
+                                                </Typography>
+                                              </Box>
+                                            </Grid>
+                                          )
+                                        )}
                                       </Grid>
                                     </Grid>
-                                    <Grid container columnGap={1} rowGap={1}>
-                                      {item.variationPropertyPojoList.map(
-                                        (val) => (
-                                          <Grid
-                                            item
-                                            lg={2.8}
-                                            md={2.8}
-                                            sm={3}
-                                            className={` ${
-                                              val.enabled
-                                                ? "variation-border"
-                                                : "border-dashed1"
-                                            } ${
-                                              val.selected && `border-orange`
-                                            }`}
-                                            onClick={() => {
-                                              val.enabled &&
-                                                handleOtherVariationClick(
-                                                  item,
-                                                  val
-                                                );
-                                            }}
-                                          >
-                                            <Box className="cursor-pointer">
-                                              <Typography
-                                                className={`${
-                                                  val.enabled &&
-                                                  "cursor-pointer"
-                                                } h-5 px-1 py-2 ${
-                                                  val.selected &&
-                                                  val.enabled &&
-                                                  `color-orange`
-                                                } ${
-                                                  !val.enabled && "color-gray"
-                                                }`}
-                                                textAlign="center"
-                                              >
-                                                {val.optionName}
-                                              </Typography>
-                                            </Box>
-                                          </Grid>
-                                        )
-                                      )}
-                                    </Grid>
-                                  </Grid>
-                                ))
-                              : null}
+                                  ))
+                                : null}
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={12} paddingY={1}>
-                    {masterData?.customerProductVariationList.length ? (
-                      <Grid container gap={1} mt={1}>
-                        <Grid item md={12} xs={12}>
-                          <Typography className="fw-bold">
-                            Variations ({masterData.mainStandardVariationName})
-                          </Typography>
-                        </Grid>
-                        {masterData?.customerProductVariationList.map(
-                          (item) => (
-                            <Grid
-                              item
-                              xs={1.8}
-                              onClick={() => {
-                                selectedMasterData.productVariationId !==
-                                  item.productVariationId &&
-                                  handleVariationClick(item);
-                              }}
-                            >
-                              <motion.div
-                                whileHover={{
-                                  scale: 1.05,
-                                  transition: { duration: 0.5 },
+                    <Grid item xs={12} paddingY={1}>
+                      {masterData?.customerProductVariationList.length ? (
+                        <Grid container gap={1} mt={1}>
+                          <Grid item md={12} xs={12}>
+                            <Typography className="fw-bold">
+                              Variations ({masterData.mainStandardVariationName}
+                              )
+                            </Typography>
+                          </Grid>
+                          {masterData?.customerProductVariationList.map(
+                            (item) => (
+                              <Grid
+                                item
+                                xs={1.8}
+                                onClick={() => {
+                                  selectedMasterData.productVariationId !==
+                                    item.productVariationId &&
+                                    handleVariationClick(item);
                                 }}
                               >
-                                <Box display="flex" justifyContent="center">
-                                  <Image
-                                    height={150}
-                                    width={150}
-                                    src={item?.imageUrl}
-                                    layout="intrinsic"
-                                    className={`${
-                                      item.variationDetails[0].enabled
-                                        ? `border`
-                                        : `border-dashed1`
-                                    } ${
-                                      selectedMasterData.productVariationId ===
-                                        item.productVariationId &&
-                                      `border-orange`
-                                    } rounded`}
-                                    alt="alt"
-                                  />
-                                </Box>
-                                <Tooltip title={item.productTitle}>
+                                <motion.div
+                                  whileHover={{
+                                    scale: 1.05,
+                                    transition: { duration: 0.5 },
+                                  }}
+                                >
+                                  <Box display="flex" justifyContent="center">
+                                    <Image
+                                      height={150}
+                                      width={150}
+                                      src={item?.imageUrl}
+                                      layout="intrinsic"
+                                      className={`${
+                                        item.variationDetails[0].enabled
+                                          ? `border`
+                                          : `border-dashed1`
+                                      } ${
+                                        selectedMasterData.productVariationId ===
+                                          item.productVariationId &&
+                                        `border-orange`
+                                      } rounded`}
+                                      alt="alt"
+                                    />
+                                  </Box>
+                                  <Tooltip title={item.productTitle}>
+                                    <Typography
+                                      className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
+                                        selectedMasterData.productVariationId ===
+                                          item.productVariationId &&
+                                        `color-orange`
+                                      }`}
+                                    >
+                                      {item.productTitle}
+                                    </Typography>
+                                  </Tooltip>
                                   <Typography
                                     className={`text-center text-truncate mt-1 h-5 cursor-pointer ${
                                       selectedMasterData.productVariationId ===
@@ -1486,118 +1526,134 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                       `color-orange`
                                     }`}
                                   >
-                                    {item.productTitle}
+                                    {masterData.mainStandardVariationName} :{" "}
+                                    {item?.variationDetails[0]?.optionName}
                                   </Typography>
-                                </Tooltip>
-                              </motion.div>
-                            </Grid>
-                          )
-                        )}
-                      </Grid>
-                    ) : null}
-                  </Grid>
-                  <Grid item md={12}>
-                    <Paper elevation={3}>
-                      <Box className="p-2">
-                        <Typography className="h-4 fw-bold">
-                          Description
-                        </Typography>
+                                </motion.div>
+                              </Grid>
+                            )
+                          )}
+                        </Grid>
+                      ) : null}
+                    </Grid>
+                    <Grid item md={12}>
+                      <Paper elevation={3}>
+                        <Box className="p-2">
+                          <Typography className="h-4 fw-bold">
+                            Description
+                          </Typography>
 
-                        <Typography
-                          className="h-5 text-break"
-                          lineHeight="1.3rem"
-                        >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: masterData?.shortDescription,
-                            }}
-                          />
-                          <span
-                            className={`h-5 color-blue cursor-pointer ${
-                              showLongDescription && `d-none`
-                            }`}
-                            onClick={() => setShowLongDescription(true)}
+                          <Typography
+                            className="h-5 text-break"
+                            lineHeight="1.3rem"
                           >
-                            See more...
-                          </span>
-                        </Typography>
-                        {showLongDescription && (
-                          <>
-                            <Box className="h-5">
-                              <Box className="d-flex">
-                                {renderDiscriptionImage(
-                                  masterData?.shortDescriptionFileUrls
-                                )}
-                              </Box>
-                              <Box>
-                                {renderDiscriptionFiles(
-                                  masterData?.shortDescriptionFileUrls
-                                )}
-                              </Box>
-                            </Box>
-                            <Box>
-                              {masterData?.longDescription && (
-                                <Typography className="h-5">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: masterData?.longDescription,
-                                    }}
-                                  />
-                                </Typography>
-                              )}
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: masterData?.shortDescription,
+                              }}
+                            />
+                            <span
+                              className={`h-5 color-blue cursor-pointer ${
+                                showLongDescription && `d-none`
+                              }`}
+                              onClick={() => setShowLongDescription(true)}
+                            >
+                              See more...
+                            </span>
+                          </Typography>
+                          {showLongDescription && (
+                            <>
                               <Box className="h-5">
                                 <Box className="d-flex">
                                   {renderDiscriptionImage(
-                                    masterData?.longDescriptionFileUrls
+                                    masterData?.shortDescriptionFileUrls
                                   )}
                                 </Box>
                                 <Box>
                                   {renderDiscriptionFiles(
-                                    masterData?.longDescriptionFileUrls
+                                    masterData?.shortDescriptionFileUrls
                                   )}
                                 </Box>
                               </Box>
-                              <span
-                                className={`h-5 color-blue cursor-pointer ${
-                                  !showLongDescription && `d-none`
-                                }`}
-                                onClick={() => {
-                                  setShowLongDescription(false);
-                                }}
-                              >
-                                Show Less...
-                              </span>
-                            </Box>
-                          </>
-                        )}
-                      </Box>
-                    </Paper>
+                              <Box>
+                                {masterData?.longDescription && (
+                                  <Typography className="h-5">
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: masterData?.longDescription,
+                                      }}
+                                    />
+                                  </Typography>
+                                )}
+                                <Box className="h-5">
+                                  <Box className="d-flex">
+                                    {renderDiscriptionImage(
+                                      masterData?.longDescriptionFileUrls
+                                    )}
+                                  </Box>
+                                  <Box>
+                                    {renderDiscriptionFiles(
+                                      masterData?.longDescriptionFileUrls
+                                    )}
+                                  </Box>
+                                </Box>
+                                <span
+                                  className={`h-5 color-blue cursor-pointer ${
+                                    !showLongDescription && `d-none`
+                                  }`}
+                                  onClick={() => {
+                                    setShowLongDescription(false);
+                                  }}
+                                >
+                                  Show Less...
+                                </span>
+                              </Box>
+                            </>
+                          )}
+                        </Box>
+                      </Paper>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-              <Grid container mt={2} px={1}>
-                <Grid item md={12}>
-                  <Box>
-                    <FrequentBuyProduct
-                      selectedMasterData={selectedMasterData}
-                      masterData={masterData}
+                <Grid container mt={2} px={1}>
+                  <Grid item md={12}>
+                    <Box>
+                      <FrequentBuyProduct
+                        selectedMasterData={selectedMasterData}
+                        masterData={masterData}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item md={12}>
+                    <Box className="mt-2">
+                      <RecentlyViewedProduct scrollPage={scrollPage} />
+                    </Box>
+                  </Grid>
+                  <Grid item sm={12}>
+                    <SimilarProducts
+                      subCategoryId={masterData.subCategoryId}
+                      scrollPage={scrollPage}
                     />
-                  </Box>
+                  </Grid>
                 </Grid>
-                <Grid item md={12}>
-                  <Box className="mt-2">
-                    <RecentlyViewedProduct scrollPage={scrollPage} />
-                  </Box>
-                </Grid>
-                <Grid item sm={12}>
-                  <SimilarProducts
-                    subCategoryId={masterData.subCategoryId}
-                    scrollPage={scrollPage}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          ) : null}
+              </Box>
+            ) : (
+              <Box>
+                <ProductSkeleton />
+              </Box>
+            )
+          ) : (
+            <div
+              className="mx-2"
+              style={{
+                backgroundImage: `url(https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/400%20Error%20Bad%20Request-amico.png)`,
+                backgroundPosition: "center",
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                height: "80vh",
+              }}
+            />
+          )}
           {showWishListModal ? (
             <AddToWishListModal
               showModal={showWishListModal}
