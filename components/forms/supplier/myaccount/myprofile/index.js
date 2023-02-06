@@ -163,7 +163,7 @@ const MyProfile = () => {
         },
         gstin: data.gstin,
         stockCount: data.avgStockCount,
-        site: data.websiteName,
+        site: Array.isArray(data.websiteName) ? data.websiteName : [],
         siteLink: data.websiteLink,
         firstName: data.firstName,
         lastName: data.lastName,
