@@ -1,10 +1,8 @@
 import ButtonComponent from "@/atoms/ButtonComponent";
-import ButtonTabsList from "@/atoms/ButtonTabsList";
 import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
-import { Box, Grid, Typography } from "@mui/material";
-import Image from "next/image";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import { Box, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
@@ -16,6 +14,7 @@ import {
   getAllWishListsByProfileId,
   updateWishListName,
 } from "services/customer/wishlist";
+import CustomIcon from "services/iconUtils";
 import serviceUtil from "services/utils";
 import toastify from "services/utils/toastUtils";
 
@@ -24,8 +23,6 @@ const AddToWishListModal = ({
   showModal = false,
   setShowModal = () => {},
   productId = "",
-  productImage = "",
-  productTitle = "",
 }) => {
   const { userId, profileId } = useSelector((state) => state?.customer);
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
@@ -151,7 +148,7 @@ const AddToWishListModal = ({
     () => {
       return serviceUtil.post(`/users/customer/wishlist/products`, {
         profileId,
-        wishlistId: selectedList?.id,
+        wishlistId: selected?.id,
         productVariationId: productId,
       });
     },
@@ -177,6 +174,7 @@ const AddToWishListModal = ({
     {
       onSuccess: ({ data }) => {
         toastify(data?.message, "success");
+        setSelected(null);
         queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
         queryClient.invalidateQueries(["RECENTLYVIEWED"]);
@@ -184,6 +182,7 @@ const AddToWishListModal = ({
         queryClient.invalidateQueries(["PRODUCTVARIATIONS"]);
         queryClient.refetchQueries("PRODUCTVARIATIONS", { force: true });
         getAllWishLists();
+        getProducts();
         setSelectedList({
           id: "",
           index: 0,
@@ -216,7 +215,7 @@ const AddToWishListModal = ({
   return (
     <ModalComponent
       open={showModal}
-      onCloseIconClick={() => {
+      modalClose={() => {
         setShowModal(false);
       }}
       onClearBtnClick={() => {
@@ -224,67 +223,119 @@ const AddToWishListModal = ({
       }}
       showSaveBtn={wishListNames?.length}
       saveBtnText="Add"
-      ModalWidth="50%"
-      ModalTitle="Choose Wishlist"
-      footerClassName="justify-content-end"
-      saveBtnClassName="fs-10"
+      // ModalWidth="25
+      showHeader={false}
       onSaveBtnClick={() => {
+        if (!selected || !selected.id) {
+          toastify("Choose one wish list", "error");
+          return;
+        }
         addProductToWishlistMutation.mutate();
       }}
+      ClearBtnText="Cancel"
+      clearBtnClassName="mx-2 mb-2"
+      saveBtnClassName="mx-2 mb-2"
+      footerClassName="d-flex justify-content-center flex-row-reverse"
     >
-      <Grid container justifyContent="center" my={2}>
-        <Grid item container md={6} lg={4}>
-          <Grid item sm={7} className="w-75 ">
-            <ButtonTabsList
-              tabsList={[...wishListNames]}
-              showEditDelete
-              activeTab={selectedList.index}
-              getActiveTab={(index, item) => {
-                setSelectedList({
-                  id: item?.id,
-                  index,
-                });
-              }}
-              onEditClick={(item) => {
+      <Box className="w-100 p-3">
+        <Typography className="fw-bold fs-16 mb-3">
+          Choose a Wish List for the selected product:
+        </Typography>
+        {wishListNames.length < 5 && (
+          <Box className="d-flex justify-content-end mb-3">
+            <ButtonComponent
+              label="+ Add New Wish List"
+              variant="outlined"
+              onBtnClick={() => {
                 setShowAddNewWishList(true);
-                setModalType("Edit");
-                setNewWishListName(item?.title);
-              }}
-              onDeleteClick={(item) => {
-                // deleteList(item?.id);
-                deleteProductMutation.mutate(item.id);
+                setModalType("Add");
+                setNewWishListName("");
               }}
             />
-          </Grid>
-          <Grid item sm={7} className="w-75 ">
-            <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3"}>
-              <ButtonComponent
-                label="Add new wishlist"
-                variant="outlined"
-                muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-                // borderColor="border-orange"
-                textColor="theme_color"
-                onBtnClick={() => {
-                  setShowAddNewWishList(true);
-                  setModalType("Add");
-                  setNewWishListName("");
-                }}
-              />
-            </Box>
-          </Grid>
+          </Box>
+        )}
+        {wishListNames.map((item) => (
+          <Box
+            className="d-flex justify-content-between w-75 m-1"
+            onMouseEnter={() => {
+              setHover(item.id);
+            }}
+            onMouseLeave={() => {
+              setHover(null);
+            }}
+            key={item.id}
+          >
+            <RadiobuttonComponent
+              label={item.title}
+              isChecked={selected && selected.id === item.id}
+              size="small"
+              onRadioChange={() => {
+                setSelected(item);
+              }}
+            />
+            {item.id === hover && (
+              <div>
+                <CustomIcon
+                  type="edit"
+                  className="h-3 mx-1 cursor-pointer"
+                  onIconClick={() => {
+                    setShowAddNewWishList(true);
+                    setModalType("Edit");
+                    setNewWishListName(item?.title);
+                  }}
+                />
+                <CustomIcon
+                  type="delete"
+                  className="h-3 mx-1 cursor-pointer"
+                  onIconClick={() => {
+                    deleteProductMutation.mutate(item.id);
+                  }}
+                />
+              </div>
+            )}
+          </Box>
+        ))}
+      </Box>
+      {/* <Grid container justifyContent="center" my={2}>
+        <Grid item sm={7} className="w-75 ">
+          <ButtonTabsList
+            tabsList={[...wishListNames]}
+            showEditDelete
+            activeTab={selectedList.index}
+            getActiveTab={(index, item) => {
+              setSelectedList({
+                id: item?.id,
+                index,
+              });
+            }}
+            onEditClick={(item) => {
+              setShowAddNewWishList(true);
+              setModalType("Edit");
+              setNewWishListName(item?.title);
+            }}
+            onDeleteClick={(item) => {
+              // deleteList(item?.id);
+              deleteProductMutation.mutate(item.id);
+            }}
+          />
         </Grid>
-        <Grid
-          item
-          md={6}
-          lg={8}
-          className="d-flex flex-column align-items-center"
-        >
-          <Typography className="text-truncat fw-bold fs-14">
-            {productTitle}
-          </Typography>
-          <Image src={productImage} height="150" width="150" />
+        <Grid item sm={7} className="w-75 ">
+          <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3"}>
+            <ButtonComponent
+              label="Add new wishlist"
+              variant="outlined"
+              muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
+              // borderColor="border-orange"
+              textColor="theme_color"
+              onBtnClick={() => {
+                setShowAddNewWishList(true);
+                setModalType("Add");
+                setNewWishListName("");
+              }}
+            />
+          </Box>
         </Grid>
-      </Grid>
+      </Grid> */}
       <ModalComponent
         open={showAddNewWishList}
         onCloseIconClick={() => {

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/no-array-index-key */
 import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
