@@ -4,6 +4,8 @@ import InputBox from "@/atoms/InputBoxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import { Box, Grid, Typography } from "@mui/material";
 import Image from "next/image";
+import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
+import validateMessage from "constants/validateMessages";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
@@ -29,7 +31,9 @@ const AddToWishListModal = ({
   const [showAddNewWishList, setShowAddNewWishList] = useState(false);
   const [newWishListName, setNewWishListName] = useState("");
   const [modalType, setModalType] = useState("Add");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
+  const [hover, setHover] = useState(null);
+  const [selected, setSelected] = useState(null);
 
   const [wishListNames, setWishListNames] = useState([]);
   const [selectedList, setSelectedList] = useState({
@@ -59,8 +63,28 @@ const AddToWishListModal = ({
   useEffect(() => {
     getAllWishLists();
   }, []);
+  const validateListname = () => {
+    let temp = null;
+    if (!newWishListName?.length) {
+      temp = validateMessage.field_required;
+      setError(validateMessage.field_required);
+    } else if (newWishListName?.length > 20) {
+      temp = validateMessage.alpha_numeric_20;
+      setError(validateMessage.alpha_numeric_20);
+    } else if (newWishListName?.trim().length !== newWishListName?.length) {
+      temp = "Enter a valid name";
+      setError("Enter a valid name");
+    } else {
+      setError(null);
+    }
+    if (temp === null) {
+      return false;
+    }
+    return true;
+  };
   const createNewWishList = async () => {
-    if (newWishListName?.length) {
+    const valid = validateListname();
+    if (!valid) {
       const payload = {
         customerId: userId,
         userProfileId: profileId,
@@ -71,34 +95,38 @@ const AddToWishListModal = ({
         toastify(message, "success");
         getAllWishLists();
         setShowAddNewWishList(false);
-        setError(false);
+        setError(null);
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
         setNewWishListName("");
         getAllWishLists();
-        setError(false);
+        setError(null);
       }
-    } else setError(true);
+    }
   };
 
   const editWishListName = async () => {
     const formData = new FormData();
     formData.append("wishlistName", newWishListName);
-    const { message, err } = await updateWishListName(
-      profileId,
-      selectedList?.id,
-      formData
-    );
-    if (message) {
-      setShowAddNewWishList(false);
-      toastify(message, "success");
-      setNewWishListName("");
-      getAllWishLists();
-      setError(false);
-    }
-    if (err) {
-      toastify(err?.response?.data?.message, "error");
-      setError(false);
+    const validname = validateListname();
+    if (!validname) {
+      const { message, err } = await updateWishListName(
+        profileId,
+        selectedList?.id,
+        formData
+      );
+      if (message) {
+        setShowAddNewWishList(false);
+        toastify(message, "success");
+        setNewWishListName("");
+        getAllWishLists();
+        setError(null);
+        setSelected(null);
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+        setError(null);
+      }
     }
   };
 
@@ -191,7 +219,9 @@ const AddToWishListModal = ({
       onCloseIconClick={() => {
         setShowModal(false);
       }}
-      showClearBtn={false}
+      onClearBtnClick={() => {
+        setShowModal(false);
+      }}
       showSaveBtn={wishListNames?.length}
       saveBtnText="Add"
       ModalWidth="50%"
@@ -259,8 +289,9 @@ const AddToWishListModal = ({
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
-          setError(false);
+          setError(null);
         }}
+        ModalTitle=""
         ClearBtnText="Clear"
         saveBtnText={
           modalType === "Add" ? "Create WishList" : "Update WishList"
@@ -287,8 +318,11 @@ const AddToWishListModal = ({
             onInputChange={(e) => {
               setNewWishListName(e?.target?.value);
             }}
-            helperText={error ? "This Field is Required" : ""}
-            error={error}
+            helperText={
+              // eslint-disable-next-line no-nested-ternary
+              error !== null ? error : ""
+            }
+            error={error !== null}
           />
         </Box>
       </ModalComponent>

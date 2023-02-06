@@ -67,7 +67,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
     const payload = {
       mainCategoryId,
       subCategoryId: subCatId,
-      profileId,
+      profileId: profileId ? profileId : "",
       supplierId,
       eStatus: "APPROVED",
       pageNumber,

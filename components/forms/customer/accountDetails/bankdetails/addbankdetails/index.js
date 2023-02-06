@@ -90,6 +90,7 @@ const AddBankDetailsModal = ({
     };
     const { err, data } = await AddBankDetails(payload);
     if (data) {
+      toastify(data.message, "success");
       setShowModal(false);
       getAllBankData();
     } else if (err) {

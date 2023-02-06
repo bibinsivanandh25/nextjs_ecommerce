@@ -232,6 +232,9 @@ const CustomerSideBarComponent = ({ children }) => {
                         getSetandSubCategory(e, item);
                       }
                     }}
+                    onMouseLeave={() => {
+                      setHover(false);
+                    }}
                     id={item.id}
                     onClick={() => {
                       if (item.route) {
