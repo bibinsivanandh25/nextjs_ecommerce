@@ -119,10 +119,6 @@ function CompareProductDrawer({
   };
 
   useEffect(() => {
-    console.log(loading, "loadinf");
-  }, [loading]);
-
-  useEffect(() => {
     if (
       isIntersecting &&
       productDetails?.length !== productCount &&
@@ -292,7 +288,12 @@ function CompareProductDrawer({
         <CompareProductDetails
           showModal={showCompareProductsModal}
           setShowModal={setShowCompareProductsModal}
-          productDetails={compareProductData}
+          productDetail={compareProductData}
+          removeProduct={(id) => {
+            let temp = [...products];
+            temp = temp.filter((ele) => ele.productId !== id);
+            setProducts([...temp]);
+          }}
         />
       ) : null}
     </CustomDrawer>
