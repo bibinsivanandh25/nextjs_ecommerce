@@ -2,13 +2,13 @@ import InputBox from "components/atoms/InputBoxComponent";
 import ModalComponent from "components/atoms/ModalComponent";
 import validateMessage from "constants/validateMessages";
 import Image from "next/image";
-import BankLogo from "public/assets/images/banklogo.png";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   AddBankDetails,
   EditBankDetails,
 } from "services/supplier/myaccount/bankdetails";
+import toastify from "services/utils/toastUtils";
 
 const AddBankDetailsModal = ({
   BankDetails,
@@ -87,10 +87,13 @@ const AddBankDetailsModal = ({
       ifscCode: BankDetails["IFSC code"],
       supplierId: user,
     };
-    const { data } = await AddBankDetails(payload);
+    const { data, err } = await AddBankDetails(payload);
     if (data) {
       setShowModal(false);
       getAllBankData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -103,10 +106,13 @@ const AddBankDetailsModal = ({
       ifscCode: BankDetails["IFSC code"],
     };
     // console.log(BankDetails);
-    const { data } = await EditBankDetails(payload);
+    const { data, err } = await EditBankDetails(payload);
     if (data) {
       setShowModal(false);
       getAllBankData();
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
@@ -134,7 +140,12 @@ const AddBankDetailsModal = ({
       }}
     >
       <div className="d-flex flex-column justify-content-center align-items-center">
-        <Image src={BankLogo} height={75} width={75} />
+        <Image
+          src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/bank.png"
+          height={75}
+          width={75}
+          layout="intrinsic"
+        />
         <div className="fw-bold">Bank Details</div>
         <div className="my-2 w-100">
           <InputBox
