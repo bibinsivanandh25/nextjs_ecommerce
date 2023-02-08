@@ -8,7 +8,10 @@ import CustomIcon from "services/iconUtils";
 import { makeStyles } from "@mui/styles";
 import MenuWithCheckbox from "@/atoms/MenuWithCheckbox";
 import { useRouter } from "next/router";
-import { getProductsUnderCategoryOrSubCategory } from "services/customer/productVariation";
+import {
+  getProductsUnderCategoryOrSubCategory,
+  productsearch,
+} from "services/customer/productVariation";
 import { useSelector } from "react-redux";
 import ProductDetailsCard from "@/forms/customer/searchedproduct/CustomerProductCard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -39,6 +42,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   const [subCategoryId, setSubCategoryId] = useState("");
   // comparProduct
   const [totalProductCount, setTotalProductCount] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const mainRef = useRef(null);
   useEffect(() => {
@@ -62,18 +66,32 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   const getProducts = async (
     mainCategoryId,
     subCatId,
+    searchText,
     pageNumber = page - 1 || 0
   ) => {
-    const payload = {
-      mainCategoryId,
-      subCategoryId: subCatId,
-      profileId: profileId ? profileId : "",
-      supplierId,
-      eStatus: "APPROVED",
-      pageNumber,
-      pageSize: dataPerPage,
-    };
-    const { data } = await getProductsUnderCategoryOrSubCategory(payload);
+    const payload =
+      searchText === "" || searchText
+        ? {
+            keyword: searchText,
+            supplierId,
+            profileId: profileId ? profileId : "",
+            pageNo: pageNumber,
+            pageSize: dataPerPage,
+            mainCategoryId:
+              route.query.categoryId === "All" ? "" : route.query.categoryId,
+          }
+        : {
+            mainCategoryId,
+            subCategoryId: subCatId,
+            profileId: profileId ? profileId : "",
+            supplierId,
+            eStatus: "APPROVED",
+            pageNumber,
+            pageSize: dataPerPage,
+          };
+    const { data } = searchText
+      ? await productsearch(payload)
+      : await getProductsUnderCategoryOrSubCategory(payload);
     if (data) {
       const result = [];
       setTotalProductCount(data?.count);
@@ -109,19 +127,23 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   };
 
   useMemo(() => {
-    if (categoryId?.length || subCategoryId?.length)
-      getProducts(categoryId, subCategoryId, page - 1);
+    if (categoryId?.length || subCategoryId?.length || searchKeyword)
+      getProducts(categoryId, subCategoryId, searchKeyword, page - 1);
   }, [page]);
 
   useEffect(() => {
     Object.entries(route?.query).forEach(([key, value]) => {
       if (key === "categoryId") {
-        getProducts(value, "");
+        getProducts(value, "", "");
         setCategoryId(value);
       }
       if (key === "subCategoryId") {
-        getProducts("", value);
+        getProducts("", value, "");
         setSubCategoryId(value);
+      }
+      if (key === "keyword") {
+        getProducts("", "", value);
+        setSearchKeyword(value);
       }
     });
   }, [route]);
@@ -305,7 +327,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                     productDetail={item}
                     viewType={viewIconClick ? "row" : "Grid"}
                     getProducts={() => {
-                      getProducts(categoryId, subCategoryId, 0);
+                      getProducts(categoryId, subCategoryId, searchKeyword, 0);
                     }}
                   />
                 </Grid>
@@ -316,7 +338,9 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
           Math.ceil(totalProductCount / dataPerPage) > 1 ? (
             <Box className="d-flex justify-content-center align-items-center mt-3 mb-2">
               <ChevronLeftIcon
-                className={page <= 1 ? "text-muted" : "text-black"}
+                className={`${
+                  page <= 1 ? "text-muted" : "text-black"
+                } cursor-pointer`}
                 onClick={() => {
                   handlePreviousbtnClick();
                 }}
@@ -348,7 +372,9 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 onClick={() => {
                   handleNextbtnClick();
                 }}
-                className={page < pageCount ? "text-black" : "text-muted"}
+                className={`${
+                  page < pageCount ? "text-black" : "text-muted"
+                } cursor-pointer`}
               />
               {/* <Button
                 variant="outlined"

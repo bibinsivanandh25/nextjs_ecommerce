@@ -194,7 +194,7 @@ const AddToWishListModal = ({
       showClearBtn={false}
       showSaveBtn={wishListNames?.length}
       saveBtnText="Add"
-      ModalWidth="50%"
+      ModalWidth={600}
       ModalTitle="Choose Wishlist"
       footerClassName="justify-content-end"
       saveBtnClassName="fs-10"
@@ -203,45 +203,41 @@ const AddToWishListModal = ({
       }}
     >
       <Grid container justifyContent="center" my={2}>
-        <Grid item container md={6} lg={4}>
-          <Grid item sm={7} className="w-75 ">
-            <ButtonTabsList
-              tabsList={[...wishListNames]}
-              showEditDelete
-              activeTab={selectedList.index}
-              getActiveTab={(index, item) => {
-                setSelectedList({
-                  id: item?.id,
-                  index,
-                });
-              }}
-              onEditClick={(item) => {
+        <Grid item md={6} lg={4}>
+          <ButtonTabsList
+            tabsList={[...wishListNames]}
+            showEditDelete
+            activeTab={selectedList.index}
+            getActiveTab={(index, item) => {
+              setSelectedList({
+                id: item?.id,
+                index,
+              });
+            }}
+            onEditClick={(item) => {
+              setShowAddNewWishList(true);
+              setModalType("Edit");
+              setNewWishListName(item?.title);
+            }}
+            onDeleteClick={(item) => {
+              // deleteList(item?.id);
+              deleteProductMutation.mutate(item.id);
+            }}
+          />
+          <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3 w-100"}>
+            <ButtonComponent
+              label="Add new wishlist"
+              variant="outlined"
+              muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
+              // borderColor="border-orange"
+              textColor="theme_color"
+              onBtnClick={() => {
                 setShowAddNewWishList(true);
-                setModalType("Edit");
-                setNewWishListName(item?.title);
-              }}
-              onDeleteClick={(item) => {
-                // deleteList(item?.id);
-                deleteProductMutation.mutate(item.id);
+                setModalType("Add");
+                setNewWishListName("");
               }}
             />
-          </Grid>
-          <Grid item sm={7} className="w-75 ">
-            <Box className={wishListNames?.length >= 5 ? "d-none" : "mt-3"}>
-              <ButtonComponent
-                label="Add new wishlist"
-                variant="outlined"
-                muiProps="fw-bold border border-secondary fs-12 w-100 text-capitalize"
-                // borderColor="border-orange"
-                textColor="theme_color"
-                onBtnClick={() => {
-                  setShowAddNewWishList(true);
-                  setModalType("Add");
-                  setNewWishListName("");
-                }}
-              />
-            </Box>
-          </Grid>
+          </Box>
         </Grid>
         <Grid
           item
@@ -249,10 +245,17 @@ const AddToWishListModal = ({
           lg={8}
           className="d-flex flex-column align-items-center"
         >
+          <Image
+            src={productImage}
+            height="150"
+            width="150"
+            style={{
+              borderRadius: "10px",
+            }}
+          />
           <Typography className="text-truncat fw-bold fs-14">
             {productTitle}
           </Typography>
-          <Image src={productImage} height="150" width="150" />
         </Grid>
       </Grid>
       <ModalComponent
