@@ -1667,6 +1667,8 @@ const ProductDetails = ({ isSideBarOpen }) => {
                   userData.variationDetails
                 );
               }}
+              productImage={selectedMasterData.variationMedia[0]}
+              productTitle={selectedMasterData.productTitle}
             />
           ) : null}
         </>

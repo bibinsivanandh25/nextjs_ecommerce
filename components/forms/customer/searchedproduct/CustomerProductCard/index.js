@@ -406,6 +406,8 @@ function ProductDetailsCard({
           setShowModal={setShowWishListModal}
           productId={productDetail?.id}
           getProducts={getProducts}
+          productImage={productDetail?.images[0]?.src}
+          productTitle={productDetail.title}
         />
       ) : null}
       {showAddToCardModal && (

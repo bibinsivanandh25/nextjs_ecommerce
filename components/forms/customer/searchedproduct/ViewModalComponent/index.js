@@ -324,6 +324,8 @@ const ViewModalComponent = ({
             getProducts={() => {
               getProductData();
             }}
+            productImage={selectedImage}
+            productTitle={masterData.productTitle}
           />
         ) : null}
       </Box>

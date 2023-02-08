@@ -89,7 +89,12 @@ const Header = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [storeCode, setStoreCode] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
-  const [category, setCategory] = useState({});
+  const [category, setCategory] = useState({
+    id: "All",
+    label: "All Categories",
+    value: "All Categories",
+  });
+  const [searchText, setSearchText] = useState("");
   const router = useRouter();
   const recentStore = async () => {
     const { data } = await getRecentStoreList(userId);
@@ -529,7 +534,12 @@ const Header = () => {
               onDropdownSelect={(value) => {
                 if (value) {
                   setCategory(value);
-                } else setCategory({});
+                } else
+                  setCategory({
+                    id: "All",
+                    label: "All Categories",
+                    value: "All Categories",
+                  });
               }}
             />
           </div>
@@ -547,13 +557,23 @@ const Header = () => {
                 outline: "none",
                 border: "none",
               }}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+              }}
+              value={searchText}
             />
             <Box
               sx={{
                 m: "0.08rem",
               }}
               onClick={() => {
-                route.push("/customer/productvariation");
+                route.push({
+                  pathname: "/customer/productvariation",
+                  query: {
+                    keyword: searchText,
+                    categoryId: category.id,
+                  },
+                });
               }}
               className="theme_bg_color d-flex  p-1 rounded align-items-center cursor-pointer"
             >
