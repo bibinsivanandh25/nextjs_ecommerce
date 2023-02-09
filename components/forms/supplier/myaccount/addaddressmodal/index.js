@@ -15,6 +15,7 @@ import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
+import { City, State } from "country-state-city";
 
 const AddAddressModal = (props) => {
   const {
@@ -29,6 +30,24 @@ const AddAddressModal = (props) => {
     disableCancel = false,
     routeToLogin = false,
   } = props;
+
+  const cities = City.getCitiesOfCountry("IN");
+
+  const citiesList = cities
+    .map((ele) => ({
+      label: ele.name,
+      value: ele.name,
+      id: ele.name,
+    }))
+    .slice(0, 50);
+
+  const states = State.getStatesOfCountry("IN");
+  const statesList = states.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+    id: ele.name,
+  }));
+
   const [formValues, setFormValues] = useState({
     name: "",
     mobileNumber: "",
@@ -90,25 +109,22 @@ const AddAddressModal = (props) => {
     },
     {
       label: "City / District / Town",
+      type: "dropdown",
       id: "cityDistrictTown",
       value: null,
       required: true,
       validation: /^.{1,50}$/,
+      options: [...citiesList],
       errorMessage: validateMessage.alpha_numeric_max_50,
     },
     {
       label: "State",
       type: "dropdown",
       id: "state",
-      options: [
-        {
-          id: "karnataka",
-          label: "Karnataka",
-        },
-        { id: "delhi", label: "Delhi" },
-      ],
+      options: [...statesList],
       value: null,
       required: true,
+      validation: /^.{1,50}$/,
     },
     {
       label: "Landmark (Optional)",
