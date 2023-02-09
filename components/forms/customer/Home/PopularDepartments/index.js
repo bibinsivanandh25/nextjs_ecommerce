@@ -138,6 +138,9 @@ const PopularDepartments = () => {
           isCarted: ele.presentInCart,
           variationDetails: ele.variationDetails,
           subCategoryId: ele.subcategoryId,
+          flagImageUrl: ele.flagImageUrl,
+          flaged: ele.flaged,
+          visibilityPlace: ele.visibilityPlace,
         });
       });
     setProducts([...temp]);

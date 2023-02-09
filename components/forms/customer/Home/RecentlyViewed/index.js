@@ -25,11 +25,15 @@ const RecentlyViewed = () => {
     return [];
   };
 
-  const { data } = useQuery(["RECENTLYVIEWED"], getRecentViewedProducts, {
-    enabled: Boolean(userInfo?.data && storeDetails),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const { data, refetch } = useQuery(
+    ["RECENTLYVIEWED"],
+    getRecentViewedProducts,
+    {
+      enabled: Boolean(userInfo?.data && storeDetails),
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   useEffect(() => {
     const temp = [];
@@ -51,17 +55,20 @@ const RecentlyViewed = () => {
           userCartId: ele.userCartId,
           subCategoryId: ele.subCategoryId,
           isCarted: ele.presentInCart,
+          flagImageUrl: ele.flagImageUrl,
+          flaged: ele.flaged,
+          visibilityPlace: ele.visibilityPlace,
         });
       });
     }
     setProducts([...temp]);
   }, [data]);
 
-  // useEffect(() => {
-  //   if (userInfo?.data && storeDetails) {
-  //     getRecentViewedProducts();
-  //   }
-  // }, [userInfo, storeDetails]);
+  useEffect(() => {
+    if (userInfo?.data && storeDetails) {
+      refetch();
+    }
+  }, [userInfo, storeDetails]);
 
   return (
     <Box className={products?.length ? "" : "d-none"}>
