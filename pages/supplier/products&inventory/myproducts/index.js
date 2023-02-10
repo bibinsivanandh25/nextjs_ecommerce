@@ -487,8 +487,9 @@ const MyProducts = () => {
       storeCode
     );
     if (data) {
-      if (data.data) {
-        setFlagTitle(JSON.parse(JSON.stringify(val)));
+      setFlagTitle(JSON.parse(JSON.stringify(val)));
+
+      if (data?.data) {
         const temp = val?.flagImagePojos?.map((item) => {
           return {
             checked: data?.data?.imageId == item?.flagImageId,
@@ -497,7 +498,6 @@ const MyProducts = () => {
           };
         });
         setflagUrlList(temp);
-
         setdisableFlagField(true);
         setFlagFormData((pre) => ({
           ...pre,
@@ -515,6 +515,14 @@ const MyProducts = () => {
           visibilityPlace: data.data.visibilityPlace,
         }));
       } else {
+        const temp = val?.flagImagePojos?.map((item) => {
+          return {
+            checked: false,
+            url: item,
+            label: <Image src={item?.imageUrl} width={400} height={50} />,
+          };
+        });
+        setflagUrlList(temp);
         setdisableFlagField(false);
         setFlagFormData((pre) => ({
           ...pre,

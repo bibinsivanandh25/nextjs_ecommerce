@@ -62,7 +62,7 @@ const Footer = ({ open = false }) => {
       title: "About us",
       items: [
         {
-          lable: "Sipplier Details",
+          lable: "Supplier Details",
         },
         {
           lable: `Email: ${supplieremailId}`,
