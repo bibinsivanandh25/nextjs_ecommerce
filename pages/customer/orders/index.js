@@ -27,11 +27,18 @@ import {
   getProductDetails,
 } from "services/customer/orders";
 import ImageCard from "@/atoms/ImageCard";
+import { format } from "date-fns";
+import DateFilterModal from "@/forms/customer/Orders/DateFilterModal";
 
+const prevYear = new Date().getFullYear() - 1;
+const prev2Year = new Date().getFullYear() - 2;
 const list = [
   { label: "Last 30 days", id: 1, value: "MONTH" },
-  { label: "Last 1 Year", id: 2, value: "1YEAR" },
-  { label: "Last 2 Years", id: 3, value: "2YEAR" },
+  { label: "Last 6 Month", id: 1, value: "6MONTH" },
+  { label: "Last 1 Year", id: 1, value: "YEAR" },
+  { label: prevYear, id: 2, value: "1YEAR" },
+  { label: prev2Year, id: 3, value: "2YEAR" },
+  { label: "Custom Duration", id: 3, value: "CUSTOM" },
 ];
 const statusList = [
   { label: "Pending", id: 1, value: "PENDING" },
@@ -51,8 +58,8 @@ const Orders = () => {
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [EachProductDetails, setEachProductDetails] = useState([]);
   const [getOrderApiCall, setgetOrderApiCall] = useState(false);
+  const [openDateModal, setopenDateModal] = useState(false);
   const [orderFilter, setorderFilter] = useState({
-    duration: { id: 1, label: "Last 30 days", value: "MONTH" },
     status: {
       label: "Pending",
       id: 1,
@@ -60,18 +67,89 @@ const Orders = () => {
     },
     keyword: "",
   });
+  const [durationDrowdown, setdurationDrowdown] = useState({
+    id: 1,
+    label: "Last 30 days",
+    value: "MONTH",
+  });
+
   const [productReviewState, setproductReviewState] = useState({
     retings: 0,
     headline: "",
     reviewText: "",
     reviewImage: [],
   });
+  const [formDate, setformDate] = useState({
+    startDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+    endDate: format(
+      new Date(new Date().setDate(new Date().getDate() - 30)),
+      "MM-dd-yyyy 00:00:00"
+    ),
+  });
+  const [dateModal, setdateModal] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  useEffect(() => {
+    if (durationDrowdown.value === "MONTH") {
+      setformDate({
+        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        startDate: format(
+          new Date(new Date().setDate(new Date().getDate() - 30)),
+          "MM-dd-yyyy 00:00:00"
+        ),
+      });
+    } else if (durationDrowdown.value === "6MONTH") {
+      setformDate({
+        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        startDate: format(
+          new Date(new Date().setDate(new Date().getDate() - 180)),
+          "MM-dd-yyyy 00:00:00"
+        ),
+      });
+    } else if (durationDrowdown.value === "YEAR") {
+      setformDate({
+        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        startDate: format(
+          new Date(new Date().setDate(new Date().getDate() - 365)),
+          "MM-dd-yyyy 00:00:00"
+        ),
+      });
+    } else if (durationDrowdown.value == "1YEAR") {
+      setformDate({
+        startDate: format(
+          new Date(new Date().getFullYear() - 1, 0, 1),
+          "MM-dd-yyyy 00:00:00"
+        ),
+        endDate: format(
+          new Date(new Date().getFullYear() - 1, 11, 31),
+          "MM-dd-yyyy 00:00:00"
+        ),
+      });
+    } else if (durationDrowdown.value == "2YEAR") {
+      setformDate({
+        startDate: format(
+          new Date(new Date().getFullYear() - 2, 0, 1),
+          "MM-dd-yyyy 00:00:00"
+        ),
+        endDate: format(
+          new Date(new Date().getFullYear() - 2, 11, 31),
+          "MM-dd-yyyy 00:00:00"
+        ),
+      });
+    } else {
+      setformDate({ ...formDate });
+    }
+  }, [durationDrowdown]);
+
   const getProducts = async () => {
     const payload = {
       customerId: user.userId,
       orderStatus: selectedLink,
       // orderStatus: "",
-      filterType: orderFilter.duration.value || "",
+      // filterType: durationDrowdown.value || "",
+      startDate: formDate.startDate,
+      endDate: formDate.endDate,
       selectStatusType: orderFilter.status.value || "",
       keyword: orderFilter.keyword.toLocaleLowerCase(),
     };
@@ -124,7 +202,7 @@ const Orders = () => {
 
   useEffect(() => {
     getProducts();
-  }, [orderFilter, getOrderApiCall]);
+  }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
       customerRatings: productReviewState.retings,
@@ -150,6 +228,7 @@ const Orders = () => {
       toastify(errRes.response.data.message, "error");
     }
   };
+
   return (
     <Box className=" px-2">
       {!showReturnOrder ? (
@@ -167,8 +246,12 @@ const Orders = () => {
               }
               onClick={() => {
                 if (selectedLink !== "") setSelectedLink("");
+                setdurationDrowdown({
+                  id: 1,
+                  label: "Last 30 days",
+                  value: "MONTH",
+                });
                 setorderFilter({
-                  duration: { id: 1, label: "Last 30 days", value: "MONTH" },
                   status: {
                     label: "Pending",
                     id: 1,
@@ -190,7 +273,8 @@ const Orders = () => {
               }
               onClick={() => {
                 if (selectedLink !== "INITIATED") setSelectedLink("INITIATED");
-                setorderFilter({ duration: "", status: "", keyword: "" });
+                setdurationDrowdown("");
+                setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
             >
@@ -205,7 +289,8 @@ const Orders = () => {
               }
               onClick={() => {
                 if (selectedLink !== "CANCELLED") setSelectedLink("CANCELLED");
-                setorderFilter({ duration: "", status: "", keyword: "" });
+                setdurationDrowdown("");
+                setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
             >
@@ -220,7 +305,8 @@ const Orders = () => {
               }
               onClick={() => {
                 if (selectedLink !== "RETURNED") setSelectedLink("RETURNED");
-                setorderFilter({ duration: "", status: "", keyword: "" });
+                setdurationDrowdown("");
+                setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
               }}
             >
@@ -561,18 +647,112 @@ const Orders = () => {
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  duration: {
-                                    label: val?.label,
-                                    id: val?.id,
-                                    value: val?.value,
-                                  },
+                                setdurationDrowdown({
+                                  label: val?.label,
+                                  id: val?.id,
+                                  value: val?.value,
                                 });
+                                if (val?.value === "CUSTOM") {
+                                  setopenDateModal(true);
+                                }
                               }}
-                              value={orderFilter?.duration}
+                              value={durationDrowdown}
                             />
                           </Grid>
+                          <DateFilterModal
+                            setformDate={setformDate}
+                            setorderFilter={setorderFilter}
+                            setopenDateModal={setopenDateModal}
+                            setdurationDrowdown={setdurationDrowdown}
+                            setdateModal={setdateModal}
+                            dateModal={dateModal}
+                            openDateModal={openDateModal}
+                          />
+                          {/* {openDateModal && (
+                            <ModalComponent
+                              open={openDateModal}
+                              ModalTitle="Select Duration"
+                              onCloseIconClick={() => {
+                                setdurationDrowdown({
+                                  id: 1,
+                                  label: "Last 30 days",
+                                  value: "MONTH",
+                                });
+                                setopenDateModal(false);
+                                setorderFilter({
+                                  status: {
+                                    label: "Pending",
+                                    id: 1,
+                                    value: "PENDING",
+                                  },
+                                  keyword: "",
+                                });
+                              }}
+                              onSaveBtnClick={() => {
+                                setformDate({ ...dateModal });
+                                setopenDateModal(false);
+                              }}
+                              onClearBtnClick={() => {
+                                setdateModal({
+                                  startDate: "",
+                                  endDate: "",
+                                });
+                              }}
+                            >
+                              <Grid container spacing={2} className="my-2">
+                                <Grid item xs={6}>
+                                  <DatePickerComponent
+                                    size="small"
+                                    label="Start Date"
+                                    inputlabelshrink
+                                    value={
+                                      dateModal.startDate
+                                        ? parse(
+                                            dateModal.startDate,
+                                            "MM-dd-yyyy HH:mm:ss",
+                                            new Date()
+                                          )
+                                        : null
+                                    }
+                                    onDateChange={(date) => {
+                                      setdateModal((pre) => ({
+                                        ...pre,
+                                        startDate: format(
+                                          date,
+                                          "MM-dd-yyyy HH:mm:ss"
+                                        ),
+                                      }));
+                                    }}
+                                  />
+                                </Grid>
+                                <Grid item xs={6}>
+                                  <DatePickerComponent
+                                    value={
+                                      dateModal.endDate
+                                        ? parse(
+                                            dateModal.endDate,
+                                            "MM-dd-yyyy HH:mm:ss",
+                                            new Date()
+                                          )
+                                        : null
+                                    }
+                                    onDateChange={(date) => {
+                                      setdateModal((pre) => ({
+                                        ...pre,
+                                        endDate: format(
+                                          date,
+                                          "MM-dd-yyyy HH:mm:ss"
+                                        ),
+                                      }));
+                                    }}
+                                    size="small"
+                                    label="End Date"
+                                    inputlabelshrink
+                                  />
+                                </Grid>
+                              </Grid>
+                            </ModalComponent>
+                          )} */}
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
                               list={statusList}
@@ -597,7 +777,7 @@ const Orders = () => {
                       <Grid item sm={3}>
                         <SearchComponent
                           fullWidth
-                          placeholder="Search Orders"
+                          placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
                             setorderFilter({
                               ...orderFilter,
@@ -641,7 +821,7 @@ const Orders = () => {
                       <Grid item sm={3}>
                         <SearchComponent
                           fullWidth
-                          placeholder="Search Orders"
+                          placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
                             setorderFilter({
                               ...orderFilter,
@@ -685,24 +865,33 @@ const Orders = () => {
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  duration: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
+                                setdurationDrowdown({
+                                  label: val?.label,
+                                  id: val?.id,
+                                  value: val?.value,
                                 });
+                                if (val?.value === "CUSTOM") {
+                                  setopenDateModal(true);
+                                }
                               }}
-                              value={orderFilter.duration}
+                              value={durationDrowdown}
                             />
                           </Grid>
+                          <DateFilterModal
+                            setformDate={setformDate}
+                            setorderFilter={setorderFilter}
+                            setopenDateModal={setopenDateModal}
+                            setdurationDrowdown={setdurationDrowdown}
+                            setdateModal={setdateModal}
+                            dateModal={dateModal}
+                            openDateModal={openDateModal}
+                          />
                         </Grid>
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
                           fullWidth
-                          placeholder="Search Orders"
+                          placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
                             setorderFilter({
                               ...orderFilter,
@@ -746,24 +935,33 @@ const Orders = () => {
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
-                                setorderFilter({
-                                  ...orderFilter,
-                                  duration: {
-                                    label: val.label,
-                                    id: val.id,
-                                    value: val.value,
-                                  },
+                                setdurationDrowdown({
+                                  label: val?.label,
+                                  id: val?.id,
+                                  value: val?.value,
                                 });
+                                if (val?.value === "CUSTOM") {
+                                  setopenDateModal(true);
+                                }
                               }}
-                              value={orderFilter.duration}
+                              value={durationDrowdown}
                             />
                           </Grid>
+                          <DateFilterModal
+                            setformDate={setformDate}
+                            setorderFilter={setorderFilter}
+                            setopenDateModal={setopenDateModal}
+                            setdurationDrowdown={setdurationDrowdown}
+                            setdateModal={setdateModal}
+                            dateModal={dateModal}
+                            openDateModal={openDateModal}
+                          />
                         </Grid>
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
                           fullWidth
-                          placeholder="Search Orders"
+                          placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
                             setorderFilter({
                               ...orderFilter,
