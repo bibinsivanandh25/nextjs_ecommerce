@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Badge, Grid, Paper, Typography } from "@mui/material";
+import { Badge, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -89,6 +89,13 @@ const HelpAndSupport = () => {
   ];
   const columns = [
     {
+      id: "col6", //  id value in column should be presented in row as key
+      label: "Sl. No.",
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+    },
+    {
       id: "col1", //  id value in column should be presented in row as key
       label: "Date and Time",
       align: "center",
@@ -169,7 +176,7 @@ const HelpAndSupport = () => {
   const mapRowsToTable = (data) => {
     const result = [];
 
-    data.forEach((row) => {
+    data.forEach((row, index) => {
       const flag = row.helpSupportMessages?.map((item) => {
         return item.helpSupportMessageViews.some(
           (value) => value.viewedById == user.userId
@@ -177,6 +184,7 @@ const HelpAndSupport = () => {
       });
       result.push({
         id: row.ticketId,
+        col6: index + 1,
         col1: new Date(row.createdDate).toLocaleString(),
         col2: row.ticketId,
         col3: row.issueSubject,
@@ -187,7 +195,7 @@ const HelpAndSupport = () => {
         ),
         col5: (
           <Grid className="d-flex justify-content-center">
-            <Grid>
+            <Grid className="d-flex justify-content-center">
               <CustomIcon
                 type="view"
                 title="View & Reply"
@@ -197,7 +205,7 @@ const HelpAndSupport = () => {
                 className="fs-18 me-2 fit-content"
               />
             </Grid>
-            <Grid classNamw="mx-2">
+            <Grid className="d-flex justify-content-center">
               <Badge
                 variant="dot"
                 sx={{
@@ -215,7 +223,7 @@ const HelpAndSupport = () => {
                 />
               </Badge>
             </Grid>
-            <Grid>
+            {/* <Grid>
               <Typography
                 className="h-5 color-orange ms-2"
                 onClick={() => {
@@ -228,7 +236,7 @@ const HelpAndSupport = () => {
               >
                 Reply
               </Typography>
-            </Grid>
+            </Grid> */}
           </Grid>
         ),
       });
