@@ -231,12 +231,12 @@ const WishList = () => {
                   WebkitTransition: "all 0.2s ease-in-out",
                 }}
                 className={`d-flex  flex-column cursor-pointer justify-content-center align-items-center m-2 ${
-                  selectedList.id !== item.id ? "theme_bg_color" : ""
+                  selectedList.id !== item.id ? "" : "theme_bg_color"
                 }`}
               >
                 <Typography
                   className={`fs-18 fw-bold text-capitalize ${
-                    selectedList.id !== item.id ? "color-white" : "theme_color"
+                    selectedList.id !== item.id ? "theme_color" : "color-white"
                   }`}
                 >
                   {item.title}
