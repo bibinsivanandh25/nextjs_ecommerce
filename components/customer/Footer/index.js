@@ -62,6 +62,9 @@ const Footer = ({ open = false }) => {
       title: "About us",
       items: [
         {
+          lable: "Sipplier Details",
+        },
+        {
           lable: `Email: ${supplieremailId}`,
         },
         {
@@ -103,7 +106,7 @@ const Footer = ({ open = false }) => {
                 </Typography>
                 {item.items.map((ele, ind) => (
                   <Typography
-                    className={`h-5 color-white mb-1 cursor-pointer d-inline ${classes.underlineClass}`}
+                    className={`h-5 color-white mb-1 cursor-pointer fit-content ${classes.underlineClass}`}
                     key={ind}
                     onClick={() => {
                       if (ele?.route) route.push(ele.route);
