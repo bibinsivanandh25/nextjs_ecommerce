@@ -315,6 +315,7 @@ const StoreSettings = () => {
     }
     return flag;
   };
+
   useEffect(() => {
     if (errorObj.description.length) {
       toastify(validateMessage, "error");
