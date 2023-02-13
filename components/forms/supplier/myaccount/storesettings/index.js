@@ -147,15 +147,6 @@ const daysList = [
   },
 ];
 
-// const themeColor = [
-//   "#e01313",
-//   "#16a887",
-//   "#e56700",
-//   "#f1b07b",
-//   "#a316a8",
-//   "#d6c20f",
-// ];
-
 const StoreSettings = () => {
   const [formValues, setFormValues] = useState({
     storeName: "",
@@ -324,6 +315,7 @@ const StoreSettings = () => {
     }
     return flag;
   };
+
   useEffect(() => {
     if (errorObj.description.length) {
       toastify(validateMessage, "error");
@@ -381,7 +373,6 @@ const StoreSettings = () => {
       }
     }
   };
-  console.log(themeColor);
 
   return (
     <Paper className="mnh-70vh overflow-auto hide-scrollbar">
