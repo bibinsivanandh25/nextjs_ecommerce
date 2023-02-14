@@ -168,6 +168,7 @@ const Orders = () => {
           orderStatus: item.orderStatus,
           orderDate: item.orderDate,
           productOwnerId: item.productOwnerId,
+          returnUptoDate: item?.returnUptoDate,
           // rating: item.rating,
           productTitle: item.productTitle,
           shippingAddressId: item.shippingAddressId,
@@ -788,6 +789,13 @@ const Orders = () => {
                       </Grid>
                     </Grid>
                     <MyOrders
+                      showCancelBtn={orderFilter?.status?.value === "PENDING"}
+                      showReturnBtn={orderFilter?.status?.value === "COMPLETED"}
+                      // showReturnBtn={selectedProduct.forEach((val) => {
+                      //   parse(val?.returnUptoDate, "MM-dd-yyyy", new Date()) >
+                      //     new Date();
+                      // })}
+                      orderFilter={orderFilter}
                       ShowReturnOrder={showReturnOrder}
                       setshowProdDetails={setshowProdDetails}
                       setSellerFeedbackModal={setSellerFeedbackModal}
