@@ -35,7 +35,7 @@ const prev2Year = new Date().getFullYear() - 2;
 const list = [
   { label: "Last 30 days", id: 1, value: "MONTH" },
   { label: "Last 6 Month", id: 1, value: "6MONTH" },
-  { label: "Last 1 Year", id: 1, value: "YEAR" },
+  // { label: "Last 1 Year", id: 1, value: "YEAR" },
   { label: prevYear, id: 2, value: "1YEAR" },
   { label: prev2Year, id: 3, value: "2YEAR" },
   { label: "Custom Duration", id: 3, value: "CUSTOM" },
