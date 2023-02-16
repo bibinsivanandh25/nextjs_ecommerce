@@ -134,11 +134,11 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   useEffect(() => {
     Object.entries(route?.query).forEach(([key, value]) => {
       if (key === "categoryId") {
-        getProducts(value, "", "");
+        getProducts(value, "");
         setCategoryId(value);
       }
       if (key === "subCategoryId") {
-        getProducts("", value, "");
+        getProducts("", value);
         setSubCategoryId(value);
       }
       if (key === "keyword") {

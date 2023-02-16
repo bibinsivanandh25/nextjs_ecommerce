@@ -104,6 +104,8 @@ function SimilarProducts({
       handleClose={() => {
         setShowDrawer(false);
       }}
+      titleContainerClass="bg-orange text-white"
+      titleClassName=" text-white"
     >
       <Grid
         container

@@ -190,6 +190,45 @@ const ProductCard = ({
       });
     }
   };
+  const getFlagPosition = (visibilityPlace) => {
+    switch (visibilityPlace) {
+      case "BOTTOM_RIGHT": {
+        return {
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          zIndex: 1,
+        };
+      }
+      case "TOP_RIGHT": {
+        return {
+          position: "absolute",
+          top: 0,
+          right: 0,
+          zIndex: 1,
+        };
+      }
+      case "BOTTOM_LEFT": {
+        return {
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          zIndex: 1,
+        };
+      }
+      // case "TOP_LEFT": {
+      //   break;
+      // }
+      default: {
+        return {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        };
+      }
+    }
+  };
   return (
     <motion.div
       whileHover={{
@@ -214,6 +253,15 @@ const ProductCard = ({
             overflow: "hidden",
           }}
         >
+          {item.flaged && (
+            <img
+              src={item.flagImageUrl}
+              width={100}
+              height={30}
+              alt=""
+              style={getFlagPosition(item.visibilityPlace)}
+            />
+          )}
           <Image
             src={item.image}
             height={height}

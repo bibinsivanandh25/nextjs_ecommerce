@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { productDetails } from "features/customerSlice";
+import { parse } from "date-fns";
 import CancelOrReturnModal from "../CancelOrReturnModal";
 
 const datas = [
@@ -244,12 +245,17 @@ const MyOrders = ({
                     >
                       {product.productTitle}
                     </Typography>
+                    {parse(product?.returnUptoDate, "MM-dd-yyyy", new Date()) >
+                    new Date() ? (
+                      <Typography className="mb-1">
+                        <small>
+                          Return window will close on {product?.returnUptoDate}
+                        </small>
+                      </Typography>
+                    ) : (
+                      <></>
+                    )}
 
-                    <Typography className="mb-1">
-                      <small>
-                        Return window will close on 20 - Aug - 2021(dummy data)
-                      </small>
-                    </Typography>
                     <ButtonComponent
                       label="Buy it Again"
                       variant="outlined"

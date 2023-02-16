@@ -121,7 +121,8 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
     data.forEach((item) => {
       if (item?.childCapabilityNameList?.length) {
         temp.push(...getCapability(item.childCapabilityNameList));
-      } else if (item.isEnable) {
+      }
+      if (item.isEnable) {
         if (item.capabilityType) {
           temp.push(item.capabilityType);
         } else {

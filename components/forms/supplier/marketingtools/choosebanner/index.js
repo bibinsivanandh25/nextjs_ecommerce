@@ -86,13 +86,16 @@ const ChooseBannerModal = ({
       headerClassName="fw-bold color-orange"
       titleClassName="fs-16"
       onSaveBtnClick={() => handleSaveBtnClick()}
+      onClearBtnClick={() => {
+        closeModal(false);
+      }}
     >
       {banners.length > 0 ? (
         <Grid container rowGap={1}>
           {banners.map((item) => (
             <Grid item sm={4} position="relative">
               <Image
-                src={item.bannerImageUrlForMobile}
+                src={item.bannerImageUrlForWeb}
                 aly="banner"
                 height={170}
                 width={270}
