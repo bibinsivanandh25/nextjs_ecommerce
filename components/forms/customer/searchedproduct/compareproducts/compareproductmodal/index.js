@@ -228,7 +228,29 @@ const CompareProductDetails = ({
                     ) : (
                       <Box className="px-2">
                         <Box className="d-flex justify-content-center">
-                          <CloseIcon
+                          <Typography
+                            className={
+                              ind !== 1
+                                ? "h-5 color-blue cursor-pointer fit-content"
+                                : "invisible"
+                            }
+                            onClick={() => {
+                              removeProduct(tableRows.ProductId[ind - 1]);
+                              const temp = JSON.parse(
+                                JSON.stringify(tableRows)
+                              );
+                              headers.forEach((keys) => {
+                                temp[keys].splice(ind, 1);
+                                setTableRows(temp);
+                              });
+                              if (temp.SKU.length === 2) {
+                                setShowModal(false);
+                              }
+                            }}
+                          >
+                            Remove <CloseIcon className="fs-14" />
+                          </Typography>
+                          {/* <CloseIcon
                             onClick={() => {
                               removeProduct(tableRows.ProductId[ind - 1]);
                               const temp = JSON.parse(
@@ -244,7 +266,7 @@ const CompareProductDetails = ({
                                 ? "text-muted cursor-pointer "
                                 : "invisible"
                             }
-                          />
+                          /> */}
                         </Box>
                         <Box className="d-flex justify-content-center">
                           <Image
@@ -308,7 +330,7 @@ const CompareProductDetails = ({
                   >
                     <Typography
                       className={`h-5 px-2 my-2 ${ind === 0 ? "fw-bold " : ""}`}
-                      lineHeight={1.5}
+                      lineHeight={3.5}
                     >
                       {Array.isArray(ele) ? (
                         ele.length ? (
@@ -364,16 +386,20 @@ const CompareProductDetails = ({
     <ModalComponent
       open={showModal}
       // maxWidth="80%"
+      modalClose={() => {
+        setShowModal(false);
+      }}
       onCloseIconClick={() => {
         setShowModal(false);
       }}
-      ModalWidth="60%"
+      // ModalWidth="80%"
       showFooter={false}
       showPositionedClose
       ModalTitle=""
       showCloseIcon={false}
-      minHeightClassName="mxh-75vh"
+      minHeightClassName="mxh-75vh mxw-85vw"
       headerBorder="none"
+      minWidth="fit-content"
     >
       <Box className="">
         {renderProducts()}

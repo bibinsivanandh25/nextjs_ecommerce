@@ -325,6 +325,8 @@ const WishList = () => {
                   </TableCell>
                   <TableCell align="center">Product Details</TableCell>
                   <TableCell align="center">Added Date</TableCell>
+                  <TableCell align="center">Sale Price</TableCell>
+                  <TableCell align="center">Status</TableCell>
                   <TableCell align="center">Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -356,8 +358,10 @@ const WishList = () => {
                     <TableCell align="center">
                       {format(new Date(row.addedAt), "dd MMM yyyy")}
                     </TableCell>
+                    <TableCell align="center">Rs. {row.salePrice}</TableCell>
+                    <TableCell align="center">{row.stockStatus}</TableCell>
                     <TableCell align="center">
-                      <div className="d-flex align-items-center w-75 justify-content-evenly mt-4">
+                      <div className="d-flex flex-column align-items-center w-75 justify-content-center ms-3">
                         <motion.div
                           whileHover={{
                             scale: 1.2,

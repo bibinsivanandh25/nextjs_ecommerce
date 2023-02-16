@@ -697,10 +697,14 @@ const Header = () => {
                   }}
                 />
                 <Badge
-                  // badgeContent={countCartstate == 0 ? "" : countCartstate}
-                  badgeContent={countCartstate}
-                  color="warning"
+                  badgeContent={countCartstate == 0 ? "" : countCartstate}
                   className={countCartstate == 0 ? "d-none" : "mb-4"}
+                  sx={{
+                    "& .MuiBadge-badge": {
+                      color: "white",
+                      backgroundColor: "red",
+                    },
+                  }}
                 />
               </span>
             </Tooltip>

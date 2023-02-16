@@ -200,7 +200,7 @@ const HelpandsupportView = ({
     );
   };
   return (
-    <Paper className="mnh-80vh">
+    <Paper className="mnh-80vh pt-2">
       <Box
         className="d-flex align-items-center ms-3"
         onClick={() =>
@@ -211,7 +211,7 @@ const HelpandsupportView = ({
         }
       >
         <Box
-          className="d-inline-block cursor-pointer d-flex ms-2 align-items-center"
+          className="d-flex  cursor-pointer d-flex  align-items-center"
           onClick={() =>
             setShowView({
               show: false,
@@ -219,9 +219,7 @@ const HelpandsupportView = ({
             })
           }
         >
-          <Typography className="theme_color cursor-pointer fw-bold">
-            <ArrowBack className="h-4" />
-          </Typography>
+          <ArrowBack className="h-4 me-2 theme_color cursor-pointer fw-bold" />
           <Typography className="theme_color cursor-pointer fw-bold">
             Back
           </Typography>
