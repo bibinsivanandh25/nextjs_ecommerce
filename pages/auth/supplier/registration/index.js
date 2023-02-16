@@ -124,9 +124,9 @@ const Registration = () => {
       };
       await serviceUtil
         .post(`users/user-registration/send-otp`, {
-          mobileNumber: "6362656767",
+          mobileNumber: formValues.mobile,
           userType: route.pathname.split("/")[2].toUpperCase(),
-          email: "rakeshkumarrocky77@gmail.com",
+          email: formValues.mail,
         })
         .then((data) => {
           // if (data) {

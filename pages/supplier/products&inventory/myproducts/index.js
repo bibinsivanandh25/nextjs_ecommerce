@@ -411,7 +411,8 @@ const MyProducts = () => {
         toastify(message, "success");
         getTabList();
         getTableData("", "", 0);
-      } else if (err) {
+        setSelected([]);
+        setSelected([]);
         toastify(err?.response?.data?.message, "error");
       }
     }
@@ -447,7 +448,6 @@ const MyProducts = () => {
           value: item.id,
           label: item.name,
           purchaseId: item?.purchaseId,
-
           flagImagePojos: item.flagImagePojos.map((imgData) => {
             return {
               visibilityPlace: imgData.visibilityPlace,
