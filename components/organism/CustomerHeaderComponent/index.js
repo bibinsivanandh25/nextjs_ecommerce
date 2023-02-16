@@ -574,6 +574,7 @@ const Header = () => {
                     categoryId: category.id,
                   },
                 });
+                setSearchText("");
               }}
               className="theme_bg_color d-flex  p-1 rounded align-items-center cursor-pointer"
             >
@@ -674,6 +675,8 @@ const Header = () => {
               onClick={() => {
                 if (userId === "") {
                   route.push("/auth/customer/signin");
+                } else {
+                  handleRouting("/customer/orders");
                 }
               }}
             >

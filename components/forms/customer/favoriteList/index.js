@@ -134,8 +134,8 @@ const FavoriteList = ({ close = () => {} }) => {
                   <Image
                     className="rounded"
                     src={item.storeLogo}
-                    width={70}
-                    height={50}
+                    width={80}
+                    height={70}
                   />
                 </Box>
                 <Box className="d-flex flex-column ms-1 p-2">
