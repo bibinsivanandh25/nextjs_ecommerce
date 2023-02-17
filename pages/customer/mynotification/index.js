@@ -452,7 +452,7 @@ const MyNotification = () => {
     }
     const payload = {
       questionId: openEdit.qid,
-      userName,
+      userName: userName.replace(" ", "_"),
       answer: productReplyInput,
     };
     const { data, errRes } = await replyProductQuery(payload);
@@ -661,7 +661,8 @@ const MyNotification = () => {
                                       Replied by
                                     </Typography>
                                     &nbsp;
-                                    {item.answerFromType},&nbsp;
+                                    {item.answerFromType.replace("_", " ")}
+                                    ,&nbsp;
                                     <>{item.questionAnsweredAt}</>
                                   </Typography>
                                 </>
@@ -691,7 +692,8 @@ const MyNotification = () => {
                                       Replied by
                                     </Typography>
                                     &nbsp;
-                                    {item.answerFromType},&nbsp;
+                                    {item.answerFromType.replace("_", " ")}
+                                    ,&nbsp;
                                     <>{item.questionAnsweredAt}</>
                                   </Typography>
                                 </>
