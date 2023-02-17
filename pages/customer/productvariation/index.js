@@ -322,7 +322,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
               }}
             >
               {productData.map((item, index) => (
-                <Grid item md={4} lg={3} sm={6} key={index}>
+                <Grid item md={3} lg={2} sm={6} key={index}>
                   <ProductDetailsCard
                     productDetail={item}
                     viewType={viewIconClick ? "row" : "Grid"}

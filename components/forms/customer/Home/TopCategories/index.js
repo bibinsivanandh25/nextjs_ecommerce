@@ -60,7 +60,7 @@ const TopCategories = () => {
               height={150}
               width={150}
               clickCardCategory={() => {
-                console.log(ele);
+                // console.log(ele);
               }}
             />
           </Box>

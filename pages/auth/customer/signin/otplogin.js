@@ -163,7 +163,7 @@ const OtpLogIn = () => {
         .then((data) => {
           if (data) {
             setSubmitted(true);
-            console.log(data.data.message, "data");
+            // console.log(data.data.message, "data");
             toastify(data.data.message, "success");
           }
         })

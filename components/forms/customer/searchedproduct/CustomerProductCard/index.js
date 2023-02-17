@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
@@ -221,8 +222,8 @@ function ProductDetailsCard({
               dynamicHeight={false}
               list={productDetail.images}
               showIndicators={hover}
-              carouselImageMaxHeight={viewType === "Grid" ? "250px" : "0"}
-              carouselImageMinHeight={viewType === "Grid" ? "250px" : "170px"}
+              carouselImageMaxHeight={viewType === "Grid" ? "150px" : "0"}
+              carouselImageMinHeight={viewType === "Grid" ? "150px" : "170px"}
               onClickItem={handleProductClick}
             />
           </div>

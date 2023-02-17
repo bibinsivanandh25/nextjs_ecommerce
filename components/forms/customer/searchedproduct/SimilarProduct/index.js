@@ -48,6 +48,7 @@ function SimilarProducts({
         userCartId: ele.userCartId,
         isCarted: ele.presentInCart,
         subCategoryId: ele.subcategoryId,
+        variationDetails: ele.variationDetails,
       });
     });
     return temp;
