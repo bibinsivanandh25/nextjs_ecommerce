@@ -13,6 +13,7 @@ import ReactImageMagnify from "react-image-magnify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCouponsData,
+  saveAsRecentProduct,
   getAllMinumCart,
   getAllProductDetails,
   getAllRating,
@@ -114,6 +115,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
     const copyTexts = document.getElementById("MrMrsCoupon").innerHTML;
     navigator.clipboard.writeText(copyTexts);
     toastify("Coupon Code Copied Successfully!", "success");
+  };
+
+  const recentProductSave = async () => {
+    const payload = {
+      productVariationId: userData.productId,
+      supplierStoreCode: userData.storeCode,
+      customerId: userData.userId,
+      profileId: userData.profileId,
+    };
+    saveAsRecentProduct(payload);
   };
 
   useEffect(() => {
@@ -298,6 +309,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
     getMinimumCart();
     getCouponsData();
+    recentProductSave();
     return () => {
       setSelectedImage("");
       setSelectedMasterData({});
@@ -521,7 +533,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 background: "hsla(0, 0%, 100%, .3)",
                                 border: "1px solid #fff",
                               }}
-                              enlargedImageClassName=""
+                              enlargedImageClassName="bg-white"
                               style={{ position: "relative" }}
                             />
                             <Paper
@@ -1635,6 +1647,57 @@ const ProductDetails = ({ isSideBarOpen }) => {
                       scrollPage={scrollPage}
                     />
                   </Grid>
+                </Grid>
+                <Grid container className="mt-3 mb-2">
+                  <Grid item md={6}>
+                    <Typography className="fw-600 h-4">
+                      Product Details
+                    </Typography>
+                    <Grid container>
+                      <Grid item md={4} className="color-gray h-p89">
+                        Brand
+                      </Grid>
+                      {/* <Grid item md={1}>
+                        :
+                      </Grid> */}
+                      <Grid item md={7} className="fw-500 h-p89">
+                        {masterData.brand}
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  {masterData?.otherInformation &&
+                    Object.keys(masterData?.otherInformation)?.length > 0 && (
+                      <Grid item md={6}>
+                        <Typography className="fw-600 h-4">
+                          Other Details
+                        </Typography>
+                        {Object.entries(masterData?.otherInformation).map(
+                          (item) => (
+                            <Grid container>
+                              <Grid item md={4}>
+                                <Typography
+                                  lineHeight={2}
+                                  className="text-muted h-p89"
+                                >
+                                  {item[0]}
+                                </Typography>
+                              </Grid>
+                              {/* <Grid item md={1}>
+                                :
+                              </Grid> */}
+                              <Grid item md={7}>
+                                <Typography
+                                  lineHeight={2}
+                                  className="h-p89 fw-500"
+                                >
+                                  {item[1]}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          )
+                        )}
+                      </Grid>
+                    )}
                 </Grid>
               </Box>
             ) : (

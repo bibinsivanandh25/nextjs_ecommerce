@@ -71,6 +71,7 @@ const SwitchProfile = ({
           profileName: data.data.profileName,
         })
       );
+      setShowSwitchProfile(false);
       getProfiles();
       router.push("/customer/home");
     } else if (err) {

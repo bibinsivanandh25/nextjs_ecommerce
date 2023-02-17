@@ -186,7 +186,7 @@ const NewAddress = ({
           ? await saveCustomerAddress(customer.userId, payload)
           : await editCustomerAddress(payload);
       if (data) {
-        if (modalType !== "add") {
+        if (modalType !== "add" || (modalType == "add" && data.data.primary)) {
           dispatch(
             storeUserInfo({
               ...customer,
