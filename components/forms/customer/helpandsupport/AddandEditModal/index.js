@@ -43,7 +43,7 @@ const ViewQuestions = ({ getParagraph, viewQuertData }) => {
   return (
     <Grid container spacing={3}>
       <Grid xs={12} item className="fs-15 fw-500">
-        {getParagraph("Cutomer Name", viewQuertData?.customerId)}
+        {getParagraph("Cutomer Name", viewQuertData?.customerName)}
         {getParagraph(
           "Product Image",
           <Grid className="d-flex justify-content-between">

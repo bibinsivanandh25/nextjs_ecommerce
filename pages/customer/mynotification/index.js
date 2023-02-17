@@ -200,9 +200,9 @@ const MyNotification = () => {
   const [errProductReply, seterrProductReply] = useState("");
   const onClickOfMenuItem = async (ele, id) => {
     if (ele === "Delete") {
-      const { data, errRes } = await deleteQuary(id);
-      if (data.data) {
-        toastify(data?.message, "success");
+      const { message, errRes } = await deleteQuary(id);
+      if (message) {
+        toastify(message, "success");
         getMyQueriesTableData(0);
       } else if (errRes) {
         toastify(errRes.message, "error");
