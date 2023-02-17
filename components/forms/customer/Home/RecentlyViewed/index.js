@@ -58,6 +58,7 @@ const RecentlyViewed = () => {
           flagImageUrl: ele.flagImageUrl,
           flaged: ele.flaged,
           visibilityPlace: ele.visibilityPlace,
+          variationDetails: ele.variationDetails,
         });
       });
     }

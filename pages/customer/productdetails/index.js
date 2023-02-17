@@ -13,6 +13,7 @@ import ReactImageMagnify from "react-image-magnify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCouponsData,
+  saveAsRecentProduct,
   getAllMinumCart,
   getAllProductDetails,
   getAllRating,
@@ -114,6 +115,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
     const copyTexts = document.getElementById("MrMrsCoupon").innerHTML;
     navigator.clipboard.writeText(copyTexts);
     toastify("Coupon Code Copied Successfully!", "success");
+  };
+
+  const recentProductSave = async () => {
+    const payload = {
+      productVariationId: userData.productId,
+      supplierStoreCode: userData.storeCode,
+      customerId: userData.userId,
+      profileId: userData.profileId,
+    };
+    saveAsRecentProduct(payload);
   };
 
   useEffect(() => {
@@ -298,6 +309,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     }
     getMinimumCart();
     getCouponsData();
+    recentProductSave();
     return () => {
       setSelectedImage("");
       setSelectedMasterData({});
@@ -521,7 +533,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 background: "hsla(0, 0%, 100%, .3)",
                                 border: "1px solid #fff",
                               }}
-                              enlargedImageClassName=""
+                              enlargedImageClassName="bg-white"
                               style={{ position: "relative" }}
                             />
                             <Paper
