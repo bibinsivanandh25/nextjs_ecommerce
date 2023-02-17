@@ -31,8 +31,8 @@ const deleteQuary = (id) => {
   return serviceUtil
     .deleteById(`/products/customer-question-answer/${id}`)
     .then((res) => {
-      const { message } = res && res.data;
-      return { message };
+      const data = res && res.data;
+      return { data };
     })
     .catch((err) => {
       const errRes = err;
