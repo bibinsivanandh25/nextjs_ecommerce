@@ -10,6 +10,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useUserInfo } from "services/hooks";
 import toastify from "services/utils/toastUtils";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { format } from "date-fns";
 
 const SupplierAddCoupons = ({
   setOpenAddModal = () => {},
@@ -99,10 +100,10 @@ const SupplierAddCoupons = ({
       const payload = {
         storeCouponCode: formValues.code,
         minimumOrderValue: parseInt(formValues.minpurchaseamount, 10),
-        expirationDate: new Date(formValues.couponExpiryDate)
-          .toLocaleDateString()
-          .toString()
-          .replaceAll("/", "-"),
+        expirationDate: format(
+          new Date(formValues.couponExpiryDate),
+          "MM-dd-yyyy"
+        ),
         couponUsageLimit: parseInt(formValues.usageLimitPerCoupon, 10),
         customerUsageLimit: parseInt(formValues.usageLimitPerUser, 10),
         couponAmount: parseInt(formValues.couponAmount, 10),

@@ -18,6 +18,7 @@ import {
 import { useUserInfo } from "services/hooks";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { format } from "date-fns";
 
 const MrMrsAddNewCoupons = ({
   setOpenAddModal = () => {},
@@ -157,19 +158,17 @@ const MrMrsAddNewCoupons = ({
   };
 
   const handleSubmitClick = async (couponStatus) => {
-    // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
-    // console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
         discountType: formValues.discountTypeObj?.value,
         couponAmount: parseInt(formValues.couponAmount, 10),
         subCategoryIncluded: formValues.subcategoryObj?.value,
-        couponExpiryDate: new Date(formValues.couponExpiryDate)
-          .toLocaleDateString()
-          .toString()
-          .replaceAll("/", "-"),
+        couponExpiryDate: format(
+          new Date(formValues.couponExpiryDate),
+          "MM-dd-yyyy"
+        ),
         categoryIncluded: formValues.categoryIncludeObj?.value,
         productsIncluded: formValues.productsIncludeObj?.map((ele) => ele?.id),
         usageLimitPerCoupon: parseInt(formValues.usageLimitPerCoupon, 10),
