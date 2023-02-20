@@ -73,7 +73,20 @@ const SupplierAddCoupons = ({
     if (formValues.description.length > 255) {
       errObj.description = validateMessage.alpha_numeric_max_255;
     }
-    validateFields("couponAmount");
+    if (formValues?.discountTypeObj?.value == "CASH") {
+      if (!formValues.couponAmount) {
+        errObj.couponAmount = validateMessage.field_required;
+      }
+    }
+    if (formValues?.discountTypeObj?.value == "PERCENTAGE") {
+      if (!formValues.couponAmount) {
+        errObj.couponPercentage = validateMessage.field_required;
+      }
+    }
+    if (!formValues?.discountTypeObj) {
+      errObj.couponAmount = validateMessage.field_required;
+    }
+    // validateFields("couponAmount");
     const limitErrors = {
       limitError: null,
     };
@@ -99,19 +112,28 @@ const SupplierAddCoupons = ({
     if (isValid) {
       const payload = {
         storeCouponCode: formValues.code,
-        minimumOrderValue: parseInt(formValues.minpurchaseamount, 10),
+        minimumOrderValue: 0,
         expirationDate: format(
           new Date(formValues.couponExpiryDate),
           "MM-dd-yyyy"
         ),
         couponUsageLimit: parseInt(formValues.usageLimitPerCoupon, 10),
         customerUsageLimit: parseInt(formValues.usageLimitPerUser, 10),
-        couponAmount: parseInt(formValues.couponAmount, 10),
+        couponAmount:
+          formValues.discountTypeObj?.value?.toUpperCase() === "CASH"
+            ? parseInt(formValues.couponAmount, 10)
+            : null,
+        percentageValue:
+          formValues.discountTypeObj?.value?.toUpperCase() === "PERCENTAGE"
+            ? parseInt(formValues.couponAmount, 10)
+            : null,
+        discounted: purchaseCheckbox,
         couponStatus,
         discountType: formValues.discountTypeObj.value?.toUpperCase(),
         maximumDiscountValue: parseInt(formValues.maximumamount, 10),
         supplierId: id,
         description: formValues.description,
+        minimumPurchaseAmount: parseInt(formValues.minpurchaseamount, 10),
       };
       const { data, err } = await CreateSupplierStoreCoupons(payload);
       if (data) {
@@ -210,15 +232,43 @@ const SupplierAddCoupons = ({
             </Grid>
             <Grid item xs={12}>
               <InputBox
-                label="Coupon Amount"
+                label={
+                  formValues.discountTypeObj?.value?.toUpperCase() === "CASH"
+                    ? "Coupon Amount"
+                    : "Coupon Percentage"
+                }
                 inputlabelshrink
                 type="number"
-                value={formValues.couponAmount}
+                value={
+                  formValues.discountTypeObj?.value?.toUpperCase() === "CASH"
+                    ? formValues.couponAmount
+                    : formValues?.couponPercentage
+                }
                 id="couponAmount"
                 name="couponAmount"
-                onInputChange={handleInputChange}
-                error={Boolean(error.couponAmount)}
-                helperText={error.couponAmount}
+                onInputChange={(e) => {
+                  setFormValues({
+                    ...formValues,
+                    ...(formValues.discountTypeObj?.value?.toUpperCase() ===
+                      "CASH" && {
+                      couponAmount: e.target.value,
+                    }),
+                    ...(formValues.discountTypeObj?.value?.toUpperCase() ===
+                      "PERCENTAGE" && {
+                      couponPercentage: e.target.value,
+                    }),
+                  });
+                }}
+                error={
+                  formValues.discountTypeObj?.value?.toUpperCase() === "CASH"
+                    ? Boolean(error.couponAmount)
+                    : Boolean(error.couponPercentage)
+                }
+                helperText={
+                  formValues.discountTypeObj?.value?.toUpperCase() === "CASH"
+                    ? error.couponAmount
+                    : error.couponPercentage
+                }
               />
             </Grid>
             <Grid item xs={12}>
