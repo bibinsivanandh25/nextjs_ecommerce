@@ -27,6 +27,7 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { FaCheck } from "react-icons/fa";
 
 const timeToProcessList = [
   {
@@ -745,7 +746,7 @@ const StoreSettings = () => {
                       height: "4rem",
                       width: "4rem",
                     }}
-                    className={`rounded ${
+                    className={`rounded d-flex justify-content-center align-items-center ${
                       selectedTheme === item.storeThemeId
                         ? "border border-primary border-2"
                         : ""
@@ -753,7 +754,11 @@ const StoreSettings = () => {
                     onClick={() => {
                       setSelectedTheme(item.storeThemeId);
                     }}
-                  />
+                  >
+                    {selectedTheme === item.storeThemeId && (
+                      <FaCheck color="white" size={28} />
+                    )}
+                  </div>
                 </Grid>
               ))}
             </Grid>
