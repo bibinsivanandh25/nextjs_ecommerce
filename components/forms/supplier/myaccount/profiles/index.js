@@ -120,6 +120,7 @@ const Profile = () => {
             profileName: data.profileName,
           })
         );
+        toastify(data.message, "success");
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }

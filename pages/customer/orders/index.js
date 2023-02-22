@@ -43,7 +43,7 @@ const list = [
 const statusList = [
   { label: "Pending", id: 1, value: "PENDING" },
   { label: "Completed", id: 2, value: "COMPLETED" },
-  { label: "REJECTED", id: 2, value: "REJECTED" },
+  { label: "Rejected", id: 2, value: "REJECTED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);

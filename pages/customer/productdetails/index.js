@@ -641,13 +641,17 @@ const ProductDetails = ({ isSideBarOpen }) => {
                         </Typography>
                       </Grid>
                       <Grid item md={1} display="flex" justifyContent="end">
-                        <RemoveRedEye className="fs-18 color-gray" />
+                        <Tooltip title="View Count">
+                          <RemoveRedEye className="fs-18 color-gray" />
+                        </Tooltip>
                         <Typography className="mx-1 h-5 color-gray">
                           {selectedMasterData?.viewCount}
                         </Typography>
                       </Grid>
                       <Grid item md={1} display="flex" justifyContent="end">
-                        <AirportShuttle className="fs-18 color-gray" />
+                        <Tooltip title="Delivered product Count">
+                          <AirportShuttle className="fs-18 color-gray" />
+                        </Tooltip>
                         <Typography className="mx-1 h-5 color-gray">
                           {selectedMasterData?.deliveredcount}
                         </Typography>

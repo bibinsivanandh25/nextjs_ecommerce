@@ -529,7 +529,7 @@ const FAQPage = ({
             />
             <Typography className="h-5">
               Your question might be answered by suppliers, Re-sellers, or
-              customers who boght this product.
+              customers who bought this product.
             </Typography>
           </Box>
         </ModalComponent>

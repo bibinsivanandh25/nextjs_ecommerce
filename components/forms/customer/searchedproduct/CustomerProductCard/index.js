@@ -37,23 +37,23 @@ const useStyles = makeStyles(() => ({
 const iconListData = [
   {
     iconName: "viewCarouselOutlinedIcon",
-    title: "View",
+    title: "Similar Products",
   },
   {
     iconName: "favoriteBorderIcon",
-    title: "Favorite",
+    title: "Wishlist",
   },
   {
     iconName: "localMallIcon",
-    title: "Favorite",
+    title: "Add to cart",
   },
   {
     iconName: "visibilityOutlinedIcon",
-    title: "Search",
+    title: "View",
   },
   {
     iconName: "balanceIcon",
-    title: "Search",
+    title: "Compare",
   },
 ];
 
@@ -261,6 +261,7 @@ function ProductDetailsCard({
                   key={index}
                 >
                   <CustomIcon
+                    title={item.title}
                     type={item.iconName}
                     className="fs-18"
                     onIconClick={() => {

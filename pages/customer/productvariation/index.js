@@ -16,6 +16,8 @@ import { useSelector } from "react-redux";
 import ProductDetailsCard from "@/forms/customer/searchedproduct/CustomerProductCard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { customerHome } from "public/assets";
+import Image from "next/image";
 
 const useStyles = makeStyles(() => ({
   selected: {
@@ -321,17 +323,30 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 width: `calc(100% - 10px)`,
               }}
             >
-              {productData.map((item, index) => (
-                <Grid item md={3} lg={2} sm={6} key={index}>
-                  <ProductDetailsCard
-                    productDetail={item}
-                    viewType={viewIconClick ? "row" : "Grid"}
-                    getProducts={() => {
-                      getProducts(categoryId, subCategoryId, searchKeyword, 0);
-                    }}
-                  />
-                </Grid>
-              ))}
+              {productData.length ? (
+                productData.map((item, index) => (
+                  <Grid item md={3} lg={2} sm={6} key={index}>
+                    <ProductDetailsCard
+                      productDetail={item}
+                      viewType={viewIconClick ? "row" : "Grid"}
+                      getProducts={() => {
+                        getProducts(
+                          categoryId,
+                          subCategoryId,
+                          searchKeyword,
+                          0
+                        );
+                      }}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Image
+                  src={customerHome.noProducts}
+                  height="250px"
+                  layout="fill"
+                />
+              )}
             </Grid>
           </Box>
           {productData?.length &&

@@ -242,7 +242,7 @@ const WishList = () => {
                   {item.title}
                 </Typography>
                 <div className="d-flex">
-                  <Tooltip title="Add to cart">
+                  <Tooltip title="Update Wishlist">
                     <EditIcon
                       className="m-1 shadow cursor-pointer rounded-circle theme_bg_color_1 theme_color"
                       size={30}
@@ -426,11 +426,15 @@ const WishList = () => {
         </div>
       </Paper>
       <ModalComponent
-        ModalTitle="Create New Wish List"
+        ModalTitle={
+          modalType == "Add" ? "Create New Wish List" : "Update Wishlist"
+        }
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
           setError(null);
+          setModalType("Add");
+          setNewWishListName("");
         }}
         ClearBtnText="Clear"
         saveBtnText={

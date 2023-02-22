@@ -32,7 +32,7 @@ function CarousalComponent({
       {list.length > 0
         ? list.map((value) => {
             return (
-              <div>
+              <div style={{ cursor: "pointer" }}>
                 <img
                   src={value.src}
                   alt=""

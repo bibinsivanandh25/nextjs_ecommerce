@@ -48,14 +48,13 @@ const TopTrending = () => {
           {topTrendingData.map((item) => (
             // eslint-disable-next-line react/no-array-index-key
 
-            <Box
-              className="d-flex p-1 cursor-pointer"
-              key={item.productVariationId}
-              onClick={() => {
-                getTrandingProductDetails(item);
-              }}
-            >
-              <Box className="me-1 ">
+            <Box className="d-flex p-1 " key={item.productVariationId}>
+              <Box
+                className="me-1 "
+                onClick={() => {
+                  getTrandingProductDetails(item);
+                }}
+              >
                 <Image
                   src={item.variationMedia}
                   layout="fixed"
@@ -65,7 +64,12 @@ const TopTrending = () => {
                 />
               </Box>
               <Box className="ms-1">
-                <Typography className="cursor-pointer">
+                <Typography
+                  className="cursor-pointer"
+                  onClick={() => {
+                    getTrandingProductDetails(item);
+                  }}
+                >
                   {item.productTitle}
                 </Typography>
                 <Rating value={item.customerRatings} readOnly />

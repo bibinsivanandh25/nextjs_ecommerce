@@ -713,6 +713,7 @@ const MyNotification = () => {
 
       {openView.open && openView.type === "myview" && (
         <ModalComponent
+          titleClassName="fs-16"
           open={openView.open}
           ModalTitle="View"
           showSaveBtn={false}
