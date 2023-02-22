@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
@@ -28,6 +29,7 @@ import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { FaCheck } from "react-icons/fa";
+import Link from "next/link";
 
 const timeToProcessList = [
   {
@@ -375,6 +377,17 @@ const StoreSettings = () => {
     }
   };
 
+  const getStoreUrl = () => {
+    if (!themeColor.length) return "";
+    const themeObj = selectedTheme
+      ? themeColor[selectedTheme - 1]
+      : themeColor[0];
+    const param = btoa(
+      `storeCode=${formValues.storeCode}&primaryColor=${themeObj.primaryColor}&secondaryColor=${themeObj.secondaryColor}`
+    );
+    return `/auth/customer?store=${param}`;
+  };
+
   return (
     <Paper className="mnh-70vh overflow-auto hide-scrollbar">
       <Box>
@@ -448,7 +461,7 @@ const StoreSettings = () => {
               </Box>
               <Box>
                 <Box className="my-2">
-                  <Button
+                  {/* <Button
                     variant="contained"
                     size="small"
                     sx={{
@@ -460,9 +473,16 @@ const StoreSettings = () => {
                       },
                     }}
                     className="h-5"
-                  >
-                    View Shop
-                  </Button>
+                  ></Button> */}
+
+                  <Link href={getStoreUrl()}>
+                    <a
+                      target="_blank"
+                      style={{ textDecoration: "none !important" }}
+                    >
+                      <ButtonComponent label="View Shop" muiProps="px-3" />
+                    </a>
+                  </Link>
                 </Box>
                 <Box>
                   <Button

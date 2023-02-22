@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import { Box, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -108,6 +109,47 @@ const ShopCode = () => {
       //   });
     }
   };
+
+  const storePreview = async () => {
+    const temp = {};
+    atob(route?.query?.store)
+      .split("&")
+      .forEach((item) => {
+        temp[item.split("=")[0]] = item.split("=")[1];
+      });
+    const { data, err } = await getStoreByStoreCode(temp.storeCode);
+    if (data) {
+      const userInfo = {
+        userId: "",
+        firstName: "",
+        lastName: "",
+        supplierId: data?.supplierId,
+        supplierStoreLogo: data?.supplierStoreLogo,
+        supplierStoreName: data?.supplierStoreName,
+        storeCode: data?.supplierStoreCode,
+        storeThemes: {
+          primaryColor: temp.primaryColor,
+          secondaryColor: temp.secondaryColor,
+        },
+        shopDescription: data?.shopDescription,
+        shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
+      };
+      dispatch(storeUserInfo(userInfo));
+      route.push({
+        pathname: `/customer/home`,
+        query: {
+          supplierId: data.supplierId,
+          storeCode: formValues.shopCode,
+        },
+      });
+    }
+    if (err) {
+      toastify(err.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    if (route.query?.store) storePreview();
+  }, [route.query]);
 
   return (
     <Box
