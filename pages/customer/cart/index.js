@@ -59,12 +59,6 @@ const Cart = () => {
 
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
-    if (data) return data;
-    return [];
-  };
-  const { data, refetch } = useQuery(["CART"], () => getproducts());
-
-  useEffect(() => {
     if (data) {
       const result = [];
       setPriceDetails({
@@ -97,10 +91,12 @@ const Cart = () => {
         });
       });
       setProducts([...result]);
-    } else {
-      setProducts([]);
+      return data;
     }
-  }, [data]);
+    setProducts([]);
+    return [];
+  };
+  const { refetch, isLoading } = useQuery(["CART"], () => getproducts());
 
   const mainRef = useRef(null);
   useEffect(() => {
@@ -670,19 +666,21 @@ const Cart = () => {
           <Typography className=" theme_bg_color_1 theme_color fs-16 fw-bold p-2 w-100">
             My Cart
           </Typography>
-          <Grid className="d-flex justify-content-center">
-            <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Your%20cart%20is%20empty%201.png"
-              alt="no product"
-              // layout="fill"
-              height={400}
-              width={800}
-              // style={{
-              //   height: "100vh",
-              //   width: "80vw",
-              // }}
-            />
-          </Grid>
+          {!isLoading && (
+            <Grid className="d-flex justify-content-center">
+              <Image
+                src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Your%20cart%20is%20empty%201.png"
+                alt="no product"
+                // layout="fill"
+                height={400}
+                width={800}
+                // style={{
+                //   height: "100vh",
+                //   width: "80vw",
+                // }}
+              />
+            </Grid>
+          )}
         </Grid>
       )}
     </>

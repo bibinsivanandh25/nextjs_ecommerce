@@ -9,10 +9,12 @@ import { getTopTrandingProducts } from "services/customer/Home";
 const TopTrending = () => {
   const dispatch = useDispatch();
   const storeDetails = useSelector((state) => state.customer);
+  const [loading, setloading] = useState(false);
   const [topTrendingData, settopTrendingData] = useState([]);
   const route = useRouter();
   const getTopTranding = async () => {
     // const supplierId = "SP0123000312";
+    setloading(true);
     const { data, errRes } = await getTopTrandingProducts(
       storeDetails.supplierId
     );
@@ -20,7 +22,9 @@ const TopTrending = () => {
     if (data) {
       // temp.push(data.data);
       settopTrendingData(data.data);
+      setloading(false);
     } else if (errRes) {
+      setloading(false);
       // console.log(errRes);
     }
   };
@@ -78,20 +82,22 @@ const TopTrending = () => {
           ))}
         </Box>
       ) : (
-        <div
-          className="mxh-400 mnh-400"
-          style={{
-            height: "30vh",
-            width: "30vw",
-            position: "relative",
-          }}
-        >
-          <Image
-            src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
-            height="250px"
-            layout="fill"
-          />
-        </div>
+        !loading && (
+          <div
+            className="mxh-400 mnh-400"
+            style={{
+              height: "30vh",
+              width: "30vw",
+              position: "relative",
+            }}
+          >
+            <Image
+              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/sorry.png"
+              height="250px"
+              layout="fill"
+            />
+          </div>
+        )
       )}
     </Box>
   );

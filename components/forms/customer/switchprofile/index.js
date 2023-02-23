@@ -199,7 +199,8 @@ const SwitchProfile = ({
     str.split(" ").forEach((i) => {
       letters += i.toUpperCase()[0];
     });
-    return letters;
+    const profileInitial = letters.substring(0, 3);
+    return profileInitial;
   };
 
   useEffect(() => {

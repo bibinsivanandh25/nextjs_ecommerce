@@ -59,6 +59,7 @@ const Orders = () => {
   const [EachProductDetails, setEachProductDetails] = useState([]);
   const [getOrderApiCall, setgetOrderApiCall] = useState(false);
   const [openDateModal, setopenDateModal] = useState(false);
+  const [searchKeyword, setsearchKeyword] = useState("");
   const [orderFilter, setorderFilter] = useState({
     status: {
       label: "Pending",
@@ -72,6 +73,9 @@ const Orders = () => {
     label: "Last 30 days",
     value: "MONTH",
   });
+  useEffect(() => {
+    setsearchKeyword("");
+  }, [selectedLink]);
 
   const [productReviewState, setproductReviewState] = useState({
     retings: 0,
@@ -142,7 +146,7 @@ const Orders = () => {
     }
   }, [durationDrowdown]);
 
-  const getProducts = async () => {
+  const getProducts = async (search = searchKeyword) => {
     const payload = {
       customerId: user.userId,
       orderStatus: selectedLink,
@@ -151,7 +155,7 @@ const Orders = () => {
       startDate: formDate.startDate,
       endDate: formDate.endDate,
       selectStatusType: orderFilter.status.value || "",
-      keyword: orderFilter.keyword.toLocaleLowerCase(),
+      keyword: search,
     };
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
@@ -202,7 +206,7 @@ const Orders = () => {
   }, [showProdDetails]);
 
   useEffect(() => {
-    getProducts();
+    getProducts(searchKeyword);
   }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
@@ -777,6 +781,9 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -784,6 +791,12 @@ const Orders = () => {
                               ...orderFilter,
                               keyword: e,
                             });
+                          }}
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
                           }}
                         />
                       </Grid>
@@ -828,6 +841,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -898,6 +920,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -968,6 +999,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {

@@ -109,7 +109,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
 
   const scrollPage = () => {
     const element = document.getElementById("MainBox");
-    element.scrollIntoView();
+    element?.scrollIntoView();
   };
   const copyText = () => {
     const copyTexts = document.getElementById("MrMrsCoupon").innerHTML;

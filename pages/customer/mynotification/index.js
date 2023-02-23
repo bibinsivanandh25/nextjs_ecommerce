@@ -182,7 +182,9 @@ const MyNotification = () => {
   const [ProductDate, setProductDate] = useState({ fromDate: "", toDate: "" });
   const [pageNumber, setpageNumber] = useState(0);
   const [pageNumberProduct, setpageNumberProduct] = useState(0);
+
   const [value, setValue] = useState(0);
+
   const [openEdit, setopenEdit] = useState({
     open: false,
     qid: "",
@@ -406,10 +408,18 @@ const MyNotification = () => {
     }
   };
   useEffect(() => {
-    getMyQueriesTableData(0);
+    if (value == 0) {
+      getMyQueriesTableData(0);
+      setpageNumber(0);
+      setpageNumberProduct(0);
+    }
   }, [value]);
   // product query
-  const getProductData = async (page = pageNumber, keyword = "", dates) => {
+  const getProductData = async (
+    page = pageNumberProduct,
+    keyword = "",
+    dates
+  ) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
@@ -438,7 +448,11 @@ const MyNotification = () => {
     }
   };
   useEffect(() => {
-    getProductData();
+    if (value == 1) {
+      getProductData();
+      setpageNumber(0);
+      setpageNumberProduct(0);
+    }
   }, [value]);
   const replyMsgCloseIcon = () => {
     setopenEdit({ open: false, qid: "", type: "" });
@@ -554,6 +568,7 @@ const MyNotification = () => {
               getMyQueriesTableData(page, searchText, dates);
             }}
             tableRows={myQueriesRows}
+            tabChange={value}
             // tableRows={mapRowsToTable}
           />
         ) : (
@@ -565,6 +580,7 @@ const MyNotification = () => {
             handlePageEnd={(searchText, _, page = pageNumberProduct, dates) => {
               getProductData(page, searchText, dates);
             }}
+            tabChange={value}
           />
         )}
       </Paper>
