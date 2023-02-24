@@ -136,7 +136,6 @@ const FAQPage = ({
   useEffect(() => {
     getAllProductReview(0);
     getAllRatingDetails();
-    getProductQandAData(0);
   }, []);
 
   const [questionData, setQuestionData] = useState("");

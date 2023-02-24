@@ -123,6 +123,19 @@ const similarProductsData = async (payload) => {
       err,
     }));
 };
+
+const saveAsRecentProduct = (payload) => {
+  return serviceUtil
+    .post(`products/recent-product`, payload)
+    .then((res) => {
+      const { data } = res && res.data;
+      return { data };
+    })
+    .catch((err) => ({
+      err,
+    }));
+};
+
 export {
   getAllFrequentProduct,
   getAllProductDetails,
@@ -135,4 +148,5 @@ export {
   mainProductAddToCart,
   getAddToCartData,
   similarProductsData,
+  saveAsRecentProduct,
 };

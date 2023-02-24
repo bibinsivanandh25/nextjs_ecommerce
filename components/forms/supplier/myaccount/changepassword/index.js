@@ -10,8 +10,12 @@ import { useSelector } from "react-redux";
 
 const ChangePassword = ({ usertype = "SUPPLIER" }) => {
   const [error, setError] = useState({});
-  const user = useSelector((state) => state.customer);
-  const [formValues, setFormValues] = useState({ emailId: user.emailId });
+  const user = useSelector((state) => state.user);
+  const customerUser = useSelector((state) => state.customer);
+
+  const [formValues, setFormValues] = useState({
+    emailId: usertype === "SUPPLIER" ? user.emailId : customerUser.emailId,
+  });
   const [showPassword, setShowPassword] = useState({
     oldPassword: false,
     newPassword: false,
@@ -63,7 +67,8 @@ const ChangePassword = ({ usertype = "SUPPLIER" }) => {
       const { data, err } = await changeSupplierPassword(payload);
       if (data) {
         setFormValues({
-          emailId: user.emailId,
+          emailId:
+            usertype === "SUPPLIER" ? user.emailId : customerUser.emailId,
           oldPassword: "",
           newPassword: "",
           reEnterPassword: "",

@@ -1086,7 +1086,7 @@ export default function TableComponent({
                     showAutoCompleteOff={false}
                   />
                 </Grid>
-                <Grid item xs={2} display="flex" justifyContent="end">
+                <Grid item xs={2} display="flex" justifyContent="start">
                   <div
                     style={{ width: "40px", height: "38px" }}
                     className={`bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ${

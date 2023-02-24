@@ -25,3 +25,15 @@
 .theme_bg_color_1 {
   background-color: var(--secondaryColor) !important;
 }
+
+.color-orange {
+  color: var(--themeColor) !important;
+}
+
+.bg-orange {
+  background-color: var(--themeColor) !important;
+}
+
+.border-orange {
+  border-color: var(--themeColor) !important;
+}

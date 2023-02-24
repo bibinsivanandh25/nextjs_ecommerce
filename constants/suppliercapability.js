@@ -90,7 +90,7 @@ const suppliercapability = [
     isEnable: false,
   },
   {
-    capabilityType: "Help & support",
+    capabilityType: "Help & Support",
     isEnable: false,
   },
   {

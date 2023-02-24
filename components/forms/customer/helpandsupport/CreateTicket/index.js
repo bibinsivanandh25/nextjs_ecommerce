@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   helpandsupportFileUpload,
+  replyHelpandSupport,
   saveHelpandSupport,
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
@@ -19,8 +20,8 @@ const HelpandsupportCreate = ({
   setShowCreateComponent = () => {},
   getTabledata = () => {},
   selectedData,
+  modalType,
 }) => {
-  // const inputField = useRef();
   const issueTypes = [
     {
       label: "ORDER RELATED ISSUE",
@@ -54,11 +55,17 @@ const HelpandsupportCreate = ({
   // const route = useRouter();
   const user = useSelector((state) => state.customer);
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [userToType, setuserToType] = useState("SUPPLIER");
+  const [userToType, setuserToType] = useState(
+    modalType === "REPLY" ? selectedData.userToType : "SUPPLIER"
+  );
+
   const [formValue, setFormValue] = useState({
-    issueType: {},
-    OrderID: "",
-    subject: "",
+    issueType:
+      modalType == "REPLY"
+        ? { label: selectedData?.issueType, value: selectedData?.issueType }
+        : {},
+    OrderID: modalType == "REPLY" ? selectedData.orderId : "",
+    subject: modalType == "REPLY" ? selectedData?.issueSubject : "",
     content: "",
   });
   const [contentFile, setContentFile] = useState([]);
@@ -161,6 +168,26 @@ const HelpandsupportCreate = ({
       }
     }
   };
+  const replyFunction = async () => {
+    if (!validateFields()) {
+      const datas = await handleFileUpload();
+      const payload = {
+        ticketId: selectedData.ticketId,
+        messageFromId: user.userId,
+        messageFromType: "CUSTOMER",
+        message: formValue.content,
+        imageUrlList: datas || [],
+      };
+      const { data, err, message } = await replyHelpandSupport(payload);
+      if (data) {
+        // setShowView(false);
+        toastify(message, "success");
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
+    }
+  };
   return (
     <Paper className="w-100 mnh-80vh">
       {/* <Box className="d-flex align-items-center">
@@ -201,10 +228,9 @@ const HelpandsupportCreate = ({
             <Grid item xs={10}>
               <SimpleDropdownComponent
                 size="small"
-                disabled
-                value={selectedData.issueType}
+                value={formValue.issueType}
+                disabled={modalType == "REPLY"}
                 helperText={errorObj.issueType}
-                label={selectedData.issueType}
                 error={errorObj.issueType.length}
                 list={[...issueTypes]}
                 onDropdownSelect={(value) => {
@@ -223,10 +249,9 @@ const HelpandsupportCreate = ({
             display="flex"
             alignItems="center"
             className={
-              // formValue.issueType?.label !== "ORDER RELATED ISSUE"
-              //   ?
-              "d-none"
-              // : ""
+              formValue.issueType?.label !== "ORDER RELATED ISSUE"
+                ? "d-none"
+                : ""
             }
           >
             <Grid item xs={1} justifyContent="end" className="fw-bold">
@@ -240,6 +265,7 @@ const HelpandsupportCreate = ({
                 className="w-100"
                 size="small"
                 value={formValue.OrderID}
+                disabled={modalType == "REPLY"}
                 helperText={errorObj?.OrderID}
                 error={errorObj?.OrderID?.length}
                 onInputChange={(e) => {
@@ -266,12 +292,12 @@ const HelpandsupportCreate = ({
             </Grid>
             <Grid item xs={10}>
               <InputBox
-                disabled
                 helperText={errorObj.subject}
                 error={errorObj.subject.length}
+                disabled={modalType == "REPLY"}
                 className="w-100"
                 size="small"
-                value={selectedData.issueSubject}
+                value={formValue.subject}
                 onInputChange={(e) => {
                   setFormValue((pre) => ({
                     ...pre,
@@ -339,8 +365,14 @@ const HelpandsupportCreate = ({
 
           <Grid item xs={6} className="d-flex flex-row-reverse pe-5">
             <ButtonComponent
-              label="Create Ticket"
-              onBtnClick={handleCreateClick}
+              label={modalType === "REPLY" ? "Send Reply" : "Create Ticket"}
+              onBtnClick={() => {
+                if (modalType === "REPLY") {
+                  replyFunction();
+                } else {
+                  handleCreateClick();
+                }
+              }}
             />
           </Grid>
         </Grid>

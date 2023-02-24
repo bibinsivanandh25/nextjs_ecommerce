@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
@@ -221,8 +222,8 @@ function ProductDetailsCard({
               dynamicHeight={false}
               list={productDetail.images}
               showIndicators={hover}
-              carouselImageMaxHeight={viewType === "Grid" ? "250px" : "0"}
-              carouselImageMinHeight={viewType === "Grid" ? "250px" : "170px"}
+              carouselImageMaxHeight={viewType === "Grid" ? "150px" : "0"}
+              carouselImageMinHeight={viewType === "Grid" ? "150px" : "170px"}
               onClickItem={handleProductClick}
             />
           </div>
@@ -378,7 +379,7 @@ function ProductDetailsCard({
             classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           >
             <div className="ms-2 me-3">
-              <RemoveRedEye className="fs-14 color-gray " />
+              <RemoveRedEye className="fs-18 color-gray " />
               <span className="h-5"> {productDetail.viewCount}</span>
             </div>
           </Tooltip>
@@ -389,7 +390,7 @@ function ProductDetailsCard({
             classes={{ arrow: classes.arrow, tooltip: classes.tooltip }}
           >
             <div>
-              <AirportShuttleOutlined className="fs-14 color-gray" />
+              <AirportShuttleOutlined className="fs-18 color-gray" />
               <span className="h-5"> {productDetail.orderCount}</span>
             </div>
           </Tooltip>
@@ -406,6 +407,8 @@ function ProductDetailsCard({
           setShowModal={setShowWishListModal}
           productId={productDetail?.id}
           getProducts={getProducts}
+          productImage={productDetail?.images[0]?.src}
+          productTitle={productDetail.title}
         />
       ) : null}
       {showAddToCardModal && (

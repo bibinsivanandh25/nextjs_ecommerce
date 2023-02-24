@@ -280,7 +280,7 @@ const Home = () => {
                   item
                   md={2.5}
                   sm={3}
-                  className="border-end border-2 d-flex justify-content-evenly p-3  align-items-center"
+                  className="border-end border-2 d-flex justify-content-evenly p-3 cursor-pointer align-items-center"
                 >
                   <TaxSvg height={40} width={60} className="theme_svg_fill" />
                   <Box>
@@ -297,20 +297,23 @@ const Home = () => {
                   item
                   md={1.8}
                   sm={3}
-                  className="d-flex justify-content-evenly p-3  align-items-center"
+                  className="d-flex justify-content-evenly p-3 cursor-pointer align-items-center"
+                  onClick={() => {
+                    route.push("/customer/helpandsupport");
+                  }}
                 >
                   <ChatBubbleSvg
                     height={40}
                     width={60}
-                    className="theme_svg_fill"
+                    className="theme_svg_fill cursor-pointer"
                   />
                   {/* <Image src={customerHome.help} height={50} width={55} /> */}
 
-                  <Box>
-                    <Typography className="fw-bold h-5">
+                  <Box className="cursor-pointer">
+                    <Typography className="fw-bold h-5 cursor-pointer">
                       Help & Support
                     </Typography>
-                    <span className="h-5">Available</span>
+                    <span className="h-5 cursor-pointer">Available</span>
                   </Box>
                 </Grid>
               </Grid>

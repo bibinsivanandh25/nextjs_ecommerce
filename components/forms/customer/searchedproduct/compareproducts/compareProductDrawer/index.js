@@ -182,7 +182,7 @@ function CompareProductDrawer({
     <CustomDrawer
       position="left"
       title={
-        <Typography className="h-5 fw-bold">
+        <Typography className="h-4 fw-bold">
           Compare Products &nbsp;
           <Typography component="span" className="fst-normal h-5">
             ( {products?.length}{" "}
@@ -195,8 +195,10 @@ function CompareProductDrawer({
       handleClose={() => {
         setShowDrawer(false);
       }}
+      titleContainerClass="bg-orange text-white"
+      titleClassName=" text-white"
     >
-      <Box className="mnh-87vh mxh-87vh overflow-scroll d-flex flex-column align-items-center">
+      <Box className="mnh-87vh mxh-87vh w-100 overflow-y-scroll d-flex flex-column align-items-center">
         <Box>{renderProductCards()}</Box>
         <Box
           className={
