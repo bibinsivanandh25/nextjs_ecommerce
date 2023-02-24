@@ -65,6 +65,12 @@ const Coupons = () => {
       data_align: "center",
     },
     {
+      label: "Coupon Percentage",
+      id: "couponPercentage",
+      align: "center",
+      data_align: "center",
+    },
+    {
       label: "Usage Limit",
       id: "col4",
       align: "center",
@@ -110,12 +116,10 @@ const Coupons = () => {
         couponId: row.couponId,
         col1: row.couponCode,
         col2: row.discountType,
-        col3:
-          row.discountType === "PERCENTAGE" && row.minimumPurchaseAmount
-            ? `${((row.couponAmount * 100) / row.minimumPurchaseAmount).toFixed(
-                2
-              )} %`
-            : `${row.couponAmount} Rs.`,
+        col3: row.couponAmount ? `₹ ${row.couponAmount}` : "--",
+        couponPercentage: row.percentageValue
+          ? `${row.percentageValue} %`
+          : "--",
         col4: row.usageLimitPerCoupon || "-",
         col5: row.couponExpiryDate,
         col6: (
