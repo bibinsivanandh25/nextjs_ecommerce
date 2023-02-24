@@ -180,7 +180,11 @@ const MyCollections = () => {
               showCheckbox={false}
               filterList={filterList}
               handlePageEnd={(searchText, filterValue, page = pageNumber) => {
-                getMycollectionData(page, searchText, filterValue);
+                getMycollectionData(
+                  page,
+                  searchText,
+                  filterValue.toUpperCase()
+                );
               }}
             />
           </Paper>

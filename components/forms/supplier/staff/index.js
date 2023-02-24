@@ -150,7 +150,7 @@ const StaffForm = ({
           return item.children.length
             ? {
                 capabilityType: item.label,
-                isEnable: item.isChecked,
+                isEnable: item.children.some((ele) => ele.isChecked),
                 childCapabilityNameList: item.children.map((child) => {
                   return {
                     capabilityType: child.label,

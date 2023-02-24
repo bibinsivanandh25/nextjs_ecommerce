@@ -9,20 +9,25 @@ const CustomDrawer = ({
   children = null,
   title = "",
   titleClassName = "",
+  titleContainerClass = "",
 }) => {
   return (
     <SwipeableDrawer anchor={position} open={open} onClose={handleClose}>
       <div
         className={`d-flex p-2 ${
           title === "" ? " justify-content-end" : " justify-content-between"
-        }`}
+        } ${titleContainerClass}`}
       >
         {title !== "" && (
           <Typography className={`fs-20 fw-bold ${titleClassName}`}>
             {title}
           </Typography>
         )}
-        <CustomIcon type="close" className="h-3" onIconClick={handleClose} />
+        <CustomIcon
+          type="close"
+          className="h-3 color-white"
+          onIconClick={handleClose}
+        />
       </div>
       <Box className={`customDrawerWidth ${widthClass}`}>{children}</Box>
     </SwipeableDrawer>

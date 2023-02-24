@@ -9,4 +9,13 @@ const getProductsUnderCategoryOrSubCategory = (reqObj) => {
     })
     .catch((err) => ({ err }));
 };
-export { getProductsUnderCategoryOrSubCategory };
+const productsearch = (reqObj) => {
+  return serviceUtil
+    .put(`products/customer/product-search`, reqObj)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+export { getProductsUnderCategoryOrSubCategory, productsearch };

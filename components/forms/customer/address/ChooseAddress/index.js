@@ -216,7 +216,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
                 setNewAddressModal(true);
               }}
             >
-              Add new Address / pickup location
+              Add New Address / Pickup Location
             </Typography>
           </Box>
         </Box>

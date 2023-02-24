@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
@@ -27,6 +28,8 @@ import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { FaCheck } from "react-icons/fa";
+import Link from "next/link";
 
 const timeToProcessList = [
   {
@@ -146,15 +149,6 @@ const daysList = [
     value: "Sunday",
   },
 ];
-
-// const themeColor = [
-//   "#e01313",
-//   "#16a887",
-//   "#e56700",
-//   "#f1b07b",
-//   "#a316a8",
-//   "#d6c20f",
-// ];
 
 const StoreSettings = () => {
   const [formValues, setFormValues] = useState({
@@ -324,6 +318,7 @@ const StoreSettings = () => {
     }
     return flag;
   };
+
   useEffect(() => {
     if (errorObj.description.length) {
       toastify(validateMessage, "error");
@@ -381,7 +376,17 @@ const StoreSettings = () => {
       }
     }
   };
-  console.log(themeColor);
+
+  const getStoreUrl = () => {
+    if (!themeColor.length) return "";
+    const themeObj = selectedTheme
+      ? themeColor[selectedTheme - 1]
+      : themeColor[0];
+    const param = btoa(
+      `storeCode=${formValues.storeCode}&primaryColor=${themeObj.primaryColor}&secondaryColor=${themeObj.secondaryColor}`
+    );
+    return `/auth/customer?store=${param}`;
+  };
 
   return (
     <Paper className="mnh-70vh overflow-auto hide-scrollbar">
@@ -456,7 +461,7 @@ const StoreSettings = () => {
               </Box>
               <Box>
                 <Box className="my-2">
-                  <Button
+                  {/* <Button
                     variant="contained"
                     size="small"
                     sx={{
@@ -468,9 +473,16 @@ const StoreSettings = () => {
                       },
                     }}
                     className="h-5"
-                  >
-                    View Shop
-                  </Button>
+                  ></Button> */}
+
+                  <Link href={getStoreUrl()}>
+                    <a
+                      target="_blank"
+                      style={{ textDecoration: "none !important" }}
+                    >
+                      <ButtonComponent label="View Shop" muiProps="px-3" />
+                    </a>
+                  </Link>
                 </Box>
                 <Box>
                   <Button
@@ -754,7 +766,7 @@ const StoreSettings = () => {
                       height: "4rem",
                       width: "4rem",
                     }}
-                    className={`rounded ${
+                    className={`rounded d-flex justify-content-center align-items-center ${
                       selectedTheme === item.storeThemeId
                         ? "border border-primary border-2"
                         : ""
@@ -762,7 +774,11 @@ const StoreSettings = () => {
                     onClick={() => {
                       setSelectedTheme(item.storeThemeId);
                     }}
-                  />
+                  >
+                    {selectedTheme === item.storeThemeId && (
+                      <FaCheck color="white" size={28} />
+                    )}
+                  </div>
                 </Grid>
               ))}
             </Grid>

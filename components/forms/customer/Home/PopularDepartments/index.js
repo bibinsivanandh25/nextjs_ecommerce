@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Card, Skeleton, Typography } from "@mui/material";
+import { Box, Card, Skeleton, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
@@ -138,6 +138,9 @@ const PopularDepartments = () => {
           isCarted: ele.presentInCart,
           variationDetails: ele.variationDetails,
           subCategoryId: ele.subcategoryId,
+          flagImageUrl: ele.flagImageUrl,
+          flaged: ele.flaged,
+          visibilityPlace: ele.visibilityPlace,
         });
       });
     setProducts([...temp]);
@@ -239,44 +242,48 @@ const PopularDepartments = () => {
           </Card>
         </Box>
         <Box className="col-4 d-flex justify-content-end pb-1">
-          <Card
-            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
-              filters.filterType === "WEEK"
-                ? "theme_border_color theme_bg_color_1 fw-bold"
-                : ""
-            }`}
-            onClick={() => {
-              setProducts([]);
-              if (filters.filterType !== "WEEK") {
-                setFilters({
-                  ...filters,
-                  filterType: "WEEK",
-                });
-                // refetch();
-              }
-            }}
-          >
-            W
-          </Card>
-          <Card
-            className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
-              filters.filterType === "MONTH"
-                ? "theme_border_color theme_bg_color_1 fw-bold"
-                : ""
-            }`}
-            onClick={() => {
-              setProducts([]);
-              if (filters.filterType !== "MONTH") {
-                setFilters({
-                  ...filters,
-                  filterType: "MONTH",
-                });
-                // getProducts("MONTH");
-              }
-            }}
-          >
-            M
-          </Card>
+          <Tooltip title="Week">
+            <Card
+              className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer  ${
+                filters.filterType === "WEEK"
+                  ? "theme_border_color theme_bg_color_1 fw-bold"
+                  : ""
+              }`}
+              onClick={() => {
+                setProducts([]);
+                if (filters.filterType !== "WEEK") {
+                  setFilters({
+                    ...filters,
+                    filterType: "WEEK",
+                  });
+                  // refetch();
+                }
+              }}
+            >
+              W
+            </Card>
+          </Tooltip>
+          <Tooltip title="Month">
+            <Card
+              className={`px-3 py-1 d-flex align-items-center text-center h-5 border cursor-pointer mx-3 ${
+                filters.filterType === "MONTH"
+                  ? "theme_border_color theme_bg_color_1 fw-bold"
+                  : ""
+              }`}
+              onClick={() => {
+                setProducts([]);
+                if (filters.filterType !== "MONTH") {
+                  setFilters({
+                    ...filters,
+                    filterType: "MONTH",
+                  });
+                  // getProducts("MONTH");
+                }
+              }}
+            >
+              M
+            </Card>
+          </Tooltip>
         </Box>
       </Box>
       <Box className="d-flex w-100 overflow-auto mt-2 hide-scrollbar py-3">

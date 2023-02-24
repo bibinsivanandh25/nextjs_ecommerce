@@ -417,6 +417,7 @@ const CustomerRegistration = () => {
                 }));
                 setOpenExplore(false);
               }}
+              showConformation={false}
             />
           </CustomDrawer>
         </Box>

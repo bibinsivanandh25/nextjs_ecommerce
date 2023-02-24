@@ -231,7 +231,7 @@ const StoresTab = ({ switchTabs = () => {}, close = () => {}, searchText }) => {
         }}
       >
         {stores.map((item, index) => {
-          console.log(item, "item");
+          // console.log(item, "item");
           return (
             <motion.div
               // ref={list.length - 1 === index ? lastStore : null}

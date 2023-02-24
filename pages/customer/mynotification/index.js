@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable consistent-return */
@@ -199,8 +200,9 @@ const MyNotification = () => {
   const [errProductReply, seterrProductReply] = useState("");
   const onClickOfMenuItem = async (ele, id) => {
     if (ele === "Delete") {
-      const { message, errRes } = deleteQuary(id);
+      const { message, errRes } = await deleteQuary(id);
       if (message) {
+        getMyQueriesTableData(0);
         toastify(message, "success");
       } else if (errRes) {
         toastify(errRes.message, "error");

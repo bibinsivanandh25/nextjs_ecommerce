@@ -201,7 +201,7 @@ const HelpandsupportView = ({
                   }}
                 />
               </div>
-              {item?.helpSupportMessageMedias[0]?.mediaUrl ? (
+              {item?.helpSupportMessageMedias.length ? (
                 <Typography className="h-5 d-flex">
                   <span className="fw-bold me-1 h-5"> Attached File :</span>
                   <Box className="d-flex">

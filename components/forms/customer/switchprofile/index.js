@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState, useRef } from "react";
 import { Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -71,6 +72,7 @@ const SwitchProfile = ({
           profileName: data.data.profileName,
         })
       );
+      setShowSwitchProfile(false);
       getProfiles();
       router.push("/customer/home");
     } else if (err) {

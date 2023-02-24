@@ -7,17 +7,22 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { AiOutlineMinus } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+// import { productDetails } from "features/customerSlice";
+import { useRouter } from "next/router";
+import { productDetails } from "features/customerSlice";
 
 const CompareProductDetails = ({
   showModal = false,
   setShowModal = () => {},
-  productDetails = [],
+  productDetail = [],
+  removeProduct = () => {},
 }) => {
   // const [productData, setProductData] = useState([]);
   const [tableRows, setTableRows] = useState({});
 
   useMemo(() => {
-    if (productDetails.length) {
+    if (productDetail.length) {
       const result = [];
       let rows = {
         Product: ["Product"],
@@ -26,11 +31,13 @@ const CompareProductDetails = ({
         Description: ["Description"],
         "Ratings & Reviews": ["Ratings & Reviews"],
         SKU: ["SKU"],
+        variationDetail: [],
+        ProductId: [],
       };
 
       const variationDetails = [];
-      if (productDetails?.length && productDetails[0].variationDetails) {
-        Object.keys(productDetails[0].variationDetails).forEach((key) => {
+      if (productDetail?.length && productDetail[0].variationDetails) {
+        Object.keys(productDetail[0].variationDetails).forEach((key) => {
           rows = {
             ...rows,
             [key]: [key],
@@ -38,11 +45,12 @@ const CompareProductDetails = ({
           variationDetails.push(key);
         });
       }
-
-      productDetails?.forEach((ele) => {
+      productDetail?.forEach((ele) => {
         const temp = {
           ...ele.productDetails,
           ...(ele.variationDetails || {}),
+          // productId: ele.productVariationId,
+          // variationDetail: ele.variationPojo,
         };
         result.push(temp);
         rows.Product.push({
@@ -60,11 +68,13 @@ const CompareProductDetails = ({
         variationDetails.forEach((key) => {
           rows[key].push(ele.variationDetails[key]);
         });
+        rows.variationDetail.push(ele.variationPojo);
+        rows.ProductId.push(ele.productVariationId);
       });
       setTableRows(rows);
       // setProductData([...result]);
     }
-  }, [productDetails]);
+  }, [productDetail]);
 
   // const renderHeaders = () => {
   //   const temp = [
@@ -190,10 +200,14 @@ const CompareProductDetails = ({
   //     );
   //   });
   // };
+  const dispatch = useDispatch();
+  const route = useRouter();
 
   const renderProducts = () => {
     if (tableRows) {
-      const headers = Object.keys(tableRows).map((key) => key);
+      const headers = Object.keys(tableRows)
+        .map((key) => key)
+        .filter((ele) => ele !== "ProductId" && ele !== "variationDetail");
       return headers.map((key) => {
         return (
           <Box className="d-flex">
@@ -214,8 +228,31 @@ const CompareProductDetails = ({
                     ) : (
                       <Box className="px-2">
                         <Box className="d-flex justify-content-center">
-                          <CloseIcon
+                          <Typography
+                            className={
+                              ind !== 1
+                                ? "h-5 color-blue cursor-pointer fit-content"
+                                : "invisible"
+                            }
                             onClick={() => {
+                              removeProduct(tableRows.ProductId[ind - 1]);
+                              const temp = JSON.parse(
+                                JSON.stringify(tableRows)
+                              );
+                              headers.forEach((keys) => {
+                                temp[keys].splice(ind, 1);
+                                setTableRows(temp);
+                              });
+                              if (temp.SKU.length === 2) {
+                                setShowModal(false);
+                              }
+                            }}
+                          >
+                            Remove <CloseIcon className="fs-14" />
+                          </Typography>
+                          {/* <CloseIcon
+                            onClick={() => {
+                              removeProduct(tableRows.ProductId[ind - 1]);
                               const temp = JSON.parse(
                                 JSON.stringify(tableRows)
                               );
@@ -224,8 +261,12 @@ const CompareProductDetails = ({
                                 setTableRows(temp);
                               });
                             }}
-                            className={ind !== 1 ? "text-muted " : "invisible"}
-                          />
+                            className={
+                              ind !== 1
+                                ? "text-muted cursor-pointer "
+                                : "invisible"
+                            }
+                          /> */}
                         </Box>
                         <Box className="d-flex justify-content-center">
                           <Image
@@ -233,7 +274,19 @@ const CompareProductDetails = ({
                             height={125}
                             width={125}
                             layout="fixed"
-                            className=""
+                            className="cursor-pointer"
+                            onClick={() => {
+                              dispatch(
+                                productDetails({
+                                  productId: tableRows.ProductId[ind - 1],
+                                  variationDetails:
+                                    tableRows.variationDetail[ind - 1],
+                                })
+                              );
+                              route.push({
+                                pathname: "/customer/productdetails",
+                              });
+                            }}
                           />
                         </Box>
                         <Typography className="h-5 fw-bold text-center">
@@ -277,7 +330,7 @@ const CompareProductDetails = ({
                   >
                     <Typography
                       className={`h-5 px-2 my-2 ${ind === 0 ? "fw-bold " : ""}`}
-                      lineHeight={1.5}
+                      lineHeight={3.5}
                     >
                       {Array.isArray(ele) ? (
                         ele.length ? (
@@ -333,16 +386,20 @@ const CompareProductDetails = ({
     <ModalComponent
       open={showModal}
       // maxWidth="80%"
+      modalClose={() => {
+        setShowModal(false);
+      }}
       onCloseIconClick={() => {
         setShowModal(false);
       }}
-      ModalWidth="60%"
+      // ModalWidth="80%"
       showFooter={false}
       showPositionedClose
       ModalTitle=""
       showCloseIcon={false}
-      minHeightClassName="mxh-75vh"
+      minHeightClassName="mxh-75vh mxw-85vw"
       headerBorder="none"
+      minWidth="fit-content"
     >
       <Box className="">
         {renderProducts()}

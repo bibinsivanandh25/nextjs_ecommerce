@@ -411,7 +411,8 @@ const MyProducts = () => {
         toastify(message, "success");
         getTabList();
         getTableData("", "", 0);
-      } else if (err) {
+        setSelected([]);
+        setSelected([]);
         toastify(err?.response?.data?.message, "error");
       }
     }
@@ -447,7 +448,6 @@ const MyProducts = () => {
           value: item.id,
           label: item.name,
           purchaseId: item?.purchaseId,
-
           flagImagePojos: item.flagImagePojos.map((imgData) => {
             return {
               visibilityPlace: imgData.visibilityPlace,
@@ -487,8 +487,9 @@ const MyProducts = () => {
       storeCode
     );
     if (data) {
-      if (data.data) {
-        setFlagTitle(JSON.parse(JSON.stringify(val)));
+      setFlagTitle(JSON.parse(JSON.stringify(val)));
+
+      if (data?.data) {
         const temp = val?.flagImagePojos?.map((item) => {
           return {
             checked: data?.data?.imageId == item?.flagImageId,
@@ -497,7 +498,6 @@ const MyProducts = () => {
           };
         });
         setflagUrlList(temp);
-
         setdisableFlagField(true);
         setFlagFormData((pre) => ({
           ...pre,
@@ -515,14 +515,22 @@ const MyProducts = () => {
           visibilityPlace: data.data.visibilityPlace,
         }));
       } else {
+        const temp = val?.flagImagePojos?.map((item) => {
+          return {
+            checked: false,
+            url: item,
+            label: <Image src={item?.imageUrl} width={400} height={50} />,
+          };
+        });
+        setflagUrlList(temp);
         setdisableFlagField(false);
         setFlagFormData((pre) => ({
           ...pre,
           flagId: val.value,
           flagTitle: val.label,
-          imageUrl: data.data.imageUrl,
-          imageId: data.data.imageId,
-          visibilityPlace: data.data.visibilityPlace,
+          imageUrl: "",
+          imageId: "",
+          visibilityPlace: "",
           supplierId,
           supplierStoreId: storeCode,
           purchaseId: val.purchaseId,

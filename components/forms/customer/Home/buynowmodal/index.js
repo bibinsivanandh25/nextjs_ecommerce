@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import ButtonComponent from "@/atoms/ButtonComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -349,9 +350,12 @@ const DeliveryOptionsModal = ({
               <Typography className="h-4 fw-bold">
                 {productDetails?.title}
               </Typography>
-              <Typography className="h-5">
-                {productDetails?.description}
-              </Typography>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: productDetails?.description,
+                }}
+              />
+
               {selectedTab === "FREEDELIVERYANDRETURN" ? (
                 <CheckBoxComponent
                   label={` ₹ ${productDetails.fastDeliveryCharges} - ${productDetails?.fastestDeliveryBy}`}
@@ -428,9 +432,14 @@ const DeliveryOptionsModal = ({
                 </Typography>
               </Box>
             </Box>
-            <Typography className="h-5">
+            {/* <Typography className="h-5">
               {productDetails?.description}
-            </Typography>
+            </Typography> */}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: productDetails?.description,
+              }}
+            />
           </Grid>
           <Grid item xs={8}>
             <Box className="ps-4">

@@ -1,7 +1,16 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/no-array-index-key */
-import { Box, Divider, Grid, Paper, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import PlusMinusButtonComponent from "@/atoms/PlusMinusButtonComponent";
@@ -15,7 +24,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import DeliveryOptionsModal from "@/forms/customer/Home/buynowmodal";
-import CustomIcon from "services/iconUtils";
 import {
   changePrimaryAddress,
   getAllCustomerAddress,
@@ -25,6 +33,7 @@ import { storeUserInfo } from "features/customerSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import serviceUtil from "services/utils";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Cart = () => {
   const [products, setProducts] = useState();
@@ -455,7 +464,74 @@ const Cart = () => {
           </Grid>
           {products?.length ? (
             <Grid item sm={3} className="">
-              <Paper className="mb-3 ms-2 p-2">
+              <Accordion className="ms-2 rounded">
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className="fs-16 fw-500 d-flex justify-content-between  border-bottom-1">
+                    Choose Address
+                    {/* <CustomIcon
+                      type="more"
+                      size={20}
+                      title="More Options"
+                      onIconClick={() => setShowChooseAddress(true)}
+                    /> */}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box className="mxh-300 overflow-auto hide-scrollbar">
+                    {masterAddress.length &&
+                      masterAddress.map((item, index) => (
+                        <Box
+                          key={index}
+                          className={`rounded my-2 mnh-150 p-2 border ${
+                            item.primary
+                              ? "theme_bg_color_1 theme_border_color "
+                              : ""
+                          }`}
+                        >
+                          <Box className="d-flex justify-content-between">
+                            <CheckBoxComponent
+                              label={item.name}
+                              isChecked={item.primary}
+                              showIcon
+                              checkBoxClick={() => {
+                                handleAddressSelect(item);
+                              }}
+                              iconType="circled"
+                            />
+                          </Box>
+                          <Box className="d-flex justify-content-between">
+                            <Box>
+                              <Typography className="ps-3 fs-14 pe-2 text-align-justify">
+                                {" "}
+                                {`${item?.address}, ${item?.location}, ${
+                                  item?.landmark ? `${item?.landmark},` : ""
+                                }  ${item?.cityDistrictTown}, ${item?.state}, ${
+                                  item?.pinCode
+                                }.`}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
+                      ))}
+                    <Box className="d-flex justify-content-end">
+                      <Typography
+                        onClick={() => {
+                          setShowChooseAddress(true);
+                        }}
+                        className="text-end fs-12 color-blue cursor-pointer fit-content"
+                      >
+                        More Options
+                      </Typography>
+                    </Box>
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+
+              {/* <Paper className="mb-3 ms-2 p-2">
                 <Typography className="fs-16 fw-500 d-flex justify-content-between  border-bottom-1">
                   Choose Address
                   <CustomIcon
@@ -502,7 +578,7 @@ const Cart = () => {
                       </Box>
                     ))}
                 </Box>
-              </Paper>
+              </Paper> */}
               <Paper className="ms-2 p-2">
                 <Typography className="text-secondary h-5 fw-bold">
                   Price Details
