@@ -330,12 +330,9 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                       productDetail={item}
                       viewType={viewIconClick ? "row" : "Grid"}
                       getProducts={() => {
-                        getProducts(
-                          categoryId,
-                          subCategoryId,
-                          searchKeyword,
-                          0
-                        );
+                        if (categoryId.length || subCategoryId.length)
+                          getProducts(categoryId, subCategoryId, null, 0);
+                        else getProducts(null, null, searchKeyword, 0);
                       }}
                     />
                   </Grid>
