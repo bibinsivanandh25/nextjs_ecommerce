@@ -1649,6 +1649,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                     <SimilarProducts
                       subCategoryId={masterData.subCategoryId}
                       scrollPage={scrollPage}
+                      userData={userData}
                     />
                   </Grid>
                 </Grid>

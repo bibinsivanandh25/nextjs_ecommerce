@@ -241,7 +241,7 @@ const CreateNotification = ({
       setShowModal(false);
     }
     if (err) {
-      toastify(err?.response?.data?.message);
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const formdata = new FormData();
@@ -464,8 +464,9 @@ const CreateNotification = ({
             : "d-none"
         }
       >
-        <Box className="w-90p">
+        <Box className="w-75  ">
           <DatePickerComponent
+            disablePast
             size="small"
             fullWidth
             className="w-100"
@@ -500,22 +501,50 @@ const CreateNotification = ({
             }}
             // value={startTime}
           />
+          <FormHelperText error={error.scheduleTime} className="ps-3">
+            {error.scheduleTime}
+          </FormHelperText>
         </Box>
       </Box>
       <Box className="d-flex justify-content-end my-2">
-        <ButtonComponent
-          variant="text"
-          muiProps="text-secondary"
-          label="Schedule"
-          onBtnClick={() => {
-            setShowScheduleDate(true);
-          }}
-        />
-        <ButtonComponent
-          variant="text"
-          muiProps="text-secondary mx-2"
-          label="Cancel"
-        />
+        {type !== "edit" ? (
+          <ButtonComponent
+            variant="text"
+            muiProps="text-secondary"
+            label="Clear"
+            onBtnClick={() => {
+              setSelectedCustomers([]);
+              setCheckedRadioId("Only Attachments");
+              setShowText(false);
+              setFileNames([]);
+              setFiles([]);
+              setTitle({});
+              setShowScheduleDate(false);
+              setDescription("");
+              setScheduleDateTime({ date: null, time: null });
+            }}
+          />
+        ) : null}
+        {!showScheduleDate ? (
+          <ButtonComponent
+            variant="text"
+            muiProps="text-secondary"
+            label="Schedule"
+            onBtnClick={() => {
+              setShowScheduleDate(true);
+            }}
+          />
+        ) : null}
+        {showScheduleDate ? (
+          <ButtonComponent
+            variant="text"
+            muiProps="text-secondary mx-2"
+            label="Cancel Schedule"
+            onBtnClick={() => {
+              setShowScheduleDate(false);
+            }}
+          />
+        ) : null}
         <ButtonComponent label="Submit" onBtnClick={handleSubmit} />
       </Box>
     </ModalComponent>

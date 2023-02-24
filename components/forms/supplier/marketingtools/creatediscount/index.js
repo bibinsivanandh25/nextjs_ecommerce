@@ -335,8 +335,6 @@ const CreateDiscount = ({
         userTypeId: user.supplierId,
         marketingToolThemeId: null,
         marketingToolProductList: temp,
-        splitDiscountDetailList: [],
-        marketingToolQuestionAnswerList: [],
       };
       const { data, err } = await createDiscountCoupons(payload);
       if (data) {

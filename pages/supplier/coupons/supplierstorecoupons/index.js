@@ -64,38 +64,44 @@ const SupplierStoreCoupons = () => {
       data_align: "center",
     },
     {
-      label: "Coupon Usage Limit",
+      label: "Coupon Percentage ",
       id: "col4",
       align: "center",
       data_align: "center",
     },
     {
-      label: "Minimum Purchase Amount",
+      label: "Coupon Usage Limit",
       id: "col5",
       align: "center",
       data_align: "center",
     },
     {
-      label: "Maximum Discount Amount",
+      label: "Minimum Purchase Amount",
       id: "col6",
       align: "center",
       data_align: "center",
     },
     {
-      label: "Expire Date",
+      label: "Maximum Discount Amount",
       id: "col7",
       align: "center",
       data_align: "center",
     },
     {
-      label: "Status",
+      label: "Expire Date",
       id: "col8",
       align: "center",
       data_align: "center",
     },
     {
-      label: "Action",
+      label: "Status",
       id: "col9",
+      align: "center",
+      data_align: "center",
+    },
+    {
+      label: "Action",
+      id: "col10",
       align: "center",
       data_align: "center",
     },
@@ -119,17 +125,13 @@ const SupplierStoreCoupons = () => {
       result.push({
         col1: row.storeCouponCode,
         col2: row.discountType,
-        col3:
-          row.discountType === "PERCENTAGE" && row.minimumOrderValue
-            ? `${((row.couponAmount * 100) / row.minimumOrderValue).toFixed(
-                2
-              )} %`
-            : `${row.couponAmount} Rs.`,
-        col4: row.couponUsageLimit,
-        col5: row.minimumOrderValue,
-        col6: row.maximumDiscountValue,
-        col7: row.expirationDate,
-        col8: (
+        col3: row.couponAmount ? `₹ ${row.couponAmount}` : "--",
+        col4: row.percentageValue ? `${row.couponAmount} %` : "--",
+        col5: row.couponUsageLimit,
+        col6: row.minimumOrderValue,
+        col7: row.maximumDiscountValue,
+        col8: row.expirationDate,
+        col9: (
           <div
             className={`${getClassnames(row.couponStatus)} ${
               row.couponStatus?.toLowerCase().includes("draft") &&
@@ -145,7 +147,7 @@ const SupplierStoreCoupons = () => {
             {row.couponStatus ? row.couponStatus : "DRAFT"}
           </div>
         ),
-        col9: (
+        col10: (
           <Share
             sx={{
               bgcolor: "#e56700",
