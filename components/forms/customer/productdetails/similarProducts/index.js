@@ -4,7 +4,11 @@ import { similarProductsData } from "services/customer/productdetails";
 import { useSelector } from "react-redux";
 import ProductListCard from "../productlistcard";
 
-const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
+const SimilarProducts = ({
+  subCategoryId = "",
+  scrollPage = () => {},
+  userData = {},
+}) => {
   const [products, setProducts] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
   const [showPage, setShowPage] = useState(true);
@@ -33,6 +37,7 @@ const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
       subCategoryId,
       pageNumber: page,
       pageSize: 20,
+      profileId: userData.profileId,
       //   productVariationId: "62fa5a03e5d1f7265bb58cd6",
       //   supplierId: "SP0822000040",
       //   subCategoryId: "62f91040e5d1f7265bb58caf",
@@ -54,7 +59,7 @@ const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
               rate: ele.averageRatings,
               count: ele.totalRatings,
             },
-            isWishlisted: ele.wishlisted,
+            isWishlisted: ele.inWishList,
             skuId: ele.skuId,
             wishlistId: ele.wishlistId,
             userCartId: ele.userCartId,
@@ -77,7 +82,7 @@ const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
               rate: ele.averageRatings,
               count: ele.totalRatings,
             },
-            isWishlisted: ele.wishlisted,
+            isWishlisted: ele.inWishList,
             skuId: ele.skuId,
             wishlistId: ele.wishlistId,
             userCartId: ele.userCartId,
@@ -110,7 +115,10 @@ const SimilarProducts = ({ subCategoryId = "", scrollPage = () => {} }) => {
               return (
                 <ProductListCard
                   item={ele}
-                  getProducts={getRecentViewedProducts}
+                  getProducts={() => {
+                    setPageNumber(0);
+                    getRecentViewedProducts(0);
+                  }}
                   scrollPage={scrollPage}
                 />
               );

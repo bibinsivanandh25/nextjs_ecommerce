@@ -106,7 +106,7 @@ const CreateShareProductByPrice = ({
       priceStartRange: formValues.inputValue,
       priceEndRange: formValues.priceEnd,
     };
-    const { data } = await getProductsForShareproduct(payload);
+    const { data, err } = await getProductsForShareproduct(payload);
     if (data) {
       const result = [];
       data.forEach((product) => {
@@ -121,9 +121,13 @@ const CreateShareProductByPrice = ({
       });
       setProducts([...result]);
     }
+    if (err) {
+      setProducts([]);
+    }
   };
 
   useEffect(() => {
+    let search;
     const { inputValue, priceEnd } = formValues;
     if (
       inputValue !== undefined &&
@@ -132,8 +136,11 @@ const CreateShareProductByPrice = ({
       priceEnd !== "" &&
       selectedCategorys.subCategoryId !== ""
     ) {
-      getProducts();
+      search = setTimeout(() => {
+        getProducts();
+      }, 500);
     }
+    return () => clearTimeout(search);
   }, [
     formValues.inputValue,
     formValues.priceEnd,
