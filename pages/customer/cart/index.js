@@ -292,7 +292,7 @@ const Cart = () => {
               </Grid>
               <Grid item sm={7}>
                 <span className={ele?.deliveryCharge ? "" : "text-success"}>
-                  {ele.deliveryCharge || "FREE"}
+                  {ele.deliveryCharge ? `₹ ${ele.deliveryCharge}` : "FREE"}
                 </span>
               </Grid>
               <Grid item sm={4}>
@@ -307,7 +307,7 @@ const Cart = () => {
                     ele?.returnCharge ? "fst-normal" : "text-success fst-normal"
                   }
                 >
-                  {ele?.returnCharge || "FREE"}
+                  {ele?.returnCharge ? `₹ ${ele?.returnCharge}` : "FREE"}
                 </span>
               </Grid>
             </Grid>

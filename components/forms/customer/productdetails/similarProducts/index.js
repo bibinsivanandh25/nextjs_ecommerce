@@ -61,9 +61,9 @@ const SimilarProducts = ({
             },
             isWishlisted: ele.inWishList,
             skuId: ele.skuId,
-            wishlistId: ele.wishlistId,
+            wishlistId: ele.wishListId,
             userCartId: ele.userCartId,
-            isCarted: ele.presentInCart,
+            isCarted: ele.inCarted,
             variationDetails: ele.variationDetails,
           });
         });
