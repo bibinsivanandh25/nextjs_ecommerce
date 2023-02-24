@@ -375,15 +375,18 @@ const SwitchProfile = ({
                     </Paper>
                   )}
                   <Typography
-                    className=" fw-500 "
+                    className=" fw-500 d-flex justify-content-center align-items-center"
+                    style={{
+                      width: "90%",
+                    }}
                     onClick={() => {
                       handleProfileSwitch(item);
                     }}
                   >
-                    {/* {item.profileName} */}
-                    <TruncateName
+                    {item.profileName}
+                    {/* <TruncateName
                       name={JSON.parse(JSON.stringify(item.profileName))}
-                    />
+                    /> */}
                   </Typography>
                 </Grid>
               );

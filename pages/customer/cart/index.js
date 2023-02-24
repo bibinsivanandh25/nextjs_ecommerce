@@ -53,10 +53,11 @@ const Cart = () => {
     totalPrice: 0,
     totalSaving: 0,
   });
-  const { profileId, userId } = useSelector((state) => state?.customer);
+  const { profileId, userId, addressDetails } = useSelector(
+    (state) => state?.customer
+  );
   const customer = useSelector((state) => state?.customer);
   const [masterAddress, setMasterAddress] = useState([]);
-
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
     if (data) {
@@ -192,7 +193,7 @@ const Cart = () => {
   };
   useEffect(() => {
     getAllData(userId);
-  }, [userId]);
+  }, [userId, showChooseAddress, addressDetails]);
 
   const getCartList = () => {
     return products?.map((ele, ind) => {
@@ -394,10 +395,10 @@ const Cart = () => {
               onBtnClick={() => setShowChooseAddress(true)}
             /> */}
                 <div className="mx-2 ">
-                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
+                  <Typography className="fs-12 color-black fw-bold">
                     {customer.addressDetails?.name}
                   </Typography>
-                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
+                  <Typography className="fs-12 color-black fw-bold">
                     {customer.addressDetails?.cityDistrictTown},
                     {customer.addressDetails?.pinCode}
                   </Typography>

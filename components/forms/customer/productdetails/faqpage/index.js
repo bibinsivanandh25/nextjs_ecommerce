@@ -161,6 +161,7 @@ const FAQPage = ({
       };
       const { data, err } = await postQuestions(payload);
       if (data) {
+        toastify(data.message, "success");
         getProductQandAData(0);
         setQuestionData("");
         setShowQuestionPage(false);

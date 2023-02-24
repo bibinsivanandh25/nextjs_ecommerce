@@ -649,6 +649,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -762,6 +763,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={statusList}
                               size="small"
+                              placeholder="Select Status"
                               label="Select Status"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -892,6 +894,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -971,6 +974,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {

@@ -187,6 +187,7 @@ const AddToWishListModal = ({
 
   return (
     <ModalComponent
+      titleClassName="fs-16"
       open={showModal}
       onCloseIconClick={() => {
         setShowModal(false);

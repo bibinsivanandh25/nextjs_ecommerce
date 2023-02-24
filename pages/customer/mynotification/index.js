@@ -181,6 +181,7 @@ const MyNotification = () => {
   const [dateState, setdateState] = useState({ fromDate: "", toDate: "" });
   const [ProductDate, setProductDate] = useState({ fromDate: "", toDate: "" });
   const [pageNumber, setpageNumber] = useState(0);
+
   const [pageNumberProduct, setpageNumberProduct] = useState(0);
 
   const [value, setValue] = useState(0);
@@ -588,6 +589,8 @@ const MyNotification = () => {
         openDrawer={openView.open && openView.type === "productview"}
         modalTitle="Questions and Reply"
         onClose={closeDrawer}
+        showCloseIcon
+        closeIconClick={closeDrawer}
       >
         <Grid container spacing={3} className="px-2">
           <Grid xs={12} item className="fs-15 fw-500">
@@ -746,7 +749,7 @@ const MyNotification = () => {
       )}
       {openEdit.open && openEdit.type === "edit" && (
         <ModalComponent
-          ModalTitle="Capture question asked by customer here..."
+          ModalTitle="Edit Your Query"
           open={openEdit.open}
           saveBtnText="Update"
           onCloseIconClick={() => editMsgCloseIcon()}
