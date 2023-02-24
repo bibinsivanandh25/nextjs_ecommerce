@@ -53,13 +53,13 @@ const Notification = () => {
       data_align: "center",
       data_classname: "center",
     },
-    {
-      id: "col4",
-      label: "Subject",
-      align: "center",
-      data_align: "center",
-      data_classname: "center",
-    },
+    // {
+    //   id: "col4",
+    //   label: "Subject",
+    //   align: "center",
+    //   data_align: "center",
+    //   data_classname: "center",
+    // },
     {
       id: "col5",
       label: "Status",
@@ -99,6 +99,7 @@ const Notification = () => {
   const [tableRows, setTableRows] = useState([]);
   const [showSendNotificationModal, setShowSendNotificationModal] =
     useState(false);
+
   const deleteNotification = async (id) => {
     const { data, err } = await deleteNotificationById(id);
     if (data) {
@@ -123,16 +124,16 @@ const Notification = () => {
         ) : (
           "--"
         ),
-        col4: ele.notificationMessage ? (
-          <p
-            className=""
-            dangerouslySetInnerHTML={{
-              __html: ele.notificationMessage,
-            }}
-          />
-        ) : (
-          "--"
-        ),
+        // col4: ele.notificationMessage ? (
+        //   <p
+        //     className=""
+        //     dangerouslySetInnerHTML={{
+        //       __html: ele.notificationMessage,
+        //     }}
+        //   />
+        // ) : (
+        //   "--"
+        // ),
         col5: ele.status,
         col6: ele.type,
         col7: ele.createdDate,
@@ -245,8 +246,8 @@ const Notification = () => {
   const renderNotificationDetails = () => {
     return (
       <Grid container spacing={2} justifyContent="center" display="flex">
-        <Grid item sm={2} className="fw-bold">
-          Title
+        <Grid item sm={3} className="fw-bold">
+          Notification Title
         </Grid>
         <Grid item sm={1} className="text-end">
           :
@@ -254,8 +255,8 @@ const Notification = () => {
         <Grid item sm={8}>
           {notificationDetails.notificationTitle}
         </Grid>
-        <Grid item sm={2} className="fw-bold">
-          Images
+        <Grid item sm={3} className="fw-bold">
+          Attachments
         </Grid>
         <Grid item sm={1} className="text-end">
           :
@@ -265,7 +266,20 @@ const Notification = () => {
             return <Image src={ele} height={50} width={50} />;
           })}
         </Grid>
-        <Grid item sm={2} className="fw-bold">
+        <Grid item sm={3} className="fw-bold">
+          Notification Message
+        </Grid>
+        <Grid item sm={1} className="text-end">
+          :
+        </Grid>
+        <Grid item sm={8}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: notificationDetails.notificationMessage,
+            }}
+          />
+        </Grid>
+        <Grid item sm={3} className="fw-bold">
           Customers
         </Grid>
         <Grid item sm={1} className="text-end">
