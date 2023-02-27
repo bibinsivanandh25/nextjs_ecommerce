@@ -169,7 +169,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
     const payload = {
       productVariationId: id,
       status: "APPROVED",
-      profileId: userData.profileId,
+      profileId: userData.profileId || "",
       variationDetails: [...select],
     };
     const { data, err } = await getAllProductDetails(payload);
@@ -247,6 +247,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
       setRatingData({});
     }
   };
+
   const handleVariationClick = (item) => {
     scrollPage();
     getRating(item.productVariationId);
@@ -306,9 +307,9 @@ const ProductDetails = ({ isSideBarOpen }) => {
       getProductDetails(userData.productId, userData.variationDetails);
       // setMasterVariation(userData.variationDetails);
       getRating(userData.productId);
+      getMinimumCart();
+      getCouponsData();
     }
-    getMinimumCart();
-    getCouponsData();
     recentProductSave();
     return () => {
       setSelectedImage("");

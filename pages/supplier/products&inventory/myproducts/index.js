@@ -23,7 +23,6 @@ import { useUserInfo } from "services/hooks";
 import Image from "next/image";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
   duplicateProduct,
@@ -36,6 +35,7 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { productDetails, storeUserInfo } from "features/customerSlice";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -219,27 +219,35 @@ const MyProducts = () => {
           col12: (
             <Grid container className="h-6" justifyContent="center">
               <Grid item xs={3}>
-                {value === 0 ? (
-                  <Link
-                    href={`/supplier/products&inventory/myproducts/viewModal?productVariationId=${variation.productVariationId}`}
-                  >
-                    <a target="_blank">
-                      <CustomIcon className="fs-6" title="View" type="view" />
-                    </a>
-                  </Link>
-                ) : (
-                  <CustomIcon
-                    className="fs-6"
-                    title="View"
-                    type="view"
-                    onIconClick={() => {
+                <CustomIcon
+                  className="fs-6"
+                  title="View"
+                  type="view"
+                  onIconClick={() => {
+                    if (value === 0) {
+                      dispatch(
+                        productDetails({
+                          productId: variation?.productVariationId,
+                          variationDetails: variation.variationProperty,
+                        })
+                      );
+                      dispatch(
+                        storeUserInfo({
+                          supplierId,
+                          storeCode,
+                        })
+                      );
+                      router.push(
+                        "/supplier/products&inventory/myproducts/viewModal"
+                      );
+                    } else {
                       viewClick(
                         masterProduct.masterProductId,
                         variation.productVariationId
                       );
-                    }}
-                  />
-                )}
+                    }
+                  }}
+                />
               </Grid>
               {value === 0 ? (
                 <Grid item xs={3}>
