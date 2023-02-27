@@ -29,15 +29,15 @@ const BankDetails = () => {
       const temp = JSON.parse(JSON.stringify(data)).filter(
         (ele) => !ele.primary
       );
-      temp.unshift(data.find((ele) => ele.primary));
+      temp.unshift(data.find((ele) => ele.primary === true));
       temp.forEach((item) => {
         result.push({
-          "Bank Name": item.bankName,
-          "Account Holder Name": item.accountHolderName,
-          "Account Number": item.accountNumber,
-          "IFSC code": item.ifscCode,
-          isChecked: item.primary,
-          id: item.bankId,
+          "Bank Name": item?.bankName,
+          "Account Holder Name": item?.accountHolderName,
+          "Account Number": item?.accountNumber,
+          "IFSC code": item?.ifscCode,
+          isChecked: item?.primary,
+          id: item?.bankId,
         });
       });
     }
@@ -66,7 +66,7 @@ const BankDetails = () => {
       getAllBankData();
     }
     if (err) {
-      toastify(err?.response?.data?.message);
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const updatePrimaryAccount = async (e, id) => {
