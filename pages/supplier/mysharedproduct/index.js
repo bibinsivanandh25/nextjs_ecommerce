@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputBox from "components/atoms/InputBoxComponent";
-import serviceUtil from "services/utils";
+// import serviceUtil from "services/utils";
 import ProductDetailsCard from "@/forms/supplier/mysharedproduct/productdetailscard";
 import {
   getDropdown,
@@ -15,14 +15,12 @@ import toastify from "services/utils/toastUtils";
 const MySharedProduct = () => {
   const [mySharedProduct, setmySharedProduct] = useState([]);
   const [dropdownState, setdropdownState] = useState([]);
-
+  const { supplierId } = useSelector((state) => state.user);
   const [filterData, setfilterData] = useState({});
   const [SearchInput, setSearchInput] = useState("");
   const [searchTextValue, setsearchTextValue] = useState("");
-  const user = useSelector((state) => state.user);
-
   const getDropdownData = async () => {
-    const { data, err } = await getDropdown(user.supplierId);
+    const { data, err } = await getDropdown(supplierId);
 
     if (data) {
       const temp = [];
@@ -41,8 +39,9 @@ const MySharedProduct = () => {
   const getAllShareProductfunction = async () => {
     const payload = {
       keyword: searchTextValue,
-      supplierId: user.supplierId,
-      mainCategoryId: "",
+      supplierId,
+      mainCategoryId: filterData.value,
+      // mainCategoryId: "",
       pageSize: 50,
       pageNumber: 0,
     };
@@ -58,7 +57,7 @@ const MySharedProduct = () => {
   }, []);
   useEffect(() => {
     getAllShareProductfunction();
-  }, [filterData, searchTextValue, SearchInput == ""]);
+  }, [filterData, searchTextValue]);
   return (
     <Paper p={4}>
       <Grid container>
@@ -96,6 +95,9 @@ const MySharedProduct = () => {
                 label="Search by Categories"
                 onInputChange={(e) => {
                   setSearchInput(e.target.value);
+                  if (e.target.value == "") {
+                    getAllShareProductfunction();
+                  }
                 }}
                 value={SearchInput}
               />

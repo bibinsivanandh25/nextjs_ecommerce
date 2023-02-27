@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { Badge, Grid, Paper } from "@mui/material";
+import { Badge, Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import CustomIcon from "services/iconUtils";
@@ -168,7 +168,7 @@ const HelpAndSupport = () => {
         getTabledata(0, null, "");
       }
       if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
       }
     }
   };
@@ -223,9 +223,9 @@ const HelpAndSupport = () => {
                 />
               </Badge>
             </Grid>
-            {/* <Grid>
+            <Grid className=" ">
               <Typography
-                className="h-5 color-orange ms-2"
+                className="h-5 color-orange ms-2 cursor-pointer"
                 onClick={() => {
                   setShowCreateComponent({
                     id: row.ticketId,
@@ -236,7 +236,7 @@ const HelpAndSupport = () => {
               >
                 Reply
               </Typography>
-            </Grid> */}
+            </Grid>
           </Grid>
         ),
       });
