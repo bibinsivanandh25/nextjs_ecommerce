@@ -5,25 +5,60 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputBox from "components/atoms/InputBoxComponent";
 import serviceUtil from "services/utils";
 import ProductDetailsCard from "@/forms/supplier/mysharedproduct/productdetailscard";
+import {
+  getDropdown,
+  getSharedProduct,
+} from "services/supplier/mysharedproducts";
+import { useSelector } from "react-redux";
+import toastify from "services/utils/toastUtils";
 
 const MySharedProduct = () => {
-  const [categoryData, setCategoryData] = useState([]);
-  const [dropDownValue, setDropDownValue] = useState({});
+  const [mySharedProduct, setmySharedProduct] = useState([]);
+  const [dropdownState, setdropdownState] = useState([]);
 
-  const getData = async () => {
-    await serviceUtil
-      .get("https://fakestoreapi.com/products")
-      .then((data) => {
-        setCategoryData([...data.data]);
-      })
-      .catch(() => {
-        // console.log(err);
+  const [filterData, setfilterData] = useState({});
+  const [SearchInput, setSearchInput] = useState("");
+  const [searchTextValue, setsearchTextValue] = useState("");
+  const user = useSelector((state) => state.user);
+
+  const getDropdownData = async () => {
+    const { data, err } = await getDropdown(user.supplierId);
+
+    if (data) {
+      const temp = [];
+      data.data.forEach((ele) => {
+        temp.push({
+          id: ele.mainCategoryId,
+          value: ele.mainCategoryId,
+          label: ele.mainCatgoryName,
+        });
       });
+      setdropdownState([...temp]);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
   };
-
+  const getAllShareProductfunction = async () => {
+    const payload = {
+      keyword: searchTextValue,
+      supplierId: user.supplierId,
+      mainCategoryId: "",
+      pageSize: 50,
+      pageNumber: 0,
+    };
+    const { data, err } = await getSharedProduct(payload);
+    if (data) {
+      setmySharedProduct(data.data);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   useEffect(() => {
-    getData();
+    getDropdownData();
   }, []);
+  useEffect(() => {
+    getAllShareProductfunction();
+  }, [filterData, searchTextValue, SearchInput == ""]);
   return (
     <Paper p={4}>
       <Grid container>
@@ -46,37 +81,41 @@ const MySharedProduct = () => {
           >
             <div className="w-25">
               <SimpleDropdownComponent
-                value={dropDownValue}
-                size="small"
+                value={filterData}
+                // size="small"
                 placeholder="Filter by Category"
-                list={[
-                  {
-                    label: "Fixed Commission",
-                    value: "Fixed Commission",
-                  },
-                  {
-                    label: "Zero Commission",
-                    value: "Zero Commission",
-                  },
-                ]}
+                list={[...dropdownState]}
                 onDropdownSelect={(value) => {
-                  setDropDownValue(value);
+                  setfilterData(value);
                 }}
               />
             </div>
             <Box className="d-flex m-3 align-items-center">
-              <InputBox size="small" label="Search by Categories" />
+              <InputBox
+                size="small"
+                label="Search by Categories"
+                onInputChange={(e) => {
+                  setSearchInput(e.target.value);
+                }}
+                value={SearchInput}
+              />
               <Box
                 className="bg-orange d-flex justify-content-center align-items-center rounded cursor-pointer rounded ms-2"
                 // onClick={handleSearch}
+                onClick={() => {
+                  setsearchTextValue(SearchInput);
+                }}
               >
-                <SearchOutlinedIcon className="text-white p-1 fs-1" />
+                <SearchOutlinedIcon
+                  className="text-white p-1 fs-1"
+                  style={{ backgroundColor: SearchInput.length ? "" : "gray" }}
+                />
               </Box>
             </Box>
           </Grid>
         </Grid>
         <Grid item xs={12} sx={{ my: 5, px: 2 }}>
-          <ProductDetailsCard products={[...categoryData]} />
+          <ProductDetailsCard products={mySharedProduct} />
         </Grid>
       </Grid>
     </Paper>

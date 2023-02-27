@@ -82,7 +82,7 @@ const ProductDetailsCard = ({
               <Grid container spacing={2}>
                 <Grid item xs={3} alignSelf="center">
                   <Image
-                    src={ele.image}
+                    src={ele.productImage}
                     // height={"100%"}
                     height={200}
                     width={200}
@@ -97,17 +97,17 @@ const ProductDetailsCard = ({
                   />
                 </Grid>
                 <Grid item xs={7} spacing={2}>
-                  <Tooltip title={ele.title} placement="top">
+                  <Tooltip title={ele.productName} placement="top">
                     <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
-                      {ele.title}
+                      {ele.productName}
                     </Typography>
                   </Tooltip>
                   <Typography>
                     <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
-                      {ele.rating.rate} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
+                      {ele.productRating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
                     </span>
                     <span className="text-secondary fs-12 mx-2">
-                      {`(${ele.rating.count} Ratings)`}
+                      {`(${ele.productAverageRating} Ratings)`}
                     </span>
                   </Typography>
                   <Typography
@@ -116,24 +116,26 @@ const ProductDetailsCard = ({
                   >
                     Free shipping
                   </Typography>
-                  <Typography className="fw-bold fs-5">₹{ele.price}</Typography>
+                  <Typography className="fw-bold fs-5">
+                    ₹{ele.productPrice}
+                  </Typography>
                 </Grid>
                 <Grid
                   className="d-flex flex-column justify-content-between align-items-end my-1"
                   item
                   xs={2}
                 >
-                  <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
+                  {/* <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
                     <Favorite
                       className="text-secondary h-4"
                       onClick={() => setShowWishlistModal(true)}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid className="border rounded-circle cursor-pointer h-5 p-1">
                     <ShareIcon className="text-secondary h-4" />
                   </Grid>
                   <Grid className="d-flex">
-                    {!showMarginButton ? (
+                    {/* {!showMarginButton ? (
                       <ButtonComponent
                         muiProps="h-6 me-2 p-0"
                         label="Set margin"
@@ -145,7 +147,7 @@ const ProductDetailsCard = ({
                           setShowMarginModal(true);
                         }}
                       />
-                    ) : null}
+                    ) : null} */}
                     <ButtonComponent
                       size="small"
                       muiProps="h-6 "
@@ -163,7 +165,11 @@ const ProductDetailsCard = ({
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid
+      container
+      spacing={2}
+      className="w-100 mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       {getProductsCard()}
       {showMarginModal ? (
         <ModalComponent

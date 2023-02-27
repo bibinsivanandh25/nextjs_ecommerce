@@ -36,6 +36,7 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import { shareProductPost } from "services/supplier/mysharedproducts";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -173,6 +174,18 @@ const MyProducts = () => {
   const handleClose = () => {
     setShowMenu(null);
   };
+  const shareProductFunction = async (variationId) => {
+    const payload = {
+      sharedProductVariationId: variationId,
+      sharedById: supplierId,
+    };
+    const { data, err } = await shareProductPost(payload);
+    if (data) {
+      toastify(data.message, "success");
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
 
   const deleteSingleRow = async (productId) => {
     if (value !== 0) {
@@ -255,6 +268,7 @@ const MyProducts = () => {
                         "Product ID Copied To The Clip Board",
                         "success"
                       );
+                      shareProductFunction(variation.productVariationId);
                     }}
                   />
                 </Grid>

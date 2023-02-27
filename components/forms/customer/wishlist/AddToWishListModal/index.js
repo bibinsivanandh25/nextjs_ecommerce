@@ -260,6 +260,7 @@ const AddToWishListModal = ({
         </Grid>
       </Grid>
       <ModalComponent
+        ModalTitle="Create New Wishlist"
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
