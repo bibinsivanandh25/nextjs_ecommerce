@@ -68,6 +68,10 @@ const MyProfile = () => {
     email: "",
     phoneNumber: "",
   });
+  const [showSendOTP, setShowSendOTP] = useState({
+    mail: true,
+    phone: true,
+  });
   const [showVerifyOtp, setShowVerifyOtp] = useState("");
   const [isOtpVerified, setIsOtpVerified] = useState({
     mail: true,
@@ -462,8 +466,16 @@ const MyProfile = () => {
               >
                 <Grid
                   item
-                  sm={formValues.mail !== initialDetails.email ? 9.5 : 12}
-                  lg={formValues.mail !== initialDetails.email ? 10 : 12}
+                  sm={
+                    formValues.mail !== initialDetails.email && showSendOTP.mail
+                      ? 9.5
+                      : 12
+                  }
+                  lg={
+                    formValues.mail !== initialDetails.email && showSendOTP.mail
+                      ? 10
+                      : 12
+                  }
                 >
                   <InputBox
                     disabled={!showUpdate}
@@ -489,7 +501,8 @@ const MyProfile = () => {
                     error={errorObj.mail !== ""}
                   />
                 </Grid>
-                {formValues.mail !== initialDetails.email ? (
+                {formValues.mail !== initialDetails.email &&
+                showSendOTP.mail ? (
                   <Grid item sm={2.5} lg={2}>
                     <ButtonComponent
                       label="Send OTP"
@@ -533,10 +546,16 @@ const MyProfile = () => {
                 <Grid
                   item
                   sm={
-                    formValues.mobile !== initialDetails.phoneNumber ? 9.5 : 12
+                    formValues.mobile !== initialDetails.phoneNumber &&
+                    showSendOTP.phone
+                      ? 9.5
+                      : 12
                   }
                   lg={
-                    formValues.mobile !== initialDetails.phoneNumber ? 10 : 12
+                    formValues.mobile !== initialDetails.phoneNumber &&
+                    showSendOTP.phone
+                      ? 10
+                      : 12
                   }
                 >
                   <InputBox
@@ -563,7 +582,8 @@ const MyProfile = () => {
                     error={errorObj.mobile !== ""}
                   />
                 </Grid>
-                {formValues.mobile !== initialDetails.phoneNumber ? (
+                {formValues.mobile !== initialDetails.phoneNumber &&
+                showSendOTP.mail ? (
                   <Grid item sm={2.5} lg={2}>
                     <ButtonComponent
                       label="Send OTP"
@@ -850,6 +870,15 @@ const MyProfile = () => {
                 const { data, errRes } = await verifyOtp(formData);
                 if (data) {
                   // console.log(data);
+                  setShowSendOTP({
+                    ...showSendOTP,
+                    ...(showVerifyOtp === "phone" && {
+                      phone: false,
+                    }),
+                    ...(showVerifyOtp === "mail" && {
+                      mail: false,
+                    }),
+                  });
                   setIsOtpVerified({
                     ...isOtpVerified,
                     ...(showVerifyOtp === "phone" && {
