@@ -54,10 +54,22 @@ const sendOTP = (user) => {
     })
     .catch((err) => ({ err }));
 };
+const sendOTPtoEmail = (reqObj) => {
+  return serviceUtil
+    .post(`users/user-registration/send-otp-email`, reqObj, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getSupplierDetailsBySupplierId,
   updateSupplierProfile,
   getMainCategories,
   UpdateProfilePicture,
   sendOTP,
+  sendOTPtoEmail,
 };

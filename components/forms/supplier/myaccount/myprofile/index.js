@@ -10,6 +10,7 @@ import {
   updateSupplierProfile,
   UpdateProfilePicture,
   sendOTP,
+  sendOTPtoEmail,
 } from "services/supplier/myaccount/myprofile";
 import { useUserInfo } from "services/hooks";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
@@ -61,9 +62,22 @@ const MyProfile = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [profileImage, setProfileImage] = useState();
   const [selectedMainCategoryIds, setSelectedMainCategoryIds] = useState([]);
-  const [supplierMobileNumber, setSupplierMobileNumber] = useState(null);
+  // const [supplierMobileNumber, setSupplierMobileNumber] = useState(null);
   const [otp, setotp] = useState("xxxx");
-  const [showVerifyOtp, setShowVerifyOtp] = useState(false);
+  const [initialDetails, setInitialDetails] = useState({
+    email: "",
+    phoneNumber: "",
+  });
+  const [showSendOTP, setShowSendOTP] = useState({
+    mail: true,
+    phone: true,
+  });
+  const [showVerifyOtp, setShowVerifyOtp] = useState("");
+  const [isOtpVerified, setIsOtpVerified] = useState({
+    mail: true,
+    phone: true,
+  });
+
   const dispatch = useDispatch();
 
   const cities = City.getCitiesOfCountry("IN");
@@ -80,7 +94,7 @@ const MyProfile = () => {
   const profilePicRef = useRef(null);
   useEffect(() => {
     return () => {
-      setShowVerifyOtp(false);
+      setShowVerifyOtp("");
       setotp("xxxx");
     };
   }, []);
@@ -151,6 +165,10 @@ const MyProfile = () => {
   const getSupplierDetails = async () => {
     const { data } = await getSupplierDetailsBySupplierId(id);
     if (data) {
+      setInitialDetails({
+        email: data.emailId,
+        phoneNumber: data.mobileNumber,
+      });
       setFormValues((pre) => ({
         ...pre,
         businessName: data.businessName,
@@ -173,7 +191,7 @@ const MyProfile = () => {
       }));
       setSelectedMainCategoryIds(data.mainCategories);
       setProfileImage(data.profileImageUrl);
-      setSupplierMobileNumber(data.mobileNumber);
+      // setSupplierMobileNumber(data.mobileNumber);
       const supplierDetails = {
         emailId: data.emailId,
         firstName: data.firstName,
@@ -208,7 +226,7 @@ const MyProfile = () => {
     const { data, err } = await updateSupplierProfile(payload);
     if (data) {
       toastify(data.message, "success");
-      setShowVerifyOtp(false);
+      setShowVerifyOtp("");
       getSupplierDetails();
     } else if (err) {
       // console.log(err.response);
@@ -218,17 +236,18 @@ const MyProfile = () => {
   const handleUpdateProfile = async () => {
     const flag = validateForm();
     if (!flag) {
-      if (supplierMobileNumber === formValues.mobile) {
-        updateProfile();
-      } else {
-        const { data, err } = await sendOTP(formValues.mobile);
-        if (data) {
-          // console.log(data);
-          setShowVerifyOtp(true);
-        } else if (err) {
-          toastify(err.response.data.message);
-        }
-      }
+      updateProfile();
+      // if (supplierMobileNumber === formValues.mobile) {
+      //   updateProfile();
+      // } else {
+      //   const { data, err } = await sendOTP(formValues.mobile);
+      //   if (data) {
+      //     // console.log(data);
+      //     setShowVerifyOtp(true);
+      //   } else if (err) {
+      //     toastify(err.response.data.message);
+      //   }
+      // }
     }
   };
 
@@ -270,6 +289,34 @@ const MyProfile = () => {
     getMainCategory();
   }, []);
 
+  const validatePhoneAndEmail = (email = false, phone = false) => {
+    const errObj = {
+      mail: "",
+      mobile: "",
+    };
+    if (email) {
+      if (formValues.mail === "") {
+        errObj.mail = validateMessage.field_required;
+      } else if (!validationRegex.email.test(formValues.mail)) {
+        errObj.mail = validateMessage.email;
+      }
+    }
+    if (phone) {
+      if (formValues.mobile === "") {
+        errObj.mobile = validateMessage.field_required;
+      } else if (!validationRegex.mobile.test(formValues.mobile)) {
+        errObj.mobile = validateMessage.mobile;
+      }
+    }
+    setErrorObj({
+      ...errorObj,
+      ...errObj,
+    });
+    return errObj;
+  };
+  useEffect(() => {
+    console.log(isOtpVerified, "isio");
+  }, [isOtpVerified]);
   const fileUpload = async (e) => {
     if (e.target.files[0]) {
       // binary = await getBase64(e.target.files[0]);
@@ -291,7 +338,7 @@ const MyProfile = () => {
 
   return (
     <div className="mnh-70vh mxh-80vh overflow-auto hide-scrollbar bg-white rounded px-4">
-      {!showVerifyOtp ? (
+      {!showVerifyOtp.length ? (
         <div>
           {" "}
           <div className="mt-4 d-flex align-items-center">
@@ -343,7 +390,7 @@ const MyProfile = () => {
                   onIconClick={() => setShowUpdate(!showUpdate)}
                 />
               </div>
-              <span>{formValues.mail}</span>
+              <span>{initialDetails.email}</span>
             </div>
           </div>
           {/* {showUpdate ? ( */}
@@ -409,24 +456,160 @@ const MyProfile = () => {
                 </Grid>
               )}
 
-              <Grid item md={6} sm={12}>
-                <InputBox
-                  disabled={!showUpdate}
-                  placeholder="Enter your Mobile Number"
-                  value={formValues.mobile}
-                  label="Mobile Number"
-                  className="w-100"
-                  size="small"
-                  onInputChange={(e) => {
-                    setFormValues((prev) => ({
-                      ...prev,
-                      mobile: e.target.value,
-                    }));
-                  }}
-                  inputlabelshrink
-                  helperText={errorObj.mobile}
-                  error={errorObj.mobile !== ""}
-                />
+              <Grid
+                item
+                container
+                md={6}
+                sm={12}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Grid
+                  item
+                  sm={
+                    formValues.mail !== initialDetails.email && showSendOTP.mail
+                      ? 9.5
+                      : 12
+                  }
+                  lg={
+                    formValues.mail !== initialDetails.email && showSendOTP.mail
+                      ? 10
+                      : 12
+                  }
+                >
+                  <InputBox
+                    disabled={!showUpdate}
+                    placeholder="Enter your Email"
+                    value={formValues.mail}
+                    label="EMail"
+                    className="w-100"
+                    size="small"
+                    onInputChange={(e) => {
+                      if (e.target.value !== initialDetails.email) {
+                        setIsOtpVerified({
+                          ...isOtpVerified,
+                          mail: false,
+                        });
+                      }
+                      setFormValues((prev) => ({
+                        ...prev,
+                        mail: e.target.value,
+                      }));
+                    }}
+                    inputlabelshrink
+                    helperText={errorObj.mail}
+                    error={errorObj.mail !== ""}
+                  />
+                </Grid>
+                {formValues.mail !== initialDetails.email &&
+                showSendOTP.mail ? (
+                  <Grid item sm={2.5} lg={2}>
+                    <ButtonComponent
+                      label="Send OTP"
+                      variant="text"
+                      textColor="color-orange"
+                      muiProps={{
+                        color: "#e56700",
+                      }}
+                      onBtnClick={async () => {
+                        const { mail } = validatePhoneAndEmail(true, false);
+                        if (!mail.length) {
+                          const formData = new FormData();
+                          formData.append("recipientMail", formValues.mail);
+                          const { data, err } = await sendOTPtoEmail(formData);
+                          if (data?.message) {
+                            // toast.show(data?.message, {
+                            //   type: "success",
+                            //   duration: 1000,
+                            //   animationType: "slide-in",
+                            // });
+                            toastify(data?.message, "success");
+                            setShowVerifyOtp("mail");
+                          }
+                          if (err) {
+                            toastify(err?.response?.data?.message, "error");
+                          }
+                        }
+                      }}
+                    />
+                  </Grid>
+                ) : null}
+              </Grid>
+              <Grid
+                item
+                container
+                md={6}
+                sm={12}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Grid
+                  item
+                  sm={
+                    formValues.mobile !== initialDetails.phoneNumber &&
+                    showSendOTP.phone
+                      ? 9.5
+                      : 12
+                  }
+                  lg={
+                    formValues.mobile !== initialDetails.phoneNumber &&
+                    showSendOTP.phone
+                      ? 10
+                      : 12
+                  }
+                >
+                  <InputBox
+                    disabled={!showUpdate}
+                    placeholder="Enter your Mobile Number"
+                    value={formValues.mobile}
+                    label="Mobile Number"
+                    className="w-100"
+                    size="small"
+                    onInputChange={(e) => {
+                      if (e.target.value !== initialDetails.phoneNumber) {
+                        setIsOtpVerified({
+                          ...isOtpVerified,
+                          phone: false,
+                        });
+                      }
+                      setFormValues((prev) => ({
+                        ...prev,
+                        mobile: e.target.value,
+                      }));
+                    }}
+                    inputlabelshrink
+                    helperText={errorObj.mobile}
+                    error={errorObj.mobile !== ""}
+                  />
+                </Grid>
+                {formValues.mobile !== initialDetails.phoneNumber &&
+                showSendOTP.mail ? (
+                  <Grid item sm={2.5} lg={2}>
+                    <ButtonComponent
+                      label="Send OTP"
+                      variant="text"
+                      textColor="color-orange"
+                      muiProps={{
+                        color: "#e56700",
+                      }}
+                      onBtnClick={async () => {
+                        const { mobile } = validatePhoneAndEmail(false, true);
+                        if (!mobile.length) {
+                          const { data, err } = await sendOTP(
+                            formValues.mobile
+                          );
+                          if (data) {
+                            // console.log(data);
+                            setShowVerifyOtp("phone");
+                            toastify(data?.message, "success");
+                          } else if (err) {
+                            toastify(err.response.data.message, "error");
+                          }
+                        }
+                      }}
+                    />
+                  </Grid>
+                ) : null}
               </Grid>
               <Grid item md={6} sm={12}>
                 <SimpleDropdownComponent
@@ -630,8 +813,18 @@ const MyProfile = () => {
             {showUpdate && (
               <Grid className="mt-2">
                 <ButtonComponent
-                  disabled={!formValues.approved}
-                  bgColor={formValues.approved ? "bg-orange" : "bg-gray"}
+                  disabled={
+                    !formValues.approved &&
+                    !isOtpVerified.mail &&
+                    !isOtpVerified.phone
+                  }
+                  bgColor={
+                    formValues.approved &&
+                    isOtpVerified.mail &&
+                    isOtpVerified.phone
+                      ? "bg-orange"
+                      : "bg-gray"
+                  }
                   label="Update profile"
                   onBtnClick={() => {
                     handleUpdateProfile();
@@ -643,29 +836,72 @@ const MyProfile = () => {
         </div>
       ) : (
         <div className="my-5">
+          <Typography
+            onClick={() => {
+              setShowVerifyOtp("");
+              setIsOtpVerified({
+                ...isOtpVerified,
+                ...(showVerifyOtp === "phone" && {
+                  phone: false,
+                }),
+                ...(showVerifyOtp === "mail" && {
+                  mail: false,
+                }),
+              });
+            }}
+            className="color-orange d-inline cursor-pointer "
+          >
+            {" "}
+            {"< Back"}
+          </Typography>
           <OtpForm otp={otp} setotp={setotp} />
           <div className="d-flex justify-content-center">
             <ButtonComponent
               label="Verify OTP"
               onBtnClick={async () => {
                 const formData = new FormData();
-                formData.append("userName", formValues.mobile);
+                formData.append(
+                  "userName",
+                  showVerifyOtp === "phone"
+                    ? formValues.mobile
+                    : formValues.mail
+                );
                 formData.append("otp", otp);
                 const { data, errRes } = await verifyOtp(formData);
                 if (data) {
                   // console.log(data);
-                  updateProfile();
+                  setShowSendOTP({
+                    ...showSendOTP,
+                    ...(showVerifyOtp === "phone" && {
+                      phone: false,
+                    }),
+                    ...(showVerifyOtp === "mail" && {
+                      mail: false,
+                    }),
+                  });
+                  setIsOtpVerified({
+                    ...isOtpVerified,
+                    ...(showVerifyOtp === "phone" && {
+                      phone: true,
+                    }),
+                    ...(showVerifyOtp === "mail" && {
+                      mail: true,
+                    }),
+                  });
+                  setShowVerifyOtp("");
+
+                  // updateProfile();
                 } else if (errRes) {
                   toastify(errRes?.message, "error");
                 }
               }}
             />
           </div>
-          <div className="d-flex justify-content-center my-2">
+          {/* <div className="d-flex justify-content-center my-2">
             <Typography
               className="cursor-pointer h-5 color-orange fw-bold me-5"
               onClick={() => {
-                setShowVerifyOtp(false);
+                setShowVerifyOtp("");
                 setShowUpdate(true);
               }}
             >
@@ -677,7 +913,7 @@ const MyProfile = () => {
             >
               Resend OTP
             </Typography>
-          </div>
+          </div> */}
         </div>
       )}
     </div>
