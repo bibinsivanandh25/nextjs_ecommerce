@@ -262,70 +262,70 @@ const AddFlag = ({
     }
   };
 
-  const getFlagDetails = async (val) => {
-    if (!val) {
-      return;
-    }
-    const { data, err } = await getFlagById(
-      val.value,
-      val.purchaseId,
-      storeCode
-    );
-    if (data) {
-      if (data?.data) {
-        const temp = val?.flagImagePojos?.map((item) => {
-          return {
-            checked: data?.data?.imageId == item?.flagImageId,
-            url: item,
-            label: <Image src={item?.imageUrl} width={400} height={50} />,
-          };
-        });
-        setflagUrlList(temp);
-        setdisableFlagField(true);
-        setFormData((pre) => ({
-          ...pre,
-          flagId: val.value,
-          flagTitle: val.label,
-          imageUrl: data.data.imageUrl,
-          imageId: data.data.imageId,
-          supplierId,
-          supplierStoreId: storeCode,
-          purchaseId: val.purchaseId,
-          variationList: [...data.data.variationList, pre.variationList],
-          startDate: data.data.startDate,
-          endDate: data.data.endDate,
-          discount: data.data.discount,
-          visibilityPlace: data.data.visibilityPlace,
-        }));
-      } else {
-        const temp = val?.flagImagePojos?.map((item) => {
-          return {
-            checked: false,
-            url: item,
-            label: <Image src={item?.imageUrl} width={400} height={50} />,
-          };
-        });
-        setflagUrlList(temp);
-        setdisableFlagField(false);
-        setFormData((pre) => ({
-          ...pre,
-          flagId: val.value,
-          flagTitle: val.label,
-          imageUrl: "",
-          imageId: "",
-          visibilityPlace: "",
-          supplierId,
-          supplierStoreId: storeCode,
-          purchaseId: val.purchaseId,
-          startDate: null,
-          endDate: null,
-          discount: "",
-        }));
-      }
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
-    }
-  };
+  // const getFlagDetails = async (val) => {
+  //   if (!val) {
+  //     return;
+  //   }
+  //   const { data, err } = await getFlagById(
+  //     val.value,
+  //     val.purchaseId,
+  //     storeCode
+  //   );
+  //   if (data) {
+  //     if (data?.data) {
+  //       const temp = val?.flagImagePojos?.map((item) => {
+  //         return {
+  //           checked: data?.data?.imageId == item?.flagImageId,
+  //           url: item,
+  //           label: <Image src={item?.imageUrl} width={400} height={50} />,
+  //         };
+  //       });
+  //       setflagUrlList(temp);
+  //       setdisableFlagField(true);
+  //       setFormData((pre) => ({
+  //         ...pre,
+  //         flagId: val.value,
+  //         flagTitle: val.label,
+  //         imageUrl: data.data.imageUrl,
+  //         imageId: data.data.imageId,
+  //         supplierId,
+  //         supplierStoreId: storeCode,
+  //         purchaseId: val.purchaseId,
+  //         variationList: [...data.data.variationList, pre.variationList],
+  //         startDate: data.data.startDate,
+  //         endDate: data.data.endDate,
+  //         discount: data.data.discount,
+  //         visibilityPlace: data.data.visibilityPlace,
+  //       }));
+  //     } else {
+  //       const temp = val?.flagImagePojos?.map((item) => {
+  //         return {
+  //           checked: false,
+  //           url: item,
+  //           label: <Image src={item?.imageUrl} width={400} height={50} />,
+  //         };
+  //       });
+  //       setflagUrlList(temp);
+  //       setdisableFlagField(false);
+  //       setFormData((pre) => ({
+  //         ...pre,
+  //         flagId: val.value,
+  //         flagTitle: val.label,
+  //         imageUrl: "",
+  //         imageId: "",
+  //         visibilityPlace: "",
+  //         supplierId,
+  //         supplierStoreId: storeCode,
+  //         purchaseId: val.purchaseId,
+  //         startDate: null,
+  //         endDate: null,
+  //         discount: "",
+  //       }));
+  //     }
+  //   } else if (err) {
+  //     toastify(err?.response?.data?.message, "error");
+  //   }
+  // };
 
   return (
     <ModalComponent
