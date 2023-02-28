@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-unneeded-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -109,7 +110,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
           freeDeliveryCostOff: ele.percentageOfFreeDelivary,
           viewCount: ele.noOfViews,
           orderCount: ele.noOfOrdered,
-          flagDetails: ele.supplierFlag,
+          // flagDetails: ele.supplierFlag,
           wishListId: ele.wishListId,
           wishListed: ele.inWishList,
           skuId: ele.skuId,
@@ -123,6 +124,9 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
           id: ele.productId,
           variationDetails: ele.variationProperty,
           subCategoryId: ele.subCategoryId,
+          flaged: ele?.flaged,
+          visibilityPlace: ele?.visibilityPlace,
+          flagImageUrl: ele.flagImageUrl,
         });
       });
       setProductData(result);
@@ -138,13 +142,15 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
 
   useEffect(() => {
     Object.entries(route?.query).forEach(([key, value]) => {
-      if (key === "categoryId") {
-        getProducts(value, "");
-        setCategoryId(value);
-      }
-      if (key === "subCategoryId") {
-        getProducts("", value);
-        setSubCategoryId(value);
+      if (!route.query.hasOwnProperty("keyword")) {
+        if (key === "categoryId") {
+          getProducts(value, "");
+          setCategoryId(value);
+        }
+        if (key === "subCategoryId") {
+          getProducts("", value);
+          setSubCategoryId(value);
+        }
       }
       if (key === "keyword") {
         getProducts("", "", value);
