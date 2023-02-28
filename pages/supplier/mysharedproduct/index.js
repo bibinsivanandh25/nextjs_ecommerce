@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -19,6 +19,29 @@ const MySharedProduct = () => {
   const [filterData, setfilterData] = useState({});
   const [SearchInput, setSearchInput] = useState("");
   const [searchTextValue, setsearchTextValue] = useState("");
+  //
+  const [isIntersecting, setIntersecting] = useState(false);
+  const [pageNumberstate, setpageNumber] = useState(0);
+
+  const observer = new IntersectionObserver(([entry]) => {
+    setIntersecting(entry.isIntersecting);
+  });
+
+  const footerRef = useRef(null);
+  useEffect(() => {
+    if (isIntersecting) {
+      setIntersecting(false);
+    }
+  }, [isIntersecting]);
+
+  useEffect(() => {
+    observer.observe(footerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  //
+
   const getDropdownData = async () => {
     const { data, err } = await getDropdown(supplierId);
 
@@ -36,18 +59,27 @@ const MySharedProduct = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const getAllShareProductfunction = async () => {
+  const getAllShareProductfunction = async (
+    key = searchTextValue,
+    page = pageNumberstate
+  ) => {
     const payload = {
-      keyword: searchTextValue,
+      keyword: key,
       supplierId,
       mainCategoryId: filterData.value,
       // mainCategoryId: "",
       pageSize: 50,
-      pageNumber: 0,
+      pageNumber: page,
     };
     const { data, err } = await getSharedProduct(payload);
     if (data) {
-      setmySharedProduct(data.data);
+      if (page == 0) {
+        setmySharedProduct(data.data);
+        setpageNumber(pageNumberstate + 1);
+      } else {
+        setmySharedProduct([...mySharedProduct, ...data.data]);
+        setpageNumber(pageNumberstate + 1);
+      }
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
@@ -56,8 +88,12 @@ const MySharedProduct = () => {
     getDropdownData();
   }, []);
   useEffect(() => {
-    getAllShareProductfunction();
+    getAllShareProductfunction(searchTextValue, 0);
   }, [filterData, searchTextValue]);
+  useEffect(() => {
+    getAllShareProductfunction();
+  }, [isIntersecting]);
+
   return (
     <Paper p={4}>
       <Grid container>
@@ -96,7 +132,7 @@ const MySharedProduct = () => {
                 onInputChange={(e) => {
                   setSearchInput(e.target.value);
                   if (e.target.value == "") {
-                    getAllShareProductfunction();
+                    getAllShareProductfunction("", 0);
                   }
                 }}
                 value={SearchInput}
@@ -118,6 +154,15 @@ const MySharedProduct = () => {
         </Grid>
         <Grid item xs={12} sx={{ my: 5, px: 2 }}>
           <ProductDetailsCard products={mySharedProduct} />
+          <div
+            ref={footerRef}
+            style={{
+              // visibility: "hidden",
+              display: mySharedProduct?.length % 50 == 0 ? "block" : "none",
+            }}
+          >
+            {/* See More Shared Products */}
+          </div>
         </Grid>
       </Grid>
     </Paper>

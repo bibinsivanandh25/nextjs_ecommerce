@@ -217,6 +217,7 @@ const HelpAndSupport = () => {
               >
                 <CustomIcon
                   type="notification"
+                  title="Notification"
                   onIconClick={() => {
                     handleViewClick(row, "notification");
                   }}

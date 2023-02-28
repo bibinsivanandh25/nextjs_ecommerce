@@ -149,7 +149,7 @@ const ChooseAddress = ({ showModal = false, setShowModal = () => {} }) => {
         minHeightClassName={masterAddress.length > 2 ? "mnh-400" : ""}
       >
         <Box className="mxh-400">
-          <Box className="mxh-350 overflow-auto hide-scrollbar">
+          <Box className="mxh-350 overflow-auto ">
             {masterAddress.length > 0 &&
               masterAddress.map((item, index) => (
                 <Box
