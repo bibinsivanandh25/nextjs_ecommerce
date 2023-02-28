@@ -110,7 +110,7 @@ const ReferredSupplier = () => {
       pageNumber: page,
       pageSize: 50,
       supplierId: user.supplierId,
-      filterType,
+      filterType: filterType?.toLocaleLowerCase() === "all" ? "" : filterType,
       keyword,
     };
     const { data } = await getReferredSupplier(payload);
