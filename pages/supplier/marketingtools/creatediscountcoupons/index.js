@@ -177,7 +177,7 @@ const CreateDiscountCoupons = () => {
           setRow(handleTableRows(data.marketingToolResponsePojo));
         }
         setpageNumber((pre) => pre + 1);
-      } else {
+      } else if (page !== 0 && data.marketingToolResponsePojo?.length) {
         setpageNumber((pre) => pre + 1);
         setRow((pre) => [
           ...pre,
