@@ -38,9 +38,6 @@ const AddFlag = ({
   getMycollectionData = () => {},
   masterProduct = {},
 }) => {
-  const [formData, setFormData] = useState({
-    ...flagSchema,
-  });
   const [flagsList, setFlagsList] = useState([]);
   const [flagUrlList, setflagUrlList] = useState([]);
   const { storeCode, supplierId } = useSelector((state) => state.user);
@@ -163,19 +160,107 @@ const AddFlag = ({
     getflagList();
   }, []);
 
-  useEffect(() => {
-    if (masterProduct?.productVariations) {
-      const variationId = masterProduct?.productVariations.map((item) => {
-        return item.productVariationId;
-      });
-      setFormData((pre) => ({
-        ...pre,
-        variationList: variationId,
-        supplierId: masterProduct.supplierId,
-        supplierStoreId: storeCode,
-      }));
+  const getFlagDetails = async (val) => {
+    if (!val) {
+      return;
     }
-  }, [masterProduct]);
+    const { data, err } = await getFlagById(
+      val.value,
+      val.purchaseId,
+      storeCode
+    );
+    if (data) {
+      setFlagTitle(JSON.parse(JSON.stringify(val)));
+
+      if (data?.data) {
+        const temp = val?.flagImagePojos?.map((item) => {
+          return {
+            checked: data?.data?.imageId == item?.flagImageId,
+            url: item,
+            label: <Image src={item?.imageUrl} width={400} height={50} />,
+          };
+        });
+        setflagUrlList(temp);
+        setdisableFlagField(true);
+        const variationList = [...data.data.variationList];
+        masterProduct.productVariations.forEach((item) => {
+          variationList.push(item.productVariationId);
+        });
+        setFlagFormData((pre) => ({
+          ...pre,
+          flagId: val.value,
+          flagTitle: val.label,
+          imageUrl: data.data.imageUrl,
+          imageId: data.data.imageId,
+          supplierId: masterProduct.supplierId,
+          supplierStoreId: storeCode,
+          purchaseId: val.purchaseId,
+          variationList,
+          startDate: data.data.startDate,
+          endDate: data.data.endDate,
+          discount: data.data.discount,
+          visibilityPlace: data.data.visibilityPlace,
+        }));
+      } else {
+        const temp = val?.flagImagePojos?.map((item) => {
+          return {
+            checked: false,
+            url: item,
+            label: <Image src={item?.imageUrl} width={400} height={50} />,
+          };
+        });
+        const variationList = [];
+        masterProduct.productVariations.forEach((item) => {
+          variationList.push(item.productVariationId);
+        });
+        setflagUrlList(temp);
+        setdisableFlagField(false);
+        setFlagFormData((pre) => ({
+          ...pre,
+          flagId: val.value,
+          flagTitle: val.label,
+          imageUrl: "",
+          imageId: "",
+          visibilityPlace: "",
+          supplierId: masterProduct.supplierId,
+          supplierStoreId: storeCode,
+          purchaseId: val.purchaseId,
+          variationList,
+          startDate: null,
+          endDate: null,
+          discount: "",
+        }));
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+
+  const flagSubmit = async () => {
+    if (!flagUrlList.filter((item) => item.checked).length) {
+      toastify("please select the flag", "error");
+      return;
+    }
+    const { data, err } = await addProductFlag({
+      ...flagFormData,
+      imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
+      visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
+        .visibilityPlace,
+      imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
+      // FlagListData.flagImagePojos.map((val)=>{})
+    });
+    if (data) {
+      toastify(data.message, "success");
+      setOpenModal(false);
+      setFlagFormData({ ...flagSchema });
+      setdisableFlagField(false);
+      setflagUrlList([]);
+      setFlagTitle([]);
+      getMycollectionData(0);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
 
   const getFlagDetails = async (val) => {
     if (!val) {
@@ -245,7 +330,10 @@ const AddFlag = ({
   return (
     <ModalComponent
       onCloseIconClick={() => {
-        handleClearBtnClick();
+        setOpenModal(false);
+        setFlagFormData({ ...flagSchema });
+        setflagUrlList([]);
+        setFlagTitle([]);
       }}
       open={openModal}
       ModalTitle="Add Flag"
@@ -253,8 +341,14 @@ const AddFlag = ({
       footerClassName="justify-content-end border-top"
       titleClassName="h-4"
       ClearBtnText="Cancel"
-      onClearBtnClick={handleClearBtnClick}
-      onSaveBtnClick={handleSubmit}
+      onClearBtnClick={() => {
+        setOpenModal(false);
+
+        setFlagFormData({ ...flagSchema });
+        setflagUrlList([]);
+        setFlagTitle([]);
+      }}
+      onSaveBtnClick={flagSubmit}
     >
       <Grid container spacing={2} className="my-2">
         <Grid item xs={12}>
@@ -272,33 +366,39 @@ const AddFlag = ({
           />
         </Grid>
 
-        {formData.flagTitle.label === "Deal Of The Day" && (
+        {flagTitle?.label === "Deal Of The Day" && (
           <Grid item sm={6}>
             <InputBox
               size="small"
-              placeholder="Enter discount %"
-              type="number"
+              value={flagFormData.discount}
+              placeholder="Enter discount in %"
               onInputChange={(e) => {
-                handleChanges(e.target.value, "discount");
+                setFlagFormData((pre) => ({
+                  ...pre,
+                  discount: e.target.value,
+                }));
               }}
               value={formData.discount}
               disabled={disableFlagField}
               helperText={errObj.discount}
               error={errObj.discount !== ""}
+              type="number"
             />
           </Grid>
         )}
+
         <Grid item sm={6}>
           <DatePickerComponent
             size="small"
             label="Start Date"
             inputlabelshrink
-            onDateChange={(value) => {
-              handleChanges(format(value, "MM-dd-yyyy HH:mm:ss"), "startDate");
-            }}
             value={
-              formData.startDate
-                ? parse(formData.startDate, "MM-dd-yyyy HH:mm:ss", new Date())
+              flagFormData.startDate
+                ? parse(
+                    flagFormData.startDate,
+                    "MM-dd-yyyy HH:mm:ss",
+                    new Date()
+                  )
                 : null
             }
             disabled={disableFlagField}
@@ -308,14 +408,12 @@ const AddFlag = ({
         </Grid>
         <Grid item sm={6}>
           <DatePickerComponent
-            onDateChange={(value) => {
-              handleChanges(format(value, "MM-dd-yyyy HH:mm:ss"), "endDate");
-            }}
             size="small"
             label="End Date"
+            inputlabelshrink
             value={
-              formData.endDate
-                ? parse(formData.endDate, "MM-dd-yyyy HH:mm:ss", new Date())
+              flagFormData.endDate
+                ? parse(flagFormData.endDate, "MM-dd-yyyy HH:mm:ss", new Date())
                 : null
             }
             inputlabelshrink
@@ -325,10 +423,10 @@ const AddFlag = ({
           />
         </Grid>
         <Grid item sm={12} container>
-          {flagUrlList.map((item, ind) => {
+          {flagUrlList?.map((item, ind) => {
             return (
               <Grid item md={6}>
-                <div className="d-flex">
+                <div className="d-flex" style={{ paddingLeft: "10px" }}>
                   <CheckBoxComponent
                     isChecked={item.checked}
                     checkBoxClick={() => {
@@ -345,6 +443,9 @@ const AddFlag = ({
                     }}
                   />
                   {item.label}
+                  <span className="fs-12 color-orange d-flex align-self-center p-3">
+                    {item.url.visibilityPlace.replace("_", " ")}
+                  </span>
                 </div>
               </Grid>
             );
