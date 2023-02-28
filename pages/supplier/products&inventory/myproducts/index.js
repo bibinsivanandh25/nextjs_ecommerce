@@ -36,6 +36,7 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { format, parse } from "date-fns";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import validateMessage from "constants/validateMessages";
 // import ViewModal from "@/forms/supplier/myproducts/viewModal";
 
 const MyProducts = () => {
@@ -147,7 +148,12 @@ const MyProducts = () => {
   });
   const { supplierId, storeCode } = useSelector((state) => state.user);
   const [flagsList, setFlagsList] = useState([]);
-
+  const [errObj, setErrObj] = useState({
+    flagTitle: "",
+    discount: "",
+    startDate: "",
+    endDate: "",
+  });
   const flagSchema = {
     flagTitle: "",
     imageUrl: "",
@@ -545,25 +551,76 @@ const MyProducts = () => {
     }
   };
 
+  const validate = () => {
+    let flag = false;
+    const err = {
+      flagTitle: "",
+      discount: "",
+      startDate: "",
+      endDate: "",
+    };
+
+    if (!Object.keys(flagFormData.flagTitle).length) {
+      flag = true;
+      err.flagTitle = validateMessage.field_required;
+    }
+    if (
+      flagFormData.flagTitle.label === "Deal Of The Day" &&
+      flagFormData.discount === ""
+    ) {
+      flag = true;
+      err.discount = validateMessage.field_required;
+    }
+    if (flagFormData.startDate === "") {
+      flag = true;
+      err.startDate = validateMessage.field_required;
+    }
+    if (flagFormData.endDate === "") {
+      flag = true;
+      err.endDate = validateMessage.field_required;
+    }
+
+    if (
+      flagFormData.startDate !== "" &&
+      flagFormData.endDate !== "" &&
+      flagFormData.startDate > flagFormData.endDate
+    ) {
+      err.endDate = "End date should be more than start date";
+    }
+
+    if (
+      flagUrlList.length &&
+      !flagUrlList.filter((item) => item.checked).length
+    ) {
+      toastify("Please select the flag", "warning");
+      flag = true;
+    }
+    return { err, flag };
+  };
+
   const flagSubmit = async () => {
-    const { data, err } = await addProductFlag({
-      ...flagFormData,
-      imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
-      visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
-        .visibilityPlace,
-      imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
-      // FlagListData.flagImagePojos.map((val)=>{})
-    });
-    if (data) {
-      toastify(data.message, "success");
-      setShowAddFlagModal(false);
-      setFlagFormData({ ...flagSchema });
-      setdisableFlagField(false);
-      setIds({ masterProductId: "", variationId: "", flagged: false });
-      setflagUrlList([]);
-      setFlagTitle([]);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+    const { err, flag } = validate();
+    setErrObj(err);
+    if (!flag) {
+      const { data, err } = await addProductFlag({
+        ...flagFormData,
+        imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
+        visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
+          .visibilityPlace,
+        imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
+        // FlagListData.flagImagePojos.map((val)=>{})
+      });
+      if (data) {
+        toastify(data.message, "success");
+        setShowAddFlagModal(false);
+        setFlagFormData({ ...flagSchema });
+        setdisableFlagField(false);
+        setIds({ masterProductId: "", variationId: "", flagged: false });
+        setflagUrlList([]);
+        setFlagTitle([]);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
   const [showPlace, setshowPlace] = useState(false);
@@ -683,6 +740,8 @@ const MyProducts = () => {
                   onDropdownSelect={(val) => {
                     getFlagDetails(val);
                   }}
+                  helperText={errObj.flagTitle}
+                  error={errObj.flagTitle !== ""}
                 />
               </Grid>
 
@@ -700,6 +759,8 @@ const MyProducts = () => {
                     }}
                     type="number"
                     disabled={disableFlagField}
+                    helperText={errObj.discount}
+                    error={errObj.discount !== ""}
                   />
                 </Grid>
               )}
@@ -725,6 +786,8 @@ const MyProducts = () => {
                     }));
                   }}
                   disabled={disableFlagField}
+                  helperText={errObj.startDate}
+                  error={errObj.startDate !== ""}
                 />
               </Grid>
               <Grid item sm={6}>
@@ -748,6 +811,8 @@ const MyProducts = () => {
                     }));
                   }}
                   disabled={disableFlagField}
+                  helperText={errObj.endDate}
+                  error={errObj.endDate !== ""}
                 />
               </Grid>
               <Grid item sm={12} container>
