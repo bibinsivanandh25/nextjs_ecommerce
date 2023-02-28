@@ -758,6 +758,7 @@ const MyProducts = () => {
                         <CheckBoxComponent
                           isChecked={item.checked}
                           checkBoxClick={() => {
+                            if (disableFlagField) return;
                             const temp = [...flagUrlList];
                             temp.forEach((ele, index) => {
                               if (index === ind) {
