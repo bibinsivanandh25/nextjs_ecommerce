@@ -378,7 +378,6 @@ const AddFlag = ({
                   discount: e.target.value,
                 }));
               }}
-              value={formData.discount}
               disabled={disableFlagField}
               helperText={errObj.discount}
               error={errObj.discount !== ""}
@@ -416,7 +415,6 @@ const AddFlag = ({
                 ? parse(flagFormData.endDate, "MM-dd-yyyy HH:mm:ss", new Date())
                 : null
             }
-            inputlabelshrink
             disabled={disableFlagField}
             helperText={errObj.endDate}
             error={errObj.endDate !== ""}
