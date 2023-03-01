@@ -28,4 +28,13 @@ const answerTheQuestions = (payload) => {
     .catch((err) => ({ err }));
 };
 
-export { getQuestionsAndAnswers, answerTheQuestions };
+const deleteAnswerData = (id) => {
+  return serviceUtil
+    .put(`products/user-answer?customerQuestionId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return data;
+    })
+    .catch((err) => ({ err }));
+};
+export { getQuestionsAndAnswers, answerTheQuestions, deleteAnswerData };

@@ -10,7 +10,10 @@ import ViewModal from "components/forms/reseller/customerq&A/ViewModal";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getQuestionsAndAnswers } from "services/supplier/customerq&a";
+import {
+  deleteAnswerData,
+  getQuestionsAndAnswers,
+} from "services/supplier/customerq&a";
 import toastify from "services/utils/toastUtils";
 import styles from "./customerqna.module.css";
 
@@ -88,113 +91,6 @@ const CustomerQnA = () => {
     },
   ];
 
-  // const UnansweredRows = [
-  //   {
-  //     id: "1",
-  //     col1: 1,
-  //     col2: "1836268",
-  //     col3: (
-  //       <div className="d-flex justify-content-center">
-  //         <ImageCard
-  //           className="d-inline me-1 my-0"
-  //           imgSrc={assetsJson.flower}
-  //           showClose={false}
-  //           height={30}
-  //           width={30}
-  //         />
-  //         <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-  //           /5
-  //         </Typography>
-  //       </div>
-  //     ),
-  //     col4: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     // col5: (
-  //     //   <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //     //     <div className="w-50 mx-auto">
-  //     //       <p className=" text-truncate  text-align-center">
-  //     //         lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //     //       </p>
-  //     //     </div>
-  //     //   </Tooltip>
-  //     // ),
-  //     // col6: "Rakesh",
-  //     col5: "25 may 2021, 21:22",
-  //     col6: (
-  //       <div className="d-flex justify-content-center align-items-center text-secondary">
-  //         <Reply
-  //           className="fs-5 cursor-pointer"
-  //           onClick={() => setShowReplyModal(true)}
-  //         />
-  //         <RemoveRedEye
-  //           className="fs-5 cursor-pointer"
-  //           onClick={() => setShowViewModal(true)}
-  //         />
-  //         <MenuOption
-  //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => // console.log(ele)}
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  //   {
-  //     id: "2",
-  //     col1: 1,
-  //     col2: "1836268",
-  //     col3: (
-  //       <div className="d-flex justify-content-center">
-  //         <ImageCard
-  //           className="d-inline me-1 my-0"
-  //           imgSrc={assetsJson.flower}
-  //           showClose={false}
-  //           height={30}
-  //           width={30}
-  //         />
-  //         <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-  //           /5
-  //         </Typography>
-  //       </div>
-  //     ),
-  //     col4: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     // col5: (
-  //     //   <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //     //     <div className="w-50 mx-auto">
-  //     //       <p className=" text-truncate  text-align-center">
-  //     //         lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //     //       </p>
-  //     //     </div>
-  //     //   </Tooltip>
-  //     // ),
-  //     // col6: "Rakesh",
-  //     col5: "25 may 2022, 21:22",
-  //     col6: (
-  //       <div className="d-flex justify-content-center align-items-center text-secondary">
-  //         <Reply className="fs-5 cursor-pointer" />
-  //         <RemoveRedEye className="fs-5 cursor-pointer" />
-  //         <MenuOption
-  //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => // console.log(ele)}
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  // ];
-
   const answeredColumns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -268,110 +164,6 @@ const CustomerQnA = () => {
     },
   ];
 
-  // const answeredRows = [
-  //   {
-  //     id: "1",
-  //     col1: 1,
-  //     col2: "1836268",
-  //     col3: (
-  //       <div className="d-flex justify-content-center">
-  //         <ImageCard
-  //           className="d-inline me-1 my-0"
-  //           imgSrc={assetsJson.flower}
-  //           showClose={false}
-  //           height={30}
-  //           width={30}
-  //         />
-  //         <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-  //           /5
-  //         </Typography>
-  //       </div>
-  //     ),
-  //     col4: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     col5: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     col6: "Rakesh",
-  //     col7: "25 may 2021, 21:22",
-  //     col8: (
-  //       <div className="d-flex justify-content-center align-items-center text-secondary">
-  //         {/* <Reply className="fs-5" /> */}
-  //         <RemoveRedEye
-  //           className="fs-5"
-  //           onClick={() => setShowViewModal(true)}
-  //         />
-  //         <MenuOption
-  //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => // console.log(ele)}
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  //   {
-  //     id: "2",
-  //     col1: 1,
-  //     col2: "1836268",
-  //     col3: (
-  //       <div className="d-flex justify-content-center">
-  //         <ImageCard
-  //           className="d-inline me-1 my-0"
-  //           imgSrc={assetsJson.flower}
-  //           showClose={false}
-  //           height={30}
-  //           width={30}
-  //         />
-  //         <Typography className="d-flex align-items-end justify-content-end flex-column py-1 h-5">
-  //           /5
-  //         </Typography>
-  //       </div>
-  //     ),
-  //     col4: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     col5: (
-  //       <Tooltip title="lorem asdsdnjk sdfkjb jshdfkj lksdhgj " placement="top">
-  //         <div className="w-50 mx-auto">
-  //           <p className=" text-truncate  text-align-center">
-  //             lorem asdsdnjk sdfkjb jshdfkj lksdhgj{" "}
-  //           </p>
-  //         </div>
-  //       </Tooltip>
-  //     ),
-  //     col6: "Rakesh",
-  //     col7: "25 may 2021, 21:22",
-  //     col8: (
-  //       <div className="d-flex justify-content-center align-items-center text-secondary">
-  //         {/* <Reply className="fs-5" /> */}
-  //         <RemoveRedEye className="fs-5" />
-  //         <MenuOption
-  //           IconclassName="fs-5"
-  //           getSelectedItem={(ele) => // console.log(ele)}
-  //         />
-  //       </div>
-  //     ),
-  //   },
-  // ];
-
   const [tabType, setTabType] = useState("tab1");
   const [showViewModal, setShowViewModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
@@ -408,7 +200,12 @@ const CustomerQnA = () => {
     setShowReplyModal(true);
   };
 
-  const handleMenuSelecteItemsForAnswers = (ele, answer, questionId, varId) => {
+  const handleMenuSelecteItemsForAnswers = async (
+    ele,
+    answer,
+    questionId,
+    varId
+  ) => {
     if (ele === "Edit") {
       setReply(answer);
       setDataForSendingReply({
@@ -416,6 +213,15 @@ const CustomerQnA = () => {
         variationId: varId,
       });
       setShowReplyModal(true);
+    }
+    if (ele === "Delete") {
+      const { data, err } = await deleteAnswerData(questionId);
+      if (data) {
+        getQuestionsOrAnsweredQuestions(true, 0);
+        getQuestionsOrAnsweredQuestions(false, 0);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
 
@@ -456,7 +262,14 @@ const CustomerQnA = () => {
       tempArray.push({
         id: val.customerQuestionId,
         col1: index < 9 ? `0${index + 1}` : index + 1,
-        col2: val.createdBy,
+        col2: val.customerName ? (
+          <Typography className="h-5">
+            {val.customerName} &nbsp;
+            {`(${val.customerId})`}
+          </Typography>
+        ) : (
+          "--"
+        ),
         col3: (
           <div className="d-flex justify-content-center">
             <Image src={val.productImages[0]} height={40} width={40} />
@@ -486,7 +299,7 @@ const CustomerQnA = () => {
         col6: val.answerFromTypeId,
         col7: val.lastModifiedAt,
         col8: (
-          <div className="d-flex justify-content-center align-items-center text-secondary">
+          <div className="d-flex justify-content-center align-items-center text-secondary cursor-pointer">
             <RemoveRedEye
               className="fs-5"
               onClick={() => {
@@ -524,7 +337,15 @@ const CustomerQnA = () => {
       tempArray.push({
         id: val.customerQuestionId,
         col1: index < 9 ? `0${index + 1}` : index + 1,
-        col2: val.createdBy,
+        col2: val.customerName ? (
+          <Typography className="h-5">
+            {val.customerName} &nbsp;
+            {`(${val.customerId})`}
+          </Typography>
+        ) : (
+          "--"
+        ),
+
         col3: (
           <div className="d-flex justify-content-center">
             <Image src={val.productImages[0]} height={40} width={40} />
@@ -567,7 +388,9 @@ const CustomerQnA = () => {
             <MenuOption
               IconclassName="fs-5"
               getSelectedItem={() => {}}
-              options={["Delete"]}
+              options={[
+                <Typography className="color-secondary">Delete</Typography>,
+              ]}
             />
           </div>
         ),
@@ -739,6 +562,7 @@ const CustomerQnA = () => {
             setPageNoForQuestions(0);
             setPageNoForAnswers(0);
           }}
+          tabChange={tabType}
         />
       </Paper>
       <ViewModal

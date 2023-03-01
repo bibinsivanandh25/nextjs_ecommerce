@@ -194,7 +194,7 @@ const HelpAndSupport = () => {
         }
       }
       if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
       }
     }
     if (selectTab == "tab2") {

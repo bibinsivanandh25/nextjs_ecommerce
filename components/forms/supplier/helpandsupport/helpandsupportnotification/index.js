@@ -59,12 +59,17 @@ const HelpAndSupportNotification = ({
               :
             </Grid>
             <Grid item xs={9}>
-              <div
-                className="text-break"
-                dangerouslySetInnerHTML={{
-                  __html: selectedData.helpSupportMessages[0].message,
-                }}
-              />
+              {selectedData?.helpSupportMessages?.length ? (
+                <div
+                  className="text-break"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      selectedData?.helpSupportMessages[
+                        selectedData?.helpSupportMessages?.length - 1
+                      ].message,
+                  }}
+                />
+              ) : null}
             </Grid>
           </Grid>
 
@@ -77,7 +82,9 @@ const HelpAndSupportNotification = ({
             </Grid>
             <Grid item xs={9}>
               {showFileNames(
-                selectedData.helpSupportMessages[0].helpSupportMessageMedias
+                selectedData.helpSupportMessages[
+                  selectedData?.helpSupportMessages?.length - 1
+                ].helpSupportMessageMedias
               ).map((item) => (
                 <a
                   href={item.url}
