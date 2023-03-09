@@ -31,6 +31,17 @@ const updateSupplierStoreConfiguration = (reqObj) => {
     .catch((err) => ({ err }));
 };
 
+const getQrPdf = (supplierId, storeCode) => {
+  return serviceUtil
+    .get(
+      `/notification/supplierstore/qrcode?supplierId=${supplierId}&storeCode=${storeCode}`
+    )
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => err);
+};
+
 const getThemes = () => {
   return serviceUtil
     .get("users/supplier/store/theme")
@@ -44,4 +55,5 @@ export {
   supplierStoreImageConfig,
   updateSupplierStoreConfiguration,
   getThemes,
+  getQrPdf,
 };
