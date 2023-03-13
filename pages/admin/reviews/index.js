@@ -99,7 +99,6 @@ const Reviews = () => {
   const [isView, setisView] = useState(false);
   const [reviewData, setreviewData] = useState([]);
   const [viewDetailsState, setviewDetailsState] = useState({});
-
   const getViewReview = async (id) => {
     const { data, err } = await getViewData(id);
     if (data) {
@@ -318,7 +317,10 @@ const Reviews = () => {
           showFooter={false}
         >
           <Grid className="p-2">
-            {reviewDataFormat("Customer Id", "12345")}
+            {reviewDataFormat(
+              "Customer Id",
+              viewDetailsState.customerOrResellerId
+            )}
             {reviewDataFormat("Customer Name", viewDetailsState.reviewerName)}
             {reviewDataFormat(
               "Product Id",
