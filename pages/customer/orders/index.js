@@ -212,6 +212,7 @@ const Orders = () => {
     const payload = {
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
+      reviewerName: user.customerName,
       reviewerType: "CUSTOMER",
       reviewerId: user.userId,
       // reviewerId: "CST1222000058",
