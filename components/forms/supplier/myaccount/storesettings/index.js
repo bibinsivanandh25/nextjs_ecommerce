@@ -20,6 +20,7 @@ import {
   supplierStoreImageConfig,
   getThemes,
   updateSupplierStoreConfiguration,
+  applySupplierLeave,
 } from "services/supplier/myaccount/storesettings";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
@@ -32,6 +33,10 @@ import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import { FaCheck } from "react-icons/fa";
 import Link from "next/link";
 import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
+import ModalComponent from "@/atoms/ModalComponent";
+import DatePickerComponent from "@/atoms/DatePickerComponent";
+import TextArea from "@/atoms/SimpleTextArea";
+import { format } from "date-fns";
 
 const timeToProcessList = [
   {
@@ -164,6 +169,16 @@ const StoreSettings = () => {
     shopCloseTimings: "",
     description: "",
   });
+  const [leaveData, setLeaveData] = useState({
+    startDate: "",
+    endDate: "",
+    reason: "",
+  });
+  const [leaveErrorObj, setLeaveErrorObj] = useState({
+    startDate: "",
+    endDate: "",
+    reason: "",
+  });
   const [themeColor, setThemeColors] = useState([]);
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [storeLogo, setStoreLogo] = useState({
@@ -175,6 +190,7 @@ const StoreSettings = () => {
     url: "",
   });
   const [profilePercentage, setProfilePercentage] = useState(0);
+  const [showApplyLeaveModal, setShowApplyLeaveModal] = useState(false);
   const [errorObj, setErrorObj] = useState({
     storeName: "",
     storeLogo: "",
@@ -452,6 +468,57 @@ const StoreSettings = () => {
         "Unable to process your request, please try again later!!",
         "error"
       );
+    }
+  };
+
+  const handleApplyLeave = async () => {
+    let flag = false;
+    const errObj = {
+      startDate: "",
+      endDate: "",
+      reason: "",
+    };
+    if (leaveData.reason === "") {
+      flag = true;
+      errObj.reason = validateMessage.field_required;
+    }
+    if (leaveData.reason.length > 255) {
+      flag = true;
+      errObj.reason = validateMessage.alpha_numeric_max_255;
+    }
+    if (leaveData.startDate === "") {
+      flag = true;
+      errObj.startDate = validateMessage.field_required;
+    }
+    if (leaveData.endDate === "") {
+      flag = true;
+      errObj.endDate = validateMessage.field_required;
+    }
+    if (new Date(leaveData.startDate) > new Date(leaveData.endDate)) {
+      flag = true;
+      errObj.endDate = "Invalid End Date";
+    }
+    setLeaveErrorObj({ ...errObj });
+    if (!flag) {
+      const payload = {
+        supplierStoreInfoId: formValues.supplierStoreInfoId,
+        leaveStartDate: format(leaveData.startDate, "MM-dd-yyyy"),
+        leaveEndDate: format(leaveData.endDate, "MM-dd-yyyy"),
+        leaveReason: leaveData.reason,
+      };
+      const { data, err } = await applySupplierLeave(payload);
+      if (data) {
+        toastify(data?.message, "success");
+        setShowApplyLeaveModal(false);
+        setLeaveData({
+          startDate: "",
+          endDate: "",
+          reason: "",
+        });
+      }
+      if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
 
@@ -902,7 +969,23 @@ const StoreSettings = () => {
             </Grid>
           </Grid>
           <Grid container className="py-2">
-            <Grid item sm={12} display="flex" justifyContent="end">
+            <Grid item sm={1.5} display="flex" alignItems="center">
+              <Box className="ps-3">
+                <ButtonComponent
+                  label="Apply Leave"
+                  onBtnClick={() => {
+                    setShowApplyLeaveModal(true);
+                  }}
+                />
+              </Box>
+            </Grid>
+            <Grid
+              item
+              sm={10.5}
+              display="flex"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
               <ButtonComponent
                 label="Cancel"
                 variant="outlined"
@@ -919,6 +1002,85 @@ const StoreSettings = () => {
           </Grid>
         </Box>
       </Paper>
+      {showApplyLeaveModal ? (
+        <ModalComponent
+          ModalTitle="Apply Leave"
+          open={showApplyLeaveModal}
+          onCloseIconClick={() => {
+            setShowApplyLeaveModal(false);
+            setLeaveData({
+              endDate: "",
+              startDate: "",
+              reason: "",
+            });
+            setLeaveErrorObj({
+              endDate: "",
+              startDate: "",
+              reason: "",
+            });
+          }}
+          saveBtnText="Apply Leave"
+          footerClassName="justify-content-start flex-row-reverse"
+          clearBtnClassName="me-2"
+          onSaveBtnClick={handleApplyLeave}
+        >
+          <Grid container spacing={2} marginTop={1} paddingX={1}>
+            <Grid item sm={12}>
+              <DatePickerComponent
+                error={Boolean(leaveErrorObj.startDate.length)}
+                helperText={leaveErrorObj.startDate}
+                label="Start Date"
+                size="small"
+                value={leaveData.startDate}
+                onDateChange={(value) => {
+                  setLeaveData((pre) => ({
+                    ...pre,
+                    startDate: value,
+                  }));
+                }}
+                disablePast
+                inputlabelshrink
+                // helperText={errorObj.dob}
+                // error={!!errorObj.dob}
+              />
+            </Grid>
+            <Grid item sm={12}>
+              <DatePickerComponent
+                error={Boolean(leaveErrorObj.endDate.length)}
+                helperText={leaveErrorObj.endDate}
+                label="End Date"
+                size="small"
+                value={leaveData.endDate}
+                onDateChange={(value) => {
+                  setLeaveData((pre) => ({
+                    ...pre,
+                    endDate: value,
+                  }));
+                }}
+                disablePast
+                inputlabelshrink
+                // helperText={errorObj.dob}
+                // error={!!errorObj.dob}
+              />
+            </Grid>
+            <Grid item sm={12}>
+              <TextArea
+                error={Boolean(leaveErrorObj.reason.length)}
+                helperText={leaveErrorObj.reason}
+                placeholder="Reason for opting leave"
+                rows={3}
+                value={leaveData.reason}
+                onInputChange={(e) => {
+                  setLeaveData({
+                    ...leaveData,
+                    reason: e.target.value,
+                  });
+                }}
+              />
+            </Grid>
+          </Grid>
+        </ModalComponent>
+      ) : null}
     </>
   );
 };
