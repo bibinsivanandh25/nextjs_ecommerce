@@ -161,6 +161,7 @@ const FAQPage = ({
       };
       const { data, err } = await postQuestions(payload);
       if (data) {
+        toastify(data.message, "success");
         getProductQandAData(0);
         setQuestionData("");
         setShowQuestionPage(false);
@@ -529,7 +530,7 @@ const FAQPage = ({
             />
             <Typography className="h-5">
               Your question might be answered by suppliers, Re-sellers, or
-              customers who boght this product.
+              customers who bought this product.
             </Typography>
           </Box>
         </ModalComponent>

@@ -1,78 +1,99 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-lone-blocks */
-import { Grid, Paper, Slider, Tooltip, Typography } from "@mui/material";
+import { Grid, Paper, Tooltip, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import Image from "next/image";
 import ShareIcon from "@mui/icons-material/Share";
-import { Favorite, FileCopy, Star } from "@mui/icons-material";
-import ModalComponent from "components/atoms/ModalComponent";
-import { useState } from "react";
-import styled from "@emotion/styled";
-import CheckBoxComponent from "components/atoms/CheckboxComponent";
-import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
-import StarIcon from "@mui/icons-material/Star";
+import { Star } from "@mui/icons-material";
+// import {  FileCopy } from "@mui/icons-material";
+// import ModalComponent from "components/atoms/ModalComponent";
+// import { useState } from "react";
+// import styled from "@emotion/styled";
+// import CheckBoxComponent from "components/atoms/CheckboxComponent";
+// import RadiobuttonComponent from "components/atoms/RadiobuttonComponent";
+// import StarIcon from "@mui/icons-material/Star";
+import { useDispatch, useSelector } from "react-redux";
+import { productDetails } from "features/customerSlice";
+import { storeUserInfo } from "features/userSlice";
+import { useRouter } from "next/router";
+import { shareProductPost } from "services/supplier/mysharedproducts";
+import toastify from "services/utils/toastUtils";
 
 const ProductDetailsCard = ({
   products = [],
-  showMarginButton = false,
-  getSelectedItem = () => {},
+  // showMarginButton = false,
+  // getSelectedItem = () => {},
 }) => {
-  const [showMarginModal, setShowMarginModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState({});
-  const [margin, setMargin] = useState(20);
-  const [showWishlistModal, setShowWishlistModal] = useState(false);
-  const [showLink, setShowLink] = useState(false);
-  const [wishListCollection, setwishListCollection] = useState([
-    {
-      title: "Electronics",
-      isSelected: false,
-    },
-    {
-      title: "Clothings",
-      isSelected: false,
-    },
-    {
-      title: "Shoes",
-      isSelected: false,
-    },
-    {
-      title: "Home Appliances",
-      isSelected: false,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { supplierId, storeCode } = useSelector((state) => state.user);
+  // const [showMarginModal, setShowMarginModal] = useState(false);
+  // const [selectedProduct, setSelectedProduct] = useState({});
+  // const [margin, setMargin] = useState(20);
+  // const [showWishlistModal, setShowWishlistModal] = useState(false);
+  // const [showLink, setShowLink] = useState(false);
+  // const [wishListCollection, setwishListCollection] = useState([
+  //   {
+  //     title: "Electronics",
+  //     isSelected: false,
+  //   },
+  //   {
+  //     title: "Clothings",
+  //     isSelected: false,
+  //   },
+  //   {
+  //     title: "Shoes",
+  //     isSelected: false,
+  //   },
+  //   {
+  //     title: "Home Appliances",
+  //     isSelected: false,
+  //   },
+  // ]);
 
-  const [isChecked, setIsChecked] = useState(false);
+  // const [isChecked, setIsChecked] = useState(false);
 
-  const CustomSlider = styled(Slider)({
-    color: "#e46c0b",
-    // height: 8,
-    // "& .MuiSlider-track": {
-    //   border: "none",
-    // },
-    "& .MuiSlider-thumb": {
-      height: 12,
-      width: 12,
-      backgroundColor: "#fff",
-      border: "2px solid currentColor",
-      "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
-        boxShadow: "inherit",
-      },
-      "&:before": {
-        display: "none",
-      },
-    },
-    "& .MuiSlider-valueLabel": {
-      fontSize: 12,
-      padding: 0,
-      width: 32,
-      height: 17,
-      color: "#e46c0b", // borderRadius: "50% 50% 50% 0",
-      backgroundColor: "#fff",
-      transformOrigin: "bottom left",
-    },
-  });
-
+  // const CustomSlider = styled(Slider)({
+  //   color: "#e46c0b",
+  //   // height: 8,
+  //   // "& .MuiSlider-track": {
+  //   //   border: "none",
+  //   // },
+  //   "& .MuiSlider-thumb": {
+  //     height: 12,
+  //     width: 12,
+  //     backgroundColor: "#fff",
+  //     border: "2px solid currentColor",
+  //     "&:focus, &:hover, &.Mui-active, &.Mui-focusVisible": {
+  //       boxShadow: "inherit",
+  //     },
+  //     "&:before": {
+  //       display: "none",
+  //     },
+  //   },
+  //   "& .MuiSlider-valueLabel": {
+  //     fontSize: 12,
+  //     padding: 0,
+  //     width: 32,
+  //     height: 17,
+  //     color: "#e46c0b", // borderRadius: "50% 50% 50% 0",
+  //     backgroundColor: "#fff",
+  //     transformOrigin: "bottom left",
+  //   },
+  // });
+  const shareProductFunction = async (variationId) => {
+    const payload = {
+      sharedProductVariationId: variationId,
+      sharedById: supplierId,
+    };
+    const { data, err } = await shareProductPost(payload);
+    if (data) {
+      toastify(data.message, "success");
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   const getProductsCard = () => {
     {
       return products.map((ele, index) => {
@@ -82,7 +103,7 @@ const ProductDetailsCard = ({
               <Grid container spacing={2}>
                 <Grid item xs={3} alignSelf="center">
                   <Image
-                    src={ele.image}
+                    src={ele.productImage}
                     // height={"100%"}
                     height={200}
                     width={200}
@@ -97,17 +118,17 @@ const ProductDetailsCard = ({
                   />
                 </Grid>
                 <Grid item xs={7} spacing={2}>
-                  <Tooltip title={ele.title} placement="top">
+                  <Tooltip title={ele.productName} placement="top">
                     <Typography className="fw-bold mt-2 h-5 text-truncate cursor-pointer">
-                      {ele.title}
+                      {ele.productName}
                     </Typography>
                   </Tooltip>
                   <Typography>
                     <span className="bg-orange border-0 px-2 text-white fs-10 py-1 rounded-5">
-                      {ele.rating.rate} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
+                      {ele.productRating} <Star sx={{ zoom: 0.6, pb: 0.5 }} />
                     </span>
                     <span className="text-secondary fs-12 mx-2">
-                      {`(${ele.rating.count} Ratings)`}
+                      {`(${ele.productAverageRating} Ratings)`}
                     </span>
                   </Typography>
                   <Typography
@@ -116,24 +137,31 @@ const ProductDetailsCard = ({
                   >
                     Free shipping
                   </Typography>
-                  <Typography className="fw-bold fs-5">₹{ele.price}</Typography>
+                  <Typography className="fw-bold fs-5">
+                    ₹{ele.productPrice}
+                  </Typography>
                 </Grid>
                 <Grid
                   className="d-flex flex-column justify-content-between align-items-end my-1"
                   item
                   xs={2}
                 >
-                  <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
+                  {/* <Grid className="border rounded-circle p-1 h-5 cursor-pointer">
                     <Favorite
                       className="text-secondary h-4"
                       onClick={() => setShowWishlistModal(true)}
                     />
-                  </Grid>
-                  <Grid className="border rounded-circle cursor-pointer h-5 p-1">
+                  </Grid> */}
+                  <Grid
+                    className="border rounded-circle cursor-pointer h-5 p-1"
+                    onClick={() => {
+                      shareProductFunction(ele.sharedProductVariationId || "");
+                    }}
+                  >
                     <ShareIcon className="text-secondary h-4" />
                   </Grid>
                   <Grid className="d-flex">
-                    {!showMarginButton ? (
+                    {/* {!showMarginButton ? (
                       <ButtonComponent
                         muiProps="h-6 me-2 p-0"
                         label="Set margin"
@@ -145,12 +173,29 @@ const ProductDetailsCard = ({
                           setShowMarginModal(true);
                         }}
                       />
-                    ) : null}
+                    ) : null} */}
                     <ButtonComponent
                       size="small"
                       muiProps="h-6 "
                       label="view"
-                      onBtnClick={() => getSelectedItem(ele)}
+                      // onBtnClick={() => getSelectedItem(ele)}
+                      onBtnClick={() => {
+                        dispatch(
+                          productDetails({
+                            productId: ele?.sharedProductVariationId,
+                            variationDetails: ele.variationProperty || [],
+                          })
+                        );
+                        dispatch(
+                          storeUserInfo({
+                            supplierId,
+                            storeCode,
+                          })
+                        );
+                        router.push(
+                          "/supplier/products&inventory/myproducts/viewModal"
+                        );
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -163,9 +208,13 @@ const ProductDetailsCard = ({
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid
+      container
+      spacing={2}
+      className="w-100 mnh-80vh mxh-80vh overflow-auto hide-scrollbar"
+    >
       {getProductsCard()}
-      {showMarginModal ? (
+      {/* {showMarginModal ? (
         <ModalComponent
           ModalWidth={350}
           open={showMarginModal}
@@ -322,7 +371,7 @@ const ProductDetailsCard = ({
             muiProps="fs-10"
           />
         </div>
-      </ModalComponent>
+      </ModalComponent> */}
     </Grid>
   );
 };

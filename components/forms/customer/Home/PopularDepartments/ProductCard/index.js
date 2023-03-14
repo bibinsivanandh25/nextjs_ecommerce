@@ -242,11 +242,11 @@ const ProductCard = ({
         }}
         onMouseLeave={() => setHover(false)}
         maxWidth={165}
-        className="position-relative"
+        className="position-relative "
       >
         <Paper
           elevation={hover ? 6 : 3}
-          className={`mx-2 position-relative rounded ${cardPaperClass}`}
+          className={`mx-2 position-relative rounded  ${cardPaperClass}`}
           style={{
             minHeight: 150,
             minWidth: 150,
@@ -267,6 +267,7 @@ const ProductCard = ({
             height={height}
             width={width}
             layout="responsive"
+            style={{ cursor: "pointer" }}
             onClick={() => {
               handleProductClick();
             }}
@@ -278,7 +279,7 @@ const ProductCard = ({
           }}
           title={item.title}
         >
-          <Typography className="h-5 fw-bold text-center text-truncate my-1 px-2">
+          <Typography className="h-5 fw-bold text-center text-truncate my-1 px-2 cursor-pointer">
             {item.title}
           </Typography>
         </Tooltip>

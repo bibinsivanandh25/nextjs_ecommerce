@@ -1,4 +1,5 @@
 import { Box, Drawer, Typography } from "@mui/material";
+import CustomIcon from "services/iconUtils";
 
 const DrawerComponent = ({
   children,
@@ -15,6 +16,8 @@ const DrawerComponent = ({
   headerBorder = true,
   openDrawer,
   enter = 500,
+  closeIconClick = () => {},
+  showCloseIcon = false,
 }) => {
   return (
     <Drawer
@@ -37,11 +40,20 @@ const DrawerComponent = ({
         <Box
           sx={{
             borderBottom: headerBorder ? "1px solid #707070" : "",
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
           <Typography className="fs-20 fw-600 color-black">
             {modalTitle}
           </Typography>
+          {showCloseIcon && (
+            <CustomIcon
+              title="Close"
+              type="close"
+              onIconClick={closeIconClick}
+            />
+          )}
         </Box>
         {children}
       </Box>

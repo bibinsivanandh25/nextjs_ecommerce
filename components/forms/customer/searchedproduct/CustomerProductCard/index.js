@@ -1,5 +1,3 @@
-/* eslint-disable react/no-danger */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
 import React, { useEffect, useState } from "react";

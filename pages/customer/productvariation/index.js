@@ -17,6 +17,8 @@ import { useSelector } from "react-redux";
 import ProductDetailsCard from "@/forms/customer/searchedproduct/CustomerProductCard";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { customerHome } from "public/assets";
+import Image from "next/image";
 
 const useStyles = makeStyles(() => ({
   selected: {
@@ -38,7 +40,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
   const [searchedCheckValue, setSearchedCheckValue] = useState([]);
   const [viewIconClick, setViewIconClick] = useState(false);
   const [productData, setProductData] = useState([]);
-
+  const [loading, setloading] = useState(false);
   const [categoryId, setCategoryId] = useState("");
   const [subCategoryId, setSubCategoryId] = useState("");
   // comparProduct
@@ -90,6 +92,7 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
             pageNumber,
             pageSize: dataPerPage,
           };
+    setloading(true);
     const { data } = searchText
       ? await productsearch(payload)
       : await getProductsUnderCategoryOrSubCategory(payload);
@@ -127,7 +130,9 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
         });
       });
       setProductData(result);
+      setloading(false);
     }
+    setloading(false);
   };
 
   useMemo(() => {
@@ -327,17 +332,27 @@ function SearchedProduct({ showBreadCrumb = () => {} }) {
                 width: `calc(100% - 10px)`,
               }}
             >
-              {productData.map((item, index) => (
-                <Grid item md={3} lg={2} sm={6} key={index}>
-                  <ProductDetailsCard
-                    productDetail={item}
-                    viewType={viewIconClick ? "row" : "Grid"}
-                    getProducts={() => {
-                      getProducts(categoryId, subCategoryId, searchKeyword, 0);
-                    }}
-                  />
-                </Grid>
-              ))}
+              {productData.length
+                ? productData.map((item, index) => (
+                    <Grid item md={3} lg={2} sm={6} key={index}>
+                      <ProductDetailsCard
+                        productDetail={item}
+                        viewType={viewIconClick ? "row" : "Grid"}
+                        getProducts={() => {
+                          if (categoryId.length || subCategoryId.length)
+                            getProducts(categoryId, subCategoryId, null, 0);
+                          else getProducts(null, null, searchKeyword, 0);
+                        }}
+                      />
+                    </Grid>
+                  ))
+                : !loading && (
+                    <Image
+                      src={customerHome.noProducts}
+                      height="250px"
+                      layout="fill"
+                    />
+                  )}
             </Grid>
           </Box>
           {productData?.length &&
