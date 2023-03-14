@@ -104,11 +104,11 @@ const FAQPage = ({
     if (data) {
       if (page == 0) {
         setPageNumber(1);
-        setAnswerData(data.customerQueAnsPojo);
+        setAnswerData(data?.customerQueAnsPojo);
         setShowPostQandA(true);
-      } else if (page !== 0 && data.customerQueAnsPojo?.length) {
+      } else if (page !== 0 && data?.customerQueAnsPojo?.length) {
         setShowPostQandA(true);
-        setAnswerData((prev) => [...prev, ...data.customerQueAnsPojo]);
+        setAnswerData((prev) => [...prev, ...data?.customerQueAnsPojo]);
         setPageNumber((pre) => pre + 1);
       }
     } else if (err) {
