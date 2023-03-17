@@ -31,6 +31,17 @@ const updateSupplierStoreConfiguration = (reqObj) => {
     .catch((err) => ({ err }));
 };
 
+const getQrPdf = (supplierId, storeCode) => {
+  return serviceUtil
+    .get(
+      `/notification/supplierstore/qrcode?supplierId=${supplierId}&storeCode=${storeCode}`
+    )
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => err);
+};
+
 const getThemes = () => {
   return serviceUtil
     .get("users/supplier/store/theme")
@@ -39,9 +50,21 @@ const getThemes = () => {
     })
     .catch((err) => ({ err }));
 };
+
+const applySupplierLeave = (reqObj) => {
+  return serviceUtil
+    .put(`users/supplier-store/leave-update`, reqObj)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getSupplierStoreConfiguration,
   supplierStoreImageConfig,
   updateSupplierStoreConfiguration,
   getThemes,
+  applySupplierLeave,
+  getQrPdf,
 };
