@@ -33,6 +33,7 @@ const ModalComponent = ({
   iconStyle = {},
   closeIconClasName = "cursor-pointer text-black",
   headerBorder = "1px solid #e6e6e6",
+  borderRadius = "10px",
 }) => {
   const style = {
     position: "absolute",
@@ -43,7 +44,7 @@ const ModalComponent = ({
     bgcolor: "background.paper",
     border: "0px solid white",
     boxShadow: 24,
-    borderRadius: "10px",
+    borderRadius,
     outline: "none",
     minWidth,
   };

@@ -1,7 +1,9 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Box, Paper, TextField, Typography } from "@mui/material";
-import React, { useRef, useState } from "react";
+import { Box, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import CustomIcon from "services/iconUtils";
 import TableComponent from "@/atoms/TableComponent";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -9,6 +11,12 @@ import MenuOption from "@/atoms/MenuOptions";
 import SwitchComponent from "@/atoms/SwitchComponent";
 import TextEditor from "@/atoms/TextEditor";
 import ActiveCustomerViewModal from "@/forms/admin/customers/activecustomersmodal";
+import toastify from "services/utils/toastUtils";
+import {
+  deleteCustomer,
+  enableDisableCustomer,
+  getCustomerData,
+} from "services/admin/customers";
 
 const activeCustomer = [
   {
@@ -82,7 +90,7 @@ const activeCustomer = [
     id: "col9",
     label: "Recent Order",
     minWidth: 150,
-    align: "start",
+    align: "center",
     data_align: "center",
     data_classname: "",
   },
@@ -112,20 +120,7 @@ const activeCustomer = [
     position: "sticky",
   },
 ];
-// const activeCustomerTab = [
-//   {
-//     id: 1,
-//     lable: "Details",
-//   },
-//   {
-//     id: 2,
-//     lable: "Address",
-//   },
-//   {
-//     id: 3,
-//     lable: "Browsing History",
-//   },
-// ];
+
 const ActiveCustomer = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [discountModalOpen, setDiscountModalOpen] = useState(false);
@@ -133,105 +128,196 @@ const ActiveCustomer = () => {
   const [addNotesModalOpen, setAddNotesModalOpen] = useState(false);
   const inputRef = useRef(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
-  const activeCustomerData = [
-    {
-      col1: "1",
-      col2: (
-        <Typography className="cursor-pointer text-decoration-underline color-light-blue h-5 d-inline text-start">
-          #12345
-        </Typography>
-      ),
-      col3: "Rohan",
-      col4: (
-        <Box className="text-start">
-          <Typography className="h-5">rohan223423@gmail.com</Typography>
-          <Typography className="h-5">9496699934</Typography>
-        </Box>
-      ),
-      col5: "10/05/1992",
-      col6: (
-        <Box className="text-decoration-underline color-light-blue text-center">
-          <Typography className="h-5 cursor-pointer fit-content">
-            Vendor
+  const [pageNumber, setPageNumber] = useState(0);
+  const [masterData, setMasterData] = useState([]);
+  const [selectedData, setSelectedData] = useState({});
+
+  const handleDeleteClick = async (id) => {
+    const { data, err } = await deleteCustomer(id);
+    if (!data.error) {
+      setPageNumber(0);
+      getAllCustomerData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const disableCustomer = async (id) => {
+    const { data, err } = await enableDisableCustomer(id, true);
+    if (!data.error) {
+      setPageNumber(0);
+      getAllCustomerData(0);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const mapStateToRow = (data) => {
+    const temp = [];
+    data?.forEach((item, index) => {
+      temp.push({
+        col1: index + 1,
+        col2: (
+          <Typography className="cursor-pointer text-decoration-underline color-light-blue h-5 d-inline text-start">
+            {item.customerId}
           </Typography>
-          <Typography className="h-5 cursor-pointer fit-content">
-            SK associates
-          </Typography>
-        </Box>
-      ),
-      col7: "85",
-      col8: "₹ 34500",
-      col9: (
-        <Box className="text-center">
-          <Typography className="h-5 cursor-pointer fit-content">
-            #34555
-          </Typography>
-          <Typography className="h-5 cursor-pointer fit-content">
-            June 5th 2022
-          </Typography>
-        </Box>
-      ),
-      col10: "12/05/2022 - 8.09",
-      col11: "Recently viewed items",
-      col12: (
-        <Box>
-          <CustomIcon
-            type="view"
-            className="fs-18 me-2"
-            onIconClick={() => {
-              setViewModalOpen(false);
-            }}
-          />
-          <MenuOption
-            options={[
-              "Delete",
-              <>
-                Disable{" "}
-                <Box className="ms-4">
-                  <SwitchComponent label="" />
-                </Box>
-              </>,
-              "Create Disc.",
-              "Notify",
-              "Add Note",
-            ]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={(ele) => {
-              if (ele === "Create Disc.") {
-                setDiscountModalOpen(true);
-              } else if (ele === "Notify") {
-                setNotifyModalOpen(true);
-              } else if (ele === "Add Note") {
-                setAddNotesModalOpen(true);
-              }
-            }}
-          />
-        </Box>
-      ),
-    },
-  ];
+        ),
+        col3: item.customerName,
+        col4: (
+          <Box className="text-start">
+            <Typography className="h-5">
+              {item?.mobileNumberAndEmail?.email}
+            </Typography>
+            <Typography className="h-5">
+              {item?.mobileNumberAndEmail?.mobileNumber}
+            </Typography>
+          </Box>
+        ),
+        col5: item.dob,
+        col6:
+          item?.linkedAlsoAsVendor !== null &&
+          Object.keys(item?.linkedAlsoAsVendor)?.length ? (
+            <Box className="text-decoration-underline color-light-blue text-center">
+              <Typography className="h-5 cursor-pointer ">
+                {item?.linkedAlsoAsVendor?.bussinessName || "--"}
+              </Typography>
+              <Typography className="h-5 cursor-pointer ">
+                {item?.linkedAlsoAsVendor?.linkedAs || "--"}
+              </Typography>
+            </Box>
+          ) : (
+            "--"
+          ),
+        col7: item.totalOrders,
+        col8: item.totalAmountSpend,
+        col9: Object.keys(item.recentOrder || {}).length ? (
+          <Box className="text-center">
+            <Typography className="h-5 cursor-pointer text-center">
+              {item?.recentOrder?.orderId}
+            </Typography>
+            <Typography className="h-5 cursor-pointer fit-content">
+              {item?.recentOrder?.orderedAt
+                ? new Date(item?.recentOrder?.orderedAt).toLocaleString()
+                : null}
+            </Typography>
+          </Box>
+        ) : (
+          "--"
+        ),
+        col10: item.loginStatus,
+        col11: (
+          <Tooltip title={item.browsingHistory}>
+            <Box className="mxh-100 overflow-y-scroll">
+              <Typography className="h-5">{item.browsingHistory}</Typography>
+            </Box>
+          </Tooltip>
+        ),
+        col12: (
+          <Box>
+            <CustomIcon
+              type="view"
+              className="fs-18 me-2"
+              onIconClick={() => {
+                setSelectedData(item);
+                setViewModalOpen(true);
+              }}
+            />
+            <MenuOption
+              options={[
+                "Delete",
+                <>
+                  Enabled{" "}
+                  <Box className="ms-4">
+                    <SwitchComponent
+                      label=""
+                      defaultChecked={!item.disabled}
+                      ontoggle={() => {
+                        disableCustomer(item.customerId);
+                      }}
+                    />
+                  </Box>
+                </>,
+                "Create Disc.",
+                "Notify",
+                "Add Note",
+              ]}
+              IconclassName="fs-5 cursor-pointer"
+              getSelectedItem={(ele) => {
+                if (ele === "Create Disc.") {
+                  setDiscountModalOpen(true);
+                } else if (ele === "Notify") {
+                  setNotifyModalOpen(true);
+                } else if (ele === "Add Note") {
+                  setAddNotesModalOpen(true);
+                } else if (ele === "Delete") {
+                  handleDeleteClick(item.customerId);
+                }
+              }}
+            />
+          </Box>
+        ),
+      });
+    });
+    return temp;
+  };
+  const getAllCustomerData = async (
+    page = pageNumber,
+    searchTexts = "",
+    filteredDates
+  ) => {
+    const payload = {
+      status: "ACTIVE",
+      keyword: searchTexts || null,
+      fromDate: filteredDates?.fromDate
+        ? new Date(filteredDates?.fromDate).toISOString()
+        : "",
+      toDate: filteredDates?.toDate
+        ? new Date(filteredDates?.toDate).toISOString()
+        : "",
+      pageSize: 50,
+      pageNumber: page,
+    };
+    const { data, err } = await getCustomerData(payload);
+    if (data?.length && page === 0) {
+      setPageNumber(1);
+      setMasterData([...mapStateToRow(data)]);
+    } else if (data?.length && page !== 0) {
+      setPageNumber((pre) => pre + 1);
+      setMasterData((pre) => [...pre, ...mapStateToRow(data)]);
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    getAllCustomerData(0);
+  }, []);
   return (
     <Box>
       <Paper className="mnh-85vh mxh-85vh overflow-auto hide-scrollbar mt-1 p-2">
-        {!viewModalOpen ? (
-          <TableComponent
-            showDateFilter
-            showDateFilterBtn
-            //   table_heading="Active Customers"
-            dateFilterBtnName="Create Customer"
-            stickyCheckBox
-            columns={activeCustomer}
-            tHeadBgColor="bg-white"
-            showCheckbox
-            tableRows={activeCustomerData}
-            draggableHeader={false}
-            dateFilterBtnClick={() => {
-              setCreateModalOpen(true);
-            }}
-          />
-        ) : (
-          <ActiveCustomerViewModal />
-        )}
+        <TableComponent
+          showDateFilter
+          showDateFilterBtn
+          //   table_heading="Active Customers"
+          dateFilterBtnName="Create Customer"
+          stickyCheckBox
+          columns={activeCustomer}
+          tHeadBgColor="bg-white"
+          showCheckbox
+          tableRows={masterData}
+          draggableHeader={false}
+          dateFilterBtnClick={() => {
+            setCreateModalOpen(true);
+          }}
+          handlePageEnd={(
+            searchTexts = "",
+            filterText = "ALL",
+            page = pageNumber,
+            filteredDates
+          ) => {
+            getAllCustomerData(page, searchTexts, filteredDates);
+          }}
+        />
       </Paper>
       {createModalOpen && (
         <ModalComponent
@@ -331,6 +417,13 @@ const ActiveCustomer = () => {
             <input type="file" className="d-none" ref={inputRef} />
           </Box>
         </ModalComponent>
+      )}
+      {viewModalOpen && (
+        <ActiveCustomerViewModal
+          viewModalOpen={viewModalOpen}
+          setViewModalOpen={setViewModalOpen}
+          selectedData={selectedData}
+        />
       )}
     </Box>
   );
