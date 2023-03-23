@@ -399,7 +399,7 @@ const Cart = () => {
                     {customer.addressDetails?.name}
                   </Typography>
                   <Typography className="fs-12 color-black fw-bold">
-                    {customer.addressDetails?.cityDistrictTown},
+                    {customer.addressDetails?.cityDistrictTown}&nbsp;
                     {customer.addressDetails?.pinCode}
                   </Typography>
                 </div>

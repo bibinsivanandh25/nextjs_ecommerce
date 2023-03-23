@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "-": "0.0.1",
+    "@chakra-ui/react": "^2.5.1",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@material-ui/pickers": "^3.3.10",
@@ -37,7 +38,7 @@
     "draft-js": "^0.11.7",
     "env-cmd": "^10.1.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^7.2.1",
+    "framer-motion": "^7.10.3",
     "next": "^12.1.5",
     "next-auth": "^4.3.2",
     "nprogress": "^0.2.0",

@@ -24,6 +24,7 @@ import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { ChakraProvider } from "@chakra-ui/react";
 // import Image from "next/image";
 // import Loader from "public/assets/loader.gif";
 
@@ -106,25 +107,27 @@ function MyApp({ Component, pageProps, router }) {
         <title> Multestore </title>
       </Head>
       <Provider store={store}>
-        <ErrorBoundary>
-          <div id="loader" style={{ display: "none" }}>
-            {/* <div className="spinner" /> */}
-            {/* <Image width={300} height={300} src={Loader} /> */}
-            <span className="loader" />
-          </div>
-          <PersistGate loading={null} persistor={persistor}>
-            <motion.div
-              animate={{ opacity: 1 }}
-              initial={{ opacity: 0 }}
-              transition={{
-                damping: 20,
-              }}
-              exit={{ opacity: 0 }}
-            >
-              <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
-            </motion.div>
-          </PersistGate>
-        </ErrorBoundary>
+        <ChakraProvider>
+          <ErrorBoundary>
+            <div id="loader" style={{ display: "none" }}>
+              {/* <div className="spinner" /> */}
+              {/* <Image width={300} height={300} src={Loader} /> */}
+              <span className="loader" />
+            </div>
+            <PersistGate loading={null} persistor={persistor}>
+              <motion.div
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                transition={{
+                  damping: 20,
+                }}
+                exit={{ opacity: 0 }}
+              >
+                <ThemeProvider theme={theme}>{renderPages()}</ThemeProvider>
+              </motion.div>
+            </PersistGate>
+          </ErrorBoundary>
+        </ChakraProvider>
       </Provider>
     </>
   );
