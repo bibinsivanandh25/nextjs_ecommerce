@@ -14,7 +14,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { productDetails } from "features/customerSlice";
+import { cartCount, productDetails } from "features/customerSlice";
+import { countCart } from "services/admin/storeList";
 import DeliveryOptionsModal from "../../Home/buynowmodal";
 import AddToWishListModal from "../../wishlist/AddToWishListModal";
 import CompareProductDrawer from "../compareproducts/compareProductDrawer";
@@ -74,6 +75,7 @@ function ProductDetailsCard({
   const [showSimilarProductsDrawer, setShowSimilarProductsDrawer] =
     useState(false);
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const mouseEnter = (name) => {
     setIconColor((prev) => ({ ...prev, [name]: true }));
@@ -127,9 +129,13 @@ function ProductDetailsCard({
       );
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
         toastify(data?.message, "success");
         getProducts();
+        const { data: count } = await countCart(profileId);
+        if (count) {
+          dispatch(cartCount({ cartCount: count }));
+        }
         setIconColor((prev) => ({ ...prev, localMallIcon: false }));
         queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
@@ -172,7 +178,6 @@ function ProductDetailsCard({
       setViewModalOpen(true);
     }
   };
-  const dispatch = useDispatch();
   const route = useRouter();
 
   // tooltip css changed

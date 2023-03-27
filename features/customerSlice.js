@@ -13,6 +13,7 @@ const initialState = {
   addStoreFlag: false,
   variationDetails: [],
   productId: "",
+  cartCount: null,
 };
 
 export const customerSlice = createSlice({
@@ -35,6 +36,12 @@ export const customerSlice = createSlice({
         productId: action.payload.productId,
       };
     },
+    cartCount: (state, action) => {
+      return {
+        ...state,
+        cartCount: action.payload.cartCount,
+      };
+    },
     clearCustomerSlice: () => {
       return {
         ...initialState,
@@ -48,6 +55,7 @@ export const {
   clearCustomerSlice,
   setAddStoreFlag,
   productDetails,
+  cartCount,
 } = customerSlice.actions;
 
 export default customerSlice.reducer;

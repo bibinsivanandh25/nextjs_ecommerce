@@ -4,11 +4,13 @@ import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import ModalComponent from "@/atoms/ModalComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { cartCount } from "features/customerSlice";
 import Image from "next/image";
 import { customerHome } from "public/assets";
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { countCart } from "services/admin/storeList";
 import {
   // addProductToCart,
   editCartProduct,
@@ -65,6 +67,8 @@ const DeliveryOptionsModal = ({
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [finalPriceWithDeliveryCharges, setFinalPriceWithDeliveryCharge] =
     useState(0);
+
+  const customer = useSelector((state) => state.customer);
 
   const queryClient = useQueryClient();
 
@@ -255,13 +259,20 @@ const DeliveryOptionsModal = ({
     return result;
   };
 
+  const dispatch = useDispatch();
+
   const addToCartMutation = useMutation(
     (reqObj) => {
       return serviceUtil.post(`products/product/user-cart`, reqObj);
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
         if (!data?.popUp) {
+          const { data: count } = await countCart(customer.profileId);
+          if (count) {
+            dispatch(cartCount({ cartCount: count }));
+          }
+
           queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
           queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
           queryClient.invalidateQueries(["RECENTLYVIEWED"]);
@@ -271,6 +282,12 @@ const DeliveryOptionsModal = ({
           setModalOpen(false);
           toastify(data?.message, "success");
           getProducts();
+          // dispatch(
+          //   cartCount({
+          //     productId: item?.id,
+          //     variationDetails: item.variationDetails,
+          //   })
+          // );
         } else setShowConfirmModal(true);
       },
       onError: (err) => {
@@ -326,6 +343,10 @@ const DeliveryOptionsModal = ({
         toastify(data?.message, "success");
         setModalOpen(false);
         getProducts();
+        const { data: count } = await countCart(customer.profileId);
+        if (count) {
+          dispatch(cartCount({ cartCount: count }));
+        }
       }
       if (err) {
         toastify(err?.response?.data?.message, "error");
