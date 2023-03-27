@@ -41,7 +41,7 @@ const SwitchProfile = ({
   const [editModal, seteditModal] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const acceptedTypes = ["png", "jpg", "pdf"];
   const getProfiles = async () => {
     const { data, err } = await getCustomerProfile(userId);
     if (data) {
@@ -151,7 +151,11 @@ const SwitchProfile = ({
       let payload = {};
       if (img !== "") {
         const imgRes = await uploadProfile(userId, img);
-        if (imgRes.data) {
+        if (
+          (imgRes.data && imgRes.data.slice(-3).includes("png")) ||
+          imgRes.data.slice(-3).includes("peg") ||
+          imgRes.data.slice(-3).includes("jpg")
+        ) {
           payload = {
             customerId: userId,
             profileName,
@@ -159,7 +163,12 @@ const SwitchProfile = ({
             profileId: editModal.profileId,
           };
         } else {
-          toastify(imgRes.err?.response?.data?.message, "error");
+          toastify(
+            imgRes.err?.response?.data?.message
+              ? imgRes.err?.response?.data?.message
+              : "Please upload image extension with png ,jpg or jpeg",
+            "error"
+          );
           return;
         }
       } else {
@@ -199,7 +208,8 @@ const SwitchProfile = ({
     str.split(" ").forEach((i) => {
       letters += i.toUpperCase()[0];
     });
-    return letters;
+    const profileInitial = letters.substring(0, 3);
+    return profileInitial;
   };
 
   useEffect(() => {
@@ -374,15 +384,18 @@ const SwitchProfile = ({
                     </Paper>
                   )}
                   <Typography
-                    className=" fw-500 "
+                    className=" fw-500 d-flex justify-content-center align-items-center"
+                    style={{
+                      width: "90%",
+                    }}
                     onClick={() => {
                       handleProfileSwitch(item);
                     }}
                   >
-                    {/* {item.profileName} */}
-                    <TruncateName
+                    {item.profileName}
+                    {/* <TruncateName
                       name={JSON.parse(JSON.stringify(item.profileName))}
-                    />
+                    /> */}
                   </Typography>
                 </Grid>
               );
@@ -467,7 +480,12 @@ const SwitchProfile = ({
                       type="file"
                       onChange={async (e) => {
                         const base = await getBase64(e.target.files[0]);
+                        // if (
+                        //   acceptedTypes.includes(base.type.split("/")[1]) &&
+                        //   acceptedTypes.includes(base.name.split(".")[1])
+                        // ) {
                         setImg(base);
+                        // }
                       }}
                     />
                   </Box>

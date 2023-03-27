@@ -515,6 +515,8 @@ export default function TableComponent({
 
   useEffect(() => {
     setPage(0);
+    setFilteredDates({ fromDate: "", toDate: "" });
+    setsearchText("");
   }, [tabChange]);
 
   useEffect(() => {

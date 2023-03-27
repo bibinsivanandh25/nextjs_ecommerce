@@ -300,13 +300,17 @@ const CompareProductDetails = ({
               if (key !== "Ratings & Reviews") {
                 const getElement = (element, keys) => {
                   if (keys === "Price") {
-                    return Number(ele.replaceAll("₹", "")).toLocaleString(
-                      "en-IN",
-                      {
-                        maximumFractionDigits: 2,
-                        style: "currency",
-                        currency: "INR",
-                      }
+                    return (
+                      <div style={{ color: "blue", fontSize: "0.9rem" }}>
+                        {Number(ele.replaceAll("₹", "")).toLocaleString(
+                          "en-IN",
+                          {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          }
+                        )}
+                      </div>
                     );
                   }
                   if (keys === "Description") {
@@ -316,6 +320,19 @@ const CompareProductDetails = ({
                           __html: ele,
                         }}
                       />
+                    );
+                  }
+                  if (keys === "Availability") {
+                    return (
+                      <div
+                        style={{
+                          color: ele === "IN STOCK" ? "green" : "red",
+                          textTransform: "capitalize",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        {ele.toLowerCase()}
+                      </div>
                     );
                   }
                   return element;

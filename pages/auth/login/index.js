@@ -306,6 +306,9 @@ const Login = () => {
                   textColor="primary"
                   muiProps={styles.profitLink}
                   variant="undefined"
+                  onBtnClick={() => {
+                    route.push("/auth/profitability");
+                  }}
                 />
               </div>
             </Grid>

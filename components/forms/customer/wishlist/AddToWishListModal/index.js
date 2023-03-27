@@ -187,6 +187,7 @@ const AddToWishListModal = ({
 
   return (
     <ModalComponent
+      titleClassName="fs-16"
       open={showModal}
       onCloseIconClick={() => {
         setShowModal(false);
@@ -259,6 +260,7 @@ const AddToWishListModal = ({
         </Grid>
       </Grid>
       <ModalComponent
+        ModalTitle="Create New Wishlist"
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);

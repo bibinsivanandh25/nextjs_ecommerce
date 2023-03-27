@@ -9,6 +9,15 @@ const getCategory = () => {
     })
     .catch((err) => ({ err }));
 };
+const getAllCategory = () => {
+  return serviceUtil
+    .get(`products/main-category/drop-down-list`)
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 const getSubCategory = (id) => {
   return serviceUtil
     .get(`products/sub-category/filter/set?setId=${id}`)
@@ -52,4 +61,5 @@ export {
   getStandard,
   getOptions,
   addVariationToSubCategory,
+  getAllCategory,
 };

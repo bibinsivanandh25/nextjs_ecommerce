@@ -100,6 +100,12 @@ const Header = () => {
   });
   const [searchText, setSearchText] = useState("");
   const router = useRouter();
+  useEffect(() => {
+    if (!router.pathname.includes("productvariation")) {
+      setSearchText("");
+    }
+  }, [router]);
+
   const recentStore = async () => {
     const { data } = await getRecentStoreList(userId);
     if (data) {
@@ -574,14 +580,16 @@ const Header = () => {
                 m: "0.08rem",
               }}
               onClick={() => {
-                route.push({
-                  pathname: "/customer/productvariation",
-                  query: {
-                    keyword: searchText,
-                    categoryId: category.id,
-                  },
-                });
-                setSearchText("");
+                if (searchText !== "") {
+                  route.push({
+                    pathname: "/customer/productvariation",
+                    query: {
+                      keyword: searchText,
+                      categoryId: category.id,
+                    },
+                  });
+                  // setSearchText("");
+                }
               }}
               className="theme_bg_color d-flex  p-1 rounded align-items-center cursor-pointer"
             >

@@ -2,10 +2,10 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ShareIcon from "@mui/icons-material/Share";
 import Image from "next/image";
-
 import { getReferredSupplier } from "services/supplier/refferedsupplier";
 import toastify from "services/utils/toastUtils";
 import TableComponent from "@/atoms/TableComponent";
+import { useSelector } from "react-redux";
 
 const column = [
   {
@@ -49,61 +49,92 @@ const column = [
     data_classname: "",
   },
 ];
-// const rows = [
-//   {
-//     id: "1",
-//     col1: "12154235",
-//     col2: (
-//       <Paper elevation={4} sx={{ width: "fit-content" }} className="mx-auto">
-//         <Image width={40} height={40} src={assetsJson.person} alt="alt" />
-//       </Paper>
-//     ),
-//     col3: <div className="w-100">Balu</div>,
-//     col4: "Sharan Jewelry",
-//     col5: "500",
-//   },
-// ];
+const filterList = [
+  {
+    id: 1,
+    label: "All",
+    value: "ALL",
+  },
+  {
+    id: 2,
+    label: "Supplier Name",
+    value: "SupplierName",
+  },
+  {
+    id: 3,
+    label: "Store Name",
+    value: "StoreName",
+  },
+];
 const ReferredSupplier = () => {
+  const user = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
   const [referralCode, setReferralCode] = useState("");
+  const [pageNumber, setPageNumber] = useState(0);
+  const [masterData, setMasterData] = useState({});
 
-  const getTableRows = async () => {
-    const { data } = await getReferredSupplier("SP0822000002");
+  const getTableRow = (data) => {
     const tableRows = [];
-    if (data) {
-      setReferralCode(data.supplierReferralCode);
-      data.list.forEach((val) => {
-        tableRows.push({
-          id: val.supplierId,
-          col1: val.supplierId,
-          col2: (
-            <Paper
-              elevation={4}
-              sx={{ width: "fit-content" }}
-              className="mx-auto p-1"
-            >
-              <Image
-                width={42}
-                height={42}
-                src={val.profileImageUrl}
-                alt="alt"
-                className="mt-1"
-              />
-            </Paper>
-          ),
-          col3: (
-            <div className="w-100">{`${val.firstName} ${val.lastName}`}</div>
-          ),
-          col4: val.supplierStoreName,
-          col5: val.signupFreeOrderCount,
-        });
+    data.list.forEach((val) => {
+      tableRows.push({
+        id: val.supplierId,
+        col1: val.supplierId,
+        col2: (
+          <Paper
+            elevation={4}
+            sx={{ width: "fit-content" }}
+            className="mx-auto p-1"
+          >
+            <Image
+              width={42}
+              height={42}
+              src={val.profileImageUrl}
+              alt="alt"
+              className="mt-1"
+            />
+          </Paper>
+        ),
+        col3: <div className="w-100">{`${val.firstName} ${val.lastName}`}</div>,
+        col4: val.supplierStoreName,
+        col5: val.signupFreeOrderCount,
       });
-      setRows([...tableRows]);
+    });
+    return tableRows;
+  };
+  const getTableRows = async (
+    page = pageNumber,
+    filterType = "",
+    keyword = ""
+  ) => {
+    const payload = {
+      pageNumber: page,
+      pageSize: 50,
+      supplierId: user.supplierId,
+      filterType: filterType?.toLocaleLowerCase() === "all" ? "" : filterType,
+      keyword,
+    };
+    const { data } = await getReferredSupplier(payload);
+    if (data) {
+      setMasterData(data);
+      setReferralCode(data.supplierReferralCode);
+      if (data.list.length && page === 0) {
+        setPageNumber(1);
+        setRows([...getTableRow(data)]);
+      } else if (data.list.length && page !== 0) {
+        setPageNumber((pre) => pre + 1);
+        setRows((pre) => [...pre, ...getTableRow(data)]);
+      } else if (data.list.length === 0 && page === 0) {
+        setRows([]);
+      }
+    } else {
+      setMasterData({});
+      setReferralCode("");
+      setRows([]);
     }
   };
 
   useEffect(() => {
-    getTableRows();
+    getTableRows(0);
   }, []);
 
   return (
@@ -130,19 +161,25 @@ const ReferredSupplier = () => {
               </Box>
             </Box>
             <Grid className="my-3" container>
-              <Grid className="d-flex text-start" item xs={4}>
+              <Grid className="d-flex text-start" item xs={6}>
                 <Typography className="h-4 text-start" component="span">
-                  Total Commission Earned :{" "}
+                  Total Commission Saved :{" "}
                 </Typography>
                 <Typography component="span" className="h-4 color-orange">
-                  &nbsp;5,0000 Rs
+                  &nbsp; ₹{" "}
+                  {masterData?.totalCommissionSaved
+                    ? masterData?.totalCommissionSaved
+                    : 0}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography className="h-4 d-flex ms-5" component="div">
-                  Total Commission Earned (Month) :{" "}
+                  Total Free Orders Earned :{" "}
                   <Typography component="span" className="h-4 color-orange">
-                    &nbsp;5,000 Rs
+                    &nbsp; ₹{" "}
+                    {masterData?.totalFreeOrderCount
+                      ? masterData?.totalFreeOrderCount
+                      : 0}
                   </Typography>
                 </Typography>
               </Grid>
@@ -158,9 +195,20 @@ const ReferredSupplier = () => {
           </Box>
         </Box>
         <TableComponent
+          filterList={filterList}
           showCheckbox={false}
           columns={column}
           tableRows={rows}
+          handlePageEnd={(
+            searchText = "",
+            filterText = "ALL",
+            page = pageNumber
+          ) => {
+            getTableRows(page, filterText, searchText);
+          }}
+          handleRowsPerPageChange={() => {
+            setPageNumber(0);
+          }}
         />
       </Box>
     </Paper>

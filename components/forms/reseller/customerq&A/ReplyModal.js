@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import ModalComponent from "components/atoms/ModalComponent";
 import validateMessage from "constants/validateMessages";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { answerTheQuestions } from "services/supplier/customerq&a";
 import toastify from "services/utils/toastUtils";
 
@@ -18,6 +19,7 @@ const ReplyModal = ({
   setReply = () => {},
   tabType = false,
 }) => {
+  const user = useSelector((state) => state.user);
   const [error, setError] = useState(errObj);
 
   const handleError = () => {
@@ -36,7 +38,7 @@ const ReplyModal = ({
       const payload = {
         userAnswer: reply,
         answerFromType: "SUPPLIER",
-        answerFromTypeId: "SP0822000040",
+        answerFromTypeId: user.supplierId,
         ...dataForSendingReply,
       };
       const { someError } = await answerTheQuestions(payload);

@@ -58,7 +58,8 @@ const Profile = () => {
     str.split(" ").forEach((i) => {
       letters += i.toUpperCase()[0];
     });
-    return letters;
+    const profileInitial = letters.substring(0, 3);
+    return profileInitial;
   };
 
   const handleProfileSwitch = async (profile, showMessage) => {
@@ -120,6 +121,7 @@ const Profile = () => {
             profileName: data.profileName,
           })
         );
+        toastify(data.message, "success");
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
@@ -150,7 +152,7 @@ const Profile = () => {
       };
     }
     const { data, err } = await updateProfile(payload);
-    if (data === null) {
+    if (data) {
       getProfiles();
       setShowModal(false);
       setError("");
@@ -245,27 +247,31 @@ const Profile = () => {
                 {item.profileName}
               </Typography>
               <div className="d-flex align-items-center w-75 justify-content-evenly mt-4">
-                <motion.div
-                  whileHover={{
-                    scale: 1.4,
-                    transition: { duration: 0.5 },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Tooltip title="Switch">
-                    <HiSwitchHorizontal
-                      className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
-                      size={30}
-                      style={{
-                        color: "#fff ",
-                        padding: "5px",
-                      }}
-                      onClick={() => {
-                        handleProfileSwitch(item);
-                      }}
-                    />
-                  </Tooltip>
-                </motion.div>
+                {!item.profilePrimary && (
+                  <motion.div
+                    whileHover={{
+                      scale: 1.4,
+                      transition: { duration: 0.5 },
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Tooltip title="Switch">
+                      <div>
+                        <HiSwitchHorizontal
+                          className="m-1 shadow cursor-pointer rounded-circle theme_bg_color"
+                          size={30}
+                          style={{
+                            color: "#fff ",
+                            padding: "5px",
+                          }}
+                          onClick={() => {
+                            handleProfileSwitch(item);
+                          }}
+                        />
+                      </div>
+                    </Tooltip>
+                  </motion.div>
+                )}
                 <motion.div
                   whileHover={{
                     scale: 1.4,
@@ -292,29 +298,31 @@ const Profile = () => {
                     />
                   </Tooltip>
                 </motion.div>
-                <motion.div
-                  whileHover={{
-                    scale: 1.4,
-                    transition: { duration: 0.5 },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Tooltip title="Delete">
-                    <Delete
-                      size={40}
-                      className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
-                      style={{
-                        color: "#fff",
-                        padding: "5px",
-                        height: "30px",
-                        width: "30px",
-                      }}
-                      onClick={() => {
-                        deleteprofile(item);
-                      }}
-                    />
-                  </Tooltip>
-                </motion.div>
+                {!item.profilePrimary && (
+                  <motion.div
+                    whileHover={{
+                      scale: 1.4,
+                      transition: { duration: 0.5 },
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Tooltip title="Delete">
+                      <Delete
+                        size={40}
+                        className=" m-1  cursor-pointer rounded-circle shadow theme_bg_color"
+                        style={{
+                          color: "#fff",
+                          padding: "5px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        onClick={() => {
+                          deleteprofile(item);
+                        }}
+                      />
+                    </Tooltip>
+                  </motion.div>
+                )}
               </div>
             </Paper>
           );

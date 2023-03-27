@@ -25,5 +25,33 @@ const saveSupplierData = (payload) => {
       return { errRes };
     });
 };
-
-export { getSupplierData, saveSupplierData };
+const getOrderHistory = (payload) => {
+  return serviceUtil
+    .post(
+      `order-payment/supplier/orders?orderStatus=${payload.status}&pageNumber=${payload.pageNumber}&pageSize=5&supplierId=${payload.supplierId}`
+    )
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return err;
+    });
+};
+const getOrderDetailsById = (id) => {
+  return serviceUtil
+    .get(`order-payment/supplier-order-details/${id}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+export {
+  getSupplierData,
+  saveSupplierData,
+  getOrderHistory,
+  getOrderDetailsById,
+};

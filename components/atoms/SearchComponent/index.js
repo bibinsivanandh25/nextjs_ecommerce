@@ -11,6 +11,8 @@ const SearchComponent = ({
   className = "",
   onSearchTextChange = () => {}, // works only when showSearchBtn is false
   handleBtnSearch = () => {}, // works only when showSearchBtn is true
+  onchangeVal = () => {},
+  searchButtonClassname = "",
 }) => {
   const [searchText, setSearchText] = useState("");
   return (
@@ -25,6 +27,7 @@ const SearchComponent = ({
           setSearchText(e.target.value);
           // eslint-disable-next-line no-unused-expressions
           !showSearchBtn && onSearchTextChange(e.target.value);
+          onchangeVal(e.target.value); // only for orderscreen
         }}
         onKeyDown={(e) => {
           if (!showSearchBtn && e.key === "Enter") {
@@ -39,7 +42,9 @@ const SearchComponent = ({
             handleBtnSearch(searchText);
           }}
         >
-          <SearchOutlinedIcon className="text-white p-1 fs-1" />
+          <SearchOutlinedIcon
+            className={`text-white p-1 fs-1 ${searchButtonClassname}`}
+          />
         </Box>
       ) : null}
     </Box>

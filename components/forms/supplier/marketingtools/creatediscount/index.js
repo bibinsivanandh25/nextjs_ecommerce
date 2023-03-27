@@ -323,20 +323,18 @@ const CreateDiscount = ({
         description: formValues.content,
         campaignTitle: formValues.campaignTitle,
         totalDiscountValue: formValues.inputValue,
-        splitType: null,
-        couponUsageLimit: null,
-        customerUsageLimit: null,
+        splitType: "NA",
+        couponUsageLimit: 0,
+        customerUsageLimit: 0,
         marginType: formValues.marginType,
         mainCategoryId: selectedCategorys.mainCategoryId,
         subCategoryId: selectedCategorys.subCategoryId,
-        productCatalogueUrl: null,
+        productCatalogueUrl: "",
         customerType: "EXISTING_CUSTOMER",
         userType: "SUPPLIER",
         userTypeId: user.supplierId,
-        marketingToolThemeId: null,
+        marketingToolThemeId: 0,
         marketingToolProductList: temp,
-        splitDiscountDetailList: [],
-        marketingToolQuestionAnswerList: [],
       };
       const { data, err } = await createDiscountCoupons(payload);
       if (data) {
@@ -539,7 +537,6 @@ const CreateDiscount = ({
             helperText={error.marginType}
           />
         </Grid>
-
         <Grid item sm={2}>
           <InputBox
             size="small"

@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getReferredSupplier = (id) => {
+const getReferredSupplier = (payload) => {
   return serviceUtil
-    .get(`users/referred-supplier?supplierId=${id}`)
+    .post(`users/referred-supplier`, payload)
     .then((res) => {
       const { data } = res.data;
       // console.log("This is data ,", data);
