@@ -424,7 +424,7 @@ export default function TableComponent({
       >
         <Grid className="d-flex justify-content-between align-items-center">
           <Grid className="color-orange">{table_heading}</Grid>
-          <Grid container>{showDateFilter ? getDateFilter() : null}</Grid>
+          <Grid>{showDateFilter ? getDateFilter() : null}</Grid>
           <Grid>
             {showButton ? (
               <ButtonComponent label={buttonLabel} onBtnClick={onBtnClick} />
