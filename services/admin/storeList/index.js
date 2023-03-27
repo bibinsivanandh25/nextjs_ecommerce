@@ -130,8 +130,8 @@ const countCart = (id) => {
   return serviceUtil
     .get(`products/cart/products/count?profileId=${id}`)
     .then((res) => {
-      const data1 = res && res.data;
-      return { data1 };
+      const { data } = res && res.data;
+      return { data };
     })
     .catch((err) => {
       const errRes = err;
