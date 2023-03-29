@@ -43,6 +43,22 @@ const AddFlag = ({
   const { storeCode, supplierId } = useSelector((state) => state.user);
   const [disableFlagField, setdisableFlagField] = useState(false);
   const [flagTitle, setflagTitle] = useState({});
+  const flagSchema = {
+    flagTitle: "",
+    imageUrl: "",
+    startDate: "",
+    endDate: "",
+    variationList: [],
+    discount: null,
+    supplierStoreId: "",
+    flagId: "",
+    supplierId: "",
+    userType: "SUPPLIER",
+    purchaseId: null,
+    visibilityPlace: "",
+    imageId: "",
+  };
+  const [flagFormData, setFlagFormData] = useState(flagSchema);
   const [errObj, setErrObj] = useState({
     flagTitle: "",
     discount: "",
