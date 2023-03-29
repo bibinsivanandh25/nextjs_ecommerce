@@ -8,6 +8,7 @@ const SimilarProducts = ({
   subCategoryId = "",
   scrollPage = () => {},
   userData = {},
+  showActions,
 }) => {
   const [products, setProducts] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
@@ -114,6 +115,7 @@ const SimilarProducts = ({
             {products?.map((ele) => {
               return (
                 <ProductListCard
+                  showActions={showActions}
                   item={ele}
                   getProducts={() => {
                     setPageNumber(0);
