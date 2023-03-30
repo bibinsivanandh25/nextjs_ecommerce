@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import {
   getAllHelpandSupportData,
+  supplierSideCloseTicket,
   viewHelpandSupport,
 } from "services/supplier/helpandsupport";
 import toastify from "services/utils/toastUtils";
@@ -36,45 +37,41 @@ const HelpAndSupport = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
-      label: "Serial No.",
+      label: "Ticket ID",
       id: "col1",
     },
     {
-      label: "Ticket ID",
+      label: "Issue Type",
       id: "col2",
     },
     {
-      label: "Issue Type",
+      label: "Issue to",
       id: "col3",
     },
     {
-      label: "Issue to",
+      label: "Order ID",
       id: "col4",
     },
     {
-      label: "Order ID",
-      id: "col5",
-    },
-    {
       label: "Subject",
-      id: "col6",
+      id: "col5",
     },
 
     {
       label: "Created Date & Time",
-      id: "col7",
+      id: "col6",
     },
     {
       label: "Last updated Date & Time",
-      id: "col8",
+      id: "col7",
     },
     {
       label: "Status",
-      id: "col9",
+      id: "col8",
     },
     {
-      label: "",
-      id: "col10",
+      label: "Action",
+      id: "col9",
       align: "center",
     },
   ];
@@ -113,32 +110,53 @@ const HelpAndSupport = () => {
       }
     }
   };
-
+  const handleTicketCloseClick = async (item) => {
+    if (item?.ticketId) {
+      const { data, err } = await supplierSideCloseTicket(item.ticketId);
+      if (data) {
+        toastify(data.message, "success");
+        setpageNumber(0);
+        getAllData("", null, 0);
+      }
+      if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
   const mapRowsToTable = (data) => {
     const result = [];
-    data?.forEach((row, index) => {
+    data?.forEach((row) => {
       const flag = row.helpSupportMessages?.map((item) => {
         return item.helpSupportMessageViews.some(
           (value) => value.viewedById == user.supplierId
         );
       });
       result.push({
-        col1: index + 1,
-        col2: row.ticketId,
-        col3: row.issueType,
-        col4: row.userToType,
-        col5: row.orderId,
-        col6: row.issueSubject,
-        col7: new Date(row.createdDate).toLocaleString(),
-        col8: new Date(row.lastModifiedDate).toLocaleString(),
-        col9: (
+        col1: row.ticketId,
+        col2: row.issueType,
+        col3: row.userToType,
+        col4: row.orderId,
+        col5: row.issueSubject,
+        col6: new Date(row.createdDate).toLocaleString(),
+        col7: new Date(row.lastModifiedDate).toLocaleString(),
+        col8: (
           <div className={getClassnames(row.ticketStatus)}>
             {row.ticketStatus}
           </div>
         ),
-        col10: (
+        col9: (
           <Grid container>
-            <Grid item xs={6} sx={{ px: 0, mx: 0 }}>
+            <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
+              <CustomIcon
+                type="close"
+                title="Close Ticket"
+                onIconClick={() => {
+                  handleTicketCloseClick(row);
+                }}
+                className="fs-18 me-2 fit-content"
+              />
+            </Grid>
+            <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
               <CustomIcon
                 type="view"
                 title="View & Reply"
@@ -148,7 +166,7 @@ const HelpAndSupport = () => {
                 className="fs-18 me-2 fit-content"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Badge
                 variant="dot"
                 sx={{
