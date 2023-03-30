@@ -878,7 +878,7 @@ const StoreSettings = () => {
                   ) : null}
                 </Grid>
                 <Grid item sm={12} className="w-100">
-                  {formValues.description && (
+                  {/* {formValues.description && ( */}
                     <TextEditor
                       className="w-100"
                       content={formValues.description}
@@ -889,7 +889,7 @@ const StoreSettings = () => {
                         }));
                       }}
                     />
-                  )}
+                  {/* )} */}
                 </Grid>
               </Grid>
             </Grid>

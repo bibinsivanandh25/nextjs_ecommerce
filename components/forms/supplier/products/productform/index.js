@@ -647,7 +647,7 @@ const ProductsLayout = ({
       otherInformation:
         Object.keys(otherInformation)[0] === "" ? {} : otherInformation,
       zoneChargeInfo: {},
-      countryOfOrigin: formData.variation.countryOfOrigin,
+      countryOfOrigin: formData.variation.countryOfOrigin?.value ?? "",
       expiryDate: formData.variation.expiryDate
         ? format(new Date(formData.variation.expiryDate), "MM-dd-yyyy HH:mm:ss")
         : null,
