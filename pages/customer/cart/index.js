@@ -53,18 +53,13 @@ const Cart = () => {
     totalPrice: 0,
     totalSaving: 0,
   });
-  const { profileId, userId } = useSelector((state) => state?.customer);
+  const { profileId, userId, addressDetails } = useSelector(
+    (state) => state?.customer
+  );
   const customer = useSelector((state) => state?.customer);
   const [masterAddress, setMasterAddress] = useState([]);
-
   const getproducts = async () => {
     const { data } = await getCartProducts(profileId);
-    if (data) return data;
-    return [];
-  };
-  const { data, refetch } = useQuery(["CART"], () => getproducts());
-
-  useEffect(() => {
     if (data) {
       const result = [];
       setPriceDetails({
@@ -97,10 +92,12 @@ const Cart = () => {
         });
       });
       setProducts([...result]);
-    } else {
-      setProducts([]);
+      return data;
     }
-  }, [data]);
+    setProducts([]);
+    return [];
+  };
+  const { refetch, isLoading } = useQuery(["CART"], () => getproducts());
 
   const mainRef = useRef(null);
   useEffect(() => {
@@ -196,7 +193,7 @@ const Cart = () => {
   };
   useEffect(() => {
     getAllData(userId);
-  }, [userId]);
+  }, [userId, showChooseAddress, addressDetails]);
 
   const getCartList = () => {
     return products?.map((ele, ind) => {
@@ -295,7 +292,7 @@ const Cart = () => {
               </Grid>
               <Grid item sm={7}>
                 <span className={ele?.deliveryCharge ? "" : "text-success"}>
-                  {ele.deliveryCharge || "FREE"}
+                  {ele.deliveryCharge ? `₹ ${ele.deliveryCharge}` : "FREE"}
                 </span>
               </Grid>
               <Grid item sm={4}>
@@ -310,7 +307,7 @@ const Cart = () => {
                     ele?.returnCharge ? "fst-normal" : "text-success fst-normal"
                   }
                 >
-                  {ele?.returnCharge || "FREE"}
+                  {ele?.returnCharge ? `₹ ${ele?.returnCharge}` : "FREE"}
                 </span>
               </Grid>
             </Grid>
@@ -398,11 +395,11 @@ const Cart = () => {
               onBtnClick={() => setShowChooseAddress(true)}
             /> */}
                 <div className="mx-2 ">
-                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
+                  <Typography className="fs-12 color-black fw-bold">
                     {customer.addressDetails?.name}
                   </Typography>
-                  <Typography className="fs-12 color-black fw-bold cursor-pointer">
-                    {customer.addressDetails?.cityDistrictTown},
+                  <Typography className="fs-12 color-black fw-bold">
+                    {customer.addressDetails?.cityDistrictTown}&nbsp;
                     {customer.addressDetails?.pinCode}
                   </Typography>
                 </div>
@@ -670,19 +667,21 @@ const Cart = () => {
           <Typography className=" theme_bg_color_1 theme_color fs-16 fw-bold p-2 w-100">
             My Cart
           </Typography>
-          <Grid className="d-flex justify-content-center">
-            <Image
-              src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Your%20cart%20is%20empty%201.png"
-              alt="no product"
-              // layout="fill"
-              height={400}
-              width={800}
-              // style={{
-              //   height: "100vh",
-              //   width: "80vw",
-              // }}
-            />
-          </Grid>
+          {!isLoading && (
+            <Grid className="d-flex justify-content-center">
+              <Image
+                src="https://dev-mrmrscart-assets.s3.ap-south-1.amazonaws.com/asset/Your%20cart%20is%20empty%201.png"
+                alt="no product"
+                // layout="fill"
+                height={400}
+                width={800}
+                // style={{
+                //   height: "100vh",
+                //   width: "80vw",
+                // }}
+              />
+            </Grid>
+          )}
         </Grid>
       )}
     </>

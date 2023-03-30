@@ -18,6 +18,7 @@ import {
 import { useUserInfo } from "services/hooks";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
+import { format } from "date-fns";
 
 const MrMrsAddNewCoupons = ({
   setOpenAddModal = () => {},
@@ -89,7 +90,6 @@ const MrMrsAddNewCoupons = ({
     };
 
     validateFields("description");
-    // validateFields("code");
     validateFields("couponExpiryDate");
     validateFields("discountType");
     validateFields("categoryInclude");
@@ -105,6 +105,21 @@ const MrMrsAddNewCoupons = ({
     if (formValues.description.length > 255) {
       errObj.description = validateMessage.alpha_numeric_max_255;
     }
+
+    if (formValues?.discountTypeObj?.value == "CASH") {
+      if (!formValues.couponAmount) {
+        errObj.couponAmount = validateMessage.field_required;
+      }
+    }
+    if (formValues?.discountTypeObj?.value == "PERCENTAGE") {
+      if (!formValues.couponAmount) {
+        errObj.couponPercentage = validateMessage.field_required;
+      }
+    }
+    if (!formValues?.discountTypeObj) {
+      errObj.couponAmount = validateMessage.field_required;
+    }
+
     const limitErrors = {
       limitError: null,
     };
@@ -113,7 +128,7 @@ const MrMrsAddNewCoupons = ({
       parseInt(formValues.usageLimitPerUser, 10)
     ) {
       limitErrors.limitError =
-        "Usage Limit PerCoupon Should Always Less than Usage Limit PerUser";
+        "Usage Limit Per Coupon Should Always Be Less than Usage Limit Per User";
     }
     const finalErrorObj = { ...errObj, ...limitErrors };
     setError({ ...finalErrorObj });
@@ -157,19 +172,25 @@ const MrMrsAddNewCoupons = ({
   };
 
   const handleSubmitClick = async (couponStatus) => {
-    // eslint-disable-next-line no-unused-vars
     const isValid = validateForm();
-    // console.log(isValid, "isValid");
     if (isValid) {
       const payload = {
         description: formValues.description,
+        discounted: purchaseCheckbox,
+        percentageValue:
+          formValues.discountTypeObj?.value === "PERCENTAGE"
+            ? parseInt(formValues?.couponPercentage, 10)
+            : null,
         discountType: formValues.discountTypeObj?.value,
-        couponAmount: parseInt(formValues.couponAmount, 10),
+        couponAmount:
+          formValues.discountTypeObj?.value === "CASH"
+            ? parseInt(formValues?.couponAmount, 10)
+            : null,
         subCategoryIncluded: formValues.subcategoryObj?.value,
-        couponExpiryDate: new Date(formValues.couponExpiryDate)
-          .toLocaleDateString()
-          .toString()
-          .replaceAll("/", "-"),
+        couponExpiryDate: format(
+          new Date(formValues.couponExpiryDate),
+          "MM-dd-yyyy"
+        ),
         categoryIncluded: formValues.categoryIncludeObj?.value,
         productsIncluded: formValues.productsIncludeObj?.map((ele) => ele?.id),
         usageLimitPerCoupon: parseInt(formValues.usageLimitPerCoupon, 10),
@@ -278,15 +299,49 @@ const MrMrsAddNewCoupons = ({
             </Grid>
             <Grid item xs={12}>
               <InputBox
-                label="Coupon Amount"
+                label={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? "Coupon Amount"
+                    : "Coupon Percentage"
+                }
                 inputlabelshrink
                 type="number"
-                value={formValues.couponAmount}
-                id="couponAmount"
-                name="couponAmount"
-                onInputChange={handleInputChange}
-                error={Boolean(error.couponAmount)}
-                helperText={error.couponAmount}
+                value={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? formValues.couponAmount
+                    : formValues.couponPercentage
+                }
+                id={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? "couponAmount"
+                    : "couponPercentage"
+                }
+                name={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? "couponAmount"
+                    : "couponPercentage"
+                }
+                onInputChange={(e) => {
+                  setFormValues({
+                    ...formValues,
+                    ...(formValues?.discountTypeObj?.value === "CASH" && {
+                      couponAmount: e.target.value,
+                    }),
+                    ...(formValues?.discountTypeObj?.value === "PERCENTAGE" && {
+                      couponPercentage: e.target.value,
+                    }),
+                  });
+                }}
+                error={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? Boolean(error.couponAmount)
+                    : Boolean(error.couponPercentage)
+                }
+                helperText={
+                  formValues?.discountTypeObj?.value === "CASH"
+                    ? error.couponAmount
+                    : error.couponPercentage
+                }
               />
             </Grid>
             <Grid item xs={12}>

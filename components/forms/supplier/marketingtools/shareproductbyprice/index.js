@@ -2,12 +2,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
+import TextEditor from "@/atoms/TextEditor";
 import { FormHelperText, Grid, Tooltip, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import CheckBoxComponent from "components/atoms/CheckboxComponent";
 import ImageCard from "components/atoms/ImageCard";
 import InputBox from "components/atoms/InputBoxComponent";
-import TextEditor from "components/atoms/TextEditor";
 import ListGroupComponent from "components/molecule/ListGroupComponent";
 import validateMessage from "constants/validateMessages";
 import { useState, useEffect } from "react";
@@ -106,7 +106,7 @@ const CreateShareProductByPrice = ({
       priceStartRange: formValues.inputValue,
       priceEndRange: formValues.priceEnd,
     };
-    const { data } = await getProductsForShareproduct(payload);
+    const { data, err } = await getProductsForShareproduct(payload);
     if (data) {
       const result = [];
       data.forEach((product) => {
@@ -121,9 +121,13 @@ const CreateShareProductByPrice = ({
       });
       setProducts([...result]);
     }
+    if (err) {
+      setProducts([]);
+    }
   };
 
   useEffect(() => {
+    let search;
     const { inputValue, priceEnd } = formValues;
     if (
       inputValue !== undefined &&
@@ -132,8 +136,11 @@ const CreateShareProductByPrice = ({
       priceEnd !== "" &&
       selectedCategorys.subCategoryId !== ""
     ) {
-      getProducts();
+      search = setTimeout(() => {
+        getProducts();
+      }, 500);
     }
+    return () => clearTimeout(search);
   }, [
     formValues.inputValue,
     formValues.priceEnd,
@@ -212,7 +219,7 @@ const CreateShareProductByPrice = ({
     } else {
       errObj.priceEnd = null;
     }
-    if (formValues.inputValue >= formValues.priceEnd) {
+    if (Number(formValues.inputValue) >= Number(formValues.priceEnd)) {
       errObj.inputValue = "Invalid start price";
       errObj.priceEnd = "Invalid end price";
     } else {
@@ -269,20 +276,18 @@ const CreateShareProductByPrice = ({
         totalDiscountValue: null,
         priceStartRange: Number(formValues.inputValue),
         priceEndRange: Number(formValues.priceEnd),
-        splitType: null,
-        couponUsageLimit: null,
-        customerUsageLimit: null,
+        splitType: "NA",
+        couponUsageLimit: 0,
+        customerUsageLimit: 0,
         marginType: formValues.marginType,
         mainCategoryId: selectedCategorys.mainCategoryId,
         subCategoryId: selectedCategorys.subCategoryId,
-        productCatalogueUrl: null,
+        productCatalogueUrl: "",
         customerType: "EXISTING_CUSTOMER",
         userType: "SUPPLIER",
         userTypeId: user.supplierId,
-        marketingToolThemeId: null,
+        marketingToolThemeId: 0,
         marketingToolProductList: temp,
-        splitDiscountDetailList: [],
-        marketingToolQuestionAnswerList: [],
       };
       const { data, err } = await createDiscountCoupons(payload);
       if (data) {

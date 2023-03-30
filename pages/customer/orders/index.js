@@ -43,7 +43,7 @@ const list = [
 const statusList = [
   { label: "Pending", id: 1, value: "PENDING" },
   { label: "Completed", id: 2, value: "COMPLETED" },
-  { label: "REJECTED", id: 2, value: "REJECTED" },
+  { label: "Rejected", id: 2, value: "REJECTED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);
@@ -59,6 +59,7 @@ const Orders = () => {
   const [EachProductDetails, setEachProductDetails] = useState([]);
   const [getOrderApiCall, setgetOrderApiCall] = useState(false);
   const [openDateModal, setopenDateModal] = useState(false);
+  const [searchKeyword, setsearchKeyword] = useState("");
   const [orderFilter, setorderFilter] = useState({
     status: {
       label: "Pending",
@@ -72,6 +73,9 @@ const Orders = () => {
     label: "Last 30 days",
     value: "MONTH",
   });
+  useEffect(() => {
+    setsearchKeyword("");
+  }, [selectedLink]);
 
   const [productReviewState, setproductReviewState] = useState({
     retings: 0,
@@ -142,7 +146,7 @@ const Orders = () => {
     }
   }, [durationDrowdown]);
 
-  const getProducts = async () => {
+  const getProducts = async (search = searchKeyword) => {
     const payload = {
       customerId: user.userId,
       orderStatus: selectedLink,
@@ -151,7 +155,7 @@ const Orders = () => {
       startDate: formDate.startDate,
       endDate: formDate.endDate,
       selectStatusType: orderFilter.status.value || "",
-      keyword: orderFilter.keyword.toLocaleLowerCase(),
+      keyword: search,
     };
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
@@ -202,12 +206,13 @@ const Orders = () => {
   }, [showProdDetails]);
 
   useEffect(() => {
-    getProducts();
+    getProducts(searchKeyword);
   }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
+      reviewerName: user.customerName,
       reviewerType: "CUSTOMER",
       reviewerId: user.userId,
       // reviewerId: "CST1222000058",
@@ -645,6 +650,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -758,6 +764,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={statusList}
                               size="small"
+                              placeholder="Select Status"
                               label="Select Status"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -777,6 +784,9 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -784,6 +794,12 @@ const Orders = () => {
                               ...orderFilter,
                               keyword: e,
                             });
+                          }}
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
                           }}
                         />
                       </Grid>
@@ -828,6 +844,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -870,6 +895,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -898,6 +924,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {
@@ -940,6 +975,7 @@ const Orders = () => {
                             <SimpleDropdownComponent
                               list={list}
                               size="small"
+                              placeholder="Select Duration"
                               label="Select Duration"
                               inputlabelshrink
                               onDropdownSelect={(val) => {
@@ -968,6 +1004,15 @@ const Orders = () => {
                       </Grid>
                       <Grid item sm={3}>
                         <SearchComponent
+                          onchangeVal={(e) => {
+                            setsearchKeyword(e);
+                            if (e == "") {
+                              getProducts("");
+                            }
+                          }}
+                          searchButtonClassname={
+                            searchKeyword == "" ? "bg-gray" : ""
+                          }
                           fullWidth
                           placeholder="Search Your Orders"
                           handleBtnSearch={(e) => {

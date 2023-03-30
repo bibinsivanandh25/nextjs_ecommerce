@@ -1,5 +1,3 @@
-/* eslint-disable react/no-danger */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import { Box, Paper, Tooltip } from "@mui/material";
 // import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -189,6 +187,43 @@ function ProductDetailsCard({
       });
     }
   };
+
+  const getFlagPosition = (visibilityPlace) => {
+    switch (visibilityPlace) {
+      case "BOTTOM_RIGHT": {
+        return {
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          zIndex: 1,
+        };
+      }
+      case "TOP_RIGHT": {
+        return {
+          position: "absolute",
+          top: 0,
+          right: 0,
+          zIndex: 1,
+        };
+      }
+      case "BOTTOM_LEFT": {
+        return {
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          zIndex: 1,
+        };
+      }
+      default: {
+        return {
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        };
+      }
+    }
+  };
   const classes = useStyles();
   return (
     <Paper
@@ -208,13 +243,22 @@ function ProductDetailsCard({
           setHover(false);
         }}
         onMouseEnter={() => {
-          if (isSignedIn) setHover(true);
+          setHover(true);
         }}
         style={{ position: "relative" }}
         className="col-md-4"
       >
         <>
-          <div className="poistion-relative">
+          <div className="position-relative">
+            {productDetail.flaged && (
+              <img
+                src={productDetail.flagImageUrl}
+                width={100}
+                height={30}
+                alt=""
+                style={getFlagPosition(productDetail.visibilityPlace)}
+              />
+            )}
             <CarousalComponent
               interval={1500}
               autoPlay={hover}
@@ -246,36 +290,39 @@ function ProductDetailsCard({
         >
           <Box className="d-flex flex-row-reverse p-2">
             <Box className="d-flex flex-column">
-              {iconListData.map((item, index) => (
-                <Box
-                  sx={{
-                    zIndex: "100",
-                    padding: "1px",
-                    width: "25px",
-                    height: "25px",
-                  }}
-                  className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                    iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
-                  }`}
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                >
-                  <CustomIcon
-                    type={item.iconName}
-                    className="fs-18"
-                    onIconClick={() => {
-                      handleIconClick(item.iconName);
-                      handleCardIconClick(item.iconName);
+              {isSignedIn &&
+                iconListData.map((item, index) => (
+                  <Box
+                    sx={{
+                      zIndex: "100",
+                      padding: "1px",
+                      width: "25px",
+                      height: "25px",
                     }}
-                    showColorOnHover={false}
-                    onMouseEnter={() => mouseEnter(item.iconName)}
-                    onMouseLeave={() => mouseLeave(item.iconName)}
-                    color={
-                      iconcolor[item.iconName] ? "text-white" : "text-secondary"
-                    }
-                  />
-                </Box>
-              ))}
+                    className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
+                      iconcolor[item.iconName] ? "theme_bg_color" : "bg-white"
+                    }`}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
+                  >
+                    <CustomIcon
+                      type={item.iconName}
+                      className="fs-18"
+                      onIconClick={() => {
+                        handleIconClick(item.iconName);
+                        handleCardIconClick(item.iconName);
+                      }}
+                      showColorOnHover={false}
+                      onMouseEnter={() => mouseEnter(item.iconName)}
+                      onMouseLeave={() => mouseLeave(item.iconName)}
+                      color={
+                        iconcolor[item.iconName]
+                          ? "text-white"
+                          : "text-secondary"
+                      }
+                    />
+                  </Box>
+                ))}
             </Box>
           </Box>
         </Box>

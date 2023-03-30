@@ -146,7 +146,12 @@ const UnlockToolsForm = ({
               }}
               sx={{ textTransform: "none" }}
             >
-              Buy Now
+              {row.isRadioSelected
+                ? `Buy Now for ${
+                    Object.values(row).filter((value) => value.isChecked)[0]
+                      .label
+                  }`
+                : "Buy Now"}
             </Button>
           ),
         });

@@ -362,7 +362,7 @@ const MyProfile = () => {
                 />
               </Grid>
               <Grid item xs={2} display="flex" alignItems="center">
-                {!disableEdit.emailOtp ? (
+                {!disableEdit.emailOtp && !disableEdit.emailId ? (
                   <CustomIcon
                     type="edit"
                     title="Edit"
@@ -484,7 +484,8 @@ const MyProfile = () => {
               </Grid>
               <Grid item xs={2} display="flex" alignItems="center">
                 {!disableEdit.phoneOtp &&
-                customerDetails?.mobileNumber?.length === 10 ? (
+                customerDetails?.mobileNumber?.length === 10 &&
+                !disableEdit.phone ? (
                   <CustomIcon
                     type="edit"
                     title="Edit"

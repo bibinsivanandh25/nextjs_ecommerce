@@ -237,7 +237,7 @@ const Banners = () => {
       setTableRows([]);
     }
     if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const handleViewClick = (item) => {
@@ -255,7 +255,7 @@ const Banners = () => {
         setpageNumber(0);
         getAllTableData(fromdate, endDate, 0);
       } else if (err) {
-        toastify(err.response.data.message, "error");
+        toastify(err?.response?.data?.message, "error");
       }
     }
   };

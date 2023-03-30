@@ -104,11 +104,11 @@ const FAQPage = ({
     if (data) {
       if (page == 0) {
         setPageNumber(1);
-        setAnswerData(data.customerQueAnsPojo);
+        setAnswerData(data?.customerQueAnsPojo);
         setShowPostQandA(true);
-      } else if (page !== 0 && data.customerQueAnsPojo?.length) {
+      } else if (page !== 0 && data?.customerQueAnsPojo?.length) {
         setShowPostQandA(true);
-        setAnswerData((prev) => [...prev, ...data.customerQueAnsPojo]);
+        setAnswerData((prev) => [...prev, ...data?.customerQueAnsPojo]);
         setPageNumber((pre) => pre + 1);
       }
     } else if (err) {
@@ -161,6 +161,7 @@ const FAQPage = ({
       };
       const { data, err } = await postQuestions(payload);
       if (data) {
+        toastify(data.message, "success");
         getProductQandAData(0);
         setQuestionData("");
         setShowQuestionPage(false);
@@ -529,7 +530,7 @@ const FAQPage = ({
             />
             <Typography className="h-5">
               Your question might be answered by suppliers, Re-sellers, or
-              customers who boght this product.
+              customers who bought this product.
             </Typography>
           </Box>
         </ModalComponent>

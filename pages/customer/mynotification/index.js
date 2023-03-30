@@ -181,8 +181,11 @@ const MyNotification = () => {
   const [dateState, setdateState] = useState({ fromDate: "", toDate: "" });
   const [ProductDate, setProductDate] = useState({ fromDate: "", toDate: "" });
   const [pageNumber, setpageNumber] = useState(0);
+
   const [pageNumberProduct, setpageNumberProduct] = useState(0);
+
   const [value, setValue] = useState(0);
+
   const [openEdit, setopenEdit] = useState({
     open: false,
     qid: "",
@@ -202,8 +205,8 @@ const MyNotification = () => {
     if (ele === "Delete") {
       const { message, errRes } = await deleteQuary(id);
       if (message) {
-        getMyQueriesTableData(0);
         toastify(message, "success");
+        getMyQueriesTableData(0);
       } else if (errRes) {
         toastify(errRes.message, "error");
       }
@@ -406,10 +409,18 @@ const MyNotification = () => {
     }
   };
   useEffect(() => {
-    getMyQueriesTableData(0);
+    if (value == 0) {
+      getMyQueriesTableData(0);
+      setpageNumber(0);
+      setpageNumberProduct(0);
+    }
   }, [value]);
   // product query
-  const getProductData = async (page = pageNumber, keyword = "", dates) => {
+  const getProductData = async (
+    page = pageNumberProduct,
+    keyword = "",
+    dates
+  ) => {
     const payload = {
       createdBy: storeDetails.userId,
       keyword,
@@ -438,7 +449,11 @@ const MyNotification = () => {
     }
   };
   useEffect(() => {
-    getProductData();
+    if (value == 1) {
+      getProductData();
+      setpageNumber(0);
+      setpageNumberProduct(0);
+    }
   }, [value]);
   const replyMsgCloseIcon = () => {
     setopenEdit({ open: false, qid: "", type: "" });
@@ -452,7 +467,7 @@ const MyNotification = () => {
     }
     const payload = {
       questionId: openEdit.qid,
-      userName,
+      userName: userName.replace(" ", "_"),
       answer: productReplyInput,
     };
     const { data, errRes } = await replyProductQuery(payload);
@@ -554,6 +569,7 @@ const MyNotification = () => {
               getMyQueriesTableData(page, searchText, dates);
             }}
             tableRows={myQueriesRows}
+            tabChange={value}
             // tableRows={mapRowsToTable}
           />
         ) : (
@@ -565,6 +581,7 @@ const MyNotification = () => {
             handlePageEnd={(searchText, _, page = pageNumberProduct, dates) => {
               getProductData(page, searchText, dates);
             }}
+            tabChange={value}
           />
         )}
       </Paper>
@@ -572,6 +589,8 @@ const MyNotification = () => {
         openDrawer={openView.open && openView.type === "productview"}
         modalTitle="Questions and Reply"
         onClose={closeDrawer}
+        showCloseIcon
+        closeIconClick={closeDrawer}
       >
         <Grid container spacing={3} className="px-2">
           <Grid xs={12} item className="fs-15 fw-500">
@@ -661,7 +680,8 @@ const MyNotification = () => {
                                       Replied by
                                     </Typography>
                                     &nbsp;
-                                    {item.answerFromType},&nbsp;
+                                    {item.answerFromType.replace("_", " ")}
+                                    ,&nbsp;
                                     <>{item.questionAnsweredAt}</>
                                   </Typography>
                                 </>
@@ -691,7 +711,8 @@ const MyNotification = () => {
                                       Replied by
                                     </Typography>
                                     &nbsp;
-                                    {item.answerFromType},&nbsp;
+                                    {item.answerFromType.replace("_", " ")}
+                                    ,&nbsp;
                                     <>{item.questionAnsweredAt}</>
                                   </Typography>
                                 </>
@@ -711,6 +732,7 @@ const MyNotification = () => {
 
       {openView.open && openView.type === "myview" && (
         <ModalComponent
+          titleClassName="fs-16"
           open={openView.open}
           ModalTitle="View"
           showSaveBtn={false}
@@ -727,7 +749,7 @@ const MyNotification = () => {
       )}
       {openEdit.open && openEdit.type === "edit" && (
         <ModalComponent
-          ModalTitle="Capture question asked by customer here..."
+          ModalTitle="Edit Your Query"
           open={openEdit.open}
           saveBtnText="Update"
           onCloseIconClick={() => editMsgCloseIcon()}

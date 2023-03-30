@@ -46,6 +46,7 @@ const WishList = () => {
     id: "",
     index: 0,
   });
+  const [selectedId, setselectedId] = useState({ id: "", isOpen: false });
   const [wishListNames, setWishListNames] = useState([]);
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
@@ -84,9 +85,11 @@ const WishList = () => {
       wishlistId: selectedList.id,
       keyword: keyword ?? "",
     };
-    const { data } = await fetchProductsFromWishListId(payload);
+    const { data, err } = await fetchProductsFromWishListId(payload);
     if (data) {
       setProducts([...data]);
+    } else if (err) {
+      setProducts([]);
     }
   };
 
@@ -161,6 +164,7 @@ const WishList = () => {
         setNewWishListName("");
         getAllWishLists();
         setEditItem(null);
+        setModalType("Add");
       }
       if (err) {
         toastify(err?.response?.data?.message, "error");
@@ -178,6 +182,8 @@ const WishList = () => {
         id: "",
         index: 0,
       });
+      getProducts();
+      setselectedId({ id: "", isOpen: false });
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -242,7 +248,7 @@ const WishList = () => {
                   {item.title}
                 </Typography>
                 <div className="d-flex">
-                  <Tooltip title="Add to cart">
+                  <Tooltip title="Update Wishlist">
                     <EditIcon
                       className="m-1 shadow cursor-pointer rounded-circle theme_bg_color_1 theme_color"
                       size={30}
@@ -260,7 +266,7 @@ const WishList = () => {
                       }}
                     />
                   </Tooltip>
-                  <Tooltip title="Add to cart">
+                  <Tooltip title="Delete Wishlist">
                     <DeleteIcon
                       className="m-1 shadow cursor-pointer rounded-circle theme_bg_color_1 theme_color"
                       size={30}
@@ -270,7 +276,8 @@ const WishList = () => {
                       }}
                       onClick={() => {
                         //   handleProfileSwitch(item);
-                        deleteList(item.id);
+                        // deleteList(item.id);
+                        setselectedId({ id: item.id, isOpen: true });
                       }}
                     />
                   </Tooltip>
@@ -279,6 +286,27 @@ const WishList = () => {
             </motion.div>
           );
         })}
+        {selectedId.isOpen && (
+          <ModalComponent
+            ModalWidth={200}
+            ModalTitle=""
+            open={selectedId.isOpen}
+            onClearBtnClick={() => {
+              setselectedId({ id: "", isOpen: false });
+            }}
+            ClearBtnText="Cancel"
+            saveBtnText="Confirm"
+            onSaveBtnClick={() => {
+              deleteList(selectedId.id);
+            }}
+            showHeader={false}
+          >
+            <Typography className="fs-14 p-3">
+              Please Click On
+              <span style={{ fontWeight: "bold" }}> Confirm </span> To Delete
+            </Typography>
+          </ModalComponent>
+        )}
         {wishListNames.length < 5 && (
           <Tooltip title="Add Wish List">
             <motion.div
@@ -426,11 +454,15 @@ const WishList = () => {
         </div>
       </Paper>
       <ModalComponent
-        ModalTitle="Create New Wish List"
+        ModalTitle={
+          modalType == "Add" ? "Create New Wish List" : "Update Wishlist"
+        }
         open={showAddNewWishList}
         onCloseIconClick={() => {
           setShowAddNewWishList(false);
           setError(null);
+          setModalType("Add");
+          setNewWishListName("");
         }}
         ClearBtnText="Clear"
         saveBtnText={

@@ -72,7 +72,7 @@ const postQuestions = (payload) => {
   return serviceUtil
     .post(`products/customer-question-answer`, payload)
     .then((res) => {
-      const { data } = res && res.data;
+      const data = res && res.data;
       return { data };
     })
     .catch((err) => ({

@@ -55,7 +55,8 @@ export default function CustomizedAccordions() {
   };
   const getCustomerHelpCenterFunction = async () => {
     const title = "FAQ";
-    const { data, errRes } = await getCustomerHelpCenter(title);
+    const userType = "CUSTOMER";
+    const { data, errRes } = await getCustomerHelpCenter(title, userType);
     if (data) {
       setHelpCenterData(
         data.map((item) => {

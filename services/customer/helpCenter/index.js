@@ -1,8 +1,10 @@
 import serviceUtil from "services/utils";
 
-const getCustomerHelpCenter = (title) => {
+const getCustomerHelpCenter = (title, userType) => {
   return serviceUtil
-    .get(`notification/customer/help-center?helpCenterTitle=${title}`)
+    .get(
+      `notification/customer/help-center?helpCenterTitle=${title}&userType=${userType}`
+    )
     .then((res) => {
       const { data } = res && res.data;
       return { data };

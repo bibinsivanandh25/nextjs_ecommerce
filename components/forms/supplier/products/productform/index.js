@@ -97,6 +97,7 @@ const ProductsLayout = ({
   const { masterProductId } = useSelector(
     (state) => state.product.productDetails
   );
+  const { supplierId } = useSelector((state) => state.user);
   const [longDescModal, setLongDescModal] = useState(false);
   const [shortDescModal, setShortDescModal] = useState(false);
   const [adminViewList, setadminViewList] = useState([
@@ -108,6 +109,7 @@ const ProductsLayout = ({
     { title: "Merged Products", component: <MergedProducts /> },
     { title: "Logs", component: <Logs /> },
   ]);
+
   useEffect(() => {
     if (productDetails?.variationData)
       setadminViewList([
@@ -180,7 +182,7 @@ const ProductsLayout = ({
   // Select Category Api
   const getSelectCategoryData = () => {
     serviceUtil
-      .get("products/main-category/drop-down-list")
+      .get(`products/main-category/drop-down-list-supplier/${userInfo.id}`)
       .then((res) => {
         const { data } = res.data;
         const finaData = [];
@@ -262,9 +264,13 @@ const ProductsLayout = ({
 
   useEffect(() => {
     getTags();
-    getSelectCategoryData();
     getB2BTradmarkValues("B2B_INVOICE");
   }, []);
+  useEffect(() => {
+    if (supplierId) {
+      getSelectCategoryData();
+    }
+  }, [supplierId]);
   useMemo(() => {
     if (formData?.mainForm?.category?.value) {
       getSets();
@@ -641,7 +647,7 @@ const ProductsLayout = ({
       otherInformation:
         Object.keys(otherInformation)[0] === "" ? {} : otherInformation,
       zoneChargeInfo: {},
-      countryOfOrigin: formData.variation.countryOfOrigin,
+      countryOfOrigin: formData.variation.countryOfOrigin?.value ?? "",
       expiryDate: formData.variation.expiryDate
         ? format(new Date(formData.variation.expiryDate), "MM-dd-yyyy HH:mm:ss")
         : null,

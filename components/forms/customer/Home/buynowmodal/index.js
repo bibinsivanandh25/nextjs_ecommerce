@@ -657,7 +657,7 @@ const DeliveryOptionsModal = ({
           </Box>
           <Box className="mb-2">
             <ButtonComponent
-              label="Add to Cart"
+              label={modalType === "ADD" ? "Add to Cart" : "Update Cart"}
               muiProps="color-black me-3 border-black"
               variant="outlined"
               onBtnClick={() => {
