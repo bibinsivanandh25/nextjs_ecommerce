@@ -248,7 +248,13 @@ const AddGroupProducts = () => {
                           className="h-4 word-break mnh-100 mxh-100"
                           component="div"
                         >
-                          {parentDetails.description}
+                          <div
+                            // eslint-disable-next-line react/no-danger
+                            dangerouslySetInnerHTML={{
+                              __html: parentDetails.description,
+                            }}
+                          />
+                          {/* {parentDetails.description} */}
                         </Typography>
                       </div>
                     </div>

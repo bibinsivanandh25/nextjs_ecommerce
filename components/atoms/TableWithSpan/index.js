@@ -22,6 +22,7 @@ import CheckBoxComponent from "../CheckboxComponent";
 import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
 import PaginationComponent from "../AdminPagination";
+import { format } from "date-fns";
 
 const useStyles = makeStyles({
   stickyCol: {
@@ -210,8 +211,8 @@ export default function TableComponent({
   //   id: "0",
   //   value: "All",
   // });
-  const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
+  const [dateValue, setDateValue] = useState({ from: "", to: "" });
   useEffect(() => {
     setPage(0);
   }, [tabChange]);
@@ -236,7 +237,7 @@ export default function TableComponent({
 
   useEffect(() => {
     if (searchText === "") setRows(tableRows);
-  }, [searchText, tableRows]);
+  }, [searchText, tableRows, dateFilterColName]);
 
   // useEffect(() => {
   //   const temp = columns.filter((item) => {
@@ -290,7 +291,7 @@ export default function TableComponent({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    handlePageEnd(0);
+    handlePageEnd(page, searchText, dateValue);
     setRowsPerPage(+event.target.value);
     setPage(0);
     handleRowsPerPageChange(0);
@@ -346,7 +347,7 @@ export default function TableComponent({
     } else {
       setRows(tableRows);
     }
-  }, [dateValue, tableRows, dateFilterColName]);
+  }, [dateValue, tableRows]);
 
   const getDateFilter = () => {
     return (
@@ -365,6 +366,7 @@ export default function TableComponent({
           onChange={(e) => {
             setDateValue((prev) => ({
               ...prev,
+              // from: `${e.target.value} 00:00:00`,
               from: e.target.value,
             }));
           }}
@@ -399,12 +401,37 @@ export default function TableComponent({
           onChange={(e) => {
             setsearchText(e.target.value);
             // handleSearch();
+            // if (searchText !== "") {
+            //   // handlePageEnd(page, e.target.value, "");
+
+            //   const search = setTimeout(() => {
+            //     handlePageEnd(page, e.target.value, "");
+            //   }, 1000);
+            //   return () => clearTimeout(search);
+            // }
           }}
         />
       </Grid>
     );
   };
-
+  useEffect(() => {
+    let formatFromDate = "";
+    let formatToDate = "";
+    if (dateValue.from !== "" && dateValue.to !== "") {
+      formatFromDate = `${format(
+        new Date(dateValue.from),
+        "MM-dd-yyyy"
+      )} 00:00:00`;
+      formatToDate = `${format(new Date(dateValue.to), "MM-dd-yyyy")} 00:00:00`;
+      const search = setTimeout(() => {
+        handlePageEnd(page, searchText, {
+          from: formatFromDate,
+          to: formatToDate,
+        });
+      }, 1000);
+      return () => clearTimeout(search);
+    }
+  }, [searchText, dateValue.from && dateValue.to]);
   const classes = useStyles();
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";

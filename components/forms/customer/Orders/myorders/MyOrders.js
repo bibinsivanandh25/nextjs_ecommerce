@@ -207,7 +207,7 @@ const MyOrders = ({
             return (
               <Box
                 className="d-flex justify-content-between px-2 "
-                key={product.id}
+                key={product.orderId}
               >
                 {/* <ReusableProduct product={product}> */}
                 <Box

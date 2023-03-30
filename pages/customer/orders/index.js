@@ -159,6 +159,7 @@ const Orders = () => {
     };
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
+      console.log(data.data, "&&&&&&&&&&&&&&&&&&");
       const temp = [];
       data.data.forEach((item) => {
         temp.push({
@@ -183,6 +184,7 @@ const Orders = () => {
           error: false,
         });
       });
+
       setProducts([...temp]);
     } else if (errRes) {
       toastify(errRes?.response?.data?.message, "error");
