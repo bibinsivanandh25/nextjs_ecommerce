@@ -18,20 +18,6 @@ import { useSelector } from "react-redux";
 import { format, parse } from "date-fns";
 import validateMessage from "constants/validateMessages";
 
-const flagSchema = {
-  flagTitle: "",
-  imageUrl: "",
-  startDate: "",
-  endDate: "",
-  variationList: [],
-  discount: null,
-  supplierStoreId: "",
-  flagId: "",
-  supplierId: "",
-  userType: "SUPPLIER",
-  purchaseId: null,
-};
-
 const AddFlag = ({
   openModal,
   setOpenModal = () => {},
@@ -40,7 +26,7 @@ const AddFlag = ({
 }) => {
   const [flagsList, setFlagsList] = useState([]);
   const [flagUrlList, setflagUrlList] = useState([]);
-  const { storeCode, supplierId } = useSelector((state) => state.user);
+  const { storeCode } = useSelector((state) => state.user);
   const [disableFlagField, setdisableFlagField] = useState(false);
   const [flagTitle, setflagTitle] = useState({});
   const flagSchema = {
@@ -65,9 +51,6 @@ const AddFlag = ({
     startDate: "",
     endDate: "",
   });
-  const handleClearBtnClick = () => {
-    setOpenModal(false);
-  };
 
   const validate = () => {
     let flag = false;
@@ -82,23 +65,23 @@ const AddFlag = ({
       flag = true;
       err.flagTitle = validateMessage.field_required;
     }
-    if (flagTitle.label === "Deal Of The Day" && formData.discount === "") {
+    if (flagTitle.label === "Deal Of The Day" && flagFormData.discount === "") {
       flag = true;
       err.discount = validateMessage.field_required;
     }
-    if (formData.startDate === "") {
+    if (flagFormData.startDate === "") {
       flag = true;
       err.startDate = validateMessage.field_required;
     }
-    if (formData.endDate === "") {
+    if (flagFormData.endDate === "") {
       flag = true;
       err.endDate = validateMessage.field_required;
     }
 
     if (
-      formData.startDate !== "" &&
-      formData.endDate !== "" &&
-      formData.startDate > formData.endDate
+      flagFormData.startDate !== "" &&
+      flagFormData.endDate !== "" &&
+      flagFormData.startDate > flagFormData.endDate
     ) {
       err.endDate = "End date should be more than start date";
     }
@@ -111,43 +94,6 @@ const AddFlag = ({
       flag = true;
     }
     return { err, flag };
-  };
-
-  const handleSubmit = async () => {
-    const { err, flag } = validate();
-    setErrObj(err);
-    if (!flag) {
-      const { data, err } = await addProductFlag({
-        ...formData,
-        flagId: flagTitle.value,
-        flagTitle: flagTitle.label,
-        imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
-      });
-      if (data) {
-        toastify(data.message, "success");
-        getMycollectionData(0);
-        setOpenModal(false);
-        setflagUrlList([]);
-      } else if (err) {
-        toastify(err?.response?.data?.message, "error");
-      }
-    }
-  };
-
-  const handleChanges = (val, name) => {
-    if (name === "flagTitle") {
-      setFormData((pre) => ({
-        ...pre,
-        [name]: val,
-        purchaseId: val.purchaseId,
-        discount: null,
-      }));
-      return;
-    }
-    setFormData((pre) => ({
-      ...pre,
-      [name]: val,
-    }));
   };
 
   const getflagList = async () => {
@@ -186,7 +132,7 @@ const AddFlag = ({
       storeCode
     );
     if (data) {
-      setFlagTitle(JSON.parse(JSON.stringify(val)));
+      setflagTitle(JSON.parse(JSON.stringify(val)));
 
       if (data?.data) {
         const temp = val?.flagImagePojos?.map((item) => {
@@ -253,95 +199,30 @@ const AddFlag = ({
   };
 
   const flagSubmit = async () => {
-    if (!flagUrlList.filter((item) => item.checked).length) {
-      toastify("please select the flag", "error");
-      return;
-    }
-    const { data, err } = await addProductFlag({
-      ...flagFormData,
-      imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
-      visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
-        .visibilityPlace,
-      imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
-      // FlagListData.flagImagePojos.map((val)=>{})
-    });
-    if (data) {
-      toastify(data.message, "success");
-      setOpenModal(false);
-      setFlagFormData({ ...flagSchema });
-      setdisableFlagField(false);
-      setflagUrlList([]);
-      setFlagTitle([]);
-      getMycollectionData(0);
-    } else if (err) {
-      toastify(err?.response?.data?.message, "error");
+    const { err, flag } = validate();
+    setErrObj(err);
+    if (!flag) {
+      const { data, err } = await addProductFlag({
+        ...flagFormData,
+        imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
+        visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
+          .visibilityPlace,
+        imageId: flagUrlList.filter((item) => item.checked)[0].url.flagImageId,
+        // FlagListData.flagImagePojos.map((val)=>{})
+      });
+      if (data) {
+        toastify(data.message, "success");
+        setOpenModal(false);
+        setFlagFormData({ ...flagSchema });
+        setdisableFlagField(false);
+        setflagUrlList([]);
+        setflagTitle({});
+        getMycollectionData(0);
+      } else if (err) {
+        toastify(err?.response?.data?.message, "error");
+      }
     }
   };
-
-  // const getFlagDetails = async (val) => {
-  //   if (!val) {
-  //     return;
-  //   }
-  //   const { data, err } = await getFlagById(
-  //     val.value,
-  //     val.purchaseId,
-  //     storeCode
-  //   );
-  //   if (data) {
-  //     if (data?.data) {
-  //       const temp = val?.flagImagePojos?.map((item) => {
-  //         return {
-  //           checked: data?.data?.imageId == item?.flagImageId,
-  //           url: item,
-  //           label: <Image src={item?.imageUrl} width={400} height={50} />,
-  //         };
-  //       });
-  //       setflagUrlList(temp);
-  //       setdisableFlagField(true);
-  //       setFormData((pre) => ({
-  //         ...pre,
-  //         flagId: val.value,
-  //         flagTitle: val.label,
-  //         imageUrl: data.data.imageUrl,
-  //         imageId: data.data.imageId,
-  //         supplierId,
-  //         supplierStoreId: storeCode,
-  //         purchaseId: val.purchaseId,
-  //         variationList: [...data.data.variationList, pre.variationList],
-  //         startDate: data.data.startDate,
-  //         endDate: data.data.endDate,
-  //         discount: data.data.discount,
-  //         visibilityPlace: data.data.visibilityPlace,
-  //       }));
-  //     } else {
-  //       const temp = val?.flagImagePojos?.map((item) => {
-  //         return {
-  //           checked: false,
-  //           url: item,
-  //           label: <Image src={item?.imageUrl} width={400} height={50} />,
-  //         };
-  //       });
-  //       setflagUrlList(temp);
-  //       setdisableFlagField(false);
-  //       setFormData((pre) => ({
-  //         ...pre,
-  //         flagId: val.value,
-  //         flagTitle: val.label,
-  //         imageUrl: "",
-  //         imageId: "",
-  //         visibilityPlace: "",
-  //         supplierId,
-  //         supplierStoreId: storeCode,
-  //         purchaseId: val.purchaseId,
-  //         startDate: null,
-  //         endDate: null,
-  //         discount: "",
-  //       }));
-  //     }
-  //   } else if (err) {
-  //     toastify(err?.response?.data?.message, "error");
-  //   }
-  // };
 
   return (
     <ModalComponent
@@ -349,7 +230,7 @@ const AddFlag = ({
         setOpenModal(false);
         setFlagFormData({ ...flagSchema });
         setflagUrlList([]);
-        setFlagTitle([]);
+        setflagTitle({});
       }}
       open={openModal}
       ModalTitle="Add Flag"
@@ -362,7 +243,7 @@ const AddFlag = ({
 
         setFlagFormData({ ...flagSchema });
         setflagUrlList([]);
-        setFlagTitle([]);
+        setflagTitle({});
       }}
       onSaveBtnClick={flagSubmit}
     >
@@ -419,6 +300,12 @@ const AddFlag = ({
             disabled={disableFlagField}
             helperText={errObj.startDate}
             error={errObj.startDate !== ""}
+            onDateChange={(date) => {
+              setFlagFormData((pre) => ({
+                ...pre,
+                startDate: format(date, "MM-dd-yyyy HH:mm:ss"),
+              }));
+            }}
           />
         </Grid>
         <Grid item sm={6}>
@@ -434,6 +321,12 @@ const AddFlag = ({
             disabled={disableFlagField}
             helperText={errObj.endDate}
             error={errObj.endDate !== ""}
+            onDateChange={(date) => {
+              setFlagFormData((pre) => ({
+                ...pre,
+                endDate: format(date, "MM-dd-yyyy HH:mm:ss"),
+              }));
+            }}
           />
         </Grid>
         <Grid item sm={12} container>
