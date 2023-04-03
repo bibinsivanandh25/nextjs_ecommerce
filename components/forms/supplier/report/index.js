@@ -214,6 +214,7 @@ const ReportLayout = ({
     });
     exceldownload(copyRowData, "Order_Summary");
   };
+  // const formatter = Intl.NumberFormat("en", { notation: "compact" });
 
   const getCardDetails = () => {
     return cardDetails?.map((ele, ind) => {
@@ -241,7 +242,14 @@ const ReportLayout = ({
               }}
             >
               <Grid className="fs-12 text-break">{ele.label}</Grid>
-              <Grid className="fs-2 text-break">{ele.value}</Grid>
+              <Grid className="fs-2 text-break">
+                {/* {formatter.format(Number(ele?.value))} */}
+                {Number(ele?.value).toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                  style: "currency",
+                  currency: "INR",
+                })}
+              </Grid>
             </Paper>
           </Grid>
         </>

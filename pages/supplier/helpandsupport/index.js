@@ -146,16 +146,18 @@ const HelpAndSupport = () => {
         ),
         col9: (
           <Grid container>
-            <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
-              <CustomIcon
-                type="close"
-                title="Close Ticket"
-                onIconClick={() => {
-                  handleTicketCloseClick(row);
-                }}
-                className="fs-18 me-2 fit-content"
-              />
-            </Grid>
+            {selectTab == "tab1" ? (
+              <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
+                <CustomIcon
+                  type="close"
+                  title="Close Ticket"
+                  onIconClick={() => {
+                    handleTicketCloseClick(row);
+                  }}
+                  className="fs-18 me-2 fit-content"
+                />
+              </Grid>
+            ) : null}
             <Grid item xs={4} sx={{ px: 0, mx: 0 }}>
               <CustomIcon
                 type="view"
