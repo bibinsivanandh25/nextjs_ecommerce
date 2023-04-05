@@ -16,13 +16,13 @@ import TableRow from "@mui/material/TableRow";
 import { Grid } from "@mui/material";
 // import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
+import { format } from "date-fns";
 import CheckBoxComponent from "../CheckboxComponent";
 // import SimpleDropdownComponent from "../SimpleDropdownComponent";
 // import InputBox from "../InputBoxComponent";
 import styles from "./TableComponent.module.css";
 import ButtonComponent from "../ButtonComponent";
 import PaginationComponent from "../AdminPagination";
-import { format } from "date-fns";
 
 const useStyles = makeStyles({
   stickyCol: {
@@ -236,7 +236,9 @@ export default function TableComponent({
   }, [tableRows]);
 
   useEffect(() => {
-    if (searchText === "") setRows(tableRows);
+    if (searchText === "") {
+      setRows(tableRows);
+    }
   }, [searchText, tableRows, dateFilterColName]);
 
   // useEffect(() => {
@@ -417,20 +419,21 @@ export default function TableComponent({
   useEffect(() => {
     let formatFromDate = "";
     let formatToDate = "";
+
     if (dateValue.from !== "" && dateValue.to !== "") {
       formatFromDate = `${format(
         new Date(dateValue.from),
         "MM-dd-yyyy"
       )} 00:00:00`;
       formatToDate = `${format(new Date(dateValue.to), "MM-dd-yyyy")} 00:00:00`;
-      const search = setTimeout(() => {
-        handlePageEnd(page, searchText, {
-          from: formatFromDate,
-          to: formatToDate,
-        });
-      }, 1000);
-      return () => clearTimeout(search);
     }
+    const search = setTimeout(() => {
+      handlePageEnd(page, searchText, {
+        from: formatFromDate,
+        to: formatToDate,
+      });
+    }, 1000);
+    return () => clearTimeout(search);
   }, [searchText, dateValue.from && dateValue.to]);
   const classes = useStyles();
   const getStickyClass = (position, index) => {

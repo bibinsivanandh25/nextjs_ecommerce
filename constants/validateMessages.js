@@ -28,5 +28,7 @@ const validateMessage = {
   brforeDate: "Selected date should be before current date",
   samePassword: "Password should same as new password",
   validPincode: "Enter a valid pincode",
+  selectImage: "Select an image file",
+  selectOption: "Select an option",
 };
 export default validateMessage;

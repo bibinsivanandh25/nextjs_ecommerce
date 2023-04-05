@@ -6,29 +6,30 @@ import DatePickerComponent from "@/atoms/DatePickerComponent";
 import InputBox from "@/atoms/InputBoxComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
-import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import MultiselectWithPagination from "@/atoms/MultiselectWithPagination";
-import MultiSelectWithPagination from "@/atoms/MultiselectWithPagination";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import TableComponent from "@/atoms/TableWithSpan";
 import TextEditor from "@/atoms/TextEditor";
 import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
 // import { styles } from "@material-ui/pickers/views/Clock/Clock";
 // import TableComponent from "@/atoms/TableComponent";
-import { Grid, Paper, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, Grid, Paper, Typography } from "@mui/material";
+import validateMessage from "constants/validateMessages";
 import { format } from "date-fns";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import Image from "next/image";
+import React, { useRef, useState, useEffect } from "react";
 import {
   createNotificationApiCall,
   deleteNotificationApiCall,
   getAllNotification,
   getNotificationById,
   getSupplierDropdown,
+  updateNotification,
   viewNotificationApiCall,
 } from "services/admin/notification";
+import { uploadSubCategoryImage } from "services/admin/products/productCategories/subcategory";
 import CustomIcon from "services/iconUtils";
+import { getBase64 } from "services/utils/functionUtils";
 import toastify from "services/utils/toastUtils";
 
 const column1 = [
@@ -38,7 +39,8 @@ const column1 = [
     align: "center",
     data_align: "center",
     data_classname: "",
-    rowSpan: 2,
+    rowSpan: 3,
+    minWidth: 200,
   },
   {
     id: "col2",
@@ -50,26 +52,19 @@ const column1 = [
   },
   {
     id: "col3",
-    label: "Reseller",
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-    rowSpan: 2,
-  },
-  {
-    id: "col4",
     label: "Supplier",
     align: "center",
     data_align: "center",
     data_classname: "",
     rowSpan: 2,
   },
+
   {
     label: "Notification Status",
     align: "center",
     data_align: "center",
     data_classname: "",
-    colSpan: 3,
+    colSpan: 2,
     minWidth: 120,
   },
   {
@@ -77,7 +72,7 @@ const column1 = [
     align: "center",
     data_align: "center",
     data_classname: "",
-    colSpan: 3,
+    colSpan: 2,
     minWidth: 120,
   },
   {
@@ -85,11 +80,11 @@ const column1 = [
     align: "center",
     data_align: "center",
     data_classname: "",
-    colSpan: 3,
+    colSpan: 2,
     minWidth: 120,
   },
   {
-    id: "col14",
+    id: "col10",
     label: "Created Date & Time",
     minWidth: 120,
     align: "center",
@@ -98,7 +93,7 @@ const column1 = [
     rowSpan: 2,
   },
   {
-    id: "col15",
+    id: "col11",
     label: "Schedule Date & Time",
     minWidth: 120,
     align: "center",
@@ -107,7 +102,7 @@ const column1 = [
     rowSpan: 2,
   },
   {
-    id: "col16",
+    id: "col12",
     label: "Action",
     minWidth: 100,
     align: "center",
@@ -119,19 +114,27 @@ const column1 = [
 
 const column2 = [
   {
-    id: "col5",
+    id: "col4",
     label: "C",
+    align: "center",
+    data_align: "center",
+  },
+
+  {
+    id: "col5",
+    label: "S",
     align: "center",
     data_align: "center",
     data_classname: "",
   },
   {
     id: "col6",
-    label: "R",
+    label: "C",
     align: "center",
     data_align: "center",
     data_classname: "",
   },
+
   {
     id: "col7",
     label: "S",
@@ -146,58 +149,17 @@ const column2 = [
     data_align: "center",
     data_classname: "",
   },
+
   {
     id: "col9",
-    label: "R",
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col10",
-    label: "S",
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col11",
-    label: "C",
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col12",
-    label: "R",
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col13",
     label: "S",
     align: "center",
     data_align: "center",
     data_classname: "",
   },
 ];
-const customerList = [
-  {
-    id: "CST0922000010",
-    title: "Suhil",
-  },
-  {
-    id: "CST0123000114",
-    title: "Suhil",
-  },
-  {
-    id: "CST1222000052",
-    title: "Tanmoy sen",
-  },
-];
+
 const Notifications = () => {
-  //create related states
   const [createNotification, setcreateNotification] = useState({
     notificationTitle: "",
     textContent: "",
@@ -207,40 +169,58 @@ const Notifications = () => {
     notificationScheduledAtTime: "",
     userNotificationInfoList: [],
   });
+  const [errorCreateNotification, seterrorCreateNotification] = useState({
+    notificationTitle: "",
+    textContent: "",
+    attachmentFile: "",
+    notificationType: "",
+    notificationScheduledAtDate: "",
+    notificationScheduledAtTime: "",
+    userNotificationInfoList: "",
+    userCheckboxType: "",
+    notificationCheckboxType: "",
+    contentRadioType: "",
+    userDropdown: "",
+  });
   const [showCreate, setshowCreate] = useState(false);
   const [modalType, setmodalType] = useState({ type: "" });
   const [selectedCustomers, setselectedCustomers] = useState([]);
   const [selectedSupplier, setselectedSupplier] = useState([]);
-
   const [selectAllCustomer, setselectAllCustomer] = useState(false);
   const [selectAllSupplier, setselectAllSupplier] = useState(false);
   const [showSchedule, setshowSchedule] = useState(false);
   const [contentType, setcontentType] = useState("");
   const [pageNumberState, setpageNumberState] = useState(0);
+  const [supplierPage, setsupplierPage] = useState(0);
+  const [imageState, setimageState] = useState(null);
   const [sendMessageToType, setsendMessageToType] = useState({
     customer: "",
     reseller: "",
     supplier: "",
   });
-  //get and view notification related state
   const [showView, setshowView] = useState(false);
   const [viewNotificationData, setviewNotificationData] = useState({});
   const [notificationDetails, setnotificationDetails] = useState([]);
   const [tablePageNumber, settablePageNumber] = useState(0);
   const [supplierDropdownVal, setsupplierDropdownVal] = useState([]);
   const [customerDropdownData, setcustomerDropdownData] = useState([]);
-  //update related state
+  const [customerDropdownTemp, setcustomerDropdownTemp] = useState([]);
+  const [supplierDropdownTemp, setsupplierDropdownTemp] = useState([]);
+  const [userId, setuserId] = useState("");
+  const profilePicRef = useRef();
 
   const getSupplierDropdownFun = async (page = pageNumberState) => {
     const payload = {
       userType: "Customer",
       searchKey: "",
-      pageNumber: page,
+      pageCount: page,
       pageSize: 10,
     };
+
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
-      const temp = [];
+      const temp = [...customerDropdownData];
+      setcustomerDropdownTemp(data?.data);
       data.data.forEach((val) => {
         temp.push({
           userId: val?.userId,
@@ -256,23 +236,19 @@ const Notifications = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  useEffect(() => {
-    if (showCreate) {
-      getSupplierDropdownFun();
-      getSupplierDropdownFunction();
-    }
-  }, [showCreate]);
-  const getSupplierDropdownFunction = async () => {
+
+  const getSupplierDropdownFunction = async (page = supplierPage) => {
     const payload = {
       userType: "Supplier",
       searchKey: "",
-      pageNumber: 0,
+      pageCount: page,
       pageSize: 10,
     };
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
       // console.log(data, "datadata");
-      const temp = [];
+      const temp = [...supplierDropdownVal];
+      setsupplierDropdownTemp(data?.data);
       data.data.forEach((val) => {
         temp.push({
           userId: val?.userId,
@@ -290,8 +266,45 @@ const Notifications = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
-  const createNotificationFunction = async () => {
+  useEffect(() => {
+    if (showCreate) {
+      getSupplierDropdownFun();
+      getSupplierDropdownFunction();
+    }
+  }, [showCreate]);
+  const closeModalFunction = () => {
+    setcreateNotification({
+      notificationTitle: "",
+      textContent: "",
+      attachmentFile: [],
+      notificationType: [],
+      notificationScheduledAtDate: "",
+      notificationScheduledAtTime: "",
+      userNotificationInfoList: [],
+    });
+    setuserId("");
+    setselectAllSupplier(false);
+    setselectAllCustomer(false);
+    setselectedSupplier([]);
+    setselectedCustomers([]);
+    setshowSchedule(false);
+    setcontentType("");
+    setsendMessageToType({
+      customer: "",
+      reseller: "",
+      supplier: "",
+    });
+    setmodalType({ type: "" });
+    setshowCreate(false);
+  };
+  const updateNotificationFunction = async () => {
+    let updateDate = `${createNotification.notificationScheduledAtDate} ${createNotification.notificationScheduledAtTime}`;
+    if (!createNotification?.notificationScheduledAtDate.length) {
+      updateDate = `${format(
+        new Date(createNotification?.notificationScheduledAtDate),
+        "MM-dd-yyyy"
+      )} ${createNotification?.notificationScheduledAtTime}:00`;
+    }
     const userNotificationInfoList = [
       ...selectedCustomers,
       ...selectedSupplier,
@@ -299,58 +312,243 @@ const Notifications = () => {
     userNotificationInfoList.forEach((ele) => {
       delete ele.isSelected;
     });
-    let dateTime = "";
-    if (
-      createNotification?.notificationScheduledAtDate !== "" &&
-      createNotification?.notificationScheduledAtTime !== ""
-    ) {
-      dateTime = `${format(
-        new Date(createNotification?.notificationScheduledAtDate),
-        "MM-dd-yyyy"
-      )} ${createNotification?.notificationScheduledAtTime}:00`;
-    }
-
-    // console.log(dateTime, "dateTime");
     const payload = {
+      notificationDetailsId: userId,
       isSupplierSelectedAll: selectAllSupplier,
       isCustomerSelectedAll: selectAllCustomer,
       notificationTitle: createNotification.notificationTitle,
       textContent: createNotification.textContent,
-      attachmentFile: [],
+      attachmentFile: createNotification.attachmentFile,
       notificationType: createNotification.notificationType,
       userNotificationInfoList,
-      notificationScheduledAt: dateTime,
+      notificationScheduledAt: updateDate,
     };
-    const { data, err } = await createNotificationApiCall(payload);
+    const { data, err } = await updateNotification(payload);
     if (data) {
       toastify(data.message, "success");
-      setshowCreate(false);
-      setmodalType({ type: "" });
-      getAllNotificationFunction(0, "", { from: "", to: "" });
-      setcreateNotification({
-        notificationTitle: "",
-        textContent: "",
-        attachmentFile: [],
-        notificationType: [],
-        notificationScheduledAtDate: "",
-        notificationScheduledAtTime: "",
-        userNotificationInfoList: [],
-      });
-      setselectAllSupplier(false);
-      setselectAllCustomer(false);
-      setselectedSupplier([]);
-      setselectedCustomers([]);
-      setshowSchedule(false);
-      setcontentType("onlyAttachment");
-      setsendMessageToType({
-        customer: "",
-        reseller: "",
-        supplier: "",
-      });
-      settablePageNumber(tablePageNumber + 1);
+      closeModalFunction();
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
+  };
+  const modalValidation = () => {
+    const tempErr = {
+      notificationTitle: "",
+      textContent: "",
+      attachmentFile: "",
+      notificationType: "",
+      notificationScheduledAtDate: "",
+      notificationScheduledAtTime: "",
+      userNotificationInfoList: "",
+      userCheckboxType: "",
+      notificationCheckboxType: "",
+      contentRadioType: "",
+      userDropdown: "",
+    };
+    let flag = false;
+    if (
+      !sendMessageToType.customer.length &&
+      !sendMessageToType.supplier.length
+    ) {
+      tempErr.userCheckboxType = validateMessage.selectOption;
+      flag = true;
+    }
+    if (!contentType?.length) {
+      tempErr.contentRadioType = validateMessage.selectOption;
+      flag = true;
+    }
+
+    if (createNotification.notificationType.length < 1) {
+      tempErr.notificationCheckboxType = validateMessage.selectOption;
+      flag = true;
+    }
+    if (
+      createNotification.notificationType.includes("email") ||
+      createNotification.notificationType.includes("pushNotification")
+    ) {
+      if (!createNotification.notificationTitle.length) {
+        tempErr.notificationTitle = validateMessage.field_required;
+        flag = true;
+      }
+    }
+    if (contentType === "text" || contentType === "textWithAttachment") {
+      if (!createNotification.textContent.length) {
+        tempErr.textContent = validateMessage.field_required;
+        flag = true;
+      }
+    }
+    if (
+      contentType === "onlyAttachment" ||
+      contentType === "textWithAttachment"
+    ) {
+      if (!createNotification.attachmentFile.length) {
+        tempErr.attachmentFile = validateMessage.selectImage;
+        flag = true;
+      }
+    }
+    if (sendMessageToType.customer || sendMessageToType.supplier) {
+      if (!selectedCustomers.length && !selectedSupplier.length) {
+        tempErr.userDropdown = validateMessage.selectOption;
+        flag = true;
+      }
+    }
+
+    seterrorCreateNotification(tempErr);
+    return flag;
+  };
+  const viewNotificationFunction = async (id) => {
+    const { data, err } = await viewNotificationApiCall(id);
+    if (data) {
+      setviewNotificationData(data.data);
+      setshowView(true);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const deleteNotificationFunction = async (id) => {
+    const { data, err } = await deleteNotificationApiCall(id);
+    if (data) {
+      toastify(data.data, "success");
+      // eslint-disable-next-line no-use-before-define
+      getAllNotificationFunction();
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const getNotificationByIdFunction = async (id) => {
+    const { data, err } = await getNotificationById(id);
+    if (data) {
+      const tempCustomer = data.data.userNotificationInfoList.some(
+        (x) => x.userType == "CUSTOMER"
+      );
+      const tempSupplier = data.data.userNotificationInfoList.some(
+        (x) => x.userType == "SUPPLIER"
+      );
+      if (tempCustomer) {
+        setsendMessageToType((pre) => ({ ...pre, customer: "customer" }));
+      }
+      if (tempSupplier) {
+        setsendMessageToType((pre) => ({ ...pre, supplier: "supplier" }));
+      }
+      const tempcustomer = [];
+      data.data.userNotificationInfoList.forEach((val) => {
+        if (val.userType == "CUSTOMER") {
+          tempcustomer.push({
+            isSelected: true,
+            userEmail: val.userEmail,
+            userId: val.userId,
+            userMobileNumber: val.userMobileNumber,
+            userName: val.userName,
+            userType: val.userType,
+          });
+        }
+      });
+      setselectedCustomers([...tempcustomer]);
+      const tempsupplier = [];
+      data.data.userNotificationInfoList.forEach((val) => {
+        if (val.userType == "SUPPLIER") {
+          tempsupplier.push({
+            isSelected: true,
+            userEmail: val.userEmail,
+            userId: val.userId,
+            userMobileNumber: val.userMobileNumber,
+            userName: val.userName,
+            userType: val.userType,
+          });
+        }
+      });
+      setselectedSupplier([...tempsupplier]);
+      // setselectedCustomers({ ...selectededitCustomer });
+      // tempSupplier = data.data.userNotificationInfoList.filter((val) => {
+      //   if (val.userType == "Supplier") {
+      //     return val;
+      //   }
+      // });
+      setcreateNotification({
+        notificationTitle: data.data.notificationTitle,
+        textContent: data.data.textContent,
+        notificationType: data.data?.notificationType,
+        attachmentFile: data.data.attachmentFile || [],
+        notificationScheduledAtTime:
+          data.data.notificationScheduledAt.split(" ")[1],
+        notificationScheduledAtDate:
+          data.data.notificationScheduledAt.split(" ")[0],
+      });
+      if (data.data.attachmentFile.length > 0) {
+        setcontentType("onlyAttachment");
+      } else if (data.data.textContent.length > 0) {
+        setcontentType("text");
+      } else if (
+        data.data.textContent.length > 0 &&
+        data.data.attachmentFile.length > 0
+      ) {
+        setcontentType("textWithAttachment");
+      } else {
+        setcontentType("");
+      }
+      if (data.data.notificationScheduledAt.length) {
+        setshowSchedule(true);
+      } else {
+        setshowSchedule(false);
+      }
+      // setselectedCustomers(tempCustomer);
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  const mapStateToRow = (data) => {
+    const temp = [];
+    data.forEach((item) => {
+      temp.push({
+        col1: item.notificationTitle,
+        col2: item.customerCount,
+        col3: item.supplierCount,
+        col4: item.customerNotificationSentStatus,
+        col5: item.supplierNotificationSentStatus,
+        col6: item.customerMailSentStatus,
+        col7: item.supplierMailSentStatus,
+        col8: item.customerSmsSentStatus,
+        col9: item.supplierSmsSentStatus,
+        // col3: item.suppllierCount,
+        col10: item.createdDateAndTime,
+        col11: item.scheduledDateAndTime,
+        col12: (
+          <Grid container className="d-flex justify-content-around">
+            {!item.isSend ? (
+              <CustomIcon type="send" className="h-4" />
+            ) : (
+              <Grid style={{ visibility: "hidden" }}>
+                <CustomIcon type="send" className="h-4" />
+              </Grid>
+            )}
+            <CustomIcon
+              type="view"
+              className="h-4"
+              onIconClick={() => {
+                viewNotificationFunction(item.notificationDetailsId);
+              }}
+            />
+            <MenuOption
+              getSelectedItem={(ele) => {
+                // onClickOfMenuItem(ele, row.customerQuestionId);
+                if (ele === "Delete") {
+                  deleteNotificationFunction(item.notificationDetailsId);
+                } else if (ele === "Edit") {
+                  setmodalType({ type: "edit" });
+                  setshowCreate(true);
+                  setuserId(item.notificationDetailsId);
+
+                  getNotificationByIdFunction(item.notificationDetailsId);
+                }
+              }}
+              options={["Edit", "Delete", item.isSend && "Resend"]}
+              IconclassName="color-gray"
+            />
+          </Grid>
+        ),
+      });
+    });
+    return temp;
   };
   const getAllNotificationFunction = async (
     page = tablePageNumber,
@@ -371,120 +569,87 @@ const Notifications = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const createNotificationFunction = async () => {
+    const errorResult = modalValidation();
+    if (!errorResult) {
+      const imageUrl = [];
+      if (createNotification.attachmentFile.length) {
+        const file = new FormData();
+        file.append("media", imageState);
+        const datas = await uploadSubCategoryImage(file);
+        if (datas) {
+          imageUrl.push(datas.data);
+        }
+        // return imageUrl;
+      }
+
+      const userNotificationInfoList = [
+        ...selectedCustomers,
+        ...selectedSupplier,
+      ];
+      userNotificationInfoList.forEach((ele) => {
+        delete ele.isSelected;
+      });
+      let dateTime = "";
+      if (
+        createNotification?.notificationScheduledAtDate !== "" &&
+        createNotification?.notificationScheduledAtTime !== ""
+      ) {
+        dateTime = `${format(
+          new Date(createNotification?.notificationScheduledAtDate),
+          "MM-dd-yyyy"
+        )} ${createNotification?.notificationScheduledAtTime}:00`;
+      }
+
+      // console.log(dateTime, "dateTime");
+
+      const payload = {
+        isSupplierSelectedAll: selectAllSupplier,
+        isCustomerSelectedAll: selectAllCustomer,
+        notificationTitle: createNotification.notificationTitle,
+        textContent: createNotification.textContent,
+        attachmentFile: imageUrl,
+        notificationType: createNotification.notificationType,
+        userNotificationInfoList,
+        notificationScheduledAt: dateTime,
+      };
+      const { data, err } = await createNotificationApiCall(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setshowCreate(false);
+        setmodalType({ type: "" });
+        getAllNotificationFunction(0, "", { from: "", to: "" });
+        setcreateNotification({
+          notificationTitle: "",
+          textContent: "",
+          attachmentFile: [],
+          notificationType: [],
+          notificationScheduledAtDate: "",
+          notificationScheduledAtTime: "",
+          userNotificationInfoList: [],
+        });
+        setselectAllSupplier(false);
+        setselectAllCustomer(false);
+        setselectedSupplier([]);
+        setselectedCustomers([]);
+        setshowSchedule(false);
+        setcontentType("onlyAttachment");
+        setsendMessageToType({
+          customer: "",
+          reseller: "",
+          supplier: "",
+        });
+        settablePageNumber(tablePageNumber + 1);
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    }
+  };
+
   useEffect(() => {
     getAllNotificationFunction();
   }, []);
-  const viewNotificationFunction = async (id) => {
-    const { data, err } = await viewNotificationApiCall(id);
-    if (data) {
-      setviewNotificationData(data.data);
-      setshowView(true);
-    } else if (err) {
-      toastify(err.response.data.message, "error");
-    }
-  };
-  const getNotificationByIdFunction = async (id) => {
-    const { data, err } = await getNotificationById(id);
-    if (data) {
-      const tempCustomer = data.data.userNotificationInfoList.some(
-        (x) => x.userType == "Customer"
-      );
-      const tempSupplier = data.data.userNotificationInfoList.some(
-        (x) => x.userType == "Supplier"
-      );
-      if (tempCustomer) {
-        setsendMessageToType((pre) => ({ ...pre, customer: "customer" }));
-      }
-      if (tempSupplier) {
-        setsendMessageToType((pre) => ({ ...pre, supplier: "supplier" }));
-      }
-      let temp = [];
-      const selectededitCustomer = data.data.userNotificationInfoList.filter(
-        (val) => {
-          if (val.userType == "Customer") {
-            temp.push({
-              isSelected: true,
-              userEmail: val.userEmail,
-              userId: val.userId,
-              userMobileNumber: val.userMobileNumber,
-              userName: val.userName,
-              userType: val.userType,
-            });
 
-            return val;
-          }
-          console.log(
-            selectededitCustomer,
-            "[eahe[0eg8ue[ortjnw[teugjqer]ohe[gqjrg[quehreouhgqroig"
-          );
-          setselectedCustomers({ ...selectededitCustomer });
-        }
-      );
-
-      // tempSupplier = data.data.userNotificationInfoList.filter((val) => {
-      //   if (val.userType == "Supplier") {
-      //     return val;
-      //   }
-      // });
-      setcreateNotification({
-        notificationTitle: data.data.notificationTitle,
-        textContent: data.data.textContent,
-        notificationType: data.data?.notificationType,
-      });
-      setselectedCustomers(tempCustomer);
-    } else if (err) {
-      toastify(err.response.data.message, "error");
-    }
-  };
-  const deleteNotificationFunction = async (id) => {
-    const { data, err } = await deleteNotificationApiCall(id);
-    if (data) {
-      toastify(data.data, "success");
-      getAllNotificationFunction();
-    } else if (err) {
-      toastify(err.response.data.message, "error");
-    }
-  };
-  const mapStateToRow = (data) => {
-    const temp = [];
-    data.forEach((item) => {
-      temp.push({
-        col1: item.notificationTitle,
-        col2: item.customerCount,
-        col3: "__",
-        col4: item.suppllierCount,
-        col14: item.createdDateAndTime,
-        col15: item.scheduledDateAndTime,
-        col16: (
-          <Grid container className="d-flex justify-content-around">
-            <CustomIcon type="send" className="h-4" />
-            <CustomIcon
-              type="view"
-              className="h-4"
-              onIconClick={() => {
-                viewNotificationFunction(item.notificationDetailsId);
-              }}
-            />
-            <MenuOption
-              getSelectedItem={(ele) => {
-                // onClickOfMenuItem(ele, row.customerQuestionId);
-                if (ele === "Delete") {
-                  deleteNotificationFunction(item.notificationDetailsId);
-                } else if (ele === "Edit") {
-                  setmodalType({ type: "edit" });
-                  setshowCreate(true);
-                  getNotificationByIdFunction(item.notificationDetailsId);
-                }
-              }}
-              options={["Edit", "Delete", "Resend"]}
-              IconclassName="color-gray"
-            />
-          </Grid>
-        ),
-      });
-    });
-    return temp;
-  };
   const viewProductDataFormat = (key, value) => {
     return (
       <Grid container xs={12} md={12}>
@@ -512,7 +677,8 @@ const Notifications = () => {
   //   const selected = temp.filter((x) => x.isSelected === true);
   //   setselectedCustomers(selected);
   // };
-  const closeModalFunction = () => {
+
+  const clearFunction = () => {
     setcreateNotification({
       notificationTitle: "",
       textContent: "",
@@ -522,21 +688,7 @@ const Notifications = () => {
       notificationScheduledAtTime: "",
       userNotificationInfoList: [],
     });
-    setselectAllSupplier(false);
-    setselectAllCustomer(false);
-    setselectedSupplier([]);
-    setselectedCustomers([]);
-    setshowSchedule(false);
-    setcontentType("");
-    setsendMessageToType({
-      customer: "",
-      reseller: "",
-      supplier: "",
-    });
-    setmodalType({ type: "" });
-    setshowCreate(false);
   };
-
   return (
     <Box>
       <Paper>
@@ -598,25 +750,16 @@ const Notifications = () => {
                         }}
                         isChecked={sendMessageToType.customer === "customer"}
                       />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.userCheckboxType}
+                      </Typography>
                     </Grid>
                     <Grid className="py-1" item md={8} xs={8}>
-                      {/* <MultiSelectComponent
-                        list={supplierDropdownData}
-                        fullWidth
-                        value={selectedCustomers}
-                        onSelectionChange={(e, val) => {
-                          handleCheckboxClick(val);
-                          // setselectedCustomers((pre) => [...pre, ...val]);
-                        }}
-                        disabled={sendMessageToType.customer !== "customer"}
-                        label="Customers"
-                        // error={error?.customerList?.length}
-                        // helperText={error.customerList}
-                        inputlabelshrink
-                        placeholder=""
-                        size="small"
-                      /> */}
                       <MultiselectWithPagination
+                        dowpdownLength={customerDropdownTemp}
+                        getSupplierDropdownFun={getSupplierDropdownFun}
+                        setpageNumberState={setpageNumberState}
+                        pageNumberState={pageNumberState}
                         disable={sendMessageToType.customer !== "customer"}
                         setselectedSupplier={setselectedCustomers}
                         selectedSupplier={selectedCustomers}
@@ -626,9 +769,12 @@ const Notifications = () => {
                         allSelect={selectAllCustomer}
                         setallSelect={setselectAllCustomer}
                       />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.userDropdown}
+                      </Typography>
                     </Grid>
                   </Grid>
-                  <Grid container item md={12} xs={12} className="">
+                  {/* <Grid container item md={12} xs={12} className="">
                     <Grid item md={4} xs={4}>
                       <CheckBoxComponent
                         label="Reseller"
@@ -648,9 +794,9 @@ const Notifications = () => {
                       />
                     </Grid>
                     <Grid className="py-1" item md={8} xs={8}>
-                      <MultiSelectWithPagination disable label="Reseller" />
+                      <MultiselectWithPagination disable label="Reseller" />
                     </Grid>
-                  </Grid>
+                  </Grid> */}
                   <Grid container item md={12} xs={12}>
                     <Grid item md={4} xs={4}>
                       <CheckBoxComponent
@@ -668,9 +814,16 @@ const Notifications = () => {
                         }}
                         isChecked={sendMessageToType.supplier === "supplier"}
                       />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.userCheckboxType}
+                      </Typography>
                     </Grid>
                     <Grid className="py-1" item md={8} xs={8}>
-                      <MultiSelectWithPagination
+                      <MultiselectWithPagination
+                        getSupplierDropdownFun={getSupplierDropdownFunction}
+                        setpageNumberState={setsupplierPage}
+                        pageNumberState={supplierPage}
+                        dowpdownLength={supplierDropdownTemp}
                         disable={sendMessageToType.supplier !== "supplier"}
                         setselectedSupplier={setselectedSupplier}
                         selectedSupplier={selectedSupplier}
@@ -680,6 +833,9 @@ const Notifications = () => {
                         allSelect={selectAllSupplier}
                         setallSelect={setselectAllSupplier}
                       />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.userDropdown}
+                      </Typography>
                     </Grid>
                   </Grid>
                   <Grid className="py-2">
@@ -694,6 +850,10 @@ const Notifications = () => {
                             notificationTitle: val.target.value,
                           });
                         }}
+                        error={errorCreateNotification.notificationTitle || ""}
+                        helperText={
+                          errorCreateNotification.notificationTitle || ""
+                        }
                         value={createNotification?.notificationTitle}
                       />
                     </Grid>
@@ -702,130 +862,163 @@ const Notifications = () => {
                     container
                     className="d-flex justify-content-between border-bottom"
                   >
-                    <CheckBoxComponent
-                      label="Push Notification"
-                      checkBoxClick={() => {
-                        let temp = [];
-                        temp = createNotification.notificationType;
-                        const isPush = (element) =>
-                          element === "pushNotification";
-                        if (
-                          createNotification.notificationType.includes(
-                            "pushNotification"
-                          )
-                        ) {
-                          const indexValue =
-                            createNotification?.notificationType?.findIndex(
-                              isPush
-                            );
-                          temp.splice(indexValue, 1);
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        } else {
-                          temp.push("pushNotification");
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        }
-                      }}
-                      isChecked={createNotification?.notificationType?.includes(
-                        "pushNotification"
-                      )}
-                    />
-                    <CheckBoxComponent
-                      label="Email"
-                      checkBoxClick={() => {
-                        let temp = [];
-                        temp = createNotification.notificationType;
-                        const isPush = (element) => element === "email";
-                        if (
-                          createNotification?.notificationType?.includes(
-                            "email"
-                          )
-                        ) {
-                          const indexValue =
-                            createNotification?.notificationType?.findIndex(
-                              isPush
-                            );
-                          temp.splice(indexValue, 1);
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        } else {
-                          temp.push("email");
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        }
-                      }}
-                      isChecked={createNotification?.notificationType?.includes(
-                        "email"
-                      )}
-                    />
-                    <CheckBoxComponent
-                      label="Message"
-                      checkBoxClick={() => {
-                        let temp = [];
-                        temp = createNotification.notificationType;
-                        const isPush = (element) => element === "sms";
-                        if (
-                          createNotification.notificationType.includes("sms")
-                        ) {
-                          const indexValue =
-                            createNotification?.notificationType?.findIndex(
-                              isPush
-                            );
-                          temp.splice(indexValue, 1);
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        } else {
-                          temp.push("sms");
-                          setcreateNotification({
-                            ...createNotification,
-                            notificationType: temp,
-                          });
-                        }
-                      }}
-                      isChecked={createNotification?.notificationType?.includes(
-                        "sms"
-                      )}
-                    />
+                    <Grid>
+                      <CheckBoxComponent
+                        label="Push Notification"
+                        checkBoxClick={() => {
+                          let temp = [];
+                          temp = createNotification.notificationType;
+                          const isPush = (element) =>
+                            element === "pushNotification";
+                          if (
+                            createNotification.notificationType.includes(
+                              "pushNotification"
+                            )
+                          ) {
+                            const indexValue =
+                              createNotification?.notificationType?.findIndex(
+                                isPush
+                              );
+                            temp.splice(indexValue, 1);
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          } else {
+                            temp.push("pushNotification");
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          }
+                        }}
+                        isChecked={createNotification?.notificationType?.includes(
+                          "pushNotification"
+                        )}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.notificationCheckboxType}
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <CheckBoxComponent
+                        label="Email"
+                        checkBoxClick={() => {
+                          let temp = [];
+                          temp = createNotification.notificationType;
+                          const isPush = (element) => element === "email";
+                          if (
+                            createNotification?.notificationType?.includes(
+                              "email"
+                            )
+                          ) {
+                            const indexValue =
+                              createNotification?.notificationType?.findIndex(
+                                isPush
+                              );
+                            temp.splice(indexValue, 1);
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          } else {
+                            temp.push("email");
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          }
+                        }}
+                        isChecked={createNotification?.notificationType?.includes(
+                          "email"
+                        )}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.notificationCheckboxType}
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <CheckBoxComponent
+                        label="Message"
+                        checkBoxClick={() => {
+                          let temp = [];
+                          temp = createNotification.notificationType;
+                          const isPush = (element) => element === "sms";
+                          if (
+                            createNotification.notificationType.includes("sms")
+                          ) {
+                            const indexValue =
+                              createNotification?.notificationType?.findIndex(
+                                isPush
+                              );
+                            temp.splice(indexValue, 1);
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          } else {
+                            temp.push("sms");
+                            setcreateNotification({
+                              ...createNotification,
+                              notificationType: temp,
+                            });
+                          }
+                        }}
+                        isChecked={createNotification?.notificationType?.includes(
+                          "sms"
+                        )}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.notificationCheckboxType}
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid className="d-flex justify-content-between ">
-                    <RadiobuttonComponent
-                      label="Only Attachment"
-                      id="Only Attachment"
-                      isChecked={contentType === "onlyAttachment"}
-                      onRadioChange={() => {
-                        setcontentType("onlyAttachment");
-                      }}
-                    />
-                    <RadiobuttonComponent
-                      label="Only Text"
-                      id="Only Text"
-                      isChecked={
-                        contentType === "text" ||
-                        createNotification?.textContent?.length
-                      }
-                      onRadioChange={() => {
-                        setcontentType("text");
-                      }}
-                    />
-                    <RadiobuttonComponent
-                      label="Text with attachment"
-                      id="Text with attachment"
-                      isChecked={contentType === "textWithAttachment"}
-                      onRadioChange={() => {
-                        setcontentType("textWithAttachment");
-                      }}
-                    />
+                  <Grid className="d-flex justify-content-between p-2">
+                    <Grid>
+                      <RadiobuttonComponent
+                        label="Only Attachment"
+                        id="Only Attachment"
+                        isChecked={
+                          contentType === "onlyAttachment" ||
+                          createNotification?.attachmentFile?.length
+                        }
+                        onRadioChange={() => {
+                          setcontentType("onlyAttachment");
+                        }}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.contentRadioType}
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <RadiobuttonComponent
+                        label="Only Text"
+                        id="Only Text"
+                        isChecked={
+                          contentType === "text" ||
+                          createNotification?.textContent?.length
+                        }
+                        onRadioChange={() => {
+                          setcontentType("text");
+                        }}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.contentRadioType}
+                      </Typography>
+                    </Grid>
+                    <Grid>
+                      <RadiobuttonComponent
+                        label="Text with attachment"
+                        id="Text with attachment"
+                        isChecked={contentType === "textWithAttachment"}
+                        onRadioChange={() => {
+                          setcontentType("textWithAttachment");
+                        }}
+                      />
+                      <Typography className="fs-12 fw-500 color-red">
+                        {errorCreateNotification.contentRadioType}
+                      </Typography>
+                    </Grid>
                   </Grid>
 
                   {contentType === "textWithAttachment" ||
@@ -843,6 +1036,7 @@ const Notifications = () => {
                           });
                         }}
                         content={createNotification?.textContent}
+                        helpertext={errorCreateNotification.textContent || ""}
                       />
                     </div>
                   ) : (
@@ -891,11 +1085,85 @@ const Notifications = () => {
                     <Grid md={6} xs={6}>
                       {contentType === "onlyAttachment" ||
                       contentType === "textWithAttachment" ? (
-                        <ButtonComponent
-                          variant="outlined"
-                          label="Attach File"
-                          muiProps="ms-3 "
-                        />
+                        <>
+                          {createNotification?.attachmentFile?.length ? (
+                            <Grid container>
+                              <Image
+                                src={createNotification?.attachmentFile[0]}
+                                height={30}
+                                width={80}
+                              />
+                              <CustomIcon
+                                type="close"
+                                size={6}
+                                className="fs-14 mb-3 position-absolute bg-white me-2"
+                                onIconClick={() => {
+                                  setcreateNotification({
+                                    ...createNotification,
+                                    attachmentFile: [],
+                                  });
+                                }}
+                              />
+                            </Grid>
+                          ) : (
+                            // <></>
+                            <Grid
+                              container
+                              className="d-flex align-items-center"
+                            >
+                              <ButtonComponent
+                                variant="outlined"
+                                label="Attach File"
+                                muiProps="ms-3 "
+                                onBtnClick={() => {
+                                  profilePicRef.current.click();
+                                }}
+                              />
+                              <Typography className="fs-12 fw-500 color-red">
+                                {errorCreateNotification.attachmentFile}
+                              </Typography>
+                              <input
+                                type="file"
+                                hidden
+                                ref={profilePicRef}
+                                // onChange={async (e) => {
+                                //   if (e.target.files[0]) {
+                                //     const file = await getBase64(e.target.files[0]);
+                                //     console.log(file, "file");
+                                //     // setcustomerDetails({
+                                //     //   ...customerDetails,
+                                //     //   profileImage: file,
+                                //     // });
+                                //   }
+                                // }}
+                                onChange={async (e) => {
+                                  if (
+                                    e.target?.files.length &&
+                                    e.target.files[0].type.includes("image")
+                                  ) {
+                                    const file = await getBase64(
+                                      e.target.files[0]
+                                    );
+                                    const temp = [];
+                                    temp.push(file);
+                                    // console.log(file, "file");
+                                    // setFiles([...files, e.target.files[0]]);
+                                    setimageState(e.target.files[0]);
+                                    setcreateNotification({
+                                      ...createNotification,
+                                      attachmentFile: temp,
+                                    });
+                                  } else {
+                                    toastify(
+                                      "Only Images file is accepted",
+                                      "error"
+                                    );
+                                  }
+                                }}
+                              />
+                            </Grid>
+                          )}
+                        </>
                       ) : (
                         <></>
                       )}
@@ -905,7 +1173,10 @@ const Notifications = () => {
                       xs={6}
                       className="d-flex justify-content-around"
                     >
-                      <ButtonComponent label="Clear" />
+                      <ButtonComponent
+                        label="Clear"
+                        onBtnClick={clearFunction}
+                      />
                       {!showSchedule && (
                         <ButtonComponent
                           label="Schedule"
@@ -923,8 +1194,14 @@ const Notifications = () => {
                         />
                       )}
                       <ButtonComponent
-                        label="Submit"
-                        onBtnClick={createNotificationFunction}
+                        label={`${
+                          modalType.type == "create" ? "Submit" : "Update"
+                        }`}
+                        onBtnClick={() => {
+                          modalType.type == "create"
+                            ? createNotificationFunction()
+                            : updateNotificationFunction();
+                        }}
                       />
                     </Grid>
                   </Grid>

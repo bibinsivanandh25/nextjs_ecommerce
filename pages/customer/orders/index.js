@@ -41,13 +41,14 @@ const list = [
   { label: "Custom Duration", id: 3, value: "CUSTOM" },
 ];
 const statusList = [
-  { label: "Pending", id: 1, value: "PENDING" },
-  { label: "Completed", id: 2, value: "COMPLETED" },
-  { label: "Rejected", id: 2, value: "REJECTED" },
+  { label: "Pending", id: 1, value: "INITIATED" },
+  { label: "Completed", id: 2, value: "DELIVERED" },
+  { label: "Rejected", id: 2, value: "CANCELLED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);
   const [selectedLink, setSelectedLink] = useState("");
+  console.log(selectedLink, "selectedLink");
   const [sellerFeedbackmModal, setSellerFeedbackModal] = useState(false);
   const [productFeedbackType, setProductFeedbackType] = useState("");
   const [feedbackRating, setFeedbackRating] = useState(0);
@@ -64,7 +65,7 @@ const Orders = () => {
     status: {
       label: "Pending",
       id: 1,
-      value: "PENDING",
+      value: "INITIATED",
     },
     keyword: "",
   });
@@ -73,6 +74,7 @@ const Orders = () => {
     label: "Last 30 days",
     value: "MONTH",
   });
+  console.log(durationDrowdown, "durationDrowdown");
   useEffect(() => {
     setsearchKeyword("");
   }, [selectedLink]);
@@ -87,7 +89,7 @@ const Orders = () => {
     startDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
     endDate: format(
       new Date(new Date().setDate(new Date().getDate() - 30)),
-      "MM-dd-yyyy 00:00:00"
+      "MM-dd-yyyy 23:59:59"
     ),
   });
   const [dateModal, setdateModal] = useState({
@@ -97,7 +99,7 @@ const Orders = () => {
   useEffect(() => {
     if (durationDrowdown.value === "MONTH") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 30)),
           "MM-dd-yyyy 00:00:00"
@@ -105,7 +107,7 @@ const Orders = () => {
       });
     } else if (durationDrowdown.value === "6MONTH") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 180)),
           "MM-dd-yyyy 00:00:00"
@@ -113,7 +115,7 @@ const Orders = () => {
       });
     } else if (durationDrowdown.value === "YEAR") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 365)),
           "MM-dd-yyyy 00:00:00"
@@ -152,14 +154,17 @@ const Orders = () => {
       orderStatus: selectedLink,
       // orderStatus: "",
       // filterType: durationDrowdown.value || "",
-      startDate: formDate.startDate,
-      endDate: formDate.endDate,
+      fromDate: selectedLink === "INITIATED" ? "" : formDate.startDate,
+      toDate: selectedLink === "INITIATED" ? "" : formDate.endDate,
       selectStatusType: orderFilter.status.value || "",
-      keyword: search,
+      searchKey: search,
+      pageCount: 0,
+      pageSize: 50,
     };
+    console.log(payload.fromDate, "payload");
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
-      console.log(data.data, "&&&&&&&&&&&&&&&&&&");
+      // setProducts([]);
       const temp = [];
       data.data.forEach((item) => {
         temp.push({
@@ -182,6 +187,7 @@ const Orders = () => {
           dropDownValue: null,
           variationId: item.productId,
           error: false,
+          productVariationId: item.productVariationId,
         });
       });
 
@@ -191,9 +197,14 @@ const Orders = () => {
     }
   };
   const indiviDualProductDetails = async () => {
-    const addressId = selectedProduct[0]?.shippingAddressId;
-    const orderId = selectedProduct[0]?.orderId;
-    const { data, errRes } = await getProductDetails(addressId, orderId);
+    // const addressId = selectedProduct[0]?.shippingAddressId;
+    // const orderId = selectedProduct[0]?.orderId;
+    const payload = {
+      orderId: selectedProduct[0]?.orderId,
+      productVariation: selectedProduct[0]?.productVariationId,
+      shippingAddressId: selectedProduct[0]?.shippingAddressId,
+    };
+    const { data, errRes } = await getProductDetails(payload);
     if (data) {
       setEachProductDetails(data.data);
       toastify(data.data.message, "success");
@@ -263,11 +274,12 @@ const Orders = () => {
                   status: {
                     label: "Pending",
                     id: 1,
-                    value: "PENDING",
+                    value: "INITIATED",
                   },
                   keyword: "",
                 });
                 setSelectedProduct([]);
+                setProducts([]);
               }}
             >
               Orders
@@ -284,6 +296,10 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
+                // setTrackPackage(false)
               }}
             >
               Not Yet Shipped
@@ -300,6 +316,9 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
               }}
             >
               Cancelled Orders
@@ -316,6 +335,9 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
               }}
             >
               Returned Orders
@@ -624,7 +646,7 @@ const Orders = () => {
                         <Typography>
                           Rs: {EachProductDetails.shipping}
                         </Typography>
-                        <Typography> (Dummy price)</Typography>
+                        <Typography>Rs: {EachProductDetails.total}</Typography>
                         <Typography>
                           Rs: {EachProductDetails.promotionApplied}
                         </Typography>
@@ -650,6 +672,9 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              // freeSolo
+                              // removeRadius
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"
@@ -764,6 +789,7 @@ const Orders = () => {
                           )} */}
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={statusList}
                               size="small"
                               placeholder="Select Status"
@@ -895,6 +921,7 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"
@@ -975,6 +1002,7 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"

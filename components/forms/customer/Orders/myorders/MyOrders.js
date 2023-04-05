@@ -131,7 +131,10 @@ const MyOrders = ({
   const handleCheckboxClick = (value) => {
     const temp = [...products];
     temp.forEach((item) => {
-      if (item.orderId === value.orderId) {
+      if (
+        item.orderId === value.orderId &&
+        item.productVariationId === value.productVariationId
+      ) {
         item.isSelected = !item.isSelected;
       }
     });
@@ -151,7 +154,9 @@ const MyOrders = ({
   };
   return (
     <Box>
-      {showTopBar && selectedProduct.length ? (
+      {showTopBar &&
+      selectedProduct.length &&
+      (showCancelBtn || showReturnBtn) ? (
         <Grid container className="px-1">
           <Grid
             item

@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import ListItemText from "@mui/material/ListItemText";
 import Select from "@mui/material/Select";
-import Checkbox from "@mui/material/Checkbox";
 import { Grid, Typography } from "@mui/material";
-import CustomIcon from "services/iconUtils";
 import InputBox from "../InputBoxComponent";
-import toastify from "services/utils/toastUtils";
-import { getSupplierDropdown } from "services/admin/notification";
 import CheckBoxComponent from "../CheckboxComponent";
 
 const ITEM_HEIGHT = 48;
@@ -27,25 +23,25 @@ const MenuProps = {
 // const names = [{ id: "", type: "", name: "", phone: "", email: "" }];
 
 export default function MultiselectWithPagination({
+  getSupplierDropdownFun = () => {},
   disable = true,
   setselectedSupplier = () => {},
-  selectedSupplier,
   label = "",
   setsupplierDropdownVal = () => {},
   supplierDropdownVal,
   setallSelect = () => {},
   allSelect,
+  pageNumberState,
+  setpageNumberState = () => {},
+  dowpdownLength,
   // personName,
   // setPersonName = () => {},
 }) {
   const [personName, setPersonName] = useState([]);
   const [selectAllValue, setselectAllValue] = useState([]);
   // const [allSelect, setallSelect] = useState(false);
-  const [deopdownLength, setdeopdownLength] = useState(10);
-  const [dropdownStart, setdropdownStart] = useState(0);
   const [searchDropdown, setsearchDropdown] = useState("");
-  // const [supplierDropdownVal, setsupplierDropdownVal] = useState([]);
-  // const [selectedSupplier, setselectedSupplier] = useState([]);
+
   const allSelectFunction = () => {
     const temp = allSelect;
     setallSelect(!temp);
@@ -55,39 +51,29 @@ export default function MultiselectWithPagination({
       setselectAllValue(["All Users Has Been Selected To Dropdown"]);
     }
   };
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    const result = [...personName];
-    value.forEach((id) => {
-      supplierDropdownVal.forEach((ele) => {
-        if (ele.userId === id) {
-          result.push(`${ele.userName} ( ${ele.userId} )`);
-        }
-      });
-    });
-    if (allSelect) {
-      setallSelect(false);
-      setselectAllValue([]);
-      setPersonName([]);
-      // setPersonName(value);
-      // setPersonName(value);
-    } else {
-      setPersonName(result);
-    }
-  };
+
   const handleCheckboxClick = (value) => {
     const temp = [...supplierDropdownVal];
-
+    const showtemp = [];
     temp.forEach((item) => {
       if (item?.userId == value?.userId) {
+        // eslint-disable-next-line no-param-reassign
         item.isSelected = !item.isSelected;
       }
     });
     setsupplierDropdownVal([...temp]);
     const selected = temp.filter((x) => x.isSelected === true);
+    selected.forEach((ele) => {
+      showtemp.push(ele.userName);
+    });
     setselectedSupplier(selected);
+    if (allSelect) {
+      setallSelect(false);
+      setselectAllValue([]);
+      setPersonName([]);
+    } else {
+      setPersonName(showtemp);
+    }
   };
   return (
     <div>
@@ -108,7 +94,7 @@ export default function MultiselectWithPagination({
           id="demo-multiple-checkbox"
           multiple
           value={selectAllValue.length ? [] : personName}
-          onChange={handleChange}
+          onChange={handleCheckboxClick}
           input={<OutlinedInput label="Supplier" />}
           renderValue={(selected) => selected.join(", ")}
           MenuProps={MenuProps}
@@ -144,48 +130,49 @@ export default function MultiselectWithPagination({
             </Grid>
           </Grid>
 
-          {supplierDropdownVal
-            // .slice(dropdownStart, deopdownLength)
-            ?.map((name) => {
-              return (
-                <MenuItem
-                  key={name.userId}
-                  value={name.userId}
-                  disabled={selectAllValue.length}
-                >
-                  {/* <Checkbox checked={personName.indexOf(name.id) > -1} /> */}
+          {supplierDropdownVal?.map((name) => {
+            return (
+              <MenuItem
+                key={name.userId}
+                // value={name.userId}
+                disabled={selectAllValue.length}
+              >
+                <CheckBoxComponent
+                  checkBoxClick={() => {
+                    handleCheckboxClick(name);
+                  }}
+                  isChecked={name.isSelected}
+                />
+                {/* <ListItemText primary={`${name.userName} ${name.userId}`} /> */}
+                <Grid container className="d-flex justify-content-between">
+                  <Typography>{name.userName}</Typography>
+                  <Typography
+                    style={{ color: "gray", fontSize: "15px", opacity: 0.7 }}
+                  >
+                    {name.userId}
+                  </Typography>
+                </Grid>
+              </MenuItem>
+            );
+          })}
 
-                  <CheckBoxComponent
-                    checkBoxClick={() => {
-                      handleCheckboxClick(name);
-                    }}
-                    isChecked={name.isSelected}
-                  />
-                  <ListItemText primary={name.userName} />
-                </MenuItem>
-              );
-            })}
-          <Grid className="d-flex  justify-content-between px-2 ">
-            {dropdownStart >= 10 && (
-              <CustomIcon
-                type="arrowBackIosNewIcon"
-                onIconClick={() => {
-                  setdeopdownLength(deopdownLength - 10);
-                  setdropdownStart(dropdownStart - 10);
-                }}
-              />
-            )}
-
-            {supplierDropdownVal?.length >= deopdownLength && (
-              <CustomIcon
-                type="arrowforward"
-                onIconClick={() => {
-                  setdeopdownLength(deopdownLength + 10);
-                  setdropdownStart(dropdownStart + 10);
-                }}
-              />
-            )}
+          <Grid
+            className={
+              dowpdownLength?.length < 10
+                ? "d-none"
+                : "d-flex justify-content-end px-2 cursor-pointer color-orange fw-500"
+            }
+            // style={{dowpdownLength.length<10?display:"none":display:"block"}}
+            onClick={() => {
+              const temp = pageNumberState;
+              const finalTemp = temp + 1;
+              getSupplierDropdownFun(finalTemp);
+              setpageNumberState(finalTemp);
+            }}
+          >
+            See more
           </Grid>
+          {/* </Grid> */}
         </Select>
       </FormControl>
     </div>
