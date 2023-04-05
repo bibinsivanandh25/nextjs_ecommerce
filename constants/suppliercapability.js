@@ -17,10 +17,7 @@ const suppliercapability = [
       },
     ],
   },
-  {
-    capabilityType: "My Collections",
-    isEnable: false,
-  },
+
   {
     capabilityType: "Products & Inventory",
     isEnable: false,
@@ -55,6 +52,10 @@ const suppliercapability = [
       },
       {
         capabilityType: "Invoice & Trademarks",
+        isEnable: false,
+      },
+      {
+        capabilityType: "My Collections",
         isEnable: false,
       },
     ],

@@ -878,18 +878,18 @@ const StoreSettings = () => {
                   ) : null}
                 </Grid>
                 <Grid item sm={12} className="w-100">
-                  {formValues.description && (
-                    <TextEditor
-                      className="w-100"
-                      content={formValues.description}
-                      getContent={(val) => {
-                        setFormValues((pre) => ({
-                          ...pre,
-                          description: val,
-                        }));
-                      }}
-                    />
-                  )}
+                  {/* {formValues.description && ( */}
+                  <TextEditor
+                    className="w-100"
+                    content={formValues.description}
+                    getContent={(val) => {
+                      setFormValues((pre) => ({
+                        ...pre,
+                        description: val,
+                      }));
+                    }}
+                  />
+                  {/* )} */}
                 </Grid>
               </Grid>
             </Grid>

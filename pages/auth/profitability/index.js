@@ -18,8 +18,7 @@ const Profitability = () => {
   const [category, setCategory] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const getCategory = async () => {
-    const { data, err } = await getAllCategory();
-    console.log({ data, err });
+    const { data } = await getAllCategory();
     if (data) {
       setCategory(
         data.map((item) => {
@@ -67,7 +66,7 @@ const Profitability = () => {
     getCategory();
   }, []);
 
-  const handleChange = (categoryInd, subCategoryInd = null) => {
+  const handleChange = (categoryInd) => {
     const copy = JSON.parse(JSON.stringify(category));
     copy[categoryInd].open = !copy[categoryInd].open;
     setCategory(copy);

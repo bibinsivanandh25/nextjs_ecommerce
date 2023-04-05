@@ -624,7 +624,7 @@ const MyProducts = () => {
     const { err, flag } = validate();
     setErrObj(err);
     if (!flag) {
-      const { data, err } = await addProductFlag({
+      const { data } = await addProductFlag({
         ...flagFormData,
         imageUrl: flagUrlList.filter((item) => item.checked)[0].url.imageUrl,
         visibilityPlace: flagUrlList.filter((item) => item.checked)[0].url
@@ -639,7 +639,7 @@ const MyProducts = () => {
         setdisableFlagField(false);
         setIds({ masterProductId: "", variationId: "", flagged: false });
         setflagUrlList([]);
-        setFlagTitle([]);
+        setFlagTitle({});
       } else if (err) {
         toastify(err?.response?.data?.message, "error");
       }
