@@ -9,7 +9,7 @@
 import { Box, Grid, Paper, Rating, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import ReactImageMagnify from "react-image-magnify";
+// import ReactImageMagnify from "react-image-magnify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCouponsData,
@@ -46,6 +46,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
 import ProductSkeleton from "@/forms/customer/productdetails/productskeleton";
+import ImageZoom from "@/forms/customer/productdetails/imagezoom";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -508,8 +509,13 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
                       </Grid>
                       <Grid item md={10}>
                         {selectedImage !== "" && (
-                          <Box position="relative" className="h-100">
-                            <ReactImageMagnify
+                          <Box position="relative" className="h-100" style={{}}>
+                            <ImageZoom
+                              src={selectedImage}
+                              height={imageSize.height}
+                              width={imageSize.width}
+                            />
+                            {/* <ReactImageMagnify
                               {...{
                                 smallImage: {
                                   alt: "No Images",
@@ -536,7 +542,7 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
                               }}
                               enlargedImageClassName="bg-white"
                               style={{ position: "relative" }}
-                            />
+                            /> */}
                             {showActions ? (
                               <Paper
                                 style={{
