@@ -99,7 +99,7 @@ const OrderHistory = ({ selectedData = {} }) => {
             {item.orderType.toLowerCase()}
           </Typography>
         ),
-        col7: item.productVariationId,
+        col7: item?.productVariationId,
         col8: item.price,
         col9: new Date(item.orderedAt).toLocaleString(),
       });

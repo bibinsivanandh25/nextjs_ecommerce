@@ -36,7 +36,7 @@ const HelpAndSupportNotification = ({
   return (
     <ModalComponent
       open={show}
-      ModalTitle="Admin Reply"
+      ModalTitle="View Reply"
       showFooter={false}
       onCloseIconClick={() => setShowModal({ show: false, id: null })}
       minHeightClassName="mnh-300 mxh-300"
@@ -53,7 +53,7 @@ const HelpAndSupportNotification = ({
           {getParagraph("Subject", selectedData.issueSubject)}
           <Grid container my={1}>
             <Grid item xs={2}>
-              Reply from Admin
+              Reply from {selectedData?.userToType?.toLowerCase()}
             </Grid>
             <Grid item xs={1}>
               :

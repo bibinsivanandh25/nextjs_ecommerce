@@ -27,6 +27,11 @@ const CustomDatePickerComponent = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
+        componentsProps={{
+          actionBar: {
+            actions: ["clear"],
+          },
+        }}
         showToolbar={showToolbar}
         disableFuture={disableFuture}
         disablePast={disablePast}

@@ -58,6 +58,17 @@ const getMessages = (id) => {
     })
     .catch((err) => ({ err }));
 };
+const supplierSideCloseTicket = (id) => {
+  return serviceUtil
+    .put(`help-and-support/admin/ticket?ticketId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   helpandsupportFileUpload,
   saveHelpandSupport,
@@ -65,4 +76,5 @@ export {
   viewHelpandSupport,
   replyHelpandSupport,
   getMessages,
+  supplierSideCloseTicket,
 };

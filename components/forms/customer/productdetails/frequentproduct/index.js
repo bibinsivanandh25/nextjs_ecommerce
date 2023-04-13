@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { getAllFrequentProduct } from "services/customer/productdetails";
 import AddToCartModal from "../addtocartmodal";
 
-const FrequentBuyProduct = () => {
+const FrequentBuyProduct = ({ showActions }) => {
   const [deliveryType, setDeliveryType] = useState("NOFREEDELIVERYANDRETURN");
   const [frequentProduct, setfrequentProduct] = useState([]);
   const [showImage, setShowImage] = useState([]);
@@ -199,6 +199,7 @@ const FrequentBuyProduct = () => {
                       </Grid>
                     </Grid> */}
                       <ButtonComponent
+                        disabled={!showActions}
                         label="Add To Cart"
                         variant="outlined"
                         onBtnClick={() => {

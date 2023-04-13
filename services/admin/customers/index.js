@@ -41,4 +41,50 @@ const enableDisableCustomer = (id, flag) => {
     .catch((err) => ({ err }));
 };
 
-export { getCustomerData, viewModalApi, deleteCustomer, enableDisableCustomer };
+const getAdminCustomerDashboardData = (payload) => {
+  return serviceUtil
+    .post(`users/admin-customer-dashboard`, payload)
+    .then((res) => {
+      const { data } = res && res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+const getAnsAndUnAnsData = (payload) => {
+  return serviceUtil
+    .put(`products/admin/customer-question-answer`, payload)
+    .then((res) => {
+      const { data } = res && res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const replyAnswer = (payload) => {
+  return serviceUtil
+    .put(`products/customer-replay-query`, payload)
+    .then((res) => {
+      const { data } = res && res;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+const deleteAnswerData = (id) => {
+  return serviceUtil
+    .put(`products/user-answer?customerQuestionId=${id}`)
+    .then((res) => {
+      const { data } = res;
+      return data;
+    })
+    .catch((err) => ({ err }));
+};
+export {
+  getCustomerData,
+  viewModalApi,
+  deleteCustomer,
+  enableDisableCustomer,
+  getAdminCustomerDashboardData,
+  getAnsAndUnAnsData,
+  replyAnswer,
+  deleteAnswerData,
+};

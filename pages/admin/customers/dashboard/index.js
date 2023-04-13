@@ -1,10 +1,11 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import NavTabComponent from "components/molecule/NavTabComponent";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LineChart } from "@/atoms/Linechart/Linechart";
 import TableComponent from "@/atoms/TableComponent";
-// import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
-import SelectComponent from "@/atoms/SelectComponent";
+import { getAdminCustomerDashboardData } from "services/admin/customers";
+import toastify from "services/utils/toastUtils";
+import { format } from "date-fns";
 
 const navbartabs = [
   {
@@ -20,38 +21,7 @@ const navbartabs = [
     title: "Year",
   },
 ];
-const LineChartLable = [
-  "Monday",
-  "Tuseday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-const resellerRows = [
-  {
-    id: "1",
-    col1: "1",
-    col2: "Traders",
-    col3: 20,
-    col4: "1000",
-  },
-  {
-    id: "2",
-    col1: "2",
-    col2: "Traders",
-    col3: 20,
-    col4: "1000",
-  },
-  {
-    id: "3",
-    col1: "3",
-    col2: "Traders",
-    col3: 20,
-    col4: "1000",
-  },
-];
+
 const resellerColumn = [
   {
     id: "col1",
@@ -63,7 +33,7 @@ const resellerColumn = [
   },
   {
     id: "col2",
-    label: "Reseller Name",
+    label: "Customer Name",
     minWidth: 100,
     align: "center",
     data_align: "center",
@@ -71,47 +41,109 @@ const resellerColumn = [
   },
   {
     id: "col3",
-    label: "Sales Value",
-    minWidth: 100,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-  },
-  {
-    id: "col4",
-    label: "Ordered Via",
+    label: "Return Value",
     minWidth: 100,
     align: "center",
     data_align: "center",
     data_classname: "",
   },
 ];
-const lineChartData = [20000, 3000, 1000, 40000, 10000, 400, 2000];
-const months = [
-  "Month",
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+
 const CustomerDashBoard = () => {
-  const monthsList = months.map((val, ind) => ({
-    id: ind,
-    label: val,
-    value: ind,
-  }));
+  const [masterData, setMasterData] = useState({});
+  const [selectedFilter, setSelectedFilter] = useState({
+    filterType: "WEEK",
+    fromDate: "",
+    toDate: "",
+  });
+  const [LineChartLable, setLineChartLable] = useState([]);
+  const [lineChartData, setLineChartData] = useState([]);
+  const [row, setRow] = useState([]);
+  const getAllDashboardData = async (filter, fromdate, todate) => {
+    const payload = {
+      filterType: filter,
+      fromDate: fromdate,
+      toDate: todate,
+    };
+    const { data, err } = await getAdminCustomerDashboardData(payload);
+    if (data) {
+      setMasterData(data);
+      const temp = [];
+      data.customerWithHighReturns.forEach((item, index) => {
+        temp.push({
+          col1: index + 1,
+          col2: item.customerName,
+          col3: item.returnAmount,
+        });
+      });
+      setRow([...temp]);
+      if (filter !== "MONTH") {
+        const temp1 = [];
+        const temp2 = [];
+        Object.entries(data.customersGrowth).forEach((item) => {
+          temp1.push(item[0]);
+          temp2.push(item[1]);
+        });
+        setLineChartLable(temp1);
+        setLineChartData(temp2);
+      } else {
+        // const sortable = Object.entries(data.customersGrowth)
+        //   .sort((a, b) => {
+        //     const x = a[0].split(" ")[1];
+        //     const y = b[0].split(" ")[1];
+        //     return Number(x) - Number(y);
+        //   })
+        //   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+        const sortable = Object.fromEntries(
+          Object.entries(data.customersGrowth).sort(
+            (a, b) => Number(a[0].split(" ")[1]) - Number(b[0].split(" ")[1])
+          )
+        );
+        const temp1 = [];
+        const temp2 = [];
+        Object.entries(sortable).forEach((item) => {
+          temp1.push(item[0]);
+          temp2.push(item[1]);
+        });
+        setLineChartLable(temp1);
+        setLineChartData(temp2);
+      }
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    getAllDashboardData(
+      selectedFilter.filterType,
+      selectedFilter.fromDate,
+      selectedFilter.toDate
+    );
+  }, [selectedFilter]);
   return (
-    <Box>
+    <Paper className="mxh-85vh mnh-85vh overflow-auto hide-scrollbar p-2">
       <Box className="w-100 py-2 ps-5 bg-white shadow-sm">
-        <NavTabComponent listData={navbartabs} />
+        <NavTabComponent
+          listData={navbartabs}
+          onTabCilck={(val) => {
+            setSelectedFilter((pre) => ({
+              ...pre,
+              filterType: val?.toUpperCase(),
+            }));
+          }}
+          getFromDate={(val) => {
+            setSelectedFilter((pre) => ({
+              ...pre,
+              fromDate: val ? format(new Date(val), "MM-dd-yyyy hh:mm:ss") : "",
+            }));
+          }}
+          getToDate={(val) => {
+            setSelectedFilter((pre) => ({
+              ...pre,
+              toDate: val ? format(new Date(val), "MM-dd-yyyy hh:mm:ss") : "",
+            }));
+          }}
+        />
       </Box>
       <Grid container spacing={2} className="mt-2">
         <Grid item lg={10} md={10} sm={12}>
@@ -125,6 +157,7 @@ const CustomerDashBoard = () => {
                 labels={LineChartLable}
                 data={lineChartData}
                 lineColor="#007fff"
+                label="Customer Count"
               />
             </Box>
           </Paper>
@@ -135,39 +168,30 @@ const CustomerDashBoard = () => {
               Total Customers
             </Typography>
             <Typography className="color-orange h-1 d-flex justify-content-center py-1">
-              10,000
+              {masterData?.totalCustomers}
             </Typography>
           </Paper>
         </Grid>
         <Grid item xs={6}>
           <Paper elevation={2} className="p-1">
             <Grid container className="d-flex justify-content-between px-2">
-              <Grid item xs={7} className="fs-16 fw-bold px-2 mt-3">
-                Top 10 Customer with high return orders
-              </Grid>
-              <Grid item xs={5} className="d-flex justify-content-end mt-2">
-                <SelectComponent
-                  list={monthsList}
-                  className="border rounded ps-2"
-                />
-                <SelectComponent
-                  list={monthsList}
-                  className="border rounded ms-2 ps-2"
-                />
-                {/* <SimpleDropdownComponent size="small" className="ms-2" /> */}
+              <Grid item xs={12} className="fs-16 fw-bold px-2 mt-3">
+                Top 10 Customer with High Return Orders
               </Grid>
             </Grid>
             <TableComponent
+              showSearchFilter={false}
               showSearchbar={false}
               showCheckbox={false}
               columns={[...resellerColumn]}
-              tableRows={[...resellerRows]}
+              tableRows={[...row]}
               paginationType="admin"
+              showPagination={false}
             />
           </Paper>
         </Grid>
       </Grid>
-    </Box>
+    </Paper>
   );
 };
 
