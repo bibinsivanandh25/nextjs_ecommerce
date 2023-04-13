@@ -21,6 +21,7 @@ const SimpleDropdownComponent = ({
   removeRadius = false,
   freeSolo = false,
   readOnly = false,
+  disableClearable = false,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -40,6 +41,7 @@ const SimpleDropdownComponent = ({
         disabled={disabled}
         freeSolo={freeSolo}
         value={value}
+        disableClearable={disableClearable}
         onChange={(_event, newValue) => {
           onDropdownSelect(newValue);
         }}

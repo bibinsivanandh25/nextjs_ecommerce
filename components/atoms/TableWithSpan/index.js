@@ -16,6 +16,7 @@ import TableRow from "@mui/material/TableRow";
 import { Grid } from "@mui/material";
 // import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { makeStyles } from "@mui/styles";
+import { format } from "date-fns";
 import CheckBoxComponent from "../CheckboxComponent";
 // import SimpleDropdownComponent from "../SimpleDropdownComponent";
 // import InputBox from "../InputBoxComponent";
@@ -210,8 +211,8 @@ export default function TableComponent({
   //   id: "0",
   //   value: "All",
   // });
-  const [dateValue, setDateValue] = useState({ from: "", to: "" });
 
+  const [dateValue, setDateValue] = useState({ from: "", to: "" });
   useEffect(() => {
     setPage(0);
   }, [tabChange]);
@@ -235,8 +236,10 @@ export default function TableComponent({
   }, [tableRows]);
 
   useEffect(() => {
-    if (searchText === "") setRows(tableRows);
-  }, [searchText, tableRows]);
+    if (searchText === "") {
+      setRows(tableRows);
+    }
+  }, [searchText, tableRows, dateFilterColName]);
 
   // useEffect(() => {
   //   const temp = columns.filter((item) => {
@@ -290,7 +293,7 @@ export default function TableComponent({
   };
 
   const handleChangeRowsPerPage = (event) => {
-    handlePageEnd(0);
+    handlePageEnd(page, searchText, dateValue);
     setRowsPerPage(+event.target.value);
     setPage(0);
     handleRowsPerPageChange(0);
@@ -346,7 +349,7 @@ export default function TableComponent({
     } else {
       setRows(tableRows);
     }
-  }, [dateValue, tableRows, dateFilterColName]);
+  }, [dateValue, tableRows]);
 
   const getDateFilter = () => {
     return (
@@ -365,6 +368,7 @@ export default function TableComponent({
           onChange={(e) => {
             setDateValue((prev) => ({
               ...prev,
+              // from: `${e.target.value} 00:00:00`,
               from: e.target.value,
             }));
           }}
@@ -399,12 +403,38 @@ export default function TableComponent({
           onChange={(e) => {
             setsearchText(e.target.value);
             // handleSearch();
+            // if (searchText !== "") {
+            //   // handlePageEnd(page, e.target.value, "");
+
+            //   const search = setTimeout(() => {
+            //     handlePageEnd(page, e.target.value, "");
+            //   }, 1000);
+            //   return () => clearTimeout(search);
+            // }
           }}
         />
       </Grid>
     );
   };
+  useEffect(() => {
+    let formatFromDate = "";
+    let formatToDate = "";
 
+    if (dateValue.from !== "" && dateValue.to !== "") {
+      formatFromDate = `${format(
+        new Date(dateValue.from),
+        "MM-dd-yyyy"
+      )} 00:00:00`;
+      formatToDate = `${format(new Date(dateValue.to), "MM-dd-yyyy")} 00:00:00`;
+    }
+    const search = setTimeout(() => {
+      handlePageEnd(page, searchText, {
+        from: formatFromDate,
+        to: formatToDate,
+      });
+    }, 1000);
+    return () => clearTimeout(search);
+  }, [searchText, dateValue.from && dateValue.to]);
   const classes = useStyles();
   const getStickyClass = (position, index) => {
     if (!position || position === "") return "";
@@ -424,7 +454,7 @@ export default function TableComponent({
       >
         <Grid className="d-flex justify-content-between align-items-center">
           <Grid className="color-orange">{table_heading}</Grid>
-          <Grid container>{showDateFilter ? getDateFilter() : null}</Grid>
+          <Grid>{showDateFilter ? getDateFilter() : null}</Grid>
           <Grid>
             {showButton ? (
               <ButtonComponent label={buttonLabel} onBtnClick={onBtnClick} />

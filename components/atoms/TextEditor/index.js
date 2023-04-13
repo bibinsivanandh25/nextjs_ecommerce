@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import dynamic from "next/dynamic";
 import "suneditor/dist/css/suneditor.min.css";
 
@@ -9,6 +10,7 @@ export default function TextEditor({
   EditorHeight = "100px",
   getContent = () => {},
   content = "",
+  helpertext = "",
   className = "w-95p",
   placeholder = "Add a Reply...",
 }) {
@@ -47,6 +49,7 @@ export default function TextEditor({
           },
         }}
       />
+      <Typography className="color-red fw-500 fs-11">{helpertext}</Typography>
       {/* <div
         className="ms-4"
         dangerouslySetInnerHTML={{

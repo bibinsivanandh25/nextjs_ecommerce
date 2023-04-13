@@ -60,13 +60,20 @@ const updateSubCategory = (payload) => {
     .catch((err) => ({ err }));
 };
 const uploadSubCategoryImage = (payload) => {
-  return serviceUtil
-    .put(`products/category-media?categoryType=subcategory`, payload)
-    .then((res) => {
-      const { data } = res?.data;
-      return { data };
-    })
-    .catch((err) => ({ err }));
+  return (
+    serviceUtil
+      .put(`products/category-media?categoryType=subcategory`, payload)
+      .then((res) => {
+        console.log(res, "response");
+        const { data } = res?.data;
+        return { data };
+      })
+      // .catch((err) => ({ err }));
+      .catch((err) => {
+        console.log(err, "error");
+        return { err };
+      })
+  );
 };
 const getCategoryById = (subCategoryId) => {
   return serviceUtil

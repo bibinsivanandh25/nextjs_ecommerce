@@ -138,7 +138,7 @@ const InitiatePayment = () => {
               justifyContent="center"
               marginRight={2}
             >
-              <CustomIcon type="chatBubbleIcon" className="fs-20" />
+              <CustomIcon type="message" className="fs-20" />
             </Box>{" "}
             <Box
               sx={{
@@ -153,7 +153,7 @@ const InitiatePayment = () => {
               alignItems="center"
               justifyContent="center"
             >
-              <CustomIcon type="attachMoneyOutlinedIcon" className="fs-20" />
+              <CustomIcon type="message" className="fs-20" />
             </Box>
           </Box>
         ),
