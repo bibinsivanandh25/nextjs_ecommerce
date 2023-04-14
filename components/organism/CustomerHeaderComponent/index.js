@@ -122,7 +122,7 @@ const Header = () => {
   };
 
   useEffect(() => {
-    setCartProductCount(cartItems || 0);
+    setCartProductCount(cartItems);
   }, [cartItems]);
 
   const handleThemeChange = () => {
@@ -189,6 +189,7 @@ const Header = () => {
       dispatch(cartCount({ cartCount: data }));
     }
   };
+
   useEffect(() => {
     if (isSignedIn) {
       getCartCount();

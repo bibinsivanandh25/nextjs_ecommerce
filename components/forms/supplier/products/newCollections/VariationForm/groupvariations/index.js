@@ -1146,6 +1146,9 @@ const GroupVariationForm = ({
                                         JSON.stringify(pre)
                                       );
                                       temp[item].mmcartPricing.sellwithus = val;
+                                      temp[item].mmcartPricing.cod = false;
+                                      temp[item].mmcartPricing.rto = false;
+                                      temp[item].mmcartPricing.returnorder = {};
                                       return temp;
                                     });
                                   }}
@@ -1236,6 +1239,10 @@ const GroupVariationForm = ({
                                   }}
                                   showIcon
                                   varient="filled"
+                                  isDisabled={
+                                    !variationData[item].mmcartPricing
+                                      .sellwithus
+                                  }
                                 />
                                 <Typography component="span" className="h-5">
                                   Return Order Accepted
@@ -1252,6 +1259,10 @@ const GroupVariationForm = ({
                                   label=""
                                   isChecked={
                                     variationData[item].mmcartPricing.cod
+                                  }
+                                  isDisabled={
+                                    !variationData[item].mmcartPricing
+                                      .sellwithus
                                   }
                                   checkBoxClick={(_, val) => {
                                     setVariationData((pre) => {

@@ -25,7 +25,7 @@ export default function SelectComponent({
       >
         {/* <option value=""></option> */}
         {list.map((item) => (
-          <option value={item.id} name={item.label} key={item.id}>
+          <option value={item.label} name={item.label} key={item.id}>
             {item.label}
           </option>
         ))}

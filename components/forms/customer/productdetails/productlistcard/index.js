@@ -20,6 +20,7 @@ const ProductListCard = ({
   width = 150,
   cardPaperClass = "",
   scrollPage = () => {},
+  showActions,
 }) => {
   const iconListData = [
     {
@@ -84,7 +85,7 @@ const ProductListCard = ({
     }
   };
   const handleProductClick = () => {
-    if (item?.variationDetails) {
+    if (item?.variationDetails && showActions) {
       dispatch(
         productDetails({
           productId: item?.id,
@@ -165,45 +166,47 @@ const ProductListCard = ({
             </Typography>
           </Box>
         </Box>
-        <Box
-          className={
-            hover ? "d-flex flex-row-reverse p-2 position-absolute" : "d-none"
-          }
-          sx={{ right: 5, top: 0 }}
-        >
-          <Box className="d-flex flex-column">
-            {iconListData.map((ele, index) => (
-              <Box
-                sx={{
-                  zIndex: "100",
-                  padding: "1px",
-                  width: "25px",
-                  height: "25px",
-                }}
-                className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
-                  iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
-                }`}
-                // eslint-disable-next-line react/no-array-index-key
-                key={index}
-              >
-                <CustomIcon
-                  type={ele.iconName}
-                  className="h-5"
-                  onIconClick={() => {
-                    handleCardIconClick(ele.iconName);
-                    handleIconClick(ele.iconName);
+        {showActions ? (
+          <Box
+            className={
+              hover ? "d-flex flex-row-reverse p-2 position-absolute" : "d-none"
+            }
+            sx={{ right: 5, top: 0 }}
+          >
+            <Box className="d-flex flex-column">
+              {iconListData.map((ele, index) => (
+                <Box
+                  sx={{
+                    zIndex: "100",
+                    padding: "1px",
+                    width: "25px",
+                    height: "25px",
                   }}
-                  showColorOnHover={false}
-                  onMouseEnter={() => mouseEnter(ele.iconName)}
-                  onMouseLeave={() => mouseLeave(ele.iconName)}
-                  color={
-                    iconcolor[ele.iconName] ? "text-white" : "text-secondary"
-                  }
-                />
-              </Box>
-            ))}
+                  className={`rounded-circle mb-1 d-flex justify-content-center align-items-center ${
+                    iconcolor[ele.iconName] ? "bg-orange" : "bg-white"
+                  }`}
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={index}
+                >
+                  <CustomIcon
+                    type={ele.iconName}
+                    className="h-5"
+                    onIconClick={() => {
+                      handleCardIconClick(ele.iconName);
+                      handleIconClick(ele.iconName);
+                    }}
+                    showColorOnHover={false}
+                    onMouseEnter={() => mouseEnter(ele.iconName)}
+                    onMouseLeave={() => mouseLeave(ele.iconName)}
+                    color={
+                      iconcolor[ele.iconName] ? "text-white" : "text-secondary"
+                    }
+                  />
+                </Box>
+              ))}
+            </Box>
           </Box>
-        </Box>
+        ) : null}
         {showWishListModal ? (
           <AddToWishListModal
             showModal={showWishListModal}

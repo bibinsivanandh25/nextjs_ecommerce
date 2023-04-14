@@ -63,6 +63,9 @@ const PricingForMrMRsCartForm = forwardRef(
                   sellwithus: !pre.mrMrsCartFormData.sellwithus,
                   free_delivery: "",
                   paid_delivery: "",
+                  return: false,
+                  cashondelivery: false,
+                  returnorder: {},
                 },
               }));
             }}
@@ -124,7 +127,7 @@ const PricingForMrMRsCartForm = forwardRef(
             }}
             showIcon
             varient="filled"
-            isDisabled={viewFlag}
+            isDisabled={viewFlag || !formData?.mrMrsCartFormData?.sellwithus}
           />
           <Typography component="span" className="h-5">
             Return Order Accepted
@@ -133,6 +136,7 @@ const PricingForMrMRsCartForm = forwardRef(
 
         <Grid item md={6} display="flex" alignItems="center">
           <CheckBoxComponent
+            isDisabled={viewFlag || !formData?.mrMrsCartFormData?.sellwithus}
             label=""
             isChecked={formData?.mrMrsCartFormData?.cashondelivery}
             checkBoxClick={() => {
@@ -145,7 +149,6 @@ const PricingForMrMRsCartForm = forwardRef(
               }));
             }}
             showIcon
-            isDisabled={viewFlag}
             varient="filled"
           />
           <Typography component="span" className="h-5">

@@ -57,6 +57,7 @@ const OrderReport = () => {
     value: new Date().getFullYear().toString(),
     label: new Date().getFullYear().toString(),
   });
+  // table 2
   const [summaryTableData, setSummaryTableData] = useState([]);
   const [summaryYear, setSummaryYear] = useState({
     value: new Date().getFullYear().toString(),

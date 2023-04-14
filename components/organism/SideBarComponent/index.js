@@ -13,9 +13,18 @@ import SideDrawer from "@/atoms/SideDrawer";
 import DrawerComponent from "./DrawerComponent";
 
 const SideBarComponent = ({ children }) => {
+  const [open, setOpen] = useState(false);
+
+  // For product view isSideBarOpen prop add to the childern if getting any error pls remove this code and pass childern directly.
+  const updatedChildren = { ...children[0] };
+  updatedChildren.props = {
+    ...children[0].props,
+    isSideBarOpen: open,
+  };
+  const renderChildern = [updatedChildren, children[1]];
+
   const route = useRouter();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const { allowedPath, role } = useSelector((state) => state.user);
   const [showFallBack, setShowFallBack] = useState(false);
   const constraintsRef = useRef(null);
@@ -107,7 +116,7 @@ const SideBarComponent = ({ children }) => {
                 }}
                 key={router.route}
               >
-                {children}
+                {renderChildern}
               </motion.div>
             </AnimatePresence>
           </>

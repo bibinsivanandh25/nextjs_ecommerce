@@ -1,7 +1,11 @@
 import TableComponent from "@/atoms/TableComponent";
 import { Box } from "@mui/material";
+import { productDetails } from "features/customerSlice";
+import AdminProductView from "pages/admin/customers/adminproductview";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { viewModalApi } from "services/admin/customers";
+import CustomIcon from "services/iconUtils";
 import toastify from "services/utils/toastUtils";
 
 const tableColumns = [
@@ -31,7 +35,7 @@ const tableColumns = [
   },
   {
     id: "col4",
-    label: "Product Link",
+    label: "Product View",
     align: "center",
     minWidth: 50,
     data_align: "center",
@@ -73,6 +77,19 @@ const tableColumns = [
 
 const Recentlyviewedproducts = ({ selectedData = {} }) => {
   const [masterData, setMasterData] = useState([]);
+  const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const handleProductViewClick = (item) => {
+    if (item) {
+      dispatch(
+        productDetails({
+          productId: item?.productVariationId,
+          variationDetails: item.variationDetails,
+        })
+      );
+      setOpenModal(true);
+    }
+  };
   const mapStateToRow = (data) => {
     const temp = [];
     data.forEach((item, index) => {
@@ -80,7 +97,15 @@ const Recentlyviewedproducts = ({ selectedData = {} }) => {
         col1: index + 1,
         col2: item.productVariationId,
         col3: item.productTitle,
-        col4: "--",
+        col4: (
+          <CustomIcon
+            type="view"
+            className="fs-18 me-2"
+            onIconClick={() => {
+              handleProductViewClick(item);
+            }}
+          />
+        ),
         col5: `${item.supplierId} / ${item.storeName}`,
         col6: item.salePrice,
         col7: item.mrp,
@@ -117,6 +142,9 @@ const Recentlyviewedproducts = ({ selectedData = {} }) => {
             showSearchbar={false}
           />
         </Box>
+      ) : null}
+      {openModal ? (
+        <AdminProductView openModal={openModal} setOpenModal={setOpenModal} />
       ) : null}
     </Box>
   );

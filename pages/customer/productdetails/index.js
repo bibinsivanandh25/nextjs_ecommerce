@@ -9,7 +9,7 @@
 import { Box, Grid, Paper, Rating, Tooltip, Typography } from "@mui/material";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import ReactImageMagnify from "react-image-magnify";
+// import ReactImageMagnify from "react-image-magnify";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCouponsData,
@@ -46,6 +46,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import SimilarProducts from "@/forms/customer/productdetails/similarProducts";
 import ProductSkeleton from "@/forms/customer/productdetails/productskeleton";
+import ImageZoom from "@/forms/customer/productdetails/imagezoom";
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -68,7 +69,7 @@ function useWindowSize() {
   }, []);
   return windowSize;
 }
-const ProductDetails = ({ isSideBarOpen }) => {
+const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
   const [masterData, setMasterData] = useState({});
   const [selectedMasterData, setSelectedMasterData] = useState({});
   const [selectedImage, setSelectedImage] = useState("");
@@ -508,8 +509,13 @@ const ProductDetails = ({ isSideBarOpen }) => {
                       </Grid>
                       <Grid item md={10}>
                         {selectedImage !== "" && (
-                          <Box position="relative" className="h-100">
-                            <ReactImageMagnify
+                          <Box position="relative" className="h-100" style={{}}>
+                            <ImageZoom
+                              src={selectedImage}
+                              height={imageSize.height}
+                              width={imageSize.width}
+                            />
+                            {/* <ReactImageMagnify
                               {...{
                                 smallImage: {
                                   alt: "No Images",
@@ -536,33 +542,35 @@ const ProductDetails = ({ isSideBarOpen }) => {
                               }}
                               enlargedImageClassName="bg-white"
                               style={{ position: "relative" }}
-                            />
-                            <Paper
-                              style={{
-                                position: "absolute",
-                                top: "3%",
-                                right: "2.5%",
-                              }}
-                              className="border rounded-circle"
-                              padding={1}
-                            >
-                              <CustomIcon
-                                onIconClick={() => {
-                                  handleCardIconClick();
+                            /> */}
+                            {showActions ? (
+                              <Paper
+                                style={{
+                                  position: "absolute",
+                                  top: "3%",
+                                  right: "2.5%",
                                 }}
-                                type={
-                                  selectedMasterData.inWishlist
-                                    ? "heart"
-                                    : "favoriteBorderIcon"
-                                }
-                                className={
-                                  selectedMasterData.inWishlist
-                                    ? "color-orange"
-                                    : ""
-                                }
-                                showColorOnHover={false}
-                              />
-                            </Paper>
+                                className="border rounded-circle"
+                                padding={1}
+                              >
+                                <CustomIcon
+                                  onIconClick={() => {
+                                    handleCardIconClick();
+                                  }}
+                                  type={
+                                    selectedMasterData.inWishlist
+                                      ? "heart"
+                                      : "favoriteBorderIcon"
+                                  }
+                                  className={
+                                    selectedMasterData.inWishlist
+                                      ? "color-orange"
+                                      : ""
+                                  }
+                                  showColorOnHover={false}
+                                />
+                              </Paper>
+                            ) : null}
                           </Box>
                         )}
                       </Grid>
@@ -1393,6 +1401,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 <Grid container marginTop={1} columnGap={1}>
                                   <Grid item md={4} display="flex">
                                     <ButtonComponent
+                                      disabled={!showActions}
                                       label={
                                         selectedMasterData.inCart
                                           ? "Go To Cart"
@@ -1409,6 +1418,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                   </Grid>
                                   <Grid item md={4} display="flex">
                                     <ButtonComponent
+                                      disabled={!showActions}
                                       label="Buy Now"
                                       muiProps="py-1 w-100"
                                     />
@@ -1446,6 +1456,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                               }`}
                                               onClick={() => {
                                                 val.enabled &&
+                                                  showActions &&
                                                   handleOtherVariationClick(
                                                     item,
                                                     val
@@ -1498,6 +1509,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                                 onClick={() => {
                                   selectedMasterData.productVariationId !==
                                     item.productVariationId &&
+                                    showActions &&
                                     handleVariationClick(item);
                                 }}
                               >
@@ -1638,12 +1650,16 @@ const ProductDetails = ({ isSideBarOpen }) => {
                       <FrequentBuyProduct
                         selectedMasterData={selectedMasterData}
                         masterData={masterData}
+                        showActions={showActions}
                       />
                     </Box>
                   </Grid>
                   <Grid item md={12}>
                     <Box className="mt-2">
-                      <RecentlyViewedProduct scrollPage={scrollPage} />
+                      <RecentlyViewedProduct
+                        scrollPage={scrollPage}
+                        showActions={showActions}
+                      />
                     </Box>
                   </Grid>
                   <Grid item sm={12}>
@@ -1651,6 +1667,7 @@ const ProductDetails = ({ isSideBarOpen }) => {
                       subCategoryId={masterData.subCategoryId}
                       scrollPage={scrollPage}
                       userData={userData}
+                      showActions={showActions}
                     />
                   </Grid>
                 </Grid>
