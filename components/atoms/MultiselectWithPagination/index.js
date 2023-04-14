@@ -34,13 +34,15 @@ export default function MultiselectWithPagination({
   pageNumberState,
   setpageNumberState = () => {},
   dowpdownLength,
+  setPersonName = () => {},
+  personName,
+  searchDropdown,
+  setsearchDropdown = () => {},
   // personName,
   // setPersonName = () => {},
 }) {
-  const [personName, setPersonName] = useState([]);
   const [selectAllValue, setselectAllValue] = useState([]);
   // const [allSelect, setallSelect] = useState(false);
-  const [searchDropdown, setsearchDropdown] = useState("");
 
   const allSelectFunction = () => {
     const temp = allSelect;
@@ -133,6 +135,9 @@ export default function MultiselectWithPagination({
           {supplierDropdownVal?.map((name) => {
             return (
               <MenuItem
+                // disableAutoFocus={false}
+                autoFocus={false}
+                // focusVisible={false}
                 key={name.userId}
                 // value={name.userId}
                 disabled={selectAllValue.length}

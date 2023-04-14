@@ -67,7 +67,6 @@ const DeliveryOptionsModal = ({
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [finalPriceWithDeliveryCharges, setFinalPriceWithDeliveryCharge] =
     useState(0);
-
   const customer = useSelector((state) => state.customer);
 
   const queryClient = useQueryClient();

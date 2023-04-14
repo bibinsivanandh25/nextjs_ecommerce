@@ -4,7 +4,7 @@ import TableComponent from "components/atoms/TableComponent";
 import Image from "next/image";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import toastify from "services/utils/toastUtils";
-import { useState } from "react";
+import { useState, useEffect, useSelector } from "react";
 import { Box, Button, Paper } from "@mui/material";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
 import CustomIcon from "services/iconUtils";
@@ -13,9 +13,48 @@ import { useRouter } from "next/router";
 import OrderConfirmModal from "@/forms/supplier/myorder/orderconfirmodal";
 import ModalComponent from "@/atoms/ModalComponent";
 import InputBox from "@/atoms/InputBoxComponent";
+import {
+  cancelOrderFromSupplier,
+  getAllnewOrders,
+} from "services/supplier/myorders/newOrders";
+
 // import logo from "../../../../../public/assets/logo.jpeg";
 
+const filterData = [
+  {
+    label: "All",
+    id: "all",
+    value: null,
+  },
+  {
+    label: "Store Owner Delivery",
+    id: "STORE_OWNER_DELIVERY",
+    value: "STORE_OWNER_DELIVERY",
+  },
+  {
+    label: "Hand Pick",
+    id: "HAND_PICK",
+    value: "HAND_PICK",
+  },
+  {
+    label: "Last Mile AC",
+    id: "LAST_MILE_AC",
+    value: "LAST_MILE_AC",
+  },
+  {
+    label: "Last Mile FDR",
+    id: "LAST_MILE_FDR",
+    value: "LAST_MILE_FDR",
+  },
+  {
+    label: "Supplier Shipment",
+    id: "SUPPLIER_SHIPMENT",
+    value: "SUPPLIER_SHIPMENT",
+  },
+];
 const AcceptandConfirmOrder = () => {
+  const { supplierId } = useSelector((state) => state.user);
+  const [newOrderData, setnewOrderData] = useState([]);
   const [dropDownValue, setDropDownValue] = useState();
   const [showConfirmAdress, setshowConfirmAdress] = useState(false);
   const [enableConfirmOrders, setEnableConfirmOrders] = useState(false);
@@ -24,6 +63,8 @@ const AcceptandConfirmOrder = () => {
     useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [categoryType, setCategoryType] = useState(null);
+  const [orderCount, setorderCount] = useState(0);
+  const [pageNumber, setpageNumber] = useState(0);
   const [progressBarSteps, setProgressBarSteps] = useState([
     {
       label: "Accept & confirm Orders",
@@ -87,7 +128,7 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "col6",
-      label: "Size",
+      label: "Weight",
       // minWidth: 50,
       align: "center",
       data_align: "center",
@@ -140,107 +181,6 @@ const AcceptandConfirmOrder = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  const rows = [
-    {
-      id: "1",
-      col1: <Image src="" height={50} width={50} alt="" />,
-      col2: "#23234342",
-      col3: "#23234342",
-      col4: "SL1234",
-      col5: "Last Mile(AC/FD)",
-      col6: "UK34",
-      col7: "28 May 2020",
-      col8: "28 May 2020",
-      col9: "5009990",
-      col10: (
-        <div className="d-flex justify-content-between align-items-center">
-          <CustomIcon
-            type="edit"
-            title="edit"
-            onIconClick={() => setShowEditModal(true)}
-          />
-          <ButtonComponent muiProps="h-6" variant="outlined" label="Cancel" />
-          <CustomIcon type="remove" title="Detail" />
-        </div>
-      ),
-      categoryType: "cloth",
-    },
-    {
-      id: "2",
-      col1: <Image src="" height={50} width={50} alt="" />,
-      col2: "#23234342",
-      col3: "#23234342",
-      col4: "SL1234",
-      col5: "Supplier Shipment",
-      col6: "UK34",
-      col7: "28 May 2020",
-      col8: "--",
-      col9: "--",
-      col10: (
-        <div className="d-flex justify-content-between align-items-center">
-          <CustomIcon
-            type="edit"
-            title="edit"
-            onIconClick={() => setShowEditModal(true)}
-          />
-          <ButtonComponent muiProps="h-6" variant="outlined" label="Cancel" />
-          <CustomIcon type="remove" title="Detail" />
-        </div>
-      ),
-      categoryType: "Accesories",
-    },
-    {
-      id: "3",
-      col1: <Image src="" height={50} width={50} alt="" />,
-      col2: "#23234342",
-      col3: "#23234342",
-      col4: "SL1234",
-      col5: "Delivery by store Owner",
-      col6: "UK34",
-      col7: "28 May 2020",
-      col8: "--",
-      col9: "--",
-      col10: (
-        <div className="d-flex justify-content-between align-items-center">
-          <CustomIcon
-            type="edit"
-            title="edit"
-            onIconClick={() => {
-              setCategoryType("mobile");
-              setShowEditModal(true);
-            }}
-          />
-          <ButtonComponent muiProps="h-6" variant="outlined" label="Cancel" />
-          <CustomIcon type="remove" title="Detail" />
-        </div>
-      ),
-      categoryType: "Mobile",
-    },
-    {
-      id: "4",
-      col1: <Image src="" height={50} width={50} alt="" />,
-      col2: "#23234342",
-      col3: "#23234342",
-      col4: "SL1234",
-      col5: "Hand picked",
-      col6: "UK34",
-      col7: "28 May 2020",
-      col8: "--",
-      col9: "--",
-      col10: (
-        <div className="d-flex justify-content-between align-items-center">
-          <CustomIcon
-            type="edit"
-            title="edit"
-            onIconClick={() => setShowEditModal(true)}
-          />
-          <ButtonComponent muiProps="h-6" variant="outlined" label="Cancel" />
-          <CustomIcon type="remove" title="Detail" />
-        </div>
-      ),
-      categoryType: "Mobile",
-    },
-  ];
 
   // const renderConfirmOrders = () => {
   //   if (selectedCategory === "first") {
@@ -253,16 +193,103 @@ const AcceptandConfirmOrder = () => {
   //   }
   //   return null;
   // };
-
+  const dataMaptoTable = (data) => {
+    const temp = [];
+    data?.forEach((val) => {
+      temp.push({
+        id: val.productVariationId,
+        col1: <Image src={val.imageUrl} height={50} width={50} alt="" />,
+        col2: val.purchaseId,
+        col3: val.orderId,
+        col4: val.skuId,
+        col5: val.modeOfOrder.replace("_", " "),
+        col6: val.weight,
+        col7: val.orderDate,
+        col8: val.expectedDispatchDate.split("T")[0],
+        col9: val.weightInclusivePackage,
+        col10: (
+          <div className="d-flex justify-content-between align-items-center">
+            <CustomIcon
+              type="edit"
+              title="edit"
+              onIconClick={() => setShowEditModal(true)}
+            />
+            <ButtonComponent
+              muiProps="h-6"
+              variant="outlined"
+              label="Cancel"
+              onBtnClick={() => {
+                // eslint-disable-next-line no-use-before-define
+                cancelOrderFunction(
+                  val.orderId,
+                  val.productVariationId,
+                  val.skuId
+                );
+              }}
+            />
+            <CustomIcon type="remove" title="Detail" />
+          </div>
+        ),
+        categoryType: "Mobile",
+      });
+    });
+    return temp;
+  };
+  const getAllNewOrdersFunction = async (page = pageNumber, mode, keyword) => {
+    const payload = {
+      supplierId,
+      status: "INITIATED",
+      category: null,
+      keyword: keyword || null,
+      modeOfOrder: mode || null,
+      pageNumber: page,
+      pageSize: 10,
+    };
+    const { data, err } = await getAllnewOrders(payload);
+    if (data) {
+      setorderCount(data.data.newOrderCount);
+      // setnewOrderData(dataMaptoTable(data?.data?.orderResponse));
+      if (page == 0) {
+        setnewOrderData(dataMaptoTable(data?.data?.orderResponse));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setpageNumber((pre) => pre + 1);
+        setnewOrderData((pre) => [
+          ...pre,
+          ...dataMaptoTable(data?.data?.orderResponse),
+        ]);
+      }
+    } else if (err) {
+      console.log(err, "error");
+      toastify(err?.response?.data?.err, "error");
+    }
+  };
+  const cancelOrderFunction = async (orderId, productVariationId, skuId) => {
+    const payload = { orderId, productVariationId, skuId };
+    const { data, err } = await cancelOrderFromSupplier(payload);
+    if (data) {
+      toastify(data, "success");
+      getAllNewOrdersFunction(0);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  useEffect(() => {
+    getAllNewOrdersFunction();
+  }, []);
   const getModeOfOrder = (item = []) => {
     const modeOfOrders = [];
     item.forEach((id) => {
-      rows.forEach((ele) => {
+      newOrderData.forEach((ele) => {
+        console.log(ele, "ele");
         if (ele.id == id) {
           modeOfOrders.push(ele.col5);
+          console.log(modeOfOrders, "inside modeOfOrders");
         }
+        console.log("outside");
       });
     });
+    console.log(modeOfOrders, "modeOfOrders");
     const result = modeOfOrders.every(
       (category) => category === modeOfOrders[0]
     );
@@ -336,10 +363,10 @@ const AcceptandConfirmOrder = () => {
               sx={{ textTransform: "none" }}
               // fullWidth
               onClick={() => {
-                if (selectedCategory === "Last Mile(AC/FD)") {
+                if (selectedCategory === "LAST_MILE_AC") {
                   setshowConfirmAdress(true);
                 }
-                if (selectedCategory === "Supplier Shipment") {
+                if (selectedCategory === "SUPPLIER SHIPMENT") {
                   setShowSupplierShipmentModal(true);
                 }
                 if (
@@ -380,11 +407,20 @@ const AcceptandConfirmOrder = () => {
             }}
           >
             <TableComponent
-              table_heading="34 New Orders"
+              filterList={filterData}
+              table_heading={`${orderCount} New Orders`}
               columns={columns}
-              tableRows={rows}
+              tableRows={newOrderData}
               OnSelectionChange={(item) => {
                 getModeOfOrder(item);
+              }}
+              enableDropdownOnChangeServiceCall
+              handlePageEnd={(searchText = "", filterText = "", page) => {
+                getAllNewOrdersFunction(page, filterText, searchText);
+                // getAllData(searchText, filterText, page);
+              }}
+              handleRowsPerPageChange={() => {
+                setpageNumber(0);
               }}
               showCheckbox
             />
@@ -416,6 +452,7 @@ const AcceptandConfirmOrder = () => {
       </ModalComponent> */}
       <OrderConfirmModal
         openModal={showSupplierShipmentModal}
+        // openModal={true}
         setOpenModal={setShowSupplierShipmentModal}
       />
       <ModalComponent

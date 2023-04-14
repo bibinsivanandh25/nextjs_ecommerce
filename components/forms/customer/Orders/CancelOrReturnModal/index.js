@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-return-assign */
@@ -74,19 +75,21 @@ const CancelOrReturnModal = ({
   selectedOldProduct,
   setgetOrderApiCall = () => {},
   getOrderApiCall,
+  setreturnedData = () => {},
 }) => {
   const user = useSelector((state) => state.user);
   const [showOrderSuccessModal, setShowOrderSuccessModal] = useState(false);
   const [dropDownData, setDropDownData] = useState([]);
+  const [cancelledData, setcancelledData] = useState([]);
   const [CancelSuccessData, setCancelSuccessData] = useState([]);
   useEffect(() => {
     const temp = JSON.parse(JSON.stringify(selectedProduct));
     setDropDownData([...temp]);
   }, [selectedProduct]);
-  const handleSelectDropDown = (val, id) => {
+  const handleSelectDropDown = (val, id, vid) => {
     const temp = JSON.parse(JSON.stringify(dropDownData));
     temp.forEach((ele) => {
-      if (ele.orderId === id) {
+      if (ele.orderId === id && ele.productVariationId === vid) {
         ele.dropDownValue = val;
       }
     });
@@ -107,20 +110,26 @@ const CancelOrReturnModal = ({
               <CheckBoxComponent
                 size="medium"
                 isChecked={ele.isSelected}
-                id={ele.id}
+                id={ele.productVariationId}
                 checkedcolor="#1492e6"
                 checkBoxClick={(id) => {
                   const temp = [...dropDownData];
                   temp.forEach((item) => {
-                    if (item.id == id) {
+                    if (item.productVariationId == id) {
                       ele.isSelected = !ele.isSelected;
                     }
                   });
+                  const selected = temp.filter((x) => x.isSelected === true);
                   setDropDownData([...temp]);
+                  if (modalType == "cancel") {
+                    setcancelledData([...selected]);
+                  } else {
+                    setreturnedData([...selected]);
+                  }
                 }}
               />
               <Typography component="" className="fs-6 fw-bold">
-                {ele.title}
+                {ele.productTitle}
                 <Typography className="h-5">
                   <Typography component="span" className="h-5">
                     Order Type :{" "}
@@ -145,26 +154,33 @@ const CancelOrReturnModal = ({
               <Image src={ele.productImage} height={75} width={100} />
             </Box>
           </Box>
-          <Box className="d-flex justify-content-between align-items-center">
-            <Typography className="fw-bold h-5">
-              Reason for {modalType === "return" ? "Returning" : "Cancelling"} :{" "}
-            </Typography>
-            <Box className="w-70p">
-              {/* <SimpleDropdownComponent size="small" /> */}
-              <SimpleDropdownComponent
-                list={modalType === "cancel" ? cancleList : returnList}
-                size="small"
-                label="Select Reason"
-                id={ele.orderId}
-                inputlabelshrink
-                onDropdownSelect={(val) => {
-                  handleSelectDropDown(val, ele.orderId);
-                }}
-                value={ele.dropDownValue}
-                helperText={ele.error ? validateMessage.field_required : ""}
-              />
+          {ele.isSelected && (
+            <Box className="d-flex justify-content-between align-items-center ">
+              <Typography className="fw-bold h-5">
+                Reason for {modalType === "return" ? "Returning" : "Cancelling"}{" "}
+                :{" "}
+              </Typography>
+              <Box className="w-70p">
+                {/* <SimpleDropdownComponent size="small" /> */}
+                <SimpleDropdownComponent
+                  list={modalType === "cancel" ? cancleList : returnList}
+                  size="small"
+                  label="Select Reason"
+                  id={ele.orderId}
+                  inputlabelshrink
+                  onDropdownSelect={(val) => {
+                    handleSelectDropDown(
+                      val,
+                      ele.orderId,
+                      ele.productVariationId
+                    );
+                  }}
+                  value={ele.dropDownValue}
+                  helperText={ele.error ? validateMessage.field_required : ""}
+                />
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       );
     });
@@ -176,7 +192,7 @@ const CancelOrReturnModal = ({
   const dropDownValidation = () => {
     const temp = JSON.parse(JSON.stringify(dropDownData));
     temp.forEach((val) => {
-      if (val.dropDownValue === null) {
+      if (val.dropDownValue === null && val.isSelected === true) {
         val.error = true;
       } else {
         val.error = false;
@@ -188,20 +204,36 @@ const CancelOrReturnModal = ({
   };
 
   const cancelProduct = async () => {
-    const type = "CANCEL";
+    const type = "CANCELLED";
     let payload = [];
-    dropDownData.forEach((val) => {
-      payload = [
-        ...payload,
-        {
-          orderId: val.orderId,
-          emailAddress: user.emailId,
-          addressId: "",
-          reason: val?.dropDownValue?.value,
-          productImage: val.productImage,
-        },
-      ];
-    });
+
+    cancelledData.length > 0
+      ? cancelledData.forEach((val) => {
+          payload = [
+            ...payload,
+            {
+              orderId: val.orderId,
+              emailAddress: user.emailId,
+              addressId: val?.billingAddressId,
+              reason: val?.dropDownValue?.value,
+              productImage: val.productImage,
+              productVariartionId: val.productVariationId,
+            },
+          ];
+        })
+      : dropDownData.forEach((val) => {
+          payload = [
+            ...payload,
+            {
+              orderId: val.orderId,
+              emailAddress: user.emailId,
+              addressId: val?.billingAddressId,
+              reason: val?.dropDownValue?.value,
+              productImage: val.productImage,
+              productVariartionId: val.productVariationId,
+            },
+          ];
+        });
     const validate = dropDownValidation();
     if (validate) {
       const { data, errRes } = await returnProduct(payload, type);
@@ -237,7 +269,7 @@ const CancelOrReturnModal = ({
       }}
     >
       <Typography className="fw-bold text-center my-2">
-        Are you sure want to {modalType === "return" ? "Return" : " Cancel"}
+        Do you want to {modalType === "return" ? "return" : " cancel"}
         &nbsp;these products?
       </Typography>
       <Box className="mxh-400 overflow-auto ">{getProducts()}</Box>

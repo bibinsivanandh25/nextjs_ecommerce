@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */
 import ButtonComponent from "@/atoms/ButtonComponent";
@@ -182,9 +183,14 @@ const Notifications = () => {
     contentRadioType: "",
     userDropdown: "",
   });
+  const [customerName, setcustomerName] = useState([]);
+  const [supplierName, setsupplierName] = useState([]);
+  const [customerSearch, setcustomerSearch] = useState("");
+  const [supplierSearch, setsupplierSearch] = useState("");
   const [showCreate, setshowCreate] = useState(false);
   const [modalType, setmodalType] = useState({ type: "" });
   const [selectedCustomers, setselectedCustomers] = useState([]);
+
   const [selectedSupplier, setselectedSupplier] = useState([]);
   const [selectAllCustomer, setselectAllCustomer] = useState(false);
   const [selectAllSupplier, setselectAllSupplier] = useState(false);
@@ -212,7 +218,7 @@ const Notifications = () => {
   const getSupplierDropdownFun = async (page = pageNumberState) => {
     const payload = {
       userType: "Customer",
-      searchKey: "",
+      searchKey: customerSearch,
       pageCount: page,
       pageSize: 10,
     };
@@ -240,7 +246,7 @@ const Notifications = () => {
   const getSupplierDropdownFunction = async (page = supplierPage) => {
     const payload = {
       userType: "Supplier",
-      searchKey: "",
+      searchKey: supplierSearch,
       pageCount: page,
       pageSize: 10,
     };
@@ -272,6 +278,23 @@ const Notifications = () => {
       getSupplierDropdownFunction();
     }
   }, [showCreate]);
+  useEffect(() => {
+    if (customerSearch.length) {
+      const search = setTimeout(() => {
+        getSupplierDropdownFun();
+      }, 1000);
+      return () => clearTimeout(search);
+    }
+  }, [customerSearch]);
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (supplierSearch.length) {
+      const search = setTimeout(() => {
+        getSupplierDropdownFunction();
+      }, 1000);
+      return () => clearTimeout(search);
+    }
+  }, [supplierSearch]);
   const closeModalFunction = () => {
     setcreateNotification({
       notificationTitle: "",
@@ -282,6 +305,8 @@ const Notifications = () => {
       notificationScheduledAtTime: "",
       userNotificationInfoList: [],
     });
+    setcustomerName([]);
+    setsupplierName([]);
     setuserId("");
     setselectAllSupplier(false);
     setselectAllCustomer(false);
@@ -738,15 +763,19 @@ const Notifications = () => {
                       <CheckBoxComponent
                         label="Customer"
                         checkBoxClick={() => {
-                          sendMessageToType.customer.length
-                            ? setsendMessageToType({
-                                ...sendMessageToType,
-                                customer: "",
-                              })
-                            : setsendMessageToType({
-                                ...sendMessageToType,
-                                customer: "customer",
-                              });
+                          if (sendMessageToType.customer.length > 0) {
+                            setsendMessageToType({
+                              ...sendMessageToType,
+                              customer: "",
+                            });
+                            setselectedCustomers([]);
+                            setcustomerName([]);
+                          } else {
+                            setsendMessageToType({
+                              ...sendMessageToType,
+                              customer: "customer",
+                            });
+                          }
                         }}
                         isChecked={sendMessageToType.customer === "customer"}
                       />
@@ -768,6 +797,10 @@ const Notifications = () => {
                         supplierDropdownVal={customerDropdownData}
                         allSelect={selectAllCustomer}
                         setallSelect={setselectAllCustomer}
+                        personName={customerName}
+                        setPersonName={setcustomerName}
+                        searchDropdown={customerSearch}
+                        setsearchDropdown={setcustomerSearch}
                       />
                       <Typography className="fs-12 fw-500 color-red">
                         {errorCreateNotification.userDropdown}
@@ -802,15 +835,19 @@ const Notifications = () => {
                       <CheckBoxComponent
                         label="Supplier"
                         checkBoxClick={() => {
-                          sendMessageToType.supplier.length
-                            ? setsendMessageToType({
-                                ...sendMessageToType,
-                                supplier: "",
-                              })
-                            : setsendMessageToType({
-                                ...sendMessageToType,
-                                supplier: "supplier",
-                              });
+                          if (sendMessageToType.supplier.length > 0) {
+                            setsendMessageToType({
+                              ...sendMessageToType,
+                              supplier: "",
+                            });
+                            setsupplierName([]);
+                            setselectedSupplier([]);
+                          } else {
+                            setsendMessageToType({
+                              ...sendMessageToType,
+                              supplier: "supplier",
+                            });
+                          }
                         }}
                         isChecked={sendMessageToType.supplier === "supplier"}
                       />
@@ -832,6 +869,10 @@ const Notifications = () => {
                         supplierDropdownVal={supplierDropdownVal}
                         allSelect={selectAllSupplier}
                         setallSelect={setselectAllSupplier}
+                        personName={supplierName}
+                        setPersonName={setsupplierName}
+                        searchDropdown={supplierSearch}
+                        setsearchDropdown={setsupplierSearch}
                       />
                       <Typography className="fs-12 fw-500 color-red">
                         {errorCreateNotification.userDropdown}

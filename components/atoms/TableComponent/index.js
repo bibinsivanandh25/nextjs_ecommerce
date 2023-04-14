@@ -493,6 +493,7 @@ export default function TableComponent({
   getFilteredValuesOnCheckBoxClick = false,
   showDateFilterDropDown = false,
   showFromToDateFilter = true,
+  enableDropdownOnChangeServiceCall = false,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -1012,8 +1013,8 @@ export default function TableComponent({
                 value={searchFilter}
                 onDropdownSelect={(value) => {
                   if (value) {
-                    if (!showSearchbar) {
-                      handlePageEnd(searchText, value, 0, {
+                    if (enableDropdownOnChangeServiceCall) {
+                      handlePageEnd(searchText, value.value, 0, {
                         fromDate: filteredDates.fromDate
                           ? `${format(
                               new Date(filteredDates.fromDate),
@@ -1028,6 +1029,23 @@ export default function TableComponent({
                           : "",
                       });
                     }
+                    if (!showSearchbar) {
+                      handlePageEnd(searchText, value.value, 0, {
+                        fromDate: filteredDates.fromDate
+                          ? `${format(
+                              new Date(filteredDates.fromDate),
+                              "MM-dd-yyyy"
+                            )} 00:00:00`
+                          : "",
+                        toDate: filteredDates.toDate
+                          ? `${format(
+                              new Date(filteredDates.toDate),
+                              "MM-dd-yyyy"
+                            )} 23:59:59`
+                          : "",
+                      });
+                    }
+
                     setSearchFilter(value);
                   } else {
                     setSearchFilter([]);
