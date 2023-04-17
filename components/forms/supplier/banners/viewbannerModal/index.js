@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
-import Image from "next/image";
 import ModalComponent from "@/atoms/ModalComponent";
+import ImageCard from "@/atoms/ImageCard";
 
 const ViewBannerModal = ({
   viewModalOpen = {},
@@ -32,25 +32,22 @@ const ViewBannerModal = ({
               <Typography className="h-6 text-center color-secondary">
                 Image For Mobile
               </Typography>
-              <Image
-                src={viewData.bannerImageUrlForMobile}
+              <ImageCard
+                imgSrc={viewData.bannerImageUrlForMobile}
                 height={100}
                 width={100}
-                alt="alt"
-                layout="intrinsic"
-                className="d-flex justify-content-center align-items-center"
+                showClose={false}
               />
             </Grid>
             <Grid item>
               <Typography className="h-6 text-center color-secondary">
                 Image For Web
               </Typography>
-              <Image
-                src={viewData.bannerImageUrlForWeb}
+              <ImageCard
+                imgSrc={viewData.bannerImageUrlForWeb}
                 height={100}
                 width={100}
-                alt="alt"
-                layout="intrinsic"
+                showClose={false}
               />
             </Grid>
           </Grid>
@@ -75,7 +72,7 @@ const ViewBannerModal = ({
                 <Typography className="">{viewData.displayPage}</Typography>
               </Grid>
             </Grid>
-            <Grid container className="py-2" xs={12}>
+            {/* <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
                 <Typography className="fw-bold">Button Label </Typography>
               </Grid>
@@ -83,7 +80,7 @@ const ViewBannerModal = ({
               <Grid item sm={6} display="flex" justifyContent="start">
                 <Typography className="">{viewData.buttonName}</Typography>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid container className="py-2" xs={12}>
               <Grid item sm={5} display="flex" justifyContent="end">
                 <Typography className="fw-bold">From Date</Typography>

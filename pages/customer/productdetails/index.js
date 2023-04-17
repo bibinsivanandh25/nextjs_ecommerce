@@ -161,7 +161,6 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
     }
   };
   const [masterVariation, setMasterVariation] = useState([]);
-
   const dispatch = useDispatch();
   const route = useRouter();
 
