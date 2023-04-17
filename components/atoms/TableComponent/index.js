@@ -999,6 +999,7 @@ export default function TableComponent({
                 label={customDropdownLabel}
                 value={customDropdownValue}
                 onDropdownSelect={(value) => {
+                  
                   onCustomDropdownChange(value);
                 }}
               />

@@ -4,7 +4,7 @@ import TableComponent from "components/atoms/TableComponent";
 import Image from "next/image";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import toastify from "services/utils/toastUtils";
-import { useState, useEffect, useSelector } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Paper } from "@mui/material";
 import AcceptandConfirmAddress from "components/forms/supplier/myorder/acceptandconfirmaddress";
 import CustomIcon from "services/iconUtils";
@@ -17,6 +17,7 @@ import {
   cancelOrderFromSupplier,
   getAllnewOrders,
 } from "services/supplier/myorders/newOrders";
+import { useSelector } from "react-redux";
 
 // import logo from "../../../../../public/assets/logo.jpeg";
 
@@ -53,7 +54,7 @@ const filterData = [
   },
 ];
 const AcceptandConfirmOrder = () => {
-  const { supplierId } = useSelector((state) => state.user);
+  // const { supplierId } = useSelector((state) => state.user);
   const [newOrderData, setnewOrderData] = useState([]);
   const [dropDownValue, setDropDownValue] = useState();
   const [showConfirmAdress, setshowConfirmAdress] = useState(false);
@@ -81,6 +82,7 @@ const AcceptandConfirmOrder = () => {
   ]);
 
   const route = useRouter();
+  const { supplierId } = useSelector((state) => state.user);
 
   const columns = [
     {
@@ -408,7 +410,7 @@ const AcceptandConfirmOrder = () => {
           >
             <TableComponent
               filterList={filterData}
-              table_heading={`${orderCount} New Orders`}
+              table_heading={`${orderCount || 0} New Orders`}
               columns={columns}
               tableRows={newOrderData}
               OnSelectionChange={(item) => {
