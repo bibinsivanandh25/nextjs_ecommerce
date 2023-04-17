@@ -2,7 +2,6 @@
 /* eslint-disable no-use-before-define */
 import { Paper } from "@mui/material";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import CustomIcon from "services/iconUtils";
 import toastify from "services/utils/toastUtils";
 import { deleteBanner, getAllData } from "services/supplier/banners";
@@ -11,6 +10,7 @@ import { useSelector } from "react-redux";
 import TableComponent from "@/atoms/TableComponent";
 import CreateBanner from "@/forms/supplier/banners/CreateBanners";
 import ViewBannerModal from "@/forms/supplier/banners/viewbannerModal";
+import ImageCard from "@/atoms/ImageCard";
 
 const displayName = [
   { id: "Home", label: "Home" },
@@ -67,15 +67,6 @@ const columns = [
   },
   {
     id: "col6",
-    label: "Button",
-    //   minWidth: 50,
-    align: "center",
-    data_align: "center",
-    data_classname: "",
-    // data_style: { paddingLeft: "7%" },
-  },
-  {
-    id: "col7",
     label: "Created Date & Time",
     //   minWidth: 50,
     align: "center",
@@ -84,7 +75,7 @@ const columns = [
     // data_style: { paddingLeft: "7%" },
   },
   {
-    id: "col8",
+    id: "col7",
     label: "Start Date & Time",
     //   minWidth: 50,
     align: "center",
@@ -93,7 +84,7 @@ const columns = [
     // data_style: { paddingLeft: "7%" },
   },
   {
-    id: "col9",
+    id: "col8",
     label: "End Date & Time",
     //   minWidth: 50,
     align: "center",
@@ -102,7 +93,7 @@ const columns = [
     // data_style: { paddingLeft: "7%" },
   },
   {
-    id: "col10",
+    id: "col9",
     label: "Status",
     //   minWidth: 50,
     align: "center",
@@ -111,7 +102,7 @@ const columns = [
     // data_style: { paddingLeft: "7%" },
   },
   {
-    id: "col11",
+    id: "col10",
     label: "Action",
     //   minWidth: 50,
     align: "center",
@@ -126,7 +117,7 @@ const Banners = () => {
     bannerId: "",
     url: null,
     displayPage: null,
-    buttonlable: null,
+    // buttonlable: null,
     startdate: "",
     enddate: "",
     starttime: "",
@@ -150,11 +141,12 @@ const Banners = () => {
           id: index + 1,
           col1: index + 1,
           col2: item.bannerImageUrlForWeb ? (
-            <Image
-              src={item.bannerImageUrlForWeb}
-              height={70}
-              width={70}
-              alt="No Image"
+            <ImageCard
+              imgSrc={item.bannerImageUrlForWeb}
+              height={60}
+              width={100}
+              showClose={false}
+              elevation={0}
             />
           ) : (
             "--"
@@ -168,18 +160,17 @@ const Banners = () => {
           ) : (
             "--------"
           ),
-          col6: item.buttonName ? item.buttonName : "--",
-          col7: item.createdAt
-            ? new Date(item.createdAt).toLocaleString()
+          col6: item.createdDate
+            ? new Date(item.createdDate).toLocaleString()
             : "--",
-          col8: item.startDateTime
+          col7: item.startDateTime
             ? new Date(item.startDateTime).toLocaleString()
             : "--",
-          col9: item.endDateTime
+          col8: item.endDateTime
             ? new Date(item.endDateTime).toLocaleString()
             : "--",
-          col10: item.status,
-          col11: (
+          col9: item.status,
+          col10: (
             <div className="d-flex justify-content-center align-items-center">
               <CustomIcon
                 className="fs-5"
@@ -278,10 +269,10 @@ const Banners = () => {
           label: selectedData.navigationUrl,
         },
         displayPage: getDisplayPage(selectedData.displayPage),
-        buttonlable: {
-          id: selectedData.buttonName,
-          label: selectedData.buttonName,
-        },
+        // buttonlable: {
+        //   id: selectedData.buttonName,
+        //   label: selectedData.buttonName,
+        // },
         startdate: format(startDate, "yyyy-MM-dd"),
         enddate: format(endDate, "yyyy-MM-dd"),
         starttime: `${startHr <= 9 ? `0${startHr}` : `${startHr}`}:${

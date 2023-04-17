@@ -70,7 +70,7 @@ const ReportLayout = ({
     const rows = [...tableRows];
     if (val.label === "Sort By Sale Count") {
       sortCol = "col2";
-    } else if (val.label === "Sort By Date") {
+    } else if (val.label === "Sort By Month") {
       sortCol = "id";
     }
 
@@ -328,7 +328,7 @@ const ReportLayout = ({
                     getSelectedValue={(item) => {
                       if (
                         item.label == "Sort By Sale Count" ||
-                        item.label == "Sort By Date"
+                        item.label == "Sort By Month"
                       ) {
                         sortTable(item);
                       }

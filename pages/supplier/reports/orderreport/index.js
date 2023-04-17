@@ -213,7 +213,7 @@ const OrderReport = () => {
         ]}
         doughnutData={monthDoughnutChart}
         detailSelectList={getListYear()}
-        detailMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
+        detailMenuList={["Sort By Sale Count", "Sort By Month", "Download"]}
         handleMonthTableYear={(e) => {
           setMonthCurrentYear({
             value: e.target.value,

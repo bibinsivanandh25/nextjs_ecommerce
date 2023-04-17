@@ -23,10 +23,10 @@ const displayName = [
   { id: "QUIZ", label: "Quiz" },
   { id: "SCRATCH_CARD", label: "Scratch Card" },
 ];
-const buttonLabel = [
-  { id: "Shop Now", label: "Shop Now" },
-  { id: "Click Now", label: "Click Now" },
-];
+// const buttonLabel = [
+//   { id: "Shop Now", label: "Shop Now" },
+//   { id: "Click Now", label: "Click Now" },
+// ];
 const CreateBanner = ({
   showModal = false,
   setShowModal = () => {},
@@ -70,7 +70,7 @@ const CreateBanner = ({
   const [error, setError] = useState({
     url: "",
     displayPage: "",
-    buttonlable: "",
+    // buttonlable: "",
     startdate: "",
     enddate: "",
     starttime: "",
@@ -89,7 +89,7 @@ const CreateBanner = ({
     const errorObj = {
       url: "",
       displayPage: "",
-      buttonlable: "",
+      // buttonlable: "",
       startdate: "",
       enddate: "",
       starttime: "",
@@ -101,7 +101,7 @@ const CreateBanner = ({
     const {
       url,
       displayPage,
-      buttonlable,
+      // buttonlable,
       startdate,
       enddate,
       starttime,
@@ -118,10 +118,10 @@ const CreateBanner = ({
       flag = false;
       errorObj.displayPage = validateMessage.field_required;
     }
-    if (buttonlable === null) {
-      flag = false;
-      errorObj.buttonlable = validateMessage.field_required;
-    }
+    // if (buttonlable === null) {
+    //   flag = false;
+    //   errorObj.buttonlable = validateMessage.field_required;
+    // }
     if (startdate.length == 0) {
       flag = false;
       errorObj.startdate = validateMessage.field_required;
@@ -181,7 +181,7 @@ const CreateBanner = ({
     setFormData({
       url: null,
       displayPage: null,
-      buttonlable: null,
+      // buttonlable: null,
       startdate: "",
       enddate: "",
       starttime: "",
@@ -192,7 +192,7 @@ const CreateBanner = ({
     setError({
       url: "",
       displayPage: "",
-      buttonlable: "",
+      // buttonlable: "",
       startdate: "",
       enddate: "",
       starttime: "",
@@ -229,7 +229,7 @@ const CreateBanner = ({
         bannerImageUrlForMobile: mobileImages?.data,
         panelName: "SUPPLIER",
         navigationUrl: formData.url.label,
-        buttonName: formData.buttonlable.label,
+        // buttonName: formData.buttonlable.label,
         displayPage: formData.displayPage.id,
         startDateTime: fromDate.toString(),
         endDateTime: toDate.toString(),
@@ -282,7 +282,7 @@ const CreateBanner = ({
           ? mobileImages.data
           : formData.mobileimage,
         navigationUrl: formData.url.label,
-        buttonName: formData.buttonlable.label,
+        // buttonName: formData.buttonlable.label,
         displayPage: formData.displayPage.label,
         startDateTime: fromDate.toString(),
         endDateTime: toDate.toString(),
@@ -466,7 +466,7 @@ const CreateBanner = ({
               helperText={error.displayPage}
             />
           </Grid>
-          <Grid item sm={12}>
+          {/* <Grid item sm={12}>
             <SimpleDropdownComponent
               inputlabelshrink
               value={formData.buttonlable}
@@ -481,7 +481,7 @@ const CreateBanner = ({
               error={error.buttonlable !== ""}
               helperText={error.buttonlable}
             />
-          </Grid>
+          </Grid> */}
           <Grid container className="mx-3 my-2" alignSelf="center">
             <Grid container item md={6} alignItems="center">
               <Grid item sm={3}>

@@ -17,6 +17,7 @@ const ImageCard = ({
   preventChooseFile = false,
   handleCardClick = () => {},
   id = "",
+  elevation = 4,
 }) => {
   const inputRef = useRef(null);
   return (
@@ -35,7 +36,7 @@ const ImageCard = ({
       )}
       <Card
         id={id}
-        elevation={4}
+        elevation={elevation}
         sx={{ width: `${width}px`, height: `${height}px` }}
         className="p-0 d-flex align-items-center justify-content-center "
         onClick={() => {
