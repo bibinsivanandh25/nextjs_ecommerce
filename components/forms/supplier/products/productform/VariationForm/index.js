@@ -29,7 +29,7 @@ const VariationForm = forwardRef(
         id: "countryOfOrigin",
         options: [],
         value: null,
-        required: true,
+        // required: true,
       },
     ];
     const countries = Country.getAllCountries();
