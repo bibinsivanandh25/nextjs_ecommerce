@@ -447,22 +447,7 @@ const StoreSettings = () => {
           window.URL.revokeObjectURL(url);
           toastify("your file has downloaded!", "success");
         })
-        .catch((err) => err);
-      // .then((blob) => {
-      //   console.log(blob, "bloc");
-      //   const url = window.URL.createObjectURL(blob);
-      //   const a = document.createElement("a");
-      //   a.style.display = "none";
-      //   a.href = url;
-      //   // the filename you want
-      //   a.download = `${formValues.storeName
-      //     .toString()
-      //     .replaceAll(" ", "_")}.pdf`;
-      //   document.body.appendChild(a);
-      //   a.click();
-      //   window.URL.revokeObjectURL(url);
-      //   toastify("your file has downloaded!", "success");
-      // })
+        .catch((err) => toastify(err?.message, "error"));
     } catch (err) {
       toastify(
         "Unable to process your request, please try again later!!",

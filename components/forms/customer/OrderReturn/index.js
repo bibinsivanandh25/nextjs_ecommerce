@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -23,6 +24,7 @@ const OrderReturn = ({
   setShowReturnOrder = () => {},
   setgetOrderApiCall = () => {},
   getOrderApiCall,
+  returnedData,
 }) => {
   const user = useSelector((state) => state.user);
   const address = useSelector((state) => state.customer.addressDetails);
@@ -36,51 +38,69 @@ const OrderReturn = ({
     setProducts([...returnProducts]);
   }, [returnProducts]);
   const getOrderSummary = () => {
-    return selectedProduct.map((ele) => {
-      return (
-        <Box className="mx-2 my-3">
-          <Grid container key={ele.orderId}>
-            <Grid item sm={2} className="">
-              <Image src={ele.productImage} height={85} width={85} />
+    return (
+      returnedData.length > 0 ||
+      selectedProduct.map((ele) => {
+        return (
+          <Box className="mx-2 my-3">
+            <Grid container key={ele.orderId}>
+              <Grid item sm={2} className="">
+                <Image src={ele.productImage} height={85} width={85} />
+              </Grid>
+              <Grid item sm={7}>
+                <Typography className="theme_color">
+                  Supplier Name: {ele.businessName}
+                </Typography>
+                <Typography className="h-5  my-1">{ele.title}</Typography>
+                <Typography component="span" className="h-5 me-2">
+                  Order Type :
+                </Typography>
+                <Typography component="span" className="h-5">
+                  {ele.orderType}
+                </Typography>
+                <Typography className="h-5">
+                  Return Charges :{" "}
+                  <span className="text-danger">₹dummy data</span>
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item sm={7}>
-              <Typography className="theme_color">
-                Supplier Name: {ele.businessName}
-              </Typography>
-              <Typography className="h-5  my-1">{ele.title}</Typography>
-              <Typography component="span" className="h-5 me-2">
-                Order Type :
-              </Typography>
-              <Typography component="span" className="h-5">
-                Dummy data
-              </Typography>
-              <Typography className="h-5">
-                Return Charges :{" "}
-                <span className="text-danger">₹dummy data</span>
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-      );
-    });
+          </Box>
+        );
+      })
+    );
   };
 
-  const returnProductFunction = async (ele) => {
+  const returnProductFunction = async () => {
     let payload = [];
-    selectedProduct.forEach((val) => {
-      payload = [
-        ...payload,
-        {
-          orderId: val.orderId,
-          emailAddress: user.emailId,
-          addressId: ele.addressId,
-          reason: val?.dropDownValue?.value,
-          productImage: val.productImage,
-        },
-      ];
-    });
+    returnedData.length > 0
+      ? returnedData.forEach((val) => {
+          payload = [
+            ...payload,
+            {
+              orderId: val.orderId,
+              emailAddress: user.emailId,
+              addressId: val.pickupAddressId,
+              reason: val?.dropDownValue?.value,
+              productImage: val.productImage,
+              productVariartionId: val.productVariationId,
+            },
+          ];
+        })
+      : selectedProduct.forEach((val) => {
+          payload = [
+            ...payload,
+            {
+              orderId: val.orderId,
+              emailAddress: user.emailId,
+              addressId: val.pickupAddressId,
+              reason: val?.dropDownValue?.value,
+              productImage: val.productImage,
+              productVariartionId: val.productVariationId,
+            },
+          ];
+        });
     // const reqBody = { orderActions: [...payload] };
-    const returnAction = "RETURN";
+    const returnAction = "RETURNED";
     const { data, errRes } = await returnProduct(payload, returnAction);
     if (data) {
       setreturnSucceccData(data.data);

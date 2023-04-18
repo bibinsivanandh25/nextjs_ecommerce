@@ -27,9 +27,7 @@ const saveSupplierData = (payload) => {
 };
 const getOrderHistory = (payload) => {
   return serviceUtil
-    .post(
-      `order-payment/supplier/orders?orderStatus=${payload.status}&pageNumber=${payload.pageNumber}&pageSize=5&supplierId=${payload.supplierId}`
-    )
+    .post(`order-payment/supplier/orders`, payload)
     .then((res) => {
       const data = res && res.data;
       return { data };

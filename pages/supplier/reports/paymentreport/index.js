@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 import { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   getMonthWiseBarChart,
   getMonthWiseChart,
@@ -68,53 +68,44 @@ const PaymentReports = () => {
     value: "COMPLETED",
     label: "COMPLETED",
   });
-  const [pageNumber, setPageNumber] = useState(0);
 
-  // const user = useSelector((state) => state.user);
-  const getCardData = async () => {
-    const { data, err } = await getPaymentReportCardData();
-    const temp = {
-      totalPaymentAmount: "9008982",
-      noOfPaymentsRecieved: "29000",
-      refunded: "930",
-      pendingPayments: "690",
-    };
-    carddata.forEach((item) => {
-      Object.entries(temp).forEach((val) => {
-        if (item.title === val[0]) {
-          item.value = val[1];
-        }
-      });
-    });
-    setCardData(carddata);
+  const user = useSelector((state) => state.user);
+  const getCardData = async (id) => {
+    const { data, err } = await getPaymentReportCardData(id);
     if (data) {
-      console.log(data);
+      carddata.forEach((item) => {
+        Object.entries(data).forEach((val) => {
+          if (item.title === val[0]) {
+            item.value = val[1];
+          }
+        });
+      });
+      setCardData(carddata);
     }
     if (err) {
-      console.log(err, "err");
+      setCardData([]);
     }
   };
-  const getBarChartData = async (year) => {
-    console.log(year, "year");
-    const { data, err } = await getMonthWiseBarChart(year);
-    const chart = [
-      442.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    ];
-    setBarChartData(chart);
-    console.log(data, err);
+  const getBarChartData = async (id, year) => {
+    const { data, err } = await getMonthWiseBarChart(id, year);
+    if (data) {
+      setBarChartData(data);
+    }
+    if (err) {
+      setBarChartData([]);
+    }
   };
-  const getDoughnutChartData = async (year) => {
-    const { data, err } = await getMonthWiseChart(year);
-    const chart = [
-      50.0, 0.0, 20.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0,
-    ];
-    setMonthDoughnutChart(chart);
-    console.log(data, err);
+  const getDoughnutChartData = async (id, year) => {
+    const { data, err } = await getMonthWiseChart(id, year);
+    if (data) {
+      setMonthDoughnutChart(data);
+    }
+    if (err) {
+      setMonthDoughnutChart([]);
+    }
   };
-  const getMonthWIseTableData = async (year) => {
-    const { data } = await getPaymentMonthDetails(year);
-    console.log(data, "data");
-    const tableData = [0, 12, 34, 1, 4, 5, 13, 43, 55, 10, 11, 12];
+  const getMonthWIseTableData = async (id, year) => {
+    const { data } = await getPaymentMonthDetails(id, year);
     const temp = [];
     const month = [
       "January",
@@ -130,14 +121,16 @@ const PaymentReports = () => {
       "November",
       "December",
     ];
-    tableData.forEach((item, index) => {
-      temp.push({
-        id: index + 1,
-        col1: month[index],
-        col2: item,
+    if (data) {
+      data.forEach((item, index) => {
+        temp.push({
+          id: index + 1,
+          col1: month[index],
+          col2: item,
+        });
       });
-    });
-    setMonthTable(temp);
+      setMonthTable(temp);
+    }
   };
   const mapStateToProps = (data) => {
     const temp = [];
@@ -154,121 +147,49 @@ const PaymentReports = () => {
     });
     return temp;
   };
-  const getSummaryTable = async (year, page, status) => {
+  const getSummaryTable = async (id, year, status) => {
     const payload = {
       year,
-      status: status.toUpperCase(),
-      filterType: "date",
-      pageSize: 10,
-      pageCount: page,
+      status: status === "pending" ? "INITIATED" : status.toUpperCase(),
+      orderedStoreOwnerId: id,
     };
 
-    const { data } = await getSummaryData(payload);
-    console.log(data, "data");
-    const Data = [
-      {
-        paymentId: "123",
-        productName: "Product A",
-        customerName: "John Doe",
-        date: "29 Mar 2022",
-        amount: 100.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-      {
-        paymentId: "124",
-        productName: "Product D",
-        customerName: "Doe",
-        date: "12 Mar 2022",
-        amount: 400.0,
-        status: "paid",
-      },
-    ];
-    if (page === 0) {
-      setPageNumber(1);
-      setSummaryTableData(mapStateToProps(Data));
+    const { data, err } = await getSummaryData(payload);
+    if (data) {
+      setSummaryTableData(mapStateToProps(data));
     }
-    if (page !== 0) {
-      setPageNumber((pre) => pre + 1);
-      setSummaryTableData((pre) => [...pre, ...mapStateToProps(Data)]);
+    if (err) {
+      setSummaryTableData([]);
     }
   };
   useEffect(() => {
-    getSummaryTable(summaryYear.value, 0, summaryStatus.value);
-  }, [summaryYear.value, summaryStatus.value]);
+    if (user.supplierId && summaryYear.value && summaryStatus.value) {
+      getSummaryTable(user.supplierId, summaryYear.value, summaryStatus.value);
+    }
+  }, [user, summaryYear.value, summaryStatus.value]);
   useEffect(() => {
-    getMonthWIseTableData(monthCurrentYear.value);
-  }, [monthCurrentYear.value]);
+    if (user.supplierId && monthCurrentYear.value) {
+      getMonthWIseTableData(user.supplierId, monthCurrentYear.value);
+    }
+  }, [user, monthCurrentYear.value]);
   useEffect(() => {
-    getBarChartData(currentYear.value);
-  }, [currentYear.value]);
+    if (user.supplierId && currentYear.value) {
+      getBarChartData(user.supplierId, currentYear.value);
+    }
+  }, [user, currentYear.value]);
   useEffect(() => {
-    getDoughnutChartData(doughnutCurrentYear.value);
-  }, [doughnutCurrentYear.value]);
+    if (user.supplierId && doughnutCurrentYear.value) {
+      getDoughnutChartData(user.supplierId, doughnutCurrentYear.value);
+    }
+  }, [user, doughnutCurrentYear.value]);
   useEffect(() => {
-    getCardData();
-  }, []);
+    if (user.supplierId) {
+      getCardData(user.supplierId);
+    }
+  }, [user]);
   return (
     <div>
       <ReportLayout
-        handleSummaryPageEnd={(_searchText, _filterText, page = pageNumber) => {
-          getSummaryTable(summaryYear.value, page, summaryStatus.value);
-        }}
         barGraphLabels={[
           "Jan",
           "Feb",
@@ -342,27 +263,27 @@ const PaymentReports = () => {
           },
         ]}
         Detailrows={[...monthTable]}
-        detailMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
+        detailMenuList={["Sort By Sale Count", "Sort By Month", "Download"]}
         summaryMenuList={["Sort By Price", "Sort By Date", "Download"]}
         summaryStatusList={[
           {
             id: 1,
-            value: "completed",
+            value: "COMPLETED",
             label: "completed",
           },
           {
             id: 2,
-            value: "pending",
+            value: "INITIATED",
             label: "pending",
           },
           {
             id: 3,
-            value: "refunded",
+            value: "REFUNDED",
             label: "refunded",
           },
           {
             id: 4,
-            value: "cancelled",
+            value: "CANCELLED",
             label: "cancelled",
           },
         ]}
@@ -425,6 +346,7 @@ const PaymentReports = () => {
         }}
         summaryStatus={summaryStatus}
         handleSummaryStatus={(e) => {
+          console.log(e.target.value, " e.target.value");
           setSummaryStatus({
             value: e.target.value,
             label: e.target.value,

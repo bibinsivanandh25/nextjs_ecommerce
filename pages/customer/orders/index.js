@@ -48,7 +48,6 @@ const statusList = [
 const Orders = () => {
   const user = useSelector((state) => state.customer);
   const [selectedLink, setSelectedLink] = useState("");
-  console.log(selectedLink, "selectedLink");
   const [sellerFeedbackmModal, setSellerFeedbackModal] = useState(false);
   const [productFeedbackType, setProductFeedbackType] = useState("");
   const [feedbackRating, setFeedbackRating] = useState(0);
@@ -61,6 +60,7 @@ const Orders = () => {
   const [getOrderApiCall, setgetOrderApiCall] = useState(false);
   const [openDateModal, setopenDateModal] = useState(false);
   const [searchKeyword, setsearchKeyword] = useState("");
+  const [returnedData, setreturnedData] = useState([]);
   const [orderFilter, setorderFilter] = useState({
     status: {
       label: "Pending",
@@ -74,7 +74,6 @@ const Orders = () => {
     label: "Last 30 days",
     value: "MONTH",
   });
-  console.log(durationDrowdown, "durationDrowdown");
   useEffect(() => {
     setsearchKeyword("");
   }, [selectedLink]);
@@ -161,10 +160,8 @@ const Orders = () => {
       pageCount: 0,
       pageSize: 50,
     };
-    console.log(payload.fromDate, "payload");
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
-      // setProducts([]);
       const temp = [];
       data.data.forEach((item) => {
         temp.push({
@@ -173,21 +170,23 @@ const Orders = () => {
           orderId: item.orderId,
           businessName: item.businessName,
           productImage: item.productImage,
-          productId: item.productId,
+          productVariationId: item.productVariationId,
           variationDetails: item.variationPropertyPojos,
-          orderStatus: item.orderStatus,
+          orderDeliveryStatus: item.orderDeliveryStatus,
           orderDate: item.orderDate,
-          productOwnerId: item.productOwnerId,
+          orderedStoreOwnerId: item.orderedStoreOwnerId,
           returnUptoDate: item?.returnUptoDate,
           // rating: item.rating,
           productTitle: item.productTitle,
           shippingAddressId: item.shippingAddressId,
+          pickupAddressId: item.pickupAddressId,
+          orderType: item.orderType,
           // price: item.price,
+          billingAddressId: item.billingAddressId,
           isSelected: false,
           dropDownValue: null,
           variationId: item.productId,
           error: false,
-          productVariationId: item.productVariationId,
         });
       });
 
@@ -579,7 +578,7 @@ const Orders = () => {
                 <Grid className="d-flex justify-content-start py-2">
                   <Grid>
                     <Typography className="fs-14">
-                      Ordered on{" "}
+                      Ordered on
                       {EachProductDetails?.orderedDate?.replace("T", " ")}
                     </Typography>
                   </Grid>
@@ -630,7 +629,7 @@ const Orders = () => {
                       Order Summary
                     </Typography>
                     <Grid container>
-                      <Grid item xs={6} md={6}>
+                      <Grid item xs={7} md={7}>
                         <Typography>Item(s) subtotal:</Typography>
                         <Typography>Shipping:</Typography>
                         <Typography>Total:</Typography>
@@ -639,7 +638,7 @@ const Orders = () => {
                           Grand Total:
                         </Typography>
                       </Grid>
-                      <Grid item xs={6} md={6}>
+                      <Grid item xs={5} md={5}>
                         <Typography>
                           Rs: {EachProductDetails.itemsSubTotal}
                         </Typography>
@@ -650,6 +649,7 @@ const Orders = () => {
                         <Typography>
                           Rs: {EachProductDetails.promotionApplied}
                         </Typography>
+
                         <Typography className="fw-600 py-2">
                           Rs: {EachProductDetails.grandTotal}
                         </Typography>
@@ -804,6 +804,7 @@ const Orders = () => {
                                     value: val?.value,
                                   },
                                 });
+                                setProducts([]);
                               }}
                               value={orderFilter.status}
                             />
@@ -833,8 +834,8 @@ const Orders = () => {
                       </Grid>
                     </Grid>
                     <MyOrders
-                      showCancelBtn={orderFilter?.status?.value === "PENDING"}
-                      showReturnBtn={orderFilter?.status?.value === "COMPLETED"}
+                      showCancelBtn={orderFilter?.status?.value === "INITIATED"}
+                      showReturnBtn={orderFilter?.status?.value === "DELIVERED"}
                       // showReturnBtn={selectedProduct.forEach((val) => {
                       //   parse(val?.returnUptoDate, "MM-dd-yyyy", new Date()) >
                       //     new Date();
@@ -853,6 +854,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -906,6 +909,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -987,6 +992,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -1068,6 +1075,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -1084,6 +1093,8 @@ const Orders = () => {
           setShowReturnOrder={setShowReturnOrder}
           setgetOrderApiCall={setgetOrderApiCall}
           getOrderApiCall={getOrderApiCall}
+          returnedData={returnedData}
+          setreturnedData={setreturnedData}
         />
       )}
     </Box>

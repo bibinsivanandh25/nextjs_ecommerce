@@ -1,8 +1,8 @@
 import serviceUtil from "services/utils";
 
-const getPaymentReportCardData = () => {
+const getPaymentReportCardData = (id) => {
   return serviceUtil
-    .get(`order-payment/paymet-details`)
+    .get(`order-payment/paymet-details?supplierId=${id}`)
     .then((res) => {
       const { data } = res.data;
       return { data };
@@ -11,9 +11,9 @@ const getPaymentReportCardData = () => {
       return { err };
     });
 };
-const getMonthWiseBarChart = (year) => {
+const getMonthWiseBarChart = (id, year) => {
   return serviceUtil
-    .get(`order-payment/paymet-montwise-details?year=${year}`)
+    .get(`order-payment/paymet-montwise-details?year=${year}&supplierId=${id}`)
     .then((res) => {
       const { data } = res.data;
       return { data };
@@ -22,9 +22,11 @@ const getMonthWiseBarChart = (year) => {
       return { err };
     });
 };
-const getMonthWiseChart = (year) => {
+const getMonthWiseChart = (id, year) => {
   return serviceUtil
-    .get(`order-payment/paymet-montwise-percentage?year=${year}`)
+    .get(
+      `order-payment/paymet-montwise-percentage?year=${year}&supplierId=${id}`
+    )
     .then((res) => {
       const { data } = res.data;
       return { data };
@@ -33,9 +35,9 @@ const getMonthWiseChart = (year) => {
       return { err };
     });
 };
-const getPaymentMonthDetails = (year) => {
+const getPaymentMonthDetails = (id, year) => {
   return serviceUtil
-    .get(`order-payment/paymet-monthwise-sale?year=${year}`)
+    .get(`order-payment/paymet-monthwise-sale?year=${year}&supplierId=${id}`)
     .then((res) => {
       const { data } = res.data;
       return { data };

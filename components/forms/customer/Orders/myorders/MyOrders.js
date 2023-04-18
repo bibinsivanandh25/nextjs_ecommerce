@@ -120,6 +120,8 @@ const MyOrders = ({
   setSelectedProduct,
   setgetOrderApiCall = () => {},
   getOrderApiCall,
+  returnedData,
+  setreturnedData = () => {},
 }) => {
   const dispatch = useDispatch();
   const route = useRouter();
@@ -415,6 +417,8 @@ const MyOrders = ({
           selectedOldProduct={selectedOldProduct}
           setgetOrderApiCall={setgetOrderApiCall}
           getOrderApiCall={getOrderApiCall}
+          returnedData={returnedData}
+          setreturnedData={setreturnedData}
         />
       ) : null}
     </Box>
