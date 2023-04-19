@@ -23,7 +23,7 @@ import Loading from "../components/organism/Loading";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+// import { ReactQueryDevtools } from "react-query/devtools";
 import { ChakraProvider } from "@chakra-ui/react";
 // import Image from "next/image";
 // import Loader from "public/assets/loader.gif";
@@ -80,7 +80,7 @@ function MyApp({ Component, pageProps, router }) {
             <ToastComponent />
             <Loading />
             <Layout Component={Component} pageProps={pageProps} />
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           </QueryClientProvider>
         </SessionProvider>
       );
