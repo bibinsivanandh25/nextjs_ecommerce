@@ -77,6 +77,17 @@ const updateNotification = (payload) => {
       return { err };
     });
 };
+const sendNotification = (id) => {
+  return serviceUtil
+    .post(`notification/send-notifications?notificationDetailsId=${id}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getSupplierDropdown,
   createNotificationApiCall,
@@ -85,4 +96,5 @@ export {
   deleteNotificationApiCall,
   getNotificationById,
   updateNotification,
+  sendNotification,
 };

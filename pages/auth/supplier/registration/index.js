@@ -16,6 +16,8 @@ const Registration = () => {
     businessName: "",
     mail: "",
     mobile: "",
+    country: { value: "India", label: "India" },
+    state: "",
     city: null,
     mainCat: [],
     gstin: "",
