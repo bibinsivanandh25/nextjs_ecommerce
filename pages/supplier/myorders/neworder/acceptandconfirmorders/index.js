@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
