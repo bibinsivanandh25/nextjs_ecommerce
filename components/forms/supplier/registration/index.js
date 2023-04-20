@@ -21,6 +21,7 @@ const RegistrationForm = ({
   const [allCountry, setallCountry] = useState([]);
   const [allState, setallState] = useState([]);
   const [allCity, setallCity] = useState([]);
+  console.log(formValues?.city, "wurhgrwrgharhrharhrg");
   // const cities = City.getCitiesOfCountry("IN");
 
   // const citiesList = cities.map((ele) => ({
@@ -249,7 +250,7 @@ const RegistrationForm = ({
             inputlabelshrink
             value={formValues.country}
             size="small"
-            // helperText={errorObj.city}
+            // helperText={errorObj?.country}
           />
         </Grid>
 
@@ -272,7 +273,7 @@ const RegistrationForm = ({
             inputlabelshrink
             value={formValues.state}
             size="small"
-            // helperText={errorObj.city}
+            helperText={errorObj.state}
           />
         </Grid>
 
@@ -342,6 +343,45 @@ const RegistrationForm = ({
             inputlabelshrink
             helperText={errorObj.gstin}
             error={errorObj.gstin !== ""}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12}>
+          <InputBox
+            required
+            placeholder="PAN Card"
+            value={formValues.pan}
+            label="PAN"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                pan: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.pan}
+            error={errorObj.pan !== ""}
+          />
+        </Grid>
+        <Grid item md={6} sm={12}>
+          <InputBox
+            required
+            placeholder="Enter AADHAR Number"
+            value={formValues.aadharNumber}
+            label="AADHAR"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                aadharNumber: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.aadharNumber}
+            error={errorObj.aadharNumber !== ""}
           />
         </Grid>
         <Grid container item md={12}>

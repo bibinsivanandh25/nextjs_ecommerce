@@ -229,7 +229,8 @@ const Orders = () => {
       reviewerId: user.userId,
       // reviewerId: "CST1222000058",
       writtenReview: productReviewState.reviewText,
-      variationId: selectedProduct[0]?.variationId,
+      // variationId: selectedProduct[0]?.variationId,
+      variationId: selectedProduct[0]?.productVariationId,
       reviewMediaUrl: productReviewState.reviewImage,
       isDeleted: false,
     };
