@@ -383,7 +383,7 @@ const StoreSettings = () => {
       toastify(data.message, "success");
       getStoreInfo();
     } else if (err) {
-      toastify(err?.response?.data?.message);
+      toastify(err?.response?.data?.message, "error");
     }
   };
 

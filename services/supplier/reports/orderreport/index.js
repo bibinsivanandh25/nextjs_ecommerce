@@ -25,7 +25,7 @@ const getOrderChartData = (id, year) => {
 const getSummaryTableData = (id, year, pageNumber, status) => {
   return serviceUtil
     .get(
-      `users/reports/orders/summary?supplierId=${id}&year=${year}&pageNumber=${pageNumber}&pageSize=50&status=${status}`
+      `order-payment/reports/orders/summary?supplierId=${id}&year=${year}&pageSize=10&pageNumber=${pageNumber}&status=${status}`
     )
     .then((res) => {
       const { data } = res.data;
@@ -35,4 +35,22 @@ const getSummaryTableData = (id, year, pageNumber, status) => {
       return { err };
     });
 };
-export { getOrderReportCardData, getOrderChartData, getSummaryTableData };
+const getpieChartData = (id, year) => {
+  return serviceUtil
+    .get(
+      `order-payment/order-montwise-percentage?year=${year}&supplierId=${id}`
+    )
+    .then((res) => {
+      const { data } = res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+export {
+  getOrderReportCardData,
+  getOrderChartData,
+  getSummaryTableData,
+  getpieChartData,
+};
