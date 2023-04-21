@@ -302,7 +302,7 @@ const ProductCard = ({
         <Box className="">
           <Box className="">
             <Typography className="fw-bold h-5 text-center">
-              Rs. {item.price}
+              ₹ {item.price}
             </Typography>
             <Typography className="fw-bold h-6 text-center">
               (Actual Product Cost)
@@ -310,7 +310,7 @@ const ProductCard = ({
           </Box>
           <Box className={!item.salePriceWithLogistics ? "d-none" : ""}>
             <Typography className="fw-bold h-5 text-center">
-              Rs. {item.salePriceWithLogistics}
+              ₹ {item.salePriceWithLogistics}
             </Typography>
             <Typography className="fw-bold h-6 text-center">
               (with free delivery & Return)

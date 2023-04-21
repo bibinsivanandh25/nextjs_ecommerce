@@ -814,8 +814,8 @@ const MyProfile = () => {
               <Grid className="mt-2">
                 <ButtonComponent
                   disabled={
-                    !formValues.approved &&
-                    !isOtpVerified.mail &&
+                    !formValues.approved ||
+                    !isOtpVerified.mail ||
                     !isOtpVerified.phone
                   }
                   bgColor={
