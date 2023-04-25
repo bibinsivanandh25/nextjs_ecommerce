@@ -1,14 +1,17 @@
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { RemoveRedEye } from "@mui/icons-material";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
-import { getOrderSummary } from "services/orders";
+import { getOrderSummary, viewOrderSummery } from "services/orders";
 import { useEffect, useState } from "react";
 import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const OrderSummary = () => {
   const [tableRowData, settableRowData] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
+  const [viewData, setviewData] = useState({});
+  const [showView, setshowView] = useState(false);
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -110,7 +113,15 @@ const OrderSummary = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-
+  const viewSummery = async (orderId, variationId) => {
+    const { data, err } = await viewOrderSummery(orderId, variationId);
+    if (data) {
+      setviewData(data.data);
+      setshowView(true);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   const dataFormatToTable = (data) => {
     const temp = [];
     data.forEach((ele, ind) => {
@@ -129,7 +140,12 @@ const OrderSummary = () => {
         col11: (
           <div className="d-flex justify-content-around align-items-center text-secondary">
             {/* <Reply className="fs-5" /> */}
-            <RemoveRedEye onClick={() => {}} className="fs-5 cursor-pointer" />
+            <RemoveRedEye
+              onClick={() => {
+                viewSummery(ele.orderId, ele.productIds);
+              }}
+              className="fs-5 cursor-pointer"
+            />
             <MenuOption
               options={["Notify", "Add Comment"]}
               IconclassName="fs-5 cursor-pointer"
@@ -140,6 +156,21 @@ const OrderSummary = () => {
       });
     });
     return temp;
+  };
+  const formatViewScreen = (key, val) => {
+    return (
+      <Grid container className="p-1">
+        <Grid item md={5} sx={5}>
+          <Typography className="fw-500 fs-14">{key}</Typography>
+        </Grid>
+        <Grid item md={1} sx={1}>
+          <Typography>:</Typography>
+        </Grid>
+        <Grid item md={6} sx={6}>
+          <Typography className=" fs-14">{val}</Typography>
+        </Grid>
+      </Grid>
+    );
   };
   const getOrderSummaryFunction = async (page = pageNumber) => {
     const { data, err } = await getOrderSummary(page, 50);
@@ -174,6 +205,36 @@ const OrderSummary = () => {
           getOrderSummaryFunction(page);
         }}
       />
+      {showView && (
+        <ModalComponent
+          ModalTitle="View Order Summary"
+          open={showView}
+          onCloseIconClick={() => {
+            setshowView(false);
+          }}
+          showFooter={false}
+        >
+          <Grid className="p-2">
+            {formatViewScreen("Customer Id", viewData.customerId)}
+            {formatViewScreen("Customer Name", viewData.customerName)}
+            {formatViewScreen("Delivery Type", viewData.deliveryType)}
+            {formatViewScreen("Order Id", viewData.orderId)}
+            {formatViewScreen("Product Variation Id", viewData.productIds)}
+            {formatViewScreen("Order Status", viewData.orderStatus)}
+            {formatViewScreen("Ordered Date", viewData.orderedDateTime)}
+            {formatViewScreen("Payment Type", viewData.paymentType)}
+            {formatViewScreen("Supplier Id", viewData.supplierId)}
+            {formatViewScreen(
+              "Product Cost After Discount",
+              viewData.productCostAfterDiscount
+            )}
+            {formatViewScreen(
+              "Total Payment After Discount",
+              viewData.totalPaymentAfterDiscount
+            )}
+          </Grid>
+        </ModalComponent>
+      )}
     </div>
   );
 };

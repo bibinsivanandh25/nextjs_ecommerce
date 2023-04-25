@@ -294,6 +294,7 @@ const Fixedcommissionproducts = () => {
   const getAllPaymentDetails = async (search, date) => {
     const payload = {
       category: "FIXED_COMMISSION",
+      // category: "ZERO_COMMISSION",
       keyword: search || null,
       paymentStatus:
         ActiveTab == 1
