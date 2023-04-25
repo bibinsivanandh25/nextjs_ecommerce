@@ -12,12 +12,13 @@ import { useRouter } from "next/router";
 
 import OrderConfirmModal from "@/forms/supplier/myorder/orderconfirmodal";
 import ModalComponent from "@/atoms/ModalComponent";
-import InputBox from "@/atoms/InputBoxComponent";
+// import InputBox from "@/atoms/InputBoxComponent";
 import {
   cancelOrderFromSupplier,
   getAllnewOrders,
 } from "services/supplier/myorders/newOrders";
 import { useSelector } from "react-redux";
+import InputFieldWithChip from "@/atoms/InputWithChip";
 
 // import logo from "../../../../../public/assets/logo.jpeg";
 
@@ -64,6 +65,7 @@ const AcceptandConfirmOrder = () => {
     useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [categoryType, setCategoryType] = useState(null);
+  const [formValues, setformValues] = useState({ number: [] });
   const [orderCount, setorderCount] = useState(0);
   const [pageNumber, setpageNumber] = useState(0);
   const [progressBarSteps, setProgressBarSteps] = useState([
@@ -262,7 +264,6 @@ const AcceptandConfirmOrder = () => {
         ]);
       }
     } else if (err) {
-      console.log(err, "error");
       toastify(err?.response?.data?.err, "error");
     }
   };
@@ -283,15 +284,11 @@ const AcceptandConfirmOrder = () => {
     const modeOfOrders = [];
     item.forEach((id) => {
       newOrderData.forEach((ele) => {
-        console.log(ele, "ele");
         if (ele.id == id) {
           modeOfOrders.push(ele.col5);
-          console.log(modeOfOrders, "inside modeOfOrders");
         }
-        console.log("outside");
       });
     });
-    console.log(modeOfOrders, "modeOfOrders");
     const result = modeOfOrders.every(
       (category) => category === modeOfOrders[0]
     );
@@ -471,12 +468,27 @@ const AcceptandConfirmOrder = () => {
         footerClassName="justify-content-end"
       >
         <Box className="my-3">
-          <InputBox
+          {/* <InputBox
             placeholder={
               categoryType === "mobile"
                 ? "Enter IMEI Number"
                 : "Enter Serial Number"
             }
+          /> */}
+          <InputFieldWithChip
+            id="options"
+            // label="Values"
+            value={formValues.number}
+            // helperText={errorObj.values}
+            // error={errorObj.values.length}
+            inputlabelshrink
+            handleChange={(_, val) => {
+              setformValues((pre) => ({
+                ...pre,
+                number: [...val],
+              }));
+            }}
+            placeholder="Enter Options"
           />
         </Box>
       </ModalComponent>

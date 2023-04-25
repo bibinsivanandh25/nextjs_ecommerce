@@ -163,6 +163,7 @@ const Orders = () => {
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
       const temp = [];
+      setSelectedProduct([]);
       data.data.forEach((item) => {
         temp.push({
           // category: item.category,
@@ -222,6 +223,7 @@ const Orders = () => {
   }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
+      orderId: selectedProduct[0].orderId,
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
       reviewerName: user.customerName,
@@ -232,7 +234,6 @@ const Orders = () => {
       // variationId: selectedProduct[0]?.variationId,
       variationId: selectedProduct[0]?.productVariationId,
       reviewMediaUrl: productReviewState.reviewImage,
-      isDeleted: false,
     };
     const { data, errRes } = await customerProdFeedback(payload);
     if (data) {
@@ -419,8 +420,8 @@ const Orders = () => {
                       // style={{ border: "1px dotted gray" }}
                     >
                       <Box
-                        className="d-flex justify-content-center"
-                        style={{ height: "100px", alignItems: "center" }}
+                        // className="d-flex justify-content-center"
+                        style={{ height: "100px" }}
                       >
                         {/* <Box> */}
                         {/* <input

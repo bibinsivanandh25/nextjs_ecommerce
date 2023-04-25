@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
 import InputBox from "components/atoms/InputBoxComponent";
@@ -10,6 +11,7 @@ import { getSupplierDetailsBySupplierId } from "services/supplier/myaccount/mypr
 import {
   addNewAddress,
   updateAddress,
+  validPincode,
 } from "services/supplier/myaccount/pickupaddress";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
@@ -252,7 +254,18 @@ const AddAddressModal = (props) => {
   useEffect(() => {
     getAllCountryFunction();
   }, []);
-
+  // const validPincodeFunction = async () => {
+  //   const payload = [{ Input_Pincode: formValues.pinCode }];
+  //   const { status, error } = await validPincode(payload);
+  //   if (status) {
+  //     console.log(data.data[0].status, "status");
+  //     status.data.forEach((val) => {
+  //       setpincodeResponse(val.status);
+  //     });
+  //   } else if (err) {
+  //     toastify(err.message, "error");
+  //   }
+  // };
   const validateForm = () => {
     const errObj = { ...error };
     inputFields.forEach((el) => {
@@ -297,39 +310,51 @@ const AddAddressModal = (props) => {
   const handleSave = async () => {
     const isValid = validateForm();
     if (isValid) {
-      if (type === "add") {
-        const temp = JSON.parse(JSON.stringify(formValues));
-        delete temp.addressId;
-        const payload = {
-          ...temp,
-          supplierId: user.length ? user : supplierId,
-        };
-        const { data, err } = await addNewAddress(payload, supplierId);
-        if (data) {
-          toastify(data.message, "success");
-          getAllAddress();
-          getUpdateUserDetails();
-          setShowAddAddressModal(false);
-          if (routeToLogin) {
-            route.push("/auth/login");
+      const temp1 = [];
+      const payload1 = [{ Input_Pincode: formValues.pinCode }];
+      const { status, error } = await validPincode(payload1);
+      if (status) {
+        status.data.forEach((val) => {
+          temp1.push(val.status);
+        });
+      } else if (error) {
+        toastify(error.message, "error");
+      }
+      if (temp1.includes("valid")) {
+        if (type === "add") {
+          const temp = JSON.parse(JSON.stringify(formValues));
+          delete temp.addressId;
+          const payload = {
+            ...temp,
+            supplierId: user.length ? user : supplierId,
+          };
+          const { data, err } = await addNewAddress(payload, supplierId);
+          if (data) {
+            toastify(data.message, "success");
+            getAllAddress();
+            getUpdateUserDetails();
+            setShowAddAddressModal(false);
+            if (routeToLogin) {
+              route.push("/auth/login");
+            }
           }
-        }
-        if (err) {
-          toastify(err?.response?.data?.message);
-        }
-      } else if (type === "edit") {
-        const payload = {
-          ...formValues,
-          supplierId: user.length ? user : supplierId,
-        };
-        const { data, err } = await updateAddress(payload);
-        if (data) {
-          getAllAddress();
-          toastify(data.message, "success");
-          setShowAddAddressModal(false);
-        }
-        if (err) {
-          toastify(err?.response?.data?.message);
+          if (err) {
+            toastify(err?.response?.data?.message);
+          }
+        } else if (type === "edit") {
+          const payload = {
+            ...formValues,
+            supplierId: user.length ? user : supplierId,
+          };
+          const { data, err } = await updateAddress(payload);
+          if (data) {
+            getAllAddress();
+            toastify(data.message, "success");
+            setShowAddAddressModal(false);
+          }
+          if (err) {
+            toastify(err?.response?.data?.message);
+          }
         }
       }
     }

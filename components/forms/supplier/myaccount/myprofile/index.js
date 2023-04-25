@@ -25,6 +25,7 @@ import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import OtpForm from "@/forms/auth/OtpForm";
 import { City } from "country-state-city";
+import { getCity, getCountry, getState } from "services/supplier/Registration";
 
 const formObj = {
   businessName: "",
@@ -47,6 +48,8 @@ const MyProfile = () => {
     mail: "",
     mobile: "",
     city: null,
+    country: null,
+    state: null,
     mainCat: [],
     gstin: "",
     stockCount: "",
@@ -62,6 +65,9 @@ const MyProfile = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [profileImage, setProfileImage] = useState();
   const [selectedMainCategoryIds, setSelectedMainCategoryIds] = useState([]);
+  const [allCountry, setallCountry] = useState([]);
+  const [allState, setallState] = useState([]);
+  const [allCity, setallCity] = useState([]);
   // const [supplierMobileNumber, setSupplierMobileNumber] = useState(null);
   const [otp, setotp] = useState("xxxx");
   const [initialDetails, setInitialDetails] = useState({
@@ -98,7 +104,61 @@ const MyProfile = () => {
       setotp("xxxx");
     };
   }, []);
-
+  const getAllCountryFunction = async () => {
+    const { data, err } = await getCountry();
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallCountry(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  const getAllStateFunction = async () => {
+    const { data, err } = await getState(formValues.country.value);
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallState(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  const getAllCityFunction = async () => {
+    const { data, err } = await getCity(
+      formValues.country.value,
+      formValues.state.value
+    );
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallCity(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  useEffect(() => {
+    if (formValues?.country?.value?.length) {
+      getAllStateFunction();
+    }
+  }, [formValues?.country?.value]);
+  useEffect(() => {
+    if (
+      formValues?.country?.value?.length &&
+      formValues?.state?.value?.length
+    ) {
+      getAllCityFunction();
+    }
+  }, [formValues?.country?.value, formValues?.state?.value]);
+  useEffect(() => {
+    getAllCountryFunction();
+  }, []);
   const validateForm = () => {
     let flag = false;
     const errObj = { ...formObj };
@@ -149,6 +209,14 @@ const MyProfile = () => {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
+    if (formValues.state === null) {
+      flag = true;
+      errObj.state = validateMessage.field_required;
+    }
+    if (formValues.country === null) {
+      flag = true;
+      errObj.country = validateMessage.field_required;
+    }
     if (!formValues.mainCat.length) {
       flag = true;
       errObj.mainCat = validateMessage.field_required;
@@ -178,6 +246,16 @@ const MyProfile = () => {
           id: data.city,
           label: data.city,
           value: data.city,
+        },
+        state: {
+          id: data.state,
+          label: data.state,
+          value: data.state,
+        },
+        country: {
+          id: data.country,
+          label: data.country,
+          value: data.country,
         },
         gstin: data.gstin,
         stockCount: data.avgStockCount,
@@ -218,6 +296,8 @@ const MyProfile = () => {
       profileImageUrl: profileImage,
       websiteLink: formValues.siteLink,
       city: formValues.city?.value,
+      state: formValues.state?.value,
+      country: formValues.country?.value,
       firstName: formValues.firstName,
       lastName: formValues.lastName,
       supplierReferralCode: formValues.supplierReferralCode,
@@ -315,7 +395,7 @@ const MyProfile = () => {
     return errObj;
   };
   useEffect(() => {
-    console.log(isOtpVerified, "isio");
+    // console.log(isOtpVerified, "isio");
   }, [isOtpVerified]);
   const fileUpload = async (e) => {
     if (e.target.files[0]) {
@@ -614,7 +694,39 @@ const MyProfile = () => {
               <Grid item md={6} sm={12}>
                 <SimpleDropdownComponent
                   disabled={!showUpdate}
-                  list={[...citiesList]}
+                  list={[...allCountry]}
+                  label="Choose Country"
+                  onDropdownSelect={(value) => {
+                    setFormValues((prev) => ({
+                      ...prev,
+                      country: value,
+                    }));
+                  }}
+                  value={formValues.country}
+                  size="small"
+                  helperText={errorObj.country}
+                />
+              </Grid>
+              <Grid item md={6} sm={12}>
+                <SimpleDropdownComponent
+                  disabled={!showUpdate}
+                  list={[...allState]}
+                  label="Choose State"
+                  onDropdownSelect={(value) => {
+                    setFormValues((prev) => ({
+                      ...prev,
+                      state: value,
+                    }));
+                  }}
+                  value={formValues.state}
+                  size="small"
+                  helperText={errorObj.state}
+                />
+              </Grid>
+              <Grid item md={6} sm={12}>
+                <SimpleDropdownComponent
+                  disabled={!showUpdate}
+                  list={[...allCity]}
                   label="Choose City"
                   onDropdownSelect={(value) => {
                     setFormValues((prev) => ({
