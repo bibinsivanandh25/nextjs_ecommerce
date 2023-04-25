@@ -7,6 +7,7 @@ import {
   getOrderChartData,
   getOrderReportCardData,
   getSummaryTableData,
+  getpieChartData,
 } from "services/supplier/reports/orderreport";
 import { getListYear } from "services/utils/yearlistUtils";
 
@@ -96,7 +97,7 @@ const OrderReport = () => {
   }, [currentYear.value]);
   // doughnutchart
   const getDoughnutChartData = async (year) => {
-    const { data } = await getOrderChartData(user.supplierId, year);
+    const { data } = await getpieChartData(user.supplierId, year);
     if (data) {
       setMonthDoughnutChart(data);
     } else {
@@ -148,11 +149,11 @@ const OrderReport = () => {
         result.push({
           id: item.orderId,
           col1: item.orderId,
-          col2: item.productName,
+          col2: item.productTitle,
           col3: item.customerName,
           col4: item.orderDate,
-          col5: item.orderAmount,
-          col6: item.orderStatus,
+          col5: item.amount,
+          col6: item.status,
         });
       });
     }
@@ -163,14 +164,16 @@ const OrderReport = () => {
       user.supplierId,
       year,
       page,
-      status.toUpperCase()
+      status == "pending" ? "INITIATED" : status.toUpperCase()
     );
     if (data) {
       setSummaryTableData(getTableRows(data));
     }
   };
   useEffect(() => {
-    getSummaryTable(summaryYear.value, 0, summaryStatus.value);
+    if (summaryYear.value && summaryStatus.value) {
+      getSummaryTable(summaryYear.value, 0, summaryStatus.value);
+    }
   }, [summaryYear.value, summaryStatus.value]);
   useEffect(() => {
     getMonthTableData(monthCurrentYear.value);
@@ -238,19 +241,23 @@ const OrderReport = () => {
         summaryMenuList={["Sort By Price", "Sort By Date", "Download"]}
         summaryStatusList={[
           {
-            value: "completed",
+            id: 1,
+            value: "COMPLETED",
             label: "completed",
           },
           {
-            value: "pending",
+            id: 2,
+            value: "INITIATED",
             label: "pending",
           },
           {
-            value: "refunded",
+            id: 3,
+            value: "REFUNDED",
             label: "refunded",
           },
           {
-            value: "cancelled",
+            id: 4,
+            value: "CANCELLED",
             label: "cancelled",
           },
         ]}

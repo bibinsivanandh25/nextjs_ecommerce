@@ -134,9 +134,8 @@ const PaymentReports = () => {
   };
   const mapStateToProps = (data) => {
     const temp = [];
-    data.forEach((item, index) => {
+    data.forEach((item) => {
       temp.push({
-        id: index + 1,
         col1: item.paymentId,
         col2: item.productName,
         col3: item.customerName,
@@ -346,7 +345,6 @@ const PaymentReports = () => {
         }}
         summaryStatus={summaryStatus}
         handleSummaryStatus={(e) => {
-          console.log(e.target.value, " e.target.value");
           setSummaryStatus({
             value: e.target.value,
             label: e.target.value,
