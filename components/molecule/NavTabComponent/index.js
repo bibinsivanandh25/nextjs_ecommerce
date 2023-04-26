@@ -3,14 +3,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box } from "@mui/material";
 import React, { useState } from "react";
-import CustomDatePickerComponent from "@/atoms/CustomDatePickerComponent";
+import NavDatePicker from "@/atoms/NavDatePicker";
 
 const NavTabComponent = ({
   listData = [],
-  // fromDate = "",
-  // toDate = "",
-  // setFromDate = () => {},
-  // setToDate = () => {},
   getFromDate = () => {},
   getToDate = () => {},
   onTabCilck = () => {},
@@ -43,7 +39,7 @@ const NavTabComponent = ({
         <Box className="d-flex align-items-center h-5">
           <span>From Date :</span>
         </Box>
-        <CustomDatePickerComponent
+        <NavDatePicker
           value={fromDate}
           onDateChange={(val) => {
             setFromDate(val);
@@ -55,7 +51,7 @@ const NavTabComponent = ({
         <Box className="d-flex align-items-center h-5">
           <span>To Date :</span>
         </Box>
-        <CustomDatePickerComponent
+        <NavDatePicker
           value={toDate}
           onDateChange={(val) => {
             setToDate(val);
