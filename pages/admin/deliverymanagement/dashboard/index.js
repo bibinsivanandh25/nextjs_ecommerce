@@ -1,51 +1,87 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PieChart } from "@/atoms/PieChart";
 import SelectComponent from "@/atoms/SelectComponent";
 import Bargraph from "@/atoms/Bar/Bargraph";
+import { getAlldeliveryManagementCard } from "services/admin/deliverymanagement/dashboard";
 
+const DeliveryDetails = [
+  {
+    title: "Total Forward orders paid to logistics",
+    value: 0,
+    backgroundColor: "#f2f7ff",
+    borderColor: "#bdd5fa",
+    color: "#5500d4",
+    key: "totalForwordOrdersPaidToLogistics",
+  },
+  {
+    title: "Total Return orders paid to logistics",
+    value: 0,
+    backgroundColor: "#fffef8",
+    borderColor: "#ffeeab",
+    color: "#ffd42a",
+    key: "totalReturnOrdersPaidToLogistics",
+  },
+  {
+    title: "Total RTO orders paid to logistics",
+    value: 0,
+    backgroundColor: "#f1fff7",
+    borderColor: "#a6ffca",
+    color: "#00c153",
+    key: "totalRTOPaidToLogistics",
+  },
+  {
+    title: "Total Hand Pick orders ",
+    value: 0,
+    backgroundColor: "#fff7ff",
+    borderColor: "#fccbfc",
+    color: "#ff00ff",
+    key: "totalHandPickOrder",
+  },
+  {
+    title: "Delivered by store owner",
+    value: 0,
+    backgroundColor: "#edfeff",
+    borderColor: "#a2f6fb",
+    color: "#009faa",
+    key: "deliveredByStoreOwner",
+  },
+];
 const DeliveryDashboard = () => {
-  const DeliveryDetails = [
-    {
-      title: "Total Forward orders paid to logistics",
-      value: 25,
-      backgroundColor: "#f2f7ff",
-      borderColor: "#bdd5fa",
-      color: "#5500d4",
-    },
-    {
-      title: "Total Return orders paid to logistics",
-      value: 215,
-      backgroundColor: "#fffef8",
-      borderColor: "#ffeeab",
-      color: "#ffd42a",
-    },
-    {
-      title: "Total RTO orders paid to logistics",
-      value: 15,
-      backgroundColor: "#f1fff7",
-      borderColor: "#a6ffca",
-      color: "#00c153",
-    },
-    {
-      title: "Total Hand Pick orders ",
-      value: 25,
-      backgroundColor: "#fff7ff",
-      borderColor: "#fccbfc",
-      color: "#ff00ff",
-    },
-    {
-      title: "Delivered by store owner",
-      value: 88,
-      backgroundColor: "#edfeff",
-      borderColor: "#a2f6fb",
-      color: "#009faa",
-    },
-  ];
+  const [cardData, setCardData] = useState([...DeliveryDetails]);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const getAllCardData = async () => {
+    const payload = {
+      filterType: "type1",
+      month: null,
+      year: null,
+    };
+    const { data, err } = await getAlldeliveryManagementCard(payload);
+    if (data) {
+      const temp = JSON.parse(JSON.stringify(DeliveryDetails));
+      temp.forEach((item) => {
+        Object.entries(data).forEach((val) => {
+          if (item.key === val[0]) {
+            item.value = val[1];
+          }
+        });
+      });
+      setCardData(temp);
+    }
+    if (err) {
+      setTotalAmount(0);
+      setCardData(DeliveryDetails);
+    }
+  };
+  useEffect(() => {
+    getAllCardData();
+  }, []);
 
   const [orderInfo, setOrderInfo] = useState([
     {
@@ -416,9 +452,9 @@ const DeliveryDashboard = () => {
     value: ind,
   }));
   const getCards = () => {
-    return DeliveryDetails.map((ele) => {
+    return cardData.map((ele) => {
       return (
-        <Grid item lg={2} md={3} sm={4} xs={6}>
+        <Grid item lg={2.4} md={3} sm={4} xs={6}>
           <Paper
             className="px-3 mnh-100 d-flex flex-column justify-content-between"
             sx={{
@@ -435,7 +471,7 @@ const DeliveryDashboard = () => {
                 color: ele.color,
               }}
             >
-              {ele.value}
+              {ele.value.toLocaleString("en-IN")}
             </Typography>
           </Paper>
         </Grid>
@@ -519,7 +555,7 @@ const DeliveryDashboard = () => {
   };
   return (
     <div className="mt-1">
-      <Grid container justifyContent="space-between" spacing={2}>
+      <Grid container justifyContent="space-between" spacing={1}>
         {getCards()}
       </Grid>
       <Grid container spacing={2} className="mt-2">
@@ -572,7 +608,7 @@ const DeliveryDashboard = () => {
                 Lost in transit / Other
               </Typography>
               <Typography className="text-center color-orange fs-1 fw-600">
-                &#8377; 08,544.00
+                &#8377; {totalAmount.toLocaleString("en-IN")}
               </Typography>
             </Paper>
           </Grid>
