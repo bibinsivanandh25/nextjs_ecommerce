@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Grid, Paper } from "@mui/material";
+import { Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -15,8 +15,6 @@ import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
 import { getAllnewOrders } from "services/supplier/myorders/newOrders";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
-
-import styles from "./GenerateInvoiceandmanifest.module.css";
 
 const filterData = [
   {
@@ -35,15 +33,11 @@ const filterData = [
     value: "HAND_PICK",
   },
   {
-    label: "Last Mile AC",
-    id: "LAST_MILE_AC",
-    value: "LAST_MILE_AC",
+    label: "Last Mile",
+    id: "LAST_MILE",
+    value: "LAST_MILE",
   },
-  {
-    label: "Last Mile FDR",
-    id: "LAST_MILE_FDR",
-    value: "LAST_MILE_FDR",
-  },
+
   {
     label: "Supplier Shipment",
     id: "SUPPLIER_SHIPMENT",
@@ -53,6 +47,10 @@ const filterData = [
 const Generateinvoiceandmanifest = () => {
   const { supplierId } = useSelector((state) => state.user);
   const [showInvoices, setShowInvoices] = useState(false);
+  const [dropDownValue, setDropDownValue] = useState({
+    mode: {},
+    commission: {},
+  });
   const [newOrderData, setnewOrderData] = useState([]);
   const [orderCount, setorderCount] = useState(0);
   const [pageNumber, setpageNumber] = useState(0);
@@ -178,9 +176,9 @@ const Generateinvoiceandmanifest = () => {
     const payload = {
       supplierId,
       status: "CONFIRMED",
-      category: null,
+      commissionMode: dropDownValue?.commission?.value || null,
       keyword: keyword || null,
-      modeOfOrder: mode || null,
+      modeOfOrder: dropDownValue?.mode?.value || null,
       pageNumber: page,
       pageSize: 10,
     };
@@ -203,8 +201,8 @@ const Generateinvoiceandmanifest = () => {
     }
   };
   useEffect(() => {
-    getAllConfirmedOrder();
-  }, []);
+    getAllConfirmedOrder(0);
+  }, [dropDownValue.commission, dropDownValue.mode]);
   // const downloadManifestFunction = async () => {
   //   const oid = orderId[0];
   // const { data, err } = await downloadManifest(oid);
@@ -227,11 +225,11 @@ const Generateinvoiceandmanifest = () => {
   //     toastify(err.response.data.message, "error");
   //   }
   // };
-  const downloadManifestFunction = async () => {
+  const downloadManifestFunction = async (type) => {
     // const { data, err } = await getQrPdf();
     try {
       fetch(
-        `${process.env.DOMAIN}notification/download-manifest?orderId=${orderId[0]}`
+        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId[0]}`
       )
         .then(async (resp) => {
           const blob = await resp.blob();
@@ -298,63 +296,63 @@ const Generateinvoiceandmanifest = () => {
       {!showInvoices ? (
         <>
           <ProgressBar showHeader steps={[...progressBarSteps]} />
-          <Grid container className="" spacing={1}>
-            <Grid
-              item
-              lg={5}
-              className="d-flex flex-column justify-content-end"
-            >
-              <p
-                className={`${styles.Previousinvoicelink} fs-14 cursor-pointer`}
-                onClick={() => {
-                  setShowInvoices(true);
-                }}
-              >
-                Show Previous Invoice
-              </p>
-            </Grid>
-            <Grid
-              item
-              lg={7}
-              className="d-flex align-items-center justify-content-end"
-            >
-              <p className="fs-12 fw-bold">Shipping Partner :&nbsp;</p>
-              <div className="w-25">
-                <SimpleDropdownComponent label="All" size="small" />
-              </div>
 
-              <ButtonComponent
-                label="Download Invoice"
-                size="large"
-                muiProps="fs-11 mx-3"
-                // onBtnClick={() => {
-                //   route.push("/supplier/myorders/neworder/uploadmanifest");
-                // }}
-                disabled={orderId.length !== 1}
-                onBtnClick={() => {}}
-              />
-              <ButtonComponent
-                label="Download Manifest"
-                size="large"
-                muiProps="fs-11"
-                disabled={orderId.length !== 1}
-                // onBtnClick={() => {
-                //   route.push("/supplier/myorders/neworder/uploadmanifest");
-                // }}
-                onBtnClick={() => {
-                  downloadManifestFunction();
+          <div className="d-flex justify-content-end">
+            <div className="w-25 mx-2">
+              <SimpleDropdownComponent
+                size="small"
+                list={[...filterData]}
+                onDropdownSelect={(val) => {
+                  setDropDownValue({ ...dropDownValue, mode: val });
                 }}
+                value={dropDownValue.mode}
+                label="Mode Of Order"
               />
-            </Grid>
-          </Grid>
-          {/* <Paper className="mt-2 py-3">
-            <TableComponent
-              tableRows={[...rows]}
-              table_heading="5 Orders Confirmed"
-              columns={[...columns]}
+            </div>
+            <div className="w-25">
+              <SimpleDropdownComponent
+                size="small"
+                list={[
+                  { label: "Zero Commission", id: 1, value: "ZERO_COMMISSION" },
+                  {
+                    label: "Fixed Commission",
+                    id: 2,
+                    value: "FIXED_COMMISSION",
+                  },
+                ]}
+                onDropdownSelect={(val) => {
+                  setDropDownValue({ ...dropDownValue, commission: val });
+                }}
+                value={dropDownValue.commission}
+                label="commission Type"
+              />
+            </div>
+            <ButtonComponent
+              label="Download Invoice"
+              size="large"
+              muiProps="fs-11 mx-3"
+              // onBtnClick={() => {
+              //   route.push("/supplier/myorders/neworder/uploadmanifest");
+              // }}
+              disabled={orderId.length !== 1}
+              onBtnClick={() => {
+                downloadManifestFunction("invoice");
+              }}
             />
-          </Paper> */}
-          .
+            <ButtonComponent
+              label="Download Manifest"
+              size="large"
+              muiProps="fs-11"
+              disabled={orderId.length !== 1}
+              // onBtnClick={() => {
+              //   route.push("/supplier/myorders/neworder/uploadmanifest");
+              // }}
+              onBtnClick={() => {
+                downloadManifestFunction("download");
+              }}
+            />
+          </div>
+
           <Paper
             className="py-3 mt-3 mnh-40vh  overflow-auto hide-scrollbar"
             sx={{
@@ -362,6 +360,7 @@ const Generateinvoiceandmanifest = () => {
             }}
           >
             <TableComponent
+              showSearchFilter={false}
               filterList={filterData}
               table_heading={`${orderCount} Confirmed Orders`}
               columns={columns}
@@ -382,7 +381,10 @@ const Generateinvoiceandmanifest = () => {
           </Paper>
         </>
       ) : (
-        <ShowPreviousInvoices setShowInvoices={setShowInvoices} />
+        <ShowPreviousInvoices
+          setShowInvoices={setShowInvoices}
+          show={showInvoices}
+        />
       )}
     </Paper>
   );
