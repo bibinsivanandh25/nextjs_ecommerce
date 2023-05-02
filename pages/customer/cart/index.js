@@ -29,11 +29,12 @@ import {
   getAllCustomerAddress,
 } from "services/customer/Home/address";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
-import { storeUserInfo } from "features/customerSlice";
+import { cartCount, storeUserInfo } from "features/customerSlice";
 import ModalComponent from "@/atoms/ModalComponent";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import serviceUtil from "services/utils";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { countCart } from "services/admin/storeList";
 
 const Cart = () => {
   const [products, setProducts] = useState();
@@ -144,9 +145,13 @@ const Cart = () => {
       );
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
         toastify(data?.message, "success");
         refetch();
+        const { data: count } = await countCart(profileId);
+        if (count) {
+          dispatch(cartCount({ cartCount: count }));
+        }
         queryClient.invalidateQueries(["CARTCOUNT"]);
         queryClient.refetchQueries("CARTCOUNT", { force: true });
       },

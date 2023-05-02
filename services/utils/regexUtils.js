@@ -12,6 +12,8 @@ const validationRegex = {
   integers: /^(\d+)$/,
   gstin: /\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}/,
   pincode: /^[1-9][0-9]{5}$/,
+  pancard: /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/,
+  aadharcard: /^[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}$/,
 };
 
 export default validationRegex;

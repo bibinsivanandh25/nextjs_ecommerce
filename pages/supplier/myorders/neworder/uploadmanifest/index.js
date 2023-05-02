@@ -4,8 +4,14 @@ import PrintIcon from "@mui/icons-material/Print";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { Paper, Tooltip } from "@mui/material";
+import { getAllManifest } from "services/supplier/myorders/newOrders";
+import toastify from "services/utils/toastUtils";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const UploadManifest = () => {
+  const { supplierId } = useSelector((state) => state.user);
+  const [pageNumber, setpageNumber] = useState(0);
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -93,6 +99,20 @@ const UploadManifest = () => {
       ),
     },
   ];
+  const getAllManifestFunction = async (page = pageNumber, key) => {
+    const payload = {
+      supplierId,
+      keyword: key,
+      pageNumber: page,
+      pageSize: 50,
+    };
+    const { data, err } = await getAllManifest(payload);
+    if (data) {
+      console.log(data, "data");
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   return (
     <Paper
       sx={{ p: 2 }}

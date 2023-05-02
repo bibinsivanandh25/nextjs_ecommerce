@@ -9,7 +9,7 @@ import AddToWishListModal from "@/forms/customer/wishlist/AddToWishListModal";
 import { useSession } from "next-auth/react";
 // import { removeProductFromWishList } from "services/customer/wishlist";
 import toastify from "services/utils/toastUtils";
-import { productDetails } from "features/customerSlice";
+import { cartCount, productDetails } from "features/customerSlice";
 import { motion } from "framer-motion";
 import SimilarProducts from "@/forms/customer/searchedproduct/SimilarProduct";
 import CompareProductDrawer from "@/forms/customer/searchedproduct/compareproducts/compareProductDrawer";
@@ -17,6 +17,7 @@ import ViewModalComponent from "@/forms/customer/searchedproduct/ViewModalCompon
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQueryClient } from "react-query";
 import serviceUtil from "services/utils";
+import { countCart } from "services/admin/storeList";
 import DeliveryOptionsModal from "../../buynowmodal";
 
 const ProductCard = ({
@@ -105,9 +106,13 @@ const ProductCard = ({
       );
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
         toastify(data?.message, "success");
         getProducts();
+        const { data: count } = await countCart(profileId);
+        if (count) {
+          dispatch(cartCount({ cartCount: count }));
+        }
         setIconColor((prev) => ({ ...prev, favoriteBorderIcon: false }));
         queryClient.invalidateQueries(["POPULARDEPARTMENTS"]);
         queryClient.refetchQueries("POPULARDEPARTMENTS", { force: true });
@@ -123,7 +128,11 @@ const ProductCard = ({
       );
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: async ({ data }) => {
+        const { data: count } = await countCart(profileId);
+        if (count) {
+          dispatch(cartCount({ cartCount: count }));
+        }
         toastify(data?.message, "success");
         getProducts();
         setIconColor((prev) => ({ ...prev, localMallIcon: false }));
@@ -293,7 +302,7 @@ const ProductCard = ({
         <Box className="">
           <Box className="">
             <Typography className="fw-bold h-5 text-center">
-              Rs. {item.price}
+              ₹ {item.price}
             </Typography>
             <Typography className="fw-bold h-6 text-center">
               (Actual Product Cost)
@@ -301,7 +310,7 @@ const ProductCard = ({
           </Box>
           <Box className={!item.salePriceWithLogistics ? "d-none" : ""}>
             <Typography className="fw-bold h-5 text-center">
-              Rs. {item.salePriceWithLogistics}
+              ₹ {item.salePriceWithLogistics}
             </Typography>
             <Typography className="fw-bold h-6 text-center">
               (with free delivery & Return)

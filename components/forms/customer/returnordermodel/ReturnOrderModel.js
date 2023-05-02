@@ -122,6 +122,7 @@ const ReturnOrderModel = ({
                 className="bg-success color-white h-2 rounded-circle"
                 showColorOnHover={false}
               />
+
               <Typography className="fs-14 fw-bold text-success ps-2">
                 {freeReturn
                   ? "Return order placed sucessfully"

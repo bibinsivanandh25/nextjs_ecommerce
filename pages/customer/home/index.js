@@ -82,19 +82,10 @@ const Home = () => {
         holidays: days.filter((day) => {
           return !data.shopOpeningDays?.includes(day);
         }),
-        shopTimings: data.shopTimings
-          ? `${format(
-              new Date(
-                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[0]?.trim()}:00`
-              ),
-              "hh:mm a"
-            )} to ${format(
-              new Date(
-                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[1]?.trim()}:00`
-              ),
-              "hh:mm a"
-            )}`
-          : null,
+        shopTimings:
+          data.storeOpenTimings && data.storeCloseTimings
+            ? `${data.storeOpenTimings} to ${data.storeCloseTimings}`
+            : "--",
         shoplogo: data?.shopDescriptionImageUrl,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         shopDescription: data?.shopDescription,
@@ -314,16 +305,30 @@ const Home = () => {
                 </Grid>
               </Grid>
             </Box>
-            {leaveDate.start && leaveDate.end && (
-              <Box className="bg-light-yellow border border-orange rounded mt-3 container-shadow">
-                <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
+            {/* {leaveDate.start && leaveDate.end && (
+              <Box className="bg-light-yellow border border-orange rounded mt-3 container-shadow"> */}
+            {/* <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
                   <FaInfoCircle className="mx-2 fs-20 color-orange" />
                   Shop will be on leave from {leaveDate.start} to{" "}
                   {leaveDate.end} , Your orders may be processed after{" "}
                   {new Date(leaveDate.end).getDate()}th.
-                </Typography>
-              </Box>
-            )}
+                </Typography> */}
+
+            {leaveDate.start &&
+              leaveDate.end &&
+              leaveDate.start <= format(new Date(), "dd MMM yyyy") &&
+              leaveDate.end >= format(new Date(), "dd MMM yyyy") && (
+                <Box className="bg-light-yellow border border-orange rounded mt-3 container-shadow">
+                  <Typography className="fw-bold bg-light-yellow rounded  py-2 px-1 d-flex align-items-center">
+                    <FaInfoCircle className="mx-2 fs-20 color-orange" />
+                    Shop will be on leave from {leaveDate.start} to{" "}
+                    {leaveDate.end} , Your orders may be processed after{" "}
+                    {new Date(leaveDate.end).getDate()}th.
+                  </Typography>
+                </Box>
+              )}
+            {/* </Box>
+            )} */}
             <Grid container className="">
               <Grid item sm={8} className="py-3 pe-3 h-100">
                 {/* <HotDealsOfTheDay /> */}

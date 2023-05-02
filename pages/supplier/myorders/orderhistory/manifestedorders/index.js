@@ -14,6 +14,7 @@ const ManifestedOrders = () => {
   const [tableData, setTableData] = useState([]);
   const [eachOrderData, seteachOrderData] = useState({});
   const [openView, setopenView] = useState(false);
+  const [modeOfOrderValue, setmodeOfOrderValue] = useState({});
   const user = useSelector((state) => state.user?.supplierId);
   const [pageNumberState, setpageNumberState] = useState(0);
   const columns = [
@@ -118,10 +119,18 @@ const ManifestedOrders = () => {
     );
   };
   const getDeleveredOrderData = async (page = pageNumberState) => {
+    // const payload = {
+    //   supplierId: user,
+    //   status: "MANIFESTED",
+    //   pageNumber: page,
+    // };
     const payload = {
       supplierId: user,
-      status: "MANIFESTED",
-      pageNumber: page,
+      orderStatus: "MANIFESTED",
+      modeOfOrder: modeOfOrderValue.id || null,
+      pageNo: page || 0,
+      pageSize: 50,
+      shipmentType: null,
     };
     const { data, err } = await getOrderHistory(payload);
     if (data) {
@@ -139,7 +148,7 @@ const ManifestedOrders = () => {
   };
   useEffect(() => {
     getDeleveredOrderData();
-  }, []);
+  }, [modeOfOrderValue]);
   return (
     <Paper
       sx={{ p: 2, height: "100%" }}
@@ -147,14 +156,27 @@ const ManifestedOrders = () => {
     >
       <Paper sx={{ px: 0, py: 2 }}>
         <TableComponent
-          table_heading={`Manifested Orders (${tableData.length})`}
+          showCustomDropdown
+          onCustomDropdownChange={(val) => {
+            setmodeOfOrderValue(val);
+            // console.log(val, "value");
+          }}
+          customDropdownValue={modeOfOrderValue}
+          customDropdownList={[
+            { id: "All", label: "All" },
+            { id: "India Post", label: "India Post" },
+            { id: "Delhivery", label: "Delhivery" },
+          ]}
+          // customDropdownValue
+          customDropdownLabel="Mode Of Order"
+          table_heading={`Manifested Orders (${tableData.length || 0})`}
           columns={columns}
           tableRows={tableData}
           showSearchbar={false}
           showCheckbox={false}
           showCustomButton
           showSearchFilter={false}
-          showCustomDropdown={false}
+          // showCustomDropdown={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             // console.log("onCustomButtonClick");

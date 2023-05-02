@@ -102,10 +102,13 @@ const SignIn = () => {
           emailId: email,
         })
       );
+      return { data };
     }
     if (err) {
       toastify(err.response?.data?.message, "error");
+      return { data: null };
     }
+    return 0;
   };
 
   const getDetails = async (id) => {
@@ -147,7 +150,7 @@ const SignIn = () => {
               const details = await getDetails(userData[0]);
               if (details) {
                 if (router?.query?.storeCode) {
-                  await storedatatoRedux(
+                  const { data: isStoreValid } = await storedatatoRedux(
                     router?.query?.storeCode,
                     userData[0],
                     userData[1],
@@ -163,20 +166,26 @@ const SignIn = () => {
                   if (addStoreData) {
                     switchStore(router.query.storeCode, details.customerId);
                   }
+                  if (router.query?.storeCode?.length && isStoreValid) {
+                    router.push(`/customer/home`);
+                  }
                 } else {
-                  await storedatatoRedux(
+                  const { data: isStoreValid } = await storedatatoRedux(
                     data?.defaultStoreCode,
                     userData[0],
                     userData[1],
                     details
                   );
+                  if (isStoreValid) {
+                    router.push(`/customer/home`);
+                  }
                 }
-                if (
-                  data?.defaultStoreCode?.length ||
-                  router?.query?.storeCode?.length
-                ) {
-                  router.push(`/customer/home`);
-                }
+                // if (
+                //   data?.defaultStoreCode?.length ||
+                //   router?.query?.storeCode?.length
+                // ) {
+                //   router.push(`/customer/home`);
+                // }
               }
             }
           }

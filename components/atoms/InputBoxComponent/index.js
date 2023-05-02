@@ -34,6 +34,7 @@ const InputBox = ({
   labelColorWhite = null,
   onFocus = () => {},
   onEnter = () => {},
+  onBlur = () => {},
   readOnly = false,
   showAutoFill = "off",
 }) => {
@@ -50,6 +51,7 @@ const InputBox = ({
     if (iconName === "arrowUp") {
       return <KeyboardArrowUpIcon />;
     }
+
     return null;
   };
 
@@ -92,6 +94,7 @@ const InputBox = ({
         rows={rows}
         fullWidth={fullWidth}
         onFocus={onFocus}
+        onBlur={onBlur}
         InputProps={{
           endAdornment: iconName !== "" && (
             <InputAdornment position="end">

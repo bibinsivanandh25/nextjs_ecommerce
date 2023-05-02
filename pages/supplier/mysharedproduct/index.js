@@ -66,7 +66,7 @@ const MySharedProduct = () => {
     const payload = {
       keyword: key,
       supplierId,
-      mainCategoryId: filterData.value,
+      mainCategoryId: filterData?.value,
       // mainCategoryId: "",
       pageSize: 50,
       pageNumber: page,

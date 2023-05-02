@@ -34,7 +34,11 @@ import ChooseAddress from "@/forms/customer/address/ChooseAddress";
 import CustomDrawer from "@/atoms/CustomDrawer";
 import StoreList from "@/forms/customer/storeList";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCustomerSlice, storeUserInfo } from "features/customerSlice";
+import {
+  cartCount,
+  clearCustomerSlice,
+  storeUserInfo,
+} from "features/customerSlice";
 import { getAllMainCategories } from "services/customer/sidebar";
 import {
   addStore,
@@ -55,7 +59,6 @@ import FavoriteList from "@/forms/customer/favoriteList";
 import { makeStyles } from "@mui/styles";
 import ExploreStores from "@/forms/customer/exploreStores";
 import FavouriteStoreSvg from "public/assets/svg/favouriteStoreSvg";
-import { useQuery } from "react-query";
 
 const Header = () => {
   const session = useSession();
@@ -70,7 +73,7 @@ const Header = () => {
   const [showStoreModal, setShowStoreModal] = useState(false);
   const [newStore, setNewStore] = useState("");
   const dispatch = useDispatch();
-  const [countCartstate, setCountCart] = useState(0);
+  const [cartProductCount, setCartProductCount] = useState(0);
   const [openExplore, setOpenExplore] = useState(false);
   const {
     supplierStoreName,
@@ -83,6 +86,7 @@ const Header = () => {
     bgcolor,
     supplierId,
     storeThemes,
+    cartCount: cartItems,
   } = useSelector((state) => state.customer);
 
   const [storeDetails, setstoreDetails] = useState(null);
@@ -116,6 +120,10 @@ const Header = () => {
       );
     }
   };
+
+  useEffect(() => {
+    setCartProductCount(cartItems);
+  }, [cartItems]);
 
   const handleThemeChange = () => {
     const r = document.querySelector(":root");
@@ -174,6 +182,19 @@ const Header = () => {
       setIsSignedIn(false);
     }
   }, [session]);
+
+  const getCartCount = async () => {
+    const { data } = await countCart(customer.profileId);
+    if (data) {
+      dispatch(cartCount({ cartCount: data }));
+    }
+  };
+
+  useEffect(() => {
+    if (isSignedIn) {
+      getCartCount();
+    }
+  }, [isSignedIn]);
 
   const handleRouting = (path) => {
     if (isSignedIn) {
@@ -262,19 +283,6 @@ const Header = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-  const countCartFunction = async () => {
-    const { data1 } = await countCart(customer.profileId);
-    if (data1) {
-      setCountCart(data1.data);
-    }
-  };
-  // eslint-disable-next-line no-unused-vars
-  const { data1 } = useQuery(["CARTCOUNT"], () => countCartFunction(), {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    retry: false,
-    retryOnMount: false,
-  });
 
   const getStores = () => {
     return (
@@ -697,26 +705,26 @@ const Header = () => {
             </div>
             <Tooltip title="Cart">
               <span>
-                <FiShoppingCart
-                  className="fs-2 cursor-pointer color-white"
-                  onClick={() => {
-                    if (userId === "") {
-                      route.push("/auth/customer/signin");
-                      return;
-                    }
-                    handleRouting("/customer/cart");
-                  }}
-                />
                 <Badge
-                  badgeContent={countCartstate == 0 ? "" : countCartstate}
-                  className={countCartstate == 0 ? "d-none" : "mb-4"}
+                  badgeContent={cartProductCount}
                   sx={{
                     "& .MuiBadge-badge": {
                       color: "white",
                       backgroundColor: "red",
                     },
                   }}
-                />
+                >
+                  <FiShoppingCart
+                    className="fs-2 cursor-pointer color-white"
+                    onClick={() => {
+                      if (userId === "") {
+                        route.push("/auth/customer/signin");
+                        return;
+                      }
+                      handleRouting("/customer/cart");
+                    }}
+                  />
+                </Badge>
               </span>
             </Tooltip>
           </>

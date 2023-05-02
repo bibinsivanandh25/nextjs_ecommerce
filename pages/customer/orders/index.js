@@ -41,9 +41,9 @@ const list = [
   { label: "Custom Duration", id: 3, value: "CUSTOM" },
 ];
 const statusList = [
-  { label: "Pending", id: 1, value: "PENDING" },
-  { label: "Completed", id: 2, value: "COMPLETED" },
-  { label: "Rejected", id: 2, value: "REJECTED" },
+  { label: "Pending", id: 1, value: "INITIATED" },
+  { label: "Completed", id: 2, value: "DELIVERED" },
+  { label: "Rejected", id: 2, value: "CANCELLED" },
 ];
 const Orders = () => {
   const user = useSelector((state) => state.customer);
@@ -60,11 +60,12 @@ const Orders = () => {
   const [getOrderApiCall, setgetOrderApiCall] = useState(false);
   const [openDateModal, setopenDateModal] = useState(false);
   const [searchKeyword, setsearchKeyword] = useState("");
+  const [returnedData, setreturnedData] = useState([]);
   const [orderFilter, setorderFilter] = useState({
     status: {
       label: "Pending",
       id: 1,
-      value: "PENDING",
+      value: "INITIATED",
     },
     keyword: "",
   });
@@ -87,7 +88,7 @@ const Orders = () => {
     startDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
     endDate: format(
       new Date(new Date().setDate(new Date().getDate() - 30)),
-      "MM-dd-yyyy 00:00:00"
+      "MM-dd-yyyy 23:59:59"
     ),
   });
   const [dateModal, setdateModal] = useState({
@@ -97,7 +98,7 @@ const Orders = () => {
   useEffect(() => {
     if (durationDrowdown.value === "MONTH") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 30)),
           "MM-dd-yyyy 00:00:00"
@@ -105,7 +106,7 @@ const Orders = () => {
       });
     } else if (durationDrowdown.value === "6MONTH") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 180)),
           "MM-dd-yyyy 00:00:00"
@@ -113,7 +114,7 @@ const Orders = () => {
       });
     } else if (durationDrowdown.value === "YEAR") {
       setformDate({
-        endDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
+        endDate: format(new Date(), "MM-dd-yyyy 23:59:59"),
         startDate: format(
           new Date(new Date().setDate(new Date().getDate() - 365)),
           "MM-dd-yyyy 00:00:00"
@@ -152,14 +153,17 @@ const Orders = () => {
       orderStatus: selectedLink,
       // orderStatus: "",
       // filterType: durationDrowdown.value || "",
-      startDate: formDate.startDate,
-      endDate: formDate.endDate,
+      fromDate: selectedLink === "INITIATED" ? "" : formDate.startDate,
+      toDate: selectedLink === "INITIATED" ? "" : formDate.endDate,
       selectStatusType: orderFilter.status.value || "",
-      keyword: search,
+      searchKey: search,
+      pageCount: 0,
+      pageSize: 50,
     };
     const { data, errRes } = await getOrderDetails(payload);
     if (data) {
       const temp = [];
+      setSelectedProduct([]);
       data.data.forEach((item) => {
         temp.push({
           // category: item.category,
@@ -167,31 +171,40 @@ const Orders = () => {
           orderId: item.orderId,
           businessName: item.businessName,
           productImage: item.productImage,
-          productId: item.productId,
+          productVariationId: item.productVariationId,
           variationDetails: item.variationPropertyPojos,
-          orderStatus: item.orderStatus,
+          orderDeliveryStatus: item.orderDeliveryStatus,
           orderDate: item.orderDate,
-          productOwnerId: item.productOwnerId,
+          orderedStoreOwnerId: item.orderedStoreOwnerId,
           returnUptoDate: item?.returnUptoDate,
           // rating: item.rating,
           productTitle: item.productTitle,
           shippingAddressId: item.shippingAddressId,
+          pickupAddressId: item.pickupAddressId,
+          orderType: item.orderType,
           // price: item.price,
+          billingAddressId: item.billingAddressId,
           isSelected: false,
           dropDownValue: null,
           variationId: item.productId,
           error: false,
         });
       });
+
       setProducts([...temp]);
     } else if (errRes) {
       toastify(errRes?.response?.data?.message, "error");
     }
   };
   const indiviDualProductDetails = async () => {
-    const addressId = selectedProduct[0]?.shippingAddressId;
-    const orderId = selectedProduct[0]?.orderId;
-    const { data, errRes } = await getProductDetails(addressId, orderId);
+    // const addressId = selectedProduct[0]?.shippingAddressId;
+    // const orderId = selectedProduct[0]?.orderId;
+    const payload = {
+      orderId: selectedProduct[0]?.orderId,
+      productVariation: selectedProduct[0]?.productVariationId,
+      shippingAddressId: selectedProduct[0]?.shippingAddressId,
+    };
+    const { data, errRes } = await getProductDetails(payload);
     if (data) {
       setEachProductDetails(data.data);
       toastify(data.data.message, "success");
@@ -210,6 +223,7 @@ const Orders = () => {
   }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
+      orderId: selectedProduct[0].orderId,
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
       reviewerName: user.customerName,
@@ -217,9 +231,9 @@ const Orders = () => {
       reviewerId: user.userId,
       // reviewerId: "CST1222000058",
       writtenReview: productReviewState.reviewText,
-      variationId: selectedProduct[0]?.variationId,
+      // variationId: selectedProduct[0]?.variationId,
+      variationId: selectedProduct[0]?.productVariationId,
       reviewMediaUrl: productReviewState.reviewImage,
-      isDeleted: false,
     };
     const { data, errRes } = await customerProdFeedback(payload);
     if (data) {
@@ -261,11 +275,12 @@ const Orders = () => {
                   status: {
                     label: "Pending",
                     id: 1,
-                    value: "PENDING",
+                    value: "INITIATED",
                   },
                   keyword: "",
                 });
                 setSelectedProduct([]);
+                setProducts([]);
               }}
             >
               Orders
@@ -282,6 +297,10 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
+                // setTrackPackage(false)
               }}
             >
               Not Yet Shipped
@@ -298,6 +317,9 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
               }}
             >
               Cancelled Orders
@@ -314,6 +336,9 @@ const Orders = () => {
                 setdurationDrowdown("");
                 setorderFilter({ status: "", keyword: "" });
                 setSelectedProduct([]);
+                setProducts([]);
+                setshowProdDetails(false);
+                setSellerFeedbackModal(false);
               }}
             >
               Returned Orders
@@ -395,8 +420,8 @@ const Orders = () => {
                       // style={{ border: "1px dotted gray" }}
                     >
                       <Box
-                        className="d-flex justify-content-center"
-                        style={{ height: "100px", alignItems: "center" }}
+                        // className="d-flex justify-content-center"
+                        style={{ height: "100px" }}
                       >
                         {/* <Box> */}
                         {/* <input
@@ -555,7 +580,7 @@ const Orders = () => {
                 <Grid className="d-flex justify-content-start py-2">
                   <Grid>
                     <Typography className="fs-14">
-                      Ordered on{" "}
+                      Ordered on
                       {EachProductDetails?.orderedDate?.replace("T", " ")}
                     </Typography>
                   </Grid>
@@ -606,7 +631,7 @@ const Orders = () => {
                       Order Summary
                     </Typography>
                     <Grid container>
-                      <Grid item xs={6} md={6}>
+                      <Grid item xs={7} md={7}>
                         <Typography>Item(s) subtotal:</Typography>
                         <Typography>Shipping:</Typography>
                         <Typography>Total:</Typography>
@@ -615,17 +640,18 @@ const Orders = () => {
                           Grand Total:
                         </Typography>
                       </Grid>
-                      <Grid item xs={6} md={6}>
+                      <Grid item xs={5} md={5}>
                         <Typography>
                           Rs: {EachProductDetails.itemsSubTotal}
                         </Typography>
                         <Typography>
                           Rs: {EachProductDetails.shipping}
                         </Typography>
-                        <Typography> (Dummy price)</Typography>
+                        <Typography>Rs: {EachProductDetails.total}</Typography>
                         <Typography>
                           Rs: {EachProductDetails.promotionApplied}
                         </Typography>
+
                         <Typography className="fw-600 py-2">
                           Rs: {EachProductDetails.grandTotal}
                         </Typography>
@@ -648,6 +674,9 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              // freeSolo
+                              // removeRadius
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"
@@ -762,6 +791,7 @@ const Orders = () => {
                           )} */}
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={statusList}
                               size="small"
                               placeholder="Select Status"
@@ -776,6 +806,7 @@ const Orders = () => {
                                     value: val?.value,
                                   },
                                 });
+                                setProducts([]);
                               }}
                               value={orderFilter.status}
                             />
@@ -805,8 +836,8 @@ const Orders = () => {
                       </Grid>
                     </Grid>
                     <MyOrders
-                      showCancelBtn={orderFilter?.status?.value === "PENDING"}
-                      showReturnBtn={orderFilter?.status?.value === "COMPLETED"}
+                      showCancelBtn={orderFilter?.status?.value === "INITIATED"}
+                      showReturnBtn={orderFilter?.status?.value === "DELIVERED"}
                       // showReturnBtn={selectedProduct.forEach((val) => {
                       //   parse(val?.returnUptoDate, "MM-dd-yyyy", new Date()) >
                       //     new Date();
@@ -825,6 +856,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -878,6 +911,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -893,6 +928,7 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"
@@ -958,6 +994,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -973,6 +1011,7 @@ const Orders = () => {
                         <Grid container spacing={1}>
                           <Grid item sm={5}>
                             <SimpleDropdownComponent
+                              disableClearable
                               list={list}
                               size="small"
                               placeholder="Select Duration"
@@ -1038,6 +1077,8 @@ const Orders = () => {
                       setSelectedProduct={setSelectedProduct}
                       setgetOrderApiCall={setgetOrderApiCall}
                       getOrderApiCall={getOrderApiCall}
+                      returnedData={returnedData}
+                      setreturnedData={setreturnedData}
                     />
                   </>
                 )}
@@ -1054,6 +1095,8 @@ const Orders = () => {
           setShowReturnOrder={setShowReturnOrder}
           setgetOrderApiCall={setgetOrderApiCall}
           getOrderApiCall={getOrderApiCall}
+          returnedData={returnedData}
+          setreturnedData={setreturnedData}
         />
       )}
     </Box>

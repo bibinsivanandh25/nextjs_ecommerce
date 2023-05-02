@@ -102,6 +102,12 @@ const option3 = [
   "Write a Product review",
   "View Order Details",
 ];
+const option4 = [
+  "View Order Details",
+  "Leave Seller feedback",
+  "Write a Product review",
+];
+const option5 = ["Track Package", "View Order Details"];
 const MyOrders = ({
   setshowProdDetails,
   setSellerFeedbackModal,
@@ -120,6 +126,8 @@ const MyOrders = ({
   setSelectedProduct,
   setgetOrderApiCall = () => {},
   getOrderApiCall,
+  returnedData,
+  setreturnedData = () => {},
 }) => {
   const dispatch = useDispatch();
   const route = useRouter();
@@ -131,7 +139,10 @@ const MyOrders = ({
   const handleCheckboxClick = (value) => {
     const temp = [...products];
     temp.forEach((item) => {
-      if (item.orderId === value.orderId) {
+      if (
+        item.orderId === value.orderId &&
+        item.productVariationId === value.productVariationId
+      ) {
         item.isSelected = !item.isSelected;
       }
     });
@@ -151,7 +162,9 @@ const MyOrders = ({
   };
   return (
     <Box>
-      {showTopBar && selectedProduct.length ? (
+      {showTopBar &&
+      selectedProduct.length &&
+      (showCancelBtn || showReturnBtn) ? (
         <Grid container className="px-1">
           <Grid
             item
@@ -207,7 +220,7 @@ const MyOrders = ({
             return (
               <Box
                 className="d-flex justify-content-between px-2 "
-                key={product.id}
+                key={product.orderId}
               >
                 {/* <ReusableProduct product={product}> */}
                 <Box
@@ -294,12 +307,18 @@ const MyOrders = ({
                   // onClickOfMenuItem(ele, item.flagId);
                 }}
                 options={
-                  selectedLink === "notYetShipped"
+                  selectedLink === "INITIATED"
                     ? [...option2]
-                    : selectedLink === "cancelled"
+                    : selectedLink === "CANCELLED"
                     ? [...option2]
-                    : selectedLink === "return"
+                    : selectedLink === "RETURNED"
                     ? [...option3]
+                    : selectedProduct[0].orderDeliveryStatus == "DELIVERED" &&
+                      selectedLink == ""
+                    ? [...option4]
+                    : selectedProduct[0].orderDeliveryStatus == "INITIATED" &&
+                      selectedLink == ""
+                    ? [...option5]
                     : [...option1]
                 }
                 IconclassName="color-gray"
@@ -410,6 +429,8 @@ const MyOrders = ({
           selectedOldProduct={selectedOldProduct}
           setgetOrderApiCall={setgetOrderApiCall}
           getOrderApiCall={getOrderApiCall}
+          returnedData={returnedData}
+          setreturnedData={setreturnedData}
         />
       ) : null}
     </Box>

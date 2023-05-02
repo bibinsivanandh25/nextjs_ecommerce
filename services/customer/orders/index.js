@@ -37,12 +37,10 @@ const returnProduct = (payload, type) => {
       return { errRes };
     });
 };
-const getProductDetails = (addId, orderId) => {
+const getProductDetails = (payload) => {
   // const aaa = 113;
   return serviceUtil
-    .get(
-      `order-payment/customer-orders?shippingAddressId=${addId}&orderId=${orderId}`
-    )
+    .post(`order-payment/customer-orders`, payload)
     .then((res) => {
       const data = res && res.data;
       return { data };

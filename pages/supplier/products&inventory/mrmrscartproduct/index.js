@@ -14,6 +14,7 @@ import toastify from "services/utils/toastUtils";
 const MrMrsCartProducts = () => {
   const [tableRows, setTableRows] = useState([]);
   const [pageNumber, setpageNumber] = useState(0);
+  const [ProductCount, setProductCount] = useState(0);
   const columns = [
     {
       label: "Image",
@@ -168,11 +169,16 @@ const MrMrsCartProducts = () => {
     const { data, err } = await getTableData(filterStatus, keyword, pageIndex);
     if (!err && data) {
       if (pageIndex === 0) {
-        setTableRows(mapRowsToTable(data.data));
+        setProductCount(data.data.count);
+        setTableRows(mapRowsToTable(data.data.masterProductPojos));
         setpageNumber((pre) => pre + 1);
       } else {
         setpageNumber((pre) => pre + 1);
-        setTableRows((pre) => [...pre, ...mapRowsToTable(data.data)]);
+        setProductCount(data.data.count);
+        setTableRows((pre) => [
+          ...pre,
+          ...mapRowsToTable(data.data.masterProductPojos),
+        ]);
       }
     }
   };
@@ -203,7 +209,7 @@ const MrMrsCartProducts = () => {
           <TableComponent
             columns={columns}
             tableRows={tableRows}
-            table_heading={`Total Products ${tableRows.length}`}
+            table_heading={`Total Products ${ProductCount}`}
             showCheckbox={false}
             filterList={filterList}
             handlePageEnd={(

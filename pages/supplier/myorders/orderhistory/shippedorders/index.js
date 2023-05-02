@@ -120,8 +120,11 @@ const ShippedOrders = () => {
   const getDeleveredOrderData = async (page = pageNumberState) => {
     const payload = {
       supplierId: user,
-      status: "SHIPPED",
-      pageNumber: page,
+      orderStatus: "SHIPPED",
+      modeOfOrder: null,
+      pageNo: page || 0,
+      pageSize: 50,
+      shipmentType: null,
     };
     const { data, err } = await getOrderHistory(payload);
     if (data) {

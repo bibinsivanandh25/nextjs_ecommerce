@@ -31,7 +31,7 @@ function DateFilterModal({
               status: {
                 label: "Pending",
                 id: 1,
-                value: "PENDING",
+                value: "INITIATED",
               },
               keyword: "",
             });

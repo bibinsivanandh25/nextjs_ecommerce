@@ -1,9 +1,17 @@
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { RemoveRedEye } from "@mui/icons-material";
 import TableComponent from "@/atoms/TableComponent";
 import MenuOption from "@/atoms/MenuOptions";
+import { getOrderSummary, viewOrderSummery } from "services/orders";
+import { useEffect, useState } from "react";
+import toastify from "services/utils/toastUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 
 const OrderSummary = () => {
+  const [tableRowData, settableRowData] = useState([]);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [viewData, setviewData] = useState({});
+  const [showView, setshowView] = useState(false);
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -105,435 +113,128 @@ const OrderSummary = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  const rows = [
-    {
-      id: "1",
-      col1: "1",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye onClick={() => {}} className="fs-5 cursor-pointer" />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "2",
-      col1: "2",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "3",
-      col1: "3",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "4",
-      col1: "4",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "5",
-      col1: "5",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "6",
-      col1: "6",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "7",
-      col1: "7",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "8",
-      col1: "8",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "9",
-      col1: "9",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      id: "10",
-      col1: "10",
-      col2: "Leather Jacket",
-      col3: "12,400",
-      col11: (
-        <div className="d-flex justify-content-around align-items-center text-secondary">
-          {/* <Reply className="fs-5" /> */}
-          <RemoveRedEye
-            // onClick={() => setShowViewModal(true)}
-            className="fs-5 cursor-pointer"
-          />
-          <MenuOption
-            options={["Notify", "Add Comment"]}
-            IconclassName="fs-5 cursor-pointer"
-            getSelectedItem={() => {
-              // console.log(ele, "ele");
-            }}
-          />
-        </div>
-      ),
-    },
-  ];
+  const viewSummery = async (orderId, variationId) => {
+    const { data, err } = await viewOrderSummery(orderId, variationId);
+    if (data) {
+      setviewData(data.data);
+      setshowView(true);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const dataFormatToTable = (data) => {
+    const temp = [];
+    data.forEach((ele, ind) => {
+      temp.push({
+        id: ind,
+        col1: `${ele.customerId} ${ele.customerName}`,
+        col2: ele.orderId,
+        col3: ele.supplierId,
+        col4: ele.productIds,
+        col5: ele.productCostAfterDiscount,
+        col6: ele.paymentType,
+        col7: ele.deliveryType.replace("_", " "),
+        col8: ele.orderStatus,
+        col9: ele.isApprovedOrReject,
+        col10: ele.orderedDateTime,
+        col11: (
+          <div className="d-flex justify-content-around align-items-center text-secondary">
+            {/* <Reply className="fs-5" /> */}
+            <RemoveRedEye
+              onClick={() => {
+                viewSummery(ele.orderId, ele.productIds);
+              }}
+              className="fs-5 cursor-pointer"
+            />
+            <MenuOption
+              options={["Notify", "Add Comment"]}
+              IconclassName="fs-5 cursor-pointer"
+              getSelectedItem={() => {}}
+            />
+          </div>
+        ),
+      });
+    });
+    return temp;
+  };
+  const formatViewScreen = (key, val) => {
+    return (
+      <Grid container className="p-1">
+        <Grid item md={5} sx={5}>
+          <Typography className="fw-500 fs-14">{key}</Typography>
+        </Grid>
+        <Grid item md={1} sx={1}>
+          <Typography>:</Typography>
+        </Grid>
+        <Grid item md={6} sx={6}>
+          <Typography className=" fs-14">{val}</Typography>
+        </Grid>
+      </Grid>
+    );
+  };
+  const getOrderSummaryFunction = async (page = pageNumber) => {
+    const { data, err } = await getOrderSummary(page, 50);
+    if (data) {
+      if (page === 0) {
+        settableRowData(dataFormatToTable(data.data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        settableRowData((pre) => [...pre, ...dataFormatToTable(data.data)]);
+        setpageNumber((pre) => pre + 1);
+      }
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  useEffect(() => {
+    getOrderSummaryFunction(0);
+  }, []);
   return (
     <div className=" hide-scrollbar">
       <Typography className="color-orange fw-bold ms-3 mt-2">
         Order summary Table
       </Typography>
       <TableComponent
+        showSearchFilter={false}
         columns={[...columns]}
-        tableRows={[...rows]}
+        tableRows={[...tableRowData]}
         showSearchbar={false}
         tHeadBgColor="bg-white"
         stickyCheckBox
+        handlePageEnd={(a, b, c, d, page = pageNumber) => {
+          getOrderSummaryFunction(page);
+        }}
       />
+      {showView && (
+        <ModalComponent
+          ModalTitle="View Order Summary"
+          open={showView}
+          onCloseIconClick={() => {
+            setshowView(false);
+          }}
+          showFooter={false}
+        >
+          <Grid className="p-2">
+            {formatViewScreen("Customer Id", viewData.customerId)}
+            {formatViewScreen("Customer Name", viewData.customerName)}
+            {formatViewScreen("Delivery Type", viewData.deliveryType)}
+            {formatViewScreen("Order Id", viewData.orderId)}
+            {formatViewScreen("Product Variation Id", viewData.productIds)}
+            {formatViewScreen("Order Status", viewData.orderStatus)}
+            {formatViewScreen("Ordered Date", viewData.orderedDateTime)}
+            {formatViewScreen("Payment Type", viewData.paymentType)}
+            {formatViewScreen("Supplier Id", viewData.supplierId)}
+            {formatViewScreen(
+              "Product Cost After Discount",
+              viewData.productCostAfterDiscount
+            )}
+            {formatViewScreen(
+              "Total Payment After Discount",
+              viewData.totalPaymentAfterDiscount
+            )}
+          </Grid>
+        </ModalComponent>
+      )}
     </div>
   );
 };

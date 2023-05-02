@@ -7,7 +7,9 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
 import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-import { City } from "country-state-city";
+// import { City } from "country-state-city";
+import { getCity, getCountry, getState } from "services/supplier/Registration";
+import toastify from "services/utils/toastUtils";
 
 const RegistrationForm = ({
   formValues = {},
@@ -16,14 +18,72 @@ const RegistrationForm = ({
   setFormValues = () => {},
 }) => {
   const [mainCategories, setMainCategories] = useState([]);
+  const [allCountry, setallCountry] = useState([]);
+  const [allState, setallState] = useState([]);
+  const [allCity, setallCity] = useState([]);
+  console.log(formValues?.city, "wurhgrwrgharhrharhrg");
+  // const cities = City.getCitiesOfCountry("IN");
 
-  const cities = City.getCitiesOfCountry("IN");
-
-  const citiesList = cities.map((ele) => ({
-    label: ele.name,
-    value: ele.name,
-    id: ele.name,
-  }));
+  // const citiesList = cities.map((ele) => ({
+  //   label: ele.name,
+  //   value: ele.name,
+  //   id: ele.name,
+  // }));
+  const getAllCountryFunction = async () => {
+    const { data, err } = await getCountry();
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallCountry(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  const getAllStateFunction = async () => {
+    const { data, err } = await getState(formValues.country.value);
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallState(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  const getAllCityFunction = async () => {
+    const { data, err } = await getCity(
+      formValues.country.value,
+      formValues.state.value
+    );
+    if (data) {
+      const temp = [];
+      data.data.forEach((val) => {
+        temp.push({ value: val.name, label: val.name });
+      });
+      setallCity(temp);
+    } else if (err) {
+      toastify(err.message, "error");
+    }
+  };
+  useEffect(() => {
+    if (formValues?.country?.value?.length) {
+      getAllStateFunction();
+    }
+  }, [formValues?.country?.value]);
+  useEffect(() => {
+    if (
+      formValues?.country?.value?.length &&
+      formValues?.state?.value?.length
+    ) {
+      getAllCityFunction();
+    }
+  }, [formValues?.country?.value, formValues?.state?.value]);
+  useEffect(() => {
+    getAllCountryFunction();
+  }, []);
   const getMainCategories = async () => {
     const { data } = await serviceUtil.get(
       `products/main-category/drop-down-list`
@@ -166,9 +226,60 @@ const RegistrationForm = ({
             error={errorObj.mobile !== ""}
           />
         </Grid>
+
         <Grid item md={6} sm={12}>
           <SimpleDropdownComponent
-            list={[...citiesList]}
+            list={[...allCountry]}
+            label="Choose Country"
+            required
+            placeholder="Choose Country"
+            onDropdownSelect={(value) => {
+              setFormValues((prev) => ({
+                ...prev,
+                country: value,
+              }));
+              setFormValues((prev) => ({
+                ...prev,
+                state: "",
+              }));
+              setFormValues((prev) => ({
+                ...prev,
+                city: "",
+              }));
+            }}
+            inputlabelshrink
+            value={formValues.country}
+            size="small"
+            // helperText={errorObj?.country}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12}>
+          <SimpleDropdownComponent
+            list={[...allState]}
+            label="Choose State"
+            required
+            placeholder="Choose State"
+            onDropdownSelect={(value) => {
+              setFormValues((prev) => ({
+                ...prev,
+                state: value,
+              }));
+              setFormValues((prev) => ({
+                ...prev,
+                city: "",
+              }));
+            }}
+            inputlabelshrink
+            value={formValues.state}
+            size="small"
+            helperText={errorObj.state}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12}>
+          <SimpleDropdownComponent
+            list={[...allCity]}
             label="Choose City"
             required
             placeholder="Choose City"
@@ -232,6 +343,45 @@ const RegistrationForm = ({
             inputlabelshrink
             helperText={errorObj.gstin}
             error={errorObj.gstin !== ""}
+          />
+        </Grid>
+
+        <Grid item md={6} sm={12}>
+          <InputBox
+            required
+            placeholder="PAN Card"
+            value={formValues.pan}
+            label="PAN"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                pan: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.pan}
+            error={errorObj.pan !== ""}
+          />
+        </Grid>
+        <Grid item md={6} sm={12}>
+          <InputBox
+            required
+            placeholder="Enter AADHAR Number"
+            value={formValues.aadharNumber}
+            label="AADHAR"
+            className="w-100"
+            size="small"
+            onInputChange={(e) => {
+              setFormValues((prev) => ({
+                ...prev,
+                aadharNumber: e.target.value,
+              }));
+            }}
+            inputlabelshrink
+            helperText={errorObj.aadharNumber}
+            error={errorObj.aadharNumber !== ""}
           />
         </Grid>
         <Grid container item md={12}>

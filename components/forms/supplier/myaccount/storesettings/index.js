@@ -260,8 +260,8 @@ const StoreSettings = () => {
           data.shopOpeningDays?.map((value) => {
             return daysList.filter((ele) => ele.value === value)[0];
           }) ?? [],
-        shopOpenTimings: data.shopTimings?.split("-")[0].trim(),
-        shopCloseTimings: data.shopTimings?.split("-")[1].trim(),
+        shopOpenTimings: data.storeOpenTimings,
+        shopCloseTimings: data.storeCloseTimings,
         description: data.shopDescription,
         supplierStoreInfoId: data.supplierStoreInfoId,
         storeVerified: data.storeVerified,
@@ -371,7 +371,8 @@ const StoreSettings = () => {
       maxOrderProcessingTime: formValues.maxTimeToProcessOrder?.value,
       maxOrderDeliveryRange: formValues.maxOrderDeliveryRange?.value,
       shopOpeningDays: formValues.shopOPenDays.map((ele) => ele.value),
-      shopTimings: `${formValues.shopOpenTimings}  -  ${formValues.shopCloseTimings}`,
+      storeOpenTimings: formValues.shopOpenTimings,
+      storeCloseTimings: formValues.shopCloseTimings,
       shopDescription: formValues.description,
       shopDescriptionImageUrl: image[1] ?? discriptionImage.url,
       supplierStoreLogo: image[0] ?? storeLogo.url,
@@ -447,22 +448,7 @@ const StoreSettings = () => {
           window.URL.revokeObjectURL(url);
           toastify("your file has downloaded!", "success");
         })
-        .catch((err) => err);
-      // .then((blob) => {
-      //   console.log(blob, "bloc");
-      //   const url = window.URL.createObjectURL(blob);
-      //   const a = document.createElement("a");
-      //   a.style.display = "none";
-      //   a.href = url;
-      //   // the filename you want
-      //   a.download = `${formValues.storeName
-      //     .toString()
-      //     .replaceAll(" ", "_")}.pdf`;
-      //   document.body.appendChild(a);
-      //   a.click();
-      //   window.URL.revokeObjectURL(url);
-      //   toastify("your file has downloaded!", "success");
-      // })
+        .catch((err) => toastify(err?.message, "error"));
     } catch (err) {
       toastify(
         "Unable to process your request, please try again later!!",
@@ -808,7 +794,7 @@ const StoreSettings = () => {
                       onChange={(e) => {
                         setFormValues((pre) => ({
                           ...pre,
-                          shopOpenTimings: e.target.value,
+                          shopOpenTimings: `${e.target.value}:00`,
                         }));
                       }}
                       value={formValues.shopOpenTimings}
@@ -858,7 +844,7 @@ const StoreSettings = () => {
                       onChange={(e) => {
                         setFormValues((pre) => ({
                           ...pre,
-                          shopCloseTimings: e.target.value,
+                          shopCloseTimings: `${e.target.value}:00`,
                         }));
                       }}
                       value={formValues.shopCloseTimings}
