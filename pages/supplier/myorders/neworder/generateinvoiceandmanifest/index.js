@@ -230,7 +230,14 @@ const Generateinvoiceandmanifest = () => {
     // const { data, err } = await getQrPdf();
     try {
       fetch(
-        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId[0]}`
+        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId[0]}`,
+        {
+          method: "get",
+          headers: new Headers({
+            userId: supplierId,
+            "Content-Type": "application/octet-stream",
+          }),
+        }
       )
         .then(async (resp) => {
           const blob = await resp.blob();
@@ -358,7 +365,7 @@ const Generateinvoiceandmanifest = () => {
               //   route.push("/supplier/myorders/neworder/uploadmanifest");
               // }}
               onBtnClick={() => {
-                downloadManifestFunction("download");
+                downloadManifestFunction("manifest");
               }}
             />
           </div>
