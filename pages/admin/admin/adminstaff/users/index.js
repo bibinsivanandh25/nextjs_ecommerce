@@ -166,7 +166,7 @@ const Users = () => {
           <Box className="d-flex align-items-center justify-content-center">
             <SwitchComponent
               label=""
-              defaultChecked={item.status === "APPROVED"}
+              defaultChecked={item.status === "ACTIVE"}
               ontoggle={() => {
                 if (item.grouped) {
                   setshowConfirmModal({
@@ -174,13 +174,13 @@ const Users = () => {
                       "The User is already present in a group, and will be removed if disabled. Would you really like to disable?",
                     adminRegistrationId: item.adminRegistrationId,
                     status:
-                      item.status === "APPROVED" ? "DISABLED" : "APPROVED",
+                      item.status === "ACTIVE" ? "DISABLED" : "ACTIVE",
                     type: "disable",
                   });
                 } else {
                   disableUsers(
                     item.adminRegistrationId,
-                    item.status === "APPROVED" ? "DISABLED" : "APPROVED"
+                    item.status === "ACTIVE" ? "DISABLED" : "ACTIVE"
                   );
                 }
               }}
