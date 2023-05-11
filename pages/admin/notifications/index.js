@@ -25,6 +25,7 @@ import {
   getAllNotification,
   getNotificationById,
   getSupplierDropdown,
+  sendNotification,
   updateNotification,
   viewNotificationApiCall,
 } from "services/admin/notification";
@@ -521,6 +522,15 @@ const Notifications = () => {
       toastify(err?.response?.data?.message, "error");
     }
   };
+  const sendNotificationFunction = async (id) => {
+    const { data, err } = await sendNotification(id);
+    console.log(data, err, "data,error");
+    if (data) {
+      toastify(data.message, "success");
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   const mapStateToRow = (data) => {
     const temp = [];
     data.forEach((item) => {
@@ -540,7 +550,13 @@ const Notifications = () => {
         col12: (
           <Grid container className="d-flex justify-content-around">
             {!item.isSend ? (
-              <CustomIcon type="send" className="h-4" />
+              <CustomIcon
+                type="send"
+                className="h-4"
+                onIconClick={() => {
+                  sendNotificationFunction(item.notificationDetailsId);
+                }}
+              />
             ) : (
               <Grid style={{ visibility: "hidden" }}>
                 <CustomIcon type="send" className="h-4" />
@@ -564,6 +580,8 @@ const Notifications = () => {
                   setuserId(item.notificationDetailsId);
 
                   getNotificationByIdFunction(item.notificationDetailsId);
+                } else if (ele == "Resend") {
+                  sendNotificationFunction(item.notificationDetailsId);
                 }
               }}
               options={["Edit", "Delete", item.isSend && "Resend"]}

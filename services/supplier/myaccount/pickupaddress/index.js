@@ -49,10 +49,22 @@ const deleteAddress = (supplierId, addressId) => {
     })
     .catch((err) => ({ err }));
 };
+const validPincode = (payload) => {
+  return serviceUtil
+    .post(`order-payment/validatePincode`, payload)
+    .then((res) => {
+      const status = res && res.data;
+      return { status };
+    })
+    .catch((error) => {
+      return { error };
+    });
+};
 export {
   getAllAddressofSupplier,
   changePrimaryAddress,
   addNewAddress,
   updateAddress,
   deleteAddress,
+  validPincode,
 };

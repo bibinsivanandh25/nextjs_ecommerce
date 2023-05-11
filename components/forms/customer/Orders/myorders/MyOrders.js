@@ -102,6 +102,12 @@ const option3 = [
   "Write a Product review",
   "View Order Details",
 ];
+const option4 = [
+  "View Order Details",
+  "Leave Seller feedback",
+  "Write a Product review",
+];
+const option5 = ["Track Package", "View Order Details"];
 const MyOrders = ({
   setshowProdDetails,
   setSellerFeedbackModal,
@@ -301,12 +307,18 @@ const MyOrders = ({
                   // onClickOfMenuItem(ele, item.flagId);
                 }}
                 options={
-                  selectedLink === "notYetShipped"
+                  selectedLink === "INITIATED"
                     ? [...option2]
-                    : selectedLink === "cancelled"
+                    : selectedLink === "CANCELLED"
                     ? [...option2]
-                    : selectedLink === "return"
+                    : selectedLink === "RETURNED"
                     ? [...option3]
+                    : selectedProduct[0].orderDeliveryStatus == "DELIVERED" &&
+                      selectedLink == ""
+                    ? [...option4]
+                    : selectedProduct[0].orderDeliveryStatus == "INITIATED" &&
+                      selectedLink == ""
+                    ? [...option5]
                     : [...option1]
                 }
                 IconclassName="color-gray"

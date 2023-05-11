@@ -171,8 +171,9 @@ const MrMrsCartProducts = () => {
       if (pageIndex === 0) {
         setTableRows(mapRowsToTable(data.data.masterProductPojos));
         setpageNumber((pre) => pre + 1);
-        setCount(data.data.count)
+        setCount(data.data.count);
       } else {
+        setCount(data.data.count);
         setpageNumber((pre) => pre + 1);
         setTableRows((pre) => [
           ...pre,

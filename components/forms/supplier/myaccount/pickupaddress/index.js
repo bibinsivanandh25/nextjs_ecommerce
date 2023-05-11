@@ -69,7 +69,7 @@ const PickUpAddress = () => {
               setShowAddAddressModal(true);
             }}
           >
-            + Add new Address{" "}
+            + Add new Address
           </Paper>
         </Grid>
         <Grid xs={6} item />

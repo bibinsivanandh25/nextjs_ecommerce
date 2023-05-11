@@ -16,6 +16,8 @@ const Registration = () => {
     businessName: "",
     mail: "",
     mobile: "",
+    country: { value: "India", label: "India" },
+    state: "",
     city: null,
     mainCat: [],
     gstin: "",
@@ -25,13 +27,14 @@ const Registration = () => {
     firstName: "",
     lastName: "",
     referralCode: "",
+    pan: "",
+    aadharNumber: "",
   };
   const [formValues, setFormValues] = useState(formObj);
   const [errorObj, setErrorObj] = useState({ ...formObj });
   const [showModal, setShowModal] = useState(false);
   const [showVerifyOTP, setShowVerifyOTP] = useState(false);
   const [registrationPayLoad, setRegistrationPayLoad] = useState({});
-
   const route = useRouter();
   const validateForm = () => {
     let flag = false;
@@ -82,6 +85,30 @@ const Registration = () => {
       flag = true;
       errObj.stockCount = "Please select one option";
     }
+    if (formValues.country === "") {
+      errObj.country = validateMessage.field_required;
+      flag = true;
+    }
+    if (formValues.state === "") {
+      errObj.state = validateMessage.field_required;
+      flag = true;
+    }
+
+    if (formValues.pan === "") {
+      errObj.pan = validateMessage.field_required;
+      flag = true;
+    } else if (!validationRegex.pancard.test(formValues.pan)) {
+      errObj.pan = validateMessage.validPAN;
+      flag = true;
+    }
+    if (formValues.aadharNumber === "") {
+      errObj.aadharNumber = validateMessage.field_required;
+      flag = true;
+    } else if (!validationRegex.aadharcard.test(formValues.aadharNumber)) {
+      errObj.aadharNumber = validateMessage.aadharcard;
+      flag = true;
+    }
+
     if (formValues.site.length === 0) {
       flag = true;
       errObj.site = "Please select one option";
@@ -90,7 +117,7 @@ const Registration = () => {
       flag = true;
       errObj.siteLink = validateMessage.alpha_numeric_max_255;
     }
-    if (formValues.city === null) {
+    if (formValues.city === null || formValues.city === "") {
       flag = true;
       errObj.city = validateMessage.field_required;
     }
@@ -119,6 +146,10 @@ const Registration = () => {
         city: formValues.city.value,
         firstName: formValues.firstName,
         lastName: formValues.lastName,
+        country: formValues.country,
+        state: formValues.state,
+        pan: formValues.pan,
+        aadharNumber: formValues.aadharNumber,
         supplierReferralCode: "",
         wished: false,
       };

@@ -33,4 +33,34 @@ const adminDeleteOrder = (payload) => {
       return { err };
     });
 };
-export { getAllOrderPaymentDetails, adminViewOrder, adminDeleteOrder };
+const getOrderSummary = (pageNo, pageSize) => {
+  return serviceUtil
+    .put(`order-payment/admin/orders/summary/${pageNo}/${pageSize}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const viewOrderSummery = (orderId, variationId) => {
+  return serviceUtil
+    .put(
+      `order-payment/orders/summary-view?orderId=${orderId}&productVariationId=${variationId}`
+    )
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+export {
+  getAllOrderPaymentDetails,
+  adminViewOrder,
+  adminDeleteOrder,
+  getOrderSummary,
+  viewOrderSummery,
+};

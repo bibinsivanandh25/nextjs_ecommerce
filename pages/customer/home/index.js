@@ -82,19 +82,10 @@ const Home = () => {
         holidays: days.filter((day) => {
           return !data.shopOpeningDays?.includes(day);
         }),
-        shopTimings: data.shopTimings
-          ? `${format(
-              new Date(
-                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[0]?.trim()}:00`
-              ),
-              "hh:mm a"
-            )} to ${format(
-              new Date(
-                `Tue Aug 03 2021 ${data?.shopTimings?.split("-")[1]?.trim()}:00`
-              ),
-              "hh:mm a"
-            )}`
-          : null,
+        shopTimings:
+          data.storeOpenTimings && data.storeCloseTimings
+            ? `${data.storeOpenTimings} to ${data.storeCloseTimings}`
+            : "--",
         shoplogo: data?.shopDescriptionImageUrl,
         shopDescriptionImageUrl: data?.shopDescriptionImageUrl,
         shopDescription: data?.shopDescription,

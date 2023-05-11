@@ -128,7 +128,7 @@ const ToolsToApproved = () => {
             }}
           />
         ),
-        col6: item.customerType.replaceAll("_", " "),
+        col6: item?.customerType?.replaceAll("_", " "),
         col7: item.startDateTime,
         col8: item.endDateTime,
         col9: item.createdDate,
