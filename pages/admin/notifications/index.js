@@ -249,7 +249,7 @@ const Notifications = () => {
       userType: "Supplier",
       searchKey: supplierSearch,
       pageCount: page,
-      pageSize: 10,
+      pageSize: 50,
     };
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
@@ -524,7 +524,6 @@ const Notifications = () => {
   };
   const sendNotificationFunction = async (id) => {
     const { data, err } = await sendNotification(id);
-    console.log(data, err, "data,error");
     if (data) {
       toastify(data.message, "success");
     } else if (err) {

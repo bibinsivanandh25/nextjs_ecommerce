@@ -41,9 +41,7 @@ const deleteQuary = (id) => {
 };
 const editQuestion = (payload) => {
   return serviceUtil
-    .put(
-      `/products/customer-update-query/${payload.userid}/${payload.questionid}?question=${payload.question}`
-    )
+    .put(`/products/customer-update-query`, payload)
     .then((res) => {
       const data = res && res.data && res.data.message;
       return { data };
@@ -81,9 +79,7 @@ const viewProductQuery = (questionId) => {
 };
 const replyProductQuery = (payload) => {
   return serviceUtil
-    .put(
-      `/products/customer-replay-query/${payload.questionId}/${payload.userName}?answer=${payload.answer}`
-    )
+    .put(`/products/customer-replay-query`, payload)
     .then((res) => {
       const data = res && res.data && res.data.message;
       return { data };

@@ -69,7 +69,6 @@ const HelpandsupportCreate = ({
     content: "",
   });
   const [contentFile, setContentFile] = useState([]);
-
   const [errorObj, setErrorObj] = useState({
     issueType: "",
     subject: "",
@@ -307,31 +306,33 @@ const HelpandsupportCreate = ({
               />
             </Grid>
           </Grid>
-          <Grid container item display="flex" alignItems="center">
-            <Grid item xs={1} justifyContent="end" className="fw-bold">
-              Issue To
-            </Grid>
+          {modalType !== "REPLY" ? (
+            <Grid container item display="flex" alignItems="center">
+              <Grid item xs={1} justifyContent="end" className="fw-bold">
+                Issue To
+              </Grid>
 
-            <Grid item xs={0.3}>
-              :
+              <Grid item xs={0.3}>
+                :
+              </Grid>
+              <Grid item xs={10}>
+                <RadiobuttonComponent
+                  label="Supplier"
+                  onRadioChange={() => {
+                    setuserToType("SUPPLIER");
+                  }}
+                  isChecked={userToType === "SUPPLIER"}
+                />
+                <RadiobuttonComponent
+                  label="Multistore"
+                  onRadioChange={() => {
+                    setuserToType("ADMIN");
+                  }}
+                  isChecked={userToType === "ADMIN"}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={10}>
-              <RadiobuttonComponent
-                label="Supplier"
-                onRadioChange={() => {
-                  setuserToType("SUPPLIER");
-                }}
-                isChecked={userToType === "SUPPLIER"}
-              />
-              <RadiobuttonComponent
-                label="Multistore"
-                onRadioChange={() => {
-                  setuserToType("ADMIN");
-                }}
-                isChecked={userToType === "ADMIN"}
-              />
-            </Grid>
-          </Grid>
+          ) : null}
         </Grid>
       </div>
       <div className="my-2 ps-5">
