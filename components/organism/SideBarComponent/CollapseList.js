@@ -116,6 +116,7 @@ const CollapseList = ({
   list = {},
   open = false,
   setToFalse = () => {},
+  setOpen = () => {},
   // id = null,
 }) => {
   const [expand, setExpand] = useState(false);
@@ -150,6 +151,9 @@ const CollapseList = ({
           router.pathname.includes(menuList.pathName) ? "color-orange" : ""
         } cursor-pointer`}
         onClick={() => {
+          if (!open) {
+            setOpen(true);
+          }
           if (menuList.navigate) {
             router.push(`${menuList.pathName}`);
           }

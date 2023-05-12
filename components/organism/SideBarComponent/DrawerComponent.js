@@ -522,6 +522,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           return temp;
                         });
                       }}
+                      setOpen={setOpen}
                       // id={index}
                     />
                   )}
