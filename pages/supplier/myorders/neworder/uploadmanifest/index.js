@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
 import PrintIcon from "@mui/icons-material/Print";

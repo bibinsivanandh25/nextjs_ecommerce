@@ -204,7 +204,7 @@ const HelpAndSupport = () => {
         keyword: searchText || "",
       };
       const { data, err } = await getAllHelpandSupportData(payload, page);
-      if (data?.length) {
+      if (data) {
         if (page == 0) {
           setTableRows(mapRowsToTable(data));
           setpageNumber((pre) => pre + 1);

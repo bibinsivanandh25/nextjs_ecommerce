@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Badge, Grid, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
@@ -88,11 +89,11 @@ const MyProfile = () => {
 
   const cities = City.getCitiesOfCountry("IN");
 
-  const citiesList = cities.map((ele) => ({
-    label: ele.name,
-    value: ele.name,
-    id: ele.name,
-  }));
+  // const citiesList = cities.map((ele) => ({
+  //   label: ele.name,
+  //   value: ele.name,
+  //   id: ele.name,
+  // }));
   const user = useSelector((state) => {
     return state.user;
   });

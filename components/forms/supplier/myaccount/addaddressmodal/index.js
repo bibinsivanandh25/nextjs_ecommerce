@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
@@ -312,6 +313,7 @@ const AddAddressModal = (props) => {
     if (isValid) {
       const temp1 = [];
       const payload1 = [{ Input_Pincode: formValues.pinCode }];
+      // eslint-disable-next-line no-shadow
       const { status, error } = await validPincode(payload1);
       if (status) {
         status.data.forEach((val) => {
