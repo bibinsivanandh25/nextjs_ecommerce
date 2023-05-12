@@ -19,8 +19,8 @@ const saveStaff = (payload) => {
   return serviceUtil
     .post(`users/staff-management`, payload)
     .then((res) => {
-      const { data } = res.data;
-      return { data };
+      const { data, message } = res.data;
+      return { data, message };
     })
     .catch((err) => {
       return { err };
