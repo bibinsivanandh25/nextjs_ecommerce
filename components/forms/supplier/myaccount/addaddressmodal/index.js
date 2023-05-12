@@ -281,6 +281,22 @@ const AddAddressModal = (props) => {
         errObj[el.id] = null;
       }
     });
+    // debugger;
+    const lat = inputFields.find((item) => item.id === "latitudeValue");
+    const lon = inputFields.find((item) => item.id === "longitudeValue");
+
+    if (lat && !validationRegex.latlong.test(lat)) {
+      errObj.latitudeValue = "Invalid entry";
+    }
+    if (lon && !validationRegex.latlong.test(lon)) {
+      errObj.longitudeValue = "Invalid entry";
+    }
+    // if (
+    //   inputFields.latitudeValue &&
+    //   !validationRegex.latlong.test(inputFields.latitudeValue)
+    // ) {
+    //   errObj.latitudeValue = "Invalid entry"
+    // }
 
     setError({ ...errObj });
     let valid = true;
