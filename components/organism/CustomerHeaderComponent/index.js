@@ -143,7 +143,7 @@ const Header = () => {
     const name = profileName ?? customerName ?? "";
     if (name !== "") {
       name.split(" ").forEach((item) => {
-        label += item[0];
+        if (item) label += item[0];
       });
     }
     return label.toUpperCase();
