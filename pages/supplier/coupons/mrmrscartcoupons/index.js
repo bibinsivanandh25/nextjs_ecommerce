@@ -19,11 +19,6 @@ import MrMrsAddNewCoupons from "@/forms/supplier/coupons/mrmrsaddnewcoupons";
 const Coupons = () => {
   const selectTypeList = [
     {
-      id: "ALL",
-      label: "ALL",
-      value: "ALL",
-    },
-    {
       id: "discountType",
       label: "Discount Type",
       value: "DISCOUNT_TYPE",
