@@ -125,7 +125,7 @@ const SupplierAddCoupons = ({
             : null,
         percentageValue:
           formValues.discountTypeObj?.value?.toUpperCase() === "PERCENTAGE"
-            ? parseInt(formValues.couponAmount, 10)
+            ? parseInt(formValues.couponPercentage, 10)
             : null,
         discounted: purchaseCheckbox,
         couponStatus,
