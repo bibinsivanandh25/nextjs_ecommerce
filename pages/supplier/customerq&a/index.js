@@ -237,7 +237,6 @@ const CustomerQnA = () => {
     customerId,
     customerName
   ) => {
-    console.log(customerId, customerName, "%%%%%%%%%%%%%5");
     if (userAnswer === "") {
       setdataForViewModal({
         customerQId: questionId,
@@ -392,7 +391,9 @@ const CustomerQnA = () => {
                   val.customerQuestion,
                   val.createdAt,
                   "",
-                  val.variationId
+                  val.variationId,
+                  val.customerId,
+                  val.customerName
                 )
               }
             />
