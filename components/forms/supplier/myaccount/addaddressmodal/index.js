@@ -18,7 +18,6 @@ import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
-// import { City, State } from "country-state-city";
 import { getCity, getCountry, getState } from "services/supplier/Registration";
 
 const AddAddressModal = (props) => {

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, FormHelperText, Grid, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import ModalComponent from "@/atoms/ModalComponent";
@@ -14,7 +14,7 @@ import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/customerSlice";
 import { useDispatch } from "react-redux";
-import { State, City } from "country-state-city";
+import { getState, getCity } from "services/supplier/Registration";
 
 const errorObj = {
   name: false,
@@ -39,30 +39,46 @@ const NewAddress = ({
   modalType,
   pageType = "",
 }) => {
-  const states = State.getStatesOfCountry("IN");
-  const statesList = states.map((ele) => ({
-    label: ele.name,
-    value: ele.name,
-    id: ele.name,
-  }));
-  const cities = City.getCitiesOfCountry("IN");
-  const citiesList = cities.map((ele) => ({
-    label: ele.name,
-    value: ele.name,
-    id: ele.name,
-  }));
+  const [statesList, setStateList] = useState([]);
+  const [citiesList, setcitiesList] = useState([]);
   const [error, setError] = useState(errorObj);
   const dispatch = useDispatch();
 
+  const getStates = async () => {
+    const { data } = await getState("India");
+    if (data) {
+      setStateList(
+        data.data.map((item) => ({
+          value: item.iso2,
+          label: item.name,
+        }))
+      );
+    }
+  };
+  const getcity = async (state) => {
+    const { data } = await getCity("India", state);
+    if (data) {
+      setcitiesList(
+        data.data.map((item) => ({
+          value: item.name,
+          label: item.name,
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    getStates();
+  }, []);
+
+  useEffect(() => {
+    if (defaultFormData.state) {
+      getcity(defaultFormData.state.label);
+    }
+  }, [defaultFormData.state]);
+
   const handleInputChange = (e, value) => {
-    if (value === "state" || value === "city") {
-      setDefaultFormData((prev) => {
-        return {
-          ...prev,
-          [value]: e,
-        };
-      });
-    } else if (value == "addresstype") {
+    if (value == "addresstype") {
       setDefaultFormData((prev) => {
         return {
           ...prev,
@@ -305,26 +321,38 @@ const NewAddress = ({
             <Grid item lg={6} md={6} xs={6}>
               <SimpleDropdownComponent
                 size="small"
-                label="City / District / Town"
-                list={[...citiesList]}
-                value={defaultFormData?.city}
+                list={[...statesList]}
+                label="State"
+                value={defaultFormData?.state}
                 onDropdownSelect={(val) => {
-                  handleInputChange(val, "city");
+                  setDefaultFormData((prev) => {
+                    return {
+                      ...prev,
+                      state: val,
+                      city: {},
+                    };
+                  });
+                  setcitiesList([]);
                 }}
-                error={error.city}
-                helperText={error.city ? validateMessage.field_required : ""}
+                helperText={error.state ? validateMessage.field_required : ""}
               />
             </Grid>
             <Grid item lg={6} md={6} xs={6}>
               <SimpleDropdownComponent
                 size="small"
-                list={[...statesList]}
-                label="State"
-                value={defaultFormData?.state}
+                label="City / District / Town"
+                list={[...citiesList]}
+                value={defaultFormData?.city}
                 onDropdownSelect={(val) => {
-                  handleInputChange(val, "state");
+                  setDefaultFormData((prev) => {
+                    return {
+                      ...prev,
+                      city: val,
+                    };
+                  });
                 }}
-                helperText={error.state ? validateMessage.field_required : ""}
+                error={error.city}
+                helperText={error.city ? validateMessage.field_required : ""}
               />
             </Grid>
             <Grid item lg={6} md={6} xs={6}>

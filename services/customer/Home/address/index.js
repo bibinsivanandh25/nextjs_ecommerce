@@ -50,10 +50,46 @@ const changePrimaryAddress = (userId, id) => {
     })
     .catch((err) => ({ err }));
 };
+const getCountry = () => {
+  return serviceUtil
+    .get(`help-and-support/allCountries`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const getState = (country) => {
+  return serviceUtil
+    .get(`help-and-support/allStates/${country}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const getCity = (country, state) => {
+  return serviceUtil
+    .get(`help-and-support/allCities?country=${country}&state=${state}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getAllCustomerAddress,
   saveCustomerAddress,
   editCustomerAddress,
   deleteCustomerAddress,
   changePrimaryAddress,
+  getState,
+  getCountry,
+  getCity,
 };

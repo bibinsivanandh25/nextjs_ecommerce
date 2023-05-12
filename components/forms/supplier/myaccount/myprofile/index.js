@@ -25,7 +25,6 @@ import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import OtpForm from "@/forms/auth/OtpForm";
-import { City } from "country-state-city";
 import { getCity, getCountry, getState } from "services/supplier/Registration";
 
 const formObj = {
@@ -87,13 +86,6 @@ const MyProfile = () => {
 
   const dispatch = useDispatch();
 
-  const cities = City.getCitiesOfCountry("IN");
-
-  // const citiesList = cities.map((ele) => ({
-  //   label: ele.name,
-  //   value: ele.name,
-  //   id: ele.name,
-  // }));
   const user = useSelector((state) => {
     return state.user;
   });

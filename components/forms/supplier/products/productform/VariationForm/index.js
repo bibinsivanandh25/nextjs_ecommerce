@@ -9,9 +9,9 @@ import DatePickerComponent from "components/atoms/DatePickerComponent";
 import InputBox from "components/atoms/InputBoxComponent";
 import { getCurrentData } from "services/supplier";
 import CustomIcon from "services/iconUtils";
-import { Country } from "country-state-city";
 import { useSelector } from "react-redux";
 import ButtonComponent from "@/atoms/ButtonComponent";
+import { getCountry } from "services/supplier/Registration";
 import { validateVariation } from "../validation";
 
 const VariationForm = forwardRef(
@@ -32,15 +32,22 @@ const VariationForm = forwardRef(
         // required: true,
       },
     ];
-    const countries = Country.getAllCountries();
+    const [countries, setcountries] = useState([]);
     const [dropdowns, setDropdowns] = useState([]);
     const [error, setError] = useState({});
-    const countryList = countries.map((item) => ({
-      label: item.name,
-      value: item.name,
-      id: item.name,
-    }));
+
     const { editProduct, viewFlag } = useSelector((state) => state.product);
+
+    const getAllCountry = async () => {
+      const { data } = await getCountry();
+      if (data) {
+        const temp = [];
+        data.data.forEach((val) => {
+          temp.push({ value: val.name, label: val.name });
+        });
+        setcountries(temp);
+      }
+    };
 
     useEffect(() => {
       let tempFormData = {};
@@ -90,6 +97,7 @@ const VariationForm = forwardRef(
 
     useEffect(() => {
       getDate();
+      getAllCountry();
     }, []);
 
     const handleInputChange = (val, ele) => {
@@ -176,11 +184,11 @@ const VariationForm = forwardRef(
                     id={ele.id}
                     size="small"
                     list={
-                      ele.id === "countryOfOrigin" ? countryList : ele.options
+                      ele.id === "countryOfOrigin" ? countries : ele.options
                     }
                     value={
                       ele.id === "countryOfOrigin"
-                        ? countryList.find(
+                        ? countries.find(
                             (op) => op.id === formData?.variation[ele.id]
                           )
                         : ele.options.find(
