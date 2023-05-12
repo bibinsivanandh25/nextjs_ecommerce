@@ -309,8 +309,10 @@ const OrderReturn = ({
 
                         <Paper className="d-flex justify-content-between align-items-center p-2">
                           <Typography>
-                            Return Order confirmation will be sent to{" "}
-                            <span className="fw-bold">xyz.gmail.com</span>{" "}
+                            Return Order confirmation will be sent to
+                            <span className="fw-bold">
+                              xyz.gmail.com (dummy data)
+                            </span>{" "}
                           </Typography>
                           <ButtonComponent
                             label="Continue"
@@ -344,7 +346,9 @@ const OrderReturn = ({
                 <Typography className="h-5  my-2">
                   Return Shipment Charges
                 </Typography>
-                <Typography className="h-5  my-2">Rs.123</Typography>
+                <Typography className="h-5  my-2">
+                  Rs.123 (dummy data)
+                </Typography>
               </Box>
               <Divider />
               <Box className="d-flex justify-content-between align-items-center my-2">

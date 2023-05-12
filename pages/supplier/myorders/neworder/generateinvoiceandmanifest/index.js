@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Paper } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
 import { getAllnewOrders } from "services/supplier/myorders/newOrders";
+import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
 
 const filterData = [
@@ -229,7 +230,14 @@ const Generateinvoiceandmanifest = () => {
     // const { data, err } = await getQrPdf();
     try {
       fetch(
-        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId[0]}`
+        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId[0]}`,
+        {
+          method: "get",
+          headers: new Headers({
+            userId: supplierId,
+            "Content-Type": "application/octet-stream",
+          }),
+        }
       )
         .then(async (resp) => {
           const blob = await resp.blob();
@@ -296,7 +304,16 @@ const Generateinvoiceandmanifest = () => {
       {!showInvoices ? (
         <>
           <ProgressBar showHeader steps={[...progressBarSteps]} />
-
+          <Grid item lg={5} className="d-flex flex-column justify-content-end">
+            <p
+              className={`${styles.Previousinvoicelink} fs-14 cursor-pointer`}
+              onClick={() => {
+                setShowInvoices(true);
+              }}
+            >
+              Show Previous Invoice
+            </p>
+          </Grid>
           <div className="d-flex justify-content-end">
             <div className="w-25 mx-2">
               <SimpleDropdownComponent
@@ -348,7 +365,7 @@ const Generateinvoiceandmanifest = () => {
               //   route.push("/supplier/myorders/neworder/uploadmanifest");
               // }}
               onBtnClick={() => {
-                downloadManifestFunction("download");
+                downloadManifestFunction("manifest");
               }}
             />
           </div>

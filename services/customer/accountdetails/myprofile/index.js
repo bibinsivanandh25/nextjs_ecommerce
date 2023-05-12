@@ -37,9 +37,7 @@ const getOtp = (payload) => {
 };
 const varifyPhoneOtp = (payload) => {
   return serviceUtil
-    .post(
-      `users/registration/verify-otp?userName=${payload.userName}&otp=${payload.otp}`
-    )
+    .post(`users/registration/verify-otp`, payload)
     .then((res) => {
       const data = res && res.data && res.data.message;
       return { data };
@@ -51,9 +49,7 @@ const varifyPhoneOtp = (payload) => {
 };
 const sendOtpEmailOrPhone = (payload) => {
   return serviceUtil
-    .post(
-      `users/customer-update/send-otp?otpType=${payload.type}&emailOrMobileNumber=${payload.value}`
-    )
+    .post(`users/customer-update/send-otp`, payload)
     .then((res) => {
       const data = res && res.data && res.data.message;
       return { data };
