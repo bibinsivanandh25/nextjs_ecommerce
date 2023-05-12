@@ -50,6 +50,25 @@ const tableHeaders = [
   },
 ];
 
+const selectTypeList = [
+  {
+    label: "ALL",
+    value: "ALL",
+  },
+  {
+    label: "Name",
+    value: "NAME",
+  },
+  {
+    label: "E-mail",
+    value: "EMAILID",
+  },
+  {
+    label: "Mobile Number",
+    value: "MOBILE_NUMBER",
+  },
+];
+
 const Staff = () => {
   const router = useRouter();
   const handleBtnClick = () => {
@@ -59,23 +78,27 @@ const Staff = () => {
   const supplierId = useSelector((state) => state.user.supplierId);
   const [viewStaffId, setviewStaffId] = useState(null);
   const [editStaffId, seteditStaffId] = useState(null);
+  const [pageNumber, setpageNumber] = useState(0);
+  const [searchtext, setsearchtext] = useState("");
+  const [filter, setFilter] = useState("ALL");
 
   const deletestaff = async (staffId) => {
     const { data, err, message } = await deleteStaff(staffId);
     if (data) {
       toastify(message, "success");
-      // const temp = rows.filter((item) => {
-      //   if (item.col1 !== staffId) return item;
-      // });
-      // setRows(temp);
-      getData();
+      getData(0, searchtext, filter);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
 
-  const getData = async () => {
-    const { data } = await getStaff(supplierId, 0);
+  const getData = async (page, searchText, filterText) => {
+    const { data } = await getStaff(
+      supplierId,
+      page,
+      searchText,
+      filterText.toUpperCase()
+    );
     if (data) {
       const temp = [];
       data.forEach((item) => {
@@ -111,12 +134,17 @@ const Staff = () => {
           ),
         });
       });
-      setRows(temp);
+      if (page === 0) {
+        setRows(temp);
+      } else {
+        setRows([...rows, ...temp]);
+      }
+      if (data.length) setpageNumber(page + 1);
     }
   };
 
   useEffect(() => {
-    getData();
+    getData(0, searchtext, filter);
   }, []);
 
   return (
@@ -136,7 +164,19 @@ const Staff = () => {
               </Box>
             </div>
             <Box className="mt-4">
-              <TableComponent tableRows={rows} columns={tableHeaders} />
+              <TableComponent
+                tableRows={rows}
+                columns={tableHeaders}
+                filterList={[...selectTypeList]}
+                handlePageEnd={(searchText, filterText, page = pageNumber) => {
+                  setsearchtext(searchText);
+                  setFilter(filterText);
+                  getData(page, searchText, filterText);
+                }}
+                handleRowsPerPageChange={() => {
+                  setpageNumber(0);
+                }}
+              />
             </Box>
           </Paper>
         </>

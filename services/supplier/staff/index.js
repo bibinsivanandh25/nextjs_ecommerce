@@ -1,10 +1,10 @@
 import serviceUtil from "services/utils";
 
-const getStaff = (supplierId, page = 0, keyword = "", searchText = "NAME") => {
+const getStaff = (supplierId, page = 0, keyword = "", filter = "ALL") => {
   const rows = 50;
   return serviceUtil
     .get(
-      `users/staff-management/filter/${page}/${rows}?supplierId=${supplierId}&type=${searchText}&keyword=${keyword}`
+      `users/staff-management/filter/${page}/${rows}?supplierId=${supplierId}&type=${filter}&keyword=${keyword}`
     )
     .then((res) => {
       const { data } = res.data;
