@@ -68,6 +68,7 @@ const DeliveryOptionsModal = ({
   const [finalPriceWithDeliveryCharges, setFinalPriceWithDeliveryCharge] =
     useState(0);
   const customer = useSelector((state) => state.customer);
+  const { userId, profileId } = useSelector((state) => state.customer);
 
   const queryClient = useQueryClient();
 
@@ -131,7 +132,8 @@ const DeliveryOptionsModal = ({
   const getProductDetails = async (type) => {
     const { data } = await getProductDetailsByDeliveryType(
       productId,
-      type ?? selectedTab
+      type ?? selectedTab,
+      profileId
     );
     if (data) {
       setFinalPriceWithDeliveryCharge(data?.finalPrice);
@@ -155,7 +157,6 @@ const DeliveryOptionsModal = ({
     }
   };
 
-  const { userId, profileId } = useSelector((state) => state.customer);
   useEffect(() => {
     if (modalType === "ADD") {
       getProductDetails("NOFREEDELIVERYANDRETURN");

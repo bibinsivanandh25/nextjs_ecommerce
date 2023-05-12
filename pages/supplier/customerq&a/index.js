@@ -184,6 +184,8 @@ const CustomerQnA = () => {
     dateAndTime: "",
     answer: "",
     varId: "",
+    customerId: "",
+    customerName: "",
   });
 
   const [pageNoForQuestions, setPageNoForQuestions] = useState(0);
@@ -231,8 +233,11 @@ const CustomerQnA = () => {
     customerQuestion,
     createdAt,
     userAnswer,
-    variationId
+    variationId,
+    customerId,
+    customerName
   ) => {
+    console.log(customerId, customerName, "%%%%%%%%%%%%%5");
     if (userAnswer === "") {
       setdataForViewModal({
         customerQId: questionId,
@@ -241,6 +246,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: "",
         varId: variationId,
+        customerId,
+        customerName,
       });
     } else {
       setdataForViewModal({
@@ -250,6 +257,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: userAnswer,
         varId: variationId,
+        customerId,
+        customerName,
       });
     }
 
@@ -309,7 +318,9 @@ const CustomerQnA = () => {
                   val.customerQuestion,
                   val.createdAt,
                   val.userAnswer,
-                  val.variationId
+                  val.variationId,
+                  val.customerId,
+                  val.customerName
                 );
               }}
             />
