@@ -971,14 +971,14 @@ const MyProfile = () => {
             <ButtonComponent
               label="Verify OTP"
               onBtnClick={async () => {
-                const formData = new FormData();
-                formData.append(
-                  "userName",
-                  showVerifyOtp === "phone"
-                    ? formValues.mobile
-                    : formValues.mail
-                );
-                formData.append("otp", otp);
+                const formData = {
+                  userName:
+                    showVerifyOtp === "phone"
+                      ? formValues.mobile
+                      : formValues.mail,
+                  otp,
+                };
+
                 const { data, errRes } = await verifyOtp(formData);
                 if (data) {
                   // console.log(data);

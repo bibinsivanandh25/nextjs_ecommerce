@@ -48,14 +48,13 @@ const VerifyOTP = ({
     if (otp.includes("x")) {
       toastify("Invalid OTP", "error");
     } else {
-      const formData = new FormData();
-      formData.append("userName", payLoad.mobileNumber);
-      formData.append("otp", otp);
-      const config = {
-        headers: { "content-type": "multipart/form-data" },
+      const formData = {
+        userName: payLoad.mobileNumber,
+        otp,
       };
+
       await serviceUtil
-        .post(`users/registration/verify-otp`, formData, config)
+        .post(`users/registration/verify-otp`, formData)
         .then(async (data) => {
           if (data) {
             if (router.pathname.split("/")[2].toUpperCase() === "SUPPLIER") {
