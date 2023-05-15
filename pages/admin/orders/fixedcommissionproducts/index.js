@@ -4,6 +4,7 @@ import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import {
@@ -205,6 +206,7 @@ const Fixedcommissionproducts = () => {
   const [viewDetails, setviewDetails] = useState({});
   const [showView, setshowView] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
+  const [searchKey, setsearchKey] = useState(null);
   const handleSelect = (index) => {
     setMainTabs((list) => {
       const theList = list;
@@ -292,7 +294,11 @@ const Fixedcommissionproducts = () => {
     return temp;
   };
 
-  const getAllPaymentDetails = async (page = pageNumber, search, date) => {
+  const getAllPaymentDetails = async (
+    page = pageNumber,
+    search = searchKey,
+    date
+  ) => {
     const payload = {
       category: "FIXED_COMMISSION",
       // category: "ZERO_COMMISSION",
@@ -339,6 +345,11 @@ const Fixedcommissionproducts = () => {
   useEffect(() => {
     getAllPaymentDetails(0);
   }, [ActiveTab]);
+  useEffect(() => {
+    if (searchKey !== null) {
+      getAllPaymentDetails(0, searchKey);
+    }
+  }, [searchKey]);
   const viewFormat = (key1, val1, key2, val2) => {
     return (
       <Grid container className="py-1">
@@ -384,7 +395,8 @@ const Fixedcommissionproducts = () => {
             showDateFilter
             showDateFilterDropDown
             handlePageEnd={(searchText, _, abc, dates) => {
-              getAllPaymentDetails(pageNumber, searchText, dates);
+              getAllPaymentDetails(pageNumber, null, dates);
+              setsearchKey(searchText);
             }}
             tableRows={orderDetails}
             // tabChange={value}
@@ -406,70 +418,134 @@ const Fixedcommissionproducts = () => {
           }}
         >
           <Grid className="mxh-500 overflow-y-scroll ">
+            <Grid className="d-flex justify-content-center">
+              <Typography className="fw-500">
+                {viewDetails.productTitle}
+              </Typography>
+            </Grid>
+            <Grid className="d-flex justify-content-center">
+              <Image
+                src={viewDetails?.productImage}
+                // layout="fill"
+                // style={{
+                //   height: "100vh",
+                //   width: "100vh",
+                // }}
+                height={100}
+                width={100}
+              />
+            </Grid>
+
             {viewFormat(
               "Order created by",
-              "__",
+              viewDetails.orderById,
               "Delivery pickup date & time",
-              "__"
+              viewDetails.deliveryPickUpDate
             )}
             {viewFormat(
               "Order status",
               viewDetails.orderStatus,
               "Estimate delivery time",
-              "__"
+              viewDetails.estimateDeliveryDate
             )}
-            {viewFormat("Quantity", "__", "Delivered date & time", "__")}
-            {viewFormat("Order type", "__", "Current location of parcel", "__")}
-            {viewFormat("Gross sales", "__", "Supplier Id & name", "__")}
+            {viewFormat(
+              "Quantity",
+              viewDetails.orderQuantity,
+              "Delivered date & time",
+              viewDetails.deliveredDate
+            )}
+            {viewFormat(
+              "Order type",
+              viewDetails.orderType,
+              "Current location of parcel",
+              viewDetails.currentLocationOfParcel
+            )}
+            {viewFormat(
+              "Gross sales",
+              viewDetails.grossSales,
+              "Supplier Id & name",
+              viewDetails.supplierId
+            )}
             {viewFormat(
               "Reseller Name & Id",
               "__",
               "Return period date & time counter",
-              "__"
+              viewDetails.returnDate
             )}
             {viewFormat(
               "Order created date & time",
-              "__",
+              viewDetails.orderDate,
               "Amount of refund (if any)",
-              "__"
+              viewDetails.returnAmount
             )}
-            {viewFormat("payment mode", "__", "Deduction charges", "__")}
+            {viewFormat(
+              "payment mode",
+              viewDetails.paymentMethod,
+              "Deduction charges",
+              viewDetails.deductionCharges
+            )}
             {viewFormat(
               "Admin earning",
-              "__",
+              viewDetails.adminEarning,
               "Multestore payment settled",
               "__"
             )}
             {viewFormat(
               "Reseller earnings",
-              "__",
+              viewDetails.resellerEarning,
               "Supplier payment settled",
               "__"
             )}
             {viewFormat(
               "Vendor earnings",
-              "__",
+              viewDetails.vendorEarning,
               "Reseller  payment settled",
               "__"
             )}
             {viewFormat(
               "Weight/volume",
-              "__",
+              viewDetails.weightInclusivePackage,
               "Supplier penalty(if any)",
-              "__"
+              viewDetails.supplierPenalty
             )}
-            {viewFormat("Tracking ID", "__", "Product image & title", "__")}
+            {viewFormat(
+              "Tracking ID",
+              viewDetails.trackingId,
+              "Product title",
+              viewDetails.productTitle
+            )}
+
             {viewFormat(
               "Logistic partner",
-              "__",
+              viewDetails.logisticPartnerName,
               "Weight/Volume during pickup",
-              "__"
+              viewDetails.weightDuringPickUp
             )}
-            {viewFormat("Delivery charge", "__", "Pickup address", "__")}
-            {viewFormat("Delivery mode", "__", "Delivery address", "__")}
-            {viewFormat("Delivery zone", "__", "Delivery partner", "__")}
-            {viewFormat("Warranty card", "__", "Tex invoice", "__")}
-            {viewFormat("Payslip", "__", "", "")}
+            {viewFormat(
+              "Delivery charge",
+              viewDetails.logisticCharges,
+              "Pickup address",
+              viewDetails?.pickUpAddress.address
+            )}
+            {viewFormat(
+              "Delivery mode",
+              "__",
+              "Delivery address",
+              viewDetails.deliveryAddress.address
+            )}
+            {viewFormat(
+              "Delivery zone",
+              "__",
+              "Delivery partner",
+              viewDetails.logisticPartnerName
+            )}
+            {viewFormat(
+              "Warranty card",
+              viewDetails.warrantyCard,
+              "Tex invoice",
+              viewDetails.taxInvoice
+            )}
+            {viewFormat("Payslip", viewDetails.payslip, "", "")}
           </Grid>
         </ModalComponent>
       )}
