@@ -9,7 +9,7 @@ const getAllCouponsWithFilter = (
 ) => {
   return serviceUtil
     .get(
-      `/users/supplier/product-coupon/${pageNumber}/${pageSize}/?supplierId=${supplierId}&filterType=${type}&keyword=${keyword}`
+      `/users/supplier/product-coupon/${pageNumber}/${pageSize}?supplierId=${supplierId}&filterType=${type}&keyword=${keyword}`
     )
     .then((res) => {
       const { data } = res && res.data;
