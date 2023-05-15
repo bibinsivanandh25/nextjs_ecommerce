@@ -45,7 +45,7 @@ const MyCollections = () => {
           col2: row.commissionMode,
           // col3: row.productType,
           col4: row.subCategoryName,
-          col5: row.masterProductId,
+          // col5: row.masterProductId,
           col6: row.brand,
           col7: row.createdAt.split("T").join(" "),
           col8: (
@@ -127,12 +127,12 @@ const MyCollections = () => {
       id: "col4",
     },
 
-    {
-      align: "center",
-      data_align: "center",
-      label: "Product Id",
-      id: "col5",
-    },
+    // {
+    //   align: "center",
+    //   data_align: "center",
+    //   label: "Product Id",
+    //   id: "col5",
+    // },
 
     {
       align: "center",
