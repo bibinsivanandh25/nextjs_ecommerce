@@ -98,7 +98,13 @@ const Cart = () => {
     setProducts([]);
     return [];
   };
-  const { refetch, isLoading } = useQuery(["CART"], () => getproducts());
+  const { refetch, isLoading } = useQuery(["CART"], () => getproducts(), {
+    staleTime: 0,
+    retry: false,
+    retryOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
   const mainRef = useRef(null);
   useEffect(() => {
@@ -153,7 +159,7 @@ const Cart = () => {
           dispatch(cartCount({ cartCount: count }));
         }
         queryClient.invalidateQueries(["CARTCOUNT"]);
-        queryClient.refetchQueries("CARTCOUNT", { force: true });
+        queryClient.refetchQueries("CARTCOUNT");
       },
     }
   );
