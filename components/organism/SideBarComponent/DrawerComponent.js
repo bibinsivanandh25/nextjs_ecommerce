@@ -458,27 +458,27 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                         });
                       }}
                     >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 1 : "auto",
-                          justifyContent: "center",
-                          // color: item.selected && "#e56700",
-                          margin: open ? "" : "0px",
-                        }}
-                        className={`${
-                          route.pathname.includes(item.pathName)
-                            ? "color-orange"
-                            : ""
-                        } cursor-pointer`}
+                      <Tooltip
+                        title={!open ? item.title : ""}
+                        placement="right"
                       >
-                        <Tooltip
-                          title={!open ? item.title : ""}
-                          placement="right"
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 1 : "auto",
+                            justifyContent: "center",
+                            // color: item.selected && "#e56700",
+                            margin: open ? "" : "0px",
+                          }}
+                          className={`${
+                            route.pathname.includes(item.pathName)
+                              ? "color-orange"
+                              : ""
+                          } cursor-pointer`}
                         >
                           <Image height={18} width={18} src={item.logo} />
-                        </Tooltip>
-                      </ListItemIcon>
+                        </ListItemIcon>
+                      </Tooltip>
                       <ListItemText
                         className="cursor-pointer"
                         primary={
@@ -522,6 +522,7 @@ const DrawerComponent = ({ open = false, setOpen = () => {} }) => {
                           return temp;
                         });
                       }}
+                      setOpen={setOpen}
                       // id={index}
                     />
                   )}

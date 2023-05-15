@@ -507,9 +507,9 @@ export default function TableComponent({
   });
   const [tableFilterList, setTableFilterList] = useState([]);
   const [searchFilter, setSearchFilter] = useState({
-    label: "All",
+    label: "Filter Type",
     id: "0",
-    value: "All",
+    value: "",
   });
   const dateFromRef = useRef(null);
   const dateToRef = useRef(null);
@@ -524,7 +524,15 @@ export default function TableComponent({
     if (!showPagination) setRowsPerPage(20);
   }, []);
   useEffect(() => {
-    if (filterList.length) setSearchFilterList(filterList);
+    if (filterList.length) {
+      const temp = [];
+      filterList.forEach((item) => {
+        if (item.label.toUpperCase() !== "ALL") {
+          temp.push(item);
+        }
+      });
+      setSearchFilterList(temp);
+    }
   }, [filterList]);
 
   useEffect(() => {
@@ -737,7 +745,11 @@ export default function TableComponent({
                             )} 23:59:59`
                           : "",
                       });
-                      setSearchFilter([]);
+                      setSearchFilter({
+                        label: "Filter Type",
+                        id: "0",
+                        value: "",
+                      });
                     }
                   }}
                   placeholder={customDropDownPlaceholder}
@@ -1048,7 +1060,11 @@ export default function TableComponent({
 
                     setSearchFilter(value);
                   } else {
-                    setSearchFilter([]);
+                    setSearchFilter({
+                      label: "Filter Type",
+                      id: "0",
+                      value: "",
+                    });
                   }
                 }}
                 placeholder={customDropDownPlaceholder}

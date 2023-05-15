@@ -19,11 +19,6 @@ import MrMrsAddNewCoupons from "@/forms/supplier/coupons/mrmrsaddnewcoupons";
 const Coupons = () => {
   const selectTypeList = [
     {
-      id: "ALL",
-      label: "ALL",
-      value: "ALL",
-    },
-    {
       id: "discountType",
       label: "Discount Type",
       value: "DISCOUNT_TYPE",
@@ -36,7 +31,7 @@ const Coupons = () => {
     {
       id: "couponCode",
       label: "Coupon Code",
-      value: "STORE_COUPON_CODE",
+      value: "COUPON_CODE",
     },
   ];
   const [tableRows, setTableRows] = useState([]);
@@ -177,7 +172,7 @@ const Coupons = () => {
       setTableRows([]);
     }
     if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const handlePublish = async () => {
@@ -187,7 +182,7 @@ const Coupons = () => {
       setShowPublishModal(false);
       getTabledata();
     } else if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
