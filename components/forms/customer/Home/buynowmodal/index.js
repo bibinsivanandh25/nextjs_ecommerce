@@ -55,6 +55,7 @@ const DeliveryOptionsModal = ({
     noFreeDeliveryFastReturn: false,
     chooseReturnOption: false,
   };
+  const { userId, profileId } = useSelector((state) => state.customer);
 
   const [selectedTab, setSelectedTab] = useState("");
   const [noFreeRetunModal, setNoFreeReturnModal] = useState(true);
@@ -132,10 +133,26 @@ const DeliveryOptionsModal = ({
   const getProductDetails = async (type) => {
     const { data } = await getProductDetailsByDeliveryType(
       productId,
-      type ?? selectedTab
+      type ?? selectedTab,
+      profileId
     );
     if (data) {
-      setFinalPriceWithDeliveryCharge(data?.finalPrice);
+      if (modalType === "ADD") {
+        setFinalPriceWithDeliveryCharge(data?.finalPrice);
+      } else {
+        const { deliveryOrReturnOptions } = choosedDeliveryandReturnCharges;
+        const temp = JSON.parse(JSON.stringify(deliveryOrReturnOptions));
+        if (temp.fastDelivery) {
+          setFinalPriceWithDeliveryCharge(
+            data.salePrice + data.productDeliveryCharges?.fastestDeliveryAmount
+          );
+        }
+        if (temp.standardDelivery) {
+          setFinalPriceWithDeliveryCharge(
+            data.salePrice + data.productDeliveryCharges?.deliveryAmount
+          );
+        }
+      }
       setProductDetails({
         ...productDetails,
         id: data.productVariationId,
@@ -156,7 +173,6 @@ const DeliveryOptionsModal = ({
     }
   };
 
-  const { userId, profileId } = useSelector((state) => state.customer);
   useEffect(() => {
     if (modalType === "ADD") {
       getProductDetails("NOFREEDELIVERYANDRETURN");
@@ -527,7 +543,7 @@ const DeliveryOptionsModal = ({
                     });
                   }
                 }}
-                label={`₹ ${productDetails?.fastDeliveryCharges} -${productDetails?.fastestDeliveryBy}`}
+                label={`₹ ${productDetails?.fastDeliveryCharges} - ${productDetails?.fastestDeliveryBy}`}
               />
             </Box>
             <Box
