@@ -322,7 +322,7 @@ const CreateDiscount = ({
           : null,
         description: formValues.content,
         campaignTitle: formValues.campaignTitle,
-        totalDiscountValue: formValues.inputValue,
+        totalDiscountValue: parseInt(formValues.inputValue, 10),
         splitType: "NA",
         couponUsageLimit: 0,
         customerUsageLimit: 0,

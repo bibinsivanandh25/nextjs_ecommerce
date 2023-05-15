@@ -59,6 +59,7 @@ const OrderReport = () => {
     label: new Date().getFullYear().toString(),
   });
   // table 2
+  const [pageNumber, setPageNumber] = useState([]);
   const [summaryTableData, setSummaryTableData] = useState([]);
   const [summaryYear, setSummaryYear] = useState({
     value: new Date().getFullYear().toString(),
@@ -159,15 +160,19 @@ const OrderReport = () => {
     }
     return result;
   };
-  const getSummaryTable = async (year, page, status) => {
+  const getSummaryTable = async (year, page = pageNumber, status) => {
     const { data } = await getSummaryTableData(
       user.supplierId,
       year,
       page,
       status == "pending" ? "INITIATED" : status.toUpperCase()
     );
-    if (data) {
+    if (data && pageNumber == 0) {
       setSummaryTableData(getTableRows(data));
+      setPageNumber(1);
+    } else if (data.length && pageNumber !== 0) {
+      setPageNumber((prev) => prev + 1);
+      setSummaryTableData((pre) => [...pre, ...getTableRows(data)]);
     }
   };
   useEffect(() => {
@@ -184,6 +189,9 @@ const OrderReport = () => {
   return (
     <>
       <ReportLayout
+        handleSummaryPageEnd={(searchText, _, page) => {
+          getSummaryTable(summaryYear.value, page, summaryStatus.value);
+        }}
         barChartDataSet="Orders"
         barGraphLabels={[
           "Jan",
