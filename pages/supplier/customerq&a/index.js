@@ -232,8 +232,8 @@ const CustomerQnA = () => {
     createdAt,
     userAnswer,
     variationId,
-    customerId,
-    customerName
+    customerName,
+    customerId
   ) => {
     if (userAnswer === "") {
       setdataForViewModal({
@@ -243,8 +243,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: "",
         varId: variationId,
-        customerId,
         customerName,
+        customerId,
       });
     } else {
       setdataForViewModal({
@@ -254,8 +254,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: userAnswer,
         varId: variationId,
-        customerId,
         customerName,
+        customerId,
       });
     }
 
@@ -316,8 +316,8 @@ const CustomerQnA = () => {
                   val.createdAt,
                   val.userAnswer,
                   val.variationId,
-                  val.customerId,
-                  val.customerName
+                  val.customerName,
+                  val.customerId
                 );
               }}
             />
@@ -382,7 +382,7 @@ const CustomerQnA = () => {
             />
             <RemoveRedEye
               className="fs-5 cursor-pointer"
-              onClick={() =>
+              onClick={() => {
                 handleViewModal(
                   val.customerQuestionId,
                   val.productImages,
@@ -390,10 +390,10 @@ const CustomerQnA = () => {
                   val.createdAt,
                   "",
                   val.variationId,
-                  val.customerId,
-                  val.customerName
-                )
-              }
+                  val.customerName,
+                  val.customerId
+                );
+              }}
             />
             <MenuOption
               IconclassName="fs-5"
@@ -508,7 +508,7 @@ const CustomerQnA = () => {
     getQuestionsOrAnsweredQuestions(false, 0);
   }, [tabType]);
 
-  const handleSearchClick = (searchText, fromDate, toDate) => {
+  const handleSearchClick = (searchText, dates) => {
     if (!searchText) {
       if (tabType === "tab1") {
         getQuestionsOrAnsweredQuestionsForSearch(
@@ -516,8 +516,8 @@ const CustomerQnA = () => {
           0,
           "",
           true,
-          fromDate,
-          toDate
+          dates.fromDate,
+          dates.toDate
         );
       } else if (tabType === "tab2") {
         getQuestionsOrAnsweredQuestionsForSearch(
@@ -525,8 +525,8 @@ const CustomerQnA = () => {
           0,
           "",
           true,
-          fromDate,
-          toDate
+          dates.fromDate,
+          dates.toDate
         );
       }
       return;
@@ -535,19 +535,19 @@ const CustomerQnA = () => {
       getQuestionsOrAnsweredQuestionsForSearch(
         false,
         0,
-        searchText.toUpperCase(),
+        searchText,
         true,
-        fromDate,
-        toDate
+        dates.fromDate,
+        dates.toDate
       );
     } else if (tabType === "tab2") {
       getQuestionsOrAnsweredQuestionsForSearch(
         true,
         0,
-        searchText.toUpperCase(),
+        searchText,
         true,
-        fromDate,
-        toDate
+        dates.fromDate,
+        dates.toDate
       );
     }
   };
@@ -583,8 +583,9 @@ const CustomerQnA = () => {
           showDateFilterBtn={false}
           dateFilterColName={["col5"]}
           searchBarPlaceHolderText="Search By Customer"
-          handlePageEnd={(searchText, a, b, dates) => {
-            handleSearchClick(searchText, dates.fromDate, dates.toDate);
+          handlePageEnd={(searchText, _, a, dates) => {
+            console.log(dates);
+            handleSearchClick(searchText, dates);
           }}
           handleRowsPerPageChange={() => {
             setPageNoForQuestions(0);
