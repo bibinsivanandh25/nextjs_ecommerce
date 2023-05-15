@@ -184,12 +184,12 @@ const CustomerQnA = () => {
     dateAndTime: "",
     answer: "",
     varId: "",
+    customerId: "",
+    customerName: "",
   });
 
   const [pageNoForQuestions, setPageNoForQuestions] = useState(0);
   const [pageNoForAnswers, setPageNoForAnswers] = useState(0);
-  const [fromDate] = useState("");
-  const [toDate] = useState("");
 
   const handleOpenReplyModal = (questionId, varId) => {
     setReply("");
@@ -231,7 +231,9 @@ const CustomerQnA = () => {
     customerQuestion,
     createdAt,
     userAnswer,
-    variationId
+    variationId,
+    customerId,
+    customerName
   ) => {
     if (userAnswer === "") {
       setdataForViewModal({
@@ -241,6 +243,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: "",
         varId: variationId,
+        customerId,
+        customerName,
       });
     } else {
       setdataForViewModal({
@@ -250,6 +254,8 @@ const CustomerQnA = () => {
         dateAndTime: createdAt,
         answer: userAnswer,
         varId: variationId,
+        customerId,
+        customerName,
       });
     }
 
@@ -309,7 +315,9 @@ const CustomerQnA = () => {
                   val.customerQuestion,
                   val.createdAt,
                   val.userAnswer,
-                  val.variationId
+                  val.variationId,
+                  val.customerId,
+                  val.customerName
                 );
               }}
             />
@@ -381,7 +389,9 @@ const CustomerQnA = () => {
                   val.customerQuestion,
                   val.createdAt,
                   "",
-                  val.variationId
+                  val.variationId,
+                  val.customerId,
+                  val.customerName
                 )
               }
             />
@@ -447,8 +457,8 @@ const CustomerQnA = () => {
     pageNum = tabType === "tab1" ? pageNoForQuestions : pageNoForAnswers,
     keyword = "",
     isSearched = false,
-    dateFrom = fromDate,
-    dateTo = toDate
+    dateFrom,
+    dateTo
   ) => {
     const { data, error } = await getQuestionsAndAnswers(
       supplierId,
@@ -498,12 +508,26 @@ const CustomerQnA = () => {
     getQuestionsOrAnsweredQuestions(false, 0);
   }, [tabType]);
 
-  const handleSearchClick = (searchText) => {
+  const handleSearchClick = (searchText, fromDate, toDate) => {
     if (!searchText) {
       if (tabType === "tab1") {
-        getQuestionsOrAnsweredQuestionsForSearch(false, 0, "", true);
+        getQuestionsOrAnsweredQuestionsForSearch(
+          false,
+          0,
+          "",
+          true,
+          fromDate,
+          toDate
+        );
       } else if (tabType === "tab2") {
-        getQuestionsOrAnsweredQuestionsForSearch(true, 0, "", true);
+        getQuestionsOrAnsweredQuestionsForSearch(
+          true,
+          0,
+          "",
+          true,
+          fromDate,
+          toDate
+        );
       }
       return;
     }
@@ -512,14 +536,18 @@ const CustomerQnA = () => {
         false,
         0,
         searchText.toUpperCase(),
-        true
+        true,
+        fromDate,
+        toDate
       );
     } else if (tabType === "tab2") {
       getQuestionsOrAnsweredQuestionsForSearch(
         true,
         0,
         searchText.toUpperCase(),
-        true
+        true,
+        fromDate,
+        toDate
       );
     }
   };
@@ -555,8 +583,8 @@ const CustomerQnA = () => {
           showDateFilterBtn={false}
           dateFilterColName={["col5"]}
           searchBarPlaceHolderText="Search By Customer"
-          handlePageEnd={(searchText) => {
-            handleSearchClick(searchText);
+          handlePageEnd={(searchText, a, b, dates) => {
+            handleSearchClick(searchText, dates.fromDate, dates.toDate);
           }}
           handleRowsPerPageChange={() => {
             setPageNoForQuestions(0);

@@ -126,7 +126,7 @@ const SupplierStoreCoupons = () => {
         col1: row.storeCouponCode,
         col2: row.discountType,
         col3: row.couponAmount ? `₹ ${row.couponAmount}` : "--",
-        col4: row.percentageValue ? `${row.couponAmount} %` : "--",
+        col4: row.percentageValue ? `${row.percentageValue} %` : "--",
         col5: row.couponUsageLimit,
         col6: row.minimumOrderValue,
         col7: row.maximumDiscountValue,
@@ -187,7 +187,7 @@ const SupplierStoreCoupons = () => {
       setTableRows([]);
     }
     if (err) {
-      toastify(err.response.data.message);
+      toastify(err?.response?.data?.message);
     }
   };
   useEffect(() => {

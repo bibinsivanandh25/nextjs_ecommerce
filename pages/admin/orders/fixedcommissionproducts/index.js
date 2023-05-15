@@ -204,6 +204,7 @@ const Fixedcommissionproducts = () => {
   const [orderDetails, setorderDetails] = useState([]);
   const [viewDetails, setviewDetails] = useState({});
   const [showView, setshowView] = useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
   const handleSelect = (index) => {
     setMainTabs((list) => {
       const theList = list;
@@ -291,7 +292,7 @@ const Fixedcommissionproducts = () => {
     return temp;
   };
 
-  const getAllPaymentDetails = async (search, date) => {
+  const getAllPaymentDetails = async (page = pageNumber, search, date) => {
     const payload = {
       category: "FIXED_COMMISSION",
       // category: "ZERO_COMMISSION",
@@ -318,17 +319,25 @@ const Fixedcommissionproducts = () => {
           : null,
       fromDate: date?.fromDate || null,
       toDate: date?.toDate || null,
+      pageSize: 50,
+      pageNumber: page,
     };
     const { data, err } = await getAllOrderPaymentDetails(payload);
     if (data) {
+      if (page == 0) {
+        setorderDetails(dataMapToTable(data.data));
+        setpageNumber(1);
+      } else {
+        setorderDetails([...orderDetails, ...dataMapToTable(data.data)]);
+        setpageNumber((pre) => pre + 1);
+      }
       // console.log(data);
-      setorderDetails(dataMapToTable(data.data));
     } else if (err) {
       // console.log(err);
     }
   };
   useEffect(() => {
-    getAllPaymentDetails();
+    getAllPaymentDetails(0);
   }, [ActiveTab]);
   const viewFormat = (key1, val1, key2, val2) => {
     return (
@@ -374,9 +383,8 @@ const Fixedcommissionproducts = () => {
             setColumns={setColumns}
             showDateFilter
             showDateFilterDropDown
-            showPagination={false}
             handlePageEnd={(searchText, _, abc, dates) => {
-              getAllPaymentDetails(searchText, dates);
+              getAllPaymentDetails(pageNumber, searchText, dates);
             }}
             tableRows={orderDetails}
             // tabChange={value}
