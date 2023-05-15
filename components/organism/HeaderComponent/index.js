@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Tooltip } from "@mui/material";
 // import { Box } from "@mui/system";
 import Image from "next/image";
 import { assetsJson } from "public/assets";
@@ -30,25 +30,31 @@ const HeaderComponent = () => {
         <Grid item xs={3} className={styles.subcontainer}>
           {router.pathname.startsWith("/supplier") && (
             <>
-              <ConfirmationNumberOutlinedIcon
-                className="cursor-pointer"
-                onClick={() => {
-                  router.push("/supplier/coupons");
-                }}
-              />
-              <EmailOutlinedIcon
-                className="cursor-pointer"
-                onClick={() => {
-                  router.push("/supplier/helpandsupport");
-                }}
-              />
+              <Tooltip title="Coupons">
+                <ConfirmationNumberOutlinedIcon
+                  className="cursor-pointer"
+                  onClick={() => {
+                    router.push("/supplier/coupons/mrmrscartcoupons");
+                  }}
+                />
+              </Tooltip>
+              <Tooltip title="Help and Support">
+                <EmailOutlinedIcon
+                  className="cursor-pointer"
+                  onClick={() => {
+                    router.push("/supplier/helpandsupport");
+                  }}
+                />
+              </Tooltip>
 
-              <NotificationsIcon
-                className="cursor-pointer"
-                onClick={() => {
-                  router.push("/supplier/newsandnotifications");
-                }}
-              />
+              <Tooltip title="News and Notifications">
+                <NotificationsIcon
+                  className="cursor-pointer"
+                  onClick={() => {
+                    router.push("/supplier/newsandnotifications");
+                  }}
+                />
+              </Tooltip>
               <ProfileComponent className="cursor-pointer" />
             </>
           )}

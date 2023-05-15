@@ -161,21 +161,21 @@ const CollapseList = ({
           setExpand(!expand);
         }}
       >
-        <ListItemIcon
-          sx={{
-            minWidth: 0,
-            mr: open ? 1 : "auto",
-            justifyContent: "center",
-            margin: open ? "" : "0px",
-          }}
-          className={`${
-            router.pathname.includes(menuList.pathName) ? "color-orange" : ""
-          } cursor-pointer`}
-        >
-          <Tooltip title={!open ? menuList.title : ""} placement="right">
+        <Tooltip title={!open ? menuList.title : ""} placement="right">
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 1 : "auto",
+              justifyContent: "center",
+              margin: open ? "" : "0px",
+            }}
+            className={`${
+              router.pathname.includes(menuList.pathName) ? "color-orange" : ""
+            } cursor-pointer`}
+          >
             <Image height={18} width={18} src={menuList.logo} />
-          </Tooltip>
-        </ListItemIcon>
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText
           className="cursor-pointer"
           primary={
