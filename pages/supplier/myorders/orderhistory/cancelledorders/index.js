@@ -10,12 +10,38 @@ import {
 } from "services/supplier/myorders/orderhistory";
 import toastify from "services/utils/toastUtils";
 
+const dropdownList = [
+  {
+    label: "All",
+    id: "ALL",
+  },
+  {
+    label: "Store Owner Delivery",
+    id: "STORE_OWNER_DELIVERY",
+  },
+  {
+    label: "Hand Pick",
+    id: "HAND_PICK",
+  },
+  {
+    label: "Last Mile AC",
+    id: "LAST_MILE_AC",
+  },
+  {
+    label: "Last Mile FDR",
+    id: "LAST_MILE_FDR",
+  },
+  {
+    label: "Supplier Shipment",
+    id: "SUPPLIER_SHIPMENT",
+  },
+];
 const CancelledOrders = () => {
-  const [dropdownFilter, setDropdownFilter] = useState({});
   const [tableData, setTableData] = useState([]);
   const [eachOrderData, seteachOrderData] = useState({});
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
+  const [modeOfOrderValue, setmodeOfOrderValue] = useState({});
   const [pageNumberState, setpageNumberState] = useState(0);
   const columns = [
     {
@@ -104,10 +130,19 @@ const CancelledOrders = () => {
   };
 
   const getCancelOrderData = async (page = pageNumberState) => {
-    const payload = { supplierId: user, status: "CANCELLED", pageNumber: page };
+    const payload = {
+      supplierId: user,
+      orderStatus: "CANCELLED",
+      pageNo: page || 0,
+      modeOfOrder:
+        modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue?.id || null,
+      pageSize: 50,
+      shipmentType: null,
+    };
     const { data, err } = await getOrderHistory(payload);
     if (data) {
       if (page == 0) {
+        setpageNumberState(0);
         setTableData(mapRowsToTable(data.data));
         setpageNumberState((pre) => pre + 1);
       } else {
@@ -120,8 +155,8 @@ const CancelledOrders = () => {
     }
   };
   useEffect(() => {
-    getCancelOrderData();
-  }, []);
+    getCancelOrderData(0);
+  }, [modeOfOrderValue]);
   const viewFormat = (key, value) => {
     return (
       <Grid md={12} sx={12} container className="py-1">
@@ -178,18 +213,18 @@ const CancelledOrders = () => {
           showSearchFilter={false}
           showCheckbox={false}
           showCustomDropdown
-          customDropdownLabel="Order Type"
-          customDropdownList={[
-            { id: "single", label: "Single" },
-            { id: "multiple", label: "Multiple" },
-          ]}
+          customDropdownLabel="Mode Of Order"
+          customDropdownList={dropdownList}
           showCustomButton
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             // console.log("onCustomButtonClick");
           }}
-          onCustomDropdownChange={(val) => setDropdownFilter(val)}
-          customDropdownValue={dropdownFilter}
+          onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
+          customDropdownValue={modeOfOrderValue}
+          handlePageEnd={() => {
+            getCancelOrderData();
+          }}
         />
       </Paper>
       {openView && (

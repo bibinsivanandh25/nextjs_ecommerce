@@ -80,6 +80,12 @@ const supplierMenu = [
             logo: null,
             path_name: "returnedorders",
           },
+          {
+            title: "Returned Confirm (00)",
+            navigate: true,
+            logo: null,
+            path_name: "returnconfirm",
+          },
         ],
       },
     ],
