@@ -16,12 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import { getBase64 } from "services/utils/functionUtils";
 import toastify from "services/utils/toastUtils";
-import { Country } from "country-state-city";
 import { getCurrentData } from "services/supplier";
 import ImageGuidelines from "components/molecule/ImageGuidelines";
 import InputBox from "@/atoms/InputBoxComponent";
 import DatePickerComponent from "@/atoms/DatePickerComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
+import { getCountry } from "services/supplier/Registration";
 import { validateOtherInfo } from "../../productform/validation";
 
 const VariationForm = forwardRef(
@@ -39,12 +39,18 @@ const VariationForm = forwardRef(
 
     const variationData = useSelector((state) => state.product.variationData);
 
-    const countries = Country.getAllCountries();
-    const countryList = countries.map((item) => ({
-      label: item.name,
-      value: item.name,
-      id: item.name,
-    }));
+    const [countries, setcountries] = useState([]);
+
+    const getAllCountry = async () => {
+      const { data } = await getCountry();
+      if (data) {
+        const temp = [];
+        data.data.forEach((val) => {
+          temp.push({ value: val.name, label: val.name });
+        });
+        setcountries(temp);
+      }
+    };
     useEffect(() => {
       if (addRef.current) addRef.current.scrollIntoView();
     }, [imagedata]);
@@ -57,6 +63,7 @@ const VariationForm = forwardRef(
     };
     useEffect(() => {
       getDate();
+      getAllCountry();
     }, []);
 
     useImperativeHandle(ref, () => {
@@ -159,8 +166,8 @@ const VariationForm = forwardRef(
                 <SimpleDropdownComponent
                   id="country"
                   size="small"
-                  list={countryList}
-                  value={countryList.find((op) => op.id === country.id)}
+                  list={countries}
+                  value={countries.find((op) => op.id === country.id)}
                   onDropdownSelect={(val) => {
                     setcountry(val);
                   }}

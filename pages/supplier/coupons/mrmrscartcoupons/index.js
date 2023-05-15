@@ -177,7 +177,7 @@ const Coupons = () => {
       setTableRows([]);
     }
     if (err) {
-      toastify(err.response.data.message);
+      toastify(err.response.data.message, "error");
     }
   };
   const handlePublish = async () => {

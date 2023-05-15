@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 import { Grid } from "@mui/material";
@@ -17,7 +18,6 @@ import validationRegex from "services/utils/regexUtils";
 import { storeUserInfo } from "features/userSlice";
 import toastify from "services/utils/toastUtils";
 import { useRouter } from "next/router";
-// import { City, State } from "country-state-city";
 import { getCity, getCountry, getState } from "services/supplier/Registration";
 
 const AddAddressModal = (props) => {
@@ -281,6 +281,22 @@ const AddAddressModal = (props) => {
         errObj[el.id] = null;
       }
     });
+    // debugger;
+    const lat = inputFields.find((item) => item.id === "latitudeValue");
+    const lon = inputFields.find((item) => item.id === "longitudeValue");
+
+    if (lat && !validationRegex.latlong.test(lat)) {
+      errObj.latitudeValue = "Invalid entry";
+    }
+    if (lon && !validationRegex.latlong.test(lon)) {
+      errObj.longitudeValue = "Invalid entry";
+    }
+    // if (
+    //   inputFields.latitudeValue &&
+    //   !validationRegex.latlong.test(inputFields.latitudeValue)
+    // ) {
+    //   errObj.latitudeValue = "Invalid entry"
+    // }
 
     setError({ ...errObj });
     let valid = true;
@@ -312,6 +328,7 @@ const AddAddressModal = (props) => {
     if (isValid) {
       const temp1 = [];
       const payload1 = [{ Input_Pincode: formValues.pinCode }];
+      // eslint-disable-next-line no-shadow
       const { status, error } = await validPincode(payload1);
       if (status) {
         status.data.forEach((val) => {

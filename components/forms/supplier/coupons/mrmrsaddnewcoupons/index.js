@@ -93,7 +93,7 @@ const MrMrsAddNewCoupons = ({
     validateFields("couponExpiryDate");
     validateFields("discountType");
     validateFields("categoryInclude");
-    validateFields("productsIncludeObj");
+    // validateFields("productsIncludeObj");
     validateFields("usageLimitPerCoupon");
     validateFields("usageLimittoXTimes");
     validateFields("usageLimitPerUser");
@@ -102,8 +102,15 @@ const MrMrsAddNewCoupons = ({
     }
     validateFields("subcategory");
     // validateFields("new");
-    if (formValues.description.length > 255) {
+    if (formValues?.description?.length > 255) {
       errObj.description = validateMessage.alpha_numeric_max_255;
+    }
+
+    if (
+      !formValues?.productsIncludeObj ||
+      !formValues.productsIncludeObj.length
+    ) {
+      errObj.productsIncludeObj = validateMessage.field_required;
     }
 
     if (formValues?.discountTypeObj?.value == "CASH") {
@@ -112,7 +119,7 @@ const MrMrsAddNewCoupons = ({
       }
     }
     if (formValues?.discountTypeObj?.value == "PERCENTAGE") {
-      if (!formValues.couponAmount) {
+      if (!formValues.couponPercentage) {
         errObj.couponPercentage = validateMessage.field_required;
       }
     }
@@ -124,7 +131,7 @@ const MrMrsAddNewCoupons = ({
       limitError: null,
     };
     if (
-      parseInt(formValues.usageLimitPerCoupon, 10) <=
+      parseInt(formValues.usageLimitPerCoupon, 10) <
       parseInt(formValues.usageLimitPerUser, 10)
     ) {
       limitErrors.limitError =
@@ -450,6 +457,8 @@ const MrMrsAddNewCoupons = ({
                             ...prev,
                             categoryInclude: val ? val.id : null,
                             categoryIncludeObj: val,
+                            subcategoryObj: {},
+                            productsIncludeObj: [],
                           }));
                         }}
                         list={[...categories]}

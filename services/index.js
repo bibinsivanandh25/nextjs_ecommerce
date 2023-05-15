@@ -30,9 +30,7 @@ const getOtp = (payload) => {
 
 const verifyOtp = (payload) => {
   return serviceUtil
-    .post(`users/registration/verify-otp`, payload, {
-      headers: { "Content-Type": "multipart/form-data" },
-    })
+    .post(`users/registration/verify-otp`, payload)
     .then((res) => {
       const data = res && res.data;
       return { data };
