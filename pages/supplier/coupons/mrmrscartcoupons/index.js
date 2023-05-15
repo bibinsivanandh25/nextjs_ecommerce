@@ -31,7 +31,7 @@ const Coupons = () => {
     {
       id: "couponCode",
       label: "Coupon Code",
-      value: "STORE_COUPON_CODE",
+      value: "COUPON_CODE",
     },
   ];
   const [tableRows, setTableRows] = useState([]);
@@ -172,7 +172,7 @@ const Coupons = () => {
       setTableRows([]);
     }
     if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
     }
   };
   const handlePublish = async () => {
@@ -182,7 +182,7 @@ const Coupons = () => {
       setShowPublishModal(false);
       getTabledata();
     } else if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err?.response?.data?.message, "error");
     }
   };
 
