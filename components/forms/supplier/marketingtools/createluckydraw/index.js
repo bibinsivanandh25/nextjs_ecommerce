@@ -52,6 +52,8 @@ const GenericForm = ({
     questions: [],
   };
   const [errorObj, setErrorObj] = useState({});
+  const [showSets, setShowSets] = useState(true);
+  const [showSubCategory, setShowSubcategory] = useState(true);
   const [formData, setFormData] = useState({
     ...JSON.parse(JSON.stringify(tempFormData)),
   });
@@ -513,14 +515,22 @@ const GenericForm = ({
                 size="small"
                 value={formData.category}
                 onDropdownSelect={(val) => {
-                  setSetsList([]);
+                  if (val === null) {
+                    setSetsList([]);
+                    setSubCategotyList([]);
+                  }
                   setFormData((pre) => ({
                     ...pre,
                     category: { ...val },
                     subCategory: null,
                     sets: null,
                   }));
-                  setSubCategotyList([]);
+                  setShowSubcategory(false);
+                  setShowSets(false);
+                  setTimeout(() => {
+                    setShowSubcategory(true);
+                    setShowSets(true);
+                  }, 5);
                 }}
                 inputlabelshrink
                 error={errorObj.category || false}
@@ -528,34 +538,45 @@ const GenericForm = ({
               />
             </Grid>
             <Grid item md={4} lg={3}>
-              <SimpleDropdownComponent
-                list={setsList}
-                id="sets"
-                label="Sets"
-                size="small"
-                value={formData.sets}
-                onDropdownSelect={(val) => {
-                  handleDropDownChange(val, "sets");
-                }}
-                inputlabelshrink
-                error={errorObj.sets || false}
-                helperText={errorObj?.sets}
-              />
+              {showSets && (
+                <SimpleDropdownComponent
+                  list={setsList}
+                  id="sets"
+                  label="Sets"
+                  size="small"
+                  value={formData.sets}
+                  onDropdownSelect={(val) => {
+                    handleDropDownChange(val, "sets");
+                    setShowSubcategory(false);
+                    if (val === null) {
+                      setSubCategotyList([]);
+                    }
+                    setTimeout(() => {
+                      setShowSubcategory(true);
+                    }, 5);
+                  }}
+                  inputlabelshrink
+                  error={errorObj.sets || false}
+                  helperText={errorObj?.sets}
+                />
+              )}
             </Grid>
             <Grid item md={4} lg={3}>
-              <SimpleDropdownComponent
-                list={subCategoryList}
-                id="subCategory"
-                label="Sub Category"
-                size="small"
-                value={formData.subCategory}
-                onDropdownSelect={(val) => {
-                  handleDropDownChange(val, "subCategory");
-                }}
-                inputlabelshrink
-                error={errorObj.subCategory || false}
-                helperText={errorObj?.subCategory}
-              />
+              {showSubCategory && (
+                <SimpleDropdownComponent
+                  list={subCategoryList}
+                  id="subCategory"
+                  label="Sub Category"
+                  size="small"
+                  value={formData.subCategory}
+                  onDropdownSelect={(val) => {
+                    handleDropDownChange(val, "subCategory");
+                  }}
+                  inputlabelshrink
+                  error={errorObj.subCategory || false}
+                  helperText={errorObj?.subCategory}
+                />
+              )}
             </Grid>
             <Grid item md={4} lg={3}>
               <InputBox
@@ -759,21 +780,23 @@ const GenericForm = ({
         <ButtonComponent label="Create" onBtnClick={handleSubmit} />
       </Box>
 
-      <ProductModal
-        open={showProducts}
-        onCloseClick={() => {
-          setShowProducts(false);
-        }}
-        submitBtnClick={(product) => {
-          setFormData((pre) => ({
-            ...pre,
-            products: [...product],
-          }));
-          setShowProducts(false);
-        }}
-        subCategoryId={formData.subCategory?.id ?? null}
-        selected={formData.products}
-      />
+      {showProducts && (
+        <ProductModal
+          open={showProducts}
+          onCloseClick={() => {
+            setShowProducts(false);
+          }}
+          submitBtnClick={(product) => {
+            setFormData((pre) => ({
+              ...pre,
+              products: [...product],
+            }));
+            setShowProducts(false);
+          }}
+          subCategoryId={formData.subCategory?.id ?? null}
+          selected={formData.products}
+        />
+      )}
     </Box>
   );
 };
