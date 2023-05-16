@@ -230,10 +230,12 @@ const CreateNotification = ({
         : null,
       customerIds: selectedCustomers.map((ele) => ele.id),
       type: selectedCustomers.length === customerList.length ? "ALL" : "CUSTOM",
+      userType: "SUPPLIER",
     };
     if (type === "edit") {
       payload.marketingToolNotificationId = notificationID;
     }
+    console.log({ payload });
     const { data, err } = await sendMarketingToolNotification(payload);
     if (data) {
       toastify(data?.message, "success");
