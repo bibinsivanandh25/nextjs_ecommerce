@@ -240,7 +240,6 @@ const Flags = () => {
         showCheckbox={false}
         handlePageEnd={(searchText, filterText, _, dateObj) => {
           getRows(dateObj, searchText);
-          console.log({ searchText });
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);

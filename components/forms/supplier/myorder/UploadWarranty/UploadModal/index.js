@@ -90,7 +90,6 @@ const UploadWarrantyModal = ({
         });
         const { data, err } = await savewarrantyDetails(payload);
         if (data) {
-          console.log({ data });
           toastify(data.message, "success");
           setShowModal(null);
         } else if (err) {
