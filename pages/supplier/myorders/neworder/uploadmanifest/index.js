@@ -130,61 +130,62 @@ const UploadManifest = () => {
             {/* <Tooltip title="Upload" placement="top">
               <FileUploadIcon /> 
             </Tooltip> */}
+
+            <CustomIcon
+              // type="upload"
+              type={val.uploaded ? "download" : "upload"}
+              onIconClick={() => {
+                if (val.uploaded) {
+                  // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
+                  // const url = val.manifestFileUrl;
+                  // const a = document.createElement("a");
+                  // a.style.display = "none";
+                  // a.href = url;
+                  // // the filename you want
+                  // a.download = `Manifest-Report-${format(
+                  //   new Date(),
+                  //   "MM-dd-yyyy HH-mm-ss"
+                  // )}.pdf`;
+                  // document.body.appendChild(a);
+                  // a.click();
+                  // console.log(url, "urlurl");
+                  // window.URL.revokeObjectURL(url);
+
+                  const element = document.createElement("a");
+                  const file = val.manifestFileUrl;
+                  element.href = file;
+                  element.target = "_blank";
+                  element.download = "Manifest";
+                  element.click();
+
+                  toastify("your file has downloaded!", "success");
+                } else {
+                  setshowUploadModal(true);
+
+                  setidState({
+                    orderId: val.orderId,
+                    orderedProductId: val.orderedProductId,
+                    productVariationId: val.productVariationId,
+                  });
+                  setUploadedDocument({
+                    ...uploadedDocument,
+                    awb: val.awbNo,
+                  });
+                }
+              }}
+            />
+
             {val.manifestFileUrl.length ? (
               <CustomIcon
-                // type="upload"
-                type={val.uploaded ? "download" : "upload"}
+                title="Detail"
+                type="view"
                 onIconClick={() => {
-                  if (val.uploaded) {
-                    // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
-                    // const url = val.manifestFileUrl;
-                    // const a = document.createElement("a");
-                    // a.style.display = "none";
-                    // a.href = url;
-                    // // the filename you want
-                    // a.download = `Manifest-Report-${format(
-                    //   new Date(),
-                    //   "MM-dd-yyyy HH-mm-ss"
-                    // )}.pdf`;
-                    // document.body.appendChild(a);
-                    // a.click();
-                    // console.log(url, "urlurl");
-                    // window.URL.revokeObjectURL(url);
-
-                    const element = document.createElement("a");
-                    const file = val.manifestFileUrl;
-                    element.href = file;
-                    element.target = "_blank";
-                    element.download = "Manifest";
-                    element.click();
-
-                    toastify("your file has downloaded!", "success");
-                  } else {
-                    setshowUploadModal(true);
-
-                    setidState({
-                      orderId: val.orderId,
-                      orderedProductId: val.orderedProductId,
-                      productVariationId: val.productVariationId,
-                    });
-                    setUploadedDocument({
-                      ...uploadedDocument,
-                      awb: val.awbNo,
-                    });
-                  }
+                  viewManifestFunction(val.manifestId);
                 }}
               />
             ) : (
               <></>
             )}
-
-            <CustomIcon
-              title="Detail"
-              type="view"
-              onIconClick={() => {
-                viewManifestFunction(val.manifestId);
-              }}
-            />
           </Grid>
         ),
       });

@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Grid, Paper } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import TableComponent from "components/atoms/TableComponent";
@@ -13,8 +14,12 @@ import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import toastify from "services/utils/toastUtils";
 import { format } from "date-fns";
-import { getAllnewOrders } from "services/supplier/myorders/newOrders";
-import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
+import {
+  getAllnewOrders,
+  getConfirmedProductsByOrderId,
+} from "services/supplier/myorders/newOrders";
+import CustomIcon from "services/iconUtils";
+import ModalComponent from "@/atoms/ModalComponent";
 import ProgressBar from "../../../../../components/atoms/ProgressBar";
 
 const filterData = [
@@ -47,6 +52,8 @@ const filterData = [
 ];
 const Generateinvoiceandmanifest = () => {
   const { supplierId } = useSelector((state) => state.user);
+  const [confirmedProductDetails, setconfirmedProductDetails] = useState([]);
+  const [showView, setshowView] = useState(false);
   const [showInvoices, setShowInvoices] = useState(false);
   const [dropDownValue, setDropDownValue] = useState({
     mode: {},
@@ -151,8 +158,25 @@ const Generateinvoiceandmanifest = () => {
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+    {
+      id: "col10",
+      label: "Action",
+      minWidth: 100,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
   ];
-
+  const getConfirmedOrderDetails = async (id) => {
+    const { data, err } = await getConfirmedProductsByOrderId(id);
+    if (data) {
+      setconfirmedProductDetails(data);
+      setshowView(true);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   const dataMaptoTable = (data) => {
     const temp = [];
     data?.forEach((val) => {
@@ -167,8 +191,19 @@ const Generateinvoiceandmanifest = () => {
         col7: val.orderDate,
         col8: val.expectedDispatchDate.split("T")[0],
         col9: val.weightInclusivePackage,
+        col10: (
+          <Grid>
+            <CustomIcon
+              type="view"
+              className="fs-25 mx-2"
+              onIconClick={() => {
+                getConfirmedOrderDetails(val.orderId);
+              }}
+            />
+          </Grid>
+        ),
 
-        categoryType: "Mobile",
+        // categoryType: "Mobile",
       });
     });
     return temp;
@@ -181,7 +216,7 @@ const Generateinvoiceandmanifest = () => {
       keyword: keyword || null,
       modeOfOrder: dropDownValue?.mode?.value || null,
       pageNumber: page,
-      pageSize: 10,
+      pageSize: 50,
     };
     const { data, err } = await getAllnewOrders(payload);
     if (data) {
@@ -278,6 +313,18 @@ const Generateinvoiceandmanifest = () => {
       );
     }
   };
+  const viewFormat = (key, value) => {
+    return (
+      <Grid container>
+        <Grid md={7} sx={7}>
+          <Typography className="fs-14 fw-500">{key}</Typography>
+        </Grid>
+        <Grid md={5} sx={5}>
+          <Typography className="fs-14">{value}</Typography>
+        </Grid>
+      </Grid>
+    );
+  };
   useEffect(() => {
     if (
       route.query.type === "Delivery by store Owner" ||
@@ -304,17 +351,18 @@ const Generateinvoiceandmanifest = () => {
       {!showInvoices ? (
         <>
           <ProgressBar showHeader steps={[...progressBarSteps]} />
-          <Grid item lg={5} className="d-flex flex-column justify-content-end">
-            <p
-              className={`${styles.Previousinvoicelink} fs-14 cursor-pointer`}
-              onClick={() => {
-                setShowInvoices(true);
-              }}
-            >
-              Show Previous Invoice
-            </p>
-          </Grid>
-          <div className="d-flex justify-content-end">
+
+          <div className="d-flex justify-content-around">
+            <Grid item lg={5} className="">
+              <span
+                className="fs-14 cursor-pointer color-orange fw-500"
+                onClick={() => {
+                  setShowInvoices(true);
+                }}
+              >
+                <u> Show Previous Invoice</u>
+              </span>
+            </Grid>
             <div className="w-25 mx-2">
               <SimpleDropdownComponent
                 size="small"
@@ -395,6 +443,120 @@ const Generateinvoiceandmanifest = () => {
               }}
               showCheckbox
             />
+            <ModalComponent
+              ModalTitle="View and Confirm Order Details"
+              titleClassName="color-orange fs-14"
+              showFooter={false}
+              minWidth={700}
+              open={showView}
+              onCloseIconClick={() => {
+                setshowView(false);
+              }}
+            >
+              <Grid
+                style={{ maxHeight: "80vh", overflowY: "scroll" }}
+                className="hide-scrollbar"
+              >
+                {confirmedProductDetails.map((product) => {
+                  return (
+                    <>
+                      <Box
+                        className="d-flex justify-content-between px-2 m-3 "
+                        key={product.orderId}
+                      >
+                        {/* <ReusableProduct product={product}> */}
+                        <Box className="d-flex justify-content-center align-items-center ">
+                          <Box className="w-150px h-180px ">
+                            <Image
+                              className="d-block w-100 h-100 img-fluid rounded-1"
+                              width="180"
+                              height="180"
+                              src={product.imageUrl}
+                              alt="product"
+                            />
+                          </Box>
+                          <Box className="ms-2 ">
+                            <Typography
+                              className="mb-1 fs-16 fw-bold "
+                              // variantMapping={<p />}
+                            >
+                              {product.productTitle}
+                            </Typography>
+                            {viewFormat("SKU Id", product.skuId)}
+                            {viewFormat("Order Id", product.orderId)}
+                            {viewFormat("Purchase Id", product.purchaseId)}
+                            {viewFormat(
+                              "Product Variation Id",
+                              product.productVariationId
+                            )}
+                            {viewFormat(
+                              "Order Status",
+                              product.orderedProductStatus
+                            )}
+                            {viewFormat(
+                              "Product Price",
+                              `₹
+                         ${product.orderedProductAmount}`
+                            )}
+                            {viewFormat(
+                              "Quantity",
+                              product.orderedProductQuantity
+                            )}
+                            {viewFormat("Weight", product.weight)}
+                            {viewFormat("Payment Mode", product.modeOfPayment)}
+                            {viewFormat(
+                              "Weight Including Package",
+                              product.weightInclusivePackage
+                            )}
+                          </Box>
+                        </Box>
+                        {/* </ReusableProduct> */}
+                        {/* <Grid className="d-flex justify-content-end  align-items-end  ">
+                          <Grid className="p-1">
+                            <ButtonComponent
+                              label="Download Invoice"
+                              // onBtnClick={() => {
+
+                              //   setshowAddress(true);
+                              // }}
+                              onBtnClick={() => {}}
+                            />
+                          </Grid>
+                          <Grid className="p-1">
+                            <ButtonComponent
+                              label="Download Manifest"
+                              onBtnClick={() => {}}
+                            />
+                          </Grid>
+                        </Grid> */}
+                      </Box>
+                      <Grid className="d-flex justify-content-end  align-items-end ">
+                        <Grid className="p-1">
+                          <ButtonComponent
+                            label="Download Invoice"
+                            // onBtnClick={() => {
+
+                            //   setshowAddress(true);
+                            // }}
+                            onBtnClick={() => {
+                              downloadManifestFunction("invoice");
+                            }}
+                          />
+                        </Grid>
+                        <Grid className="p-1">
+                          <ButtonComponent
+                            label="Download Manifest"
+                            onBtnClick={() => {
+                              downloadManifestFunction("manifest");
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </>
+                  );
+                })}
+              </Grid>
+            </ModalComponent>
           </Paper>
         </>
       ) : (

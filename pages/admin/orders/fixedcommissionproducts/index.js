@@ -438,7 +438,7 @@ const Fixedcommissionproducts = () => {
 
             {viewFormat(
               "Order created by",
-              viewDetails.orderById,
+              `${viewDetails.customerName} (${viewDetails.orderById})`,
               "Delivery pickup date & time",
               viewDetails.deliveryPickUpDate
             )}
@@ -464,7 +464,7 @@ const Fixedcommissionproducts = () => {
               "Gross sales",
               viewDetails.grossSales,
               "Supplier Id & name",
-              viewDetails.supplierId
+              `${viewDetails.supplierName} (${viewDetails.supplierId})}`
             )}
             {viewFormat(
               "Reseller Name & Id",
