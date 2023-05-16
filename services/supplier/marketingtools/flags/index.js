@@ -5,7 +5,8 @@ const getAllFlags = (
   supplierStoreId,
   pageNumber = 0,
   dateFrom = "",
-  dateTo = ""
+  dateTo = "",
+  keyword = ""
 ) => {
   const pageSize = 50;
   return serviceUtil
@@ -14,6 +15,7 @@ const getAllFlags = (
       dateTo,
       supplierStoreId,
       supplierId,
+      keyword,
     })
     .then((res) => {
       const { data } = res.data;
