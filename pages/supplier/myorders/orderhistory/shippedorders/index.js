@@ -10,8 +10,36 @@ import {
 } from "services/supplier/myorders/orderhistory";
 import toastify from "services/utils/toastUtils";
 
+const dropdownList = [
+  {
+    label: "All",
+    id: "ALL",
+  },
+  {
+    label: "Store Owner Delivery",
+    id: "STORE_OWNER_DELIVERY",
+  },
+  {
+    label: "Hand Pick",
+    id: "HAND_PICK",
+  },
+  {
+    label: "Last Mile AC",
+    id: "LAST_MILE_AC",
+  },
+  {
+    label: "Last Mile FDR",
+    id: "LAST_MILE_FDR",
+  },
+  {
+    label: "Supplier Shipment",
+    id: "SUPPLIER_SHIPMENT",
+  },
+];
 const ShippedOrders = () => {
   const [tableData, setTableData] = useState([]);
+  const [modeOfOrderValue, setmodeOfOrderValue] = useState({});
+
   const [eachOrderData, seteachOrderData] = useState({});
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
@@ -121,7 +149,8 @@ const ShippedOrders = () => {
     const payload = {
       supplierId: user,
       orderStatus: "SHIPPED",
-      modeOfOrder: null,
+      modeOfOrder:
+        modeOfOrderValue.id == "ALL" ? null : modeOfOrderValue.id || null,
       pageNo: page || 0,
       pageSize: 50,
       shipmentType: null,
@@ -129,6 +158,7 @@ const ShippedOrders = () => {
     const { data, err } = await getOrderHistory(payload);
     if (data) {
       if (page == 0) {
+        setpageNumberState(0);
         setTableData(mapRowsToTable(data.data));
         setpageNumberState((pre) => pre + 1);
       } else {
@@ -141,8 +171,8 @@ const ShippedOrders = () => {
     }
   };
   useEffect(() => {
-    getDeleveredOrderData();
-  }, []);
+    getDeleveredOrderData(0);
+  }, [modeOfOrderValue]);
   // const filterByType = React.useCallback(() => {
   //   if (dropdownFilter && dropdownFilter.id) {
   //     switch (dropdownFilter?.id) {
@@ -165,7 +195,11 @@ const ShippedOrders = () => {
   // useEffect(() => {
   //   filterByType();
   // }, [dropdownFilter]);
-
+  // useEffect(() => {
+  //   if (modeOfOrderValue !== {}) {
+  //     getDeleveredOrderData(0);
+  //   }
+  // }, [modeOfOrderValue]);
   return (
     <Paper
       sx={{ p: 2, height: "100%" }}
@@ -180,18 +214,18 @@ const ShippedOrders = () => {
           showCheckbox={false}
           showSearchFilter={false}
           showCustomDropdown
-          customDropdownLabel="Order Type"
-          customDropdownList={[
-            { id: "single", label: "Single" },
-            { id: "multiple", label: "Multiple" },
-          ]}
+          customDropdownLabel="Mode Of Order"
+          customDropdownList={dropdownList}
           showCustomButton
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             // console.log("onCustomButtonClick");
           }}
-          // onCustomDropdownChange={(val) => setDropdownFilter(val)}
-          // customDropdownValue={dropdownFilter}
+          handlePageEnd={() => {
+            getDeleveredOrderData();
+          }}
+          onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
+          customDropdownValue={modeOfOrderValue}
         />
       </Paper>
       {openView && (

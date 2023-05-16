@@ -125,9 +125,9 @@ const getMediaUrl = (supId, orderId, payload) => {
       return { err };
     });
 };
-const viewManifest = (payload) => {
+const viewManifest = (id) => {
   return serviceUtil
-    .get(`order-payment/viewManifest`, payload)
+    .get(`order-payment/viewManifest?manifestId=${id}`)
     .then((res) => {
       const data = res && res.data;
       return { data };

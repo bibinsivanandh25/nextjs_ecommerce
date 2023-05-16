@@ -45,6 +45,11 @@ export const paths = [
     navigate: true,
   },
   {
+    title: "Returned Confirm",
+    id: "returnconfirm",
+    navigate: true,
+  },
+  {
     title: "Returned Orders",
     id: "returnedorders",
     navigate: true,

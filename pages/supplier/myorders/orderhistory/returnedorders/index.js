@@ -11,9 +11,36 @@ import {
 import toastify from "services/utils/toastUtils";
 import { useSelector } from "react-redux";
 
+const dropdownList = [
+  {
+    label: "All",
+    id: "ALL",
+  },
+  {
+    label: "Store Owner Delivery",
+    id: "STORE_OWNER_DELIVERY",
+  },
+  {
+    label: "Hand Pick",
+    id: "HAND_PICK",
+  },
+  {
+    label: "Last Mile AC",
+    id: "LAST_MILE_AC",
+  },
+  {
+    label: "Last Mile FDR",
+    id: "LAST_MILE_FDR",
+  },
+  {
+    label: "Supplier Shipment",
+    id: "SUPPLIER_SHIPMENT",
+  },
+];
 const ReturnedOrders = () => {
   const [tableData, setTableData] = useState([]);
   const [eachOrderData, seteachOrderData] = useState({});
+  const [modeOfOrderValue, setmodeOfOrderValue] = useState({});
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
   const [pageNumberState, setpageNumberState] = useState(0);
@@ -117,7 +144,7 @@ const ReturnedOrders = () => {
     if (status?.toLowerCase().includes("live")) {
       return "text-success";
     }
-    if (status.toLowerCase().includes("fail")) {
+    if (status?.toLowerCase().includes("fail")) {
       return "text-danger";
     }
     return "";
@@ -205,12 +232,17 @@ const ReturnedOrders = () => {
   const getDeleveredOrderData = async (page = pageNumberState) => {
     const payload = {
       supplierId: user,
-      status: "RETURNED",
-      pageNumber: page,
+      orderStatus: "RETURNED",
+      pageNo: page || 0,
+      pageSize: 50,
+      modeOfOrder:
+        modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue?.id || null,
+      shipmentType: null,
     };
     const { data, err } = await getOrderHistory(payload);
     if (data) {
       if (page == 0) {
+        setpageNumberState(0);
         setTableData(mapRowsToTable(data.data));
         setpageNumberState((pre) => pre + 1);
       } else {
@@ -223,8 +255,8 @@ const ReturnedOrders = () => {
     }
   };
   useEffect(() => {
-    getDeleveredOrderData();
-  }, []);
+    getDeleveredOrderData(0);
+  }, [modeOfOrderValue]);
   // useEffect(() => {
   //   setTableRows(mapRowsToTable(tableData));
   // }, [tableData]);
@@ -307,19 +339,19 @@ const ReturnedOrders = () => {
           showSearchbar={false}
           showCheckbox={false}
           showCustomDropdown
-          customDropdownLabel="Order Type"
-          customDropdownList={[
-            { id: "single", label: "Single" },
-            { id: "multiple", label: "Multiple" },
-          ]}
+          customDropdownLabel="Mode Of Order"
+          customDropdownList={dropdownList}
           showCustomButton
           showSearchFilter={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
             // console.log("onCustomButtonClick");
           }}
-          onCustomDropdownChange={(val) => setDropdownFilter(val)}
-          customDropdownValue={dropdownFilter}
+          onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
+          customDropdownValue={modeOfOrderValue}
+          handlePageEnd={() => {
+            getDeleveredOrderData();
+          }}
         />
       </Paper>
       {openView && (
