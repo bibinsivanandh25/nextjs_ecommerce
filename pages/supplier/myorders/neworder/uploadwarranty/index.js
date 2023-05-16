@@ -67,7 +67,7 @@ const columns = [
   },
 ];
 const UploadWarranty = () => {
-  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(null);
   const [showView, setShowView] = useState(null);
   const { supplierId } = useSelector((state) => state.user);
   const [rows, setRows] = useState([]);
@@ -77,6 +77,9 @@ const UploadWarranty = () => {
     return data.map((item) => {
       return {
         id: item.productVariationId,
+        warrantyAvailable: item.warrantyAvailable,
+        taxInvoiceAvailable: item.taxInvoiceAvailable,
+        payslipAvailable: item.payslipAvailable,
         col1: item.payId,
         col2: item.orderId,
         col3: item.orderDate,
@@ -90,7 +93,7 @@ const UploadWarranty = () => {
               type="upload"
               className="h-3"
               onIconClick={() => {
-                setShowUploadModal(true);
+                setShowUploadModal(item);
               }}
             />
             <CustomIcon
@@ -148,10 +151,12 @@ const UploadWarranty = () => {
           setPageNum(0);
         }}
       />
-      <UploadWarrantyModal
-        showModal={showUploadModal}
-        setShowModal={setShowUploadModal}
-      />
+      {showUploadModal && (
+        <UploadWarrantyModal
+          warrentyDetails={showUploadModal}
+          setShowModal={setShowUploadModal}
+        />
+      )}
       {showView && <ViewWarent warrantyDetails={showView} />}
     </Paper>
   );
