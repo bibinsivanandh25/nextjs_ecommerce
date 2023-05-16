@@ -65,34 +65,34 @@ const UploadWarrantyModal = ({
         }
       });
       const res = await Promise.all(promiseAll);
-      console.log({ res });
       if (res.length) {
         const payload = {
           orderId: warrentyDetails.orderId,
           productVariationId: warrentyDetails.productVariationId,
-          isTaxInvoice: false,
+          isTaxInvoiceAvailable: false,
           taxInvoiceFileUrl: "",
-          isWarrantyCard: false,
+          isWarrantyAvailable: false,
           warrantyCardFileUrl: "",
-          isPayslip: false,
+          isPayslipAvailable: false,
           payslipFileUrl: "",
         };
         res.forEach((item) => {
           if (item.hasOwnProperty("TAX_INVOICE")) {
-            payload.isTaxInvoice = true;
+            payload.isTaxInvoiceAvailable = true;
             payload.taxInvoiceFileUrl = item.TAX_INVOICE[0];
           } else if (item.hasOwnProperty("WARRANTY_CARD")) {
-            payload.isWarrantyCard = true;
+            payload.isWarrantyAvailable = true;
             payload.warrantyCardFileUrl = item.WARRANTY_CARD[0];
           } else if (item.hasOwnProperty("PAYSLIP")) {
-            payload.isPayslip = true;
+            payload.isPayslipAvailable = true;
             payload.payslipFileUrl = item.PAYSLIP[0];
           }
         });
-        console.log({ payload });
         const { data, err } = await savewarrantyDetails(payload);
         if (data) {
           console.log({ data });
+          toastify(data.message, "success");
+          setShowModal(null);
         } else if (err) {
           toastify(err?.response?.data?.message, "error");
         }

@@ -52,7 +52,7 @@ const savewarrantyDetails = (payload) => {
   return serviceUtil
     .put(`order-payment/saveTaxWarrantyPayslip`, payload)
     .then((res) => {
-      const { data } = res.data;
+      const { data } = res;
       // console.log("This is data ,", data);
       return { data };
     })
