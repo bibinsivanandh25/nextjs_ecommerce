@@ -203,13 +203,14 @@ const Flags = () => {
     setRows(temp);
   };
 
-  const getRows = async (dateObj = {}) => {
+  const getRows = async (dateObj = {}, searchText) => {
     const { data, err } = await getAllFlags(
       supplierId,
       storeCode,
       pageNumber,
       dateObj?.fromDate,
-      dateObj?.toDate
+      dateObj?.toDate,
+      searchText
     );
     if (data) {
       mapToTable(data);
@@ -238,7 +239,7 @@ const Flags = () => {
         tHeadBgColor="bg-tableGray"
         showCheckbox={false}
         handlePageEnd={(searchText, filterText, _, dateObj) => {
-          getRows(dateObj);
+          getRows(dateObj, searchText);
         }}
         handleRowsPerPageChange={() => {
           setpageNumber(0);

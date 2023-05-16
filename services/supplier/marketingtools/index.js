@@ -15,9 +15,9 @@ const getUserMarketingTool = (id, toolType, pageNumber) => {
     });
 };
 
-const getAllMainCategories = () => {
+const getAllMainCategories = (supplierId) => {
   return serviceUtil
-    .get("products/main-category/drop-down-list")
+    .get(`products/main-category/drop-down-list-supplier/${supplierId}`)
     .then((res) => {
       const { data } = res?.data;
       return { data };

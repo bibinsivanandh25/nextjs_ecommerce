@@ -32,4 +32,14 @@ const saveScratchCard = (payload) => {
     .catch((err) => ({ err }));
 };
 
-export { getCategorys, getProducts, saveScratchCard };
+const getAllMainCategories = (supplierId) => {
+  return serviceUtil
+    .get(`products/main-category/drop-down-list-supplier/${supplierId}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
+
+export { getCategorys, getProducts, saveScratchCard, getAllMainCategories };

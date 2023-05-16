@@ -15,8 +15,8 @@ import validateMessage from "constants/validateMessages";
 import toastify from "services/utils/toastUtils";
 import validationRegex from "services/utils/regexUtils";
 import {
-  getCategorys,
   saveScratchCard,
+  getAllMainCategories,
 } from "services/supplier/marketingtools/luckydraw/scratchcard";
 import { useSelector } from "react-redux";
 import { getSet, getSubCategory } from "services/supplier/AddProducts";
@@ -66,7 +66,7 @@ const GenericForm = ({
   const [numberOfQuestions, setNumberOfQuestions] = useState(3);
 
   const getCategoryList = async () => {
-    const { data } = await getCategorys();
+    const { data } = await getAllMainCategories(supplierId);
     if (data) {
       const finaData = [];
       data.forEach((item) => {

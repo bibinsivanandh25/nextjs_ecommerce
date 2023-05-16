@@ -10,6 +10,11 @@ export const paths = [
     navigate: true,
   },
   {
+    title: "Upload Warranty",
+    id: "uploadwarranty",
+    navigate: true,
+  },
+  {
     title: "Generate Invoice & Manifest",
     id: "generateinvoiceandmanifest",
     navigate: true,
