@@ -1,6 +1,7 @@
 import ModalComponent from "@/atoms/ModalComponent";
 import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
@@ -8,6 +9,7 @@ import {
   getOrderDetailsById,
   getOrderHistory,
 } from "services/supplier/myorders/orderhistory";
+import exceldownload from "services/utils/exceldownload";
 import toastify from "services/utils/toastUtils";
 
 const dropdownList = [
@@ -57,11 +59,11 @@ const DeliveredOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
@@ -77,12 +79,16 @@ const DeliveredOrders = () => {
       id: "col8",
     },
     {
-      label: "Total",
+      label: "Ordered Product Amount",
       id: "col9",
     },
     {
-      label: "Action",
+      label: "AWB Number",
       id: "col10",
+    },
+    {
+      label: "Action",
+      id: "col11",
       align: "center",
     },
   ];
@@ -100,16 +106,19 @@ const DeliveredOrders = () => {
     const result = [];
     data?.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          `${format(new Date(row?.manifestDate), "MM-dd-yyyy")} 00:00:00` ||
+          "__",
         col7: row?.orderQuantity || "__",
-        col8: row?.orderStatus || "__",
-        col9: row?.orderAmount || "__",
-        col10: (
+        col8: row?.status || "__",
+        col9: row?.orderedProductAmount || "__",
+        col10: row?.awbNo || "__",
+        col11: (
           <Grid container>
             <Grid item xs={6}>
               <CustomIcon type="download" title="Download" />
@@ -129,51 +138,27 @@ const DeliveredOrders = () => {
     });
     return result;
   };
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Index"] = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Manifest Date"] = item.col6;
+      tempObj["Qty"] = item.col7;
+      tempObj["Status"] = item.col8;
+      tempObj["ordered Product Amount"] = item.col9;
+      tempObj["AWB Number"] = item.col10;
 
-  // useEffect(() => {
-  //   const rows = [
-  //     {
-  //       purchaseid: "#123458",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "PRODUCT LIVE",
-  //       chooseActionValue: null,
-  //       total: 2,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123456",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "VALIDATION FAILED",
-  //       chooseActionValue: null,
-  //       total: 3,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123459",
-  //       orderid: "123423",
-  //       orderdate: "12-01-2023",
-  //       size: "UK22",
-  //       weight: "300gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "1",
-  //       status: "VALIDATION FAILED",
-  //       chooseActionValue: null,
-  //       total: 4,
-  //       orderQuantity: 3,
-  //     },
-  //   ];
-  //   setTableData(rows);
-  // }, []);
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Delivered order details");
+  };
 
   // useEffect(() => {
   //   setTableRows(mapRowsToTable(tableData));
@@ -240,6 +225,9 @@ const DeliveredOrders = () => {
           showSearchbar={false}
           showCustomButton
           customButtonLabel="Download All Orders"
+          onCustomButtonClick={() => {
+            handleexcelDownload();
+          }}
           onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
           customDropdownValue={modeOfOrderValue}
           handlePageEnd={() => {

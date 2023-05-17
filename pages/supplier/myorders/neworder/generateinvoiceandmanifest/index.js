@@ -80,8 +80,8 @@ const Generateinvoiceandmanifest = () => {
   const route = useRouter();
   const columns = [
     {
-      id: "col1", //  id value in column should be presented in row as key
-      label: "Image",
+      id: "col1",
+      label: "Customer ID",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -89,7 +89,7 @@ const Generateinvoiceandmanifest = () => {
     },
     {
       id: "col2",
-      label: "Purchase ID",
+      label: "Customer Name",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -97,6 +97,14 @@ const Generateinvoiceandmanifest = () => {
     },
     {
       id: "col3",
+      label: "Purchase ID",
+      minWidth: 100,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+    },
+    {
+      id: "col4",
       label: "Order ID",
       minWidth: 100,
       align: "center",
@@ -104,35 +112,19 @@ const Generateinvoiceandmanifest = () => {
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
-    {
-      id: "col4",
-      label: "Style Code",
-      minWidth: 100,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
+
     {
       id: "col5",
-      label: "Size",
+      label: "Mode Of Order",
       minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+
     {
       id: "col6",
-      label: "Weight",
-      minWidth: 100,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col7",
       label: "Order Date",
       minWidth: 100,
       align: "center",
@@ -141,7 +133,7 @@ const Generateinvoiceandmanifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col8",
+      id: "col7",
       label: "Expected Dispatch Date",
       minWidth: 100,
       align: "center",
@@ -150,8 +142,8 @@ const Generateinvoiceandmanifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col9",
-      label: "Add weight in grams including packaging",
+      id: "col8",
+      label: "Total Order amount",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -159,7 +151,7 @@ const Generateinvoiceandmanifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col10",
+      id: "col9",
       label: "Action",
       minWidth: 100,
       align: "center",
@@ -182,22 +174,23 @@ const Generateinvoiceandmanifest = () => {
     data?.forEach((val) => {
       temp.push({
         id: val.orderId,
-        col1: <Image src={val.imageUrl} height={50} width={50} alt="" />,
-        col2: val.purchaseId,
-        col3: val.orderId,
-        col4: val.skuId,
+        col1: val.orderedById,
+        col2: val.orderedByName,
+        col3: val.purchaseId,
+        col4: val.orderId,
         col5: val.modeOfOrder.replace("_", " "),
-        col6: val.weight,
-        col7: val.orderDate,
-        col8: val.expectedDispatchDate.split("T")[0],
-        col9: val.weightInclusivePackage,
-        col10: (
+        col6: val.orderDate,
+        col7: val.expectedDispatchDate.split("T")[0],
+        col8: val.totalOrderAmount,
+        col9: (
           <Grid>
             <CustomIcon
               type="view"
+              title="view Details"
               className="fs-25 mx-2"
               onIconClick={() => {
                 getConfirmedOrderDetails(val.orderId);
+                setorderId(val.orderId);
               }}
             />
           </Grid>
@@ -444,7 +437,7 @@ const Generateinvoiceandmanifest = () => {
               showCheckbox
             />
             <ModalComponent
-              ModalTitle="View and Confirm Order Details"
+              ModalTitle="Confirmed Order Details"
               titleClassName="color-orange fs-14"
               showFooter={false}
               minWidth={700}

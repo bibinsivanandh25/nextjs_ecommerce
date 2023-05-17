@@ -254,22 +254,37 @@ const Notifications = () => {
     };
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
-      // console.log(data, "datadata");
-      const temp = [...supplierDropdownVal];
-      setsupplierDropdownTemp(data?.data);
-      data.data.forEach((val) => {
-        temp.push({
-          userId: val?.userId,
-          userType: val?.userType,
-          userName: val?.userName,
-          userMobileNumber: val?.userMobileNumber,
-          userEmail: val?.userEmail,
-          isSelected: false,
+      if (page == 0) {
+        const tempFirst = [];
+        data.data.forEach((val) => {
+          tempFirst.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
         });
-      });
+        setsupplierDropdownVal([...tempFirst]);
+      } else {
+        const temp = [...supplierDropdownVal];
+        setsupplierDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
+        });
+        setsupplierDropdownVal([...temp]);
+      }
+      // console.log(data, "datadata");
 
       // console.log(temp, "temp");
-      setsupplierDropdownVal([...temp]);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -283,7 +298,7 @@ const Notifications = () => {
   useEffect(() => {
     if (customerSearch.length) {
       const search = setTimeout(() => {
-        getSupplierDropdownFun();
+        getSupplierDropdownFun(0);
       }, 1000);
       return () => clearTimeout(search);
     }
@@ -292,7 +307,7 @@ const Notifications = () => {
   useEffect(() => {
     if (supplierSearch.length) {
       const search = setTimeout(() => {
-        getSupplierDropdownFunction();
+        getSupplierDropdownFunction(0);
       }, 1000);
       return () => clearTimeout(search);
     }
@@ -810,7 +825,11 @@ const Notifications = () => {
                         disable={sendMessageToType.customer !== "customer"}
                         setselectedSupplier={setselectedCustomers}
                         selectedSupplier={selectedCustomers}
-                        label="Customer"
+                        label={
+                          selectedCustomers.length
+                            ? `Customer${selectedCustomers.length}`
+                            : "Customer"
+                        }
                         setsupplierDropdownVal={setcustomerDropdownData}
                         supplierDropdownVal={customerDropdownData}
                         allSelect={selectAllCustomer}
@@ -882,7 +901,11 @@ const Notifications = () => {
                         disable={sendMessageToType.supplier !== "supplier"}
                         setselectedSupplier={setselectedSupplier}
                         selectedSupplier={selectedSupplier}
-                        label="Supplier"
+                        label={
+                          selectedSupplier.length
+                            ? `Supplier ${selectedSupplier.length}`
+                            : "Supplier"
+                        }
                         setsupplierDropdownVal={setsupplierDropdownVal}
                         supplierDropdownVal={supplierDropdownVal}
                         allSelect={selectAllSupplier}

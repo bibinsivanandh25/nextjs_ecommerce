@@ -10,6 +10,8 @@ import {
 } from "services/supplier/myorders/orderhistory";
 import toastify from "services/utils/toastUtils";
 import { useSelector } from "react-redux";
+import { format } from "date-fns";
+import exceldownload from "services/utils/exceldownload";
 
 const dropdownList = [
   {
@@ -44,6 +46,53 @@ const ReturnedOrders = () => {
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
   const [pageNumberState, setpageNumberState] = useState(0);
+  // const columns = [
+  //   {
+  //     label: "Purchase ID",
+  //     id: "col1",
+  //   },
+  //   {
+  //     label: "Order ID",
+  //     id: "col2",
+  //   },
+  //   {
+  //     label: "Order Date",
+  //     id: "col3",
+  //   },
+  //   {
+  //     label: "Size",
+  //     id: "col4",
+  //   },
+  //   {
+  //     label: "Weight",
+  //     id: "col5",
+  //   },
+  //   {
+  //     label: "Manifest Date",
+  //     id: "col6",
+  //   },
+  //   {
+  //     label: "Qty",
+  //     id: "col7",
+  //   },
+  //   {
+  //     label: "Status",
+  //     // align: "center",
+  //     id: "col8",
+  //   },
+  //   {
+  //     label: "Choose Action",
+  //     id: "col9",
+  //     // align: "center",
+  //     minWidth: 250,
+  //   },
+  //   {
+  //     label: "Action",
+  //     id: "col10",
+  //     // align: "center",
+  //     minWidth: 100,
+  //   },
+  // ];
   const columns = [
     {
       label: "Purchase ID",
@@ -58,11 +107,11 @@ const ReturnedOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
@@ -75,20 +124,27 @@ const ReturnedOrders = () => {
     },
     {
       label: "Status",
-      // align: "center",
       id: "col8",
     },
     {
-      label: "Choose Action",
+      label: "Ordered Product Amount",
       id: "col9",
+    },
+    {
+      label: "AWB Number",
+      id: "col10",
+    },
+    {
+      label: "Choose Action",
+      id: "col11",
       // align: "center",
       minWidth: 250,
     },
     {
       label: "Action",
-      id: "col10",
-      // align: "center",
-      minWidth: 100,
+      id: "col12",
+      align: "center",
+      minWidth: 150,
     },
   ];
 
@@ -139,7 +195,27 @@ const ReturnedOrders = () => {
     });
     setTableData(copy);
   };
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Index"] = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Manifest Date"] = item.col6;
+      tempObj["Qty"] = item.col7;
+      tempObj["Status"] = item.col8;
+      tempObj["ordered Product Amount"] = item.col9;
+      tempObj["AWB Number"] = item.col10;
 
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Returned order details");
+  };
   const getClassnames = (status) => {
     if (status?.toLowerCase().includes("live")) {
       return "text-success";
@@ -169,19 +245,19 @@ const ReturnedOrders = () => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          `${format(new Date(row?.manifestDate), "MM-dd-yyyy")} 00:00:00` ||
+          "__",
         col7: row?.orderQuantity || "__",
-        col8: (
-          <div className={getClassnames(row.orderStatus)}>
-            {row.orderStatus}
-          </div>
-        ),
-        col9: (
+        col8: row?.status || "__",
+        col9: row?.orderedProductAmount || "__",
+        col10: row?.awbNo || "__",
+        col11: (
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={10}>
               <SimpleDropdownComponent
@@ -209,7 +285,7 @@ const ReturnedOrders = () => {
             </Grid>
           </Grid>
         ),
-        col10: (
+        col12: (
           <Grid container mx={1} alignItems="center" justifyContent="center">
             <Grid item>
               <CustomIcon title="Download" type="download" />
@@ -257,74 +333,6 @@ const ReturnedOrders = () => {
   useEffect(() => {
     getDeleveredOrderData(0);
   }, [modeOfOrderValue]);
-  // useEffect(() => {
-  //   setTableRows(mapRowsToTable(tableData));
-  // }, [tableData]);
-
-  // useEffect(() => {
-  //   const rows = [
-  //     {
-  //       purchaseid: "#123458",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "PRODUCT LIVE",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123456",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "VALIDATION FAILED",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123450",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "PRODUCT LIVE",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //   ];
-  //   setTableData(rows);
-  // }, []);
-
-  // const filterByType = React.useCallback(() => {
-  //   if (dropdownFilter && dropdownFilter.id) {
-  //     switch (dropdownFilter?.id) {
-  //       case "single":
-  //         setTableRows(
-  //           tableRows?.filter((row) => parseInt(row.col7, 10) === 1)
-  //         );
-  //         break;
-  //       case "multiple":
-  //         setTableRows(tableRows?.filter((row) => parseInt(row.col7, 10) > 1));
-  //         break;
-  //       default:
-  //         setTableRows(mapRowsToTable(tableData));
-  //     }
-  //   } else {
-  //     setTableRows(mapRowsToTable(tableData));
-  //   }
-  // }, [dropdownFilter]);
-
-  // useEffect(() => {
-  //   filterByType();
-  // }, [dropdownFilter]);
 
   return (
     <Paper
@@ -345,7 +353,7 @@ const ReturnedOrders = () => {
           showSearchFilter={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
-            // console.log("onCustomButtonClick");
+            handleexcelDownload();
           }}
           onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
           customDropdownValue={modeOfOrderValue}

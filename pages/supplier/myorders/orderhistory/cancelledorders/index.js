@@ -1,6 +1,7 @@
 import ModalComponent from "@/atoms/ModalComponent";
 import { Grid, Paper, Typography } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
@@ -8,6 +9,7 @@ import {
   getOrderDetailsById,
   getOrderHistory,
 } from "services/supplier/myorders/orderhistory";
+import exceldownload from "services/utils/exceldownload";
 import toastify from "services/utils/toastUtils";
 
 const dropdownList = [
@@ -57,11 +59,11 @@ const CancelledOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
@@ -77,12 +79,16 @@ const CancelledOrders = () => {
       id: "col8",
     },
     {
-      label: "Total",
+      label: "Ordered Product Amount",
       id: "col9",
     },
     {
-      label: "Action",
+      label: "AWB Number",
       id: "col10",
+    },
+    {
+      label: "Action",
+      id: "col11",
       align: "center",
     },
   ];
@@ -99,16 +105,19 @@ const CancelledOrders = () => {
     const result = [];
     data?.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          `${format(new Date(row?.manifestDate), "MM-dd-yyyy")} 00:00:00` ||
+          "__",
         col7: row?.orderQuantity || "__",
-        col8: row?.orderStatus || "__",
-        col9: row?.orderAmount || "__",
-        col10: (
+        col8: row?.status || "__",
+        col9: row?.orderedProductAmount || "__",
+        col10: row?.awbNo || "__",
+        col11: (
           <Grid container>
             <Grid item xs={6}>
               <CustomIcon type="download" title="Download" />
@@ -128,7 +137,27 @@ const CancelledOrders = () => {
     });
     return result;
   };
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Index"] = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Manifest Date"] = item.col6;
+      tempObj["Qty"] = item.col7;
+      tempObj["Status"] = item.col8;
+      tempObj["ordered Product Amount"] = item.col9;
+      tempObj["AWB Number"] = item.col10;
 
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Cancelled order details");
+  };
   const getCancelOrderData = async (page = pageNumberState) => {
     const payload = {
       supplierId: user,
@@ -218,7 +247,7 @@ const CancelledOrders = () => {
           showCustomButton
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
-            // console.log("onCustomButtonClick");
+            handleexcelDownload();
           }}
           onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
           customDropdownValue={modeOfOrderValue}

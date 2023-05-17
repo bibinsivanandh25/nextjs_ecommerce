@@ -39,6 +39,14 @@ const UploadManifest = () => {
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
+      label: "Order Id",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+    },
+    {
+      id: "col2", //  id value in column should be presented in row as key
       label: "Manifest ID",
 
       align: "center",
@@ -46,15 +54,15 @@ const UploadManifest = () => {
       data_classname: "",
     },
     {
-      id: "col2",
-      label: "Shipment Provider",
+      id: "col3",
+      label: "AWB Number",
 
       align: "center",
       data_align: "center",
       data_classname: "",
     },
     {
-      id: "col3",
+      id: "col4",
       label: "Manifest Date",
 
       align: "center",
@@ -62,8 +70,9 @@ const UploadManifest = () => {
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+
     {
-      id: "col4",
+      id: "col5",
       label: "Number of Products ",
 
       align: "center",
@@ -72,7 +81,25 @@ const UploadManifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col5",
+      id: "col6",
+      label: "Shipment Provider",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col7",
+      label: "Ordered Product Status",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col8",
       label: "Action",
 
       align: "center",
@@ -121,11 +148,15 @@ const UploadManifest = () => {
     data.forEach((val, idx) => {
       temp.push({
         id: idx,
-        col1: val.manifestId,
-        col2: val.shipmentProvider,
-        col3: val.manifestDate,
-        col4: val.noOfProducts,
-        col5: (
+        col1: val.orderId,
+        col2: val.manifestId,
+        col3: val.awbNo,
+        col4: val.manifestDate,
+        col5: val.noOfProducts,
+        col6: val.shipmentProvider,
+
+        col7: val.orderedProductStatus,
+        col8: (
           <Grid className="d-flex justify-content-around align-items-center ">
             {/* <Tooltip title="Upload" placement="top">
               <FileUploadIcon /> 
