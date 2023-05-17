@@ -268,8 +268,7 @@ const RevenueSales = () => {
             id: "2",
             col1: "Orders Cancelled",
             col2: `Cancelled ${data.ordersCancelledLast15Days} (${data.ordersCancelledLast15DaysPercentage}%)`,
-            col3: `Order Received : ${data.orderRecieved}, Cancelled : ${data.ordersCancelledTillDate} (${data.ordersCancelledTillDatePercentage}%) Orders Received :
-               ${data.orderRecievedPercentage}%`,
+            col3: `Order Received : ${data.orderRecieved} ( ${data.orderRecievedPercentage}%), Cancelled : ${data.ordersCancelledTillDate} (${data.ordersCancelledTillDatePercentage}%)`,
             col4: "",
             // col5: <CustomIcon type="view" />,
           },
@@ -277,8 +276,7 @@ const RevenueSales = () => {
             id: "3",
             col1: "Orders Returned",
             col2: `Returned ${data.ordersReturnedLast15Days} (${data.ordersReturnedLast15DaysPercentage}%)`,
-            col3: `Order Received : ${data.orderRecieved}, Returned : ${data.ordersReturnedTillDate} (${data.ordersReturnedTillDatePercentage}%) Orders Received :
-                ${data.orderRecievedPercentage}%`,
+            col3: `Order Received : ${data.orderRecieved} (${data.orderRecievedPercentage}%), Returned : ${data.ordersReturnedTillDate} (${data.ordersReturnedTillDatePercentage}%)`,
             col4: "",
             // col5: <CustomIcon type="view" />,
           },
