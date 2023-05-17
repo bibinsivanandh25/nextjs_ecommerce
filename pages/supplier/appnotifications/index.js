@@ -177,10 +177,8 @@ import {
   TableContainer,
   TableBody,
 } from "@mui/material";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CustomIcon from "services/iconUtils";
 import {
   getPenaltyData,
   getPerformanceData,
@@ -260,9 +258,9 @@ const RevenueSales = () => {
           {
             id: "1",
             col1: "Average Pick Up Turn Around Time(TAT)",
-            col2: data.averagePickUpTurnAroundLast15Days,
-            col3: data.averagePickUpTurnAroundTillDate,
-            col4: data.averagePickUpTurnAroundExpectedMetrics,
+            col2: `${data.averagePickUpTurnAroundLast15Days} days`,
+            col3: `${data.averagePickUpTurnAroundTillDate} days`,
+            col4: `${data.averagePickUpTurnAroundExpectedMetrics} days`,
             // col5: <CustomIcon type="view" />,
           },
 
