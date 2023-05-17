@@ -326,8 +326,14 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
     setCount((prev) => (prev > 1 ? prev - 1 : 1));
   };
   const handlePlusClick = () => {
-    setCount((prev) => (masterData.limitsPerOrder > prev ? prev + 1 : prev));
+    setCount((prev) =>
+      masterData.limitsPerOrder > prev &&
+      selectedMasterData.productStockQty > prev
+        ? prev + 1
+        : prev
+    );
   };
+
   const renderDiscriptionImage = (data) => {
     return data?.map((item) => {
       if (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i.test(item)) {
