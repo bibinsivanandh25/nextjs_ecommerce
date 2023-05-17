@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import TableComponent from "components/atoms/TableComponent";
-import PrintIcon from "@mui/icons-material/Print";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Paper, Tooltip } from "@mui/material";
+import { Paper } from "@mui/material";
 import {
   getPreviousInvoice,
   viewPreviousInvoice,
@@ -57,6 +56,7 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
     const { data, err } = await viewPreviousInvoice(id);
     if (data) {
       // console.log(data.data);
+
       const temp = data.data;
       window.open(temp, "_blank").focus();
     } else if (err) {
@@ -73,9 +73,6 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
         col3: ele.noOfProducts,
         col4: (
           <div className="d-flex justify-content-center align-items-center ">
-            <Tooltip title="Print" placement="top">
-              <PrintIcon className="mx-2 tableIcons" />
-            </Tooltip>
             {/* <Tooltip title="Detail" placement="top">
               <RemoveRedEyeIcon />
             </Tooltip> */}

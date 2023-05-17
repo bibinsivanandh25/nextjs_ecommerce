@@ -1,4 +1,4 @@
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Menu, MenuItem } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import MenuOption from "@/atoms/MenuOptions";
@@ -7,13 +7,18 @@ import ViewProducts from "./ViewProducts";
 // import ImagesInfoTable from "./ImagesInfoTable";
 // import EditModalForArticles from "./EditModalForArticles";
 import RaiseQueryModal from "./RaiseQueryModal";
+import { getAllProducts } from "services/admin/media";
+import toastify from "services/utils/toastUtils";
+import CustomIcon from "services/iconUtils";
 
-const Products = ({ rowsDataObjectsForProducts }) => {
+const Products = ({}) => {
   const [tableRows, setTableRows] = useState([]);
   //   const [showImageInfoTable, setShowImageInfoTable] = useState(false);
   //   const [openEditModal, setOpenEditModal] = useState(false);
   const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
   const [showViewProduct, setShowViewProduct] = useState(false);
+  const [pageNum, setPageNum] = useState(0);
+  const [showMenu, setShowMenu] = useState(null);
 
   const tableColumns = [
     {
@@ -44,13 +49,13 @@ const Products = ({ rowsDataObjectsForProducts }) => {
     {
       id: "col6",
       align: "center",
-      label: "Category/Subcategory",
+      label: "Subcategory",
       data_align: "center",
     },
     {
       id: "col7",
       align: "center",
-      label: "Name",
+      label: "Product Title",
       data_align: "center",
     },
     {
@@ -97,53 +102,58 @@ const Products = ({ rowsDataObjectsForProducts }) => {
 
   const options = ["Edit", "Delete", "Raise Query", "Add a Note"];
 
-  const theTaleRowsData = () => {
-    const anArray = [];
-    rowsDataObjectsForProducts.forEach((val, index) => {
-      anArray.push({
-        id: index + 1,
-        col1: val.col1,
-        col2: val.col2,
-        col3: (
-          <Box className="d-flex align-items-end justify-content-center">
-            <Box className="h-30 border d-flex justify-content-center">
-              <Image
-                src={val.col3.imgSrc[0]}
-                width="50"
-                height="50"
-                className="cursor-pointer"
-              />
-            </Box>
-            <Typography className="fs-10">/{val.col2.imgCount}</Typography>
-          </Box>
+  const mapData = (data) => {
+    return data.map((item, index) => {
+      return {
+        col1: index + 1,
+        col2: item.productVariationId,
+        col3: item?.imageUrlList?.length ? (
+          <Image src={item.imageUrlList[0]} height={50} width={50} />
+        ) : (
+          ""
         ),
-        col4: val.col4,
-        col5: val.col5,
-        col6: val.col6,
-        col7: val.col7,
-        col8: val.col8,
-        col9: val.col9,
-        col10: val.col10,
-        col11: val.col11,
+        col4: item.vendorId,
+        col5: item?.seo?.join(", "),
+        col6: item.subCategory,
+        col7: item.productTitle,
+        col8: item.imageSize,
+        col9: item.imageUrl,
+        col10: item.pixelRatio,
+        col11: item.lastUpdatedDate,
         col12: (
-          <Box className="d-flex justify-content-evenly align-items-center">
-            <MenuOption
-              getSelectedItem={(ele) => {
-                onClickOfMenuItem(ele, index);
-              }}
-              options={options}
-              IconclassName="fs-18 color-gray"
-            />
-          </Box>
+          <CustomIcon
+            className="fs-6"
+            title="More"
+            type="more"
+            onIconClick={(event) => {
+              setShowMenu(event.currentTarget);
+            }}
+          />
         ),
-      });
+      };
     });
+  };
 
-    setTableRows(anArray);
+  const getProducts = async (page = 0, searchText = "") => {
+    const { data, err } = await getAllProducts({
+      pageNumber: page,
+      pageSize: 50,
+      keyValue: searchText,
+    });
+    if (data) {
+      if (page === 0) {
+        setTableRows(mapData(data));
+      } else {
+        setTableRows([...tableRows, ...mapData(data)]);
+      }
+      setPageNum(page + 1);
+    } else {
+      toastify(err?.response?.data?.message, "error");
+    }
   };
 
   useEffect(() => {
-    theTaleRowsData();
+    getProducts();
   }, []);
 
   return (
@@ -151,32 +161,41 @@ const Products = ({ rowsDataObjectsForProducts }) => {
       <Box>
         <Box className="px-1 pt-2">
           {!showViewProduct ? (
-            <TableComponent
-              columns={tableColumns}
-              tHeadBgColor="bg-light-gray"
-              // showPagination={false}
-              tableRows={tableRows}
-              showSearchbar={false}
-              showDateFilterBtn
-              showDateFilter
-              //   dateFilterBtnName="+ New Product"
-              //   dateFilterBtnClick={() => {
-              //     setProductDetails({
-              //       vendorIdOrName: "",
-              //       images: "",
-              //       productTitle: "",
-              //       sku: "",
-              //       categorySubcategory: "",
-              //       weightOrVolume: "",
-              //       totalStock: "",
-              //       salePriceAndMrp: "",
-              //       discounts: "",
-              //     });
-              // setImageArray([]);
-              // setOpenEditModal(true);
-              // setModalId(null);
-              //   }}
-            />
+            <>
+              <TableComponent
+                columns={tableColumns}
+                tHeadBgColor="bg-light-gray"
+                // showPagination={false}
+                tableRows={tableRows}
+                showSearchbar={false}
+                showDateFilterBtn
+                showDateFilter
+                handlePageEnd={(searchText, filterText, page = pageNum) => {
+                  getProducts(page, searchText);
+                }}
+                handleRowsPerPageChange={() => {
+                  setPageNum(0);
+                }}
+              />
+              <Menu
+                id="basic-menu"
+                anchorEl={showMenu}
+                open={Boolean(showMenu)}
+                onClose={() => {
+                  setShowMenu(null);
+                }}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem>
+                  <span className="fs-12 ">Edit</span>
+                </MenuItem>
+                <MenuItem>
+                  <span className="fs-12 ">Delete</span>
+                </MenuItem>
+              </Menu>
+            </>
           ) : (
             <ViewProducts setShowViewProduct={setShowViewProduct} />
           )}

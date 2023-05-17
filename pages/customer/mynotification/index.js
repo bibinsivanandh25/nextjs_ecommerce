@@ -466,8 +466,8 @@ const MyNotification = () => {
       return false;
     }
     const payload = {
-      questionId: openEdit.qid,
-      userName: userName.replace(" ", "_"),
+      customerQuestionId: openEdit.qid,
+      answerFromType: "CUSTOMER",
       answer: productReplyInput,
     };
     const { data, errRes } = await replyProductQuery(payload);
@@ -485,8 +485,8 @@ const MyNotification = () => {
     }
     const payload = {
       question: replyInput,
-      questionid: openEdit.qid,
-      userid: storeDetails.userId,
+      customerQuestionId: openEdit.qid,
+      createdBy: storeDetails.userId,
     };
     const { data, errRes } = await editQuestion(payload);
     if (data) {

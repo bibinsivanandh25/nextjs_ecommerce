@@ -67,14 +67,14 @@ const MyProducts = () => {
       id: "col2",
       minWidth: 100,
     },
-    {
-      align: "center",
-      data_align: "center",
-      label: "Product ID",
-      isFilter: true,
-      id: "col3",
-      minWidth: 100,
-    },
+    // {
+    //   align: "center",
+    //   data_align: "center",
+    //   label: "Product ID",
+    //   isFilter: true,
+    //   id: "col3",
+    //   minWidth: 100,
+    // },
     {
       align: "center",
       data_align: "center",
@@ -227,7 +227,7 @@ const MyProducts = () => {
             <Image src={variation.variationMedia[0]} height={50} width={50} />
           ) : null,
           col2: masterProduct.productType,
-          col3: variation.productVariationId,
+          // col3: variation.productVariationId,
           col4: variation.productTitle,
           col5: variation.skuId,
           col6: variation.stockQty,

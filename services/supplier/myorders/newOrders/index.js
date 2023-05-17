@@ -111,6 +111,42 @@ const getAllManifest = (payload) => {
     })
     .catch((err) => ({ err }));
 };
+const getMediaUrl = (supId, orderId, payload) => {
+  return serviceUtil
+    .put(
+      `products/manifest-media?supplierId=${supId}&orderId=${orderId}&documentType=MANIFEST`,
+      payload
+    )
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const viewManifest = (id) => {
+  return serviceUtil
+    .get(`order-payment/viewManifest?manifestId=${id}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const uploadMenifestData = (payload) => {
+  return serviceUtil
+    .post(`order-payment/uploadManifest`, payload)
+    .then((res) => {
+      const uploadData = res && res.data;
+      return { uploadData };
+    })
+    .catch((error) => {
+      return { error };
+    });
+};
 export {
   getAllnewOrders,
   cancelOrderFromSupplier,
@@ -122,4 +158,7 @@ export {
   getPreviousInvoice,
   viewPreviousInvoice,
   getAllManifest,
+  getMediaUrl,
+  viewManifest,
+  uploadMenifestData,
 };

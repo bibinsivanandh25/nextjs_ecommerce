@@ -10,8 +10,35 @@ import {
 } from "services/supplier/myorders/orderhistory";
 import toastify from "services/utils/toastUtils";
 
+const dropdownList = [
+  {
+    label: "All",
+    id: "ALL",
+  },
+  {
+    label: "Store Owner Delivery",
+    id: "STORE_OWNER_DELIVERY",
+  },
+  {
+    label: "Hand Pick",
+    id: "HAND_PICK",
+  },
+  {
+    label: "Last Mile AC",
+    id: "LAST_MILE_AC",
+  },
+  {
+    label: "Last Mile FDR",
+    id: "LAST_MILE_FDR",
+  },
+  {
+    label: "Supplier Shipment",
+    id: "SUPPLIER_SHIPMENT",
+  },
+];
 const DeliveredOrders = () => {
   const [tableData, setTableData] = useState([]);
+  const [modeOfOrderValue, setmodeOfOrderValue] = useState({});
   const [eachOrderData, seteachOrderData] = useState({});
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
@@ -167,10 +194,20 @@ const DeliveredOrders = () => {
     );
   };
   const getDeleveredOrderData = async (page = pageNumberState) => {
-    const payload = { supplierId: user, status: "DELIVERED", pageNumber: page };
+    const payload = {
+      supplierId: user,
+      orderStatus: "DELIVERED",
+
+      modeOfOrder:
+        modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue?.id || null,
+      pageNo: page || 0,
+      pageSize: 50,
+      shipmentType: null,
+    };
     const { data, err } = await getOrderHistory(payload);
     if (data) {
       if (page == 0) {
+        setpageNumberState(0);
         setTableData(mapRowsToTable(data.data));
         setpageNumberState((pre) => pre + 1);
       } else {
@@ -183,8 +220,8 @@ const DeliveredOrders = () => {
     }
   };
   useEffect(() => {
-    getDeleveredOrderData();
-  }, []);
+    getDeleveredOrderData(0);
+  }, [modeOfOrderValue]);
   return (
     <Paper
       sx={{ p: 2, height: "100%" }}
@@ -196,11 +233,18 @@ const DeliveredOrders = () => {
           columns={columns}
           tableRows={tableData}
           showCheckbox={false}
-          showCustomDropdown={false}
+          showCustomDropdown
+          customDropdownLabel="Mode Of Order"
+          customDropdownList={dropdownList}
           showSearchFilter={false}
           showSearchbar={false}
           showCustomButton
           customButtonLabel="Download All Orders"
+          onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
+          customDropdownValue={modeOfOrderValue}
+          handlePageEnd={() => {
+            getDeleveredOrderData();
+          }}
         />
       </Paper>
       {openView && (

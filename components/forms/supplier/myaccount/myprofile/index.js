@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Avatar, Badge, Grid, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import validationRegex from "services/utils/regexUtils";
@@ -24,7 +25,6 @@ import MultiSelectComponent from "@/atoms/MultiSelectComponent";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
 import RadiobuttonComponent from "@/atoms/RadiobuttonComponent";
 import OtpForm from "@/forms/auth/OtpForm";
-import { City } from "country-state-city";
 import { getCity, getCountry, getState } from "services/supplier/Registration";
 
 const formObj = {
@@ -86,13 +86,6 @@ const MyProfile = () => {
 
   const dispatch = useDispatch();
 
-  const cities = City.getCitiesOfCountry("IN");
-
-  const citiesList = cities.map((ele) => ({
-    label: ele.name,
-    value: ele.name,
-    id: ele.name,
-  }));
   const user = useSelector((state) => {
     return state.user;
   });
@@ -971,14 +964,14 @@ const MyProfile = () => {
             <ButtonComponent
               label="Verify OTP"
               onBtnClick={async () => {
-                const formData = new FormData();
-                formData.append(
-                  "userName",
-                  showVerifyOtp === "phone"
-                    ? formValues.mobile
-                    : formValues.mail
-                );
-                formData.append("otp", otp);
+                const formData = {
+                  userName:
+                    showVerifyOtp === "phone"
+                      ? formValues.mobile
+                      : formValues.mail,
+                  otp,
+                };
+
                 const { data, errRes } = await verifyOtp(formData);
                 if (data) {
                   // console.log(data);

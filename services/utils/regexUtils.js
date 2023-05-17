@@ -14,6 +14,8 @@ const validationRegex = {
   pincode: /^[1-9][0-9]{5}$/,
   pancard: /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/,
   aadharcard: /^[0-9]{4}[ -]?[0-9]{4}[ -]?[0-9]{4}$/,
+  latlong:
+    /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/,
 };
 
 export default validationRegex;

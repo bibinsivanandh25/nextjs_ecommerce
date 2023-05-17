@@ -1,179 +1,10 @@
-// import TableComponent from "@/atoms/TableComponent";
-// import { Box, Grid, Paper } from "@mui/material";
-// import TabsCard from "components/molecule/TabsCard";
-// import React, { useState } from "react";
-
-// const myQueriescolumns = [
-//   {
-//     id: "col1", //  id value in column should be presented in row as key
-//     label: "VendorId/Name",
-//     minWidth: 40,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col2", //  id value in column should be presented in row as key
-//     label: "Quantity",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col3", //  id value in column should be presented in row as key
-//     label: "Order Status",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col4", //  id value in column should be presented in row as key
-//     label: "Order ID",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col5", //  id value in column should be presented in row as key
-//     label: "Order Type",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col6", //  id value in column should be presented in row as key
-//     label: "Reseller Details",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col7", //  id value in column should be presented in row as key
-//     label: "Gross Sell Amount",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col8", //  id value in column should be presented in row as key
-//     label: "Billing Address",
-//     minWidth: 40,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col9", //  id value in column should be presented in row as key
-//     label: "Vendor Earning",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col10", //  id value in column should be presented in row as key
-//     label: "Reseller Earning",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col11", //  id value in column should be presented in row as key
-//     label: "Multestore Earning",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-//   {
-//     id: "col12", //  id value in column should be presented in row as key
-//     label: "Action",
-//     minWidth: 100,
-//     align: "center",
-//     data_align: "center",
-//     data_classname: "",
-//   },
-// ];
-// const Zerocommissionproducts = () => {
-//   const [mianTabs, setMainTabs] = useState([
-//     {
-//       label: "All",
-//       isSelected: true,
-//     },
-//     { label: "Pending Payments", isSelected: false },
-//     { label: "Processing", isSelected: false },
-//     { label: "On Hold", isSelected: false },
-//     { label: "Payment Completed", isSelected: false },
-//     { label: "Cancelled", isSelected: false },
-//     { label: "Refunded", isSelected: false },
-//     { label: "Returned", isSelected: false },
-//     { label: "Falied", isSelected: false },
-//     { label: "Payment Settled", isSelected: false },
-//   ]);
-//   const [ActiveTab, setActiveTab] = useState(0);
-//   const handleSelect = (index) => {
-//     setMainTabs((list) => {
-//       const theList = list;
-//       theList.forEach((val, forEachIndex) => {
-//         if (forEachIndex === index) {
-//           const theVal = val;
-//           theVal.isSelected = true;
-//         } else {
-//           const theVal = val;
-//           theVal.isSelected = false;
-//         }
-//       });
-//       return theList;
-//     });
-//     setActiveTab(index);
-//   };
-//   return (
-//     <Box>
-//       <Grid>
-//         <TabsCard
-//           tabList={mianTabs}
-//           onSelect={(index) => {
-//             handleSelect(index);
-//           }}
-//         />
-//         <Paper className="py-3">
-//           {ActiveTab == 0 ? (
-//             <TableComponent
-//               table_heading="Products Table"
-//               columns={myQueriescolumns}
-//               showDateFilter
-//               showDateFilterDropDown
-//               // handlePageEnd={(searchText, _, page = pageNumber, dates) => {
-//               //   getMyQueriesTableData(page, searchText, dates);
-//               // }}
-//               // tableRows={myQueriesRows}
-//               // tabChange={value}
-//               // tableRows={mapRowsToTable}
-//             />
-//           ) : (
-//             <></>
-//           )}
-//         </Paper>
-//       </Grid>
-//     </Box>
-//   );
-// };
-
-// export default Zerocommissionproducts;
-
 /* eslint-disable no-nested-ternary */
 import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import {
@@ -374,6 +205,7 @@ const Zerocommissionproducts = () => {
   const [orderDetails, setorderDetails] = useState([]);
   const [viewDetails, setviewDetails] = useState({});
   const [showView, setshowView] = useState(false);
+  const [pageNumber, setpageNumber] = useState(0);
   const handleSelect = (index) => {
     setMainTabs((list) => {
       const theList = list;
@@ -461,7 +293,7 @@ const Zerocommissionproducts = () => {
     return temp;
   };
 
-  const getAllPaymentDetails = async (search, date) => {
+  const getAllPaymentDetails = async (page = pageNumber, search, date) => {
     const payload = {
       // category: "FIXED_COMMISSION",
       category: "ZERO_COMMISSION",
@@ -488,17 +320,25 @@ const Zerocommissionproducts = () => {
           : null,
       fromDate: date?.fromDate || null,
       toDate: date?.toDate || null,
+      pageSize: 50,
+      pageNumber: page,
     };
     const { data, err } = await getAllOrderPaymentDetails(payload);
     if (data) {
+      if (page == 0) {
+        setorderDetails(dataMapToTable(data.data));
+        setpageNumber(1);
+      } else {
+        setorderDetails([...orderDetails, ...dataMapToTable(data.data)]);
+        setpageNumber((pre) => pre + 1);
+      }
       // console.log(data);
-      setorderDetails(dataMapToTable(data.data));
     } else if (err) {
       // console.log(err);
     }
   };
   useEffect(() => {
-    getAllPaymentDetails();
+    getAllPaymentDetails(0);
   }, [ActiveTab]);
   const viewFormat = (key1, val1, key2, val2) => {
     return (
@@ -544,9 +384,9 @@ const Zerocommissionproducts = () => {
             setColumns={setColumns}
             showDateFilter
             showDateFilterDropDown
-            showPagination={false}
-            handlePageEnd={(searchText, _, abc, dates) => {
-              getAllPaymentDetails(searchText, dates);
+            // showPagination
+            handlePageEnd={(searchText, d, abc, dates) => {
+              getAllPaymentDetails(pageNumber, searchText, dates);
             }}
             tableRows={orderDetails}
             // tabChange={value}
@@ -568,70 +408,134 @@ const Zerocommissionproducts = () => {
           }}
         >
           <Grid className="mxh-500 overflow-y-scroll ">
+            <Grid className="d-flex justify-content-center">
+              <Typography className="fw-500">
+                {viewDetails.productTitle}
+              </Typography>
+            </Grid>
+            <Grid className="d-flex justify-content-center">
+              <Image
+                src={viewDetails?.productImage}
+                // layout="fill"
+                // style={{
+                //   height: "100vh",
+                //   width: "100vh",
+                // }}
+                height={100}
+                width={100}
+              />
+            </Grid>
+
             {viewFormat(
               "Order created by",
-              "__",
+              viewDetails.orderById,
               "Delivery pickup date & time",
-              "__"
+              viewDetails.deliveryPickUpDate
             )}
             {viewFormat(
               "Order status",
               viewDetails.orderStatus,
               "Estimate delivery time",
-              "__"
+              viewDetails.estimateDeliveryDate
             )}
-            {viewFormat("Quantity", "__", "Delivered date & time", "__")}
-            {viewFormat("Order type", "__", "Current location of parcel", "__")}
-            {viewFormat("Gross sales", "__", "Supplier Id & name", "__")}
+            {viewFormat(
+              "Quantity",
+              viewDetails.orderQuantity,
+              "Delivered date & time",
+              viewDetails.deliveredDate
+            )}
+            {viewFormat(
+              "Order type",
+              viewDetails.orderType,
+              "Current location of parcel",
+              viewDetails.currentLocationOfParcel
+            )}
+            {viewFormat(
+              "Gross sales",
+              viewDetails.grossSales,
+              "Supplier Id & name",
+              viewDetails.supplierId
+            )}
             {viewFormat(
               "Reseller Name & Id",
               "__",
               "Return period date & time counter",
-              "__"
+              viewDetails.returnDate
             )}
             {viewFormat(
               "Order created date & time",
-              "__",
+              viewDetails.orderDate,
               "Amount of refund (if any)",
-              "__"
+              viewDetails.returnAmount
             )}
-            {viewFormat("payment mode", "__", "Deduction charges", "__")}
+            {viewFormat(
+              "payment mode",
+              viewDetails.paymentMethod,
+              "Deduction charges",
+              viewDetails.deductionCharges
+            )}
             {viewFormat(
               "Admin earning",
-              "__",
+              viewDetails.adminEarning,
               "Multestore payment settled",
               "__"
             )}
             {viewFormat(
               "Reseller earnings",
-              "__",
+              viewDetails.resellerEarning,
               "Supplier payment settled",
               "__"
             )}
             {viewFormat(
               "Vendor earnings",
-              "__",
+              viewDetails.vendorEarning,
               "Reseller  payment settled",
               "__"
             )}
             {viewFormat(
               "Weight/volume",
-              "__",
+              viewDetails.weightInclusivePackage,
               "Supplier penalty(if any)",
-              "__"
+              viewDetails.supplierPenalty
             )}
-            {viewFormat("Tracking ID", "__", "Product image & title", "__")}
+            {viewFormat(
+              "Tracking ID",
+              viewDetails.trackingId,
+              "Product title",
+              viewDetails.productTitle
+            )}
+
             {viewFormat(
               "Logistic partner",
-              "__",
+              viewDetails.logisticPartnerName,
               "Weight/Volume during pickup",
-              "__"
+              viewDetails.weightDuringPickUp
             )}
-            {viewFormat("Delivery charge", "__", "Pickup address", "__")}
-            {viewFormat("Delivery mode", "__", "Delivery address", "__")}
-            {viewFormat("Delivery zone", "__", "Delivery partner", "__")}
-            {viewFormat("Warranty card", "__", "Tex invoice", "__")}
-            {viewFormat("Payslip", "__", "", "")}
+            {viewFormat(
+              "Delivery charge",
+              viewDetails.logisticCharges,
+              "Pickup address",
+              viewDetails?.pickUpAddress.address
+            )}
+            {viewFormat(
+              "Delivery mode",
+              "__",
+              "Delivery address",
+              viewDetails.deliveryAddress.address
+            )}
+            {viewFormat(
+              "Delivery zone",
+              "__",
+              "Delivery partner",
+              viewDetails.logisticPartnerName
+            )}
+            {viewFormat(
+              "Warranty card",
+              viewDetails.warrantyCard,
+              "Tex invoice",
+              viewDetails.taxInvoice
+            )}
+            {viewFormat("Payslip", viewDetails.payslip, "", "")}
           </Grid>
         </ModalComponent>
       )}

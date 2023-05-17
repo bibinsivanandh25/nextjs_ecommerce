@@ -167,8 +167,8 @@ const MyProfile = () => {
     if (customerDetails.mobileNumber.length === 10) {
       setErrorObj({ ...ErrorObj, mobileNumber: "" });
       const payload = {
-        type: "MobileNumber",
-        value: customerDetails.mobileNumber,
+        otpType: "MobileNumber",
+        emailOrMobileNumber: customerDetails.mobileNumber,
       };
       const { data, errRes } = await sendOtpEmailOrPhone(payload);
       if (data) {
@@ -222,7 +222,10 @@ const MyProfile = () => {
       setErrorObj({ ...ErrorObj, emailId: validateMessage.email });
       return false;
     }
-    const payload = { type: "Email", value: customerDetails.emailId };
+    const payload = {
+      otpType: "Email",
+      emailOrMobileNumber: customerDetails.emailId,
+    };
     const { data, errRes } = await sendOtpEmailOrPhone(payload);
     if (data) {
       toastify(data, "success");

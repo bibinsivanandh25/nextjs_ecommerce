@@ -1,17 +1,41 @@
+/* eslint-disable no-unused-vars */
 import ProgressBar from "components/atoms/ProgressBar";
 import TableComponent from "components/atoms/TableComponent";
 import PrintIcon from "@mui/icons-material/Print";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { Paper, Tooltip } from "@mui/material";
-import { getAllManifest } from "services/supplier/myorders/newOrders";
+
+import { Grid, Paper, Tooltip, Typography } from "@mui/material";
+import {
+  getAllManifest,
+  getMediaUrl,
+  uploadMenifestData,
+  viewManifest,
+} from "services/supplier/myorders/newOrders";
 import toastify from "services/utils/toastUtils";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import CustomIcon from "services/iconUtils";
+import ModalComponent from "@/atoms/ModalComponent";
+import ButtonComponent from "@/atoms/ButtonComponent";
+
+import InputBox from "@/atoms/InputBoxComponent";
 
 const UploadManifest = () => {
   const { supplierId } = useSelector((state) => state.user);
   const [pageNumber, setpageNumber] = useState(0);
+
+  const [idState, setidState] = useState({
+    orderId: "",
+    orderedProductId: "",
+    productVariationId: "",
+  });
+  const [getAllData, setgetAllData] = useState([]);
+  const [uploadedDocument, setUploadedDocument] = useState({
+    documentName: null,
+    awb: null,
+    document: null,
+  });
+  const taxRef = useRef(null);
+  const [showUploadModal, setshowUploadModal] = useState(false);
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
@@ -40,7 +64,7 @@ const UploadManifest = () => {
     },
     {
       id: "col4",
-      label: "Number of Orders ",
+      label: "Number of Products ",
 
       align: "center",
       data_align: "center",
@@ -57,48 +81,116 @@ const UploadManifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
   ];
-  const rows = [
-    {
-      id: "1",
-      col1: "#23324234",
-      col2: "ECOM",
-      col3: "28 may 2021",
-      col4: "1",
-      col5: (
-        <div className="d-flex justify-content-center align-items-center ">
-          <Tooltip title="Upload" placement="top">
-            <FileUploadIcon />
-          </Tooltip>
-          <Tooltip title="Print" placement="top">
-            <PrintIcon className="mx-4 tableIcons" />
-          </Tooltip>
-          <Tooltip title="Detail" placement="top">
-            <RemoveRedEyeIcon />
-          </Tooltip>
-        </div>
-      ),
-    },
-    {
-      id: "2",
-      col1: "#23324234",
-      col2: "Ecom",
-      col3: "29 Apr 2021",
-      col4: "2",
-      col5: (
-        <div className="d-flex justify-content-center align-items-center">
-          <Tooltip title="Upload" placement="top">
-            <FileUploadIcon />
-          </Tooltip>
-          <Tooltip title="Print" placement="top">
-            <PrintIcon className="mx-4" />
-          </Tooltip>
-          <Tooltip title="Detail" placement="top">
-            <RemoveRedEyeIcon />
-          </Tooltip>
-        </div>
-      ),
-    },
-  ];
+  const viewManifestFunction = async (id) => {
+    const { data, err } = await viewManifest(id);
+    if (data) {
+      const temp = data.data.manifestFielUrl;
+      window.open(temp, "_blank").focus();
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const uploadFunction = async () => {
+    const formdata = new FormData();
+    formdata.append("medias", uploadedDocument.document);
+
+    const { data, err } = await getMediaUrl(
+      supplierId,
+      idState.orderId,
+      formdata
+    );
+    if (data) {
+      const payload = {
+        orderId: idState.orderId,
+        orderedProductId: idState.orderedProductId,
+        manifestFileUrl: data.data[0],
+        productVariationId: idState.productVariationId,
+      };
+      const { uploadData, error } = await uploadMenifestData(payload);
+      if (uploadData) {
+        // console.log(uploadData, "upload");
+      } else if (error) {
+        toastify(error.response.data.message, "error");
+      }
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const dataMaptoTable = (data) => {
+    const temp = [];
+    data.forEach((val, idx) => {
+      temp.push({
+        id: idx,
+        col1: val.manifestId,
+        col2: val.shipmentProvider,
+        col3: val.manifestDate,
+        col4: val.noOfProducts,
+        col5: (
+          <Grid className="d-flex justify-content-around align-items-center ">
+            {/* <Tooltip title="Upload" placement="top">
+              <FileUploadIcon /> 
+            </Tooltip> */}
+            {val.manifestFileUrl.length ? (
+              <CustomIcon
+                // type="upload"
+                type={val.uploaded ? "download" : "upload"}
+                onIconClick={() => {
+                  if (val.uploaded) {
+                    // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
+                    // const url = val.manifestFileUrl;
+                    // const a = document.createElement("a");
+                    // a.style.display = "none";
+                    // a.href = url;
+                    // // the filename you want
+                    // a.download = `Manifest-Report-${format(
+                    //   new Date(),
+                    //   "MM-dd-yyyy HH-mm-ss"
+                    // )}.pdf`;
+                    // document.body.appendChild(a);
+                    // a.click();
+                    // console.log(url, "urlurl");
+                    // window.URL.revokeObjectURL(url);
+
+                    const element = document.createElement("a");
+                    const file = val.manifestFileUrl;
+                    element.href = file;
+                    element.target = "_blank";
+                    element.download = "Manifest";
+                    element.click();
+
+                    toastify("your file has downloaded!", "success");
+                  } else {
+                    setshowUploadModal(true);
+
+                    setidState({
+                      orderId: val.orderId,
+                      orderedProductId: val.orderedProductId,
+                      productVariationId: val.productVariationId,
+                    });
+                    setUploadedDocument({
+                      ...uploadedDocument,
+                      awb: val.awbNo,
+                    });
+                  }
+                }}
+              />
+            ) : (
+              <></>
+            )}
+
+            <CustomIcon
+              title="Detail"
+              type="view"
+              onIconClick={() => {
+                viewManifestFunction(val.manifestId);
+              }}
+            />
+          </Grid>
+        ),
+      });
+    });
+    return temp;
+  };
   const getAllManifestFunction = async (page = pageNumber, key) => {
     const payload = {
       supplierId,
@@ -108,11 +200,19 @@ const UploadManifest = () => {
     };
     const { data, err } = await getAllManifest(payload);
     if (data) {
-      console.log(data, "data");
+      if (page == 0) {
+        setgetAllData(dataMaptoTable(data));
+        setpageNumber((pre) => pre + 1);
+      } else {
+        setgetAllData((pre) => [...pre, ...dataMaptoTable(data)]);
+      }
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
   };
+  useEffect(() => {
+    getAllManifestFunction();
+  }, []);
   return (
     <Paper
       sx={{ p: 2 }}
@@ -120,8 +220,80 @@ const UploadManifest = () => {
     >
       <ProgressBar />
       <Paper className="py-3">
-        <TableComponent columns={[...columns]} tableRows={[...rows]} />
+        <TableComponent
+          showSearchFilter={false}
+          columns={[...columns]}
+          tableRows={[...getAllData]}
+          handlePageEnd={(searchText = "", filterText = "", page) => {
+            getAllManifestFunction(page, searchText);
+            // getAllData(searchText, filterText, page);
+          }}
+        />
       </Paper>
+      {showUploadModal && (
+        <ModalComponent
+          open={showUploadModal}
+          onCloseIconClick={() => {
+            setshowUploadModal(false);
+            setUploadedDocument({ documentName: null, awbNo: null });
+          }}
+          onSaveBtnClick={() => {
+            uploadFunction();
+          }}
+          footerClassName="justify-content-end"
+          ClearBtnText="Cancel"
+          ModalTitle="Upload"
+          onClearBtnClick={() => {
+            setshowUploadModal(false);
+            setUploadedDocument({ documentName: null, awbNo: null });
+          }}
+        >
+          <Grid container alignSelf="center" className="my-2">
+            <Grid
+              item
+              sm={12}
+              alignItems="center"
+              className="border d-flex justify-content-between py-2 px-1"
+            >
+              <Typography>
+                {uploadedDocument?.documentName?.length > 0
+                  ? uploadedDocument?.documentName
+                  : "Document Name"}
+              </Typography>
+              {/* <Typography>{uploadedDocument.taxInvoice}</Typography> */}
+              <ButtonComponent
+                onBtnClick={() => {
+                  taxRef.current.click();
+                }}
+                label="Upload Document"
+              />
+            </Grid>
+          </Grid>
+          <input
+            type="file"
+            hidden
+            ref={taxRef}
+            onChange={(e) => {
+              setUploadedDocument((pre) => ({
+                ...pre,
+                documentName: e.target.files[0].name,
+                document: e.target.files[0],
+              }));
+            }}
+          />
+          <InputBox
+            disabled
+            label="Enter AWB No."
+            onInputChange={(e) => {
+              setUploadedDocument({
+                ...uploadedDocument,
+                awbNo: e.target.value,
+              });
+            }}
+            value={uploadedDocument.awb}
+          />
+        </ModalComponent>
+      )}
     </Paper>
   );
 };

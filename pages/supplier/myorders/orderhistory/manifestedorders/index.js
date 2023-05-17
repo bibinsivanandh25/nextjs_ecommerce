@@ -127,14 +127,15 @@ const ManifestedOrders = () => {
     const payload = {
       supplierId: user,
       orderStatus: "MANIFESTED",
-      modeOfOrder: modeOfOrderValue.id || null,
+      modeOfOrder: null,
       pageNo: page || 0,
       pageSize: 50,
-      shipmentType: null,
+      shipmentType: modeOfOrderValue?.id || null,
     };
     const { data, err } = await getOrderHistory(payload);
     if (data) {
       if (page == 0) {
+        setpageNumberState(0);
         setTableData(mapRowsToTable(data.data));
         setpageNumberState((pre) => pre + 1);
       } else {
@@ -147,7 +148,7 @@ const ManifestedOrders = () => {
     }
   };
   useEffect(() => {
-    getDeleveredOrderData();
+    getDeleveredOrderData(0);
   }, [modeOfOrderValue]);
   return (
     <Paper
@@ -176,6 +177,9 @@ const ManifestedOrders = () => {
           showCheckbox={false}
           showCustomButton
           showSearchFilter={false}
+          handlePageEnd={() => {
+            getDeleveredOrderData();
+          }}
           // showCustomDropdown={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
@@ -196,7 +200,7 @@ const ManifestedOrders = () => {
             {viewFormat("Order Id", eachOrderData.orderId)}
             {viewFormat(
               "Delivered Date",
-              eachOrderData.deliveredDate.replace("T", " ")
+              eachOrderData?.deliveredDate?.replace("T", " ")
             )}
             {viewFormat("Order Status", eachOrderData.orderStatus)}
             {viewFormat("Discount Amount", eachOrderData.discountAmount)}

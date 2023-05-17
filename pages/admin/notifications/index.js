@@ -18,6 +18,7 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import validateMessage from "constants/validateMessages";
 import { format } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useRef, useState, useEffect } from "react";
 import {
   createNotificationApiCall,
@@ -249,7 +250,7 @@ const Notifications = () => {
       userType: "Supplier",
       searchKey: supplierSearch,
       pageCount: page,
-      pageSize: 10,
+      pageSize: 50,
     };
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
@@ -524,7 +525,6 @@ const Notifications = () => {
   };
   const sendNotificationFunction = async (id) => {
     const { data, err } = await sendNotification(id);
-    console.log(data, err, "data,error");
     if (data) {
       toastify(data.message, "success");
     } else if (err) {
@@ -1307,11 +1307,27 @@ const Notifications = () => {
                       " "
                     ) || "__"
                   )}
-                  <Grid className="d-flex justify-content-end">
-                    <Typography className="fs-12 theme_color">
-                      Click Here To Download Attachments
-                    </Typography>
-                  </Grid>
+                  {viewNotificationData.attachmentFile.length ? (
+                    <Grid className="d-flex justify-content-end">
+                      <Typography className="fs-12 theme_color">
+                        <Link
+                          href={{
+                            pathname: viewNotificationData.attachmentFile,
+                          }}
+
+                          // as="/auth/forgotpassword"
+                          // passHref
+                        >
+                          {/* <span className="color-orange fs-12 cursor-pointer fw-bold">
+                            Click Here To Download Attachments
+                          </span> */}
+                          <a target="_blank">Click Here To View Attachments</a>
+                        </Link>
+                      </Typography>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
               </ModalComponent>
             )}

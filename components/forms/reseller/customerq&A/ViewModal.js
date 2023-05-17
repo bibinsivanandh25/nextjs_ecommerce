@@ -10,6 +10,7 @@ const ViewModal = ({
   handleOpenReplyModal,
   handleMenuSelecteItemsForAnswers,
 }) => {
+  console.log(dataForViewModal, "dataForViewModal");
   const handleSaveBtnClick = () => {
     if (tabType === "tab1")
       handleOpenReplyModal(
@@ -53,11 +54,11 @@ const ViewModal = ({
           justifyContent="center"
         >
           <Grid item sm={3} textAlign="end">
-            <Typography className="h-5">Customer Id :</Typography>
+            <Typography className="h-5">Customer :</Typography>
           </Grid>
           <Grid item sm={7}>
             <Typography className="fw-bold h-5">
-              {dataForViewModal.customerQId}
+              {`${dataForViewModal.customerName}(${dataForViewModal.customerId})`}
             </Typography>
           </Grid>
         </Grid>

@@ -7,7 +7,6 @@ import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
 import { useEffect, useState } from "react";
 import serviceUtil from "services/utils";
 import MultiSelectComponent from "@/atoms/MultiSelectComponent";
-// import { City } from "country-state-city";
 import { getCity, getCountry, getState } from "services/supplier/Registration";
 import toastify from "services/utils/toastUtils";
 
@@ -21,14 +20,7 @@ const RegistrationForm = ({
   const [allCountry, setallCountry] = useState([]);
   const [allState, setallState] = useState([]);
   const [allCity, setallCity] = useState([]);
-  console.log(formValues?.city, "wurhgrwrgharhrharhrg");
-  // const cities = City.getCitiesOfCountry("IN");
 
-  // const citiesList = cities.map((ele) => ({
-  //   label: ele.name,
-  //   value: ele.name,
-  //   id: ele.name,
-  // }));
   const getAllCountryFunction = async () => {
     const { data, err } = await getCountry();
     if (data) {

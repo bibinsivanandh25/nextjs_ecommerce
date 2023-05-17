@@ -4,7 +4,6 @@ import InputBox from "@/atoms/InputBoxComponent";
 import SimpleDropdownComponent from "@/atoms/SimpleDropdownComponent";
 import { Grid, Box, Paper, Typography } from "@mui/material";
 import { useRef, useEffect, useState, useCallback } from "react";
-import { State } from "country-state-city";
 import { getCategory } from "services/admin/products/productCategories/assignVariation";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -30,7 +29,6 @@ const ExploreStores = ({
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
   const [noStore, setnoStore] = useState(false);
-  const [stateList, setStateList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   // const { loading, error, list, hasMore } = useStoreList(cb, pageNum);
   const observer = useRef();
@@ -71,13 +69,6 @@ const ExploreStores = ({
   useEffect(() => {
     const temp = [];
     getCategories();
-    State.getStatesOfCountry("IN")?.forEach((item) => {
-      temp.push({
-        id: item.isoCode,
-        label: item.name,
-      });
-    });
-    setStateList(temp);
   }, []);
 
   const handleSubmit = async () => {

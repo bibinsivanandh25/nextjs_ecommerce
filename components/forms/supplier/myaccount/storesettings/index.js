@@ -241,7 +241,7 @@ const StoreSettings = () => {
         }
       });
       const percentage = (count / Object.keys(storeData).length) * 100;
-      setProfilePercentage(percentage);
+      setProfilePercentage(Math.round(percentage));
       setSelectedTheme(data?.storeTheme?.storeThemeId ?? 0);
       setFormValues((pre) => ({
         ...pre,

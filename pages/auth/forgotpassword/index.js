@@ -24,9 +24,11 @@ const OtpLogIn = () => {
     };
   }, []);
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("userName", user);
-    formData.append("otp", otp);
+    const formData = {
+      userName: user,
+      otp,
+    };
+
     const { data, errRes } = await verifyOtp(formData);
     if (data) {
       router.push({

@@ -168,9 +168,9 @@ const StaffForm = ({
   };
 
   const addStaff = async (payload) => {
-    const { data, err } = await saveStaff(payload);
+    const { data, err, message } = await saveStaff(payload);
     if (data) {
-      toastify(data, "success");
+      toastify(message, "success");
       router.push("/supplier/staff");
     } else if (err) {
       toastify(err?.response?.data?.message, "error");

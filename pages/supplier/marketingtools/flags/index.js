@@ -116,10 +116,10 @@ const Flags = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [rows, setRows] = useState([]);
-  const [pageNumber, setPageNumber] = useState(0);
   const { supplierId, storeCode } = useSelector((state) => state.user);
   const [flagDetails, setFlagDetails] = useState(null);
   const [viewDetails, setviewDetails] = useState(null);
+  const [pageNumber, setpageNumber] = useState(0);
 
   const disableFlag = async (flagId, flag) => {
     const { data, err } = await disableProductFlag(flagId, flag);
@@ -203,8 +203,15 @@ const Flags = () => {
     setRows(temp);
   };
 
-  const getRows = async () => {
-    const { data, err } = await getAllFlags(supplierId, storeCode, pageNumber);
+  const getRows = async (dateObj = {}, searchText) => {
+    const { data, err } = await getAllFlags(
+      supplierId,
+      storeCode,
+      pageNumber,
+      dateObj?.fromDate,
+      dateObj?.toDate,
+      searchText
+    );
     if (data) {
       mapToTable(data);
     } else {
@@ -231,6 +238,12 @@ const Flags = () => {
         showDateFilter
         tHeadBgColor="bg-tableGray"
         showCheckbox={false}
+        handlePageEnd={(searchText, filterText, _, dateObj) => {
+          getRows(dateObj, searchText);
+        }}
+        handleRowsPerPageChange={() => {
+          setpageNumber(0);
+        }}
       />
       {viewModalOpen && (
         <ViewModal

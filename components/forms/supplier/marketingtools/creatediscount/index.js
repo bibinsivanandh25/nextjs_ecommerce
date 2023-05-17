@@ -64,7 +64,7 @@ const CreateDiscount = ({
   const supplierId = useSelector((state) => state.user.supplierId);
 
   const getCategories = async () => {
-    const { data } = await getAllMainCategories();
+    const { data } = await getAllMainCategories(supplierId);
     if (data) {
       const finalData = [];
       data.forEach((item) => {

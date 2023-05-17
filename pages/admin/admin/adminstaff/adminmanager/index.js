@@ -165,8 +165,7 @@ const AdminManger = () => {
                     message:
                       "The Manager is already present in a group, and will be removed if disabled. Would you really like to disable?",
                     adminRegistrationId: item.adminRegistrationId,
-                    status:
-                      item.status === "ACTIVE" ? "DISABLED" : "ACTIVE",
+                    status: item.status === "ACTIVE" ? "DISABLED" : "ACTIVE",
                     type: "disable",
                   });
                 } else {

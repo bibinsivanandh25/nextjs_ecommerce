@@ -135,7 +135,7 @@ const CancelOrReturnModal = ({
                     Order Type :{" "}
                   </Typography>
                   <Typography component="span" className="h-5">
-                    Free Delivery and Return{" "}
+                    {ele.orderType}
                   </Typography>
                 </Typography>
                 <Typography>

@@ -42,10 +42,14 @@ const removeProductFromCart = (productId, profileId) => {
     .catch((err) => ({ err }));
 };
 
-const getProductDetailsByDeliveryType = (productId, deliveryType) => {
+const getProductDetailsByDeliveryType = (
+  productId,
+  deliveryType,
+  profileId
+) => {
   return serviceUtil
     .get(
-      `products/product/view?productVariationId=${productId}&deliveryType=${deliveryType}`
+      `products/product/view?productVariationId=${productId}&deliveryType=${deliveryType}&profileId=${profileId}`
     )
     .then((res) => {
       const { data } = res?.data;
