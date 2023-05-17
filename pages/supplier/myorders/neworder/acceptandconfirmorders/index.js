@@ -492,7 +492,7 @@ const AcceptandConfirmOrder = () => {
     item.forEach((id) => {
       newOrderData.forEach((ele) => {
         if (ele.id == id) {
-          modeOfOrders.push(ele.col3);
+          modeOfOrders.push(ele.col5);
         }
       });
     });
@@ -600,7 +600,7 @@ const AcceptandConfirmOrder = () => {
               />
             </div>
             <ButtonComponent
-              label="Download orders"
+              label="Download All orders"
               variant="outlined"
               muiProps="mx-3"
               onBtnClick={() => {
