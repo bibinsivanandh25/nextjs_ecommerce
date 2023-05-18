@@ -120,13 +120,13 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
   return (
     <>
       <div
-        className="color-orange d-flex align-items-center mb-3"
+        className="color-orange d-flex align-items-center mb-3 cursor-pointer"
         onClick={() => {
           setShowInvoices(false);
         }}
       >
-        <KeyboardArrowLeftIcon className="fw-bold fs-26" />
-        <span>Back</span>
+        <KeyboardArrowLeftIcon className="fw-bold fs-26 " />
+        <span style={{ cursor: "pointer" }}>Back</span>
       </div>
       <Paper className="py-3">
         <TableComponent

@@ -189,8 +189,10 @@ const Generateinvoiceandmanifest = () => {
               title="view Details"
               className="fs-25 mx-2"
               onIconClick={() => {
+                const tempId = [val.orderId];
                 getConfirmedOrderDetails(val.orderId);
-                setorderId(val.orderId);
+                // temp.push(val.orderId);
+                setorderId(tempId);
               }}
             />
           </Grid>
@@ -274,7 +276,7 @@ const Generateinvoiceandmanifest = () => {
           a.style.display = "none";
           a.href = url;
           // the filename you want
-          a.download = `Manifest-Report-${format(
+          a.download = `${type}-Report-${format(
             new Date(),
             "MM-dd-yyyy HH-mm-ss"
           )}.pdf`;

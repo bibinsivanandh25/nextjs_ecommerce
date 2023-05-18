@@ -1,5 +1,6 @@
 import ModalComponent from "@/atoms/ModalComponent";
-import { Grid, Paper, Typography } from "@mui/material";
+import ViewOrderDetails from "@/forms/supplier/myorder/viewOrderDetails";
+import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
@@ -76,6 +77,43 @@ const ManifestedOrders = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const downloadManifestFunction = async (type, orderId) => {
+    // const { data, err } = await getQrPdf();
+    try {
+      fetch(
+        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId}`,
+        {
+          method: "get",
+          headers: new Headers({
+            userId: user,
+            "Content-Type": "application/octet-stream",
+          }),
+        }
+      )
+        .then(async (resp) => {
+          const blob = await resp.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          // the filename you want
+          a.download = `Manifest-Report-${format(
+            new Date(),
+            "MM-dd-yyyy HH-mm-ss"
+          )}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          toastify("your file has downloaded!", "success");
+        })
+        .catch((err) => err);
+    } catch (err) {
+      toastify(
+        "Unable to process your request, please try again later!!",
+        "error"
+      );
+    }
+  };
   const mapRowsToTable = (data) => {
     const result = [];
     data?.forEach((row) => {
@@ -95,7 +133,13 @@ const ManifestedOrders = () => {
         col11: (
           <Grid container>
             <Grid item xs={6}>
-              <CustomIcon type="download" title="Download" />
+              <CustomIcon
+                type="download"
+                title="Download"
+                onIconClick={() => {
+                  downloadManifestFunction("manifest", row?.orderId);
+                }}
+              />
             </Grid>
             <Grid item xs={6}>
               <CustomIcon
@@ -112,20 +156,21 @@ const ManifestedOrders = () => {
     });
     return result;
   };
+
   const handleexcelDownload = () => {
     const data = tableData;
     const copyRowData = [];
     data.forEach((item, index) => {
       const tempObj = {};
-      tempObj["Index"] = index + 1;
+      tempObj.Index = index + 1;
       tempObj["Purchase Id"] = item.col1;
       tempObj["Order Id"] = item.col2;
       tempObj["Order Date"] = item.col3;
       tempObj["Mode Of Order"] = item.col4;
       tempObj["weight Inclusive Package"] = item.col5;
       tempObj["Manifest Date"] = item.col6;
-      tempObj["Qty"] = item.col7;
-      tempObj["Status"] = item.col8;
+      tempObj.Qty = item.col7;
+      tempObj.Status = item.col8;
       tempObj["ordered Product Amount"] = item.col9;
       tempObj["AWB Number"] = item.col10;
 
@@ -133,21 +178,7 @@ const ManifestedOrders = () => {
     });
     exceldownload(copyRowData, "Manifested order details");
   };
-  const viewFormat = (key, value) => {
-    return (
-      <Grid md={12} sx={12} container className="py-1">
-        <Grid md={3} sx={3}>
-          <Typography className="fs-12 fw-500">{key}</Typography>
-        </Grid>
-        <Grid md={1} sx={1}>
-          <Typography className="fs-12">:</Typography>
-        </Grid>
-        <Grid md={8} sx={8}>
-          <Typography className="fs-12">{value}</Typography>
-        </Grid>
-      </Grid>
-    );
-  };
+
   const getDeleveredOrderData = async (page = pageNumberState) => {
     // const payload = {
     //   supplierId: user,
@@ -221,35 +252,13 @@ const ManifestedOrders = () => {
         <ModalComponent
           showFooter={false}
           ModalTitle="View Details"
+          minWidth={800}
           open={openView}
           onCloseIconClick={() => {
             setopenView(false);
           }}
         >
-          <Grid className="p-2">
-            {viewFormat("Order Id", eachOrderData.orderId)}
-            {viewFormat(
-              "Delivered Date",
-              eachOrderData?.deliveredDate?.replace("T", " ")
-            )}
-            {viewFormat("Order Status", eachOrderData.orderStatus)}
-            {viewFormat("Discount Amount", eachOrderData.discountAmount)}
-            {viewFormat("Earning", eachOrderData.earning)}
-            {viewFormat(
-              "Expected Dispatch",
-              eachOrderData.expectedDispatchDate
-            )}
-            {viewFormat("Margin Amount", eachOrderData.marginAmount)}
-            {viewFormat("Mode Of Order", eachOrderData.modeOfOrder)}
-            {viewFormat("Quentity", eachOrderData.orderQuantity)}
-            {viewFormat("Ordered By", eachOrderData.orderedByType)}
-            {viewFormat(
-              `${eachOrderData.orderedByType} ID`,
-              eachOrderData.orderedById
-            )}
-            {viewFormat("product Id", eachOrderData.productId)}
-            {viewFormat("Product Owner Id", eachOrderData.productOwnerId)}
-          </Grid>
+          <ViewOrderDetails eachOrderData={eachOrderData} />
         </ModalComponent>
       )}
     </Paper>

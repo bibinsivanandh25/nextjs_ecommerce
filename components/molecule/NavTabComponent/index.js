@@ -25,7 +25,7 @@ const NavTabComponent = ({
             }`}
             onClick={() => {
               setSelectedId(item.id);
-              onTabCilck(item.title);
+              onTabCilck(item.title, item);
             }}
             style={{
               borderRight: listData?.length > item.id ? "1px solid gray" : "",

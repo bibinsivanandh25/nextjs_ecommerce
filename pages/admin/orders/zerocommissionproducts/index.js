@@ -237,6 +237,8 @@ const Zerocommissionproducts = () => {
     const { data, err } = await adminDeleteOrder(payload);
     if (data) {
       toastify(data.message, "success");
+      // eslint-disable-next-line no-use-before-define
+      getAllPaymentDetails(0);
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
@@ -379,14 +381,14 @@ const Zerocommissionproducts = () => {
           <TableComponent
             tabChange={ActiveTab}
             draggableHeader
-            table_heading="Products Table"
+            table_heading="Zero Commission"
             columns={columns}
             setColumns={setColumns}
             showDateFilter
-            showDateFilterDropDown
+            // showDateFilterDropDown
             // showPagination
-            handlePageEnd={(searchText, d, abc, dates) => {
-              getAllPaymentDetails(pageNumber, searchText, dates);
+            handlePageEnd={(searchTexT, Filter, page, date) => {
+              getAllPaymentDetails(page, searchTexT, date);
             }}
             tableRows={orderDetails}
             // tabChange={value}
@@ -409,11 +411,6 @@ const Zerocommissionproducts = () => {
         >
           <Grid className="mxh-500 overflow-y-scroll ">
             <Grid className="d-flex justify-content-center">
-              <Typography className="fw-500">
-                {viewDetails.productTitle}
-              </Typography>
-            </Grid>
-            <Grid className="d-flex justify-content-center">
               <Image
                 src={viewDetails?.productImage}
                 // layout="fill"
@@ -425,6 +422,11 @@ const Zerocommissionproducts = () => {
                 width={100}
               />
             </Grid>
+            {/* <Grid className="d-flex justify-content-center"> */}
+            <Typography className="fw-500 text-center">
+              {viewDetails.productTitle}
+            </Typography>
+            {/* </Grid> */}
 
             {viewFormat(
               "Order created by",
@@ -515,13 +517,13 @@ const Zerocommissionproducts = () => {
               "Delivery charge",
               viewDetails.logisticCharges,
               "Pickup address",
-              viewDetails?.pickUpAddress.address
+              `${viewDetails?.pickUpAddress.address}, ${viewDetails?.pickUpAddress.cityDistrictTown}, ${viewDetails?.pickUpAddress.state}, ${viewDetails?.pickUpAddress.cityDistrictTown}, ${viewDetails?.pickUpAddress.pinCode}`
             )}
             {viewFormat(
               "Delivery mode",
               "__",
               "Delivery address",
-              viewDetails.deliveryAddress.address
+              `${viewDetails?.deliveryAddress.address}, ${viewDetails?.deliveryAddress.cityDistrictTown}, ${viewDetails?.deliveryAddress.state}, ${viewDetails?.deliveryAddress.cityDistrictTown}, ${viewDetails?.deliveryAddress.pinCode}`
             )}
             {viewFormat(
               "Delivery zone",

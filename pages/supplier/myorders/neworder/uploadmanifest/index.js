@@ -117,32 +117,7 @@ const UploadManifest = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const uploadFunction = async () => {
-    const formdata = new FormData();
-    formdata.append("medias", uploadedDocument.document);
 
-    const { data, err } = await getMediaUrl(
-      supplierId,
-      idState.orderId,
-      formdata
-    );
-    if (data) {
-      const payload = {
-        orderId: idState.orderId,
-        orderedProductId: idState.orderedProductId,
-        manifestFileUrl: data.data[0],
-        productVariationId: idState.productVariationId,
-      };
-      const { uploadData, error } = await uploadMenifestData(payload);
-      if (uploadData) {
-        // console.log(uploadData, "upload");
-      } else if (error) {
-        toastify(error.response.data.message, "error");
-      }
-    } else if (err) {
-      toastify(err.response.data.message, "error");
-    }
-  };
   const dataMaptoTable = (data) => {
     const temp = [];
     data.forEach((val, idx) => {
@@ -166,43 +141,77 @@ const UploadManifest = () => {
               // type="upload"
               type={val.uploaded ? "download" : "upload"}
               onIconClick={() => {
-                if (val.uploaded) {
-                  // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
-                  // const url = val.manifestFileUrl;
-                  // const a = document.createElement("a");
-                  // a.style.display = "none";
-                  // a.href = url;
-                  // // the filename you want
-                  // a.download = `Manifest-Report-${format(
-                  //   new Date(),
-                  //   "MM-dd-yyyy HH-mm-ss"
-                  // )}.pdf`;
-                  // document.body.appendChild(a);
-                  // a.click();
-                  // console.log(url, "urlurl");
-                  // window.URL.revokeObjectURL(url);
-
-                  const element = document.createElement("a");
-                  const file = val.manifestFileUrl;
-                  element.href = file;
-                  element.target = "_blank";
-                  element.download = "Manifest";
-                  element.click();
-
-                  toastify("your file has downloaded!", "success");
-                } else {
-                  setshowUploadModal(true);
-
-                  setidState({
-                    orderId: val.orderId,
-                    orderedProductId: val.orderedProductId,
-                    productVariationId: val.productVariationId,
-                  });
-                  setUploadedDocument({
-                    ...uploadedDocument,
-                    awb: val.awbNo,
-                  });
+                if (val.manifestFileUrl) {
+                  const a = document.createElement("a");
+                  a.href = val.manifestFileUrl;
+                  a.style.display = "none";
+                  a.download = "manifest";
+                  a.target = "_blank";
+                  document.body.appendChild(a);
+                  a.click();
                 }
+
+                //   // const a = document.createElement("a");
+                //   // a.style.display = "none";
+                //   // a.href = url;
+                //   // // the filename you want
+                //   // a.download = `Manifest-Report-${format(
+                //   //   new Date(),
+                //   //   "MM-dd-yyyy HH-mm-ss"
+                //   // )}.pdf`;
+                //   // document.body.appendChild(a);
+                //   // a.click();
+                // if (val.uploaded) {
+                //   // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
+                //   // const url = val.manifestFileUrl;
+                //   // const a = document.createElement("a");
+                //   // a.style.display = "none";
+                //   // a.href = url;
+                //   // // the filename you want
+                //   // a.download = `Manifest-Report-${format(
+                //   //   new Date(),
+                //   //   "MM-dd-yyyy HH-mm-ss"
+                //   // )}.pdf`;
+                //   // document.body.appendChild(a);
+                //   // a.click();
+                //   // console.log(url, "urlurl");
+                //   // window.URL.revokeObjectURL(url);
+
+                //   const url = val.manifestFileUrl;
+                //   const a = document.createElement("a");
+                //   a.style.display = "none";
+                //   a.href = url;
+                //   // the filename you want
+                //   a.download = `${val.manifestDate
+                //     .toString()
+                //     .replaceAll(" ", "_")}.pdf`;
+                //   document.body.appendChild(a);
+                //   a.click();
+                //   window.URL.revokeObjectURL(url);
+                //   toastify("your file has downloaded!", "success");
+
+                //   // *****************
+                //   // const element = document.createElement("a");
+                //   // const file = val.manifestFileUrl;
+                //   // element.href = file;
+                //   // element.target = "_blank";
+                //   // element.download = "Manifest";
+                //   // element.click();
+
+                //   toastify("your file has downloaded!", "success");
+                // } else {
+                //   setshowUploadModal(true);
+
+                //   setidState({
+                //     orderId: val.orderId,
+                //     orderedProductId: val.orderedProductId,
+                //     productVariationId: val.productVariationId,
+                //   });
+                //   setUploadedDocument({
+                //     ...uploadedDocument,
+                //     awb: val.awbNo,
+                //   });
+                // }
               }}
             />
 
@@ -245,6 +254,36 @@ const UploadManifest = () => {
   useEffect(() => {
     getAllManifestFunction();
   }, []);
+  const uploadFunction = async () => {
+    const formdata = new FormData();
+    formdata.append("medias", uploadedDocument.document);
+
+    const { data, err } = await getMediaUrl(
+      supplierId,
+      idState.orderId,
+      formdata
+    );
+    if (data) {
+      const payload = {
+        orderId: idState.orderId,
+        orderedProductId: idState.orderedProductId,
+        manifestFileUrl: data.data[0],
+        productVariationId: idState.productVariationId,
+      };
+      const { uploadData, error } = await uploadMenifestData(payload);
+      if (uploadData) {
+        // console.log(uploadData, "upload");
+        toastify(uploadData.message, "success");
+        setshowUploadModal(false);
+        setUploadedDocument({ documentName: null, awbNo: null });
+        getAllManifestFunction(0);
+      } else if (error) {
+        toastify(error.response.data.message, "error");
+      }
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   return (
     <Paper
       sx={{ p: 2 }}

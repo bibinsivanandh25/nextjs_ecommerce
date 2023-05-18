@@ -206,7 +206,6 @@ const Fixedcommissionproducts = () => {
   const [viewDetails, setviewDetails] = useState({});
   const [showView, setshowView] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
-  const [searchKey, setsearchKey] = useState(null);
   const handleSelect = (index) => {
     setMainTabs((list) => {
       const theList = list;
@@ -294,11 +293,7 @@ const Fixedcommissionproducts = () => {
     return temp;
   };
 
-  const getAllPaymentDetails = async (
-    page = pageNumber,
-    search = searchKey,
-    date
-  ) => {
+  const getAllPaymentDetails = async (page = pageNumber, search, date) => {
     const payload = {
       category: "FIXED_COMMISSION",
       // category: "ZERO_COMMISSION",
@@ -345,11 +340,7 @@ const Fixedcommissionproducts = () => {
   useEffect(() => {
     getAllPaymentDetails(0);
   }, [ActiveTab]);
-  useEffect(() => {
-    if (searchKey !== null) {
-      getAllPaymentDetails(0, searchKey);
-    }
-  }, [searchKey]);
+
   const viewFormat = (key1, val1, key2, val2) => {
     return (
       <Grid container className="py-1">
@@ -389,14 +380,12 @@ const Fixedcommissionproducts = () => {
           <TableComponent
             tabChange={ActiveTab}
             draggableHeader
-            table_heading="Products Table"
+            table_heading="Fixed Commission"
             columns={columns}
             setColumns={setColumns}
             showDateFilter
-            showDateFilterDropDown
-            handlePageEnd={(searchText, _, abc, dates) => {
-              getAllPaymentDetails(pageNumber, null, dates);
-              setsearchKey(searchText);
+            handlePageEnd={(searchTexT, Filter, page, date) => {
+              getAllPaymentDetails(page, searchTexT, date);
             }}
             tableRows={orderDetails}
             // tabChange={value}

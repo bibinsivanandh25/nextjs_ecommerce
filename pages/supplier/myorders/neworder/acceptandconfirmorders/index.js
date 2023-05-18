@@ -329,14 +329,14 @@ const AcceptandConfirmOrder = () => {
     data.forEach((item, index) => {
       const tempObj = {};
       tempObj["Index"] = index + 1;
-      tempObj["Purchase Id"] = item.col1;
-      tempObj["Order Id"] = item.col2;
-      tempObj["SKU Id"] = item.col3;
-      tempObj["Mode of orders"] = item.col4;
-      tempObj["Weight"] = item.col5;
+      tempObj["Customer Id"] = item.col1;
+      tempObj["Customer Name"] = item.col2;
+      tempObj["Purchase Id"] = item.col3;
+      tempObj["Order Id"] = item.col4;
+      tempObj["Mode Of Order"] = item.col5;
       tempObj["Order Date"] = item.col6;
       tempObj["Expected Dispatch Date"] = item.col7;
-      tempObj["Weight Inclusive of Package"] = item.col8;
+      tempObj["Total order Amount"] = item.col8;
       copyRowData.push(tempObj);
     });
     exceldownload(copyRowData, "Accept and confirm order details");
@@ -747,7 +747,6 @@ const AcceptandConfirmOrder = () => {
               <CustomIcon type="add" className="fs-35 mx-2" />
             </Grid> */}
             <Grid container md={12} xs={12} className="py-2">
-              <Grid item md={8} xs={8}></Grid>
               <Grid
                 container
                 md={4}

@@ -434,6 +434,7 @@ const StoreSettings = () => {
         `${process.env.DOMAIN}users/supplierstore/qrcode?supplierId=${user?.supplierId}&storeCode=${formValues.storeCode}`
       )
         .then(async (resp) => {
+          console.log(resp, "response");
           const blob = await resp.blob();
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement("a");
