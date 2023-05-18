@@ -258,9 +258,6 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
         variationDetails: [...item.variationDetails],
       })
     );
-    route.push({
-      pathname: "/customer/productdetails",
-    });
   };
   const handleOtherVariationClick = (item, val) => {
     const temp = JSON.parse(JSON.stringify(otherVariation));
@@ -284,7 +281,6 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
         }
       });
     });
-    // setSelectedOtherVariation(y);
     dispatch(
       productDetails({
         productId: selectedMasterData.productVariationId,
@@ -598,7 +594,7 @@ const ProductDetails = ({ isSideBarOpen, showActions = true }) => {
                                     id="MrMrsCoupon"
                                   >
                                     {item.storeCouponCode}
-                                  </span>{" "}
+                                  </span>
                                   <Tooltip
                                     placement="right-start"
                                     title="Copy Coupon"
