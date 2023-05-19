@@ -217,7 +217,7 @@ const Notifications = () => {
   const [userId, setuserId] = useState("");
   const profilePicRef = useRef();
 
-  const getSupplierDropdownFun = async (page = pageNumberState) => {
+  const getCustomerDropdownFunction = async (page = pageNumberState) => {
     const payload = {
       userType: "Customer",
       searchKey: customerSearch,
@@ -227,19 +227,35 @@ const Notifications = () => {
 
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
-      const temp = [...customerDropdownData];
-      setcustomerDropdownTemp(data?.data);
-      data.data.forEach((val) => {
-        temp.push({
-          userId: val?.userId,
-          userType: val?.userType,
-          userName: val?.userName,
-          userMobileNumber: val?.userMobileNumber,
-          userEmail: val?.userEmail,
-          isSelected: false,
+      if (page == 0) {
+        const temp1 = [];
+        setcustomerDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp1.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
         });
-      });
-      setcustomerDropdownData([...temp]);
+        setcustomerDropdownData([...temp1]);
+      } else {
+        const temp = [...customerDropdownData];
+        setcustomerDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
+        });
+        setcustomerDropdownData([...temp]);
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -291,26 +307,24 @@ const Notifications = () => {
   };
   useEffect(() => {
     if (showCreate) {
-      getSupplierDropdownFun();
+      getCustomerDropdownFunction();
       getSupplierDropdownFunction();
     }
   }, [showCreate]);
   useEffect(() => {
-    if (customerSearch.length) {
-      const search = setTimeout(() => {
-        getSupplierDropdownFun(0);
-      }, 1000);
-      return () => clearTimeout(search);
-    }
+    const search = setTimeout(() => {
+      getCustomerDropdownFunction(0);
+    }, 1000);
+    return () => clearTimeout(search);
   }, [customerSearch]);
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (supplierSearch.length) {
-      const search = setTimeout(() => {
-        getSupplierDropdownFunction(0);
-      }, 1000);
-      return () => clearTimeout(search);
-    }
+    // if (supplierSearch.length) {
+    const search = setTimeout(() => {
+      getSupplierDropdownFunction(0);
+    }, 1000);
+    return () => clearTimeout(search);
+    // }
   }, [supplierSearch]);
   const closeModalFunction = () => {
     setcreateNotification({
@@ -819,7 +833,7 @@ const Notifications = () => {
                     <Grid className="py-1" item md={8} xs={8}>
                       <MultiselectWithPagination
                         dowpdownLength={customerDropdownTemp}
-                        getSupplierDropdownFun={getSupplierDropdownFun}
+                        getSupplierDropdownFun={getCustomerDropdownFunction}
                         setpageNumberState={setpageNumberState}
                         pageNumberState={pageNumberState}
                         disable={sendMessageToType.customer !== "customer"}

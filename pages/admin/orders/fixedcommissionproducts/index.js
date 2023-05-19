@@ -1,16 +1,21 @@
 /* eslint-disable no-nested-ternary */
+import InputBox from "@/atoms/InputBoxComponent";
 import MenuOption from "@/atoms/MenuOptions";
 import ModalComponent from "@/atoms/ModalComponent";
 import TableComponent from "@/atoms/TableComponent";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import TabsCard from "components/molecule/TabsCard";
+import validateMessage from "constants/validateMessages";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import CustomIcon from "services/iconUtils";
 import {
+  addNote,
   adminDeleteOrder,
   adminViewOrder,
   getAllOrderPaymentDetails,
+  viewInvoiceAdmin,
+  viewManifestAdmin,
 } from "services/orders";
 import toastify from "services/utils/toastUtils";
 // import  from "react";
@@ -206,6 +211,9 @@ const Fixedcommissionproducts = () => {
   const [viewDetails, setviewDetails] = useState({});
   const [showView, setshowView] = useState(false);
   const [pageNumber, setpageNumber] = useState(0);
+  const [viewNoteInput, setviewNoteInput] = useState(false);
+  const [noteState, setnoteState] = useState({ oId: "", vId: "", input: "" });
+  const [errNote, seterrNote] = useState("");
   const handleSelect = (index) => {
     setMainTabs((list) => {
       const theList = list;
@@ -232,11 +240,51 @@ const Fixedcommissionproducts = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  // eslint-disable-next-line consistent-return
+  const addNoteFunction = async () => {
+    if (noteState.input.length) {
+      seterrNote("");
+      const payload = {
+        note: noteState.input,
+        orderId: noteState.oId,
+        productVariationId: noteState.vId,
+      };
+      const { data, err } = await addNote(payload);
+      if (data) {
+        toastify(data.message, "success");
+        setviewNoteInput(false);
+        setnoteState({ oId: "", vId: "", input: "" });
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    } else {
+      seterrNote(validateMessage.field_required);
+      return false;
+    }
+  };
   const deleteOrder = async (oId, vId) => {
     const payload = { orderId: oId, variationId: vId };
     const { data, err } = await adminDeleteOrder(payload);
     if (data) {
       toastify(data.message, "success");
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const viewManifestFunction = async (orderId, productId) => {
+    const { data, err } = await viewManifestAdmin(orderId, productId);
+    if (data) {
+      const temp = data.data;
+      window.open(temp, "_blank").focus();
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  const viewInvoiceFunction = async (orderId) => {
+    const { data, err } = await viewInvoiceAdmin(orderId);
+    if (data) {
+      const temp = data.data;
+      window.open(temp, "_blank").focus();
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
@@ -275,14 +323,25 @@ const Fixedcommissionproducts = () => {
               getSelectedItem={(opt) => {
                 if (opt == "Delete") {
                   deleteOrder(ele.orderId, ele.productVariationId);
+                } else if (opt == "View Manifest") {
+                  viewManifestFunction(ele.orderId, ele.productVariationId);
+                } else if (opt == "View Invoice") {
+                  viewInvoiceFunction(ele.orderId);
+                } else if (opt == "Add a note") {
+                  setviewNoteInput(true);
+                  setnoteState((pre) => ({
+                    ...pre,
+                    oId: ele.orderId,
+                    vId: ele.productVariationId,
+                  }));
                 }
               }}
               options={[
                 "Delete",
                 "Add a note",
-                "Invoice",
+                "View Invoice",
                 "Refund",
-                "View Menifest ",
+                "View Manifest",
               ]}
               IconclassName="color-gray"
             />
@@ -453,7 +512,7 @@ const Fixedcommissionproducts = () => {
               "Gross sales",
               viewDetails.grossSales,
               "Supplier Id & name",
-              `${viewDetails.supplierName} (${viewDetails.supplierId})}`
+              `${viewDetails.supplierName} (${viewDetails.supplierId})`
             )}
             {viewFormat(
               "Reseller Name & Id",
@@ -534,8 +593,36 @@ const Fixedcommissionproducts = () => {
               "Tex invoice",
               viewDetails.taxInvoice
             )}
-            {viewFormat("Payslip", viewDetails.payslip, "", "")}
+            {viewFormat(
+              "Payslip",
+              viewDetails.payslip,
+              "Note",
+              viewDetails.note
+            )}
           </Grid>
+        </ModalComponent>
+      )}
+      {viewNoteInput && (
+        <ModalComponent
+          open={viewNoteInput}
+          onCloseIconClick={() => {
+            setviewNoteInput(false);
+          }}
+          onClearBtnClick={() => {
+            setnoteState((pre) => ({ ...pre, input: "" }));
+          }}
+          onSaveBtnClick={() => {
+            addNoteFunction();
+          }}
+        >
+          <InputBox
+            onInputChange={(val) => {
+              setnoteState((pre) => ({ ...pre, input: val.target.value }));
+            }}
+            value={noteState.input}
+            helperText={errNote}
+            error={errNote}
+          />
         </ModalComponent>
       )}
     </Box>

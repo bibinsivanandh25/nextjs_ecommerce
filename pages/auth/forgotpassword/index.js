@@ -28,21 +28,24 @@ const OtpLogIn = () => {
       userName: user,
       otp,
     };
-
-    const { data, errRes } = await verifyOtp(formData);
-    if (data) {
-      router.push({
-        pathname:
-          // eslint-disable-next-line no-nested-ternary
-          router.query.role === "SUPPLIER"
-            ? "/auth/supplier/newpassword"
-            : router.query.role === "CUSTOMER"
-            ? "/auth/customer/newpassword"
-            : "/auth/admin/newpassword",
-        query: { user: btoa(`,${user}`) },
-      });
-    } else if (errRes) {
-      toastify(errRes?.message, "error");
+    if (!otp.includes("x")) {
+      const { data, errRes } = await verifyOtp(formData);
+      if (data) {
+        router.push({
+          pathname:
+            // eslint-disable-next-line no-nested-ternary
+            router.query.role === "SUPPLIER"
+              ? "/auth/supplier/newpassword"
+              : router.query.role === "CUSTOMER"
+              ? "/auth/customer/newpassword"
+              : "/auth/admin/newpassword",
+          query: { user: btoa(`,${user}`) },
+        });
+      } else if (errRes) {
+        toastify(errRes?.message, "error");
+      }
+    } else {
+      toastify("Please Enter OTP", "error");
     }
   };
 

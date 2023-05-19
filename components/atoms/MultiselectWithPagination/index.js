@@ -107,7 +107,7 @@ export default function MultiselectWithPagination({
               <InputBox
                 value={searchDropdown}
                 disabled
-                className=" "
+                className="position-fixed"
                 onInputChange={(e) => {
                   setsearchDropdown(e.target.value);
                 }}

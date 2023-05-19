@@ -74,39 +74,43 @@ const OtpLogIn = () => {
   };
 
   const handleSubmit = async () => {
-    const formdata = new FormData();
-    formdata.append("userName", user);
-    formdata.append("userType", "SUPPLIER");
-    formdata.append("otp", otp);
-    const data = await serviceUtil
-      .post(`users/registration/verify-login-otp`, formdata, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .catch((err) => {
-        toastify(err?.response?.data?.message, "error");
-      });
-    if (data?.data) {
-      const { token } = data.data;
-      const decoded = JSON.parse(atob(token.split(".")[1].toString()));
-      const userData = decoded.sub.split(",");
-      const res = await signIn("credentials", {
-        id: userData[0],
-        email: userData[1],
-        role: decoded.roles[0],
-        token,
-        callbackUrl: `/supplier/dashboard`,
-        redirect: false,
-      });
-      if (res?.error) {
-        toastify("Invalid credentials", "error");
-        return null;
+    if (!otp.includes("x")) {
+      const formdata = new FormData();
+      formdata.append("userName", user);
+      formdata.append("userType", "SUPPLIER");
+      formdata.append("otp", otp);
+      const data = await serviceUtil
+        .post(`users/registration/verify-login-otp`, formdata, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .catch((err) => {
+          toastify(err?.response?.data?.message, "error");
+        });
+      if (data?.data) {
+        const { token } = data.data;
+        const decoded = JSON.parse(atob(token.split(".")[1].toString()));
+        const userData = decoded.sub.split(",");
+        const res = await signIn("credentials", {
+          id: userData[0],
+          email: userData[1],
+          role: decoded.roles[0],
+          token,
+          callbackUrl: `/supplier/dashboard`,
+          redirect: false,
+        });
+        if (res?.error) {
+          toastify("Invalid credentials", "error");
+          return null;
+        }
+        await storedatatoRedux(
+          userData[0],
+          decoded.roles[0],
+          data.data.staffDetails
+        );
+        route.push(`/supplier/dashboard`);
       }
-      await storedatatoRedux(
-        userData[0],
-        decoded.roles[0],
-        data.data.staffDetails
-      );
-      route.push(`/supplier/dashboard`);
+    } else {
+      toastify("Please Enter OTP", "error");
     }
   };
   const validateForm = () => {
