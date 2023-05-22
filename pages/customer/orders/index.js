@@ -420,8 +420,8 @@ const Orders = () => {
                       // style={{ border: "1px dotted gray" }}
                     >
                       <Box
-                        // className="d-flex justify-content-center"
-                        style={{ height: "100px" }}
+                        className="d-flex justify-content-start"
+                        // style={{}}
                       >
                         {/* <Box> */}
                         {/* <input

@@ -37,7 +37,7 @@ const Products = ({}) => {
     {
       id: "col4",
       align: "center",
-      label: "Vendor/admin ID",
+      label: "Supplier ID",
       data_align: "center",
     },
     {
@@ -168,7 +168,7 @@ const Products = ({}) => {
                 // showPagination={false}
                 tableRows={tableRows}
                 showSearchbar={false}
-                showDateFilterBtn
+                showDateFilterBtn={false}
                 showDateFilter
                 handlePageEnd={(searchText, filterText, page = pageNum) => {
                   getProducts(page, searchText);
@@ -188,7 +188,11 @@ const Products = ({}) => {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    console.log("jfijfiejf");
+                  }}
+                >
                   <span className="fs-12 ">Edit</span>
                 </MenuItem>
                 <MenuItem>
