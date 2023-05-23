@@ -49,21 +49,19 @@ const ManifestedOrders = () => {
       label: "Qty",
       id: "col7",
     },
+
     {
-      label: "Status",
+      label: "Ordered Product Amount",
       id: "col8",
     },
     {
-      label: "Ordered Product Amount",
+      label: "AWB Number",
       id: "col9",
     },
     {
-      label: "AWB Number",
-      id: "col10",
-    },
-    {
       label: "Action",
-      id: "col11",
+      minWidth: 100,
+      id: "col10",
       align: "center",
     },
   ];
@@ -124,13 +122,13 @@ const ManifestedOrders = () => {
         col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
         col6:
-          `${format(new Date(row?.manifestDate), "MM-dd-yyyy")} 00:00:00` ||
-          "__",
+          row?.allDate != null
+            ? `${format(new Date(row?.allDate), "MM-dd-yyyy")} 00:00:00`
+            : null,
         col7: row?.orderQuantity || "__",
-        col8: row?.status || "__",
-        col9: row?.orderedProductAmount || "__",
-        col10: row?.awbNo || "__",
-        col11: (
+        col8: row?.orderedProductAmount || "__",
+        col9: row?.awbNo || "__",
+        col10: (
           <Grid container>
             <Grid item xs={6}>
               <CustomIcon
@@ -170,9 +168,8 @@ const ManifestedOrders = () => {
       tempObj["weight Inclusive Package"] = item.col5;
       tempObj["Manifest Date"] = item.col6;
       tempObj.Qty = item.col7;
-      tempObj.Status = item.col8;
-      tempObj["ordered Product Amount"] = item.col9;
-      tempObj["AWB Number"] = item.col10;
+      tempObj["ordered Product Amount"] = item.col8;
+      tempObj["AWB Number"] = item.col9;
 
       copyRowData.push(tempObj);
     });
@@ -225,12 +222,12 @@ const ManifestedOrders = () => {
           }}
           customDropdownValue={modeOfOrderValue}
           customDropdownList={[
-            { id: "All", label: "All" },
+            { id: null, label: "All" },
             { id: "India Post", label: "India Post" },
             { id: "Delhivery", label: "Delhivery" },
           ]}
           // customDropdownValue
-          customDropdownLabel="Mode Of Order"
+          customDropdownLabel="Shipment Type"
           table_heading={`Manifested Orders (${tableData.length || 0})`}
           columns={columns}
           tableRows={tableData}

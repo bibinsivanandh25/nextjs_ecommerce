@@ -355,7 +355,7 @@ const Notifications = () => {
   };
   const updateNotificationFunction = async () => {
     let updateDate = `${createNotification.notificationScheduledAtDate} ${createNotification.notificationScheduledAtTime}`;
-    if (!createNotification?.notificationScheduledAtDate.length) {
+    if (!createNotification?.notificationScheduledAtDate?.length) {
       updateDate = `${format(
         new Date(createNotification?.notificationScheduledAtDate),
         "MM-dd-yyyy"
@@ -526,9 +526,9 @@ const Notifications = () => {
         notificationType: data.data?.notificationType,
         attachmentFile: data.data.attachmentFile || [],
         notificationScheduledAtTime:
-          data.data.notificationScheduledAt.split(" ")[1],
+          data.data.notificationScheduledAt?.split(" ")[1],
         notificationScheduledAtDate:
-          data.data.notificationScheduledAt.split(" ")[0],
+          data.data.notificationScheduledAt?.split(" ")[0],
       });
       if (data.data.attachmentFile.length > 0) {
         setcontentType("onlyAttachment");
@@ -542,7 +542,7 @@ const Notifications = () => {
       } else {
         setcontentType("");
       }
-      if (data.data.notificationScheduledAt.length) {
+      if (data?.data?.notificationScheduledAt?.length) {
         setshowSchedule(true);
       } else {
         setshowSchedule(false);

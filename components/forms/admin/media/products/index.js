@@ -1,25 +1,30 @@
-import { Typography, Box, Menu, MenuItem } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import MenuOption from "@/atoms/MenuOptions";
 import TableComponent from "@/atoms/TableComponent";
-import ViewProducts from "./ViewProducts";
 // import ImagesInfoTable from "./ImagesInfoTable";
 // import EditModalForArticles from "./EditModalForArticles";
-import RaiseQueryModal from "./RaiseQueryModal";
+
 import { getAllProducts } from "services/admin/media";
 import toastify from "services/utils/toastUtils";
-import CustomIcon from "services/iconUtils";
+import { getVariation } from "services/supplier/myProducts";
+import { useDispatch } from "react-redux";
+import { resetAdminProductView, updateProduct } from "features/productsSlice";
+import { deleteProducts } from "services/admin/products";
+import ModalComponent from "@/atoms/ModalComponent";
+import ViewOrEditProducts from "../../products/VieworEditProducts";
+import RaiseQueryModal from "./RaiseQueryModal";
 
-const Products = ({}) => {
+const Products = () => {
+  const dispatch = useDispatch();
   const [tableRows, setTableRows] = useState([]);
   //   const [showImageInfoTable, setShowImageInfoTable] = useState(false);
   //   const [openEditModal, setOpenEditModal] = useState(false);
   const [openRaiseQueryModal, setOpenRaiseQueryModal] = useState(false);
   const [showViewProduct, setShowViewProduct] = useState(false);
   const [pageNum, setPageNum] = useState(0);
-  const [showMenu, setShowMenu] = useState(null);
-
+  const [alertmodal, setalertmodal] = useState({ status: false, id: "" });
   const tableColumns = [
     {
       id: "col1",
@@ -90,18 +95,26 @@ const Products = ({}) => {
     },
   ];
 
-  const onClickOfMenuItem = (ele) => {
-    if (ele === "Edit") {
+  // const onClickOfMenuItem = (ele) => {
+  //   if (ele === "Edit") {
+  //     setShowViewProduct(true);
+  //   }
+
+  //   if (ele === "Raise Query") {
+  //     setOpenRaiseQueryModal(true);
+  //   }
+  // };
+
+  // const options = ["Edit", "Delete", "Raise Query", "Add a Note"];
+  const editClick = async (payload) => {
+    const { data, err } = await getVariation(payload);
+    if (err) {
+      toastify(err?.response?.data?.messagea);
+    } else {
+      dispatch(updateProduct(data[0]));
       setShowViewProduct(true);
     }
-
-    if (ele === "Raise Query") {
-      setOpenRaiseQueryModal(true);
-    }
   };
-
-  const options = ["Edit", "Delete", "Raise Query", "Add a Note"];
-
   const mapData = (data) => {
     return data.map((item, index) => {
       return {
@@ -121,13 +134,33 @@ const Products = ({}) => {
         col10: item.pixelRatio,
         col11: item.lastUpdatedDate,
         col12: (
-          <CustomIcon
+          <MenuOption
             className="fs-6"
             title="More"
-            type="more"
-            onIconClick={(event) => {
-              setShowMenu(event.currentTarget);
+            options={["Edit", "Delete"]}
+            IconclassName="fs-5 cursor-pointer"
+            getSelectedItem={(ele) => {
+              if (ele == "Edit") {
+                editClick([
+                  {
+                    masterProductId: item.masterProductId,
+                    variationId: item.productVariationId,
+                    flagged: false,
+                  },
+                ]);
+              } else if (ele == "Delete") {
+                if (item.status == "APPROVED") {
+                  setalertmodal({ status: true, id: item.productVariationId });
+                } else {
+                  // eslint-disable-next-line no-use-before-define
+                  deleteProduct(item.productVariationId);
+                }
+              }
             }}
+            // type="more"
+            // onIconClick={(event) => {
+            //   setShowMenu(event.currentTarget);
+            // }}
           />
         ),
       };
@@ -151,7 +184,17 @@ const Products = ({}) => {
       toastify(err?.response?.data?.message, "error");
     }
   };
-
+  const deleteProduct = async (id) => {
+    const { data, err } = await deleteProducts(id);
+    if (data) {
+      toastify(data?.message, "success");
+      getProducts(0);
+      setalertmodal({ status: false, id: "" });
+    }
+    if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
   useEffect(() => {
     getProducts();
   }, []);
@@ -177,31 +220,35 @@ const Products = ({}) => {
                   setPageNum(0);
                 }}
               />
-              <Menu
-                id="basic-menu"
-                anchorEl={showMenu}
-                open={Boolean(showMenu)}
-                onClose={() => {
-                  setShowMenu(null);
+              <ModalComponent
+                ModalTitle="Alert"
+                open={alertmodal.status}
+                onCloseIconClick={() => {
+                  setalertmodal({ status: false, id: "" });
                 }}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
+                saveBtnText="Yes"
+                ClearBtnText="No"
+                onClearBtnClick={() => {
+                  setalertmodal({ status: false, id: "" });
+                }}
+                onSaveBtnClick={() => {
+                  deleteProduct(alertmodal.id);
                 }}
               >
-                <MenuItem
-                  onClick={() => {
-                    console.log("jfijfiejf");
-                  }}
-                >
-                  <span className="fs-12 ">Edit</span>
-                </MenuItem>
-                <MenuItem>
-                  <span className="fs-12 ">Delete</span>
-                </MenuItem>
-              </Menu>
+                <Typography className="fs-14 color-orange">
+                  This is an active product. Are you sure you want to delete
+                  this product?
+                </Typography>
+              </ModalComponent>
             </>
           ) : (
-            <ViewProducts setShowViewProduct={setShowViewProduct} />
+            // <ViewProducts setShowViewProduct={setShowViewProduct} />
+            <ViewOrEditProducts
+              setShowViewOrEdit={() => {
+                setShowViewProduct(false);
+                dispatch(resetAdminProductView());
+              }}
+            />
           )}
         </Box>
       </Box>

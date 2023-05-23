@@ -27,13 +27,10 @@ const dropdownList = [
     id: "HAND_PICK",
   },
   {
-    label: "Last Mile AC",
-    id: "LAST_MILE_AC",
+    label: "Last Mile",
+    id: "LAST_MILE",
   },
-  {
-    label: "Last Mile FDR",
-    id: "LAST_MILE_FDR",
-  },
+
   {
     label: "Supplier Shipment",
     id: "SUPPLIER_SHIPMENT",
@@ -68,28 +65,25 @@ const CancelledOrders = () => {
       id: "col5",
     },
     {
-      label: "Manifest Date",
+      label: "Cancelled Date",
       id: "col6",
     },
     {
       label: "Qty",
       id: "col7",
     },
+
     {
-      label: "Status",
+      label: "Ordered Product Amount",
       id: "col8",
     },
     {
-      label: "Ordered Product Amount",
+      label: "AWB Number",
       id: "col9",
     },
     {
-      label: "AWB Number",
-      id: "col10",
-    },
-    {
       label: "Action",
-      id: "col11",
+      id: "col10",
       align: "center",
     },
   ];
@@ -112,13 +106,13 @@ const CancelledOrders = () => {
         col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
         col6:
-          `${format(new Date(row?.manifestDate), "MM-dd-yyyy")} 00:00:00` ||
-          "__",
+          row?.allDate != null
+            ? `${format(new Date(row?.allDate), "MM-dd-yyyy")} 00:00:00`
+            : null,
         col7: row?.orderQuantity || "__",
-        col8: row?.status || "__",
-        col9: row?.orderedProductAmount || "__",
-        col10: row?.awbNo || "__",
-        col11: (
+        col8: row?.orderedProductAmount || "__",
+        col9: row?.awbNo || "__",
+        col10: (
           <Grid container>
             <Grid item xs={6}>
               <CustomIcon
@@ -146,11 +140,10 @@ const CancelledOrders = () => {
       tempObj["Order Date"] = item.col3;
       tempObj["Mode Of Order"] = item.col4;
       tempObj["weight Inclusive Package"] = item.col5;
-      tempObj["Manifest Date"] = item.col6;
+      tempObj["Cancelled Date"] = item.col6;
       tempObj.Qty = item.col7;
-      tempObj.Status = item.col8;
-      tempObj["ordered Product Amount"] = item.col9;
-      tempObj["AWB Number"] = item.col10;
+      tempObj["ordered Product Amount"] = item.col8;
+      tempObj["AWB Number"] = item.col9;
 
       copyRowData.push(tempObj);
     });

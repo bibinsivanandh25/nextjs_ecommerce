@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable dot-notation */
 /* eslint-disable no-unused-vars */
 import ButtonComponent from "components/atoms/ButtonComponent";
@@ -733,7 +734,7 @@ const AcceptandConfirmOrder = () => {
                 // helperText={errorObj.values}
                 // error={errorObj.values.length}
                 inputlabelshrink
-                handleChange={(_, val) => {
+                handleChange={(a, val) => {
                   setformValues((pre) => ({
                     ...pre,
                     number: [...val],
@@ -749,8 +750,8 @@ const AcceptandConfirmOrder = () => {
             <Grid container md={12} xs={12} className="py-2">
               <Grid
                 container
-                md={4}
-                xs={4}
+                md={8}
+                xs={8}
                 className="d-flex justify-content-around "
               >
                 <ButtonComponent
@@ -759,7 +760,7 @@ const AcceptandConfirmOrder = () => {
                     setformValues({ ...formValues, number: [] });
                   }}
                 />
-                {formValues.number.length > 0 ? (
+                {idState.qty === formValues.number.length ? (
                   <ButtonComponent
                     label="Next"
                     onBtnClick={() => {
@@ -769,7 +770,7 @@ const AcceptandConfirmOrder = () => {
                       );
                     }}
                   />
-                ) : (
+                ) : !formValues.number.length ? (
                   <ButtonComponent
                     label="Skip"
                     onBtnClick={() => {
@@ -777,7 +778,11 @@ const AcceptandConfirmOrder = () => {
                       setShowEditModal(false);
                     }}
                   />
-                )}
+                ) : null}
+                <ButtonComponent
+                  label="Add serial No"
+                  disabled={idState.qty === formValues.number.length}
+                />
               </Grid>
             </Grid>
           </Grid>
