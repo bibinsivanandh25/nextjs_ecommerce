@@ -159,14 +159,14 @@ const AddAddressModal = (props) => {
     {
       label: "Latitude Value (Optional)",
       id: "latitudeValue",
-      value: null,
+      value: "",
       validation: /^.{1,100}$/,
       errorMessage: validateMessage.alpha_numeric_max_100,
     },
     {
       label: "Longitude Value (Optional)",
       id: "longitudeValue",
-      value: null,
+      value: "",
       validation: /^.{1,100}$/,
       errorMessage: validateMessage.alpha_numeric_max_100,
     },
@@ -283,12 +283,15 @@ const AddAddressModal = (props) => {
     });
     // debugger;
     const lat = inputFields.find((item) => item.id === "latitudeValue");
-    const lon = inputFields.find((item) => item.id === "longitudeValue");
+    const Emptylat = inputFields.find((item) => item.value === "");
 
-    if (lat && !validationRegex.latlong.test(lat)) {
+    const lon = inputFields.find((item) => item.id === "longitudeValue");
+    const Emptylon = inputFields.find((item) => item.value === "");
+
+    if (lat && !validationRegex.latlong.test(lat) && !Emptylat) {
       errObj.latitudeValue = "Invalid entry";
     }
-    if (lon && !validationRegex.latlong.test(lon)) {
+    if (lon && !validationRegex.latlong.test(lon) && !Emptylon) {
       errObj.longitudeValue = "Invalid entry";
     }
     // if (

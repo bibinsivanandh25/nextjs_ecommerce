@@ -206,7 +206,7 @@ const Coupons = () => {
             className="border-bottom"
           >
             <Grid item sx={{ p: 2 }} className="fs-16 fw-bold px-3">
-              Coupon Listing
+              Multestore Coupons
             </Grid>
             <Grid item sx={{ p: 2 }}>
               <ButtonComponent

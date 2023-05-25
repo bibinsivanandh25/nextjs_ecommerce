@@ -85,7 +85,7 @@ export const paths = [
     navigate: true,
   },
   {
-    title: "MrMrsCart Product",
+    title: "Multestore Product",
     id: "mrmrscartproduct",
     navigate: true,
   },
@@ -241,14 +241,14 @@ export const paths = [
 
   { title: "Customer Q&A", id: "customerq&a", navigate: true },
 
-  { title: "Rate MrMrsCart", id: "ratemrmrscart", navigate: true },
+  { title: "Rate Multestore", id: "ratemrmrscart", navigate: true },
   {
     title: "Help Center",
     id: "helpcenter",
     navigate: true,
   },
   {
-    title: "MrMrsCart Coupons",
+    title: "Multestore Coupons",
     id: "mrmrscartcoupons",
     navigate: true,
   },
