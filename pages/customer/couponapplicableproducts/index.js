@@ -9,6 +9,7 @@ import { getActiveMarketingToolNames } from "services/customer/couponapplicablep
 import TODAYSDEAL from "./todaysDeal";
 import ScratchCard from "./scratchCard";
 import Quiz from "./quiz";
+import SpinWheel from "./spinwheel";
 
 const CouponApplicableProducts = () => {
   const intialTabs = [
@@ -73,7 +74,7 @@ const CouponApplicableProducts = () => {
         break;
       }
       default: {
-        setComponent(null);
+        setComponent(SpinWheel);
         break;
       }
     }
