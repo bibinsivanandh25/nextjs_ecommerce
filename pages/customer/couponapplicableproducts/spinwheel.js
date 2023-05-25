@@ -3,7 +3,7 @@ import CarousalComponent from "@/atoms/Carousel";
 import ProductCard from "@/forms/customer/Home/PopularDepartments/ProductCard";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import Image from "next/image";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState, useRef } from "react";
 import {
   getScratchCardMarketingTool,
   getScratchCardProduct,
@@ -14,28 +14,60 @@ import { motion } from "framer-motion";
 import ModalComponent from "@/atoms/ModalComponent";
 import ButtonComponent from "@/atoms/ButtonComponent";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import WheelSpin from "@/forms/supplier/marketingtools/createluckydraw/createSpinWheel/WheelSpin";
 
-const Quiz = forwardRef(
+const SpinWheel = forwardRef(
   // eslint-disable-next-line no-unused-vars
   ({ purchaseId, setShowSearch = () => {} }, ref = null) => {
     const [bannerImages, setbannerImages] = useState([]);
     const [productdetails, setProductDetails] = useState([]);
     const [campaigndetails, setCampaigndetails] = useState([]);
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState({
-      id: null,
-      marketingToolId: null,
-      marketingToolQuestionAnswerList: [],
-      description: "",
-      couponCode: "",
-    });
-    const [questionCount, setquestionCount] = useState(0);
+    const [selected, setSelected] = useState(null);
     const [showResult, setShowResult] = useState(false);
+    const spinWheelRef = useRef(null);
+    const [showproductModal, setShowProductModal] = useState(false);
     const [result, setResult] = useState({
       message: "",
-      score: 0,
+      status: "",
     });
-    const [showproductModal, setShowProductModal] = useState(false);
+    const segments = [
+      "better luck next time",
+      "better luck next time",
+      "won a voucher",
+      "better luck next time",
+    ];
+    const [winSegment, setWinSegment] = useState(
+      Math.round(Math.random() * segments.length)
+    );
+    const segColors = [
+      "#EE4040",
+      "#F0CF50",
+      "#815CD1",
+      "#3DA5E0",
+      "#34A24F",
+      "#F9AA1F",
+      "#EC3F3F",
+      "#FF9000",
+      "#F0CF50",
+      "#815CD1",
+      "#3DA5E0",
+      "#34A24F",
+      "#F9AA1F",
+      "#EC3F3F",
+      "#FF9000",
+    ];
+    const onFinished = (winner) => {
+      setResult({
+        message: winner.includes("won")
+          ? "Congratulations"
+          : "Beter Luck Next Time",
+        status: winner.includes("won"),
+      });
+      setTimeout(() => {
+        setShowResult(true);
+      }, 2000);
+    };
 
     const getQuiz = async () => {
       const { data, err } = await getScratchCardMarketingTool(purchaseId);
@@ -55,8 +87,6 @@ const Quiz = forwardRef(
               couponCode: ele.couponCode,
               marketingToolId: ele.marketingToolId,
               description: ele.description,
-              marketingToolQuestionAnswerList:
-                ele.marketingToolQuestionAnswerList,
             };
           })
         );
@@ -69,21 +99,9 @@ const Quiz = forwardRef(
       if (purchaseId) getQuiz();
     }, [purchaseId]);
 
-    const handleQuizSubmit = () => {
-      let score = 0;
-      selected.marketingToolQuestionAnswerList.forEach((ele) => {
-        if (ele.selectedAnswer === ele.answer) {
-          score += 1;
-        }
-      });
-      const status = selected.marketingToolQuestionAnswerList.length === score;
-      setResult({
-        score,
-        message: status ? "Congratulations" : "Beter Luck Next Time",
-        status,
-      });
-      setShowResult(true);
-    };
+    useEffect(() => {
+      setShowSearch(false);
+    }, []);
 
     const getProducts = async (marketingtoolId) => {
       const payload = {
@@ -124,9 +142,6 @@ const Quiz = forwardRef(
         getProducts(selected.marketingToolId);
       }
     }, [showproductModal]);
-    useEffect(() => {
-      setShowSearch(false);
-    }, []);
 
     return (
       <>
@@ -160,21 +175,7 @@ const Quiz = forwardRef(
                     }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => {
-                      setSelected({
-                        id: item.themeId,
-                        marketingToolId: item.marketingToolId,
-                        marketingToolQuestionAnswerList:
-                          item.marketingToolQuestionAnswerList.map((ele) => ({
-                            ...ele,
-                            questionOptions: ele.answerOptions.map((q) => ({
-                              option: q,
-                              selected: false,
-                            })),
-                            selectedAnswer: null,
-                          })),
-                        couponCode: item.couponCode,
-                        description: item.description,
-                      });
+                      setSelected(item);
                       setOpen(true);
                     }}
                   >
@@ -224,13 +225,6 @@ const Quiz = forwardRef(
             minWidth={showResult ? 500 : "60%"}
             onCloseIconClick={() => {
               setOpen(false);
-              setSelected({
-                id: null,
-                marketingToolId: null,
-                marketingToolQuestionAnswerList: [],
-                description: "",
-              });
-              setquestionCount(0);
               setShowResult(false);
             }}
           >
@@ -244,21 +238,7 @@ const Quiz = forwardRef(
                     className="d-flex flex-column align-items-center"
                   >
                     <Typography className="h-3">{result.message}</Typography>
-                    <div
-                      className="d-flex justify-content-between rounded mt-2"
-                      style={{
-                        width: "400px",
-                        padding: "15px",
-                        border: "1px solid #E56700",
-                        background: "#FFF0E3",
-                      }}
-                    >
-                      <Typography className="h-2">Your Score</Typography>
-                      <Typography className="h-2 color-orange">
-                        {result.score}/
-                        {selected.marketingToolQuestionAnswerList.length}
-                      </Typography>
-                    </div>
+
                     {result.status && (
                       <>
                         <Box className="border rounded p-3 my-2 shadow ">
@@ -293,13 +273,6 @@ const Quiz = forwardRef(
                           label="View Coupon Applicable Products"
                           onBtnClick={() => {
                             setOpen(false);
-                            //   setSelected({
-                            //     id: null,
-                            //     marketingToolId: null,
-                            //     marketingToolQuestionAnswerList: [],
-                            //     description: "",
-                            //   });
-                            setquestionCount(0);
                             setShowResult(false);
                             setShowProductModal(true);
                           }}
@@ -311,96 +284,34 @@ const Quiz = forwardRef(
                 </>
               ) : (
                 <>
-                  <Typography className="mb-3">
-                    Answer all the questions.
-                  </Typography>
-                  <div>
-                    <Typography
-                      className="fs-14 rounded mb-3"
-                      style={{
-                        border: "1px solid #E56700",
-                        background: "#FFF0E3",
-                        padding: "15px",
-                      }}
-                    >
-                      {`${questionCount + 1}. `}
-                      {
-                        selected.marketingToolQuestionAnswerList[questionCount]
-                          .question
+                  <WheelSpin
+                    ref={spinWheelRef}
+                    segments={segments}
+                    segColors={segColors}
+                    winningSegment={segments[winSegment]}
+                    onFinished={(winner) => onFinished(winner)}
+                    primaryColor="black"
+                    contrastColor="white"
+                    buttonText="Spin"
+                    isOnlyOnce={false}
+                    size={290}
+                    upDuration={100}
+                    downDuration={1000}
+                  />
+                  <ButtonComponent
+                    label="Click to Spin"
+                    onBtnClick={() => {
+                      if (spinWheelRef.current) {
+                        setWinSegment(
+                          Math.floor(Math.random() * segments.length - 1)
+                        );
+                        spinWheelRef.current.callSpin();
                       }
-                    </Typography>
-                    {selected.marketingToolQuestionAnswerList[
-                      questionCount
-                    ].questionOptions.map((item, index) => {
-                      return (
-                        <motion.div
-                          whileHover={{
-                            scale: 1.01,
-                            transition: { duration: 0.5 },
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => {
-                            const temp = JSON.parse(JSON.stringify(selected));
-                            temp.marketingToolQuestionAnswerList[
-                              questionCount
-                            ].questionOptions.forEach((ele, ind) => {
-                              if (ind === index) {
-                                ele.selected = true;
-                              } else {
-                                ele.selected = false;
-                              }
-                            });
-                            temp.marketingToolQuestionAnswerList[
-                              questionCount
-                            ].selectedAnswer = item.option;
-
-                            setSelected(temp);
-                          }}
-                        >
-                          <Typography
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={index}
-                            className="fs-14 rounded mb-2 hoverShadow"
-                            style={{
-                              border: "1px solid ",
-                              background: "#FAFAFA",
-                              padding: "8px",
-                              borderColor: item.selected
-                                ? "#E56700"
-                                : "#666666",
-                            }}
-                          >
-                            {item.option}
-                          </Typography>
-                        </motion.div>
-                      );
-                    })}
-                    {selected.marketingToolQuestionAnswerList[questionCount]
-                      .selectedAnswer && (
-                      <div className="d-flex justify-content-end">
-                        <ButtonComponent
-                          label={
-                            selected.marketingToolQuestionAnswerList.length -
-                              1 ===
-                            questionCount
-                              ? "Submit"
-                              : "Next"
-                          }
-                          onBtnClick={() => {
-                            if (
-                              selected.marketingToolQuestionAnswerList.length -
-                                1 !==
-                              questionCount
-                            ) {
-                              setquestionCount(questionCount + 1);
-                            } else {
-                              handleQuizSubmit();
-                            }
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
+                    }}
+                    variant="outlined"
+                    size="medium"
+                    muiProps=" fs-12"
+                  />
                 </>
               )}
             </div>
@@ -429,4 +340,4 @@ const Quiz = forwardRef(
   }
 );
 
-export default Quiz;
+export default SpinWheel;
