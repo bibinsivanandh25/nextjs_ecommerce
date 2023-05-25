@@ -65,10 +65,12 @@ const OrderReport = () => {
     value: new Date().getFullYear().toString(),
     label: new Date().getFullYear().toString(),
   });
+
   const [summaryStatus, setSummaryStatus] = useState({
     value: "COMPLETED",
     label: "COMPLETED",
   });
+
   const getCardData = async () => {
     const { data } = await getOrderReportCardData(user.supplierId);
     if (data) {

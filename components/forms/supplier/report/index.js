@@ -33,9 +33,12 @@ const ReportLayout = ({
   cardLabel = "",
   tableLabel1 = "",
   tableLabel2 = "",
-  showCurrentDateTable = false,
   dateTableTitle = "",
+  handleCurrentDayTableYear = () => {},
+  dateCurrentYear = {},
   dateSummaryTitle = "",
+  dateSummaryYear = {},
+  handleDateSummaryYear = () => {},
   summarydateSelectList = [],
   dateMenuList = [],
   dateSelectList = [],
@@ -65,6 +68,11 @@ const ReportLayout = ({
   useEffect(() => {
     setTableRows(Detailrows);
   }, [Detailrows]);
+
+  useEffect(() => {
+    setDateRows(dateRows);
+  }, [dateRows]);
+
   const sortTable = (val) => {
     let sortCol;
     const rows = [...tableRows];
@@ -98,6 +106,10 @@ const ReportLayout = ({
   useEffect(() => {
     setsummaryTableRows(summaryRows);
   }, [summaryRows]);
+
+  useEffect(() => {
+    setDateTableRows(summaryDateRows);
+  }, [summaryDateRows]);
   const sortSummaryTable = (val) => {
     let sortCol;
     const rows = [...summarytableRows];
@@ -199,7 +211,36 @@ const ReportLayout = ({
     });
     exceldownload(copyRowData, "Month_Wise_Order_Details");
   };
+
+  const handleDayExcelDownload = (data) => {
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Sl.No"] = index + 1;
+      tempObj["Date"] = item.col1;
+      tempObj["No of Sales"] = item.col2;
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Month_Wise_Order_Details");
+  };
+
   const handleSummaryexcelDownload = (data) => {
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Sl.No"] = index + 1;
+      tempObj["Payment Id"] = item.col1;
+      tempObj["Product"] = item.col2;
+      tempObj["Customer"] = item.col3;
+      tempObj["Date"] = item.col4;
+      tempObj["Amount"] = item.col5;
+      tempObj["Status"] = item.col6;
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Order_Summary");
+  };
+
+  const handleDateSummaryExcelDownload = (data) => {
     const copyRowData = [];
     data.forEach((item, index) => {
       const tempObj = {};
@@ -328,7 +369,7 @@ const ReportLayout = ({
                     getSelectedValue={(item) => {
                       if (
                         item.label == "Sort By Sale Count" ||
-                        item.label == "Sort By Month"
+                        item.label == "Sort By Date"
                       ) {
                         sortTable(item);
                       }
@@ -395,27 +436,40 @@ const ReportLayout = ({
             </Paper>
           </Grid>
         </Grid>
-        {showCurrentDateTable ? (
-          <Grid container spacing={3} className="mt-2">
-            <Grid item xs={4.3}>
-              <Paper className="h-100 rounded">
-                <Grid className="d-flex align-items-center ">
-                  <Grid className="fs-12 fw-bold px-2 mt-3">
-                    {dateTableTitle}
-                  </Grid>
-                  <Grid className="ms-auto " mt={2}>
-                    <SelectComponent disableUnderline list={dateSelectList} />
-                  </Grid>
-                  <Grid className="mt-3 cursor-pointer zIndex-100">
-                    {/* <MoreVert /> */}
-                    <BasicMenu
-                      menuList={dateMenuList}
-                      getSelectedValue={(item) => {
-                        sortDateTable(item);
-                      }}
-                    />
-                  </Grid>
+        <Grid container spacing={3} className="mt-2">
+          <Grid item md={4.3} sm={12}>
+            <Paper className="h-100 rounded">
+              <Grid className="d-flex align-items-center ">
+                <Grid className="fs-12 fw-bold px-2 mt-3">
+                  {dateTableTitle}
                 </Grid>
+                <Grid className="ms-auto " mt={2}>
+                  <SelectComponent
+                    disableUnderline
+                    list={dateSelectList}
+                    value={dateCurrentYear.value}
+                    onChange={handleCurrentDayTableYear}
+                  />
+                </Grid>
+                <Grid className="mt-3 cursor-pointer zIndex-100">
+                  {/* <MoreVert /> */}
+                  <BasicMenu
+                    menuList={dateMenuList}
+                    getSelectedValue={(item) => {
+                      if (
+                        item.label == "Sort By Sale Count" ||
+                        item.label == "Sort By Month"
+                      ) {
+                        sortDateTable(item);
+                      }
+                      if (item.label == "Download") {
+                        handleDayExcelDownload(daterows);
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              {dateRows && (
                 <TableComponent
                   showSearchFilter={false}
                   showSearchbar={false}
@@ -423,42 +477,49 @@ const ReportLayout = ({
                   tableRows={[...dateRows]}
                   showCheckbox={false}
                 />
-              </Paper>
-            </Grid>
-            <Grid item xs={7.7}>
-              <Paper className="h-100 rounded">
-                <Grid className="d-flex align-items-center justify-content-between">
-                  <Grid className="fs-12 fw-bold px-2 mt-3">
-                    {dateSummaryTitle}
+              )}
+            </Paper>
+          </Grid>
+          <Grid item md={7.7} sm={12}>
+            <Paper className="h-100 rounded">
+              <Grid className="d-flex align-items-center justify-content-between">
+                <Grid className="fs-12 fw-bold px-2 mt-3">
+                  {dateSummaryTitle}
+                </Grid>
+                <Grid className="d-flex justify-content-between align-items-center">
+                  <Grid mt={2}>
+                    <SelectComponent
+                      disableUnderline
+                      value={dateSummaryYear.value}
+                      list={summarydateSelectList}
+                      onChange={handleDateSummaryYear}
+                    />
                   </Grid>
-                  <Grid className="d-flex justify-content-between align-items-center">
-                    <Grid mt={2}>
-                      <SelectComponent
-                        disableUnderline
-                        list={summarydateSelectList}
-                      />
-                    </Grid>
-                    <Grid className="mt-3 cursor-pointer zIndex-100">
-                      <BasicMenu
-                        menuList={summarydateMenuList}
-                        getSelectedValue={(item) => {
+                  <Grid className="mt-3 cursor-pointer zIndex-100">
+                    <BasicMenu
+                      menuList={summarydateMenuList}
+                      getSelectedValue={(item) => {
+                        if (item.label == "Download") {
+                          handleDateSummaryExcelDownload(dateTableRows);
+                        } else {
                           sortDateSummaryTable(item);
-                        }}
-                      />
-                    </Grid>
+                        }
+                      }}
+                    />
                   </Grid>
                 </Grid>
-                <TableComponent
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  tableRows={[...dateTableRows]}
-                  columns={[...summaryDateColumns]}
-                  showCheckbox={false}
-                />
-              </Paper>
-            </Grid>
+              </Grid>
+              <TableComponent
+                showSearchFilter={false}
+                showSearchbar={false}
+                tableRows={[...dateTableRows]}
+                columns={[...summaryDateColumns]}
+                showCheckbox={false}
+                handlePageEnd={handleSummaryPageEnd}
+              />
+            </Paper>
           </Grid>
-        ) : null}
+        </Grid>
       </Grid>
     </Paper>
   );
