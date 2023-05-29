@@ -106,6 +106,7 @@ const option4 = [
   "View Order Details",
   "Leave Seller feedback",
   "Write a Product review",
+  "Download Invoice",
 ];
 const option5 = ["Track Package", "View Order Details"];
 const MyOrders = ({
@@ -128,6 +129,8 @@ const MyOrders = ({
   getOrderApiCall,
   returnedData,
   setreturnedData = () => {},
+  setsaveIds = () => {},
+  setinvoiceDownload = () => {},
 }) => {
   const dispatch = useDispatch();
   const route = useRouter();
@@ -282,12 +285,69 @@ const MyOrders = ({
                   </Box>
                 </Box>
                 {/* </ReusableProduct> */}
+                {/* <Grid item xs={1} md={1} className="  p-3"> */}
+                {/* <Grid item xs={4} md={4}> */}
+
+                <MenuOption
+                  getSelectedItem={(ele) => {
+                    if (ele === "Track Package") {
+                      setTrackPackage(true);
+                    } else if (ele === "Leave Seller feedback") {
+                      setProductFeedbackType("seller");
+                      setSellerFeedbackModal(true);
+                    } else if (ele === "Write a Product review") {
+                      setProductFeedbackType("product");
+                      setSellerFeedbackModal(true);
+                      setsaveIds({
+                        orderId: product.orderId,
+                        productVId: product.productVariationId,
+                        addressId: product.shippingAddressId,
+                        masterPordId: product.masterProductId,
+                      });
+                    } else if (ele === "View Order Details") {
+                      setsaveIds({
+                        orderId: product.orderId,
+                        productVId: product.productVariationId,
+                        addressId: product.shippingAddressId,
+                      });
+                      setshowProdDetails(true);
+                    } else if (ele == "Download Invoice") {
+                      setinvoiceDownload(true);
+                      setsaveIds({
+                        orderId: product.orderId,
+                        productVId: product.productVariationId,
+                        addressId: product.shippingAddressId,
+                      });
+                    }
+
+                    // onClickOfMenuItem(ele, item.flagId);
+                  }}
+                  options={
+                    selectedLink === "INITIATED"
+                      ? [...option2]
+                      : selectedLink === "CANCELLED"
+                      ? [...option2]
+                      : selectedLink === "RETURNED"
+                      ? [...option3]
+                      : product.orderDeliveryStatus == "DELIVERED" &&
+                        selectedLink == ""
+                      ? [...option4]
+                      : product.orderDeliveryStatus == "INITIATED" &&
+                        selectedLink == ""
+                      ? [...option5]
+                      : [...option1]
+                  }
+                  IconclassName="color-gray"
+                />
+
+                {/* </Grid> */}
+                {/* </Grid> */}
               </Box>
             );
           })}
         </Grid>
 
-        <Grid item xs={1} md={1} className="  p-3">
+        {/* <Grid item xs={1} md={1} className="  p-3">
           <Grid item xs={4} md={4}>
             {selectedProduct.length === 1 ? (
               <MenuOption
@@ -327,7 +387,7 @@ const MyOrders = ({
               <></>
             )}
           </Grid>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {trackPackage && (

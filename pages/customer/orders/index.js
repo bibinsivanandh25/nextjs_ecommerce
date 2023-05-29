@@ -25,6 +25,7 @@ import {
   customerProdFeedback,
   getOrderDetails,
   getProductDetails,
+  getReviewData,
 } from "services/customer/orders";
 import ImageCard from "@/atoms/ImageCard";
 import { format } from "date-fns";
@@ -54,6 +55,12 @@ const Orders = () => {
   const [showReturnOrder, setShowReturnOrder] = useState(false);
   const [returnProducts, setReturnProducts] = useState([]);
   const [showProdDetails, setshowProdDetails] = useState(false);
+  const [saveIds, setsaveIds] = useState({
+    orderId: "",
+    productVId: "",
+    addressId: "",
+    masterPordId: "",
+  });
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [EachProductDetails, setEachProductDetails] = useState([]);
@@ -61,6 +68,7 @@ const Orders = () => {
   const [openDateModal, setopenDateModal] = useState(false);
   const [searchKeyword, setsearchKeyword] = useState("");
   const [returnedData, setreturnedData] = useState([]);
+  const [invoiceDownload, setinvoiceDownload] = useState(false);
   const [orderFilter, setorderFilter] = useState({
     status: {
       label: "Pending",
@@ -83,6 +91,7 @@ const Orders = () => {
     headline: "",
     reviewText: "",
     reviewImage: [],
+    customerReviewId: null,
   });
   const [formDate, setformDate] = useState({
     startDate: format(new Date(), "MM-dd-yyyy 00:00:00"),
@@ -146,7 +155,25 @@ const Orders = () => {
       setformDate({ ...formDate });
     }
   }, [durationDrowdown]);
-
+  const getReviewDataFunction = async () => {
+    const { data, err } = await getReviewData(saveIds.productVId, user.userId);
+    if (data) {
+      setproductReviewState({
+        retings: data?.data?.customerRatings || "",
+        headline: data?.data?.headline || "",
+        reviewText: data?.data?.writtenReview || "",
+        reviewImage: data?.data?.reviewMediaUrl || [],
+        customerReviewId: data?.data?.customerReviewId || null,
+      });
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    if (productFeedbackType == "product") {
+      getReviewDataFunction();
+    }
+  }, [productFeedbackType]);
   const getProducts = async (search = searchKeyword) => {
     const payload = {
       customerId: user.userId,
@@ -200,9 +227,9 @@ const Orders = () => {
     // const addressId = selectedProduct[0]?.shippingAddressId;
     // const orderId = selectedProduct[0]?.orderId;
     const payload = {
-      orderId: selectedProduct[0]?.orderId,
-      productVariation: selectedProduct[0]?.productVariationId,
-      shippingAddressId: selectedProduct[0]?.shippingAddressId,
+      orderId: saveIds.orderId,
+      productVariation: saveIds.productVId,
+      shippingAddressId: saveIds.addressId,
     };
     const { data, errRes } = await getProductDetails(payload);
     if (data) {
@@ -223,16 +250,19 @@ const Orders = () => {
   }, [orderFilter, getOrderApiCall, formDate]);
   const submitProductReview = async () => {
     const payload = {
-      orderId: selectedProduct[0].orderId,
+      orderId: saveIds.orderId,
       customerRatings: productReviewState.retings,
       headline: productReviewState.headline,
       reviewerName: user.customerName,
       reviewerType: "CUSTOMER",
       reviewerId: user.userId,
       // reviewerId: "CST1222000058",
+      masterProductId: saveIds.masterPordId,
       writtenReview: productReviewState.reviewText,
       // variationId: selectedProduct[0]?.variationId,
-      variationId: selectedProduct[0]?.productVariationId,
+      variationId: saveIds.productVId,
+      isDeleted: false,
+      customerReviewId: productReviewState.customerReviewId || null,
       reviewMediaUrl: productReviewState.reviewImage,
     };
     const { data, errRes } = await customerProdFeedback(payload);
@@ -244,11 +274,63 @@ const Orders = () => {
         reviewText: "",
         reviewImage: [],
       });
+      setsaveIds({
+        orderId: "",
+        productVId: "",
+        addressId: "",
+        masterPordId: "",
+      });
+      setSellerFeedbackModal(false);
+      setProductFeedbackType("");
     } else if (errRes) {
       toastify(errRes.response.data.message, "error");
     }
   };
 
+  const downloadManifestFunction = async () => {
+    // const { data, err } = await getQrPdf();
+    try {
+      fetch(
+        `${process.env.DOMAIN}notification/download-invoice?orderId=${saveIds.orderId}`,
+        {
+          method: "get",
+          headers: new Headers({
+            userId: user.userId,
+            "Content-Type": "application/octet-stream",
+          }),
+        }
+      )
+        .then(async (resp) => {
+          const blob = await resp.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          // the filename you want
+          a.download = `${"invoice"}-Report-${format(
+            new Date(),
+            "MM-dd-yyyy HH-mm-ss"
+          )}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          toastify("your file has downloaded!", "success");
+          setinvoiceDownload(false);
+        })
+        .catch((err) => err);
+    } catch (err) {
+      toastify(
+        "Unable to process your request, please try again later!!",
+        "error"
+      );
+      setinvoiceDownload(false);
+    }
+  };
+  useEffect(() => {
+    if (invoiceDownload) {
+      downloadManifestFunction();
+    }
+  }, [invoiceDownload]);
   return (
     <Box className=" px-2">
       {!showReturnOrder ? (
@@ -299,6 +381,11 @@ const Orders = () => {
                 setSelectedProduct([]);
                 setProducts([]);
                 setshowProdDetails(false);
+                setsaveIds({
+                  orderId: "",
+                  productVId: "",
+                  addressId: "",
+                });
                 setSellerFeedbackModal(false);
                 // setTrackPackage(false)
               }}
@@ -319,6 +406,11 @@ const Orders = () => {
                 setSelectedProduct([]);
                 setProducts([]);
                 setshowProdDetails(false);
+                setsaveIds({
+                  orderId: "",
+                  productVId: "",
+                  addressId: "",
+                });
                 setSellerFeedbackModal(false);
               }}
             >
@@ -338,6 +430,11 @@ const Orders = () => {
                 setSelectedProduct([]);
                 setProducts([]);
                 setshowProdDetails(false);
+                setsaveIds({
+                  orderId: "",
+                  productVId: "",
+                  addressId: "",
+                });
                 setSellerFeedbackModal(false);
               }}
             >
@@ -570,6 +667,11 @@ const Orders = () => {
               <Typography
                 onClick={() => {
                   setshowProdDetails(false);
+                  setsaveIds({
+                    orderId: "",
+                    productVId: "",
+                    addressId: "",
+                  });
                 }}
                 className="color-orange pb-3"
               >
@@ -858,6 +960,8 @@ const Orders = () => {
                       getOrderApiCall={getOrderApiCall}
                       returnedData={returnedData}
                       setreturnedData={setreturnedData}
+                      setsaveIds={setsaveIds}
+                      setinvoiceDownload={setinvoiceDownload}
                     />
                   </>
                 )}
@@ -913,6 +1017,8 @@ const Orders = () => {
                       getOrderApiCall={getOrderApiCall}
                       returnedData={returnedData}
                       setreturnedData={setreturnedData}
+                      setsaveIds={setsaveIds}
+                      setinvoiceDownload={setinvoiceDownload}
                     />
                   </>
                 )}
@@ -996,6 +1102,8 @@ const Orders = () => {
                       getOrderApiCall={getOrderApiCall}
                       returnedData={returnedData}
                       setreturnedData={setreturnedData}
+                      setsaveIds={setsaveIds}
+                      setinvoiceDownload={setinvoiceDownload}
                     />
                   </>
                 )}
@@ -1079,6 +1187,8 @@ const Orders = () => {
                       getOrderApiCall={getOrderApiCall}
                       returnedData={returnedData}
                       setreturnedData={setreturnedData}
+                      setsaveIds={setsaveIds}
+                      setinvoiceDownload={setinvoiceDownload}
                     />
                   </>
                 )}

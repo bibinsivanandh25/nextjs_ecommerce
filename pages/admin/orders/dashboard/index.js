@@ -186,6 +186,7 @@ const DashBoard = () => {
   // total Refund Bar
   const [refundData, setRefundData] = useState({ label: [], data: [] });
   const [refundCount, setrefundCount] = useState(0);
+  const [refundFilter, setrefundFilter] = useState("Category");
   // category with more return
   const [categoryReturn, setCategoryReturn] = useState([]);
   // supplier table
@@ -463,7 +464,7 @@ const DashBoard = () => {
   useEffect(() => {
     if (selectedNavData) {
       getTotalOrder(selectedNavData, selectedDate);
-      totalRefundData(selectedNavData, selectedDate);
+
       getReturnTableData(selectedNavData, selectedDate);
       getSupplierTableData(selectedNavData, selectedDate);
       getCustomerTableData(selectedNavData, selectedDate);
@@ -481,7 +482,9 @@ const DashBoard = () => {
   useEffect(() => {
     totalReturnData(selectedNavData, selectedDate, returnFilter);
   }, [selectedNavData, selectedDate, returnFilter]);
-
+  useEffect(() => {
+    totalRefundData(selectedNavData, selectedDate, refundFilter);
+  }, [selectedNavData, selectedDate, refundFilter]);
   const getProductsInfo = () => {
     return orderDetails.map((ele, ind) => {
       return (
@@ -718,11 +721,34 @@ const DashBoard = () => {
         </Grid>
         <Grid item md={6} sm={12}>
           <Paper>
-            <div className=" bg-light-grey p-2">
+            <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
               <Typography className="h-5 fw-bold">
                 Refund Amount: {refundCount}
-                {/* {refundData.data.reduce((sum, val) => sum + val, 0)} */}
               </Typography>
+              <div className="h-5">
+                <span
+                  className={`${
+                    refundFilter === "Category" ? "color-blue" : ""
+                  } cursor-pointer`}
+                  onClick={() => {
+                    setrefundFilter("Category");
+                  }}
+                >
+                  categories
+                </span>
+                <span>|</span>
+                <span
+                  className={`${
+                    refundFilter === "subCategory" ? "color-blue" : ""
+                  } cursor-pointer`}
+                  onClick={() => {
+                    setrefundFilter("subCategory");
+                  }}
+                >
+                  {" "}
+                  subcategories
+                </span>
+              </div>
             </div>
             <div className="w-90p">
               <Bargraph
