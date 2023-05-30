@@ -39,9 +39,7 @@ const ReportLayout = ({
   dateSummaryTitle = "",
   dateSummaryYear = {},
   handleDateSummaryYear = () => {},
-  summarydateSelectList = [],
   dateMenuList = [],
-  dateSelectList = [],
   summarydateMenuList = [],
   summaryDateColumns = [],
   summaryDateRows = [],
@@ -59,6 +57,7 @@ const ReportLayout = ({
   handleSummaryStatus = () => {},
   handleSummaryPageEnd = () => {},
   barChartDataSet = "",
+  currentDateDetails = false,
 }) => {
   const [tableRows, setTableRows] = useState([]);
   const [summarytableRows, setsummaryTableRows] = useState([]);
@@ -79,7 +78,7 @@ const ReportLayout = ({
     if (val.label === "Sort By Sale Count") {
       sortCol = "col2";
     } else if (val.label === "Sort By Month") {
-      sortCol = "id";
+      sortCol = "col1";
     }
 
     if (val.sort === "ascending") {
@@ -103,6 +102,7 @@ const ReportLayout = ({
     }
     setTableRows([...rows]);
   };
+
   useEffect(() => {
     setsummaryTableRows(summaryRows);
   }, [summaryRows]);
@@ -110,6 +110,7 @@ const ReportLayout = ({
   useEffect(() => {
     setDateTableRows(summaryDateRows);
   }, [summaryDateRows]);
+
   const sortSummaryTable = (val) => {
     let sortCol;
     const rows = [...summarytableRows];
@@ -175,7 +176,7 @@ const ReportLayout = ({
     const rows = [...daterows];
     if (val.label === "Sort By Sale Count") {
       sortCol = "col2";
-    } else if (val.label === "Sort By Date") {
+    } else if (val.label === "Sort By Time") {
       sortCol = "col1";
     }
 
@@ -217,7 +218,7 @@ const ReportLayout = ({
     data.forEach((item, index) => {
       const tempObj = {};
       tempObj["Sl.No"] = index + 1;
-      tempObj["Date"] = item.col1;
+      tempObj["Time"] = item.col1;
       tempObj["No of Sales"] = item.col2;
       copyRowData.push(tempObj);
     });
@@ -369,7 +370,7 @@ const ReportLayout = ({
                     getSelectedValue={(item) => {
                       if (
                         item.label == "Sort By Sale Count" ||
-                        item.label == "Sort By Date"
+                        item.label == "Sort By Month"
                       ) {
                         sortTable(item);
                       }
@@ -436,90 +437,92 @@ const ReportLayout = ({
             </Paper>
           </Grid>
         </Grid>
-        <Grid container spacing={3} className="mt-2">
-          <Grid item md={4.3} sm={12}>
-            <Paper className="h-100 rounded">
-              <Grid className="d-flex align-items-center ">
-                <Grid className="fs-12 fw-bold px-2 mt-3">
-                  {dateTableTitle}
-                </Grid>
-                <Grid className="ms-auto " mt={2}>
-                  <SelectComponent
-                    disableUnderline
-                    list={dateSelectList}
-                    value={dateCurrentYear.value}
-                    onChange={handleCurrentDayTableYear}
-                  />
-                </Grid>
-                <Grid className="mt-3 cursor-pointer zIndex-100">
-                  {/* <MoreVert /> */}
-                  <BasicMenu
-                    menuList={dateMenuList}
-                    getSelectedValue={(item) => {
-                      if (
-                        item.label == "Sort By Sale Count" ||
-                        item.label == "Sort By Month"
-                      ) {
-                        sortDateTable(item);
-                      }
-                      if (item.label == "Download") {
-                        handleDayExcelDownload(daterows);
-                      }
-                    }}
-                  />
-                </Grid>
-              </Grid>
-              {dateRows && (
-                <TableComponent
-                  showSearchFilter={false}
-                  showSearchbar={false}
-                  columns={[...Datecolumns]}
-                  tableRows={[...dateRows]}
-                  showCheckbox={false}
-                />
-              )}
-            </Paper>
-          </Grid>
-          <Grid item md={7.7} sm={12}>
-            <Paper className="h-100 rounded">
-              <Grid className="d-flex align-items-center justify-content-between">
-                <Grid className="fs-12 fw-bold px-2 mt-3">
-                  {dateSummaryTitle}
-                </Grid>
-                <Grid className="d-flex justify-content-between align-items-center">
-                  <Grid mt={2}>
+        {currentDateDetails ? (
+          <Grid container spacing={3} className="mt-2">
+            <Grid item md={4.3} sm={12}>
+              <Paper className="h-100 rounded">
+                <Grid className="d-flex align-items-center ">
+                  <Grid className="fs-12 fw-bold px-2 mt-3">
+                    {dateTableTitle}
+                  </Grid>
+                  <Grid className="ms-auto " mt={2}>
                     <SelectComponent
                       disableUnderline
-                      value={dateSummaryYear.value}
-                      list={summarydateSelectList}
-                      onChange={handleDateSummaryYear}
+                      list={detailSelectList}
+                      value={dateCurrentYear.value}
+                      onChange={handleCurrentDayTableYear}
                     />
                   </Grid>
                   <Grid className="mt-3 cursor-pointer zIndex-100">
+                    {/* <MoreVert /> */}
                     <BasicMenu
-                      menuList={summarydateMenuList}
+                      menuList={dateMenuList}
                       getSelectedValue={(item) => {
+                        if (
+                          item.label == "Sort By Sale Count" ||
+                          item.label == "Sort By Time"
+                        ) {
+                          sortDateTable(item);
+                        }
                         if (item.label == "Download") {
-                          handleDateSummaryExcelDownload(dateTableRows);
-                        } else {
-                          sortDateSummaryTable(item);
+                          handleDayExcelDownload(daterows);
                         }
                       }}
                     />
                   </Grid>
                 </Grid>
-              </Grid>
-              <TableComponent
-                showSearchFilter={false}
-                showSearchbar={false}
-                tableRows={[...dateTableRows]}
-                columns={[...summaryDateColumns]}
-                showCheckbox={false}
-                handlePageEnd={handleSummaryPageEnd}
-              />
-            </Paper>
+                {dateRows && (
+                  <TableComponent
+                    showSearchFilter={false}
+                    showSearchbar={false}
+                    columns={[...Datecolumns]}
+                    tableRows={[...daterows]}
+                    showCheckbox={false}
+                  />
+                )}
+              </Paper>
+            </Grid>
+            <Grid item md={7.7} sm={12}>
+              <Paper className="h-100 rounded">
+                <Grid className="d-flex align-items-center justify-content-between">
+                  <Grid className="fs-12 fw-bold px-2 mt-3">
+                    {dateSummaryTitle}
+                  </Grid>
+                  <Grid className="d-flex justify-content-between align-items-center">
+                    <Grid mt={2}>
+                      <SelectComponent
+                        disableUnderline
+                        value={dateSummaryYear.value}
+                        list={detailSelectList}
+                        onChange={handleDateSummaryYear}
+                      />
+                    </Grid>
+                    <Grid className="mt-3 cursor-pointer zIndex-100">
+                      <BasicMenu
+                        menuList={summarydateMenuList}
+                        getSelectedValue={(item) => {
+                          if (item.label == "Download") {
+                            handleDateSummaryExcelDownload(dateTableRows);
+                          } else {
+                            sortDateSummaryTable(item);
+                          }
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <TableComponent
+                  showSearchFilter={false}
+                  showSearchbar={false}
+                  tableRows={[...dateTableRows]}
+                  columns={[...summaryDateColumns]}
+                  showCheckbox={false}
+                  handlePageEnd={handleSummaryPageEnd}
+                />
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+        ) : null}
       </Grid>
     </Paper>
   );

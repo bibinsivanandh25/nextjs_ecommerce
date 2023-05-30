@@ -172,7 +172,7 @@ const OrderReport = () => {
     if (data && pageNumber == 0) {
       setSummaryTableData(getTableRows(data));
       setPageNumber(1);
-    } else if (data.length && pageNumber !== 0) {
+    } else if (data?.length && pageNumber !== 0) {
       setPageNumber((prev) => prev + 1);
       setSummaryTableData((pre) => [...pre, ...getTableRows(data)]);
     }

@@ -151,6 +151,8 @@ const PaymentReports = () => {
       year,
       status: status === "pending" ? "INITIATED" : status.toUpperCase(),
       orderedStoreOwnerId: id,
+      pageNumber: 0,
+      pageSize: 50,
     };
 
     const { data, err } = await getSummaryData(payload);
@@ -296,7 +298,7 @@ const PaymentReports = () => {
             data_classname: "",
           },
           {
-            id: "col1",
+            id: "col2",
             label: "Product",
             minWidth: 100,
             align: "center",

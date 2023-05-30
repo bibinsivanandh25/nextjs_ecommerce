@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import ReportLayout from "components/forms/supplier/report";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -10,6 +11,7 @@ import {
   getSalesCurrentDayWise,
   getSalesCurrentDayWiseSummary,
 } from "services/supplier/reports/salesreport";
+import { getListYear } from "services/utils/yearlistUtils";
 
 const cardDetails = [
   {
@@ -85,7 +87,6 @@ const SalesReport = () => {
 
   // table 4
 
-  const [pageNumberDays, setPageNumberDays] = useState(0);
   const [summaryTableDayData, setSummaryTableDayData] = useState([]);
   const [daySummaryYear, setDaySummaryYear] = useState({
     value: new Date().getFullYear().toString(),
@@ -210,30 +211,30 @@ const SalesReport = () => {
     const { data } = await getSalesCurrentDayWise(user.supplierId);
     if (data) {
       const times = [
-        "12am-01am",
-        "01am-02am",
-        "02am-03am",
-        "03am-04am",
-        "04am-05am",
-        "05am-06am",
-        "06am-07am",
-        "07am-08am",
-        "08am-09am",
-        "09am-10am",
-        "10am-11am",
-        "11am-12pm",
-        "12pm-01pm",
-        "01pm-02pm",
-        "02pm-03pm",
-        "03pm-04pm",
-        "04pm-05pm",
-        "05pm-06pm",
-        "06pm-07pm",
-        "07pm-08pm",
-        "08pm-09pm",
-        "09pm-10pm",
-        "10pm-11pm",
-        "11pm-12am",
+        "12am - 01am",
+        "01am - 02am",
+        "02am - 03am",
+        "03am - 04am",
+        "04am - 05am",
+        "05am - 06am",
+        "06am - 07am",
+        "07am - 08am",
+        "08am - 09am",
+        "09am - 10am",
+        "10am - 11am",
+        "11am - 12pm",
+        "12pm - 01pm",
+        "01pm - 02pm",
+        "02pm - 03pm",
+        "03pm - 04pm",
+        "04pm - 05pm",
+        "05pm - 06pm",
+        "06pm - 07pm",
+        "07pm - 08pm",
+        "08pm - 09pm",
+        "09pm - 10pm",
+        "10pm - 11pm",
+        "11pm - 12am",
       ];
 
       const temp = [];
@@ -261,7 +262,7 @@ const SalesReport = () => {
       data.forEach((item) => {
         result.push({
           id: item.paymentId,
-          col1: item.paymentId,
+          col1: item.paymentId ?? "--",
           col2: item.productName,
           col3: item.customerName,
           col4: item.date,
@@ -273,24 +274,22 @@ const SalesReport = () => {
     return result;
   };
 
-  const getDayWiseSummaryTable = async (page = pageNumberDays) => {
+  const getDayWiseSummaryTable = async () => {
     const payload = {
       orderedStoreOwnerId: user.supplierId,
-      pageNumber: page,
+      pageNumber: 0,
       pageSize: 50,
     };
-    const { data } = await getSalesCurrentDayWiseSummary(payload);
-    if (data && pageNumberDays == 0) {
+    const { data, err } = await getSalesCurrentDayWiseSummary(payload);
+    if (data) {
       setSummaryTableDayData(getDayTableRows(data));
-      setPageNumberDays(1);
-    } else if (data?.length && pageNumberDays !== 0) {
-      setSummaryTableDayData(getDayTableRows(data));
-      setPageNumberDays((pre) => [...pre, ...getDayTableRows(data)]);
+    } else if (err) {
+      setSummaryTableDayData([]);
     }
   };
 
   useEffect(() => {
-    getDayWiseSummaryTable(daySummaryYear.value, 0);
+    getDayWiseSummaryTable(daySummaryYear.value);
   }, [daySummaryYear.value]);
 
   useEffect(() => {
@@ -313,7 +312,7 @@ const SalesReport = () => {
 
   useEffect(() => {
     getCardData();
-  });
+  }, []);
 
   useEffect(() => {
     getMonthWiseSalesTableData(monthCurrentYear.value);
@@ -329,13 +328,14 @@ const SalesReport = () => {
             summaryStatus.value
           );
         }}
+        currentDateDetails
         showCurrentDateTable
         dateTableTitle="Current Day Sales Data"
         dateSummaryTitle="Current Date Sales Summary"
         Datecolumns={[
           {
             id: "col1", // id value in column should be presented in row as key
-            label: "Date",
+            label: "Time",
             minWidth: 100,
             align: "center",
             data_align: "center",
@@ -375,7 +375,7 @@ const SalesReport = () => {
           });
         }}
         dateCurrentYear={currentSaleYear}
-        dateMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
+        dateMenuList={["Sort By Sale Count", "Sort By Time", "Download"]}
         summarydateSelectList={[
           {
             id: 1,
@@ -490,41 +490,8 @@ const SalesReport = () => {
             label: e.target.value,
           });
         }}
-        detailSelectList={[
-          {
-            id: 1,
-            value: 2021,
-            label: 2021,
-          },
-          {
-            id: 2,
-            value: 2022,
-            label: 2022,
-          },
-          {
-            id: 3,
-            value: 2023,
-            label: 2023,
-          },
-        ]}
-        detailMenuList={["Sort By Sale Count", "Sort By Date", "Download"]}
-        summarySelectList={[
-          {
-            id: 1,
-            value: 2021,
-            label: 2021,
-          },
-          {
-            id: 2,
-            value: 2022,
-            label: 2022,
-          },
-          {
-            id: 3,
-            value: 2023,
-            label: 2023,
-          },
-        ]}
+        detailSelectList={getListYear()}
+        detailMenuList={["Sort By Sale Count", "Sort By Month", "Download"]}
         summaryMenuList={["Sort By Price", "Sort By Date", "Download"]}
         summaryStatusList={[
           {
