@@ -47,7 +47,7 @@ const totalrefundBarChart = (payload) => {
 };
 const returnTableData = (payload) => {
   return serviceUtil
-    .post(`order-payment/category-returns-happining`, payload)
+    .get(`order-payment/category-returns-happining`, payload)
     .then((res) => {
       const { data } = res && res?.data;
       return { data };
@@ -56,7 +56,7 @@ const returnTableData = (payload) => {
 };
 const supplierTableData = (payload) => {
   return serviceUtil
-    .post(`order-payment/supplier-causing`, payload)
+    .get(`order-payment/supplier-causing`, payload)
     .then((res) => {
       const { data } = res && res?.data;
       return { data };
@@ -65,12 +65,23 @@ const supplierTableData = (payload) => {
 };
 const customerTableData = (payload) => {
   return serviceUtil
-    .post(`order-payment/customer-returns`, payload)
+    .get(`order-payment/customer-returns`, payload)
     .then((res) => {
       const { data } = res && res?.data;
       return { data };
     })
     .catch((err) => ({ err }));
+};
+const getOrderedProductDetails = (payload) => {
+  return serviceUtil
+    .post(`order-payment/get-producDetails`, payload)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
 };
 export {
   getAllTotalOrders,
@@ -81,4 +92,5 @@ export {
   returnTableData,
   supplierTableData,
   customerTableData,
+  getOrderedProductDetails,
 };

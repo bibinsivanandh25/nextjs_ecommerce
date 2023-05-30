@@ -57,10 +57,48 @@ const viewOrderSummery = (orderId, variationId) => {
       return { err };
     });
 };
+const viewManifestAdmin = (orderId, productId) => {
+  return serviceUtil
+    .get(
+      `order-payment/admin/manifest?orderId=${orderId}&orderedProductId=${productId}`
+    )
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const viewInvoiceAdmin = (orderId) => {
+  return serviceUtil
+    .get(`order-payment/admin/invoice?orderId=${orderId}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
+const addNote = (payload) => {
+  return serviceUtil
+    .put(`order-payment/admin/comment`, payload)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getAllOrderPaymentDetails,
   adminViewOrder,
   adminDeleteOrder,
   getOrderSummary,
   viewOrderSummery,
+  viewManifestAdmin,
+  viewInvoiceAdmin,
+  addNote,
 };

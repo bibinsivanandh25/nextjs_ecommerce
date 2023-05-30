@@ -1,6 +1,8 @@
 import ModalComponent from "@/atoms/ModalComponent";
-import { Grid, Paper, Typography } from "@mui/material";
+import ViewOrderDetails from "@/forms/supplier/myorder/viewOrderDetails";
+import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
@@ -8,6 +10,7 @@ import {
   getOrderDetailsById,
   getOrderHistory,
 } from "services/supplier/myorders/orderhistory";
+import exceldownload from "services/utils/exceldownload";
 import toastify from "services/utils/toastUtils";
 
 const ManifestedOrders = () => {
@@ -31,11 +34,11 @@ const ManifestedOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
@@ -46,16 +49,18 @@ const ManifestedOrders = () => {
       label: "Qty",
       id: "col7",
     },
+
     {
-      label: "Status",
+      label: "Ordered Product Amount",
       id: "col8",
     },
     {
-      label: "Total",
+      label: "AWB Number",
       id: "col9",
     },
     {
       label: "Action",
+      minWidth: 100,
       id: "col10",
       align: "center",
     },
@@ -70,23 +75,69 @@ const ManifestedOrders = () => {
       toastify(err.response.data.message, "error");
     }
   };
+  const downloadManifestFunction = async (type, orderId) => {
+    // const { data, err } = await getQrPdf();
+    try {
+      fetch(
+        `${process.env.DOMAIN}notification/download-${type}?orderId=${orderId}`,
+        {
+          method: "get",
+          headers: new Headers({
+            userId: user,
+            "Content-Type": "application/octet-stream",
+          }),
+        }
+      )
+        .then(async (resp) => {
+          const blob = await resp.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          // the filename you want
+          a.download = `Manifest-Report-${format(
+            new Date(),
+            "MM-dd-yyyy HH-mm-ss"
+          )}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          toastify("your file has downloaded!", "success");
+        })
+        .catch((err) => err);
+    } catch (err) {
+      toastify(
+        "Unable to process your request, please try again later!!",
+        "error"
+      );
+    }
+  };
   const mapRowsToTable = (data) => {
     const result = [];
     data?.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          row?.allDate != null
+            ? `${format(new Date(row?.allDate), "MM-dd-yyyy")} 00:00:00`
+            : null,
         col7: row?.orderQuantity || "__",
-        col8: row?.orderStatus || "__",
-        col9: row?.orderAmount || "__",
+        col8: row?.orderedProductAmount || "__",
+        col9: row?.awbNo || "__",
         col10: (
           <Grid container>
             <Grid item xs={6}>
-              <CustomIcon type="download" title="Download" />
+              <CustomIcon
+                type="download"
+                title="Download"
+                onIconClick={() => {
+                  downloadManifestFunction("manifest", row?.orderId);
+                }}
+              />
             </Grid>
             <Grid item xs={6}>
               <CustomIcon
@@ -103,21 +154,28 @@ const ManifestedOrders = () => {
     });
     return result;
   };
-  const viewFormat = (key, value) => {
-    return (
-      <Grid md={12} sx={12} container className="py-1">
-        <Grid md={3} sx={3}>
-          <Typography className="fs-12 fw-500">{key}</Typography>
-        </Grid>
-        <Grid md={1} sx={1}>
-          <Typography className="fs-12">:</Typography>
-        </Grid>
-        <Grid md={8} sx={8}>
-          <Typography className="fs-12">{value}</Typography>
-        </Grid>
-      </Grid>
-    );
+
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj.Index = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Manifest Date"] = item.col6;
+      tempObj.Qty = item.col7;
+      tempObj["ordered Product Amount"] = item.col8;
+      tempObj["AWB Number"] = item.col9;
+
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Manifested order details");
   };
+
   const getDeleveredOrderData = async (page = pageNumberState) => {
     // const payload = {
     //   supplierId: user,
@@ -164,12 +222,12 @@ const ManifestedOrders = () => {
           }}
           customDropdownValue={modeOfOrderValue}
           customDropdownList={[
-            { id: "All", label: "All" },
+            { id: null, label: "All" },
             { id: "India Post", label: "India Post" },
             { id: "Delhivery", label: "Delhivery" },
           ]}
           // customDropdownValue
-          customDropdownLabel="Mode Of Order"
+          customDropdownLabel="Shipment Type"
           table_heading={`Manifested Orders (${tableData.length || 0})`}
           columns={columns}
           tableRows={tableData}
@@ -183,7 +241,7 @@ const ManifestedOrders = () => {
           // showCustomDropdown={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
-            // console.log("onCustomButtonClick");
+            handleexcelDownload();
           }}
         />
       </Paper>
@@ -191,35 +249,13 @@ const ManifestedOrders = () => {
         <ModalComponent
           showFooter={false}
           ModalTitle="View Details"
+          minWidth={800}
           open={openView}
           onCloseIconClick={() => {
             setopenView(false);
           }}
         >
-          <Grid className="p-2">
-            {viewFormat("Order Id", eachOrderData.orderId)}
-            {viewFormat(
-              "Delivered Date",
-              eachOrderData?.deliveredDate?.replace("T", " ")
-            )}
-            {viewFormat("Order Status", eachOrderData.orderStatus)}
-            {viewFormat("Discount Amount", eachOrderData.discountAmount)}
-            {viewFormat("Earning", eachOrderData.earning)}
-            {viewFormat(
-              "Expected Dispatch",
-              eachOrderData.expectedDispatchDate
-            )}
-            {viewFormat("Margin Amount", eachOrderData.marginAmount)}
-            {viewFormat("Mode Of Order", eachOrderData.modeOfOrder)}
-            {viewFormat("Quentity", eachOrderData.orderQuantity)}
-            {viewFormat("Ordered By", eachOrderData.orderedByType)}
-            {viewFormat(
-              `${eachOrderData.orderedByType} ID`,
-              eachOrderData.orderedById
-            )}
-            {viewFormat("product Id", eachOrderData.productId)}
-            {viewFormat("Product Owner Id", eachOrderData.productOwnerId)}
-          </Grid>
+          <ViewOrderDetails eachOrderData={eachOrderData} />
         </ModalComponent>
       )}
     </Paper>

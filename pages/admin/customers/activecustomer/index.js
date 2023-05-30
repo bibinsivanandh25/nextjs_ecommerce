@@ -16,7 +16,10 @@ import {
   deleteCustomer,
   enableDisableCustomer,
   getCustomerData,
+  inviteUser,
 } from "services/admin/customers";
+import { format } from "date-fns";
+import validateMessage from "constants/validateMessages";
 
 const activeCustomer = [
   {
@@ -46,20 +49,21 @@ const activeCustomer = [
     data_classname: "",
     position: "sticky",
   },
+
   {
     id: "col4",
-    label: "Email & Mobile",
-    minWidth: 150,
-    align: "start",
-    data_align: "start",
-    data_classname: "",
-  },
-  {
-    id: "col5",
     label: "DOB",
     minWidth: 150,
     align: "center",
     data_align: "center",
+    data_classname: "",
+  },
+  {
+    id: "col5",
+    label: "Email & Mobile",
+    minWidth: 150,
+    align: "start",
+    data_align: "start",
     data_classname: "",
   },
   {
@@ -131,7 +135,8 @@ const ActiveCustomer = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [masterData, setMasterData] = useState([]);
   const [selectedData, setSelectedData] = useState({});
-
+  const [inviteInput, setinviteInput] = useState("");
+  const [errinviteInput, seterrinviteInput] = useState("");
   const handleDeleteClick = async (id) => {
     const { data, err } = await deleteCustomer(id);
     if (!data.error) {
@@ -163,7 +168,7 @@ const ActiveCustomer = () => {
           </Typography>
         ),
         col3: item.customerName,
-        col4: (
+        col5: (
           <Box className="text-start">
             <Typography className="h-5">
               {item?.mobileNumberAndEmail?.email}
@@ -173,7 +178,7 @@ const ActiveCustomer = () => {
             </Typography>
           </Box>
         ),
-        col5: item.dob,
+        col4: item.dob,
         col6:
           item?.linkedAlsoAsVendor !== null &&
           Object.keys(item?.linkedAlsoAsVendor)?.length ? (
@@ -260,6 +265,23 @@ const ActiveCustomer = () => {
     });
     return temp;
   };
+  // eslint-disable-next-line consistent-return
+  const inviteUserFunction = async () => {
+    if (inviteInput !== "") {
+      const { data, err } = await inviteUser(inviteInput);
+      if (data) {
+        toastify(data.message, "success");
+        setCreateModalOpen(false);
+        seterrinviteInput("");
+        setinviteInput("");
+      } else if (err) {
+        toastify(err.response.data.message, "error");
+      }
+    } else {
+      seterrinviteInput(validateMessage.field_required);
+      return false;
+    }
+  };
   const getAllCustomerData = async (
     page = pageNumber,
     searchTexts = "",
@@ -269,19 +291,19 @@ const ActiveCustomer = () => {
       status: "ACTIVE",
       keyword: searchTexts || null,
       fromDate: filteredDates?.fromDate
-        ? new Date(filteredDates?.fromDate).toISOString()
+        ? `${format(new Date(filteredDates?.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates?.toDate
-        ? new Date(filteredDates?.toDate).toISOString()
+        ? `${format(new Date(filteredDates?.toDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       pageSize: 50,
       pageNumber: page,
     };
     const { data, err } = await getCustomerData(payload);
-    if (data?.length && page === 0) {
+    if (data && page === 0) {
       setPageNumber(1);
-      setMasterData([...mapStateToRow(data)]);
-    } else if (data?.length && page !== 0) {
+      setMasterData(mapStateToRow(data));
+    } else if (data && page !== 0) {
       setPageNumber((pre) => pre + 1);
       setMasterData((pre) => [...pre, ...mapStateToRow(data)]);
     }
@@ -299,11 +321,11 @@ const ActiveCustomer = () => {
           showDateFilter
           showDateFilterBtn
           //   table_heading="Active Customers"
-          dateFilterBtnName="Create Customer"
+          dateFilterBtnName="Invite Customer"
           stickyCheckBox
           columns={activeCustomer}
           tHeadBgColor="bg-white"
-          showCheckbox
+          // showCheckbox
           tableRows={masterData}
           draggableHeader={false}
           dateFilterBtnClick={() => {
@@ -328,10 +350,14 @@ const ActiveCustomer = () => {
           ModalTitle="Invite Customer"
           titleClassName="color-orange h-4"
           footerClassName="justify-content-end border-top"
-          ClearBtnText="Cancel"
+          ClearBtnText="Clear"
           saveBtnText="Submit"
           onClearBtnClick={() => {
-            setCreateModalOpen(false);
+            // setCreateModalOpen(false);
+            setinviteInput("");
+          }}
+          onSaveBtnClick={() => {
+            inviteUserFunction();
           }}
         >
           <Box className="p-4">
@@ -339,6 +365,12 @@ const ActiveCustomer = () => {
               label="Enter Mail ID / ph. number"
               variant="standard"
               fullWidth
+              onChange={(e) => {
+                setinviteInput(e.target.value);
+              }}
+              helperText={errinviteInput}
+              error={errinviteInput}
+              value={inviteInput}
             />
           </Box>
         </ModalComponent>

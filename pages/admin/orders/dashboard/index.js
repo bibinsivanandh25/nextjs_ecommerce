@@ -11,6 +11,7 @@ import TableComponent from "@/atoms/TableComponent";
 import {
   customerTableData,
   getAllTotalOrders,
+  getOrderedProductDetails,
   returnTableData,
   supplierTableData,
   totalOrderBarChart,
@@ -19,13 +20,14 @@ import {
   totalrefundBarChart,
 } from "services/admin/orders/dashboard";
 import { format } from "date-fns";
+import toastify from "services/utils/toastUtils";
 
 const navData = [
-  { id: 1, title: "Today" },
-  { id: 2, title: "Yesterday" },
-  { id: 3, title: "Last 7 days" },
-  { id: 4, title: "Last month" },
-  { id: 5, title: "Last year" },
+  { id: 1, value: "TODAY", title: "Today" },
+  { id: 2, value: "YESTERDAY", title: "Yesterday" },
+  { id: 3, value: "LAST_SEVEN_DAYS", title: "Last 7 Days" },
+  { id: 4, value: "LAST_MONTH", title: "Last Month" },
+  { id: 5, value: "LAST_YEAR", title: "Last Year" },
 ];
 const pieChartData = [
   {
@@ -150,57 +152,72 @@ const DashBoard = () => {
     },
   ];
 
-  const productInfo = [
-    {
-      title: "Fixed Margin Products",
-      value: {
-        TotalOrders: 254,
-        ActualCost: 8544,
-        FreedeliveryandReturn: 5555,
-      },
-    },
-    {
-      title: "Zero commission products",
-      value: {
-        TotalOrders: 254,
-        ActualCost: 8544,
-        FreedeliveryandReturn: 5555,
-      },
-    },
-    {
-      title: "Returned Orders",
-      value: {
-        TotalOrders: 254,
-        ActualCost: 8544,
-        FreedeliveryandReturn: 5555,
-      },
-    },
-  ];
   const [pieData, setPieData] = useState(pieChartData);
-  const [selectedNavData, setSelectedNavData] = useState("Today");
+  const [selectedNavData, setSelectedNavData] = useState("TODAY");
   const [selectedDate, setSelectedDate] = useState({
     fromdate: "",
     todate: "",
   });
+  const [orderDetails, setorderDetails] = useState([]);
+  const [orderDetailsFilter, setorderDetailsFilter] = useState("Category");
   // order Bar
   const [orderBarData, setOrderBarData] = useState({ label: [], data: [] });
-  const [barFilter, setBarFilter] = useState("category");
+  const [barFilter, setBarFilter] = useState("Category");
+  const [totalOrderCount, settotalOrderCount] = useState({
+    orders: 0,
+    products: 0,
+  });
 
   // Returnable Bar
   const [returnableData, setReturnableData] = useState({ label: [], data: [] });
-  const [returnableFilter, setReturnableFilter] = useState("category");
+  const [returnableFilter, setReturnableFilter] = useState("Category");
+  const [returnedCount, setreturnedCount] = useState({
+    total: 0,
+    category: 0,
+    subCategory: 0,
+  });
+  const [alreadyReturnedCount, setalreadyReturnedCount] = useState({
+    total: 0,
+    products: 0,
+  });
   // return Bar
   const [returnData, setReturnData] = useState({ label: [], data: [] });
-  const [returnFilter, setReturnFilter] = useState("category");
+  const [returnFilter, setReturnFilter] = useState("Category");
   // total Refund Bar
   const [refundData, setRefundData] = useState({ label: [], data: [] });
+  const [refundCount, setrefundCount] = useState(0);
+  const [refundFilter, setrefundFilter] = useState("Category");
   // category with more return
   const [categoryReturn, setCategoryReturn] = useState([]);
   // supplier table
   const [supplierRow, setSupplierRow] = useState([]);
   // customer Table
   const [customerRow, setCustomerRow] = useState([]);
-
+  const productDetailsFunction = async () => {
+    const payload = {
+      startDate: selectedDate?.fromdate?.length
+        ? `${format(new Date(selectedDate?.fromdate), "MM-dd-yyyy")} 00:00:00`
+        : null,
+      endDate: selectedDate?.todate?.length
+        ? `${format(new Date(selectedDate?.todate), "MM-dd-yyyy")} 00:00:00`
+        : null,
+      filterType: selectedNavData,
+      categoryFilterType: orderDetailsFilter,
+    };
+    const { data, err } = await getOrderedProductDetails(payload);
+    if (data) {
+      setorderDetails(data.data);
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
+  useEffect(() => {
+    productDetailsFunction();
+  }, [
+    selectedNavData,
+    orderDetailsFilter,
+    selectedDate.fromdate && selectedDate.todate,
+  ]);
   const getTotalOrder = async (day, date) => {
     const payload = {
       startDate: date?.fromdate
@@ -245,7 +262,11 @@ const DashBoard = () => {
       data: [],
     };
     if (data) {
-      Object.entries(data).forEach((val) => {
+      settotalOrderCount({
+        orders: data.totalOrders,
+        products: data.totalOrderedProducts,
+      });
+      Object.entries(data.categoryBasedData).forEach((val) => {
         temp.label.push(val[0]);
         temp.data.push(val[1]);
       });
@@ -273,7 +294,18 @@ const DashBoard = () => {
       data: [],
     };
     if (data) {
-      Object.entries(data).forEach((val) => {
+      setreturnedCount({
+        total:
+          data.returnedProductsCategoryBasedCountResponse
+            .totalReturnableProduct,
+        category:
+          data.returnedProductsCategoryBasedCountResponse
+            .returnableProductCategory,
+        subCategory:
+          data.returnedProductsCategoryBasedCountResponse
+            .returnableProductSubCategory,
+      });
+      Object.entries(data.returnedChartData).forEach((val) => {
         temp.label.push(val[0]);
         temp.data.push(val[1]);
       });
@@ -300,8 +332,13 @@ const DashBoard = () => {
       label: [],
       data: [],
     };
+
     if (data) {
-      Object.entries(data).forEach((val) => {
+      setalreadyReturnedCount({
+        total: data.totalOrders,
+        products: data.totalOrderedProducts,
+      });
+      Object.entries(data.categoryBasedData).forEach((val) => {
         temp.label.push(val[0]);
         temp.data.push(val[1]);
       });
@@ -328,7 +365,8 @@ const DashBoard = () => {
       data: [],
     };
     if (data) {
-      Object.entries(data).forEach((val) => {
+      setrefundCount(data.totalRefundAmount);
+      Object.entries(data.categoryBasedData).forEach((val) => {
         temp.label.push(val[0]);
         temp.data.push(val[1]);
       });
@@ -426,7 +464,7 @@ const DashBoard = () => {
   useEffect(() => {
     if (selectedNavData) {
       getTotalOrder(selectedNavData, selectedDate);
-      totalRefundData(selectedNavData, selectedDate);
+
       getReturnTableData(selectedNavData, selectedDate);
       getSupplierTableData(selectedNavData, selectedDate);
       getCustomerTableData(selectedNavData, selectedDate);
@@ -444,9 +482,11 @@ const DashBoard = () => {
   useEffect(() => {
     totalReturnData(selectedNavData, selectedDate, returnFilter);
   }, [selectedNavData, selectedDate, returnFilter]);
-
+  useEffect(() => {
+    totalRefundData(selectedNavData, selectedDate, refundFilter);
+  }, [selectedNavData, selectedDate, refundFilter]);
   const getProductsInfo = () => {
-    return productInfo.map((ele, ind) => {
+    return orderDetails.map((ele, ind) => {
       return (
         <div className={`px-3 ${ind % 2 === 0 ? "bg-light-gray" : ""}`}>
           <div className="mx-3 border-bottom border-dashed">
@@ -459,7 +499,7 @@ const DashBoard = () => {
                   Total Orders
                 </Typography>
                 <Typography className="fw-bold h-3 pb-1">
-                  {ele.value.TotalOrders}
+                  {ele.values.totalOrders}
                 </Typography>
               </div>
               <div>
@@ -467,7 +507,7 @@ const DashBoard = () => {
                   Actual Cost
                 </Typography>
                 <Typography className="fw-bold h-3 pb-1">
-                  ₹ {ele.value.ActualCost}
+                  ₹ {ele.values.actualCost}
                 </Typography>
               </div>
               <div>
@@ -475,7 +515,7 @@ const DashBoard = () => {
                   Free Delivery & Return
                 </Typography>
                 <Typography className="fw-bold h-3 pb-1">
-                  ₹ {ele.value.FreedeliveryandReturn}
+                  ₹ {ele.values.freeDelivaryAndReturn}
                 </Typography>
               </div>
             </div>
@@ -495,8 +535,8 @@ const DashBoard = () => {
           getToDate={(val) => {
             setSelectedDate((pre) => ({ ...pre, todate: val }));
           }}
-          onTabCilck={(val) => {
-            setSelectedNavData(val);
+          onTabCilck={(val, item) => {
+            setSelectedNavData(item.value);
           }}
         />
       </Box>
@@ -512,6 +552,29 @@ const DashBoard = () => {
           </Paper>
         </Grid>
         <Grid item md={6} sm={12}>
+          <div className="h-5 d-flex justify-content-end">
+            <span
+              className={`${
+                orderDetailsFilter === "Category" ? "color-blue" : ""
+              } cursor-pointer`}
+              onClick={() => {
+                setorderDetailsFilter("Category");
+              }}
+            >
+              categories
+            </span>
+            <span>|</span>
+            <span
+              className={`${
+                orderDetailsFilter === "subCategory" ? "color-blue" : ""
+              } cursor-pointer`}
+              onClick={() => {
+                setorderDetailsFilter("subCategory");
+              }}
+            >
+              subcategories
+            </span>
+          </div>
           <Paper className="mnh-300">{getProductsInfo()}</Paper>
         </Grid>
       </Grid>
@@ -520,16 +583,17 @@ const DashBoard = () => {
           <Paper>
             <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
               <Typography className="h-5 fw-bold">
-                Total Orders:{" "}
-                {orderBarData.data.reduce((sum, val) => sum + val, 0)}
+                Total Orders:
+                {totalOrderCount.orders} (Total Products:
+                {totalOrderCount.products})
               </Typography>
               <div className="h-5">
                 <span
                   className={`${
-                    barFilter === "category" ? "color-blue" : ""
+                    barFilter === "Category" ? "color-blue" : ""
                   } cursor-pointer`}
                   onClick={() => {
-                    setBarFilter("category");
+                    setBarFilter("Category");
                   }}
                 >
                   categories{" "}
@@ -566,19 +630,20 @@ const DashBoard = () => {
           <Paper>
             <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
               <Typography className="h-5 fw-bold">
-                Returnable Products:{" "}
-                {returnableData.data.reduce((sum, val) => sum + val, 0)}
+                Returnable Total Products:{returnedCount.total} (Returnable
+                Product Category: {returnedCount.category}) (Returnable Product
+                Suncategory: {returnedCount.subCategory})
               </Typography>
               <div className="h-5">
                 <span
                   className={`${
-                    returnableFilter === "category" ? "color-blue" : ""
+                    returnableFilter === "Category" ? "color-blue" : ""
                   } cursor-pointer`}
                   onClick={() => {
-                    setReturnableFilter("category");
+                    setReturnableFilter("Category");
                   }}
                 >
-                  categories{" "}
+                  categories
                 </span>
                 <span>|</span>
                 <span
@@ -589,7 +654,6 @@ const DashBoard = () => {
                     setReturnableFilter("subCategory");
                   }}
                 >
-                  {" "}
                   subcategories
                 </span>
               </div>
@@ -614,16 +678,16 @@ const DashBoard = () => {
           <Paper>
             <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
               <Typography className="h-5 fw-bold">
-                Total Order Returned:{" "}
-                {returnData.data.reduce((sum, val) => sum + val, 0)}
+                Total Order Returned:{alreadyReturnedCount.total} ( Total
+                Returned Products: {alreadyReturnedCount.products} )
               </Typography>
               <div className="h-5">
                 <span
                   className={`${
-                    returnFilter === "category" ? "color-blue" : ""
+                    returnFilter === "Category" ? "color-blue" : ""
                   } cursor-pointer`}
                   onClick={() => {
-                    setReturnFilter("category");
+                    setReturnFilter("Category");
                   }}
                 >
                   categories{" "}
@@ -657,11 +721,34 @@ const DashBoard = () => {
         </Grid>
         <Grid item md={6} sm={12}>
           <Paper>
-            <div className=" bg-light-grey p-2">
+            <div className="d-flex justify-content-between align-items-center bg-light-grey p-2">
               <Typography className="h-5 fw-bold">
-                Refund Amount:{" "}
-                {refundData.data.reduce((sum, val) => sum + val, 0)}
+                Refund Amount: {refundCount}
               </Typography>
+              <div className="h-5">
+                <span
+                  className={`${
+                    refundFilter === "Category" ? "color-blue" : ""
+                  } cursor-pointer`}
+                  onClick={() => {
+                    setrefundFilter("Category");
+                  }}
+                >
+                  categories
+                </span>
+                <span>|</span>
+                <span
+                  className={`${
+                    refundFilter === "subCategory" ? "color-blue" : ""
+                  } cursor-pointer`}
+                  onClick={() => {
+                    setrefundFilter("subCategory");
+                  }}
+                >
+                  {" "}
+                  subcategories
+                </span>
+              </div>
             </div>
             <div className="w-90p">
               <Bargraph

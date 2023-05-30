@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable dot-notation */
 /* eslint-disable no-unused-vars */
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ProgressBar from "components/atoms/ProgressBar";
@@ -33,6 +35,7 @@ import {
 } from "services/supplier/myaccount/pickupaddress";
 import AddAddressModal from "@/forms/supplier/myaccount/addaddressmodal";
 import CheckBoxComponent from "@/atoms/CheckboxComponent";
+import exceldownload from "services/utils/exceldownload";
 
 // import logo from "../../../../../public/assets/logo.jpeg";
 
@@ -70,10 +73,15 @@ const AcceptandConfirmOrder = () => {
 
   // console.log(multipleConfirmPayload, "multipleConfirmPayload");
   const [eachOrderData, seteachOrderData] = useState([]);
-  const [idState, setidState] = useState({ orderId: "", variationId: "" });
+  const [idState, setidState] = useState({
+    orderId: "",
+    variationId: "",
+    qty: 0,
+  });
   const [confirmOrderId, setconfirmOrderId] = useState([]);
   const [showView, setshowView] = useState(false);
   const [showAddress, setshowAddress] = useState(false);
+  const [alertModal, setalertModal] = useState(false);
   const [dropDownValue, setDropDownValue] = useState({
     mode: {},
     commission: {},
@@ -111,72 +119,122 @@ const AcceptandConfirmOrder = () => {
   const route = useRouter();
   const { supplierId } = useSelector((state) => state.user);
 
+  // const columns = [
+  //   {
+  //     id: "col1",
+  //     label: "Purchase ID",
+  //     // minWidth: 50,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //   },
+  //   {
+  //     id: "col2",
+  //     label: "Order ID",
+  //     // minWidth: 50,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //     // data_style: { paddingLeft: "7%" },
+  //   },
+
+  //   {
+  //     id: "col3",
+  //     label: "Mode Of Orders",
+  //     // minWidth: 50,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //     // data_style: { paddingLeft: "7%" },
+  //   },
+
+  //   {
+  //     id: "col4",
+  //     label: "Order Date",
+  //     // minWidth: 50,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //     // data_style: { paddingLeft: "7%" },
+  //   },
+  //   {
+  //     id: "col5",
+  //     label: "Expected Dispatch Date",
+  //     // minWidth: 50,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //     // data_style: { paddingLeft: "7%" },
+  //   },
+
+  //   {
+  //     id: "col6",
+  //     label: "Action",
+  //     minWidth: 120,
+  //     align: "center",
+  //     data_align: "center",
+  //     data_classname: "",
+  //     // data_style: { paddingLeft: "7%" },
+  //   },
+  // ];
   const columns = [
     {
-      id: "col1", //  id value in column should be presented in row as key
-      label: "Image",
-      // minWidth: 50,
+      id: "col1",
+      label: "Customer ID",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
     },
     {
       id: "col2",
-      label: "Purchase ID",
-      // minWidth: 50,
+      label: "Customer Name",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
     },
     {
       id: "col3",
-      label: "Order ID",
-      // minWidth: 50,
+      label: "Purchase ID",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
-      // data_style: { paddingLeft: "7%" },
     },
     {
       id: "col4",
-      label: "SKU ID",
-      // minWidth: 50,
+      label: "Order ID",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+
     {
       id: "col5",
-      label: "Mode Of Orders",
-      // minWidth: 50,
+      label: "Mode Of Order",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+
     {
       id: "col6",
-      label: "Weight",
-      // minWidth: 50,
+      label: "Order Date",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
-    // {
-    //   id: "col6",
-    //   label: "Weight",
-    //   // minWidth: 50,
-    //   align: "center",
-    //   data_align: "center",
-    //   data_classname: "",
-    //   // data_style: { paddingLeft: "7%" },
-    // },
     {
       id: "col7",
-      label: "Order Date",
-      // minWidth: 50,
+      label: "Expected Dispatch Date",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -184,8 +242,8 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "col8",
-      label: "Expected Dispatch Date",
-      // minWidth: 50,
+      label: "Total Order amount",
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -193,17 +251,8 @@ const AcceptandConfirmOrder = () => {
     },
     {
       id: "col9",
-      label: "weight (inclusive of package)",
-      // minWidth: 50,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col10",
       label: "Action",
-      minWidth: 120,
+      minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
@@ -275,6 +324,24 @@ const AcceptandConfirmOrder = () => {
   useEffect(() => {
     getAllAddress();
   }, []);
+  const handleexcelDownload = () => {
+    const data = newOrderData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj["Index"] = index + 1;
+      tempObj["Customer Id"] = item.col1;
+      tempObj["Customer Name"] = item.col2;
+      tempObj["Purchase Id"] = item.col3;
+      tempObj["Order Id"] = item.col4;
+      tempObj["Mode Of Order"] = item.col5;
+      tempObj["Order Date"] = item.col6;
+      tempObj["Expected Dispatch Date"] = item.col7;
+      tempObj["Total order Amount"] = item.col8;
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Accept and confirm order details");
+  };
   const updateSerialNumberFunction = async (orderId, variationId) => {
     const payload = { orderId, variationId, serialNos: formValues.number };
     const { data, err } = await updateSerialNumber(payload);
@@ -282,6 +349,7 @@ const AcceptandConfirmOrder = () => {
       setShowEditModal(false);
       toastify(data, "success");
       setformValues({ number: [] });
+      setshowAddress(true);
     } else if (err) {
       toastify(err.response.data.message, "error");
     }
@@ -312,17 +380,17 @@ const AcceptandConfirmOrder = () => {
     data?.forEach((val) => {
       temp.push({
         id: val.orderId,
-        col1: <Image src={val.imageUrl} height={50} width={50} alt="" />,
-        col2: val.purchaseId,
-        col3: val.orderId,
-        col4: val.skuId,
+        col1: val.orderedById,
+        col2: val.orderedByName,
+        col3: val.purchaseId,
+        col4: val.orderId,
         col5: val.modeOfOrder.replace("_", " "),
-        col6: val.weight,
-        col7: val.orderDate,
-        col8: val.expectedDispatchDate.split("T")[0],
-        col9: val.weightInclusivePackage,
-        col10: (
-          <div className="d-flex justify-content-between align-items-center">
+        col6: val.orderDate,
+        col7: val.expectedDispatchDate.split("T")[0],
+        col8: val.totalOrderAmount,
+
+        col9: (
+          <div className="d-flex justify-content-center align-items-center">
             {/* <CustomIcon
               type="edit"
               title="edit"
@@ -369,7 +437,7 @@ const AcceptandConfirmOrder = () => {
       keyword: keyword || null,
       modeOfOrder: dropDownValue?.mode?.value || null,
       pageNumber: page,
-      pageSize: 10,
+      pageSize: 50,
     };
     const { data, err } = await getAllnewOrders(payload);
     if (data) {
@@ -408,10 +476,10 @@ const AcceptandConfirmOrder = () => {
   const viewFormat = (key, value) => {
     return (
       <Grid container>
-        <Grid md={4} sx={4}>
+        <Grid md={7} sx={7}>
           <Typography className="fs-14 fw-500">{key}</Typography>
         </Grid>
-        <Grid md={8} sx={8}>
+        <Grid md={5} sx={5}>
           <Typography className="fs-14">{value}</Typography>
         </Grid>
       </Grid>
@@ -533,9 +601,12 @@ const AcceptandConfirmOrder = () => {
               />
             </div>
             <ButtonComponent
-              label="Download orders"
+              label="Download All orders"
               variant="outlined"
               muiProps="mx-3"
+              onBtnClick={() => {
+                handleexcelDownload();
+              }}
             />
             <Button
               variant="contained"
@@ -544,7 +615,7 @@ const AcceptandConfirmOrder = () => {
               // fullWidth
               onClick={() => {
                 if (selectedCategory === "LAST MILE") {
-                  setshowAddress(true);
+                  setalertModal(true);
                 }
                 if (selectedCategory === "SUPPLIER SHIPMENT") {
                   setShowSupplierShipmentModal(true);
@@ -628,17 +699,21 @@ const AcceptandConfirmOrder = () => {
       <ModalComponent
         open={showEditModal}
         onCloseIconClick={() => setShowEditModal(false)}
+        showFooter={false}
         ModalTitle={
-          categoryType === "mobile"
-            ? "Update IMEI Number"
-            : "Update Serial Number"
+          categoryType === "mobile" ? "Update IMEI Number" : "Add Serial Number"
         }
         ClearBtnText="cancel"
+        saveBtnText={formValues.number.length > 0 ? "Next" : "Skip"}
         // onSaveBtnClick={() => setShowEditModal(false)}
-        onSaveBtnClick={() =>
-          updateSerialNumberFunction(idState.orderId, idState.variationId)
-        }
-        onClearBtnClick={() => setShowEditModal(false)}
+        // onSaveBtnClick={() =>if(formValues.number.length > 0 ){
+
+        // }else{
+
+        //   updateSerialNumberFunction(idState.orderId, idState.variationId)
+        // }
+        // }
+        // onClearBtnClick={() => setShowEditModal(false)}
         footerClassName="justify-content-end"
       >
         <Box className="my-3">
@@ -652,13 +727,14 @@ const AcceptandConfirmOrder = () => {
           <Grid container>
             <Grid md={10} sx={10}>
               <InputFieldWithChip
+                disabled={idState.qty === formValues.number.length}
                 id="options"
                 // label="Values"
                 value={formValues.number}
                 // helperText={errorObj.values}
                 // error={errorObj.values.length}
                 inputlabelshrink
-                handleChange={(_, val) => {
+                handleChange={(a, val) => {
                   setformValues((pre) => ({
                     ...pre,
                     number: [...val],
@@ -671,117 +747,183 @@ const AcceptandConfirmOrder = () => {
             {/* <Grid md={2} sx={2}>
               <CustomIcon type="add" className="fs-35 mx-2" />
             </Grid> */}
+            <Grid container md={12} xs={12} className="py-2">
+              <Grid
+                container
+                md={8}
+                xs={8}
+                className="d-flex justify-content-around "
+              >
+                <ButtonComponent
+                  label="Clear"
+                  onBtnClick={() => {
+                    setformValues({ ...formValues, number: [] });
+                  }}
+                />
+                {idState.qty === formValues.number.length ? (
+                  <ButtonComponent
+                    label="Next"
+                    onBtnClick={() => {
+                      updateSerialNumberFunction(
+                        idState.orderId,
+                        idState.variationId
+                      );
+                    }}
+                  />
+                ) : !formValues.number.length ? (
+                  <ButtonComponent
+                    label="Skip"
+                    onBtnClick={() => {
+                      setshowAddress(true);
+                      setShowEditModal(false);
+                    }}
+                  />
+                ) : null}
+                <ButtonComponent
+                  label="Add serial No"
+                  disabled={idState.qty === formValues.number.length}
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Box>
       </ModalComponent>
+      {eachOrderData.length > 0 && (
+        <ModalComponent
+          ModalTitle="View and Confirm Order Details"
+          titleClassName="color-orange fs-14"
+          showFooter={false}
+          minWidth={700}
+          open={showView}
+          onCloseIconClick={() => {
+            setshowView(false);
+          }}
+        >
+          <Grid
+            style={{ maxHeight: "80vh", overflowY: "scroll" }}
+            className="hide-scrollbar"
+          >
+            {eachOrderData.map((product) => {
+              return (
+                <>
+                  <Box
+                    className="d-flex justify-content-between px-2 m-3"
+                    key={product.orderId}
+                  >
+                    {/* <ReusableProduct product={product}> */}
+                    <Box
+                      className={`d-flex align-items-center" "
+                    }`}
+                    >
+                      <Box className="w-150px h-180px">
+                        <Image
+                          className="d-block w-100 h-100 img-fluid rounded-1"
+                          width="180"
+                          height="180"
+                          src={product.imageUrl}
+                          alt="product"
+                        />
+                      </Box>
+                      <Box className="ms-2">
+                        <Typography
+                          className="mb-1 fs-16 fw-bold"
+                          variantMapping={<p />}
+                        >
+                          {product.productTitle}
+                        </Typography>
+                        {viewFormat("SKU Id", product.skuId)}
+                        {viewFormat("Order Id", product.orderId)}
+                        {viewFormat("Purchase Id", product.purchaseId)}
+                        {viewFormat(
+                          "Product Variation Id",
+                          product.productVariationId
+                        )}
+                        {viewFormat(
+                          "Order Status",
+                          product.orderedProductStatus
+                        )}
+                        {viewFormat(
+                          "Product Price",
+                          `₹
+                         ${product.orderedProductAmount}`
+                        )}
+                        {viewFormat("Quantity", product.orderedProductQuantity)}
+                        {viewFormat("Weight", product.weight)}
+                        {viewFormat("Payment Mode", product.modeOfPayment)}
+                        {viewFormat(
+                          "Weight Including Package",
+                          product.weightInclusivePackage
+                        )}
+                      </Box>
+                    </Box>
+                    {/* </ReusableProduct> */}
+                  </Box>
+                  <Grid className="d-flex justify-content-end  align-items-end  p-2">
+                    <Grid className="p-1">
+                      <ButtonComponent
+                        label="Cancel"
+                        onBtnClick={() => {
+                          cancelOrderFunction(
+                            product.orderId,
+                            product.productVariationId,
+                            product.skuId
+                          );
+                        }}
+                      />
+                    </Grid>
+                    <Grid className="p-1">
+                      <ButtonComponent
+                        label="Confirm"
+                        // onBtnClick={() => {
+
+                        //   setshowAddress(true);
+                        // }}
+                        onBtnClick={() => {
+                          setidState({
+                            orderId: product.orderId,
+                            variationId: product.productVariationId,
+                            qty: product.orderedProductQuantity,
+                          });
+                          confirmOrderId.push({
+                            orderId: product.orderId,
+                            orderedProductId: [product.orderedProductId],
+                          });
+                          getSerialNumberFunction(
+                            product.orderId,
+                            product.productVariationId
+                          );
+                          setShowEditModal(true);
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                </>
+              );
+            })}
+          </Grid>
+        </ModalComponent>
+      )}
       <ModalComponent
-        ModalTitle="Order Details"
-        showFooter={false}
-        minWidth={900}
-        open={showView}
+        ModalTitle="Alert"
+        open={alertModal}
         onCloseIconClick={() => {
-          setshowView(false);
+          setalertModal(false);
+        }}
+        saveBtnText="Continue"
+        ClearBtnText="Cancel"
+        onSaveBtnClick={() => {
+          setshowAddress(true);
+          setalertModal(false);
+        }}
+        onClearBtnClick={() => {
+          setalertModal(false);
         }}
       >
-        <Grid
-          style={{ maxHeight: "80vh", overflowY: "scroll" }}
-          className="hide-scrollbar"
-        >
-          {eachOrderData.map((product) => {
-            return (
-              <Box
-                className="d-flex justify-content-between px-2 m-3"
-                key={product.orderId}
-              >
-                {/* <ReusableProduct product={product}> */}
-                <Box
-                  className={`d-flex align-items-center" "
-                    }`}
-                >
-                  <Box className="w-150px h-180px">
-                    <Image
-                      className="d-block w-100 h-100 img-fluid rounded-1"
-                      width="180"
-                      height="180"
-                      src={product.imageUrl}
-                      alt="product"
-                    />
-                  </Box>
-                  <Box className="ms-2">
-                    <Typography
-                      className="mb-1 fs-16 fw-bold"
-                      variantMapping={<p />}
-                    >
-                      {product.productTitle}
-                    </Typography>
-                    {viewFormat("SKU Id", product.skuId)}
-                    {viewFormat("Order Id", product.orderId)}
-                    {viewFormat("Purchase Id", product.purchaseId)}
-                    {viewFormat(
-                      "Product Variation Id",
-                      product.productVariationId
-                    )}
-                    {viewFormat("Order Status", product.orderedProductStatus)}
-                    {viewFormat(
-                      "Product Price",
-                      `₹
-                         ${product.orderedProductAmount}`
-                    )}
-                    {viewFormat("Quantity", product.orderedProductQuantity)}
-                    {viewFormat("Weight", product.weight)}
-                    {viewFormat("Payment Mode", product.modeOfPayment)}
-                    {viewFormat(
-                      "Weight Including Package",
-                      product.weightInclusivePackage
-                    )}
-                  </Box>
-                </Box>
-                {/* </ReusableProduct> */}
-                <Grid className="d-flex justify-content-end  align-items-end  ">
-                  <Grid className="p-1">
-                    <ButtonComponent
-                      label="Confirm"
-                      onBtnClick={() => {
-                        confirmOrderId.push({
-                          orderId: product.orderId,
-                          orderedProductId: [product.orderedProductId],
-                        });
-                        setshowAddress(true);
-                      }}
-                    />
-                  </Grid>
-                  <Grid className="p-1">
-                    <ButtonComponent
-                      label="Cancel"
-                      onBtnClick={() => {
-                        cancelOrderFunction(
-                          product.orderId,
-                          product.productVariationId,
-                          product.skuId
-                        );
-                      }}
-                    />
-                  </Grid>
-                  <Grid className="p-1">
-                    <ButtonComponent
-                      label="Edit"
-                      onBtnClick={() => {
-                        setidState({
-                          orderId: product.orderId,
-                          variationId: product.productVariationId,
-                        });
-                        getSerialNumberFunction(
-                          product.orderId,
-                          product.productVariationId
-                        );
-                        setShowEditModal(true);
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-            );
-          })}
+        <Grid>
+          <Typography className="fs-12 fw-500">
+            If You Want To Add Serial Number You Can Confirm Order Individually
+            By Clicking On View Icon Present In Table
+          </Typography>
         </Grid>
       </ModalComponent>
       <ModalComponent

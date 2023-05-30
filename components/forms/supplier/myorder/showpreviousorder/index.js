@@ -11,6 +11,7 @@ import toastify from "services/utils/toastUtils";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
+import { format } from "date-fns";
 
 const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
   const { supplierId } = useSelector((state) => state.user);
@@ -69,7 +70,8 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
       temp.push({
         id: index + 1,
         col1: ele.invoiceId,
-        col2: ele.invoiceDate,
+        // col2: ele.invoiceDate,
+        col2: `${format(new Date(ele.invoiceDate), "MM-dd-yyyy")} 00:00:00`,
         col3: ele.noOfProducts,
         col4: (
           <div className="d-flex justify-content-center align-items-center ">
@@ -118,13 +120,13 @@ const ShowPreviousInvoices = ({ setShowInvoices = () => {}, show }) => {
   return (
     <>
       <div
-        className="color-orange d-flex align-items-center mb-3"
+        className="color-orange d-flex align-items-center mb-3 cursor-pointer"
         onClick={() => {
           setShowInvoices(false);
         }}
       >
-        <KeyboardArrowLeftIcon className="fw-bold fs-26" />
-        <span>Back</span>
+        <KeyboardArrowLeftIcon className="fw-bold fs-26 " />
+        <span style={{ cursor: "pointer" }}>Back</span>
       </div>
       <Paper className="py-3">
         <TableComponent

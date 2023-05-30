@@ -10,6 +10,7 @@ const NavTabComponent = ({
   getFromDate = () => {},
   getToDate = () => {},
   onTabCilck = () => {},
+  showDate = true,
 }) => {
   const [selectedId, setSelectedId] = useState(1);
   const [fromDate, setFromDate] = useState();
@@ -25,7 +26,7 @@ const NavTabComponent = ({
             }`}
             onClick={() => {
               setSelectedId(item.id);
-              onTabCilck(item.title);
+              onTabCilck(item.title, item);
             }}
             style={{
               borderRight: listData?.length > item.id ? "1px solid gray" : "",
@@ -35,30 +36,36 @@ const NavTabComponent = ({
           </p>
         ))}
       </Box>
-      <Box className="d-flex ms-4">
-        <Box className="d-flex align-items-center h-5">
-          <span>From Date :</span>
-        </Box>
-        <NavDatePicker
-          value={fromDate}
-          onDateChange={(val) => {
-            setFromDate(val);
-            getFromDate(val);
-          }}
-        />
-      </Box>
-      <Box className="d-flex ms-4">
-        <Box className="d-flex align-items-center h-5">
-          <span>To Date :</span>
-        </Box>
-        <NavDatePicker
-          value={toDate}
-          onDateChange={(val) => {
-            setToDate(val);
-            getToDate(val);
-          }}
-        />
-      </Box>
+      {showDate ? (
+        <>
+          <Box className="d-flex ms-4">
+            <Box className="d-flex align-items-center h-5">
+              <span>From Date :</span>
+            </Box>
+            <NavDatePicker
+              value={fromDate}
+              onDateChange={(val) => {
+                setFromDate(val);
+                getFromDate(val);
+              }}
+            />
+          </Box>
+          <Box className="d-flex ms-4">
+            <Box className="d-flex align-items-center h-5">
+              <span>To Date :</span>
+            </Box>
+            <NavDatePicker
+              value={toDate}
+              onDateChange={(val) => {
+                setToDate(val);
+                getToDate(val);
+              }}
+            />
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };

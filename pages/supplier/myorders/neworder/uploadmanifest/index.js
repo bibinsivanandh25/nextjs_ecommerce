@@ -39,6 +39,14 @@ const UploadManifest = () => {
   const columns = [
     {
       id: "col1", //  id value in column should be presented in row as key
+      label: "Order Id",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+    },
+    {
+      id: "col2", //  id value in column should be presented in row as key
       label: "Manifest ID",
 
       align: "center",
@@ -46,15 +54,15 @@ const UploadManifest = () => {
       data_classname: "",
     },
     {
-      id: "col2",
-      label: "Shipment Provider",
+      id: "col3",
+      label: "AWB Number",
 
       align: "center",
       data_align: "center",
       data_classname: "",
     },
     {
-      id: "col3",
+      id: "col4",
       label: "Manifest Date",
 
       align: "center",
@@ -62,8 +70,9 @@ const UploadManifest = () => {
       data_classname: "",
       // data_style: { paddingLeft: "7%" },
     },
+
     {
-      id: "col4",
+      id: "col5",
       label: "Number of Products ",
 
       align: "center",
@@ -72,7 +81,25 @@ const UploadManifest = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col5",
+      id: "col6",
+      label: "Shipment Provider",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col7",
+      label: "Ordered Product Status",
+
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col8",
       label: "Action",
 
       align: "center",
@@ -90,101 +117,115 @@ const UploadManifest = () => {
       toastify(err.response.data.message, "error");
     }
   };
-  const uploadFunction = async () => {
-    const formdata = new FormData();
-    formdata.append("medias", uploadedDocument.document);
 
-    const { data, err } = await getMediaUrl(
-      supplierId,
-      idState.orderId,
-      formdata
-    );
-    if (data) {
-      const payload = {
-        orderId: idState.orderId,
-        orderedProductId: idState.orderedProductId,
-        manifestFileUrl: data.data[0],
-        productVariationId: idState.productVariationId,
-      };
-      const { uploadData, error } = await uploadMenifestData(payload);
-      if (uploadData) {
-        // console.log(uploadData, "upload");
-      } else if (error) {
-        toastify(error.response.data.message, "error");
-      }
-    } else if (err) {
-      toastify(err.response.data.message, "error");
-    }
-  };
   const dataMaptoTable = (data) => {
     const temp = [];
     data.forEach((val, idx) => {
       temp.push({
         id: idx,
-        col1: val.manifestId,
-        col2: val.shipmentProvider,
-        col3: val.manifestDate,
-        col4: val.noOfProducts,
-        col5: (
+        col1: val.orderId,
+        col2: val.manifestId,
+        col3: val.awbNo,
+        col4: val.manifestDate,
+        col5: val.noOfProducts,
+        col6: val.shipmentProvider,
+
+        col7: val.orderedProductStatus,
+        col8: (
           <Grid className="d-flex justify-content-around align-items-center ">
             {/* <Tooltip title="Upload" placement="top">
               <FileUploadIcon /> 
             </Tooltip> */}
+
+            <CustomIcon
+              // type="upload"
+              type={val.uploaded ? "download" : "upload"}
+              onIconClick={() => {
+                if (val.manifestFileUrl) {
+                  const a = document.createElement("a");
+                  a.href = val.manifestFileUrl;
+                  a.style.display = "none";
+                  a.download = "manifest";
+                  a.target = "_blank";
+                  document.body.appendChild(a);
+                  a.click();
+                }
+
+                //   // const a = document.createElement("a");
+                //   // a.style.display = "none";
+                //   // a.href = url;
+                //   // // the filename you want
+                //   // a.download = `Manifest-Report-${format(
+                //   //   new Date(),
+                //   //   "MM-dd-yyyy HH-mm-ss"
+                //   // )}.pdf`;
+                //   // document.body.appendChild(a);
+                //   // a.click();
+                // if (val.uploaded) {
+                //   // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
+                //   // const url = val.manifestFileUrl;
+                //   // const a = document.createElement("a");
+                //   // a.style.display = "none";
+                //   // a.href = url;
+                //   // // the filename you want
+                //   // a.download = `Manifest-Report-${format(
+                //   //   new Date(),
+                //   //   "MM-dd-yyyy HH-mm-ss"
+                //   // )}.pdf`;
+                //   // document.body.appendChild(a);
+                //   // a.click();
+                //   // console.log(url, "urlurl");
+                //   // window.URL.revokeObjectURL(url);
+
+                //   const url = val.manifestFileUrl;
+                //   const a = document.createElement("a");
+                //   a.style.display = "none";
+                //   a.href = url;
+                //   // the filename you want
+                //   a.download = `${val.manifestDate
+                //     .toString()
+                //     .replaceAll(" ", "_")}.pdf`;
+                //   document.body.appendChild(a);
+                //   a.click();
+                //   window.URL.revokeObjectURL(url);
+                //   toastify("your file has downloaded!", "success");
+
+                //   // *****************
+                //   // const element = document.createElement("a");
+                //   // const file = val.manifestFileUrl;
+                //   // element.href = file;
+                //   // element.target = "_blank";
+                //   // element.download = "Manifest";
+                //   // element.click();
+
+                //   toastify("your file has downloaded!", "success");
+                // } else {
+                //   setshowUploadModal(true);
+
+                //   setidState({
+                //     orderId: val.orderId,
+                //     orderedProductId: val.orderedProductId,
+                //     productVariationId: val.productVariationId,
+                //   });
+                //   setUploadedDocument({
+                //     ...uploadedDocument,
+                //     awb: val.awbNo,
+                //   });
+                // }
+              }}
+            />
+
             {val.manifestFileUrl.length ? (
               <CustomIcon
-                // type="upload"
-                type={val.uploaded ? "download" : "upload"}
+                title="Detail"
+                type="view"
                 onIconClick={() => {
-                  if (val.uploaded) {
-                    // downloadUploadedManifest(val.manifestFileUrl, val.orderId);
-                    // const url = val.manifestFileUrl;
-                    // const a = document.createElement("a");
-                    // a.style.display = "none";
-                    // a.href = url;
-                    // // the filename you want
-                    // a.download = `Manifest-Report-${format(
-                    //   new Date(),
-                    //   "MM-dd-yyyy HH-mm-ss"
-                    // )}.pdf`;
-                    // document.body.appendChild(a);
-                    // a.click();
-                    // console.log(url, "urlurl");
-                    // window.URL.revokeObjectURL(url);
-
-                    const element = document.createElement("a");
-                    const file = val.manifestFileUrl;
-                    element.href = file;
-                    element.target = "_blank";
-                    element.download = "Manifest";
-                    element.click();
-
-                    toastify("your file has downloaded!", "success");
-                  } else {
-                    setshowUploadModal(true);
-
-                    setidState({
-                      orderId: val.orderId,
-                      orderedProductId: val.orderedProductId,
-                      productVariationId: val.productVariationId,
-                    });
-                    setUploadedDocument({
-                      ...uploadedDocument,
-                      awb: val.awbNo,
-                    });
-                  }
+                  viewManifestFunction(val.manifestId);
                 }}
               />
             ) : (
               <></>
             )}
-
-            <CustomIcon
-              title="Detail"
-              type="view"
-              onIconClick={() => {
-                viewManifestFunction(val.manifestId);
-              }}
-            />
           </Grid>
         ),
       });
@@ -213,6 +254,36 @@ const UploadManifest = () => {
   useEffect(() => {
     getAllManifestFunction();
   }, []);
+  const uploadFunction = async () => {
+    const formdata = new FormData();
+    formdata.append("medias", uploadedDocument.document);
+
+    const { data, err } = await getMediaUrl(
+      supplierId,
+      idState.orderId,
+      formdata
+    );
+    if (data) {
+      const payload = {
+        orderId: idState.orderId,
+        orderedProductId: idState.orderedProductId,
+        manifestFileUrl: data.data[0],
+        productVariationId: idState.productVariationId,
+      };
+      const { uploadData, error } = await uploadMenifestData(payload);
+      if (uploadData) {
+        // console.log(uploadData, "upload");
+        toastify(uploadData.message, "success");
+        setshowUploadModal(false);
+        setUploadedDocument({ documentName: null, awbNo: null });
+        getAllManifestFunction(0);
+      } else if (error) {
+        toastify(error.response.data.message, "error");
+      }
+    } else if (err) {
+      toastify(err.response.data.message, "error");
+    }
+  };
   return (
     <Paper
       sx={{ p: 2 }}
