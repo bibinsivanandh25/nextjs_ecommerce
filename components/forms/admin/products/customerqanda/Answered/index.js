@@ -41,6 +41,7 @@ const columns = [
     id: "col8",
     align: "center",
     label: "Action",
+    minWidth: 150,
     data_align: "center",
   },
 ];

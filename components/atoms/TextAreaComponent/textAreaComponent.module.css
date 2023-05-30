@@ -5,6 +5,7 @@
     border-bottom-right-radius: 2%;
     outline: none;
     border-color: #c4c4c4;
+    border-width: 1px;
   }
 
   .legend {

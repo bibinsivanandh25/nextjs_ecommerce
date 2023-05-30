@@ -217,7 +217,7 @@ const Notifications = () => {
   const [userId, setuserId] = useState("");
   const profilePicRef = useRef();
 
-  const getSupplierDropdownFun = async (page = pageNumberState) => {
+  const getCustomerDropdownFunction = async (page = pageNumberState) => {
     const payload = {
       userType: "Customer",
       searchKey: customerSearch,
@@ -227,19 +227,35 @@ const Notifications = () => {
 
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
-      const temp = [...customerDropdownData];
-      setcustomerDropdownTemp(data?.data);
-      data.data.forEach((val) => {
-        temp.push({
-          userId: val?.userId,
-          userType: val?.userType,
-          userName: val?.userName,
-          userMobileNumber: val?.userMobileNumber,
-          userEmail: val?.userEmail,
-          isSelected: false,
+      if (page == 0) {
+        const temp1 = [];
+        setcustomerDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp1.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
         });
-      });
-      setcustomerDropdownData([...temp]);
+        setcustomerDropdownData([...temp1]);
+      } else {
+        const temp = [...customerDropdownData];
+        setcustomerDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
+        });
+        setcustomerDropdownData([...temp]);
+      }
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
@@ -254,48 +270,61 @@ const Notifications = () => {
     };
     const { data, err } = await getSupplierDropdown(payload);
     if (data) {
-      // console.log(data, "datadata");
-      const temp = [...supplierDropdownVal];
-      setsupplierDropdownTemp(data?.data);
-      data.data.forEach((val) => {
-        temp.push({
-          userId: val?.userId,
-          userType: val?.userType,
-          userName: val?.userName,
-          userMobileNumber: val?.userMobileNumber,
-          userEmail: val?.userEmail,
-          isSelected: false,
+      if (page == 0) {
+        const tempFirst = [];
+        data.data.forEach((val) => {
+          tempFirst.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
         });
-      });
+        setsupplierDropdownVal([...tempFirst]);
+      } else {
+        const temp = [...supplierDropdownVal];
+        setsupplierDropdownTemp(data?.data);
+        data.data.forEach((val) => {
+          temp.push({
+            userId: val?.userId,
+            userType: val?.userType,
+            userName: val?.userName,
+            userMobileNumber: val?.userMobileNumber,
+            userEmail: val?.userEmail,
+            isSelected: false,
+          });
+        });
+        setsupplierDropdownVal([...temp]);
+      }
+      // console.log(data, "datadata");
 
       // console.log(temp, "temp");
-      setsupplierDropdownVal([...temp]);
     } else if (err) {
       toastify(err?.response?.data?.message, "error");
     }
   };
   useEffect(() => {
     if (showCreate) {
-      getSupplierDropdownFun();
+      getCustomerDropdownFunction();
       getSupplierDropdownFunction();
     }
   }, [showCreate]);
   useEffect(() => {
-    if (customerSearch.length) {
-      const search = setTimeout(() => {
-        getSupplierDropdownFun();
-      }, 1000);
-      return () => clearTimeout(search);
-    }
+    const search = setTimeout(() => {
+      getCustomerDropdownFunction(0);
+    }, 1000);
+    return () => clearTimeout(search);
   }, [customerSearch]);
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (supplierSearch.length) {
-      const search = setTimeout(() => {
-        getSupplierDropdownFunction();
-      }, 1000);
-      return () => clearTimeout(search);
-    }
+    // if (supplierSearch.length) {
+    const search = setTimeout(() => {
+      getSupplierDropdownFunction(0);
+    }, 1000);
+    return () => clearTimeout(search);
+    // }
   }, [supplierSearch]);
   const closeModalFunction = () => {
     setcreateNotification({
@@ -326,7 +355,7 @@ const Notifications = () => {
   };
   const updateNotificationFunction = async () => {
     let updateDate = `${createNotification.notificationScheduledAtDate} ${createNotification.notificationScheduledAtTime}`;
-    if (!createNotification?.notificationScheduledAtDate.length) {
+    if (!createNotification?.notificationScheduledAtDate?.length) {
       updateDate = `${format(
         new Date(createNotification?.notificationScheduledAtDate),
         "MM-dd-yyyy"
@@ -497,9 +526,9 @@ const Notifications = () => {
         notificationType: data.data?.notificationType,
         attachmentFile: data.data.attachmentFile || [],
         notificationScheduledAtTime:
-          data.data.notificationScheduledAt.split(" ")[1],
+          data.data.notificationScheduledAt?.split(" ")[1],
         notificationScheduledAtDate:
-          data.data.notificationScheduledAt.split(" ")[0],
+          data.data.notificationScheduledAt?.split(" ")[0],
       });
       if (data.data.attachmentFile.length > 0) {
         setcontentType("onlyAttachment");
@@ -513,7 +542,7 @@ const Notifications = () => {
       } else {
         setcontentType("");
       }
-      if (data.data.notificationScheduledAt.length) {
+      if (data?.data?.notificationScheduledAt?.length) {
         setshowSchedule(true);
       } else {
         setshowSchedule(false);
@@ -804,13 +833,17 @@ const Notifications = () => {
                     <Grid className="py-1" item md={8} xs={8}>
                       <MultiselectWithPagination
                         dowpdownLength={customerDropdownTemp}
-                        getSupplierDropdownFun={getSupplierDropdownFun}
+                        getSupplierDropdownFun={getCustomerDropdownFunction}
                         setpageNumberState={setpageNumberState}
                         pageNumberState={pageNumberState}
                         disable={sendMessageToType.customer !== "customer"}
                         setselectedSupplier={setselectedCustomers}
                         selectedSupplier={selectedCustomers}
-                        label="Customer"
+                        label={
+                          selectedCustomers.length
+                            ? `Customer${selectedCustomers.length}`
+                            : "Customer"
+                        }
                         setsupplierDropdownVal={setcustomerDropdownData}
                         supplierDropdownVal={customerDropdownData}
                         allSelect={selectAllCustomer}
@@ -882,7 +915,11 @@ const Notifications = () => {
                         disable={sendMessageToType.supplier !== "supplier"}
                         setselectedSupplier={setselectedSupplier}
                         selectedSupplier={selectedSupplier}
-                        label="Supplier"
+                        label={
+                          selectedSupplier.length
+                            ? `Supplier ${selectedSupplier.length}`
+                            : "Supplier"
+                        }
                         setsupplierDropdownVal={setsupplierDropdownVal}
                         supplierDropdownVal={supplierDropdownVal}
                         allSelect={selectAllSupplier}

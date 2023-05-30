@@ -90,44 +90,48 @@ const OtpLogIn = () => {
   };
 
   const handleSubmit = async () => {
-    const formdata = new FormData();
-    formdata.append("userName", user);
-    formdata.append("userType", "CUSTOMER");
-    formdata.append("otp", otp);
-    const data = await serviceUtil
-      .post(`users/registration/verify-login-otp`, formdata, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .catch((err) => {
-        toastify(err?.response?.data?.message, "error");
-      });
-    if (data?.data) {
-      toastify(data.data.message, "success");
-      const { token } = data.data;
-      const decoded = JSON.parse(atob(token.split(".")[1].toString()));
-      const userData = decoded.sub.split(",");
-      const res = await signIn("credentials", {
-        id: userData[0],
-        email: userData[1],
-        role: "CUSTOMER",
-        token,
-        callbackUrl: `/customer/home`,
-        redirect: false,
-      });
-      if (res?.error) {
-        toastify("Invalid credentials", "error");
-        return null;
+    if (!otp.includes("x")) {
+      const formdata = new FormData();
+      formdata.append("userName", user);
+      formdata.append("userType", "CUSTOMER");
+      formdata.append("otp", otp);
+      const data = await serviceUtil
+        .post(`users/registration/verify-login-otp`, formdata, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .catch((err) => {
+          toastify(err?.response?.data?.message, "error");
+        });
+      if (data?.data) {
+        toastify(data.data.message, "success");
+        const { token } = data.data;
+        const decoded = JSON.parse(atob(token.split(".")[1].toString()));
+        const userData = decoded.sub.split(",");
+        const res = await signIn("credentials", {
+          id: userData[0],
+          email: userData[1],
+          role: "CUSTOMER",
+          token,
+          callbackUrl: `/customer/home`,
+          redirect: false,
+        });
+        if (res?.error) {
+          toastify("Invalid credentials", "error");
+          return null;
+        }
+        const details = await getDetails(userData[0]);
+        if (details) {
+          await storedatatoRedux(
+            data?.data?.defaultStoreCode,
+            userData[0],
+            userData[1],
+            details
+          );
+          route.push(`/customer/home`);
+        }
       }
-      const details = await getDetails(userData[0]);
-      if (details) {
-        await storedatatoRedux(
-          data?.data?.defaultStoreCode,
-          userData[0],
-          userData[1],
-          details
-        );
-        route.push(`/customer/home`);
-      }
+    } else {
+      toastify("Please Enter OTP", "error");
     }
   };
   const validateForm = () => {

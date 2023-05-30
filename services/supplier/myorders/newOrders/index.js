@@ -147,6 +147,15 @@ const uploadMenifestData = (payload) => {
       return { error };
     });
 };
+const getConfirmedProductsByOrderId = (orderId) => {
+  return serviceUtil
+    .get(`order-payment/orders/status?orderId=${orderId}`)
+    .then((res) => {
+      const { data } = res?.data;
+      return { data };
+    })
+    .catch((err) => ({ err }));
+};
 export {
   getAllnewOrders,
   cancelOrderFromSupplier,
@@ -161,4 +170,5 @@ export {
   getMediaUrl,
   viewManifest,
   uploadMenifestData,
+  getConfirmedProductsByOrderId,
 };

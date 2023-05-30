@@ -1,6 +1,8 @@
 import ModalComponent from "@/atoms/ModalComponent";
-import { Grid, Paper, Typography } from "@mui/material";
+import ViewOrderDetails from "@/forms/supplier/myorder/viewOrderDetails";
+import { Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
+import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
@@ -8,6 +10,7 @@ import {
   getOrderDetailsById,
   getOrderHistory,
 } from "services/supplier/myorders/orderhistory";
+import exceldownload from "services/utils/exceldownload";
 import toastify from "services/utils/toastUtils";
 
 const dropdownList = [
@@ -24,13 +27,10 @@ const dropdownList = [
     id: "HAND_PICK",
   },
   {
-    label: "Last Mile AC",
-    id: "LAST_MILE_AC",
+    label: "Last Mile",
+    id: "LAST_MILE",
   },
-  {
-    label: "Last Mile FDR",
-    id: "LAST_MILE_FDR",
-  },
+
   {
     label: "Supplier Shipment",
     id: "SUPPLIER_SHIPMENT",
@@ -58,27 +58,28 @@ const ShippedOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
-      label: "Manifest Date",
+      label: "Shifted Date",
       id: "col6",
     },
     {
       label: "Qty",
       id: "col7",
     },
+
     {
-      label: "Status",
+      label: "Ordered Product Amount",
       id: "col8",
     },
     {
-      label: "Total",
+      label: "AWB Number",
       id: "col9",
     },
     {
@@ -87,7 +88,26 @@ const ShippedOrders = () => {
       align: "center",
     },
   ];
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj.Index = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Shifted Date"] = item.col6;
+      tempObj.Qty = item.col7;
+      tempObj["ordered Product Amount"] = item.col8;
+      tempObj["AWB Number"] = item.col9;
 
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Shipped order details");
+  };
   const getOrderDataById = async (id) => {
     const { data, err } = await getOrderDetailsById(id);
     if (data) {
@@ -101,20 +121,20 @@ const ShippedOrders = () => {
     const result = [];
     data?.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          row?.allDate != null
+            ? `${format(new Date(row?.allDate), "MM-dd-yyyy")} 00:00:00`
+            : null,
         col7: row?.orderQuantity || "__",
-        col8: row?.orderStatus || "__",
-        col9: row?.orderAmount || "__",
+        col8: row?.orderedProductAmount || "__",
+        col9: row?.awbNo || "__",
         col10: (
           <Grid container>
-            <Grid item xs={6}>
-              <CustomIcon type="download" title="Download" />
-            </Grid>
             <Grid item xs={6}>
               <CustomIcon
                 type="view"
@@ -130,27 +150,17 @@ const ShippedOrders = () => {
     });
     return result;
   };
-  const viewFormat = (key, value) => {
-    return (
-      <Grid md={12} sx={12} container className="py-1">
-        <Grid md={3} sx={3}>
-          <Typography className="fs-12 fw-500">{key}</Typography>
-        </Grid>
-        <Grid md={1} sx={1}>
-          <Typography className="fs-12">:</Typography>
-        </Grid>
-        <Grid md={8} sx={8}>
-          <Typography className="fs-12">{value}</Typography>
-        </Grid>
-      </Grid>
-    );
-  };
+
   const getDeleveredOrderData = async (page = pageNumberState) => {
     const payload = {
       supplierId: user,
       orderStatus: "SHIPPED",
       modeOfOrder:
+<<<<<<< HEAD
         modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue?.id || null,
+=======
+        modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue.id || null,
+>>>>>>> 021ffc627bbe67d723b9adfa8c5520acfb93d6ef
       pageNo: page || 0,
       pageSize: 50,
       shipmentType: null,
@@ -219,7 +229,7 @@ const ShippedOrders = () => {
           showCustomButton
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
-            // console.log("onCustomButtonClick");
+            handleexcelDownload();
           }}
           handlePageEnd={() => {
             getDeleveredOrderData();
@@ -233,34 +243,12 @@ const ShippedOrders = () => {
           showFooter={false}
           ModalTitle="View Details"
           open={openView}
+          minWidth={800}
           onCloseIconClick={() => {
             setopenView(false);
           }}
         >
-          <Grid className="p-2">
-            {viewFormat("Order Id", eachOrderData.orderId)}
-            {viewFormat(
-              "Delivered Date",
-              eachOrderData.deliveredDate.replace("T", " ")
-            )}
-            {viewFormat("Order Status", eachOrderData.orderStatus)}
-            {viewFormat("Discount Amount", eachOrderData.discountAmount)}
-            {viewFormat("Earning", eachOrderData.earning)}
-            {viewFormat(
-              "Expected Dispatch",
-              eachOrderData.expectedDispatchDate
-            )}
-            {viewFormat("Margin Amount", eachOrderData.marginAmount)}
-            {viewFormat("Mode Of Order", eachOrderData.modeOfOrder)}
-            {viewFormat("Quentity", eachOrderData.orderQuantity)}
-            {viewFormat("Ordered By", eachOrderData.orderedByType)}
-            {viewFormat(
-              `${eachOrderData.orderedByType} ID`,
-              eachOrderData.orderedById
-            )}
-            {viewFormat("product Id", eachOrderData.productId)}
-            {viewFormat("Product Owner Id", eachOrderData.productOwnerId)}
-          </Grid>
+          <ViewOrderDetails eachOrderData={eachOrderData} />
         </ModalComponent>
       )}
     </Paper>

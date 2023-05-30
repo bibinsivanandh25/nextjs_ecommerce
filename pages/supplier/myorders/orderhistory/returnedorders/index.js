@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Button, Grid, Paper } from "@mui/material";
 import TableComponent from "components/atoms/TableComponent";
 import React, { useEffect, useState } from "react";
 import SimpleDropdownComponent from "components/atoms/SimpleDropdownComponent";
@@ -10,6 +10,9 @@ import {
 } from "services/supplier/myorders/orderhistory";
 import toastify from "services/utils/toastUtils";
 import { useSelector } from "react-redux";
+import { format } from "date-fns";
+import exceldownload from "services/utils/exceldownload";
+import ViewOrderDetails from "@/forms/supplier/myorder/viewOrderDetails";
 
 const dropdownList = [
   {
@@ -25,13 +28,10 @@ const dropdownList = [
     id: "HAND_PICK",
   },
   {
-    label: "Last Mile AC",
-    id: "LAST_MILE_AC",
+    label: "Last Mile",
+    id: "LAST_MILE",
   },
-  {
-    label: "Last Mile FDR",
-    id: "LAST_MILE_FDR",
-  },
+
   {
     label: "Supplier Shipment",
     id: "SUPPLIER_SHIPMENT",
@@ -44,6 +44,7 @@ const ReturnedOrders = () => {
   const [openView, setopenView] = useState(false);
   const user = useSelector((state) => state.user?.supplierId);
   const [pageNumberState, setpageNumberState] = useState(0);
+
   const columns = [
     {
       label: "Purchase ID",
@@ -58,42 +59,46 @@ const ReturnedOrders = () => {
       id: "col3",
     },
     {
-      label: "Size",
+      label: "Mode Of Order",
       id: "col4",
     },
     {
-      label: "Weight",
+      label: "Weight Inclusive Package",
       id: "col5",
     },
     {
-      label: "Manifest Date",
+      label: "Returned Date",
       id: "col6",
     },
     {
       label: "Qty",
       id: "col7",
     },
+
     {
-      label: "Status",
-      // align: "center",
+      label: "Ordered Product Amount",
       id: "col8",
     },
     {
-      label: "Choose Action",
+      label: "AWB Number",
       id: "col9",
+    },
+    {
+      label: "Choose Action",
+      id: "col10",
       // align: "center",
       minWidth: 250,
     },
     {
       label: "Action",
-      id: "col10",
-      // align: "center",
-      minWidth: 100,
+      id: "col11",
+      align: "center",
+      minWidth: 150,
     },
   ];
 
   // const [tableRows, setTableRows] = useState([]);
-  const [dropdownFilter, setDropdownFilter] = useState({});
+  const [dropdownFilter] = useState({});
   // const [tableData, setTableData] = useState([]);
   const getOrderDataById = async (id) => {
     const { data, err } = await getOrderDetailsById(id);
@@ -139,49 +144,44 @@ const ReturnedOrders = () => {
     });
     setTableData(copy);
   };
+  const handleexcelDownload = () => {
+    const data = tableData;
+    const copyRowData = [];
+    data.forEach((item, index) => {
+      const tempObj = {};
+      tempObj.Index = index + 1;
+      tempObj["Purchase Id"] = item.col1;
+      tempObj["Order Id"] = item.col2;
+      tempObj["Order Date"] = item.col3;
+      tempObj["Mode Of Order"] = item.col4;
+      tempObj["weight Inclusive Package"] = item.col5;
+      tempObj["Manifest Date"] = item.col6;
+      tempObj.Qty = item.col7;
+      tempObj["ordered Product Amount"] = item.col8;
+      tempObj["AWB Number"] = item.col9;
 
-  const getClassnames = (status) => {
-    if (status?.toLowerCase().includes("live")) {
-      return "text-success";
-    }
-    if (status?.toLowerCase().includes("fail")) {
-      return "text-danger";
-    }
-    return "";
-  };
-  const viewFormat = (key, value) => {
-    return (
-      <Grid md={12} sx={12} container className="py-1">
-        <Grid md={3} sx={3}>
-          <Typography className="fs-12 fw-500">{key}</Typography>
-        </Grid>
-        <Grid md={1} sx={1}>
-          <Typography className="fs-12">:</Typography>
-        </Grid>
-        <Grid md={8} sx={8}>
-          <Typography className="fs-12">{value}</Typography>
-        </Grid>
-      </Grid>
-    );
+      copyRowData.push(tempObj);
+    });
+    exceldownload(copyRowData, "Returned order details");
   };
 
   const mapRowsToTable = (data) => {
     const result = [];
     data.forEach((row) => {
       result.push({
-        col1: row?.purchaseid || "__",
+        col1: row?.purchaseId || "__",
         col2: row?.orderId || "__",
         col3: row?.orderDate || "__",
-        col4: row?.size || "__",
+        col4: row?.modeOfOrder || "__",
         col5: row?.weightInclusivePackage || "__",
-        col6: row?.manifestdate || "__",
+        col6:
+          row?.allDate !== null
+            ? `${format(new Date(row?.allDate), "MM-dd-yyyy")} 00:00:00`
+            : null,
         col7: row?.orderQuantity || "__",
-        col8: (
-          <div className={getClassnames(row.orderStatus)}>
-            {row.orderStatus}
-          </div>
-        ),
-        col9: (
+        col8: row?.orderedProductAmount || "__",
+        col9: row?.awbNo || "__",
+        col10: (
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={10}>
               <SimpleDropdownComponent
@@ -209,11 +209,8 @@ const ReturnedOrders = () => {
             </Grid>
           </Grid>
         ),
-        col10: (
+        col11: (
           <Grid container mx={1} alignItems="center" justifyContent="center">
-            <Grid item>
-              <CustomIcon title="Download" type="download" />
-            </Grid>
             <Grid item>
               <CustomIcon
                 title="View"
@@ -257,74 +254,6 @@ const ReturnedOrders = () => {
   useEffect(() => {
     getDeleveredOrderData(0);
   }, [modeOfOrderValue]);
-  // useEffect(() => {
-  //   setTableRows(mapRowsToTable(tableData));
-  // }, [tableData]);
-
-  // useEffect(() => {
-  //   const rows = [
-  //     {
-  //       purchaseid: "#123458",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "PRODUCT LIVE",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123456",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "VALIDATION FAILED",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //     {
-  //       purchaseid: "#123450",
-  //       orderid: "123456",
-  //       orderdate: "12-01-2022",
-  //       size: "UK24",
-  //       weight: "200gm",
-  //       manifestdate: "23-01-2022",
-  //       qty: "4",
-  //       status: "PRODUCT LIVE",
-  //       chooseActionValue: null,
-  //       orderQuantity: 1,
-  //     },
-  //   ];
-  //   setTableData(rows);
-  // }, []);
-
-  // const filterByType = React.useCallback(() => {
-  //   if (dropdownFilter && dropdownFilter.id) {
-  //     switch (dropdownFilter?.id) {
-  //       case "single":
-  //         setTableRows(
-  //           tableRows?.filter((row) => parseInt(row.col7, 10) === 1)
-  //         );
-  //         break;
-  //       case "multiple":
-  //         setTableRows(tableRows?.filter((row) => parseInt(row.col7, 10) > 1));
-  //         break;
-  //       default:
-  //         setTableRows(mapRowsToTable(tableData));
-  //     }
-  //   } else {
-  //     setTableRows(mapRowsToTable(tableData));
-  //   }
-  // }, [dropdownFilter]);
-
-  // useEffect(() => {
-  //   filterByType();
-  // }, [dropdownFilter]);
 
   return (
     <Paper
@@ -345,7 +274,7 @@ const ReturnedOrders = () => {
           showSearchFilter={false}
           customButtonLabel="Download All Orders"
           onCustomButtonClick={() => {
-            // console.log("onCustomButtonClick");
+            handleexcelDownload();
           }}
           onCustomDropdownChange={(val) => setmodeOfOrderValue(val)}
           customDropdownValue={modeOfOrderValue}
@@ -359,34 +288,12 @@ const ReturnedOrders = () => {
           showFooter={false}
           ModalTitle="View Details"
           open={openView}
+          minWidth={800}
           onCloseIconClick={() => {
             setopenView(false);
           }}
         >
-          <Grid className="p-2">
-            {viewFormat("Order Id", eachOrderData.orderId)}
-            {viewFormat(
-              "Delivered Date",
-              eachOrderData.deliveredDate.replace("T", " ")
-            )}
-            {viewFormat("Order Status", eachOrderData.orderStatus)}
-            {viewFormat("Discount Amount", eachOrderData.discountAmount)}
-            {viewFormat("Earning", eachOrderData.earning)}
-            {viewFormat(
-              "Expected Dispatch",
-              eachOrderData.expectedDispatchDate
-            )}
-            {viewFormat("Margin Amount", eachOrderData.marginAmount)}
-            {viewFormat("Mode Of Order", eachOrderData.modeOfOrder)}
-            {viewFormat("Quentity", eachOrderData.orderQuantity)}
-            {viewFormat("Ordered By", eachOrderData.orderedByType)}
-            {viewFormat(
-              `${eachOrderData.orderedByType} ID`,
-              eachOrderData.orderedById
-            )}
-            {viewFormat("product Id", eachOrderData.productId)}
-            {viewFormat("Product Owner Id", eachOrderData.productOwnerId)}
-          </Grid>
+          <ViewOrderDetails eachOrderData={eachOrderData} />
         </ModalComponent>
       )}
     </Paper>

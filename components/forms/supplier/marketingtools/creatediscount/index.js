@@ -53,6 +53,7 @@ const CreateDiscount = ({
     starttime: "",
     endtime: "",
   });
+
   const [selectedCategorys, setSelectedCategory] = useState({
     mainCategoryId: "",
     subCategoryId: "",
@@ -220,7 +221,7 @@ const CreateDiscount = ({
     if (formValues.inputValue == "" || formValues.inputValue == undefined) {
       errObj.inputValue = validateMessage.field_required;
     } else if (
-      !(parseInt(formValues.inputValue, 10) <= 45) ||
+      !(parseInt(Math.ceil(formValues.inputValue), 10) <= 45) ||
       !(parseInt(formValues.inputValue, 10) >= 5)
     ) {
       errObj.inputValue = "Discount Range Should be 5% to 45%.";

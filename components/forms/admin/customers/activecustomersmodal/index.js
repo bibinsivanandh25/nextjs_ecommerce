@@ -43,11 +43,7 @@ const list = [
     label: "Order history",
     tabWidth: "100px",
   },
-  {
-    isSelected: false,
-    label: "Comments",
-    tabWidth: "65px",
-  },
+
   {
     isSelected: false,
     label: "Product reviews",

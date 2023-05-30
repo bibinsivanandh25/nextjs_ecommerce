@@ -43,7 +43,6 @@ export default function MultiselectWithPagination({
 }) {
   const [selectAllValue, setselectAllValue] = useState([]);
   // const [allSelect, setallSelect] = useState(false);
-
   const allSelectFunction = () => {
     const temp = allSelect;
     setallSelect(!temp);
@@ -91,6 +90,7 @@ export default function MultiselectWithPagination({
           )}
         </Grid>
         <Select
+          disableAutoFocus
           readOnly={disable}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
@@ -107,7 +107,7 @@ export default function MultiselectWithPagination({
               <InputBox
                 value={searchDropdown}
                 disabled
-                className=" "
+                className="position-fixed"
                 onInputChange={(e) => {
                   setsearchDropdown(e.target.value);
                 }}

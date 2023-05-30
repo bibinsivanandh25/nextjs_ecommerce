@@ -73,7 +73,7 @@ const CustomerDashBoard = () => {
         temp.push({
           col1: index + 1,
           col2: item.customerName,
-          col3: item.returnAmount,
+          col3: item.returnAmountValue,
         });
       });
       setRow([...temp]);

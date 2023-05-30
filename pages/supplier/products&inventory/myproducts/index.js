@@ -52,6 +52,12 @@ const MyProducts = () => {
   const [pageNumber, setpageNumber] = useState(0);
   const [search, setsearch] = useState("");
   const dispatch = useDispatch();
+  const [showAlert, setshowAlert] = useState({
+    status: false,
+    vid: "",
+    skuid: "",
+  });
+  const [deleteAlert, setdeleteAlert] = useState(false);
   const columns = [
     {
       label: "Image",
@@ -195,10 +201,18 @@ const MyProducts = () => {
   };
 
   const deleteSingleRow = async (productId) => {
-    if (value !== 0) {
-      // *******doubt is it possible to delete active products
-      const { data } = await deleteSingleProduct(productId);
-      if (data) {
+    // *******doubt is it possible to delete active products
+    const { data } = await deleteSingleProduct(productId);
+    if (data) {
+      if (deleteAlert) {
+        toastify(data.message, "success");
+        setdeleteAlert(false);
+        setshowAlert({
+          status: false,
+          vid: "",
+          skuid: "",
+        });
+      } else {
         toastify(data.message, "success");
         getTabList();
       }
@@ -279,10 +293,10 @@ const MyProducts = () => {
                       navigator.clipboard.writeText(
                         variation.productVariationId
                       );
-                      toastify(
-                        "Product ID Copied To The Clip Board",
-                        "success"
-                      );
+                      // toastify(
+                      //   "Product ID Copied To The Clip Board",
+                      //   "success"
+                      // );
                       shareProductFunction(variation.productVariationId);
                     }}
                   />
@@ -292,7 +306,15 @@ const MyProducts = () => {
               <Grid item xs={3}>
                 <CustomIcon
                   onIconClick={() => {
-                    deleteSingleRow(variation.productVariationId);
+                    if (variation.status == "APPROVED") {
+                      setshowAlert({
+                        status: true,
+                        vid: variation.productVariationId,
+                        skuid: variation.skuId,
+                      });
+                    } else {
+                      deleteSingleRow(variation.productVariationId);
+                    }
                   }}
                   className="fs-6"
                   title="Delete"
@@ -428,21 +450,33 @@ const MyProducts = () => {
   const handleCustomButtonClick = async () => {
     if (value === 0) {
       const payload = [];
-      tableRows.forEach((ele) => {
-        if (selected.includes(ele.col3))
-          payload.push({
-            productVariationId: ele.col3,
-            skuId: ele.col5,
-          });
-      });
+      if (showAlert.status) {
+        payload.push({
+          productVariationId: showAlert.vid,
+          skuId: showAlert.skuid,
+        });
+      } else {
+        tableRows.forEach((ele) => {
+          if (selected.includes(ele.id))
+            payload.push({
+              productVariationId: ele.id,
+              skuId: ele.col5,
+            });
+        });
+      }
+
       const { data, message, err } = await markOutOfStock(payload);
       if (data) {
-        toastify(message, "success");
-        getTabList();
-        getTableData("", "", 0);
-        setSelected([]);
-        setSelected([]);
-        toastify(err?.response?.data?.message, "error");
+        if (showAlert.status) {
+          setdeleteAlert(true);
+        } else {
+          toastify(message, "success");
+          getTabList();
+          getTableData("", "", 0);
+          setSelected([]);
+          setSelected([]);
+          toastify(err?.response?.data?.message, "error");
+        }
       }
     }
   };
@@ -922,6 +956,63 @@ const MyProducts = () => {
                 <ArrowRightIcon className="color-orange h-1 cursor-pointer " />
               </Grid>
             </Grid>
+          </ModalComponent>
+          <ModalComponent
+            ModalTitle="Alert"
+            open={showAlert.status}
+            onCloseIconClick={() => {
+              setshowAlert({
+                status: false,
+                vid: "",
+                skuid: "",
+              });
+            }}
+            saveBtnText="Mark Out Of Stock"
+            ClearBtnText="Cancel"
+            onClearBtnClick={() => {
+              setshowAlert({
+                status: false,
+                vid: "",
+                skuid: "",
+              });
+            }}
+            onSaveBtnClick={() => {
+              handleCustomButtonClick();
+            }}
+          >
+            <Typography className="fs-14 color-orange">
+              This is an active product. Before delete please make it as out of
+              stock.
+            </Typography>
+          </ModalComponent>
+          <ModalComponent
+            ModalTitle="Delete ALert"
+            open={deleteAlert}
+            onCloseIconClick={() => {
+              setdeleteAlert(false);
+              setshowAlert({
+                status: false,
+                vid: "",
+                skuid: "",
+              });
+            }}
+            saveBtnText="Confirm"
+            ClearBtnText="Cancel"
+            onClearBtnClick={() => {
+              setdeleteAlert(false);
+              setshowAlert({
+                status: false,
+                vid: "",
+                skuid: "",
+              });
+            }}
+            onSaveBtnClick={() => {
+              deleteSingleRow(showAlert.vid);
+            }}
+          >
+            <Typography className="fs-14 color-orange">
+              Please comfirm that you want to delete this product.
+            </Typography>
           </ModalComponent>
         </Paper>
       </Box>

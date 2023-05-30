@@ -1,37 +1,32 @@
 /* eslint-disable no-unused-vars */
 import { Box, Paper, Typography } from "@mui/material";
 import NavTabComponent from "components/molecule/NavTabComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TableComponent from "@/atoms/TableWithSpan";
+import { getDeliveryStatus } from "services/admin/deliverymanagement/dashboard";
+import toastify from "services/utils/toastUtils";
 
 const DeliveryStatus = () => {
   const [navData, setNavData] = useState([
-    { id: 1, title: "Today" },
-    { id: 2, title: "Yesterday" },
-    { id: 3, title: "Last 7 days" },
-    { id: 4, title: "Last month" },
-    { id: 5, title: "Last year" },
+    { id: 1, title: "Today", value: "TODAY" },
+    { id: 2, title: "Yesterday", value: "YESTERDAY" },
+    { id: 3, title: "Last 7 days", value: "LAST_SEVEN_DAYS" },
+    { id: 4, title: "Last month", value: "LAST_MONTH" },
+    { id: 5, title: "Last year", value: "LAST_YEAR" },
   ]);
+  const [tabFilter, settabFilter] = useState("TODAY");
+  const [tablerowData, settablerowData] = useState([]);
+  const [pagenumber, setpagenumber] = useState(0);
   const column1 = [
     {
-      id: "col1", //  id value in column should be presented in row as key
-      label: "Sl.No",
-      minWidth: 100,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      rowSpan: 2,
-      position: "sticky",
-    },
-    {
-      id: "col2",
+      id: "col1",
       label: "logistics partners",
       minWidth: 100,
       align: "center",
       data_align: "center",
       data_classname: "",
       rowSpan: 2,
-      position: "sticky",
+      // position: "sticky",
     },
     {
       label: "Total Orders",
@@ -114,7 +109,7 @@ const DeliveryStatus = () => {
       colSpan: 2,
     },
     {
-      id: "col24",
+      id: "col23",
       label: "Date",
       minWidth: 100,
       align: "center",
@@ -126,8 +121,17 @@ const DeliveryStatus = () => {
 
   const column2 = [
     {
-      id: "col3",
+      id: "col2",
       label: "S",
+      minWidth: 100,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col3",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -136,15 +140,6 @@ const DeliveryStatus = () => {
     },
     {
       id: "col4",
-      label: "A",
-      minWidth: 100,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col5",
       label: "COD",
       minWidth: 100,
       align: "center",
@@ -153,8 +148,17 @@ const DeliveryStatus = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col6",
+      id: "col5",
       label: "S",
+      minWidth: 100,
+      align: "center",
+      data_align: "center",
+      data_classname: "",
+      // data_style: { paddingLeft: "7%" },
+    },
+    {
+      id: "col6",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -163,7 +167,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col7",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -172,7 +176,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col8",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -181,7 +185,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col9",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -190,7 +194,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col10",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -199,7 +203,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col11",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -208,7 +212,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col12",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -217,7 +221,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col13",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -226,7 +230,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col14",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -235,7 +239,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col15",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -244,7 +248,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col16",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -253,7 +257,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col17",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -262,7 +266,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col18",
-      label: "S",
+      label: "A",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -271,7 +275,7 @@ const DeliveryStatus = () => {
     },
     {
       id: "col19",
-      label: "A",
+      label: "S",
       minWidth: 100,
       align: "center",
       data_align: "center",
@@ -280,15 +284,6 @@ const DeliveryStatus = () => {
     },
     {
       id: "col20",
-      label: "S",
-      minWidth: 100,
-      align: "center",
-      data_align: "center",
-      data_classname: "",
-      // data_style: { paddingLeft: "7%" },
-    },
-    {
-      id: "col21",
       label: "A",
       minWidth: 100,
       align: "center",
@@ -297,7 +292,7 @@ const DeliveryStatus = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col22",
+      id: "col21",
       label: "S",
       minWidth: 100,
       align: "center",
@@ -306,7 +301,7 @@ const DeliveryStatus = () => {
       // data_style: { paddingLeft: "7%" },
     },
     {
-      id: "col23",
+      id: "col22",
       label: "A",
       minWidth: 100,
       align: "center",
@@ -371,9 +366,70 @@ const DeliveryStatus = () => {
       col24: "current day",
     },
   ];
+  const getTableData = (data) => {
+    const temp = [];
+    data.forEach((ele, ind) => {
+      temp.push({
+        key: ind,
+        col1: ele.logisticPartners,
+        col2: ele.totalOrdersBySurface,
+        col3: ele.totalOrdersByAir,
+        col4: ele.totalOrderCashOnDelivery,
+        col5: ele.orderApprovalPendingSurface,
+        col6: ele.orderApprovalPendingAir,
+        col7: ele.ordersPickedUpSurface,
+        col8: ele.ordersPickedUpAir,
+        col9: ele.ordersInCommuteSurface,
+        col10: ele.ordersInCommuteAir,
+        col11: ele.ordersDeliveredSurface,
+        col12: ele.ordersDeliveredAir,
+        col13: ele.returnOrderApprovalPendingSurface,
+        col14: ele.returnOrderApprovalPendingAir,
+        col15: ele.returnPickedUpSurface,
+        col16: ele.returnPickedUpAir,
+        col17: ele.returnOrderInCommuteSurface,
+        col18: ele.returnOrderInCommuteAir,
+        col19: ele.returnDeliveredSurface,
+        col20: ele.returnDeliveredAir,
+        col21: ele.rtoSurface,
+        col22: ele.rtoAir,
+        col23: ele.orderDate,
+      });
+    });
+    return temp;
+  };
+  const getDeliveryStatusData = async (page = pagenumber) => {
+    const payload = {
+      filterType: tabFilter,
+      fromDate: "",
+      toDate: "",
+      pageNumber: page,
+      pageSize: 20,
+    };
+    const { data, err } = await getDeliveryStatus(payload);
+    if (data) {
+      if (page == 0) {
+        setpagenumber(1);
+        settablerowData(getTableData(data.data));
+      } else {
+        setpagenumber((pre) => pre + 1);
+        settablerowData((pre) => [...pre, ...getTableData(data.data)]);
+      }
+    } else if (err) {
+      toastify(err?.response?.data?.message, "error");
+    }
+  };
+  useEffect(() => {
+    getDeliveryStatusData(0);
+  }, [tabFilter]);
   return (
     <div>
-      <NavTabComponent listData={[...navData]} />
+      <NavTabComponent
+        listData={[...navData]}
+        onTabCilck={(val, item) => {
+          settabFilter(item.value);
+        }}
+      />
       <Paper elevation={3} className="p-2">
         <Box className="d-flex mt-3 px-3">
           <Typography className="color-blue h-5 fw-bold">
@@ -387,11 +443,15 @@ const DeliveryStatus = () => {
           </Typography>
         </Box>
         <TableComponent
-          tableRows={[...rows]}
+          showCheckbox={false}
+          tableRows={tablerowData}
           columns={[...column2]}
           column2={[...column1]}
           stickyCheckBox
           tHeadBgColor="bg-gray-1"
+          handlePageEnd={(page) => {
+            getDeliveryStatusData(page);
+          }}
         />
       </Paper>
     </div>

@@ -201,7 +201,7 @@ const Reviews = () => {
                 }
                 // onClickOfMenuItem(ele);
               }}
-              options={["view", "Edit", "Delete"]}
+              options={["view", "Delete"]}
               IconclassName="color-gray"
             />
           </Box>

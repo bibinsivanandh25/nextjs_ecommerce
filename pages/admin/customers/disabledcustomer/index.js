@@ -17,6 +17,7 @@ import {
 } from "services/admin/customers";
 import toastify from "services/utils/toastUtils";
 import ActiveCustomerViewModal from "@/forms/admin/customers/activecustomersmodal";
+import { format } from "date-fns";
 
 const disabledCustomer = [
   {
@@ -314,19 +315,19 @@ const DisabledCustomer = () => {
       status: "DISABLED",
       keyword: searchText || null,
       fromDate: filteredDates?.fromDate
-        ? new Date(filteredDates?.fromDate).toISOString()
+        ? `${format(new Date(filteredDates?.fromDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       toDate: filteredDates?.toDate
-        ? new Date(filteredDates?.toDate).toISOString()
+        ? `${format(new Date(filteredDates?.toDate), "MM-dd-yyyy")} 00:00:00`
         : "",
       pageSize: 10,
       pageNumber: page,
     };
     const { data, err } = await getCustomerData(payload);
-    if (data?.length && page === 0) {
+    if (data && page === 0) {
       setPageNumber(1);
       setMasterData([...mapStateToRow(data)]);
-    } else if (data?.length && page !== 0) {
+    } else if (data && page !== 0) {
       setPageNumber((pre) => pre + 1);
       setMasterData((pre) => [...pre, ...mapStateToRow(data)]);
     }
@@ -345,7 +346,7 @@ const DisabledCustomer = () => {
           stickyCheckBox
           columns={disabledCustomer}
           tHeadBgColor="bg-white"
-          showCheckbox
+          // showCheckbox
           tableRows={masterData}
           draggableHeader={false}
           handlePageEnd={(

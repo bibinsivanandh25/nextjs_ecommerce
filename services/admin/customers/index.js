@@ -78,6 +78,17 @@ const deleteAnswerData = (id) => {
     })
     .catch((err) => ({ err }));
 };
+const inviteUser = (useremailorph) => {
+  return serviceUtil
+    .post(`users/admin/invite-customer?input=${useremailorph}`)
+    .then((res) => {
+      const data = res && res.data;
+      return { data };
+    })
+    .catch((err) => {
+      return { err };
+    });
+};
 export {
   getCustomerData,
   viewModalApi,
@@ -87,4 +98,5 @@ export {
   getAnsAndUnAnsData,
   replyAnswer,
   deleteAnswerData,
+  inviteUser,
 };

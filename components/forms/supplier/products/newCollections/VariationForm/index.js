@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 /* eslint-disable react/no-array-index-key */
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, FormHelperText, Grid, Typography } from "@mui/material";
 import ButtonComponent from "components/atoms/ButtonComponent";
 import ImageCard from "components/atoms/ImageCard";
 import ModalComponent from "components/atoms/ModalComponent";
@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import CustomIcon from "services/iconUtils";
 import { getBase64 } from "services/utils/functionUtils";
-import toastify from "services/utils/toastUtils";
+// import toastify from "services/utils/toastUtils";
 import { getCurrentData } from "services/supplier";
 import ImageGuidelines from "components/molecule/ImageGuidelines";
 import InputBox from "@/atoms/InputBoxComponent";
@@ -36,6 +36,7 @@ const VariationForm = forwardRef(
     const [expireDate, setexpireDate] = useState(null);
     const [expireDateErr, setexpireDateErr] = useState("");
     const [country, setcountry] = useState({});
+    const [isError, setIsError] = useState(false);
 
     const variationData = useSelector((state) => state.product.variationData);
 
@@ -109,7 +110,8 @@ const VariationForm = forwardRef(
 
         setShowGroupVariant(true);
       } else {
-        toastify("Please upload variation image", "error");
+        // toastify("Please upload variation image", "error");
+        setIsError(true);
       }
     };
     const addOtherField = () => {
@@ -261,6 +263,7 @@ const VariationForm = forwardRef(
             showHeader
             onCloseIconClick={() => {
               setShowModal(false);
+              setIsError(false);
             }}
             headerClassName="border-0"
             minHeightClassName="mnh-100 p-4  d-flex justify-content-center"
@@ -337,6 +340,16 @@ const VariationForm = forwardRef(
                   />
                 </div>
               </Box>
+              <div
+                className={
+                  !isError ? "d-none" : "d-flex justify-content-center"
+                }
+              >
+                <FormHelperText error classsName="text-center">
+                  Please upload variation Image
+                </FormHelperText>
+              </div>
+
               <div className="mt-3 ">
                 <Typography className="fs-16 fw-500 color-orange">
                   Image Guidelines

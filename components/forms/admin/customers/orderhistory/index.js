@@ -91,7 +91,7 @@ const OrderHistory = ({ selectedData = {} }) => {
         col4: item.productLink,
         col5: (
           <Typography className="text-capitalize h-5">
-            {item.orderStatus.toLowerCase()}
+            {item.orderStatus?.toLowerCase()}
           </Typography>
         ),
         col6: (
