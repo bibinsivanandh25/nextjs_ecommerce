@@ -156,11 +156,7 @@ const ShippedOrders = () => {
       supplierId: user,
       orderStatus: "SHIPPED",
       modeOfOrder:
-<<<<<<< HEAD
         modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue?.id || null,
-=======
-        modeOfOrderValue?.id == "ALL" ? null : modeOfOrderValue.id || null,
->>>>>>> 021ffc627bbe67d723b9adfa8c5520acfb93d6ef
       pageNo: page || 0,
       pageSize: 50,
       shipmentType: null,
