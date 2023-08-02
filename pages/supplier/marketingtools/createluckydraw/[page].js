@@ -171,7 +171,7 @@ const CreateQuiz = ({ pageName }) => {
       }
     }
     if (err) {
-      toastify(err.response.data.message, "error");
+      toastify(err.response?.data?.message, "error");
     }
   };
   const getPageName = () => {
